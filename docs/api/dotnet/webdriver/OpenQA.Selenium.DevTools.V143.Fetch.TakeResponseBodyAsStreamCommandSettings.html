@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class TakeResponseBodyAsStreamCommandSettings ">
       
-      <meta name="description" content="TakeResponseBodyAsStream">
+      <meta name="description" content="Returns a handle to the stream representing the response body. The request must be paused in the HeadersReceived stage. Note that after this command the request can&#39;t be continued as is -- client either needs to cancel it or to provide the response body. The stream only supports sequential read, IO.read will fail if the position is specified. This method is mutually exclusive with getResponseBody. Calling other methods that affect the request or disabling fetch domain before body is received results in an undefined behavior.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Fetch_TakeResponseBodyAsStreamCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.TakeResponseBodyAsStreamCommandSettings" class="text-break">
-Class TakeResponseBodyAsStreamCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/TakeResponseBodyAsStreamCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class TakeResponseBodyAsStreamCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/TakeResponseBodyAsStreamCommand.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,16 @@ Class TakeResponseBodyAsStreamCommandSettings  <a class="header-action link-seco
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>TakeResponseBodyAsStream</p>
+  <div class="markdown summary"><p>Returns a handle to the stream representing the response body.
+The request must be paused in the HeadersReceived stage.
+Note that after this command the request can't be continued
+as is -- client either needs to cancel it or to provide the
+response body.
+The stream only supports sequential read, IO.read will fail if the position
+is specified.
+This method is mutually exclusive with getResponseBody.
+Calling other methods that affect the request or disabling fetch
+domain before body is received results in an undefined behavior.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +169,7 @@ Class TakeResponseBodyAsStreamCommandSettings  <a class="header-action link-seco
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_TakeResponseBodyAsStreamCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.TakeResponseBodyAsStreamCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/TakeResponseBodyAsStreamCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/TakeResponseBodyAsStreamCommand.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,7 +202,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_TakeResponseBodyAsStreamCommandSettings_RequestId" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.TakeResponseBodyAsStreamCommandSettings.RequestId">
   RequestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/TakeResponseBodyAsStreamCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/TakeResponseBodyAsStreamCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the requestId</p>
@@ -226,7 +235,7 @@ public string RequestId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/TakeResponseBodyAsStreamCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/TakeResponseBodyAsStreamCommand.cs/#L21" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CompilationCacheParams ">
       
-      <meta name="description" content="CompilationCacheParams">
+      <meta name="description" content="Per-script compilation cache parameters for Page.produceCompilationCache">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class CompilationCacheParams  <a class="header-action link-secondary" title="Vie
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>CompilationCacheParams</p>
+  <div class="markdown summary"><p>Per-script compilation cache parameters for <code>Page.produceCompilationCache</code></p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +154,11 @@ Class CompilationCacheParams  <a class="header-action link-secondary" title="Vie
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Page_CompilationCacheParams_Eager" data-uid="OpenQA.Selenium.DevTools.V143.Page.CompilationCacheParams.Eager">
   Eager
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/CompilationCacheParams.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/CompilationCacheParams.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>eager</p>
+  <div class="markdown level1 summary"><p>A hint to the backend whether eager compilation is recommended.
+(the actual compilation mode used is upon backend discretion).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,7 +192,7 @@ public bool? Eager { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/CompilationCacheParams.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>url</p>
+  <div class="markdown level1 summary"><p>The URL of the script to produce a compilation cache entry for.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

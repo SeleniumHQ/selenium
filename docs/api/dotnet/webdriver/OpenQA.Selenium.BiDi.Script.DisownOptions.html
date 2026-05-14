@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Script_DisownOptions" data-uid="OpenQA.Selenium.BiDi.Script.DisownOptions" class="text-break">
-Class DisownOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/DisownCommand.cs/#L29"><i class="bi bi-code-slash"></i></a>
+Class DisownOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/DisownCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class DisownOptions  <a class="header-action link-secondary" title="View source"
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class DisownOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record DisownOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;DisownOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class DisownOptions  <a class="header-action link-secondary" title="View source"
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.DisownOptions.html">DisownOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -153,7 +160,7 @@ Class DisownOptions  <a class="header-action link-secondary" title="View source"
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/DisownCommand.cs/#L29" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/DisownCommand.cs/#L27" class="edit-link">Edit this page</a>
         </div>
 
 

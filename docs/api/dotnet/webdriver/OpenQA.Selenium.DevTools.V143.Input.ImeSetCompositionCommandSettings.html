@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ImeSetCompositionCommandSettings ">
       
-      <meta name="description" content="ImeSetComposition">
+      <meta name="description" content="This method sets the current candidate text for IME. Use imeCommitComposition to commit the final text. Use imeSetComposition with empty string as text to cancel composition.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Input_ImeSetCompositionCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.Input.ImeSetCompositionCommandSettings" class="text-break">
-Class ImeSetCompositionCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class ImeSetCompositionCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,9 @@ Class ImeSetCompositionCommandSettings  <a class="header-action link-secondary" 
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>ImeSetComposition</p>
+  <div class="markdown summary"><p>This method sets the current candidate text for IME.
+Use imeCommitComposition to commit the final text.
+Use imeSetComposition with empty string as text to cancel composition.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +162,7 @@ Class ImeSetCompositionCommandSettings  <a class="header-action link-secondary" 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Input_ImeSetCompositionCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.Input.ImeSetCompositionCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +195,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Input_ImeSetCompositionCommandSettings_ReplacementEnd" data-uid="OpenQA.Selenium.DevTools.V143.Input.ImeSetCompositionCommandSettings.ReplacementEnd">
   ReplacementEnd
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the replacementEnd</p>
+  <div class="markdown level1 summary"><p>replacement end</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +229,10 @@ public long? ReplacementEnd { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Input_ImeSetCompositionCommandSettings_ReplacementStart" data-uid="OpenQA.Selenium.DevTools.V143.Input.ImeSetCompositionCommandSettings.ReplacementStart">
   ReplacementStart
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the replacementStart</p>
+  <div class="markdown level1 summary"><p>replacement start</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -261,10 +263,10 @@ public long? ReplacementStart { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Input_ImeSetCompositionCommandSettings_SelectionEnd" data-uid="OpenQA.Selenium.DevTools.V143.Input.ImeSetCompositionCommandSettings.SelectionEnd">
   SelectionEnd
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the selectionEnd</p>
+  <div class="markdown level1 summary"><p>selection end</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -294,10 +296,10 @@ public long SelectionEnd { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Input_ImeSetCompositionCommandSettings_SelectionStart" data-uid="OpenQA.Selenium.DevTools.V143.Input.ImeSetCompositionCommandSettings.SelectionStart">
   SelectionStart
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the selectionStart</p>
+  <div class="markdown level1 summary"><p>selection start</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -327,10 +329,10 @@ public long SelectionStart { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Input_ImeSetCompositionCommandSettings_Text" data-uid="OpenQA.Selenium.DevTools.V143.Input.ImeSetCompositionCommandSettings.Text">
   Text
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the text</p>
+  <div class="markdown level1 summary"><p>The text to insert</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -360,7 +362,7 @@ public string Text { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Input/ImeSetCompositionCommand.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class StackTrace ">
       
-      <meta name="description" content="StackTrace">
+      <meta name="description" content="Call frames for assertions or error messages.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class StackTrace  <a class="header-action link-secondary" title="View source" hr
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>StackTrace</p>
+  <div class="markdown summary"><p>Call frames for assertions or error messages.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +154,10 @@ Class StackTrace  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_StackTrace_CallFrames" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.StackTrace.CallFrames">
   CallFrames
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/StackTrace.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/StackTrace.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>callFrames</p>
+  <div class="markdown level1 summary"><p>JavaScript function name.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -187,10 +187,11 @@ public CallFrame[] CallFrames { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_StackTrace_Description" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.StackTrace.Description">
   Description
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/StackTrace.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/StackTrace.cs/#L18"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>description</p>
+  <div class="markdown level1 summary"><p>String label of this stack trace. For async traces this may be a name of the function that
+initiated the async call.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -221,10 +222,10 @@ public string? Description { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_StackTrace_Parent" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.StackTrace.Parent">
   Parent
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/StackTrace.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/StackTrace.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>parent</p>
+  <div class="markdown level1 summary"><p>Asynchronous JavaScript stack trace that preceded this stack, if available.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -255,10 +256,10 @@ public StackTrace? Parent { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_StackTrace_ParentId" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.StackTrace.ParentId">
   ParentId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/StackTrace.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/StackTrace.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>parentId</p>
+  <div class="markdown level1 summary"><p>Asynchronous JavaScript stack trace that preceded this stack, if available.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

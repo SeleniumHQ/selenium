@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class BlockedSetCookieWithReason ">
       
-      <meta name="description" content="BlockedSetCookieWithReason">
+      <meta name="description" content="A cookie which was not stored from a response with the corresponding reason.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class BlockedSetCookieWithReason  <a class="header-action link-secondary" title=
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>BlockedSetCookieWithReason</p>
+  <div class="markdown summary"><p>A cookie which was not stored from a response with the corresponding reason.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -157,7 +157,7 @@ Class BlockedSetCookieWithReason  <a class="header-action link-secondary" title=
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/BlockedSetCookieWithReason.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>blockedReasons</p>
+  <div class="markdown level1 summary"><p>The reason(s) this cookie was blocked.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -187,10 +187,12 @@ public SetCookieBlockedReason[] BlockedReasons { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_BlockedSetCookieWithReason_Cookie" data-uid="OpenQA.Selenium.DevTools.V143.Network.BlockedSetCookieWithReason.Cookie">
   Cookie
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/BlockedSetCookieWithReason.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/BlockedSetCookieWithReason.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>cookie</p>
+  <div class="markdown level1 summary"><p>The cookie object which represents the cookie which was not stored. It is optional because
+sometimes complete cookie information is not available, such as in the case of parsing
+errors.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -221,10 +223,11 @@ public Cookie? Cookie { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_BlockedSetCookieWithReason_CookieLine" data-uid="OpenQA.Selenium.DevTools.V143.Network.BlockedSetCookieWithReason.CookieLine">
   CookieLine
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/BlockedSetCookieWithReason.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/BlockedSetCookieWithReason.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>cookieLine</p>
+  <div class="markdown level1 summary"><p>The string representing this individual cookie as it would appear in the header.
+This is not the entire &quot;cookie&quot; or &quot;set-cookie&quot; header which could have multiple cookies.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

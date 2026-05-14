@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_Chromium_ChromiumDriverService" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService" class="text-break">
-Class ChromiumDriverService  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L29"><i class="bi bi-code-slash"></i></a>
+Class ChromiumDriverService  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -102,7 +102,7 @@ Class ChromiumDriverService  <a class="header-action link-secondary" title="View
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract class ChromiumDriverService : DriverService, ICommandServer, IDisposable</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract class ChromiumDriverService : DriverService, IDisposable, IAsyncDisposable</code></pre>
   </div>
 
 
@@ -120,8 +120,8 @@ Class ChromiumDriverService  <a class="header-action link-secondary" title="View
   <dl class="typelist implements">
     <dt>Implements</dt>
     <dd>
-      <div><a class="xref" href="OpenQA.Selenium.Remote.ICommandServer.html">ICommandServer</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iasyncdisposable">IAsyncDisposable</a></div>
     </dd>
   </dl>
 
@@ -182,19 +182,25 @@ Class ChromiumDriverService  <a class="header-action link-secondary" title="View
       <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_EnableProcessRedirection">DriverService.EnableProcessRedirection</a>
     </div>
     <div>
-      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_IsInitialized">DriverService.IsInitialized</a>
-    </div>
-    <div>
       <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_Dispose">DriverService.Dispose()</a>
     </div>
     <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_DisposeAsync">DriverService.DisposeAsync()</a>
+    </div>
+    <div>
       <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_Start">DriverService.Start()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_StartAsync_System_Threading_CancellationToken_">DriverService.StartAsync(CancellationToken)</a>
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_GetDefaultDriverOptions">DriverService.GetDefaultDriverOptions()</a>
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_Dispose_System_Boolean_">DriverService.Dispose(bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_DisposeAsync_System_Boolean_">DriverService.DisposeAsync(bool)</a>
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_OnDriverProcessStarting_OpenQA_Selenium_DriverProcessStartingEventArgs_">DriverService.OnDriverProcessStarting(DriverProcessStartingEventArgs)</a>
@@ -241,7 +247,7 @@ Class ChromiumDriverService  <a class="header-action link-secondary" title="View
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService__ctor_System_String_System_String_System_Int32_" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.#ctor(System.String,System.String,System.Int32)">
   ChromiumDriverService(string?, string?, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html">ChromiumDriverService</a> class.</p>
@@ -284,7 +290,7 @@ Class ChromiumDriverService  <a class="header-action link-secondary" title="View
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_AllowedIPAddresses" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.AllowedIPAddresses">
   AllowedIPAddresses
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L95"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the comma-delimited list of IP addresses that are approved to connect to this instance of the Chrome driver.</p>
@@ -317,7 +323,7 @@ Class ChromiumDriverService  <a class="header-action link-secondary" title="View
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_AndroidDebugBridgePort" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.AndroidDebugBridgePort">
   AndroidDebugBridgePort
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the port on which the Android Debug Bridge is listening for commands.</p>
@@ -350,7 +356,7 @@ Class ChromiumDriverService  <a class="header-action link-secondary" title="View
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_CommandLineArguments" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.CommandLineArguments">
   CommandLineArguments
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L105"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the command-line arguments for the driver service.</p>
@@ -382,7 +388,7 @@ Class ChromiumDriverService  <a class="header-action link-secondary" title="View
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_DisableBuildCheck" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.DisableBuildCheck">
   DisableBuildCheck
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L72"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a value indicating whether to skip version compatibility check
@@ -416,7 +422,7 @@ Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-referenc
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_EnableAppendLog" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.EnableAppendLog">
   EnableAppendLog
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L85"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a value indicating whether to enable appending to an existing ChromeDriver log file.
@@ -449,7 +455,7 @@ Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-referenc
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_EnableVerboseLogging" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.EnableVerboseLogging">
   EnableVerboseLogging
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L78"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a value indicating whether to enable verbose logging for the ChromeDriver executable.
@@ -482,7 +488,7 @@ Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-referenc
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_LogLevel" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.LogLevel">
   LogLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the level at which log output is displayed.</p>
@@ -514,12 +520,11 @@ Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-referenc
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_LogPath" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.LogPath">
   LogPath
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the location of the log file written to by the ChromeDriver executable.</p>
-<p>
-  <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string.empty">Empty</a> signify no log path.</p>
+<p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string.empty">Empty</a> signify no log path.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -548,12 +553,11 @@ Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-referenc
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_PortServerAddress" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.PortServerAddress">
   PortServerAddress
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the address of a server to contact for reserving a port.</p>
-<p>
-  <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string.empty">Empty</a> signify no port server.</p>
+<p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string.empty">Empty</a> signify no port server.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -582,7 +586,7 @@ Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-referenc
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_ReadableTimestamp" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.ReadableTimestamp">
   ReadableTimestamp
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L100"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds readable timestamps to log</p>
@@ -614,12 +618,11 @@ Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-referenc
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_UrlPathPrefix" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.UrlPathPrefix">
   UrlPathPrefix
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L53"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the base URL path prefix for commands (e.g., "wd/url").</p>
-<p>
-  <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string.empty">Empty</a> signify no prefix.</p>
+<p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string.empty">Empty</a> signify no prefix.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -652,7 +655,7 @@ Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-referenc
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_ChromiumDriverServiceFileName_System_String_" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.ChromiumDriverServiceFileName(System.String)">
   ChromiumDriverServiceFileName(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L178"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L189"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns the Chromium driver filename for the currently running platform</p>
@@ -691,7 +694,7 @@ Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-referenc
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L29" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L28" class="edit-link">Edit this page</a>
         </div>
 
 

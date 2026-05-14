@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AuthChallengeResponse ">
       
-      <meta name="description" content="AuthChallengeResponse">
+      <meta name="description" content="Response to an AuthChallenge.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class AuthChallengeResponse  <a class="header-action link-secondary" title="View
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>AuthChallengeResponse</p>
+  <div class="markdown summary"><p>Response to an AuthChallenge.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +154,11 @@ Class AuthChallengeResponse  <a class="header-action link-secondary" title="View
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_AuthChallengeResponse_Password" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.AuthChallengeResponse.Password">
   Password
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthChallengeResponse.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthChallengeResponse.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>password</p>
+  <div class="markdown level1 summary"><p>The password to provide, possibly empty. Should only be set if response is
+ProvideCredentials.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -188,10 +189,12 @@ public string? Password { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_AuthChallengeResponse_Response" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.AuthChallengeResponse.Response">
   Response
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthChallengeResponse.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthChallengeResponse.cs/#L19"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>response</p>
+  <div class="markdown level1 summary"><p>The decision on what to do in response to the authorization challenge.  Default means
+deferring to the default behavior of the net stack, which will likely either the Cancel
+authentication or display a popup dialog box.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -221,10 +224,11 @@ public AuthChallengeResponseResponseValues Response { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_AuthChallengeResponse_Username" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.AuthChallengeResponse.Username">
   Username
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthChallengeResponse.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthChallengeResponse.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>username</p>
+  <div class="markdown level1 summary"><p>The username to provide, possibly empty. Should only be set if response is
+ProvideCredentials.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

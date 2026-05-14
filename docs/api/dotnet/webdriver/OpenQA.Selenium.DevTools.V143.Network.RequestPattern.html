@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class RequestPattern ">
       
-      <meta name="description" content="RequestPattern">
+      <meta name="description" content="Request pattern for interception.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class RequestPattern  <a class="header-action link-secondary" title="View source
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>RequestPattern</p>
+  <div class="markdown summary"><p>Request pattern for interception.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +154,10 @@ Class RequestPattern  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_RequestPattern_InterceptionStage" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestPattern.InterceptionStage">
   InterceptionStage
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestPattern.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestPattern.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>interceptionStage</p>
+  <div class="markdown level1 summary"><p>Stage at which to begin intercepting requests. Default is Request.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -188,10 +188,10 @@ public InterceptionStage? InterceptionStage { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_RequestPattern_ResourceType" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestPattern.ResourceType">
   ResourceType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestPattern.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestPattern.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>resourceType</p>
+  <div class="markdown level1 summary"><p>If set, only requests for matching resource types will be intercepted.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -222,10 +222,11 @@ public ResourceType? ResourceType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_RequestPattern_UrlPattern" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestPattern.UrlPattern">
   UrlPattern
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestPattern.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestPattern.cs/#L18"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>urlPattern</p>
+  <div class="markdown level1 summary"><p>Wildcards (<code>'*'</code> -&gt; zero or more, <code>'?'</code> -&gt; exactly one) are allowed. Escape character is
+backslash. Omitting is equivalent to <code>&quot;*&quot;</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

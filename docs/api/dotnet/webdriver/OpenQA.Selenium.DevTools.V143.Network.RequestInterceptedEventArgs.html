@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class RequestInterceptedEventArgs ">
       
-      <meta name="description" content="RequestIntercepted">
+      <meta name="description" content="Details of an intercepted HTTP request, which must be either allowed, blocked, modified or mocked. Deprecated, use Fetch.requestPaused instead.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Network_RequestInterceptedEventArgs" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestInterceptedEventArgs" class="text-break">
-Class RequestInterceptedEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Class RequestInterceptedEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L15"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,9 @@ Class RequestInterceptedEventArgs  <a class="header-action link-secondary" title
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>RequestIntercepted</p>
+  <div class="markdown summary"><p>Details of an intercepted HTTP request, which must be either allowed, blocked, modified or
+mocked.
+Deprecated, use Fetch.requestPaused instead.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +160,11 @@ Class RequestInterceptedEventArgs  <a class="header-action link-secondary" title
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_RequestInterceptedEventArgs_AuthChallenge" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestInterceptedEventArgs.AuthChallenge">
   AuthChallenge
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the authChallenge</p>
+  <div class="markdown level1 summary"><p>Details of the Authorization Challenge encountered. If this is set then
+continueInterceptedRequest must contain an authChallengeResponse.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -192,10 +195,10 @@ public AuthChallenge? AuthChallenge { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_RequestInterceptedEventArgs_FrameId" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestInterceptedEventArgs.FrameId">
   FrameId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the frameId</p>
+  <div class="markdown level1 summary"><p>The id of the frame that initiated the request.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -225,10 +228,12 @@ public string FrameId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_RequestInterceptedEventArgs_InterceptionId" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestInterceptedEventArgs.InterceptionId">
   InterceptionId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the interceptionId</p>
+  <div class="markdown level1 summary"><p>Each request the page makes will have a unique id, however if any redirects are encountered
+while processing that fetch, they will be reported with the same id as the original fetch.
+Likewise if HTTP authentication is needed then the same fetch id will be used.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -258,10 +263,11 @@ public string InterceptionId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_RequestInterceptedEventArgs_IsDownload" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestInterceptedEventArgs.IsDownload">
   IsDownload
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the isDownload</p>
+  <div class="markdown level1 summary"><p>Set if the request is a navigation that will result in a download.
+Only present after response is received from the server (i.e. HeadersReceived stage).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -292,10 +298,10 @@ public bool? IsDownload { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_RequestInterceptedEventArgs_IsNavigationRequest" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestInterceptedEventArgs.IsNavigationRequest">
   IsNavigationRequest
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L50"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the isNavigationRequest</p>
+  <div class="markdown level1 summary"><p>Whether this is a navigation request, which can abort the navigation completely.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -325,10 +331,10 @@ public bool IsNavigationRequest { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_RequestInterceptedEventArgs_RedirectUrl" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestInterceptedEventArgs.RedirectUrl">
   RedirectUrl
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the redirectUrl</p>
+  <div class="markdown level1 summary"><p>Redirect location, only sent if a redirect was intercepted.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -359,7 +365,7 @@ public string? RedirectUrl { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_RequestInterceptedEventArgs_Request" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestInterceptedEventArgs.Request">
   Request
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the request</p>
@@ -392,10 +398,11 @@ public Request Request { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_RequestInterceptedEventArgs_RequestId" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestInterceptedEventArgs.RequestId">
   RequestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L105"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the requestId</p>
+  <div class="markdown level1 summary"><p>If the intercepted request had a corresponding requestWillBeSent event fired for it, then
+this requestId will be the same as the requestId present in the requestWillBeSent event.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -426,10 +433,10 @@ public string? RequestId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_RequestInterceptedEventArgs_ResourceType" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestInterceptedEventArgs.ResourceType">
   ResourceType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the resourceType</p>
+  <div class="markdown level1 summary"><p>How the requested resource will be used.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -459,10 +466,11 @@ public ResourceType ResourceType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_RequestInterceptedEventArgs_ResponseErrorReason" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestInterceptedEventArgs.ResponseErrorReason">
   ResponseErrorReason
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L81"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the responseErrorReason</p>
+  <div class="markdown level1 summary"><p>Response error if intercepted at response stage or if redirect occurred while intercepting
+request.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -493,10 +501,11 @@ public ErrorReason? ResponseErrorReason { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_RequestInterceptedEventArgs_ResponseHeaders" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestInterceptedEventArgs.ResponseHeaders">
   ResponseHeaders
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L97"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the responseHeaders</p>
+  <div class="markdown level1 summary"><p>Response headers if intercepted at the response stage or if redirect occurred while
+intercepting request or auth retry occurred.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -527,10 +536,11 @@ public Headers? ResponseHeaders { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_RequestInterceptedEventArgs_ResponseStatusCode" data-uid="OpenQA.Selenium.DevTools.V143.Network.RequestInterceptedEventArgs.ResponseStatusCode">
   ResponseStatusCode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the responseStatusCode</p>
+  <div class="markdown level1 summary"><p>Response code if intercepted at response stage or if redirect occurred while intercepting
+request or auth retry occurred.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -561,7 +571,7 @@ public long? ResponseStatusCode { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/RequestInterceptedEventArgs.cs/#L15" class="edit-link">Edit this page</a>
         </div>
 
 

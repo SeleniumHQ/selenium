@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AutoAttachRelatedCommandSettings ">
       
-      <meta name="description" content="AutoAttachRelated">
+      <meta name="description" content="Adds the specified target to the list of targets that will be monitored for any related target creation (such as child frames, child workers and new versions of service worker) and reported through attachedToTarget. The specified target is also auto-attached. This cancels the effect of any previous setAutoAttach and is also cancelled by subsequent setAutoAttach. Only available at the Browser target.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Target_AutoAttachRelatedCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.Target.AutoAttachRelatedCommandSettings" class="text-break">
-Class AutoAttachRelatedCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/AutoAttachRelatedCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class AutoAttachRelatedCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/AutoAttachRelatedCommand.cs/#L16"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,11 @@ Class AutoAttachRelatedCommandSettings  <a class="header-action link-secondary" 
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>AutoAttachRelated</p>
+  <div class="markdown summary"><p>Adds the specified target to the list of targets that will be monitored for any related target
+creation (such as child frames, child workers and new versions of service worker) and reported
+through <code>attachedToTarget</code>. The specified target is also auto-attached.
+This cancels the effect of any previous <code>setAutoAttach</code> and is also cancelled by subsequent
+<code>setAutoAttach</code>. Only available at the Browser target.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +164,7 @@ Class AutoAttachRelatedCommandSettings  <a class="header-action link-secondary" 
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Target_AutoAttachRelatedCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.Target.AutoAttachRelatedCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/AutoAttachRelatedCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/AutoAttachRelatedCommand.cs/#L23"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +197,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Target_AutoAttachRelatedCommandSettings_Filter" data-uid="OpenQA.Selenium.DevTools.V144.Target.AutoAttachRelatedCommandSettings.Filter">
   Filter
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/AutoAttachRelatedCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/AutoAttachRelatedCommand.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the filter</p>
+  <div class="markdown level1 summary"><p>Only targets matching filter will be attached.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,7 +231,7 @@ public object[]? Filter { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Target_AutoAttachRelatedCommandSettings_TargetId" data-uid="OpenQA.Selenium.DevTools.V144.Target.AutoAttachRelatedCommandSettings.TargetId">
   TargetId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/AutoAttachRelatedCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/AutoAttachRelatedCommand.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the targetId</p>
@@ -260,10 +264,11 @@ public string TargetId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Target_AutoAttachRelatedCommandSettings_WaitForDebuggerOnStart" data-uid="OpenQA.Selenium.DevTools.V144.Target.AutoAttachRelatedCommandSettings.WaitForDebuggerOnStart">
   WaitForDebuggerOnStart
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/AutoAttachRelatedCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/AutoAttachRelatedCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the waitForDebuggerOnStart</p>
+  <div class="markdown level1 summary"><p>Whether to pause new targets when attaching to them. Use <code>Runtime.runIfWaitingForDebugger</code>
+to run paused targets.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -293,7 +298,7 @@ public bool WaitForDebuggerOnStart { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/AutoAttachRelatedCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/AutoAttachRelatedCommand.cs/#L16" class="edit-link">Edit this page</a>
         </div>
 
 

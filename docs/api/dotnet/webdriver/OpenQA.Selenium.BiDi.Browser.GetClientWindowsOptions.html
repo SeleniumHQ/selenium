@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Browser_GetClientWindowsOptions" data-uid="OpenQA.Selenium.BiDi.Browser.GetClientWindowsOptions" class="text-break">
-Class GetClientWindowsOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetClientWindowsCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
+Class GetClientWindowsOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetClientWindowsCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class GetClientWindowsOptions  <a class="header-action link-secondary" title="Vi
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class GetClientWindowsOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record GetClientWindowsOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;GetClientWindowsOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class GetClientWindowsOptions  <a class="header-action link-secondary" title="Vi
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.GetClientWindowsOptions.html">GetClientWindowsOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -153,7 +160,7 @@ Class GetClientWindowsOptions  <a class="header-action link-secondary" title="Vi
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetClientWindowsCommand.cs/#L27" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetClientWindowsCommand.cs/#L25" class="edit-link">Edit this page</a>
         </div>
 
 

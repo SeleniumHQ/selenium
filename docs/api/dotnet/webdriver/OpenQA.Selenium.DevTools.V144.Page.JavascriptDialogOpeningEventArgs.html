@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class JavascriptDialogOpeningEventArgs ">
       
-      <meta name="description" content="JavascriptDialogOpening">
+      <meta name="description" content="Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) is about to open.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Page_JavascriptDialogOpeningEventArgs" data-uid="OpenQA.Selenium.DevTools.V144.Page.JavascriptDialogOpeningEventArgs" class="text-break">
-Class JavascriptDialogOpeningEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Class JavascriptDialogOpeningEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class JavascriptDialogOpeningEventArgs  <a class="header-action link-secondary" 
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>JavascriptDialogOpening</p>
+  <div class="markdown summary"><p>Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) is about to
+open.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +159,10 @@ Class JavascriptDialogOpeningEventArgs  <a class="header-action link-secondary" 
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_JavascriptDialogOpeningEventArgs_DefaultPrompt" data-uid="OpenQA.Selenium.DevTools.V144.Page.JavascriptDialogOpeningEventArgs.DefaultPrompt">
   DefaultPrompt
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the defaultPrompt</p>
+  <div class="markdown level1 summary"><p>Default dialog prompt.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -192,10 +193,10 @@ public string? DefaultPrompt { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_JavascriptDialogOpeningEventArgs_FrameId" data-uid="OpenQA.Selenium.DevTools.V144.Page.JavascriptDialogOpeningEventArgs.FrameId">
   FrameId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the frameId</p>
+  <div class="markdown level1 summary"><p>Frame id.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -225,10 +226,12 @@ public string FrameId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_JavascriptDialogOpeningEventArgs_HasBrowserHandler" data-uid="OpenQA.Selenium.DevTools.V144.Page.JavascriptDialogOpeningEventArgs.HasBrowserHandler">
   HasBrowserHandler
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the hasBrowserHandler</p>
+  <div class="markdown level1 summary"><p>True iff browser is capable showing or acting on the given dialog. When browser has no
+dialog handler for given target, calling alert while Page domain is engaged will stall
+the page execution. Execution can be resumed via calling Page.handleJavaScriptDialog.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -258,10 +261,10 @@ public bool HasBrowserHandler { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_JavascriptDialogOpeningEventArgs_Message" data-uid="OpenQA.Selenium.DevTools.V144.Page.JavascriptDialogOpeningEventArgs.Message">
   Message
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the message</p>
+  <div class="markdown level1 summary"><p>Message that will be displayed by the dialog.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -291,10 +294,10 @@ public string Message { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_JavascriptDialogOpeningEventArgs_Type" data-uid="OpenQA.Selenium.DevTools.V144.Page.JavascriptDialogOpeningEventArgs.Type">
   Type
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the type</p>
+  <div class="markdown level1 summary"><p>Dialog type.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -324,10 +327,10 @@ public DialogType Type { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_JavascriptDialogOpeningEventArgs_Url" data-uid="OpenQA.Selenium.DevTools.V144.Page.JavascriptDialogOpeningEventArgs.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L19"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the url</p>
+  <div class="markdown level1 summary"><p>Frame url.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -357,7 +360,7 @@ public string Url { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/JavascriptDialogOpeningEventArgs.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

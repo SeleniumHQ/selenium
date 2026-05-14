@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetDeviceMetricsOverrideCommandSettings ">
       
-      <meta name="description" content="SetDeviceMetricsOverride">
+      <meta name="description" content="Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and &amp;quot;device-width&amp;quot;/&amp;quot;device-height&amp;quot;-related CSS media query results).">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings" class="text-break">
-Class SetDeviceMetricsOverrideCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class SetDeviceMetricsOverrideCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,9 @@ Class SetDeviceMetricsOverrideCommandSettings  <a class="header-action link-seco
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SetDeviceMetricsOverride</p>
+  <div class="markdown summary"><p>Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
+window.innerWidth, window.innerHeight, and &quot;device-width&quot;/&quot;device-height&quot;-related CSS media
+query results).</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +162,7 @@ Class SetDeviceMetricsOverrideCommandSettings  <a class="header-action link-seco
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +195,12 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings_DevicePosture" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings.DevicePosture">
   DevicePosture
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L124"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the devicePosture</p>
+  <div class="markdown level1 summary"><p>If set, the posture of a foldable device. If not set the posture is set
+to continuous.
+Deprecated, use Emulation.setDevicePostureOverride.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +231,10 @@ public DevicePosture? DevicePosture { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings_DeviceScaleFactor" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings.DeviceScaleFactor">
   DeviceScaleFactor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the deviceScaleFactor</p>
+  <div class="markdown level1 summary"><p>Overriding device scale factor value. 0 disables the override.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -260,10 +264,12 @@ public double DeviceScaleFactor { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings_DisplayFeature" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings.DisplayFeature">
   DisplayFeature
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L115"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the displayFeature</p>
+  <div class="markdown level1 summary"><p>If set, the display feature of a multi-segment screen. If not set, multi-segment support
+is turned-off.
+Deprecated, use Emulation.setDisplayFeaturesOverride.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -294,10 +300,10 @@ public DisplayFeature? DisplayFeature { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings_DontSetVisibleSize" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings.DontSetVisibleSize">
   DontSetVisibleSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L91"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the dontSetVisibleSize</p>
+  <div class="markdown level1 summary"><p>Do not set visible view size, rely upon explicit setVisibleSize call.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -328,10 +334,10 @@ public bool? DontSetVisibleSize { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings_Height" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings.Height">
   Height
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the height</p>
+  <div class="markdown level1 summary"><p>Overriding height value in pixels (minimum 0, maximum 10000000). 0 disables the override.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -361,10 +367,11 @@ public long Height { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings_Mobile" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings.Mobile">
   Mobile
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the mobile</p>
+  <div class="markdown level1 summary"><p>Whether to emulate mobile device. This includes viewport meta tag, overlay scrollbars, text
+autosizing and more.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -394,10 +401,10 @@ public bool Mobile { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings_PositionX" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings.PositionX">
   PositionX
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the positionX</p>
+  <div class="markdown level1 summary"><p>Overriding view X position on screen in pixels (minimum 0, maximum 10000000).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -428,10 +435,10 @@ public long? PositionX { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings_PositionY" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings.PositionY">
   PositionY
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the positionY</p>
+  <div class="markdown level1 summary"><p>Overriding view Y position on screen in pixels (minimum 0, maximum 10000000).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -462,10 +469,10 @@ public long? PositionY { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings_Scale" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings.Scale">
   Scale
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the scale</p>
+  <div class="markdown level1 summary"><p>Scale to apply to resulting view image.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -496,10 +503,10 @@ public double? Scale { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings_ScreenHeight" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings.ScreenHeight">
   ScreenHeight
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the screenHeight</p>
+  <div class="markdown level1 summary"><p>Overriding screen height value in pixels (minimum 0, maximum 10000000).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -530,10 +537,10 @@ public long? ScreenHeight { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings_ScreenOrientation" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings.ScreenOrientation">
   ScreenOrientation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L98"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the screenOrientation</p>
+  <div class="markdown level1 summary"><p>Screen orientation override.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -564,10 +571,10 @@ public ScreenOrientation? ScreenOrientation { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings_ScreenWidth" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings.ScreenWidth">
   ScreenWidth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the screenWidth</p>
+  <div class="markdown level1 summary"><p>Overriding screen width value in pixels (minimum 0, maximum 10000000).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -598,10 +605,11 @@ public long? ScreenWidth { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings_Viewport" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings.Viewport">
   Viewport
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L106"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the viewport</p>
+  <div class="markdown level1 summary"><p>If set, the visible area of the page will be overridden to this viewport. This viewport
+change is not observed by the page, e.g. viewport-relative elements do not change positions.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -632,10 +640,10 @@ public Viewport? Viewport { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetDeviceMetricsOverrideCommandSettings_Width" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetDeviceMetricsOverrideCommandSettings.Width">
   Width
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the width</p>
+  <div class="markdown level1 summary"><p>Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -665,7 +673,7 @@ public long Width { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetDeviceMetricsOverrideCommand.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

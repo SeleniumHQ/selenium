@@ -106,17 +106,23 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Autofill.AddressFields.html">AddressFields</a></dt>
-      <dd><p>AddressFields</p>
+      <dd><p>A list of address fields.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Autofill.AddressFormFilledEventArgs.html">AddressFormFilledEventArgs</a></dt>
-      <dd><p>AddressFormFilled</p>
+      <dd><p>Emitted when an address form is filled.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Autofill.AddressUI.html">AddressUI</a></dt>
-      <dd><p>AddressUI</p>
+      <dd><p>Defines how an address can be displayed like in chrome://settings/addresses.
+Address UI is a two dimensional array, each inner array is an &quot;address information line&quot;, and when rendered in a UI surface should be displayed as such.
+The following address UI for instance:
+[[{name: &quot;GIVE_NAME&quot;, value: &quot;Jon&quot;}, {name: &quot;FAMILY_NAME&quot;, value: &quot;Doe&quot;}], [{name: &quot;CITY&quot;, value: &quot;Munich&quot;}, {name: &quot;ZIP&quot;, value: &quot;81456&quot;}]]
+should allow the receiver to render:
+Jon Doe
+Munich 81456</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -131,22 +137,22 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Autofill.DisableCommandResponse.html">DisableCommandResponse</a></dt>
-      <dd><p>Response for Disable</p>
+      <dd><p>Response for Disables autofill domain notifications.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Autofill.DisableCommandSettings.html">DisableCommandSettings</a></dt>
-      <dd><p>Disable</p>
+      <dd><p>Disables autofill domain notifications.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Autofill.EnableCommandResponse.html">EnableCommandResponse</a></dt>
-      <dd><p>Response for Enable</p>
+      <dd><p>Response for Enables autofill domain notifications.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Autofill.EnableCommandSettings.html">EnableCommandSettings</a></dt>
-      <dd><p>Enable</p>
+      <dd><p>Enables autofill domain notifications.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -156,22 +162,24 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Autofill.SetAddressesCommandResponse.html">SetAddressesCommandResponse</a></dt>
-      <dd><p>Response for SetAddresses</p>
+      <dd><p>Response for Set addresses so that developers can verify their forms implementation.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Autofill.SetAddressesCommandSettings.html">SetAddressesCommandSettings</a></dt>
-      <dd><p>SetAddresses</p>
+      <dd><p>Set addresses so that developers can verify their forms implementation.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Autofill.TriggerCommandResponse.html">TriggerCommandResponse</a></dt>
-      <dd><p>Response for Trigger</p>
+      <dd><p>Response for Trigger autofill on a form identified by the fieldId.
+If the field and related form cannot be autofilled, returns an error.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Autofill.TriggerCommandSettings.html">TriggerCommandSettings</a></dt>
-      <dd><p>Trigger</p>
+      <dd><p>Trigger autofill on a form identified by the fieldId.
+If the field and related form cannot be autofilled, returns an error.</p>
 </dd>
     </dl>
     <h3 id="enums">
@@ -179,7 +187,7 @@ Enums
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Autofill.FillingStrategy.html">FillingStrategy</a></dt>
-      <dd><p>FillingStrategy</p>
+      <dd><p>Specified whether a filled field was done so by using the html autocomplete attribute or autofill heuristics.</p>
 </dd>
     </dl>
 

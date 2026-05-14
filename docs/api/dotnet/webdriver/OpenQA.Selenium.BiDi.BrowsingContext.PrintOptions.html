@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_PrintOptions" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.PrintOptions" class="text-break">
-Class PrintOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+Class PrintOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class PrintOptions  <a class="header-action link-secondary" title="View source" 
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class PrintOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record PrintOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;PrintOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class PrintOptions  <a class="header-action link-secondary" title="View source" 
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.PrintOptions.html">PrintOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -157,14 +164,14 @@ Class PrintOptions  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_PrintOptions_Background" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.PrintOptions.Background">
   Background
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool? Background { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public bool? Background { get; init; }</code></pre>
   </div>
 
 
@@ -188,14 +195,14 @@ Class PrintOptions  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_PrintOptions_Margin" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.PrintOptions.Margin">
   Margin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public PrintMargin? Margin { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public PrintMargin? Margin { get; init; }</code></pre>
   </div>
 
 
@@ -219,14 +226,14 @@ Class PrintOptions  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_PrintOptions_Orientation" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.PrintOptions.Orientation">
   Orientation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public PrintOrientation? Orientation { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public PrintOrientation? Orientation { get; init; }</code></pre>
   </div>
 
 
@@ -250,14 +257,14 @@ Class PrintOptions  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_PrintOptions_Page" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.PrintOptions.Page">
   Page
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public PrintPage? Page { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public PrintPage? Page { get; init; }</code></pre>
   </div>
 
 
@@ -281,14 +288,14 @@ Class PrintOptions  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_PrintOptions_PageRanges" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.PrintOptions.PageRanges">
   PageRanges
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;PrintPageRange&gt;? PageRanges { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;PrintPageRange&gt;? PageRanges { get; init; }</code></pre>
   </div>
 
 
@@ -312,14 +319,14 @@ Class PrintOptions  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_PrintOptions_Scale" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.PrintOptions.Scale">
   Scale
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public double? Scale { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public double? Scale { get; init; }</code></pre>
   </div>
 
 
@@ -343,14 +350,14 @@ Class PrintOptions  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_PrintOptions_ShrinkToFit" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.PrintOptions.ShrinkToFit">
   ShrinkToFit
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool? ShrinkToFit { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public bool? ShrinkToFit { get; init; }</code></pre>
   </div>
 
 
@@ -374,7 +381,7 @@ Class PrintOptions  <a class="header-action link-secondary" title="View source" 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L32" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L30" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -236,10 +236,10 @@ Class AccessibilityAdapter  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Accessibility_AccessibilityAdapter_Disable_OpenQA_Selenium_DevTools_V143_Accessibility_DisableCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Accessibility.AccessibilityAdapter.Disable(OpenQA.Selenium.DevTools.V143.Accessibility.DisableCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Disable(DisableCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>disable</p>
+  <div class="markdown level1 summary"><p>Disables the accessibility domain.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -279,10 +279,11 @@ Class AccessibilityAdapter  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Accessibility_AccessibilityAdapter_Enable_OpenQA_Selenium_DevTools_V143_Accessibility_EnableCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Accessibility.AccessibilityAdapter.Enable(OpenQA.Selenium.DevTools.V143.Accessibility.EnableCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Enable(EnableCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>enable</p>
+  <div class="markdown level1 summary"><p>Enables the accessibility domain which causes <code>AXNodeId</code>s to remain consistent between method calls.
+This turns on accessibility for the page, which can impact performance until accessibility is disabled.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -322,10 +323,11 @@ Class AccessibilityAdapter  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Accessibility_AccessibilityAdapter_GetAXNodeAndAncestors_OpenQA_Selenium_DevTools_V143_Accessibility_GetAXNodeAndAncestorsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Accessibility.AccessibilityAdapter.GetAXNodeAndAncestors(OpenQA.Selenium.DevTools.V143.Accessibility.GetAXNodeAndAncestorsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetAXNodeAndAncestors(GetAXNodeAndAncestorsCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L98"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getAXNodeAndAncestors</p>
+  <div class="markdown level1 summary"><p>Fetches a node and all ancestors up to and including the root.
+Requires <code>enable()</code> to have been called previously.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -365,10 +367,11 @@ Class AccessibilityAdapter  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Accessibility_AccessibilityAdapter_GetChildAXNodes_OpenQA_Selenium_DevTools_V143_Accessibility_GetChildAXNodesCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Accessibility.AccessibilityAdapter.GetChildAXNodes(OpenQA.Selenium.DevTools.V143.Accessibility.GetChildAXNodesCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetChildAXNodes(GetChildAXNodesCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L107"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getChildAXNodes</p>
+  <div class="markdown level1 summary"><p>Fetches a particular accessibility node by AXNodeId.
+Requires <code>enable()</code> to have been called previously.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -408,10 +411,10 @@ Class AccessibilityAdapter  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Accessibility_AccessibilityAdapter_GetFullAXTree_OpenQA_Selenium_DevTools_V143_Accessibility_GetFullAXTreeCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Accessibility.AccessibilityAdapter.GetFullAXTree(OpenQA.Selenium.DevTools.V143.Accessibility.GetFullAXTreeCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetFullAXTree(GetFullAXTreeCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getFullAXTree</p>
+  <div class="markdown level1 summary"><p>Fetches the entire accessibility tree for the root Document</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -451,10 +454,10 @@ Class AccessibilityAdapter  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Accessibility_AccessibilityAdapter_GetPartialAXTree_OpenQA_Selenium_DevTools_V143_Accessibility_GetPartialAXTreeCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Accessibility.AccessibilityAdapter.GetPartialAXTree(OpenQA.Selenium.DevTools.V143.Accessibility.GetPartialAXTreeCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetPartialAXTree(GetPartialAXTreeCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L72"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getPartialAXTree</p>
+  <div class="markdown level1 summary"><p>Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -494,10 +497,11 @@ Class AccessibilityAdapter  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Accessibility_AccessibilityAdapter_GetRootAXNode_OpenQA_Selenium_DevTools_V143_Accessibility_GetRootAXNodeCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Accessibility.AccessibilityAdapter.GetRootAXNode(OpenQA.Selenium.DevTools.V143.Accessibility.GetRootAXNodeCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetRootAXNode(GetRootAXNodeCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getRootAXNode</p>
+  <div class="markdown level1 summary"><p>Fetches the root node.
+Requires <code>enable()</code> to have been called previously.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -537,10 +541,14 @@ Class AccessibilityAdapter  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Accessibility_AccessibilityAdapter_QueryAXTree_OpenQA_Selenium_DevTools_V143_Accessibility_QueryAXTreeCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Accessibility.AccessibilityAdapter.QueryAXTree(OpenQA.Selenium.DevTools.V143.Accessibility.QueryAXTreeCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   QueryAXTree(QueryAXTreeCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L119"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>queryAXTree</p>
+  <div class="markdown level1 summary"><p>Query a DOM node's accessibility subtree for accessible name and role.
+This command computes the name and role for all nodes in the subtree, including those that are
+ignored for accessibility, and returns those that match the specified name and role. If no DOM
+node is specified, or the DOM node does not exist, the command returns an error. If neither
+<code>accessibleName</code> or <code>role</code> is specified, it returns all the accessibility nodes in the subtree.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -583,10 +591,11 @@ Class AccessibilityAdapter  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Accessibility_AccessibilityAdapter_LoadComplete" data-uid="OpenQA.Selenium.DevTools.V143.Accessibility.AccessibilityAdapter.LoadComplete">
   LoadComplete
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>loadComplete</p>
+  <div class="markdown level1 summary"><p>The loadComplete event mirrors the load complete event sent by the browser to assistive
+technology when the web page has finished loading.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -614,10 +623,10 @@ Class AccessibilityAdapter  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Accessibility_AccessibilityAdapter_NodesUpdated" data-uid="OpenQA.Selenium.DevTools.V143.Accessibility.AccessibilityAdapter.NodesUpdated">
   NodesUpdated
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AccessibilityAdapter.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>nodesUpdated</p>
+  <div class="markdown level1 summary"><p>The nodesUpdated event is sent every time a previously requested node has changed the in tree.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ResumeCommandSettings ">
       
-      <meta name="description" content="Resume">
+      <meta name="description" content="Resumes JavaScript execution.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class ResumeCommandSettings  <a class="header-action link-secondary" title="View
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Resume</p>
+  <div class="markdown summary"><p>Resumes JavaScript execution.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -193,10 +193,14 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_ResumeCommandSettings_TerminateOnResume" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.ResumeCommandSettings.TerminateOnResume">
   TerminateOnResume
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ResumeCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ResumeCommand.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the terminateOnResume</p>
+  <div class="markdown level1 summary"><p>Set to true to terminate execution upon resuming execution. In contrast
+to Runtime.terminateExecution, this will allows to execute further
+JavaScript (i.e. via evaluation) until execution of the paused code
+is actually resumed, at which point termination is triggered.
+If execution is currently not paused, this parameter has no effect.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

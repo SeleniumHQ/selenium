@@ -236,10 +236,11 @@ Class AuditsAdapter  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Audits_AuditsAdapter_CheckContrast_OpenQA_Selenium_DevTools_V143_Audits_CheckContrastCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Audits.AuditsAdapter.CheckContrast(OpenQA.Selenium.DevTools.V143.Audits.CheckContrastCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   CheckContrast(CheckContrastCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/AuditsAdapter.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/AuditsAdapter.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>checkContrast</p>
+  <div class="markdown level1 summary"><p>Runs the contrast check for the target page. Found issues are reported
+using Audits.issueAdded event.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -279,10 +280,11 @@ Class AuditsAdapter  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Audits_AuditsAdapter_CheckFormsIssues_OpenQA_Selenium_DevTools_V143_Audits_CheckFormsIssuesCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Audits.AuditsAdapter.CheckFormsIssues(OpenQA.Selenium.DevTools.V143.Audits.CheckFormsIssuesCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   CheckFormsIssues(CheckFormsIssuesCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/AuditsAdapter.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/AuditsAdapter.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>checkFormsIssues</p>
+  <div class="markdown level1 summary"><p>Runs the form issues check for the target page. Found issues are reported
+using Audits.issueAdded event.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -322,10 +324,10 @@ Class AuditsAdapter  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Audits_AuditsAdapter_Disable_OpenQA_Selenium_DevTools_V143_Audits_DisableCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Audits.AuditsAdapter.Disable(OpenQA.Selenium.DevTools.V143.Audits.DisableCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Disable(DisableCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/AuditsAdapter.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/AuditsAdapter.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>disable</p>
+  <div class="markdown level1 summary"><p>Disables issues domain, prevents further issues from being reported to the client.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -365,10 +367,11 @@ Class AuditsAdapter  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Audits_AuditsAdapter_Enable_OpenQA_Selenium_DevTools_V143_Audits_EnableCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Audits.AuditsAdapter.Enable(OpenQA.Selenium.DevTools.V143.Audits.EnableCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Enable(EnableCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/AuditsAdapter.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/AuditsAdapter.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>enable</p>
+  <div class="markdown level1 summary"><p>Enables issues domain, sends the issues collected so far to the client by means of the
+<code>issueAdded</code> event.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -408,10 +411,11 @@ Class AuditsAdapter  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Audits_AuditsAdapter_GetEncodedResponse_OpenQA_Selenium_DevTools_V143_Audits_GetEncodedResponseCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Audits.AuditsAdapter.GetEncodedResponse(OpenQA.Selenium.DevTools.V143.Audits.GetEncodedResponseCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetEncodedResponse(GetEncodedResponseCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/AuditsAdapter.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/AuditsAdapter.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getEncodedResponse</p>
+  <div class="markdown level1 summary"><p>Returns the response body and size if it were re-encoded with the specified settings. Only
+applies to images.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

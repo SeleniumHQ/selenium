@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetBreakpointOnFunctionCallCommandSettings ">
       
-      <meta name="description" content="SetBreakpointOnFunctionCall">
+      <meta name="description" content="Sets JavaScript breakpoint before each call to the given function. If another function was created from the same source as a given one, calling it will also trigger the breakpoint.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Debugger_SetBreakpointOnFunctionCallCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.Debugger.SetBreakpointOnFunctionCallCommandSettings" class="text-break">
-Class SetBreakpointOnFunctionCallCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBreakpointOnFunctionCallCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class SetBreakpointOnFunctionCallCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBreakpointOnFunctionCallCommand.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,9 @@ Class SetBreakpointOnFunctionCallCommandSettings  <a class="header-action link-s
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SetBreakpointOnFunctionCall</p>
+  <div class="markdown summary"><p>Sets JavaScript breakpoint before each call to the given function.
+If another function was created from the same source as a given one,
+calling it will also trigger the breakpoint.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +162,7 @@ Class SetBreakpointOnFunctionCallCommandSettings  <a class="header-action link-s
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Debugger_SetBreakpointOnFunctionCallCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.Debugger.SetBreakpointOnFunctionCallCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBreakpointOnFunctionCallCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBreakpointOnFunctionCallCommand.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +195,11 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Debugger_SetBreakpointOnFunctionCallCommandSettings_Condition" data-uid="OpenQA.Selenium.DevTools.V143.Debugger.SetBreakpointOnFunctionCallCommandSettings.Condition">
   Condition
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBreakpointOnFunctionCallCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBreakpointOnFunctionCallCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the condition</p>
+  <div class="markdown level1 summary"><p>Expression to use as a breakpoint condition. When specified, debugger will
+stop on the breakpoint if this expression evaluates to true.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +230,10 @@ public string? Condition { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Debugger_SetBreakpointOnFunctionCallCommandSettings_ObjectId" data-uid="OpenQA.Selenium.DevTools.V143.Debugger.SetBreakpointOnFunctionCallCommandSettings.ObjectId">
   ObjectId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBreakpointOnFunctionCallCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBreakpointOnFunctionCallCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the objectId</p>
+  <div class="markdown level1 summary"><p>Function object id.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -260,7 +263,7 @@ public string ObjectId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBreakpointOnFunctionCallCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBreakpointOnFunctionCallCommand.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

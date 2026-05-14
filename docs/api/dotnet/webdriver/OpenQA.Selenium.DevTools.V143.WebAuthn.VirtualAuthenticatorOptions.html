@@ -154,10 +154,11 @@ Class VirtualAuthenticatorOptions  <a class="header-action link-secondary" title
 
   <h3 id="OpenQA_Selenium_DevTools_V143_WebAuthn_VirtualAuthenticatorOptions_AutomaticPresenceSimulation" data-uid="OpenQA.Selenium.DevTools.V143.WebAuthn.VirtualAuthenticatorOptions.AutomaticPresenceSimulation">
   AutomaticPresenceSimulation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>automaticPresenceSimulation</p>
+  <div class="markdown level1 summary"><p>If set to true, tests of user presence will succeed immediately.
+Otherwise, they will not be resolved. Defaults to true.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,7 +192,7 @@ public bool? AutomaticPresenceSimulation { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>ctap2Version</p>
+  <div class="markdown level1 summary"><p>Defaults to ctap2_0. Ignored if |protocol| == u2f.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -222,10 +223,12 @@ public Ctap2Version? Ctap2Version { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_WebAuthn_VirtualAuthenticatorOptions_DefaultBackupEligibility" data-uid="OpenQA.Selenium.DevTools.V143.WebAuthn.VirtualAuthenticatorOptions.DefaultBackupEligibility">
   DefaultBackupEligibility
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L106"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>defaultBackupEligibility</p>
+  <div class="markdown level1 summary"><p>Credentials created by this authenticator will have the backup
+eligibility (BE) flag set to this value. Defaults to false.
+<a href="https://w3c.github.io/webauthn/#sctn-credential-backup">https://w3c.github.io/webauthn/#sctn-credential-backup</a></p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -256,10 +259,12 @@ public bool? DefaultBackupEligibility { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_WebAuthn_VirtualAuthenticatorOptions_DefaultBackupState" data-uid="OpenQA.Selenium.DevTools.V143.WebAuthn.VirtualAuthenticatorOptions.DefaultBackupState">
   DefaultBackupState
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L115"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>defaultBackupState</p>
+  <div class="markdown level1 summary"><p>Credentials created by this authenticator will have the backup state
+(BS) flag set to this value. Defaults to false.
+<a href="https://w3c.github.io/webauthn/#sctn-credential-backup">https://w3c.github.io/webauthn/#sctn-credential-backup</a></p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -290,10 +295,12 @@ public bool? DefaultBackupState { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_WebAuthn_VirtualAuthenticatorOptions_HasCredBlob" data-uid="OpenQA.Selenium.DevTools.V143.WebAuthn.VirtualAuthenticatorOptions.HasCredBlob">
   HasCredBlob
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>hasCredBlob</p>
+  <div class="markdown level1 summary"><p>If set to true, the authenticator will support the credBlob extension.
+<a href="https://fidoalliance.org/specs/fido-v2.1-rd-20201208/fido-client-to-authenticator-protocol-v2.1-rd-20201208.html#sctn-credBlob-extension">https://fidoalliance.org/specs/fido-v2.1-rd-20201208/fido-client-to-authenticator-protocol-v2.1-rd-20201208.html#sctn-credBlob-extension</a>
+Defaults to false.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -324,10 +331,12 @@ public bool? HasCredBlob { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_WebAuthn_VirtualAuthenticatorOptions_HasLargeBlob" data-uid="OpenQA.Selenium.DevTools.V143.WebAuthn.VirtualAuthenticatorOptions.HasLargeBlob">
   HasLargeBlob
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>hasLargeBlob</p>
+  <div class="markdown level1 summary"><p>If set to true, the authenticator will support the largeBlob extension.
+<a href="https://w3c.github.io/webauthn#largeBlob">https://w3c.github.io/webauthn#largeBlob</a>
+Defaults to false.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -358,10 +367,12 @@ public bool? HasLargeBlob { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_WebAuthn_VirtualAuthenticatorOptions_HasMinPinLength" data-uid="OpenQA.Selenium.DevTools.V143.WebAuthn.VirtualAuthenticatorOptions.HasMinPinLength">
   HasMinPinLength
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L72"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>hasMinPinLength</p>
+  <div class="markdown level1 summary"><p>If set to true, the authenticator will support the minPinLength extension.
+<a href="https://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-minpinlength-extension">https://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-minpinlength-extension</a>
+Defaults to false.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -392,10 +403,12 @@ public bool? HasMinPinLength { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_WebAuthn_VirtualAuthenticatorOptions_HasPrf" data-uid="OpenQA.Selenium.DevTools.V143.WebAuthn.VirtualAuthenticatorOptions.HasPrf">
   HasPrf
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L81"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>hasPrf</p>
+  <div class="markdown level1 summary"><p>If set to true, the authenticator will support the prf extension.
+<a href="https://w3c.github.io/webauthn/#prf-extension">https://w3c.github.io/webauthn/#prf-extension</a>
+Defaults to false.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -429,7 +442,7 @@ public bool? HasPrf { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>hasResidentKey</p>
+  <div class="markdown level1 summary"><p>Defaults to false.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -463,7 +476,7 @@ public bool? HasResidentKey { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>hasUserVerification</p>
+  <div class="markdown level1 summary"><p>Defaults to false.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -494,10 +507,11 @@ public bool? HasUserVerification { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_WebAuthn_VirtualAuthenticatorOptions_IsUserVerified" data-uid="OpenQA.Selenium.DevTools.V143.WebAuthn.VirtualAuthenticatorOptions.IsUserVerified">
   IsUserVerified
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/VirtualAuthenticatorOptions.cs/#L97"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>isUserVerified</p>
+  <div class="markdown level1 summary"><p>Sets whether User Verification succeeds or fails for an authenticator.
+Defaults to false.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

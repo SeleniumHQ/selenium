@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Network_ProvideResponseOptions" data-uid="OpenQA.Selenium.BiDi.Network.ProvideResponseOptions" class="text-break">
-Class ProvideResponseOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/ProvideResponseCommand.cs/#L29"><i class="bi bi-code-slash"></i></a>
+Class ProvideResponseOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/ProvideResponseCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class ProvideResponseOptions  <a class="header-action link-secondary" title="Vie
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class ProvideResponseOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record ProvideResponseOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;ProvideResponseOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class ProvideResponseOptions  <a class="header-action link-secondary" title="Vie
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.ProvideResponseOptions.html">ProvideResponseOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -157,14 +164,14 @@ Class ProvideResponseOptions  <a class="header-action link-secondary" title="Vie
 
   <h3 id="OpenQA_Selenium_BiDi_Network_ProvideResponseOptions_Body" data-uid="OpenQA.Selenium.BiDi.Network.ProvideResponseOptions.Body">
   Body
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/ProvideResponseCommand.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/ProvideResponseCommand.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public BytesValue? Body { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public BytesValue? Body { get; init; }</code></pre>
   </div>
 
 
@@ -188,14 +195,14 @@ Class ProvideResponseOptions  <a class="header-action link-secondary" title="Vie
 
   <h3 id="OpenQA_Selenium_BiDi_Network_ProvideResponseOptions_Cookies" data-uid="OpenQA.Selenium.BiDi.Network.ProvideResponseOptions.Cookies">
   Cookies
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/ProvideResponseCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/ProvideResponseCommand.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;SetCookieHeader&gt;? Cookies { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;SetCookieHeader&gt;? Cookies { get; init; }</code></pre>
   </div>
 
 
@@ -219,14 +226,14 @@ Class ProvideResponseOptions  <a class="header-action link-secondary" title="Vie
 
   <h3 id="OpenQA_Selenium_BiDi_Network_ProvideResponseOptions_Headers" data-uid="OpenQA.Selenium.BiDi.Network.ProvideResponseOptions.Headers">
   Headers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/ProvideResponseCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/ProvideResponseCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;Header&gt;? Headers { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;Header&gt;? Headers { get; init; }</code></pre>
   </div>
 
 
@@ -250,14 +257,14 @@ Class ProvideResponseOptions  <a class="header-action link-secondary" title="Vie
 
   <h3 id="OpenQA_Selenium_BiDi_Network_ProvideResponseOptions_ReasonPhrase" data-uid="OpenQA.Selenium.BiDi.Network.ProvideResponseOptions.ReasonPhrase">
   ReasonPhrase
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/ProvideResponseCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/ProvideResponseCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string? ReasonPhrase { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string? ReasonPhrase { get; init; }</code></pre>
   </div>
 
 
@@ -281,14 +288,14 @@ Class ProvideResponseOptions  <a class="header-action link-secondary" title="Vie
 
   <h3 id="OpenQA_Selenium_BiDi_Network_ProvideResponseOptions_StatusCode" data-uid="OpenQA.Selenium.BiDi.Network.ProvideResponseOptions.StatusCode">
   StatusCode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/ProvideResponseCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/ProvideResponseCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public long? StatusCode { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public long? StatusCode { get; init; }</code></pre>
   </div>
 
 
@@ -312,7 +319,7 @@ Class ProvideResponseOptions  <a class="header-action link-secondary" title="Vie
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/ProvideResponseCommand.cs/#L29" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/ProvideResponseCommand.cs/#L27" class="edit-link">Edit this page</a>
         </div>
 
 

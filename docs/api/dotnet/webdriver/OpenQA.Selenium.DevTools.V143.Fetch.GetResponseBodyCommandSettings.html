@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetResponseBodyCommandSettings ">
       
-      <meta name="description" content="GetResponseBody">
+      <meta name="description" content="Causes the body of the response to be received from the server and returned as a single string. May only be issued for a request that is paused in the Response stage and is mutually exclusive with takeResponseBodyForInterceptionAsStream. Calling other methods that affect the request or disabling fetch domain before body is received results in an undefined behavior. Note that the response body is not available for redirects. Requests paused in the redirect received state may be differentiated by responseCode and presence of location response header, see comments to requestPaused for details.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Fetch_GetResponseBodyCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.GetResponseBodyCommandSettings" class="text-break">
-Class GetResponseBodyCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/GetResponseBodyCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class GetResponseBodyCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/GetResponseBodyCommand.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,16 @@ Class GetResponseBodyCommandSettings  <a class="header-action link-secondary" ti
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>GetResponseBody</p>
+  <div class="markdown summary"><p>Causes the body of the response to be received from the server and
+returned as a single string. May only be issued for a request that
+is paused in the Response stage and is mutually exclusive with
+takeResponseBodyForInterceptionAsStream. Calling other methods that
+affect the request or disabling fetch domain before body is received
+results in an undefined behavior.
+Note that the response body is not available for redirects. Requests
+paused in the <em>redirect received</em> state may be differentiated by
+<code>responseCode</code> and presence of <code>location</code> response header, see
+comments to <code>requestPaused</code> for details.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +169,7 @@ Class GetResponseBodyCommandSettings  <a class="header-action link-secondary" ti
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_GetResponseBodyCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.GetResponseBodyCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/GetResponseBodyCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/GetResponseBodyCommand.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +202,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_GetResponseBodyCommandSettings_RequestId" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.GetResponseBodyCommandSettings.RequestId">
   RequestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/GetResponseBodyCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/GetResponseBodyCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the requestId</p>
+  <div class="markdown level1 summary"><p>Identifier for the intercepted request to get body for.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -226,7 +235,7 @@ public string RequestId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/GetResponseBodyCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/GetResponseBodyCommand.cs/#L21" class="edit-link">Edit this page</a>
         </div>
 
 

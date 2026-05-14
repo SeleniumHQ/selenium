@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CreateStyleSheetCommandSettings ">
       
-      <meta name="description" content="CreateStyleSheet">
+      <meta name="description" content="Creates a new special &amp;quot;via-inspector&amp;quot; stylesheet in the frame with given frameId.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class CreateStyleSheetCommandSettings  <a class="header-action link-secondary" t
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>CreateStyleSheet</p>
+  <div class="markdown summary"><p>Creates a new special &quot;via-inspector&quot; stylesheet in the frame with given <code>frameId</code>.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -193,10 +193,13 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_CSS_CreateStyleSheetCommandSettings_Force" data-uid="OpenQA.Selenium.DevTools.V144.CSS.CreateStyleSheetCommandSettings.Force">
   Force
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CreateStyleSheetCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CreateStyleSheetCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the force</p>
+  <div class="markdown level1 summary"><p>If true, creates a new stylesheet for every call. If false,
+returns a stylesheet previously created by a call with force=false
+for the frame's document if it exists or creates a new stylesheet
+(default: false).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -230,7 +233,7 @@ public bool? Force { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CreateStyleSheetCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the frameId</p>
+  <div class="markdown level1 summary"><p>Identifier of the frame where &quot;via-inspector&quot; stylesheet should be created.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

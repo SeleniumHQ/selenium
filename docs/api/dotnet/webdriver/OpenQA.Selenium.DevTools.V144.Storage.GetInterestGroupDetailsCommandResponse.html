@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetInterestGroupDetailsCommandResponse ">
       
-      <meta name="description" content="Response for GetInterestGroupDetails">
+      <meta name="description" content="Response for Gets details for a named interest group.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class GetInterestGroupDetailsCommandResponse  <a class="header-action link-secon
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Response for GetInterestGroupDetails</p>
+  <div class="markdown summary"><p>Response for Gets details for a named interest group.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -168,10 +168,13 @@ Class GetInterestGroupDetailsCommandResponse  <a class="header-action link-secon
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Storage_GetInterestGroupDetailsCommandResponse_Details" data-uid="OpenQA.Selenium.DevTools.V144.Storage.GetInterestGroupDetailsCommandResponse.Details">
   Details
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Storage/GetInterestGroupDetailsCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Storage/GetInterestGroupDetailsCommand.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the details</p>
+  <div class="markdown level1 summary"><p>This largely corresponds to:
+<a href="https://wicg.github.io/turtledove/#dictdef-generatebidinterestgroup">https://wicg.github.io/turtledove/#dictdef-generatebidinterestgroup</a>
+but has absolute expirationTime instead of relative lifetimeMs and
+also adds joiningOrigin.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

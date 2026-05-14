@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class DownloadProgressEventArgs ">
       
-      <meta name="description" content="DownloadProgress">
+      <meta name="description" content="Fired when download makes progress. Last call has |done| == true.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class DownloadProgressEventArgs  <a class="header-action link-secondary" title="
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>DownloadProgress</p>
+  <div class="markdown summary"><p>Fired when download makes progress. Last call has |done| == true.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +158,12 @@ Class DownloadProgressEventArgs  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Browser_DownloadProgressEventArgs_FilePath" data-uid="OpenQA.Selenium.DevTools.V143.Browser.DownloadProgressEventArgs.FilePath">
   FilePath
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/DownloadProgressEventArgs.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/DownloadProgressEventArgs.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the filePath</p>
+  <div class="markdown level1 summary"><p>If download is &quot;completed&quot;, provides the path of the downloaded file.
+Depending on the platform, it is not guaranteed to be set, nor the file
+is guaranteed to exist.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -195,7 +197,7 @@ public string? FilePath { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/DownloadProgressEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the guid</p>
+  <div class="markdown level1 summary"><p>Global unique identifier of the download.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -228,7 +230,7 @@ public string Guid { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/DownloadProgressEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the receivedBytes</p>
+  <div class="markdown level1 summary"><p>Total bytes received.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -261,7 +263,7 @@ public double ReceivedBytes { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/DownloadProgressEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the state</p>
+  <div class="markdown level1 summary"><p>Download status.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -294,7 +296,7 @@ public string State { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/DownloadProgressEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the totalBytes</p>
+  <div class="markdown level1 summary"><p>Total expected bytes to download.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

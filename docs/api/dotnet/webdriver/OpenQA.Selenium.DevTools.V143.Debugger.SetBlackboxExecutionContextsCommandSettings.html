@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetBlackboxExecutionContextsCommandSettings ">
       
-      <meta name="description" content="SetBlackboxExecutionContexts">
+      <meta name="description" content="Replace previous blackbox execution contexts with passed ones. Forces backend to skip stepping/pausing in scripts in these execution contexts. VM will try to leave blackboxed script by performing &#39;step in&#39; several times, finally resorting to &#39;step out&#39; if unsuccessful.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Debugger_SetBlackboxExecutionContextsCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.Debugger.SetBlackboxExecutionContextsCommandSettings" class="text-break">
-Class SetBlackboxExecutionContextsCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBlackboxExecutionContextsCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class SetBlackboxExecutionContextsCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBlackboxExecutionContextsCommand.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,9 @@ Class SetBlackboxExecutionContextsCommandSettings  <a class="header-action link-
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SetBlackboxExecutionContexts</p>
+  <div class="markdown summary"><p>Replace previous blackbox execution contexts with passed ones. Forces backend to skip
+stepping/pausing in scripts in these execution contexts. VM will try to leave blackboxed script by
+performing 'step in' several times, finally resorting to 'step out' if unsuccessful.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +162,7 @@ Class SetBlackboxExecutionContextsCommandSettings  <a class="header-action link-
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Debugger_SetBlackboxExecutionContextsCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.Debugger.SetBlackboxExecutionContextsCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBlackboxExecutionContextsCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBlackboxExecutionContextsCommand.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +195,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Debugger_SetBlackboxExecutionContextsCommandSettings_UniqueIds" data-uid="OpenQA.Selenium.DevTools.V143.Debugger.SetBlackboxExecutionContextsCommandSettings.UniqueIds">
   UniqueIds
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBlackboxExecutionContextsCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBlackboxExecutionContextsCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the uniqueIds</p>
+  <div class="markdown level1 summary"><p>Array of execution context unique ids for the debugger to ignore.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -226,7 +228,7 @@ public string[] UniqueIds { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBlackboxExecutionContextsCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/SetBlackboxExecutionContextsCommand.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

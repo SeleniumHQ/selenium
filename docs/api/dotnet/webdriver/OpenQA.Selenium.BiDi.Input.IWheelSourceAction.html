@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Input_IWheelSourceAction" data-uid="OpenQA.Selenium.BiDi.Input.IWheelSourceAction" class="text-break">
-Interface IWheelSourceAction  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L77"><i class="bi bi-code-slash"></i></a>
+Interface IWheelSourceAction  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -102,8 +102,8 @@ Interface IWheelSourceAction  <a class="header-action link-secondary" title="Vie
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonPolymorphic(TypeDiscriminatorPropertyName = &quot;type&quot;)]
-[JsonDerivedType(typeof(Pause), &quot;pause&quot;)]
-[JsonDerivedType(typeof(ScrollWheel), &quot;scroll&quot;)]
+[JsonDerivedType(typeof(PauseAction), &quot;pause&quot;)]
+[JsonDerivedType(typeof(WheelScrollAction), &quot;scroll&quot;)]
 public interface IWheelSourceAction : ISourceAction</code></pre>
   </div>
 
@@ -123,7 +123,7 @@ public interface IWheelSourceAction : ISourceAction</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L77" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L75" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class BackForwardCacheNotUsedEventArgs ">
       
-      <meta name="description" content="BackForwardCacheNotUsed">
+      <meta name="description" content="Fired for failed bfcache history navigations if BackForwardCache feature is enabled. Do not assume any ordering with the Page.frameNavigated event. This event is fired only for main-frame history navigation where the document changes (non-same-document navigations), when bfcache navigation fails.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Page_BackForwardCacheNotUsedEventArgs" data-uid="OpenQA.Selenium.DevTools.V144.Page.BackForwardCacheNotUsedEventArgs" class="text-break">
-Class BackForwardCacheNotUsedEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotUsedEventArgs.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Class BackForwardCacheNotUsedEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotUsedEventArgs.cs/#L16"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,10 @@ Class BackForwardCacheNotUsedEventArgs  <a class="header-action link-secondary" 
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>BackForwardCacheNotUsed</p>
+  <div class="markdown summary"><p>Fired for failed bfcache history navigations if BackForwardCache feature is enabled. Do
+not assume any ordering with the Page.frameNavigated event. This event is fired only for
+main-frame history navigation where the document changes (non-same-document navigations),
+when bfcache navigation fails.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +161,10 @@ Class BackForwardCacheNotUsedEventArgs  <a class="header-action link-secondary" 
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_BackForwardCacheNotUsedEventArgs_FrameId" data-uid="OpenQA.Selenium.DevTools.V144.Page.BackForwardCacheNotUsedEventArgs.FrameId">
   FrameId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotUsedEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotUsedEventArgs.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the frameId</p>
+  <div class="markdown level1 summary"><p>The frame id of the associated frame.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,10 +194,10 @@ public string FrameId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_BackForwardCacheNotUsedEventArgs_LoaderId" data-uid="OpenQA.Selenium.DevTools.V144.Page.BackForwardCacheNotUsedEventArgs.LoaderId">
   LoaderId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotUsedEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotUsedEventArgs.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the loaderId</p>
+  <div class="markdown level1 summary"><p>The loader id for the associated navigation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -224,10 +227,10 @@ public string LoaderId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_BackForwardCacheNotUsedEventArgs_NotRestoredExplanations" data-uid="OpenQA.Selenium.DevTools.V144.Page.BackForwardCacheNotUsedEventArgs.NotRestoredExplanations">
   NotRestoredExplanations
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotUsedEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotUsedEventArgs.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the notRestoredExplanations</p>
+  <div class="markdown level1 summary"><p>Array of reasons why the page could not be cached. This must not be empty.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -257,10 +260,10 @@ public BackForwardCacheNotRestoredExplanation[] NotRestoredExplanations { get; s
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_BackForwardCacheNotUsedEventArgs_NotRestoredExplanationsTree" data-uid="OpenQA.Selenium.DevTools.V144.Page.BackForwardCacheNotUsedEventArgs.NotRestoredExplanationsTree">
   NotRestoredExplanationsTree
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotUsedEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotUsedEventArgs.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the notRestoredExplanationsTree</p>
+  <div class="markdown level1 summary"><p>Tree structure of reasons why the page could not be cached for each frame.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -291,7 +294,7 @@ public BackForwardCacheNotRestoredExplanationTree? NotRestoredExplanationsTree {
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotUsedEventArgs.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotUsedEventArgs.cs/#L16" class="edit-link">Edit this page</a>
         </div>
 
 

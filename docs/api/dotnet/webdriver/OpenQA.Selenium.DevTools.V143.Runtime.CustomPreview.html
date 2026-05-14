@@ -154,10 +154,12 @@ Class CustomPreview  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_CustomPreview_BodyGetterId" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.CustomPreview.BodyGetterId">
   BodyGetterId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/CustomPreview.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/CustomPreview.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>bodyGetterId</p>
+  <div class="markdown level1 summary"><p>If formatter returns true as a result of formatter.hasBody call then bodyGetterId will
+contain RemoteObjectId for the function that returns result of formatter.body(object, config) call.
+The result value is json ML array.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -188,10 +190,11 @@ public string? BodyGetterId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_CustomPreview_Header" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.CustomPreview.Header">
   Header
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/CustomPreview.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/CustomPreview.cs/#L18"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>header</p>
+  <div class="markdown level1 summary"><p>The JSON-stringified result of formatter.header(object, config) call.
+It contains json ML array that represents RemoteObject.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

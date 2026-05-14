@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class DownloadProgressEventArgs ">
       
-      <meta name="description" content="DownloadProgress">
+      <meta name="description" content="Fired when download makes progress. Last call has |done| == true. Deprecated. Use Browser.downloadProgress instead.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Page_DownloadProgressEventArgs" data-uid="OpenQA.Selenium.DevTools.V144.Page.DownloadProgressEventArgs" class="text-break">
-Class DownloadProgressEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/DownloadProgressEventArgs.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Class DownloadProgressEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/DownloadProgressEventArgs.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class DownloadProgressEventArgs  <a class="header-action link-secondary" title="
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>DownloadProgress</p>
+  <div class="markdown summary"><p>Fired when download makes progress. Last call has |done| == true.
+Deprecated. Use Browser.downloadProgress instead.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +159,10 @@ Class DownloadProgressEventArgs  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_DownloadProgressEventArgs_Guid" data-uid="OpenQA.Selenium.DevTools.V144.Page.DownloadProgressEventArgs.Guid">
   Guid
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/DownloadProgressEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/DownloadProgressEventArgs.cs/#L19"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the guid</p>
+  <div class="markdown level1 summary"><p>Global unique identifier of the download.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,10 +192,10 @@ public string Guid { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_DownloadProgressEventArgs_ReceivedBytes" data-uid="OpenQA.Selenium.DevTools.V144.Page.DownloadProgressEventArgs.ReceivedBytes">
   ReceivedBytes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/DownloadProgressEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/DownloadProgressEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the receivedBytes</p>
+  <div class="markdown level1 summary"><p>Total bytes received.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -224,10 +225,10 @@ public double ReceivedBytes { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_DownloadProgressEventArgs_State" data-uid="OpenQA.Selenium.DevTools.V144.Page.DownloadProgressEventArgs.State">
   State
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/DownloadProgressEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/DownloadProgressEventArgs.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the state</p>
+  <div class="markdown level1 summary"><p>Download status.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -257,10 +258,10 @@ public string State { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_DownloadProgressEventArgs_TotalBytes" data-uid="OpenQA.Selenium.DevTools.V144.Page.DownloadProgressEventArgs.TotalBytes">
   TotalBytes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/DownloadProgressEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/DownloadProgressEventArgs.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the totalBytes</p>
+  <div class="markdown level1 summary"><p>Total expected bytes to download.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -290,7 +291,7 @@ public double TotalBytes { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/DownloadProgressEventArgs.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/DownloadProgressEventArgs.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

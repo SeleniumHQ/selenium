@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class FulfillRequestCommandSettings ">
       
-      <meta name="description" content="FulfillRequest">
+      <meta name="description" content="Provides response to the request.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class FulfillRequestCommandSettings  <a class="header-action link-secondary" tit
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>FulfillRequest</p>
+  <div class="markdown summary"><p>Provides response to the request.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,10 +160,13 @@ Class FulfillRequestCommandSettings  <a class="header-action link-secondary" tit
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Fetch_FulfillRequestCommandSettings_BinaryResponseHeaders" data-uid="OpenQA.Selenium.DevTools.V144.Fetch.FulfillRequestCommandSettings.BinaryResponseHeaders">
   BinaryResponseHeaders
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/FulfillRequestCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/FulfillRequestCommand.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the binaryResponseHeaders</p>
+  <div class="markdown level1 summary"><p>Alternative way of specifying response headers as a \0-separated
+series of name: value pairs. Prefer the above method unless you
+need to represent some non-UTF8 values that can't be transmitted
+over the protocol as text.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -194,10 +197,12 @@ public string? BinaryResponseHeaders { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Fetch_FulfillRequestCommandSettings_Body" data-uid="OpenQA.Selenium.DevTools.V144.Fetch.FulfillRequestCommandSettings.Body">
   Body
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/FulfillRequestCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/FulfillRequestCommand.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the body</p>
+  <div class="markdown level1 summary"><p>A response body. If absent, original response body will be used if
+the request is intercepted at the response stage and empty body
+will be used if the request is intercepted at the request stage.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -264,7 +269,7 @@ public string CommandName { get; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/FulfillRequestCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the requestId</p>
+  <div class="markdown level1 summary"><p>An id the client received in requestPaused event.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -297,7 +302,7 @@ public string RequestId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/FulfillRequestCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the responseCode</p>
+  <div class="markdown level1 summary"><p>An HTTP response code.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -330,7 +335,7 @@ public long ResponseCode { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/FulfillRequestCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the responseHeaders</p>
+  <div class="markdown level1 summary"><p>Response headers.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -361,10 +366,11 @@ public HeaderEntry[]? ResponseHeaders { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Fetch_FulfillRequestCommandSettings_ResponsePhrase" data-uid="OpenQA.Selenium.DevTools.V144.Fetch.FulfillRequestCommandSettings.ResponsePhrase">
   ResponsePhrase
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/FulfillRequestCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/FulfillRequestCommand.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the responsePhrase</p>
+  <div class="markdown level1 summary"><p>A textual representation of responseCode.
+If absent, a standard phrase matching responseCode is used.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

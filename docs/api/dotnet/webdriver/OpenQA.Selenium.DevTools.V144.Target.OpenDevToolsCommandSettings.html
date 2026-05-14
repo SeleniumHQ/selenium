@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class OpenDevToolsCommandSettings ">
       
-      <meta name="description" content="OpenDevTools">
+      <meta name="description" content="Opens a DevTools window for the target.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class OpenDevToolsCommandSettings  <a class="header-action link-secondary" title
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>OpenDevTools</p>
+  <div class="markdown summary"><p>Opens a DevTools window for the target.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -193,10 +193,12 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Target_OpenDevToolsCommandSettings_PanelId" data-uid="OpenQA.Selenium.DevTools.V144.Target.OpenDevToolsCommandSettings.PanelId">
   PanelId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/OpenDevToolsCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/OpenDevToolsCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the panelId</p>
+  <div class="markdown level1 summary"><p>The id of the panel we want DevTools to open initially. Currently
+supported panels are elements, console, network, sources, resources
+and performance.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -230,7 +232,7 @@ public string? PanelId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/OpenDevToolsCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the targetId</p>
+  <div class="markdown level1 summary"><p>This can be the page or tab target ID.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

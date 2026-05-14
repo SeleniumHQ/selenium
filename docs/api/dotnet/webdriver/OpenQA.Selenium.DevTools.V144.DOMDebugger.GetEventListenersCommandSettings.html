@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetEventListenersCommandSettings ">
       
-      <meta name="description" content="GetEventListeners">
+      <meta name="description" content="Returns event listeners of the given object.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class GetEventListenersCommandSettings  <a class="header-action link-secondary" 
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>GetEventListeners</p>
+  <div class="markdown summary"><p>Returns event listeners of the given object.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -193,10 +193,11 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOMDebugger_GetEventListenersCommandSettings_Depth" data-uid="OpenQA.Selenium.DevTools.V144.DOMDebugger.GetEventListenersCommandSettings.Depth">
   Depth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/GetEventListenersCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/GetEventListenersCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the depth</p>
+  <div class="markdown level1 summary"><p>The maximum depth at which Node children should be retrieved, defaults to 1. Use -1 for the
+entire subtree or provide an integer larger than 0.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -230,7 +231,7 @@ public long? Depth { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/GetEventListenersCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the objectId</p>
+  <div class="markdown level1 summary"><p>Identifier of the object to return listeners for.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -260,10 +261,11 @@ public string ObjectId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOMDebugger_GetEventListenersCommandSettings_Pierce" data-uid="OpenQA.Selenium.DevTools.V144.DOMDebugger.GetEventListenersCommandSettings.Pierce">
   Pierce
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/GetEventListenersCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/GetEventListenersCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the pierce</p>
+  <div class="markdown level1 summary"><p>Whether or not iframes and shadow roots should be traversed when returning the subtree
+(default is false). Reports listeners for all contexts if pierce is enabled.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

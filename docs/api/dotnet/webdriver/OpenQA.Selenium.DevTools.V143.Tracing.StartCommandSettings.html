@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class StartCommandSettings ">
       
-      <meta name="description" content="Start">
+      <meta name="description" content="Start trace events collection.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class StartCommandSettings  <a class="header-action link-secondary" title="View 
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Start</p>
+  <div class="markdown summary"><p>Start trace events collection.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -163,7 +163,7 @@ Class StartCommandSettings  <a class="header-action link-secondary" title="View 
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/StartCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the bufferUsageReportingInterval</p>
+  <div class="markdown level1 summary"><p>If set, the agent will issue bufferUsage events at this interval, specified in milliseconds</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -197,7 +197,7 @@ public double? BufferUsageReportingInterval { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/StartCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the categories</p>
+  <div class="markdown level1 summary"><p>Category/tag filter</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -264,7 +264,7 @@ public string CommandName { get; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/StartCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the options</p>
+  <div class="markdown level1 summary"><p>Tracing options</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -295,10 +295,12 @@ public string? Options { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Tracing_StartCommandSettings_PerfettoConfig" data-uid="OpenQA.Selenium.DevTools.V143.Tracing.StartCommandSettings.PerfettoConfig">
   PerfettoConfig
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/StartCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/StartCommand.cs/#L79"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the perfettoConfig</p>
+  <div class="markdown level1 summary"><p>Base64-encoded serialized perfetto.protos.TraceConfig protobuf message
+When specified, the parameters <code>categories</code>, <code>options</code>, <code>traceConfig</code>
+are ignored.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -329,10 +331,11 @@ public string? PerfettoConfig { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Tracing_StartCommandSettings_StreamCompression" data-uid="OpenQA.Selenium.DevTools.V143.Tracing.StartCommandSettings.StreamCompression">
   StreamCompression
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/StartCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/StartCommand.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the streamCompression</p>
+  <div class="markdown level1 summary"><p>Compression format to use. This only applies when using <code>ReturnAsStream</code>
+transfer mode (defaults to <code>none</code>)</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -363,10 +366,11 @@ public StreamCompression? StreamCompression { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Tracing_StartCommandSettings_StreamFormat" data-uid="OpenQA.Selenium.DevTools.V143.Tracing.StartCommandSettings.StreamFormat">
   StreamFormat
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/StartCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/StartCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the streamFormat</p>
+  <div class="markdown level1 summary"><p>Trace data format to use. This only applies when using <code>ReturnAsStream</code>
+transfer mode (defaults to <code>json</code>).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -397,7 +401,7 @@ public StreamFormat? StreamFormat { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Tracing_StartCommandSettings_TraceConfig" data-uid="OpenQA.Selenium.DevTools.V143.Tracing.StartCommandSettings.TraceConfig">
   TraceConfig
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/StartCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/StartCommand.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the traceConfig</p>
@@ -431,10 +435,10 @@ public TraceConfig? TraceConfig { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Tracing_StartCommandSettings_TracingBackend" data-uid="OpenQA.Selenium.DevTools.V143.Tracing.StartCommandSettings.TracingBackend">
   TracingBackend
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/StartCommand.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/StartCommand.cs/#L86"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the tracingBackend</p>
+  <div class="markdown level1 summary"><p>Backend type (defaults to <code>auto</code>)</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -465,10 +469,11 @@ public TracingBackend? TracingBackend { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Tracing_StartCommandSettings_TransferMode" data-uid="OpenQA.Selenium.DevTools.V143.Tracing.StartCommandSettings.TransferMode">
   TransferMode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/StartCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/StartCommand.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the transferMode</p>
+  <div class="markdown level1 summary"><p>Whether to report trace events as series of dataCollected events or to save trace to a
+stream (defaults to <code>ReportEvents</code>).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

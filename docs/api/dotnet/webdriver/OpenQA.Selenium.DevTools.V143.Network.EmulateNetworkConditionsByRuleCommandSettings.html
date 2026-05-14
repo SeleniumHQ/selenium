@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class EmulateNetworkConditionsByRuleCommandSettings ">
       
-      <meta name="description" content="EmulateNetworkConditionsByRule">
+      <meta name="description" content="Activates emulation of network conditions for individual requests using URL match patterns. Unlike the deprecated Network.emulateNetworkConditions this method does not affect navigator state. Use Network.overrideNetworkState to explicitly modify navigator behavior.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Network_EmulateNetworkConditionsByRuleCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.Network.EmulateNetworkConditionsByRuleCommandSettings" class="text-break">
-Class EmulateNetworkConditionsByRuleCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsByRuleCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class EmulateNetworkConditionsByRuleCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsByRuleCommand.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,9 @@ Class EmulateNetworkConditionsByRuleCommandSettings  <a class="header-action lin
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>EmulateNetworkConditionsByRule</p>
+  <div class="markdown summary"><p>Activates emulation of network conditions for individual requests using URL match patterns. Unlike the deprecated
+Network.emulateNetworkConditions this method does not affect <code>navigator</code> state. Use Network.overrideNetworkState to
+explicitly modify <code>navigator</code> behavior.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +162,7 @@ Class EmulateNetworkConditionsByRuleCommandSettings  <a class="header-action lin
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_EmulateNetworkConditionsByRuleCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.Network.EmulateNetworkConditionsByRuleCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsByRuleCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsByRuleCommand.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +195,12 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_EmulateNetworkConditionsByRuleCommandSettings_MatchedNetworkConditions" data-uid="OpenQA.Selenium.DevTools.V143.Network.EmulateNetworkConditionsByRuleCommandSettings.MatchedNetworkConditions">
   MatchedNetworkConditions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsByRuleCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsByRuleCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the matchedNetworkConditions</p>
+  <div class="markdown level1 summary"><p>Configure conditions for matching requests. If multiple entries match a request, the first entry wins.  Global
+conditions can be configured by leaving the urlPattern for the conditions empty. These global conditions are
+also applied for throttling of p2p connections.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -226,10 +230,10 @@ public NetworkConditions[] MatchedNetworkConditions { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_EmulateNetworkConditionsByRuleCommandSettings_Offline" data-uid="OpenQA.Selenium.DevTools.V143.Network.EmulateNetworkConditionsByRuleCommandSettings.Offline">
   Offline
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsByRuleCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsByRuleCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the offline</p>
+  <div class="markdown level1 summary"><p>True to emulate internet disconnection.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -259,7 +263,7 @@ public bool Offline { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsByRuleCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsByRuleCommand.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

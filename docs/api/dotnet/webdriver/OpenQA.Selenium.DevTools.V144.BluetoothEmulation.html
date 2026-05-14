@@ -96,32 +96,36 @@ Classes
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.AddCharacteristicCommandResponse.html">AddCharacteristicCommandResponse</a></dt>
-      <dd><p>Response for AddCharacteristic</p>
+      <dd><p>Response for Adds a characteristic with |characteristicUuid| and |properties| to the
+service represented by |serviceId|.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.AddCharacteristicCommandSettings.html">AddCharacteristicCommandSettings</a></dt>
-      <dd><p>AddCharacteristic</p>
+      <dd><p>Adds a characteristic with |characteristicUuid| and |properties| to the
+service represented by |serviceId|.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.AddDescriptorCommandResponse.html">AddDescriptorCommandResponse</a></dt>
-      <dd><p>Response for AddDescriptor</p>
+      <dd><p>Response for Adds a descriptor with |descriptorUuid| to the characteristic respresented
+by |characteristicId|.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.AddDescriptorCommandSettings.html">AddDescriptorCommandSettings</a></dt>
-      <dd><p>AddDescriptor</p>
+      <dd><p>Adds a descriptor with |descriptorUuid| to the characteristic respresented
+by |characteristicId|.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.AddServiceCommandResponse.html">AddServiceCommandResponse</a></dt>
-      <dd><p>Response for AddService</p>
+      <dd><p>Response for Adds a service with |serviceUuid| to the peripheral with |address|.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.AddServiceCommandSettings.html">AddServiceCommandSettings</a></dt>
-      <dd><p>AddService</p>
+      <dd><p>Adds a service with |serviceUuid| to the peripheral with |address|.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -131,157 +135,189 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.CharacteristicOperationReceivedEventArgs.html">CharacteristicOperationReceivedEventArgs</a></dt>
-      <dd><p>CharacteristicOperationReceived</p>
+      <dd><p>Event for when a characteristic operation of |type| to the characteristic
+respresented by |characteristicId| happened. |data| and |writeType| is
+expected to exist when |type| is write.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.CharacteristicProperties.html">CharacteristicProperties</a></dt>
-      <dd><p>CharacteristicProperties</p>
+      <dd><p>Describes the properties of a characteristic. This follows Bluetooth Core
+Specification BT 4.2 Vol 3 Part G 3.3.1. Characteristic Properties.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.DescriptorOperationReceivedEventArgs.html">DescriptorOperationReceivedEventArgs</a></dt>
-      <dd><p>DescriptorOperationReceived</p>
+      <dd><p>Event for when a descriptor operation of |type| to the descriptor
+respresented by |descriptorId| happened. |data| is expected to exist when
+|type| is write.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.DisableCommandResponse.html">DisableCommandResponse</a></dt>
-      <dd><p>Response for Disable</p>
+      <dd><p>Response for Disable the BluetoothEmulation domain.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.DisableCommandSettings.html">DisableCommandSettings</a></dt>
-      <dd><p>Disable</p>
+      <dd><p>Disable the BluetoothEmulation domain.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.EnableCommandResponse.html">EnableCommandResponse</a></dt>
-      <dd><p>Response for Enable</p>
+      <dd><p>Response for Enable the BluetoothEmulation domain.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.EnableCommandSettings.html">EnableCommandSettings</a></dt>
-      <dd><p>Enable</p>
+      <dd><p>Enable the BluetoothEmulation domain.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.GattOperationReceivedEventArgs.html">GattOperationReceivedEventArgs</a></dt>
-      <dd><p>GattOperationReceived</p>
+      <dd><p>Event for when a GATT operation of |type| to the peripheral with |address|
+happened.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.ManufacturerData.html">ManufacturerData</a></dt>
-      <dd><p>ManufacturerData</p>
+      <dd><p>Stores the manufacturer data</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.RemoveCharacteristicCommandResponse.html">RemoveCharacteristicCommandResponse</a></dt>
-      <dd><p>Response for RemoveCharacteristic</p>
+      <dd><p>Response for Removes the characteristic respresented by |characteristicId| from the
+simulated central.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.RemoveCharacteristicCommandSettings.html">RemoveCharacteristicCommandSettings</a></dt>
-      <dd><p>RemoveCharacteristic</p>
+      <dd><p>Removes the characteristic respresented by |characteristicId| from the
+simulated central.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.RemoveDescriptorCommandResponse.html">RemoveDescriptorCommandResponse</a></dt>
-      <dd><p>Response for RemoveDescriptor</p>
+      <dd><p>Response for Removes the descriptor with |descriptorId| from the simulated central.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.RemoveDescriptorCommandSettings.html">RemoveDescriptorCommandSettings</a></dt>
-      <dd><p>RemoveDescriptor</p>
+      <dd><p>Removes the descriptor with |descriptorId| from the simulated central.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.RemoveServiceCommandResponse.html">RemoveServiceCommandResponse</a></dt>
-      <dd><p>Response for RemoveService</p>
+      <dd><p>Response for Removes the service respresented by |serviceId| from the simulated central.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.RemoveServiceCommandSettings.html">RemoveServiceCommandSettings</a></dt>
-      <dd><p>RemoveService</p>
+      <dd><p>Removes the service respresented by |serviceId| from the simulated central.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.ScanEntry.html">ScanEntry</a></dt>
-      <dd><p>ScanEntry</p>
+      <dd><p>Stores the advertisement packet information that is sent by a Bluetooth device.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.ScanRecord.html">ScanRecord</a></dt>
-      <dd><p>ScanRecord</p>
+      <dd><p>Stores the byte data of the advertisement packet sent by a Bluetooth device.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.SetSimulatedCentralStateCommandResponse.html">SetSimulatedCentralStateCommandResponse</a></dt>
-      <dd><p>Response for SetSimulatedCentralState</p>
+      <dd><p>Response for Set the state of the simulated central.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.SetSimulatedCentralStateCommandSettings.html">SetSimulatedCentralStateCommandSettings</a></dt>
-      <dd><p>SetSimulatedCentralState</p>
+      <dd><p>Set the state of the simulated central.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.SimulateAdvertisementCommandResponse.html">SimulateAdvertisementCommandResponse</a></dt>
-      <dd><p>Response for SimulateAdvertisement</p>
+      <dd><p>Response for Simulates an advertisement packet described in |entry| being received by
+the central.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.SimulateAdvertisementCommandSettings.html">SimulateAdvertisementCommandSettings</a></dt>
-      <dd><p>SimulateAdvertisement</p>
+      <dd><p>Simulates an advertisement packet described in |entry| being received by
+the central.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.SimulateCharacteristicOperationResponseCommandResponse.html">SimulateCharacteristicOperationResponseCommandResponse</a></dt>
-      <dd><p>Response for SimulateCharacteristicOperationResponse</p>
+      <dd><p>Response for Simulates the response from the characteristic with |characteristicId| for a
+characteristic operation of |type|. The |code| value follows the Error
+Codes from Bluetooth Core Specification Vol 3 Part F 3.4.1.1 Error Response.
+The |data| is expected to exist when simulating a successful read operation
+response.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.SimulateCharacteristicOperationResponseCommandSettings.html">SimulateCharacteristicOperationResponseCommandSettings</a></dt>
-      <dd><p>SimulateCharacteristicOperationResponse</p>
+      <dd><p>Simulates the response from the characteristic with |characteristicId| for a
+characteristic operation of |type|. The |code| value follows the Error
+Codes from Bluetooth Core Specification Vol 3 Part F 3.4.1.1 Error Response.
+The |data| is expected to exist when simulating a successful read operation
+response.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.SimulateDescriptorOperationResponseCommandResponse.html">SimulateDescriptorOperationResponseCommandResponse</a></dt>
-      <dd><p>Response for SimulateDescriptorOperationResponse</p>
+      <dd><p>Response for Simulates the response from the descriptor with |descriptorId| for a
+descriptor operation of |type|. The |code| value follows the Error
+Codes from Bluetooth Core Specification Vol 3 Part F 3.4.1.1 Error Response.
+The |data| is expected to exist when simulating a successful read operation
+response.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.SimulateDescriptorOperationResponseCommandSettings.html">SimulateDescriptorOperationResponseCommandSettings</a></dt>
-      <dd><p>SimulateDescriptorOperationResponse</p>
+      <dd><p>Simulates the response from the descriptor with |descriptorId| for a
+descriptor operation of |type|. The |code| value follows the Error
+Codes from Bluetooth Core Specification Vol 3 Part F 3.4.1.1 Error Response.
+The |data| is expected to exist when simulating a successful read operation
+response.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.SimulateGATTDisconnectionCommandResponse.html">SimulateGATTDisconnectionCommandResponse</a></dt>
-      <dd><p>Response for SimulateGATTDisconnection</p>
+      <dd><p>Response for Simulates a GATT disconnection from the peripheral with |address|.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.SimulateGATTDisconnectionCommandSettings.html">SimulateGATTDisconnectionCommandSettings</a></dt>
-      <dd><p>SimulateGATTDisconnection</p>
+      <dd><p>Simulates a GATT disconnection from the peripheral with |address|.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.SimulateGATTOperationResponseCommandResponse.html">SimulateGATTOperationResponseCommandResponse</a></dt>
-      <dd><p>Response for SimulateGATTOperationResponse</p>
+      <dd><p>Response for Simulates the response code from the peripheral with |address| for a
+GATT operation of |type|. The |code| value follows the HCI Error Codes from
+Bluetooth Core Specification Vol 2 Part D 1.3 List Of Error Codes.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.SimulateGATTOperationResponseCommandSettings.html">SimulateGATTOperationResponseCommandSettings</a></dt>
-      <dd><p>SimulateGATTOperationResponse</p>
+      <dd><p>Simulates the response code from the peripheral with |address| for a
+GATT operation of |type|. The |code| value follows the HCI Error Codes from
+Bluetooth Core Specification Vol 2 Part D 1.3 List Of Error Codes.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.SimulatePreconnectedPeripheralCommandResponse.html">SimulatePreconnectedPeripheralCommandResponse</a></dt>
-      <dd><p>Response for SimulatePreconnectedPeripheral</p>
+      <dd><p>Response for Simulates a peripheral with |address|, |name| and |knownServiceUuids|
+that has already been connected to the system.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.SimulatePreconnectedPeripheralCommandSettings.html">SimulatePreconnectedPeripheralCommandSettings</a></dt>
-      <dd><p>SimulatePreconnectedPeripheral</p>
+      <dd><p>Simulates a peripheral with |address|, |name| and |knownServiceUuids|
+that has already been connected to the system.</p>
 </dd>
     </dl>
     <h3 id="enums">
@@ -289,27 +325,27 @@ Enums
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.CentralState.html">CentralState</a></dt>
-      <dd><p>CentralState</p>
+      <dd><p>Indicates the various states of Central.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.CharacteristicOperationType.html">CharacteristicOperationType</a></dt>
-      <dd><p>CharacteristicOperationType</p>
+      <dd><p>Indicates the various types of characteristic operation.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.CharacteristicWriteType.html">CharacteristicWriteType</a></dt>
-      <dd><p>CharacteristicWriteType</p>
+      <dd><p>Indicates the various types of characteristic write.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.DescriptorOperationType.html">DescriptorOperationType</a></dt>
-      <dd><p>DescriptorOperationType</p>
+      <dd><p>Indicates the various types of descriptor operation.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.BluetoothEmulation.GATTOperationType.html">GATTOperationType</a></dt>
-      <dd><p>GATTOperationType</p>
+      <dd><p>Indicates the various types of GATT event.</p>
 </dd>
     </dl>
 

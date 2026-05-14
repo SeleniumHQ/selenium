@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetDocumentCommandSettings ">
       
-      <meta name="description" content="GetDocument">
+      <meta name="description" content="Returns the root DOM node (and optionally the subtree) to the caller. Implicitly enables the DOM domain events for the current target.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_DOM_GetDocumentCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetDocumentCommandSettings" class="text-break">
-Class GetDocumentCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetDocumentCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class GetDocumentCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetDocumentCommand.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class GetDocumentCommandSettings  <a class="header-action link-secondary" title=
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>GetDocument</p>
+  <div class="markdown summary"><p>Returns the root DOM node (and optionally the subtree) to the caller.
+Implicitly enables the DOM domain events for the current target.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +161,7 @@ Class GetDocumentCommandSettings  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_GetDocumentCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetDocumentCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetDocumentCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetDocumentCommand.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +194,11 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_GetDocumentCommandSettings_Depth" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetDocumentCommandSettings.Depth">
   Depth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetDocumentCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetDocumentCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the depth</p>
+  <div class="markdown level1 summary"><p>The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the
+entire subtree or provide an integer larger than 0.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +229,11 @@ public long? Depth { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_GetDocumentCommandSettings_Pierce" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetDocumentCommandSettings.Pierce">
   Pierce
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetDocumentCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetDocumentCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the pierce</p>
+  <div class="markdown level1 summary"><p>Whether or not iframes and shadow roots should be traversed when returning the subtree
+(default is false).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -261,7 +264,7 @@ public bool? Pierce { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetDocumentCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetDocumentCommand.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

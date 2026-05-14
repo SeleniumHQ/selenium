@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class FrameScheduledNavigationEventArgs ">
       
-      <meta name="description" content="FrameScheduledNavigation">
+      <meta name="description" content="Fired when frame schedules a potential navigation.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class FrameScheduledNavigationEventArgs  <a class="header-action link-secondary"
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>FrameScheduledNavigation</p>
+  <div class="markdown summary"><p>Fired when frame schedules a potential navigation.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +158,11 @@ Class FrameScheduledNavigationEventArgs  <a class="header-action link-secondary"
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Page_FrameScheduledNavigationEventArgs_Delay" data-uid="OpenQA.Selenium.DevTools.V143.Page.FrameScheduledNavigationEventArgs.Delay">
   Delay
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/FrameScheduledNavigationEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/FrameScheduledNavigationEventArgs.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the delay</p>
+  <div class="markdown level1 summary"><p>Delay (in seconds) until the navigation is scheduled to begin. The navigation is not
+guaranteed to start.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -194,7 +195,7 @@ public double Delay { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/FrameScheduledNavigationEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the frameId</p>
+  <div class="markdown level1 summary"><p>Id of the frame that has scheduled a navigation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -224,10 +225,10 @@ public string FrameId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Page_FrameScheduledNavigationEventArgs_Reason" data-uid="OpenQA.Selenium.DevTools.V143.Page.FrameScheduledNavigationEventArgs.Reason">
   Reason
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/FrameScheduledNavigationEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/FrameScheduledNavigationEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the reason</p>
+  <div class="markdown level1 summary"><p>The reason for the navigation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -257,10 +258,10 @@ public ClientNavigationReason Reason { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Page_FrameScheduledNavigationEventArgs_Url" data-uid="OpenQA.Selenium.DevTools.V143.Page.FrameScheduledNavigationEventArgs.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/FrameScheduledNavigationEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/FrameScheduledNavigationEventArgs.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the url</p>
+  <div class="markdown level1 summary"><p>The destination URL for the scheduled navigation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

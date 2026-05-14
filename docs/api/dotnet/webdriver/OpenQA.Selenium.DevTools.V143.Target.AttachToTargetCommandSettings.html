@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AttachToTargetCommandSettings ">
       
-      <meta name="description" content="AttachToTarget">
+      <meta name="description" content="Attaches to the target with given id.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class AttachToTargetCommandSettings  <a class="header-action link-secondary" tit
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>AttachToTarget</p>
+  <div class="markdown summary"><p>Attaches to the target with given id.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -193,10 +193,12 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Target_AttachToTargetCommandSettings_Flatten" data-uid="OpenQA.Selenium.DevTools.V143.Target.AttachToTargetCommandSettings.Flatten">
   Flatten
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/AttachToTargetCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/AttachToTargetCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the flatten</p>
+  <div class="markdown level1 summary"><p>Enables &quot;flat&quot; access to the session via specifying sessionId attribute in the commands.
+We plan to make this the default, deprecate non-flattened mode,
+and eventually retire it. See crbug.com/991325.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

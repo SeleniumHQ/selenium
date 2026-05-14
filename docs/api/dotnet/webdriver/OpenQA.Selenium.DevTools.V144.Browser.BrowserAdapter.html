@@ -236,10 +236,13 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_AddPrivacySandboxCoordinatorKeyConfig_OpenQA_Selenium_DevTools_V144_Browser_AddPrivacySandboxCoordinatorKeyConfigCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.AddPrivacySandboxCoordinatorKeyConfig(OpenQA.Selenium.DevTools.V144.Browser.AddPrivacySandboxCoordinatorKeyConfigCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   AddPrivacySandboxCoordinatorKeyConfig(AddPrivacySandboxCoordinatorKeyConfigCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L206"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L212"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>addPrivacySandboxCoordinatorKeyConfig</p>
+  <div class="markdown level1 summary"><p>Configures encryption keys used with a given privacy sandbox API to talk
+to a trusted coordinator.  Since this is intended for test automation only,
+coordinatorOrigin must be a .test domain. No existing coordinator
+configuration for the origin may exist.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -279,10 +282,11 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_AddPrivacySandboxEnrollmentOverride_OpenQA_Selenium_DevTools_V144_Browser_AddPrivacySandboxEnrollmentOverrideCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.AddPrivacySandboxEnrollmentOverride(OpenQA.Selenium.DevTools.V144.Browser.AddPrivacySandboxEnrollmentOverrideCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   AddPrivacySandboxEnrollmentOverride(AddPrivacySandboxEnrollmentOverrideCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L198"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L201"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>addPrivacySandboxEnrollmentOverride</p>
+  <div class="markdown level1 summary"><p>Allows a site to use privacy sandbox features that require enrollment
+without the site actually being enrolled. Only supported on page targets.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -322,10 +326,10 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_CancelDownload_OpenQA_Selenium_DevTools_V144_Browser_CancelDownloadCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.CancelDownload(OpenQA.Selenium.DevTools.V144.Browser.CancelDownloadCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   CancelDownload(CancelDownloadCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>cancelDownload</p>
+  <div class="markdown level1 summary"><p>Cancel a download if in progress</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -365,10 +369,10 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_Close_OpenQA_Selenium_DevTools_V144_Browser_CloseCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.Close(OpenQA.Selenium.DevTools.V144.Browser.CloseCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Close(CloseCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L95"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>close</p>
+  <div class="markdown level1 summary"><p>Close browser gracefully.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -408,10 +412,10 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_Crash_OpenQA_Selenium_DevTools_V144_Browser_CrashCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.Crash(OpenQA.Selenium.DevTools.V144.Browser.CrashCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Crash(CrashCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L103"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>crash</p>
+  <div class="markdown level1 summary"><p>Crashes browser on the main thread.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -451,10 +455,10 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_CrashGpuProcess_OpenQA_Selenium_DevTools_V144_Browser_CrashGpuProcessCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.CrashGpuProcess(OpenQA.Selenium.DevTools.V144.Browser.CrashGpuProcessCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   CrashGpuProcess(CrashGpuProcessCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L111"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>crashGpuProcess</p>
+  <div class="markdown level1 summary"><p>Crashes GPU process.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -494,10 +498,10 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_ExecuteBrowserCommand_OpenQA_Selenium_DevTools_V144_Browser_ExecuteBrowserCommandCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.ExecuteBrowserCommand(OpenQA.Selenium.DevTools.V144.Browser.ExecuteBrowserCommandCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   ExecuteBrowserCommand(ExecuteBrowserCommandCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L190"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L192"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>executeBrowserCommand</p>
+  <div class="markdown level1 summary"><p>Invoke custom browser commands used by telemetry.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -537,10 +541,11 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_GetBrowserCommandLine_OpenQA_Selenium_DevTools_V144_Browser_GetBrowserCommandLineCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.GetBrowserCommandLine(OpenQA.Selenium.DevTools.V144.Browser.GetBrowserCommandLineCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetBrowserCommandLine(GetBrowserCommandLineCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L128"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getBrowserCommandLine</p>
+  <div class="markdown level1 summary"><p>Returns the command line switches for the browser process if, and only if
+--enable-automation is on the commandline.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -580,10 +585,10 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_GetHistogram_OpenQA_Selenium_DevTools_V144_Browser_GetHistogramCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.GetHistogram(OpenQA.Selenium.DevTools.V144.Browser.GetHistogramCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetHistogram(GetHistogramCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L144"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getHistogram</p>
+  <div class="markdown level1 summary"><p>Get a Chrome histogram by name.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -623,10 +628,10 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_GetHistograms_OpenQA_Selenium_DevTools_V144_Browser_GetHistogramsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.GetHistograms(OpenQA.Selenium.DevTools.V144.Browser.GetHistogramsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetHistograms(GetHistogramsCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L134"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L136"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getHistograms</p>
+  <div class="markdown level1 summary"><p>Get Chrome histograms.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -666,10 +671,10 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_GetVersion_OpenQA_Selenium_DevTools_V144_Browser_GetVersionCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.GetVersion(OpenQA.Selenium.DevTools.V144.Browser.GetVersionCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetVersion(GetVersionCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L119"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getVersion</p>
+  <div class="markdown level1 summary"><p>Returns version information.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -709,10 +714,10 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_GetWindowBounds_OpenQA_Selenium_DevTools_V144_Browser_GetWindowBoundsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.GetWindowBounds(OpenQA.Selenium.DevTools.V144.Browser.GetWindowBoundsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetWindowBounds(GetWindowBoundsCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L150"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L152"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getWindowBounds</p>
+  <div class="markdown level1 summary"><p>Get position and size of the browser window.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -752,10 +757,10 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_GetWindowForTarget_OpenQA_Selenium_DevTools_V144_Browser_GetWindowForTargetCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.GetWindowForTarget(OpenQA.Selenium.DevTools.V144.Browser.GetWindowForTargetCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetWindowForTarget(GetWindowForTargetCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L158"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L160"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getWindowForTarget</p>
+  <div class="markdown level1 summary"><p>Get the browser window that contains the devtools target.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -795,10 +800,11 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_GrantPermissions_OpenQA_Selenium_DevTools_V144_Browser_GrantPermissionsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.GrantPermissions(OpenQA.Selenium.DevTools.V144.Browser.GrantPermissionsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GrantPermissions(GrantPermissionsCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>grantPermissions</p>
+  <div class="markdown level1 summary"><p>Grant specific permissions to the given origin and reject all others. Deprecated. Use
+setPermission instead.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -838,10 +844,10 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_ResetPermissions_OpenQA_Selenium_DevTools_V144_Browser_ResetPermissionsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.ResetPermissions(OpenQA.Selenium.DevTools.V144.Browser.ResetPermissionsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   ResetPermissions(ResetPermissionsCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L71"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>resetPermissions</p>
+  <div class="markdown level1 summary"><p>Reset all permission management for all origins.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -881,10 +887,10 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_SetContentsSize_OpenQA_Selenium_DevTools_V144_Browser_SetContentsSizeCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.SetContentsSize(OpenQA.Selenium.DevTools.V144.Browser.SetContentsSizeCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetContentsSize(SetContentsSizeCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L174"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L176"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setContentsSize</p>
+  <div class="markdown level1 summary"><p>Set size of the browser contents resizing browser window as necessary.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -924,10 +930,10 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_SetDockTile_OpenQA_Selenium_DevTools_V144_Browser_SetDockTileCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.SetDockTile(OpenQA.Selenium.DevTools.V144.Browser.SetDockTileCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetDockTile(SetDockTileCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L182"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L184"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setDockTile</p>
+  <div class="markdown level1 summary"><p>Set dock tile details, platform-specific.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -967,10 +973,10 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_SetDownloadBehavior_OpenQA_Selenium_DevTools_V144_Browser_SetDownloadBehaviorCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.SetDownloadBehavior(OpenQA.Selenium.DevTools.V144.Browser.SetDownloadBehaviorCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetDownloadBehavior(SetDownloadBehaviorCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L79"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setDownloadBehavior</p>
+  <div class="markdown level1 summary"><p>Set the behavior when downloading a file.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1013,7 +1019,7 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setPermission</p>
+  <div class="markdown level1 summary"><p>Set permission settings for given embedding and embedded origins.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1053,10 +1059,10 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_BrowserAdapter_SetWindowBounds_OpenQA_Selenium_DevTools_V144_Browser_SetWindowBoundsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Browser.BrowserAdapter.SetWindowBounds(OpenQA.Selenium.DevTools.V144.Browser.SetWindowBoundsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetWindowBounds(SetWindowBoundsCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L166"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L168"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setWindowBounds</p>
+  <div class="markdown level1 summary"><p>Set position and/or size of the browser window.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1102,7 +1108,7 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>downloadProgress</p>
+  <div class="markdown level1 summary"><p>Fired when download makes progress. Last call has |done| == true.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1133,7 +1139,7 @@ Class BrowserAdapter  <a class="header-action link-secondary" title="View source
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/BrowserAdapter.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>downloadWillBegin</p>
+  <div class="markdown level1 summary"><p>Fired when page is about to start a download.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class HighlightFrameCommandSettings ">
       
-      <meta name="description" content="HighlightFrame">
+      <meta name="description" content="Highlights owner element of the frame with given id. Deprecated: Doesn&#39;t work reliably and cannot be fixed due to process separation (the owner node might be in a different process). Determine the owner node in the client and use highlightNode.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Overlay_HighlightFrameCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.Overlay.HighlightFrameCommandSettings" class="text-break">
-Class HighlightFrameCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightFrameCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class HighlightFrameCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightFrameCommand.cs/#L15"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,10 @@ Class HighlightFrameCommandSettings  <a class="header-action link-secondary" tit
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>HighlightFrame</p>
+  <div class="markdown summary"><p>Highlights owner element of the frame with given id.
+Deprecated: Doesn't work reliably and cannot be fixed due to process
+separation (the owner node might be in a different process). Determine
+the owner node in the client and use highlightNode.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +163,7 @@ Class HighlightFrameCommandSettings  <a class="header-action link-secondary" tit
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Overlay_HighlightFrameCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.Overlay.HighlightFrameCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightFrameCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightFrameCommand.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +196,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Overlay_HighlightFrameCommandSettings_ContentColor" data-uid="OpenQA.Selenium.DevTools.V144.Overlay.HighlightFrameCommandSettings.ContentColor">
   ContentColor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightFrameCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightFrameCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the contentColor</p>
+  <div class="markdown level1 summary"><p>The content box highlight fill color (default: transparent).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +230,10 @@ public RGBA? ContentColor { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Overlay_HighlightFrameCommandSettings_ContentOutlineColor" data-uid="OpenQA.Selenium.DevTools.V144.Overlay.HighlightFrameCommandSettings.ContentOutlineColor">
   ContentOutlineColor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightFrameCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightFrameCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the contentOutlineColor</p>
+  <div class="markdown level1 summary"><p>The content box highlight outline color (default: transparent).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -261,10 +264,10 @@ public RGBA? ContentOutlineColor { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Overlay_HighlightFrameCommandSettings_FrameId" data-uid="OpenQA.Selenium.DevTools.V144.Overlay.HighlightFrameCommandSettings.FrameId">
   FrameId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightFrameCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightFrameCommand.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the frameId</p>
+  <div class="markdown level1 summary"><p>Identifier of the frame to highlight.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -294,7 +297,7 @@ public string FrameId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightFrameCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightFrameCommand.cs/#L15" class="edit-link">Edit this page</a>
         </div>
 
 

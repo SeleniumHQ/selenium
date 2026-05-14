@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class RequestChildNodesCommandSettings ">
       
-      <meta name="description" content="RequestChildNodes">
+      <meta name="description" content="Requests that children of the node with given id are returned to the caller in form of setChildNodes events where not only immediate children are retrieved, but all children down to the specified depth.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_DOM_RequestChildNodesCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.DOM.RequestChildNodesCommandSettings" class="text-break">
-Class RequestChildNodesCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/RequestChildNodesCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class RequestChildNodesCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/RequestChildNodesCommand.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,9 @@ Class RequestChildNodesCommandSettings  <a class="header-action link-secondary" 
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>RequestChildNodes</p>
+  <div class="markdown summary"><p>Requests that children of the node with given id are returned to the caller in form of
+<code>setChildNodes</code> events where not only immediate children are retrieved, but all children down to
+the specified depth.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +162,7 @@ Class RequestChildNodesCommandSettings  <a class="header-action link-secondary" 
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_RequestChildNodesCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.DOM.RequestChildNodesCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/RequestChildNodesCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/RequestChildNodesCommand.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +195,11 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_RequestChildNodesCommandSettings_Depth" data-uid="OpenQA.Selenium.DevTools.V144.DOM.RequestChildNodesCommandSettings.Depth">
   Depth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/RequestChildNodesCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/RequestChildNodesCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the depth</p>
+  <div class="markdown level1 summary"><p>The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the
+entire subtree or provide an integer larger than 0.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +230,10 @@ public long? Depth { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_RequestChildNodesCommandSettings_NodeId" data-uid="OpenQA.Selenium.DevTools.V144.DOM.RequestChildNodesCommandSettings.NodeId">
   NodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/RequestChildNodesCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/RequestChildNodesCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the nodeId</p>
+  <div class="markdown level1 summary"><p>Id of the node to get children for.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -260,10 +263,11 @@ public long NodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_RequestChildNodesCommandSettings_Pierce" data-uid="OpenQA.Selenium.DevTools.V144.DOM.RequestChildNodesCommandSettings.Pierce">
   Pierce
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/RequestChildNodesCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/RequestChildNodesCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the pierce</p>
+  <div class="markdown level1 summary"><p>Whether or not iframes and shadow roots should be traversed when returning the sub-tree
+(default is false).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -294,7 +298,7 @@ public bool? Pierce { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/RequestChildNodesCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/RequestChildNodesCommand.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

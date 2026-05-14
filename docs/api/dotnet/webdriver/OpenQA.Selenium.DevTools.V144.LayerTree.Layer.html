@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class Layer ">
       
-      <meta name="description" content="Layer">
+      <meta name="description" content="Information about a compositing layer.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class Layer  <a class="header-action link-secondary" title="View source" href="h
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Layer</p>
+  <div class="markdown summary"><p>Information about a compositing layer.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -157,7 +157,7 @@ Class Layer  <a class="header-action link-secondary" title="View source" href="h
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>anchorX</p>
+  <div class="markdown level1 summary"><p>Transform anchor point X, absent if no transform specified</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,7 +191,7 @@ public double? AnchorX { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>anchorY</p>
+  <div class="markdown level1 summary"><p>Transform anchor point Y, absent if no transform specified</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -225,7 +225,7 @@ public double? AnchorY { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>anchorZ</p>
+  <div class="markdown level1 summary"><p>Transform anchor point Z, absent if no transform specified</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -259,7 +259,7 @@ public double? AnchorZ { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>backendNodeId</p>
+  <div class="markdown level1 summary"><p>The backend id for the node associated with this layer.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -290,10 +290,11 @@ public long? BackendNodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_LayerTree_Layer_DrawsContent" data-uid="OpenQA.Selenium.DevTools.V144.LayerTree.Layer.DrawsContent">
   DrawsContent
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L102"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>drawsContent</p>
+  <div class="markdown level1 summary"><p>Indicates whether this layer hosts any content, rather than being used for
+transform/scrolling purposes only.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -326,7 +327,7 @@ public bool DrawsContent { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>height</p>
+  <div class="markdown level1 summary"><p>Layer height.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -356,10 +357,10 @@ public double Height { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_LayerTree_Layer_Invisible" data-uid="OpenQA.Selenium.DevTools.V144.LayerTree.Layer.Invisible">
   Invisible
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L109"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>invisible</p>
+  <div class="markdown level1 summary"><p>Set if layer is not visible.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -393,7 +394,7 @@ public bool? Invisible { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>layerId</p>
+  <div class="markdown level1 summary"><p>The unique id for this layer.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -426,7 +427,7 @@ public string LayerId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>offsetX</p>
+  <div class="markdown level1 summary"><p>Offset from parent layer, X coordinate.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -459,7 +460,7 @@ public double OffsetX { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>offsetY</p>
+  <div class="markdown level1 summary"><p>Offset from parent layer, Y coordinate.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -492,7 +493,7 @@ public double OffsetY { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>paintCount</p>
+  <div class="markdown level1 summary"><p>Indicates how many time this layer has painted.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -525,7 +526,7 @@ public long PaintCount { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>parentLayerId</p>
+  <div class="markdown level1 summary"><p>The id of parent (not present for root).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -556,10 +557,10 @@ public string? ParentLayerId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_LayerTree_Layer_ScrollRects" data-uid="OpenQA.Selenium.DevTools.V144.LayerTree.Layer.ScrollRects">
   ScrollRects
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L116"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>scrollRects</p>
+  <div class="markdown level1 summary"><p>Rectangles scrolling on main thread only.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -590,10 +591,10 @@ public ScrollRect[]? ScrollRects { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_LayerTree_Layer_StickyPositionConstraint" data-uid="OpenQA.Selenium.DevTools.V144.LayerTree.Layer.StickyPositionConstraint">
   StickyPositionConstraint
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L123"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>stickyPositionConstraint</p>
+  <div class="markdown level1 summary"><p>Sticky position constraint information</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -627,7 +628,7 @@ public StickyPositionConstraint? StickyPositionConstraint { get; set; }</code></
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>transform</p>
+  <div class="markdown level1 summary"><p>Transformation matrix for layer, default is identity matrix</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -661,7 +662,7 @@ public double[]? Transform { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/LayerTree/Layer.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>width</p>
+  <div class="markdown level1 summary"><p>Layer width.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

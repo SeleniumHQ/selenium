@@ -95,6 +95,9 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">SessionClosedEvent</span>
 <span class="extends-implements">extends <a href="../../events/Event.html" title="class in org.openqa.selenium.events">Event</a></span></div>
+<div class="block">Event fired when a session is closed on a node. This event provides context about the closed
+ session for sidecar services to consume, enabling functionality such as stopping video recording,
+ collecting logs, or other session lifecycle management.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -106,11 +109,19 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.remote.SessionId)" class="member-name-link">SessionClosedEvent</a><wbr>(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.remote.SessionId,org.openqa.selenium.grid.data.SessionClosedReason)" class="member-name-link">SessionClosedEvent</a><wbr>(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.grid.data.SessionClosedData)" class="member-name-link">SessionClosedEvent</a><wbr>(<a href="SessionClosedData.html" title="class in org.openqa.selenium.grid.data">SessionClosedData</a>&nbsp;data)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Full constructor with rich session context for sidecar services.</div>
+</div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.remote.SessionId)" class="member-name-link">SessionClosedEvent</a><wbr>(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Backward compatible constructor using just SessionId.</div>
+</div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.remote.SessionId,org.openqa.selenium.grid.data.SessionClosedReason)" class="member-name-link">SessionClosedEvent</a><wbr>(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id,
  <a href="SessionClosedReason.html" title="enum class in org.openqa.selenium.grid.data">SessionClosedReason</a>&nbsp;reason)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Backward compatible constructor using SessionId and reason.</div>
+</div>
 </div>
 </section>
 </li>
@@ -155,6 +166,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="&lt;init&gt;(org.openqa.selenium.remote.SessionId)">
 <h3>SessionClosedEvent</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">SessionClosedEvent</span><wbr><span class="parameters">(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</span></div>
+<div class="block">Backward compatible constructor using just SessionId.</div>
 </section>
 </li>
 <li>
@@ -162,6 +174,18 @@ loadScripts(document, 'script');</script>
 <h3>SessionClosedEvent</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">SessionClosedEvent</span><wbr><span class="parameters">(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id,
  <a href="SessionClosedReason.html" title="enum class in org.openqa.selenium.grid.data">SessionClosedReason</a>&nbsp;reason)</span></div>
+<div class="block">Backward compatible constructor using SessionId and reason.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="&lt;init&gt;(org.openqa.selenium.grid.data.SessionClosedData)">
+<h3>SessionClosedEvent</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">SessionClosedEvent</span><wbr><span class="parameters">(<a href="SessionClosedData.html" title="class in org.openqa.selenium.grid.data">SessionClosedData</a>&nbsp;data)</span></div>
+<div class="block">Full constructor with rich session context for sidecar services.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>data</code> - the complete session closed data including node context and timing</dd>
+</dl>
 </section>
 </li>
 </ul>

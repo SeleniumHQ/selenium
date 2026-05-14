@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Network_AddInterceptOptions" data-uid="OpenQA.Selenium.BiDi.Network.AddInterceptOptions" class="text-break">
-Class AddInterceptOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddInterceptCommand.cs/#L31"><i class="bi bi-code-slash"></i></a>
+Class AddInterceptOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddInterceptCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class AddInterceptOptions  <a class="header-action link-secondary" title="View s
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class AddInterceptOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public record AddInterceptOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;AddInterceptOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class AddInterceptOptions  <a class="header-action link-secondary" title="View s
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.AddInterceptOptions.html">AddInterceptOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
   <dl class="typelist derived">
     <dt>Derived</dt>
@@ -168,7 +175,7 @@ Class AddInterceptOptions  <a class="header-action link-secondary" title="View s
 
   <h3 id="OpenQA_Selenium_BiDi_Network_AddInterceptOptions__ctor" data-uid="OpenQA.Selenium.BiDi.Network.AddInterceptOptions.#ctor">
   AddInterceptOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddInterceptCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddInterceptCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -198,14 +205,14 @@ Class AddInterceptOptions  <a class="header-action link-secondary" title="View s
 
   <h3 id="OpenQA_Selenium_BiDi_Network_AddInterceptOptions_Contexts" data-uid="OpenQA.Selenium.BiDi.Network.AddInterceptOptions.Contexts">
   Contexts
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddInterceptCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddInterceptCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;BrowsingContext&gt;? Contexts { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;BrowsingContext&gt;? Contexts { get; init; }</code></pre>
   </div>
 
 
@@ -229,14 +236,14 @@ Class AddInterceptOptions  <a class="header-action link-secondary" title="View s
 
   <h3 id="OpenQA_Selenium_BiDi_Network_AddInterceptOptions_UrlPatterns" data-uid="OpenQA.Selenium.BiDi.Network.AddInterceptOptions.UrlPatterns">
   UrlPatterns
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddInterceptCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddInterceptCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;UrlPattern&gt;? UrlPatterns { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;UrlPattern&gt;? UrlPatterns { get; init; }</code></pre>
   </div>
 
 
@@ -260,7 +267,7 @@ Class AddInterceptOptions  <a class="header-action link-secondary" title="View s
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddInterceptCommand.cs/#L31" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddInterceptCommand.cs/#L30" class="edit-link">Edit this page</a>
         </div>
 
 

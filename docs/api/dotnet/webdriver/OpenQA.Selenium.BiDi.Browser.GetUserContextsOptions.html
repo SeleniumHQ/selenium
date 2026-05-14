@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Browser_GetUserContextsOptions" data-uid="OpenQA.Selenium.BiDi.Browser.GetUserContextsOptions" class="text-break">
-Class GetUserContextsOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetUserContextsCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
+Class GetUserContextsOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetUserContextsCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class GetUserContextsOptions  <a class="header-action link-secondary" title="Vie
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class GetUserContextsOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public record GetUserContextsOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;GetUserContextsOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class GetUserContextsOptions  <a class="header-action link-secondary" title="Vie
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.GetUserContextsOptions.html">GetUserContextsOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -156,7 +163,7 @@ Class GetUserContextsOptions  <a class="header-action link-secondary" title="Vie
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetUserContextsCommand.cs/#L27" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetUserContextsCommand.cs/#L25" class="edit-link">Edit this page</a>
         </div>
 
 

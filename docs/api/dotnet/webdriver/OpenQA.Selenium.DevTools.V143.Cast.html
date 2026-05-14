@@ -101,37 +101,48 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Cast.DisableCommandResponse.html">DisableCommandResponse</a></dt>
-      <dd><p>Response for Disable</p>
+      <dd><p>Response for Stops observing for sinks and issues.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Cast.DisableCommandSettings.html">DisableCommandSettings</a></dt>
-      <dd><p>Disable</p>
+      <dd><p>Stops observing for sinks and issues.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Cast.EnableCommandResponse.html">EnableCommandResponse</a></dt>
-      <dd><p>Response for Enable</p>
+      <dd><p>Response for Starts observing for sinks that can be used for tab mirroring, and if set,
+sinks compatible with |presentationUrl| as well. When sinks are found, a
+|sinksUpdated| event is fired.
+Also starts observing for issue messages. When an issue is added or removed,
+an |issueUpdated| event is fired.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Cast.EnableCommandSettings.html">EnableCommandSettings</a></dt>
-      <dd><p>Enable</p>
+      <dd><p>Starts observing for sinks that can be used for tab mirroring, and if set,
+sinks compatible with |presentationUrl| as well. When sinks are found, a
+|sinksUpdated| event is fired.
+Also starts observing for issue messages. When an issue is added or removed,
+an |issueUpdated| event is fired.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Cast.IssueUpdatedEventArgs.html">IssueUpdatedEventArgs</a></dt>
-      <dd><p>IssueUpdated</p>
+      <dd><p>This is fired whenever the outstanding issue/error message changes.
+|issueMessage| is empty if there is no issue.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Cast.SetSinkToUseCommandResponse.html">SetSinkToUseCommandResponse</a></dt>
-      <dd><p>Response for SetSinkToUse</p>
+      <dd><p>Response for Sets a sink to be used when the web page requests the browser to choose a
+sink via Presentation API, Remote Playback API, or Cast SDK.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Cast.SetSinkToUseCommandSettings.html">SetSinkToUseCommandSettings</a></dt>
-      <dd><p>SetSinkToUse</p>
+      <dd><p>Sets a sink to be used when the web page requests the browser to choose a
+sink via Presentation API, Remote Playback API, or Cast SDK.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -141,37 +152,38 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Cast.SinksUpdatedEventArgs.html">SinksUpdatedEventArgs</a></dt>
-      <dd><p>SinksUpdated</p>
+      <dd><p>This is fired whenever the list of available sinks changes. A sink is a
+device or a software surface that you can cast to.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Cast.StartDesktopMirroringCommandResponse.html">StartDesktopMirroringCommandResponse</a></dt>
-      <dd><p>Response for StartDesktopMirroring</p>
+      <dd><p>Response for Starts mirroring the desktop to the sink.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Cast.StartDesktopMirroringCommandSettings.html">StartDesktopMirroringCommandSettings</a></dt>
-      <dd><p>StartDesktopMirroring</p>
+      <dd><p>Starts mirroring the desktop to the sink.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Cast.StartTabMirroringCommandResponse.html">StartTabMirroringCommandResponse</a></dt>
-      <dd><p>Response for StartTabMirroring</p>
+      <dd><p>Response for Starts mirroring the tab to the sink.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Cast.StartTabMirroringCommandSettings.html">StartTabMirroringCommandSettings</a></dt>
-      <dd><p>StartTabMirroring</p>
+      <dd><p>Starts mirroring the tab to the sink.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Cast.StopCastingCommandResponse.html">StopCastingCommandResponse</a></dt>
-      <dd><p>Response for StopCasting</p>
+      <dd><p>Response for Stops the active Cast session on the sink.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Cast.StopCastingCommandSettings.html">StopCastingCommandSettings</a></dt>
-      <dd><p>StopCasting</p>
+      <dd><p>Stops the active Cast session on the sink.</p>
 </dd>
     </dl>
 

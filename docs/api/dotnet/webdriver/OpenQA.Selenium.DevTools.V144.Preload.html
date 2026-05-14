@@ -116,7 +116,7 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Preload.PrefetchStatusUpdatedEventArgs.html">PrefetchStatusUpdatedEventArgs</a></dt>
-      <dd><p>PrefetchStatusUpdated</p>
+      <dd><p>Fired when a prefetch attempt is updated.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -126,37 +126,45 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Preload.PreloadEnabledStateUpdatedEventArgs.html">PreloadEnabledStateUpdatedEventArgs</a></dt>
-      <dd><p>PreloadEnabledStateUpdated</p>
+      <dd><p>Fired when a preload enabled state is updated.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Preload.PreloadingAttemptKey.html">PreloadingAttemptKey</a></dt>
-      <dd><p>PreloadingAttemptKey</p>
+      <dd><p>A key that identifies a preloading attempt.</p>
+<p>The url used is the url specified by the trigger (i.e. the initial URL), and
+not the final url that is navigated to. For example, prerendering allows
+same-origin main frame navigations during the attempt, but the attempt is
+still keyed with the initial URL.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Preload.PreloadingAttemptSource.html">PreloadingAttemptSource</a></dt>
-      <dd><p>PreloadingAttemptSource</p>
+      <dd><p>Lists sources for a preloading attempt, specifically the ids of rule sets
+that had a speculation rule that triggered the attempt, and the
+BackendNodeIds of &lt;a href&gt; or &lt;area href&gt; elements that triggered the
+attempt (in the case of attempts triggered by a document rule). It is
+possible for multiple rule sets and links to trigger a single attempt.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Preload.PreloadingAttemptSourcesUpdatedEventArgs.html">PreloadingAttemptSourcesUpdatedEventArgs</a></dt>
-      <dd><p>PreloadingAttemptSourcesUpdated</p>
+      <dd><p>Send a list of sources for all preloading attempts in a document.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Preload.PrerenderMismatchedHeaders.html">PrerenderMismatchedHeaders</a></dt>
-      <dd><p>PrerenderMismatchedHeaders</p>
+      <dd><p>Information of headers to be displayed when the header mismatch occurred.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Preload.PrerenderStatusUpdatedEventArgs.html">PrerenderStatusUpdatedEventArgs</a></dt>
-      <dd><p>PrerenderStatusUpdated</p>
+      <dd><p>Fired when a prerender attempt is updated.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Preload.RuleSet.html">RuleSet</a></dt>
-      <dd><p>RuleSet</p>
+      <dd><p>Corresponds to SpeculationRuleSet</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -166,7 +174,7 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Preload.RuleSetUpdatedEventArgs.html">RuleSetUpdatedEventArgs</a></dt>
-      <dd><p>RuleSetUpdated</p>
+      <dd><p>Upsert. Currently, it is only emitted when a rule set added.</p>
 </dd>
     </dl>
     <h3 id="enums">
@@ -174,17 +182,19 @@ Enums
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Preload.PrefetchStatus.html">PrefetchStatus</a></dt>
-      <dd><p>PrefetchStatus</p>
+      <dd><p>TODO(<a href="https://crbug.com/1384419">https://crbug.com/1384419</a>): revisit the list of PrefetchStatus and
+filter out the ones that aren't necessary to the developers.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Preload.PreloadingStatus.html">PreloadingStatus</a></dt>
-      <dd><p>PreloadingStatus</p>
+      <dd><p>Preloading status values, see also PreloadingTriggeringOutcome. This
+status is shared by prefetchStatusUpdated and prerenderStatusUpdated.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Preload.PrerenderFinalStatus.html">PrerenderFinalStatus</a></dt>
-      <dd><p>PrerenderFinalStatus</p>
+      <dd><p>List of FinalStatus reasons for Prerender2.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -194,12 +204,15 @@ Enums
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Preload.SpeculationAction.html">SpeculationAction</a></dt>
-      <dd><p>SpeculationAction</p>
+      <dd><p>The type of preloading attempted. It corresponds to
+mojom::SpeculationAction (although PrefetchWithSubresources is omitted as it
+isn't being used by clients).</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Preload.SpeculationTargetHint.html">SpeculationTargetHint</a></dt>
-      <dd><p>SpeculationTargetHint</p>
+      <dd><p>Corresponds to mojom::SpeculationTargetHint.
+See <a href="https://github.com/WICG/nav-speculation/blob/main/triggers.md#window-name-targeting-hints">https://github.com/WICG/nav-speculation/blob/main/triggers.md#window-name-targeting-hints</a></p>
 </dd>
     </dl>
 

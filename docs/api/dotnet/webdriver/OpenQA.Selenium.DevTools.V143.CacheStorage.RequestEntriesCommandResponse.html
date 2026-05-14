@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class RequestEntriesCommandResponse ">
       
-      <meta name="description" content="Response for RequestEntries">
+      <meta name="description" content="Response for Requests data from cache.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class RequestEntriesCommandResponse  <a class="header-action link-secondary" tit
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Response for RequestEntries</p>
+  <div class="markdown summary"><p>Response for Requests data from cache.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -171,7 +171,7 @@ Class RequestEntriesCommandResponse  <a class="header-action link-secondary" tit
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CacheStorage/RequestEntriesCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the cacheDataEntries</p>
+  <div class="markdown level1 summary"><p>Array of object store data entries.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -201,10 +201,11 @@ public DataEntry[] CacheDataEntries { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_CacheStorage_RequestEntriesCommandResponse_ReturnCount" data-uid="OpenQA.Selenium.DevTools.V143.CacheStorage.RequestEntriesCommandResponse.ReturnCount">
   ReturnCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CacheStorage/RequestEntriesCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CacheStorage/RequestEntriesCommand.cs/#L68"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the returnCount</p>
+  <div class="markdown level1 summary"><p>Count of returned entries from this storage. If pathFilter is empty, it
+is the count of all entries from this storage.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

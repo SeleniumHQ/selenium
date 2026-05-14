@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AuthRequiredEventArgs ">
       
-      <meta name="description" content="AuthRequired">
+      <meta name="description" content="Issued when the domain is enabled with handleAuthRequests set to true. The request is paused until client responds with continueWithAuth.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Fetch_AuthRequiredEventArgs" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.AuthRequiredEventArgs" class="text-break">
-Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthRequiredEventArgs.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthRequiredEventArgs.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>AuthRequired</p>
+  <div class="markdown summary"><p>Issued when the domain is enabled with handleAuthRequests set to true.
+The request is paused until client responds with continueWithAuth.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +159,12 @@ Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_AuthRequiredEventArgs_AuthChallenge" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.AuthRequiredEventArgs.AuthChallenge">
   AuthChallenge
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthRequiredEventArgs.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthRequiredEventArgs.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the authChallenge</p>
+  <div class="markdown level1 summary"><p>Details of the Authorization Challenge encountered.
+If this is set, client should respond with continueRequest that
+contains AuthChallengeResponse.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,10 +194,10 @@ public AuthChallenge AuthChallenge { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_AuthRequiredEventArgs_FrameId" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.AuthRequiredEventArgs.FrameId">
   FrameId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthRequiredEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthRequiredEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the frameId</p>
+  <div class="markdown level1 summary"><p>The id of the frame that initiated the request.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -224,10 +227,10 @@ public string FrameId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_AuthRequiredEventArgs_Request" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.AuthRequiredEventArgs.Request">
   Request
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthRequiredEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthRequiredEventArgs.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the request</p>
+  <div class="markdown level1 summary"><p>The details of the request.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -257,10 +260,10 @@ public Request Request { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_AuthRequiredEventArgs_RequestId" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.AuthRequiredEventArgs.RequestId">
   RequestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthRequiredEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthRequiredEventArgs.cs/#L19"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the requestId</p>
+  <div class="markdown level1 summary"><p>Each request the page makes will have a unique id.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -290,10 +293,10 @@ public string RequestId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_AuthRequiredEventArgs_ResourceType" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.AuthRequiredEventArgs.ResourceType">
   ResourceType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthRequiredEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthRequiredEventArgs.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the resourceType</p>
+  <div class="markdown level1 summary"><p>How the requested resource will be used.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -323,7 +326,7 @@ public ResourceType ResourceType { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthRequiredEventArgs.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/AuthRequiredEventArgs.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

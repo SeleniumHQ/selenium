@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class NavigateCommandResponse ">
       
-      <meta name="description" content="Response for Navigate">
+      <meta name="description" content="Response for Navigates current page to the given URL.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class NavigateCommandResponse  <a class="header-action link-secondary" title="Vi
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Response for Navigate</p>
+  <div class="markdown summary"><p>Response for Navigates current page to the given URL.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -168,10 +168,10 @@ Class NavigateCommandResponse  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_NavigateCommandResponse_ErrorText" data-uid="OpenQA.Selenium.DevTools.V144.Page.NavigateCommandResponse.ErrorText">
   ErrorText
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/NavigateCommand.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/NavigateCommand.cs/#L82"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the errorText</p>
+  <div class="markdown level1 summary"><p>User friendly error message, present if and only if navigation has failed.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -205,7 +205,7 @@ public string? ErrorText { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/NavigateCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the frameId</p>
+  <div class="markdown level1 summary"><p>Frame id that has navigated (or failed to navigate)</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -235,10 +235,10 @@ public string FrameId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_NavigateCommandResponse_IsDownload" data-uid="OpenQA.Selenium.DevTools.V144.Page.NavigateCommandResponse.IsDownload">
   IsDownload
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/NavigateCommand.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/NavigateCommand.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the isDownload</p>
+  <div class="markdown level1 summary"><p>Whether the navigation resulted in a download.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -269,10 +269,11 @@ public bool? IsDownload { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_NavigateCommandResponse_LoaderId" data-uid="OpenQA.Selenium.DevTools.V144.Page.NavigateCommandResponse.LoaderId">
   LoaderId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/NavigateCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/NavigateCommand.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the loaderId</p>
+  <div class="markdown level1 summary"><p>Loader identifier. This is omitted in case of same-document navigation,
+as the previously committed loaderId would not change.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

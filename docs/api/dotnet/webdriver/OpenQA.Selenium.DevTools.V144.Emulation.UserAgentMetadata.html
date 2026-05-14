@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class UserAgentMetadata ">
       
-      <meta name="description" content="UserAgentMetadata">
+      <meta name="description" content="Used to specify User Agent Client Hints to emulate. See https://wicg.github.io/ua-client-hints Missing optional values will be filled in by the target with what it would normally use.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Emulation_UserAgentMetadata" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.UserAgentMetadata" class="text-break">
-Class UserAgentMetadata  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class UserAgentMetadata  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class UserAgentMetadata  <a class="header-action link-secondary" title="View sou
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>UserAgentMetadata</p>
+  <div class="markdown summary"><p>Used to specify User Agent Client Hints to emulate. See <a href="https://wicg.github.io/ua-client-hints">https://wicg.github.io/ua-client-hints</a>
+Missing optional values will be filled in by the target with what it would normally use.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,7 +155,7 @@ Class UserAgentMetadata  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_UserAgentMetadata_Architecture" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.UserAgentMetadata.Architecture">
   Architecture
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L53"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>architecture</p>
@@ -187,7 +188,7 @@ public string Architecture { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_UserAgentMetadata_Bitness" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.UserAgentMetadata.Bitness">
   Bitness
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>bitness</p>
@@ -221,10 +222,10 @@ public string? Bitness { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_UserAgentMetadata_Brands" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.UserAgentMetadata.Brands">
   Brands
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L18"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>brands</p>
+  <div class="markdown level1 summary"><p>Brands appearing in Sec-CH-UA.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -255,10 +256,11 @@ public UserAgentBrandVersion[]? Brands { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_UserAgentMetadata_FormFactors" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.UserAgentMetadata.FormFactors">
   FormFactors
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>formFactors</p>
+  <div class="markdown level1 summary"><p>Used to specify User Agent form-factor values.
+See <a href="https://wicg.github.io/ua-client-hints/#sec-ch-ua-form-factors">https://wicg.github.io/ua-client-hints/#sec-ch-ua-form-factors</a></p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -289,7 +291,7 @@ public string[]? FormFactors { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_UserAgentMetadata_FullVersion" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.UserAgentMetadata.FullVersion">
   FullVersion
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>fullVersion</p>
@@ -323,10 +325,10 @@ public string? FullVersion { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_UserAgentMetadata_FullVersionList" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.UserAgentMetadata.FullVersionList">
   FullVersionList
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>fullVersionList</p>
+  <div class="markdown level1 summary"><p>Brands appearing in Sec-CH-UA-Full-Version-List.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -357,7 +359,7 @@ public UserAgentBrandVersion[]? FullVersionList { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_UserAgentMetadata_Mobile" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.UserAgentMetadata.Mobile">
   Mobile
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>mobile</p>
@@ -390,7 +392,7 @@ public bool Mobile { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_UserAgentMetadata_Model" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.UserAgentMetadata.Model">
   Model
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L60"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>model</p>
@@ -423,7 +425,7 @@ public string Model { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_UserAgentMetadata_Platform" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.UserAgentMetadata.Platform">
   Platform
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>platform</p>
@@ -456,7 +458,7 @@ public string Platform { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_UserAgentMetadata_PlatformVersion" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.UserAgentMetadata.PlatformVersion">
   PlatformVersion
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>platformVersion</p>
@@ -489,7 +491,7 @@ public string PlatformVersion { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_UserAgentMetadata_Wow64" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.UserAgentMetadata.Wow64">
   Wow64
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L81"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>wow64</p>
@@ -523,7 +525,7 @@ public bool? Wow64 { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/UserAgentMetadata.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

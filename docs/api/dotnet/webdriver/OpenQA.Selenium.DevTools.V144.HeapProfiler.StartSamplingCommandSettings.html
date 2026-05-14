@@ -193,10 +193,16 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_HeapProfiler_StartSamplingCommandSettings_IncludeObjectsCollectedByMajorGC" data-uid="OpenQA.Selenium.DevTools.V144.HeapProfiler.StartSamplingCommandSettings.IncludeObjectsCollectedByMajorGC">
   IncludeObjectsCollectedByMajorGC
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeapProfiler/StartSamplingCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeapProfiler/StartSamplingCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the includeObjectsCollectedByMajorGC</p>
+  <div class="markdown level1 summary"><p>By default, the sampling heap profiler reports only objects which are
+still alive when the profile is returned via getSamplingProfile or
+stopSampling, which is useful for determining what functions contribute
+the most to steady-state memory usage. This flag instructs the sampling
+heap profiler to also include information about objects discarded by
+major GC, which will show which functions cause large temporary memory
+usage or long GC pauses.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +233,16 @@ public bool? IncludeObjectsCollectedByMajorGC { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_HeapProfiler_StartSamplingCommandSettings_IncludeObjectsCollectedByMinorGC" data-uid="OpenQA.Selenium.DevTools.V144.HeapProfiler.StartSamplingCommandSettings.IncludeObjectsCollectedByMinorGC">
   IncludeObjectsCollectedByMinorGC
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeapProfiler/StartSamplingCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeapProfiler/StartSamplingCommand.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the includeObjectsCollectedByMinorGC</p>
+  <div class="markdown level1 summary"><p>By default, the sampling heap profiler reports only objects which are
+still alive when the profile is returned via getSamplingProfile or
+stopSampling, which is useful for determining what functions contribute
+the most to steady-state memory usage. This flag instructs the sampling
+heap profiler to also include information about objects discarded by
+minor GC, which is useful when tuning a latency-sensitive application
+for minimal GC activity.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -261,10 +273,11 @@ public bool? IncludeObjectsCollectedByMinorGC { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_HeapProfiler_StartSamplingCommandSettings_SamplingInterval" data-uid="OpenQA.Selenium.DevTools.V144.HeapProfiler.StartSamplingCommandSettings.SamplingInterval">
   SamplingInterval
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeapProfiler/StartSamplingCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeapProfiler/StartSamplingCommand.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the samplingInterval</p>
+  <div class="markdown level1 summary"><p>Average sample interval in bytes. Poisson distribution is used for the intervals. The
+default value is 32768 bytes.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -295,10 +308,10 @@ public double? SamplingInterval { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_HeapProfiler_StartSamplingCommandSettings_StackDepth" data-uid="OpenQA.Selenium.DevTools.V144.HeapProfiler.StartSamplingCommandSettings.StackDepth">
   StackDepth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeapProfiler/StartSamplingCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeapProfiler/StartSamplingCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the stackDepth</p>
+  <div class="markdown level1 summary"><p>Maximum stack depth. The default value is 128.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

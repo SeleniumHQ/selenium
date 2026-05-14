@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class NodeTreeSnapshot ">
       
-      <meta name="description" content="NodeTreeSnapshot">
+      <meta name="description" content="Table containing nodes.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class NodeTreeSnapshot  <a class="header-action link-secondary" title="View sour
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>NodeTreeSnapshot</p>
+  <div class="markdown summary"><p>Table containing nodes.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -157,7 +157,7 @@ Class NodeTreeSnapshot  <a class="header-action link-secondary" title="View sour
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>attributes</p>
+  <div class="markdown level1 summary"><p>Attributes of an <code>Element</code> node. Flatten name, value pairs.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,7 +191,7 @@ public string[][]? Attributes { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>backendNodeId</p>
+  <div class="markdown level1 summary"><p><code>Node</code>'s id, corresponds to DOM.Node.backendNodeId.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -225,7 +225,7 @@ public long[]? BackendNodeId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>contentDocumentIndex</p>
+  <div class="markdown level1 summary"><p>The index of the document in the list of the snapshot documents.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -256,10 +256,10 @@ public RareIntegerData? ContentDocumentIndex { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOMSnapshot_NodeTreeSnapshot_CurrentSourceURL" data-uid="OpenQA.Selenium.DevTools.V144.DOMSnapshot.NodeTreeSnapshot.CurrentSourceURL">
   CurrentSourceURL
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L125"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>currentSourceURL</p>
+  <div class="markdown level1 summary"><p>The selected url for nodes with a srcset attribute.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -293,7 +293,7 @@ public RareStringData? CurrentSourceURL { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>inputChecked</p>
+  <div class="markdown level1 summary"><p>Only set for radio and checkbox input elements, indicates if the element has been checked</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -327,7 +327,7 @@ public RareBooleanData? InputChecked { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>inputValue</p>
+  <div class="markdown level1 summary"><p>Only set for input elements, contains the input's associated text value.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -358,10 +358,12 @@ public RareStringData? InputValue { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOMSnapshot_NodeTreeSnapshot_IsClickable" data-uid="OpenQA.Selenium.DevTools.V144.DOMSnapshot.NodeTreeSnapshot.IsClickable">
   IsClickable
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L118"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>isClickable</p>
+  <div class="markdown level1 summary"><p>Whether this DOM node responds to mouse clicks. This includes nodes that have had click
+event listeners attached via JavaScript as well as anchor tags that naturally navigate when
+clicked.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -395,7 +397,7 @@ public RareBooleanData? IsClickable { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>nodeName</p>
+  <div class="markdown level1 summary"><p><code>Node</code>'s nodeName.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -429,7 +431,7 @@ public long[]? NodeName { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>nodeType</p>
+  <div class="markdown level1 summary"><p><code>Node</code>'s nodeType.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -463,7 +465,7 @@ public long[]? NodeType { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>nodeValue</p>
+  <div class="markdown level1 summary"><p><code>Node</code>'s nodeValue.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -497,7 +499,7 @@ public long[]? NodeValue { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>optionSelected</p>
+  <div class="markdown level1 summary"><p>Only set for option elements, indicates if the element has been selected</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -528,10 +530,10 @@ public RareBooleanData? OptionSelected { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOMSnapshot_NodeTreeSnapshot_OriginURL" data-uid="OpenQA.Selenium.DevTools.V144.DOMSnapshot.NodeTreeSnapshot.OriginURL">
   OriginURL
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L132"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>originURL</p>
+  <div class="markdown level1 summary"><p>The url of the script (if any) that generates this node.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -565,7 +567,7 @@ public RareStringData? OriginURL { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>parentIndex</p>
+  <div class="markdown level1 summary"><p>Parent node index.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -596,10 +598,11 @@ public long[]? ParentIndex { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOMSnapshot_NodeTreeSnapshot_PseudoIdentifier" data-uid="OpenQA.Selenium.DevTools.V144.DOMSnapshot.NodeTreeSnapshot.PseudoIdentifier">
   PseudoIdentifier
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L109"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>pseudoIdentifier</p>
+  <div class="markdown level1 summary"><p>Pseudo element identifier for this node. Only present if there is a
+valid pseudoType.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -633,7 +636,7 @@ public RareStringData? PseudoIdentifier { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L101"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>pseudoType</p>
+  <div class="markdown level1 summary"><p>Type of a pseudo element node.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -667,7 +670,7 @@ public RareStringData? PseudoType { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>shadowRootType</p>
+  <div class="markdown level1 summary"><p>Type of the shadow root the <code>Node</code> is in. String values are equal to the <code>ShadowRootType</code> enum.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -701,7 +704,7 @@ public RareStringData? ShadowRootType { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/NodeTreeSnapshot.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>textValue</p>
+  <div class="markdown level1 summary"><p>Only set for textarea elements, contains the text value.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SharedStorageWorkletOperationExecutionFinishedEventArgs ">
       
-      <meta name="description" content="SharedStorageWorkletOperationExecutionFinished">
+      <meta name="description" content="A shared storage run or selectURL operation finished its execution. The following parameters are included in all events.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageWorkletOperationExecutionFinishedEventArgs" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageWorkletOperationExecutionFinishedEventArgs" class="text-break">
-Class SharedStorageWorkletOperationExecutionFinishedEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Class SharedStorageWorkletOperationExecutionFinishedEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class SharedStorageWorkletOperationExecutionFinishedEventArgs  <a class="header-
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SharedStorageWorkletOperationExecutionFinished</p>
+  <div class="markdown summary"><p>A shared storage run or selectURL operation finished its execution.
+The following parameters are included in all events.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +159,11 @@ Class SharedStorageWorkletOperationExecutionFinishedEventArgs  <a class="header-
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageWorkletOperationExecutionFinishedEventArgs_ExecutionTime" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageWorkletOperationExecutionFinishedEventArgs.ExecutionTime">
   ExecutionTime
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the executionTime</p>
+  <div class="markdown level1 summary"><p>Time, in microseconds, from start of shared storage JS API call until
+end of operation execution in the worklet.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,10 +193,10 @@ public long ExecutionTime { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageWorkletOperationExecutionFinishedEventArgs_FinishedTime" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageWorkletOperationExecutionFinishedEventArgs.FinishedTime">
   FinishedTime
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L19"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the finishedTime</p>
+  <div class="markdown level1 summary"><p>Time that the operation finished.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -224,10 +226,10 @@ public double FinishedTime { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageWorkletOperationExecutionFinishedEventArgs_MainFrameId" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageWorkletOperationExecutionFinishedEventArgs.MainFrameId">
   MainFrameId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the mainFrameId</p>
+  <div class="markdown level1 summary"><p>DevTools Frame Token for the primary frame tree's root.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -257,10 +259,10 @@ public string MainFrameId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageWorkletOperationExecutionFinishedEventArgs_Method" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageWorkletOperationExecutionFinishedEventArgs.Method">
   Method
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the method</p>
+  <div class="markdown level1 summary"><p>Enum value indicating the Shared Storage API method invoked.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -290,10 +292,10 @@ public SharedStorageAccessMethod Method { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageWorkletOperationExecutionFinishedEventArgs_OperationId" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageWorkletOperationExecutionFinishedEventArgs.OperationId">
   OperationId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the operationId</p>
+  <div class="markdown level1 summary"><p>ID of the operation call.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -323,10 +325,10 @@ public string OperationId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageWorkletOperationExecutionFinishedEventArgs_OwnerOrigin" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageWorkletOperationExecutionFinishedEventArgs.OwnerOrigin">
   OwnerOrigin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the ownerOrigin</p>
+  <div class="markdown level1 summary"><p>Serialization of the origin owning the Shared Storage data.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -356,10 +358,11 @@ public string OwnerOrigin { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageWorkletOperationExecutionFinishedEventArgs_WorkletTargetId" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageWorkletOperationExecutionFinishedEventArgs.WorkletTargetId">
   WorkletTargetId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the workletTargetId</p>
+  <div class="markdown level1 summary"><p>Hex representation of the DevTools token used as the TargetID for the
+associated shared storage worklet.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -389,7 +392,7 @@ public string WorkletTargetId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageWorkletOperationExecutionFinishedEventArgs.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

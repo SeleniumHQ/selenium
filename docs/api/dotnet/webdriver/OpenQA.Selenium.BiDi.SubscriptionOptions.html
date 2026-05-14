@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_SubscriptionOptions" data-uid="OpenQA.Selenium.BiDi.SubscriptionOptions" class="text-break">
-Class SubscriptionOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L52"><i class="bi bi-code-slash"></i></a>
+Class SubscriptionOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class SubscriptionOptions  <a class="header-action link-secondary" title="View s
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class SubscriptionOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record SubscriptionOptions : IEquatable&lt;SubscriptionOptions&gt;</code></pre>
   </div>
 
 
@@ -115,6 +115,12 @@ Class SubscriptionOptions  <a class="header-action link-secondary" title="View s
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -138,9 +144,6 @@ Class SubscriptionOptions  <a class="header-action link-secondary" title="View s
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
     </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
-    </div>
   </dd></dl>
 
 
@@ -156,14 +159,14 @@ Class SubscriptionOptions  <a class="header-action link-secondary" title="View s
 
   <h3 id="OpenQA_Selenium_BiDi_SubscriptionOptions_Contexts" data-uid="OpenQA.Selenium.BiDi.SubscriptionOptions.Contexts">
   Contexts
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L50"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;BrowsingContext&gt;? Contexts { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;BrowsingContext&gt;? Contexts { get; init; }</code></pre>
   </div>
 
 
@@ -187,14 +190,14 @@ Class SubscriptionOptions  <a class="header-action link-secondary" title="View s
 
   <h3 id="OpenQA_Selenium_BiDi_SubscriptionOptions_Timeout" data-uid="OpenQA.Selenium.BiDi.SubscriptionOptions.Timeout">
   Timeout
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TimeSpan? Timeout { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public TimeSpan? Timeout { get; init; }</code></pre>
   </div>
 
 
@@ -218,14 +221,14 @@ Class SubscriptionOptions  <a class="header-action link-secondary" title="View s
 
   <h3 id="OpenQA_Selenium_BiDi_SubscriptionOptions_UserContexts" data-uid="OpenQA.Selenium.BiDi.SubscriptionOptions.UserContexts">
   UserContexts
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;UserContext&gt;? UserContexts { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;UserContext&gt;? UserContexts { get; init; }</code></pre>
   </div>
 
 
@@ -249,7 +252,7 @@ Class SubscriptionOptions  <a class="header-action link-secondary" title="View s
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L52" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L48" class="edit-link">Edit this page</a>
         </div>
 
 

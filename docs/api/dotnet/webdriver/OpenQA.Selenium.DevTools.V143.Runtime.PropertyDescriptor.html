@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class PropertyDescriptor ">
       
-      <meta name="description" content="PropertyDescriptor">
+      <meta name="description" content="Object property descriptor.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class PropertyDescriptor  <a class="header-action link-secondary" title="View so
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>PropertyDescriptor</p>
+  <div class="markdown summary"><p>Object property descriptor.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +154,11 @@ Class PropertyDescriptor  <a class="header-action link-secondary" title="View so
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_PropertyDescriptor_Configurable" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.PropertyDescriptor.Configurable">
   Configurable
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>configurable</p>
+  <div class="markdown level1 summary"><p>True if the type of this property descriptor may be changed and if the property may be
+deleted from the corresponding object.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -187,10 +188,11 @@ public bool Configurable { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_PropertyDescriptor_Enumerable" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.PropertyDescriptor.Enumerable">
   Enumerable
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>enumerable</p>
+  <div class="markdown level1 summary"><p>True if this property shows up during enumeration of the properties on the corresponding
+object.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -220,10 +222,11 @@ public bool Enumerable { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_PropertyDescriptor_Get" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.PropertyDescriptor.Get">
   Get
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>get</p>
+  <div class="markdown level1 summary"><p>A function which serves as a getter for the property, or <code>undefined</code> if there is no getter
+(accessor descriptors only).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -254,10 +257,10 @@ public RemoteObject? Get { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_PropertyDescriptor_IsOwn" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.PropertyDescriptor.IsOwn">
   IsOwn
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>isOwn</p>
+  <div class="markdown level1 summary"><p>True if the property is owned for the object.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -291,7 +294,7 @@ public bool? IsOwn { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>name</p>
+  <div class="markdown level1 summary"><p>Property name or symbol description.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -321,10 +324,11 @@ public string Name { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_PropertyDescriptor_Set" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.PropertyDescriptor.Set">
   Set
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>set</p>
+  <div class="markdown level1 summary"><p>A function which serves as a setter for the property, or <code>undefined</code> if there is no setter
+(accessor descriptors only).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -355,10 +359,10 @@ public RemoteObject? Set { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_PropertyDescriptor_Symbol" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.PropertyDescriptor.Symbol">
   Symbol
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>symbol</p>
+  <div class="markdown level1 summary"><p>Property symbol object, if the property is of the <code>symbol</code> type.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -392,7 +396,7 @@ public RemoteObject? Symbol { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>value</p>
+  <div class="markdown level1 summary"><p>The value associated with the property.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -423,10 +427,10 @@ public RemoteObject? Value { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_PropertyDescriptor_WasThrown" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.PropertyDescriptor.WasThrown">
   WasThrown
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>wasThrown</p>
+  <div class="markdown level1 summary"><p>True if the result was thrown during the evaluation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -460,7 +464,7 @@ public bool? WasThrown { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/PropertyDescriptor.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>writable</p>
+  <div class="markdown level1 summary"><p>True if the value associated with the property may be changed (data descriptors only).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

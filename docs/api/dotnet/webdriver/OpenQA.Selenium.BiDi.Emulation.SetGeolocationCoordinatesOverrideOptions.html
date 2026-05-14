@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Emulation_SetGeolocationCoordinatesOverrideOptions" data-uid="OpenQA.Selenium.BiDi.Emulation.SetGeolocationCoordinatesOverrideOptions" class="text-break">
-Class SetGeolocationCoordinatesOverrideOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetGeolocationOverrideCommand.cs/#L51"><i class="bi bi-code-slash"></i></a>
+Class SetGeolocationCoordinatesOverrideOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetGeolocationOverrideCommand.cs/#L50"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class SetGeolocationCoordinatesOverrideOptions  <a class="header-action link-sec
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class SetGeolocationCoordinatesOverrideOptions : SetGeolocationOverrideOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record SetGeolocationCoordinatesOverrideOptions : SetGeolocationOverrideOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;SetGeolocationOverrideOptions&gt;, IEquatable&lt;SetGeolocationCoordinatesOverrideOptions&gt;</code></pre>
   </div>
 
 
@@ -117,6 +117,14 @@ Class SetGeolocationCoordinatesOverrideOptions  <a class="header-action link-sec
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetGeolocationOverrideOptions.html">SetGeolocationOverrideOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetGeolocationCoordinatesOverrideOptions.html">SetGeolocationCoordinatesOverrideOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -164,14 +172,14 @@ Class SetGeolocationCoordinatesOverrideOptions  <a class="header-action link-sec
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_SetGeolocationCoordinatesOverrideOptions_Accuracy" data-uid="OpenQA.Selenium.BiDi.Emulation.SetGeolocationCoordinatesOverrideOptions.Accuracy">
   Accuracy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetGeolocationOverrideCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetGeolocationOverrideCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public double? Accuracy { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public double? Accuracy { get; init; }</code></pre>
   </div>
 
 
@@ -195,14 +203,14 @@ Class SetGeolocationCoordinatesOverrideOptions  <a class="header-action link-sec
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_SetGeolocationCoordinatesOverrideOptions_Altitude" data-uid="OpenQA.Selenium.BiDi.Emulation.SetGeolocationCoordinatesOverrideOptions.Altitude">
   Altitude
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetGeolocationOverrideCommand.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetGeolocationOverrideCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public double? Altitude { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public double? Altitude { get; init; }</code></pre>
   </div>
 
 
@@ -226,14 +234,14 @@ Class SetGeolocationCoordinatesOverrideOptions  <a class="header-action link-sec
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_SetGeolocationCoordinatesOverrideOptions_AltitudeAccuracy" data-uid="OpenQA.Selenium.BiDi.Emulation.SetGeolocationCoordinatesOverrideOptions.AltitudeAccuracy">
   AltitudeAccuracy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetGeolocationOverrideCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetGeolocationOverrideCommand.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public double? AltitudeAccuracy { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public double? AltitudeAccuracy { get; init; }</code></pre>
   </div>
 
 
@@ -257,14 +265,14 @@ Class SetGeolocationCoordinatesOverrideOptions  <a class="header-action link-sec
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_SetGeolocationCoordinatesOverrideOptions_Heading" data-uid="OpenQA.Selenium.BiDi.Emulation.SetGeolocationCoordinatesOverrideOptions.Heading">
   Heading
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetGeolocationOverrideCommand.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetGeolocationOverrideCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public double? Heading { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public double? Heading { get; init; }</code></pre>
   </div>
 
 
@@ -288,14 +296,14 @@ Class SetGeolocationCoordinatesOverrideOptions  <a class="header-action link-sec
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_SetGeolocationCoordinatesOverrideOptions_Speed" data-uid="OpenQA.Selenium.BiDi.Emulation.SetGeolocationCoordinatesOverrideOptions.Speed">
   Speed
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetGeolocationOverrideCommand.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetGeolocationOverrideCommand.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public double? Speed { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public double? Speed { get; init; }</code></pre>
   </div>
 
 
@@ -319,7 +327,7 @@ Class SetGeolocationCoordinatesOverrideOptions  <a class="header-action link-sec
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetGeolocationOverrideCommand.cs/#L51" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetGeolocationOverrideCommand.cs/#L50" class="edit-link">Edit this page</a>
         </div>
 
 

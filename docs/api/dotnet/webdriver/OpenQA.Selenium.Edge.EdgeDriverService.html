@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_Edge_EdgeDriverService" data-uid="OpenQA.Selenium.Edge.EdgeDriverService" class="text-break">
-Class EdgeDriverService  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L30"><i class="bi bi-code-slash"></i></a>
+Class EdgeDriverService  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -102,7 +102,7 @@ Class EdgeDriverService  <a class="header-action link-secondary" title="View sou
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class EdgeDriverService : ChromiumDriverService, ICommandServer, IDisposable</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class EdgeDriverService : ChromiumDriverService, IDisposable, IAsyncDisposable</code></pre>
   </div>
 
 
@@ -121,8 +121,8 @@ Class EdgeDriverService  <a class="header-action link-secondary" title="View sou
   <dl class="typelist implements">
     <dt>Implements</dt>
     <dd>
-      <div><a class="xref" href="OpenQA.Selenium.Remote.ICommandServer.html">ICommandServer</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iasyncdisposable">IAsyncDisposable</a></div>
     </dd>
   </dl>
 
@@ -200,7 +200,13 @@ Class EdgeDriverService  <a class="header-action link-secondary" title="View sou
       <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_Dispose">DriverService.Dispose()</a>
     </div>
     <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_DisposeAsync">DriverService.DisposeAsync()</a>
+    </div>
+    <div>
       <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_Start">DriverService.Start()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_StartAsync_System_Threading_CancellationToken_">DriverService.StartAsync(CancellationToken)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
@@ -235,7 +241,7 @@ Class EdgeDriverService  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriverService_CreateDefaultService" data-uid="OpenQA.Selenium.Edge.EdgeDriverService.CreateDefaultService">
   CreateDefaultService()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L53"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a default instance of the EdgeDriverService.</p>
@@ -268,7 +274,7 @@ Class EdgeDriverService  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriverService_CreateDefaultService_System_String_" data-uid="OpenQA.Selenium.Edge.EdgeDriverService.CreateDefaultService(System.String)">
   CreateDefaultService(string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable.</p>
@@ -307,7 +313,7 @@ Class EdgeDriverService  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriverService_CreateDefaultService_System_String_System_String_" data-uid="OpenQA.Selenium.Edge.EdgeDriverService.CreateDefaultService(System.String,System.String)">
   CreateDefaultService(string?, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L89"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable with the given name.</p>
@@ -349,7 +355,7 @@ Class EdgeDriverService  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriverService_GetDefaultDriverOptions" data-uid="OpenQA.Selenium.Edge.EdgeDriverService.GetDefaultDriverOptions">
   GetDefaultDriverOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The browser options instance that corresponds to the driver service</p>
@@ -381,7 +387,7 @@ Class EdgeDriverService  <a class="header-action link-secondary" title="View sou
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L30" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L28" class="edit-link">Edit this page</a>
         </div>
 
 

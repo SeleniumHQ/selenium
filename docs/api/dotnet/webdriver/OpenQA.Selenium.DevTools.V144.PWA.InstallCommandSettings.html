@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class InstallCommandSettings ">
       
-      <meta name="description" content="Install">
+      <meta name="description" content="Installs the given manifest identity, optionally using the given installUrlOrBundleUrl IWA-specific install description: manifestId corresponds to isolated-app:// + web_package::SignedWebBundleId File installation mode: The installUrlOrBundleUrl can be either file:// or http(s):// pointing to a signed web bundle (.swbn). In this case SignedWebBundleId must correspond to The .swbn file&#39;s signing key. Dev proxy installation mode: installUrlOrBundleUrl must be http(s):// that serves dev mode IWA. web_package::SignedWebBundleId must be of type dev proxy. The advantage of dev proxy mode is that all changes to IWA automatically will be reflected in the running app without reinstallation. To generate bundle id for proxy mode:  Generate 32 random bytes. Add a specific suffix at the end following the documentation https://github.com/WICG/isolated-web-apps/blob/main/Scheme.md#suffix Encode the entire sequence using Base32 without padding.  If Chrome is not in IWA dev mode, the installation will fail, regardless of the state of the allowlist.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_PWA_InstallCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.PWA.InstallCommandSettings" class="text-break">
-Class InstallCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/InstallCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class InstallCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/InstallCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,28 @@ Class InstallCommandSettings  <a class="header-action link-secondary" title="Vie
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Install</p>
+  <div class="markdown summary"><p>Installs the given manifest identity, optionally using the given installUrlOrBundleUrl</p>
+<p>IWA-specific install description:
+manifestId corresponds to isolated-app:// + web_package::SignedWebBundleId</p>
+<p>File installation mode:
+The installUrlOrBundleUrl can be either file:// or http(s):// pointing
+to a signed web bundle (.swbn). In this case SignedWebBundleId must correspond to
+The .swbn file's signing key.</p>
+<p>Dev proxy installation mode:
+installUrlOrBundleUrl must be http(s):// that serves dev mode IWA.
+web_package::SignedWebBundleId must be of type dev proxy.</p>
+<p>The advantage of dev proxy mode is that all changes to IWA
+automatically will be reflected in the running app without
+reinstallation.</p>
+<p>To generate bundle id for proxy mode:</p>
+<ol>
+<li>Generate 32 random bytes.</li>
+<li>Add a specific suffix at the end following the documentation
+<a href="https://github.com/WICG/isolated-web-apps/blob/main/Scheme.md#suffix">https://github.com/WICG/isolated-web-apps/blob/main/Scheme.md#suffix</a></li>
+<li>Encode the entire sequence using Base32 without padding.</li>
+</ol>
+<p>If Chrome is not in IWA dev
+mode, the installation will fail, regardless of the state of the allowlist.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +181,7 @@ Class InstallCommandSettings  <a class="header-action link-secondary" title="Vie
 
   <h3 id="OpenQA_Selenium_DevTools_V144_PWA_InstallCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.PWA.InstallCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/InstallCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/InstallCommand.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +214,11 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_PWA_InstallCommandSettings_InstallUrlOrBundleUrl" data-uid="OpenQA.Selenium.DevTools.V144.PWA.InstallCommandSettings.InstallUrlOrBundleUrl">
   InstallUrlOrBundleUrl
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/InstallCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/InstallCommand.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the installUrlOrBundleUrl</p>
+  <div class="markdown level1 summary"><p>The location of the app or bundle overriding the one derived from the
+manifestId.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,7 +249,7 @@ public string? InstallUrlOrBundleUrl { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_PWA_InstallCommandSettings_ManifestId" data-uid="OpenQA.Selenium.DevTools.V144.PWA.InstallCommandSettings.ManifestId">
   ManifestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/InstallCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/InstallCommand.cs/#L50"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the manifestId</p>
@@ -260,7 +282,7 @@ public string ManifestId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/InstallCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/InstallCommand.cs/#L37" class="edit-link">Edit this page</a>
         </div>
 
 

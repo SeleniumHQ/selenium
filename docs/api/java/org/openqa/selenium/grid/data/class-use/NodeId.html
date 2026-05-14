@@ -70,8 +70,10 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.node">org.openqa.selenium.grid.node</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.node.remote">org.openqa.selenium.grid.node.remote</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.node.local">org.openqa.selenium.grid.node.local</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.node.remote">org.openqa.selenium.grid.node.remote</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -87,8 +89,17 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color"><span class="type-name-label">NodeStatus.</span><code><a href="../NodeStatus.html#getNodeId()" class="member-name-link">getNodeId</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">SlotId.</span><code><a href="../SlotId.html#getOwningNodeId()" class="member-name-link">getOwningNodeId</a>()</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SessionClosedData.</span><code><a href="../SessionClosedData.html#getNodeId()" class="member-name-link">getNodeId</a>()</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SessionCreatedData.</span><code><a href="../SessionCreatedData.html#getNodeId()" class="member-name-link">getNodeId</a>()</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SessionEventData.</span><code><a href="../SessionEventData.html#getNodeId()" class="member-name-link">getNodeId</a>()</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SlotId.</span><code><a href="../SlotId.html#getOwningNodeId()" class="member-name-link">getOwningNodeId</a>()</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.openqa.selenium.grid.data</a> that return types with arguments of type <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></span></div>
 <div class="summary-table three-column-summary">
@@ -113,6 +124,12 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>int</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">NodeId.</span><code><a href="../NodeId.html#compareTo(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">compareTo</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;that)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../SessionEventData.html" title="class in org.openqa.selenium.grid.data">SessionEventData</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SessionEventData.</span><code><a href="../SessionEventData.html#withNodeContext(org.openqa.selenium.grid.data.NodeId,java.net.URI)" class="member-name-link">withNodeContext</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Creates a copy of this event with node context added (used when processing on the node).</div>
+</div>
 </div>
 <div class="caption"><span>Method parameters in <a href="../package-summary.html">org.openqa.selenium.grid.data</a> with type arguments of type <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></span></div>
 <div class="summary-table three-column-summary">
@@ -155,9 +172,37 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;osInfo)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../SlotId.html#%3Cinit%3E(org.openqa.selenium.grid.data.NodeId,java.util.UUID)" class="member-name-link">SlotId</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;host,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;uuid)</code></div>
+<div class="col-second even-row-color"><code><a href="../SessionClosedData.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,org.openqa.selenium.grid.data.SessionClosedReason,org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.Capabilities,java.time.Instant,java.time.Instant)" class="member-name-link">SessionClosedData</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
+ <a href="../SessionClosedReason.html" title="enum class in org.openqa.selenium.grid.data">SessionClosedReason</a>&nbsp;reason,
+ <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri,
+ <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;startTime,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;endTime)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Full constructor with all session context for sidecar services.</div>
+</div>
+<div class="col-first odd-row-color"><code>&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../SessionCreatedData.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,org.openqa.selenium.grid.data.NodeId,java.net.URI,java.net.URI,org.openqa.selenium.Capabilities,org.openqa.selenium.Capabilities,java.time.Instant)" class="member-name-link">SessionCreatedData</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
+ <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;sessionUri,
+ <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;startTime)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../SessionEventData.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,java.lang.String,org.openqa.selenium.grid.data.NodeId,java.net.URI,java.time.Instant,java.util.Map)" class="member-name-link">SessionEventData</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;eventType,
+ <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;timestamp,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;payload)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../SlotId.html#%3Cinit%3E(org.openqa.selenium.grid.data.NodeId,java.util.UUID)" class="member-name-link">SlotId</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;host,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;uuid)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -342,6 +387,24 @@ loadScripts(document, 'script');</script>
  <a href="../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;sessionTimeout)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.grid.node.local">
+<h2>Uses of <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a> in <a href="../../node/local/package-summary.html">org.openqa.selenium.grid.node.local</a></h2>
+<div class="caption"><span>Methods in <a href="../../node/local/package-summary.html">org.openqa.selenium.grid.node.local</a> with parameters of type <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SessionSlot.</span><code><a href="../../node/local/SessionSlot.html#stop(org.openqa.selenium.grid.data.SessionClosedReason,org.openqa.selenium.grid.data.NodeId,java.net.URI)" class="member-name-link">stop</a><wbr>(<a href="../SessionClosedReason.html" title="enum class in org.openqa.selenium.grid.data">SessionClosedReason</a>&nbsp;reason,
+ <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Stops the session with full context for sidecar services.</div>
+</div>
 </div>
 </section>
 </li>

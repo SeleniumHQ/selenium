@@ -236,10 +236,16 @@ Class PWAAdapter  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_DevTools_V143_PWA_PWAAdapter_ChangeAppUserSettings_OpenQA_Selenium_DevTools_V143_PWA_ChangeAppUserSettingsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.PWA.PWAAdapter.ChangeAppUserSettings(OpenQA.Selenium.DevTools.V143.PWA.ChangeAppUserSettingsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   ChangeAppUserSettings(ChangeAppUserSettingsCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/PWAAdapter.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/PWAAdapter.cs/#L139"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>changeAppUserSettings</p>
+  <div class="markdown level1 summary"><p>Changes user settings of the web app identified by its manifestId. If the
+app was not installed, this command returns an error. Unset parameters will
+be ignored; unrecognized values will cause an error.</p>
+<p>Unlike the ones defined in the manifest files of the web apps, these
+settings are provided by the browser and controlled by the users, they
+impact the way the browser handling the web apps.</p>
+<p>See the comment of each parameter.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -282,7 +288,7 @@ Class PWAAdapter  <a class="header-action link-secondary" title="View source" hr
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/PWAAdapter.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getOsAppState</p>
+  <div class="markdown level1 summary"><p>Returns the following OS state for the given manifest id.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -322,10 +328,31 @@ Class PWAAdapter  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_DevTools_V143_PWA_PWAAdapter_Install_OpenQA_Selenium_DevTools_V143_PWA_InstallCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.PWA.PWAAdapter.Install(OpenQA.Selenium.DevTools.V143.PWA.InstallCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Install(InstallCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/PWAAdapter.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/PWAAdapter.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>install</p>
+  <div class="markdown level1 summary"><p>Installs the given manifest identity, optionally using the given installUrlOrBundleUrl</p>
+<p>IWA-specific install description:
+manifestId corresponds to isolated-app:// + web_package::SignedWebBundleId</p>
+<p>File installation mode:
+The installUrlOrBundleUrl can be either file:// or http(s):// pointing
+to a signed web bundle (.swbn). In this case SignedWebBundleId must correspond to
+The .swbn file's signing key.</p>
+<p>Dev proxy installation mode:
+installUrlOrBundleUrl must be http(s):// that serves dev mode IWA.
+web_package::SignedWebBundleId must be of type dev proxy.</p>
+<p>The advantage of dev proxy mode is that all changes to IWA
+automatically will be reflected in the running app without
+reinstallation.</p>
+<p>To generate bundle id for proxy mode:</p>
+<ol>
+<li>Generate 32 random bytes.</li>
+<li>Add a specific suffix at the end following the documentation
+<a href="https://github.com/WICG/isolated-web-apps/blob/main/Scheme.md#suffix">https://github.com/WICG/isolated-web-apps/blob/main/Scheme.md#suffix</a></li>
+<li>Encode the entire sequence using Base32 without padding.</li>
+</ol>
+<p>If Chrome is not in IWA dev
+mode, the installation will fail, regardless of the state of the allowlist.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -365,10 +392,12 @@ Class PWAAdapter  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_DevTools_V143_PWA_PWAAdapter_Launch_OpenQA_Selenium_DevTools_V143_PWA_LaunchCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.PWA.PWAAdapter.Launch(OpenQA.Selenium.DevTools.V143.PWA.LaunchCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Launch(LaunchCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/PWAAdapter.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/PWAAdapter.cs/#L93"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>launch</p>
+  <div class="markdown level1 summary"><p>Launches the installed web app, or an url in the same web app instead of the
+default start url if it is provided. Returns a page Target.TargetID which
+can be used to attach to via Target.attachToTarget or similar APIs.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -408,10 +437,20 @@ Class PWAAdapter  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_DevTools_V143_PWA_PWAAdapter_LaunchFilesInApp_OpenQA_Selenium_DevTools_V143_PWA_LaunchFilesInAppCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.PWA.PWAAdapter.LaunchFilesInApp(OpenQA.Selenium.DevTools.V143.PWA.LaunchFilesInAppCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   LaunchFilesInApp(LaunchFilesInAppCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/PWAAdapter.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/PWAAdapter.cs/#L113"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>launchFilesInApp</p>
+  <div class="markdown level1 summary"><p>Opens one or more local files from an installed web app identified by its
+manifestId. The web app needs to have file handlers registered to process
+the files. The API returns one or more page Target.TargetIDs which can be
+used to attach to via Target.attachToTarget or similar APIs.
+If some files in the parameters cannot be handled by the web app, they will
+be ignored. If none of the files can be handled, this API returns an error.
+If no files are provided as the parameter, this API also returns an error.</p>
+<p>According to the definition of the file handlers in the manifest file, one
+Target.TargetID may represent a page handling one or more files. The order
+of the returned Target.TargetIDs is not guaranteed.</p>
+<p>TODO(crbug.com/339454034): Check the existences of the input files.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -451,10 +490,12 @@ Class PWAAdapter  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_DevTools_V143_PWA_PWAAdapter_OpenCurrentPageInApp_OpenQA_Selenium_DevTools_V143_PWA_OpenCurrentPageInAppCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.PWA.PWAAdapter.OpenCurrentPageInApp(OpenQA.Selenium.DevTools.V143.PWA.OpenCurrentPageInAppCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   OpenCurrentPageInApp(OpenCurrentPageInAppCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/PWAAdapter.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/PWAAdapter.cs/#L123"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>openCurrentPageInApp</p>
+  <div class="markdown level1 summary"><p>Opens the current page in its web app identified by the manifest id, needs
+to be called on a page target. This function returns immediately without
+waiting for the app to finish loading.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -494,10 +535,10 @@ Class PWAAdapter  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_DevTools_V143_PWA_PWAAdapter_Uninstall_OpenQA_Selenium_DevTools_V143_PWA_UninstallCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.PWA.PWAAdapter.Uninstall(OpenQA.Selenium.DevTools.V143.PWA.UninstallCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Uninstall(UninstallCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/PWAAdapter.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/PWAAdapter.cs/#L83"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>uninstall</p>
+  <div class="markdown level1 summary"><p>Uninstalls the given manifest_id and closes any opened app windows.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

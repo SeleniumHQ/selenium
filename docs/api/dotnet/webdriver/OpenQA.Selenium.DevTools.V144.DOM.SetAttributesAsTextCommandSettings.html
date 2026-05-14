@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetAttributesAsTextCommandSettings ">
       
-      <meta name="description" content="SetAttributesAsText">
+      <meta name="description" content="Sets attributes on element with given id. This method is useful when user edits some existing attribute value and types in several attribute name/value pairs.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_DOM_SetAttributesAsTextCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.DOM.SetAttributesAsTextCommandSettings" class="text-break">
-Class SetAttributesAsTextCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/SetAttributesAsTextCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class SetAttributesAsTextCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/SetAttributesAsTextCommand.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class SetAttributesAsTextCommandSettings  <a class="header-action link-secondary
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SetAttributesAsText</p>
+  <div class="markdown summary"><p>Sets attributes on element with given id. This method is useful when user edits some existing
+attribute value and types in several attribute name/value pairs.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +161,7 @@ Class SetAttributesAsTextCommandSettings  <a class="header-action link-secondary
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_SetAttributesAsTextCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.DOM.SetAttributesAsTextCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/SetAttributesAsTextCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/SetAttributesAsTextCommand.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +194,11 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_SetAttributesAsTextCommandSettings_Name" data-uid="OpenQA.Selenium.DevTools.V144.DOM.SetAttributesAsTextCommandSettings.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/SetAttributesAsTextCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/SetAttributesAsTextCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the name</p>
+  <div class="markdown level1 summary"><p>Attribute name to replace with new attributes derived from text in case text parsed
+successfully.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +229,10 @@ public string? Name { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_SetAttributesAsTextCommandSettings_NodeId" data-uid="OpenQA.Selenium.DevTools.V144.DOM.SetAttributesAsTextCommandSettings.NodeId">
   NodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/SetAttributesAsTextCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/SetAttributesAsTextCommand.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the nodeId</p>
+  <div class="markdown level1 summary"><p>Id of the element to set attributes for.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -260,10 +262,10 @@ public long NodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_SetAttributesAsTextCommandSettings_Text" data-uid="OpenQA.Selenium.DevTools.V144.DOM.SetAttributesAsTextCommandSettings.Text">
   Text
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/SetAttributesAsTextCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/SetAttributesAsTextCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the text</p>
+  <div class="markdown level1 summary"><p>Text with a number of attributes. Will parse this text using HTML parser.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -293,7 +295,7 @@ public string Text { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/SetAttributesAsTextCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/SetAttributesAsTextCommand.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

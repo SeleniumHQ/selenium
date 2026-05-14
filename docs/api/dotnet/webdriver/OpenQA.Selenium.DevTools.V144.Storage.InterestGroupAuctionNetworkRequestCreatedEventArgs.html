@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class InterestGroupAuctionNetworkRequestCreatedEventArgs ">
       
-      <meta name="description" content="InterestGroupAuctionNetworkRequestCreated">
+      <meta name="description" content="Specifies which auctions a particular network fetch may be related to, and in what role. Note that it is not ordered with respect to Network.requestWillBeSent (but will happen before loadingFinished loadingFailed).">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Storage_InterestGroupAuctionNetworkRequestCreatedEventArgs" data-uid="OpenQA.Selenium.DevTools.V144.Storage.InterestGroupAuctionNetworkRequestCreatedEventArgs" class="text-break">
-Class InterestGroupAuctionNetworkRequestCreatedEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Storage/InterestGroupAuctionNetworkRequestCreatedEventArgs.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Class InterestGroupAuctionNetworkRequestCreatedEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Storage/InterestGroupAuctionNetworkRequestCreatedEventArgs.cs/#L16"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,10 @@ Class InterestGroupAuctionNetworkRequestCreatedEventArgs  <a class="header-actio
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>InterestGroupAuctionNetworkRequestCreated</p>
+  <div class="markdown summary"><p>Specifies which auctions a particular network fetch may be related to, and
+in what role. Note that it is not ordered with respect to
+Network.requestWillBeSent (but will happen before loadingFinished
+loadingFailed).</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +161,12 @@ Class InterestGroupAuctionNetworkRequestCreatedEventArgs  <a class="header-actio
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Storage_InterestGroupAuctionNetworkRequestCreatedEventArgs_Auctions" data-uid="OpenQA.Selenium.DevTools.V144.Storage.InterestGroupAuctionNetworkRequestCreatedEventArgs.Auctions">
   Auctions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Storage/InterestGroupAuctionNetworkRequestCreatedEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Storage/InterestGroupAuctionNetworkRequestCreatedEventArgs.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the auctions</p>
+  <div class="markdown level1 summary"><p>This is the set of the auctions using the worklet that issued this
+request.  In the case of trusted signals, it's possible that only some of
+them actually care about the keys being queried.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,7 +196,7 @@ public string[] Auctions { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Storage_InterestGroupAuctionNetworkRequestCreatedEventArgs_RequestId" data-uid="OpenQA.Selenium.DevTools.V144.Storage.InterestGroupAuctionNetworkRequestCreatedEventArgs.RequestId">
   RequestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Storage/InterestGroupAuctionNetworkRequestCreatedEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Storage/InterestGroupAuctionNetworkRequestCreatedEventArgs.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the requestId</p>
@@ -224,7 +229,7 @@ public string RequestId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Storage_InterestGroupAuctionNetworkRequestCreatedEventArgs_Type" data-uid="OpenQA.Selenium.DevTools.V144.Storage.InterestGroupAuctionNetworkRequestCreatedEventArgs.Type">
   Type
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Storage/InterestGroupAuctionNetworkRequestCreatedEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Storage/InterestGroupAuctionNetworkRequestCreatedEventArgs.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the type</p>
@@ -257,7 +262,7 @@ public InterestGroupAuctionFetchType Type { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Storage/InterestGroupAuctionNetworkRequestCreatedEventArgs.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Storage/InterestGroupAuctionNetworkRequestCreatedEventArgs.cs/#L16" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -96,62 +96,75 @@ Classes
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.AddBindingCommandResponse.html">AddBindingCommandResponse</a></dt>
-      <dd><p>Response for AddBinding</p>
+      <dd><p>Response for If executionContextId is empty, adds binding with the given name on the
+global objects of all inspected contexts, including those created later,
+bindings survive reloads.
+Binding function takes exactly one argument, this argument should be string,
+in case of any other input, function throws an exception.
+Each binding function call produces Runtime.bindingCalled notification.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.AddBindingCommandSettings.html">AddBindingCommandSettings</a></dt>
-      <dd><p>AddBinding</p>
+      <dd><p>If executionContextId is empty, adds binding with the given name on the
+global objects of all inspected contexts, including those created later,
+bindings survive reloads.
+Binding function takes exactly one argument, this argument should be string,
+in case of any other input, function throws an exception.
+Each binding function call produces Runtime.bindingCalled notification.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.AwaitPromiseCommandResponse.html">AwaitPromiseCommandResponse</a></dt>
-      <dd><p>Response for AwaitPromise</p>
+      <dd><p>Response for Add handler to promise with given promise object id.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.AwaitPromiseCommandSettings.html">AwaitPromiseCommandSettings</a></dt>
-      <dd><p>AwaitPromise</p>
+      <dd><p>Add handler to promise with given promise object id.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.BindingCalledEventArgs.html">BindingCalledEventArgs</a></dt>
-      <dd><p>BindingCalled</p>
+      <dd><p>Notification is issued every time when binding is called.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.CallArgument.html">CallArgument</a></dt>
-      <dd><p>CallArgument</p>
+      <dd><p>Represents function call argument. Either remote object id <code>objectId</code>, primitive <code>value</code>,
+unserializable primitive value or neither of (for undefined) them should be specified.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.CallFrame.html">CallFrame</a></dt>
-      <dd><p>CallFrame</p>
+      <dd><p>Stack entry for runtime errors and assertions.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.CallFunctionOnCommandResponse.html">CallFunctionOnCommandResponse</a></dt>
-      <dd><p>Response for CallFunctionOn</p>
+      <dd><p>Response for Calls function with given declaration on the given object. Object group of the result is
+inherited from the target object.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.CallFunctionOnCommandSettings.html">CallFunctionOnCommandSettings</a></dt>
-      <dd><p>CallFunctionOn</p>
+      <dd><p>Calls function with given declaration on the given object. Object group of the result is
+inherited from the target object.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.CompileScriptCommandResponse.html">CompileScriptCommandResponse</a></dt>
-      <dd><p>Response for CompileScript</p>
+      <dd><p>Response for Compiles expression.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.CompileScriptCommandSettings.html">CompileScriptCommandSettings</a></dt>
-      <dd><p>CompileScript</p>
+      <dd><p>Compiles expression.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.ConsoleAPICalledEventArgs.html">ConsoleAPICalledEventArgs</a></dt>
-      <dd><p>ConsoleAPICalled</p>
+      <dd><p>Issued when console API was called.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -161,37 +174,41 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.DeepSerializedValue.html">DeepSerializedValue</a></dt>
-      <dd><p>DeepSerializedValue</p>
+      <dd><p>Represents deep serialized value.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.DisableCommandResponse.html">DisableCommandResponse</a></dt>
-      <dd><p>Response for Disable</p>
+      <dd><p>Response for Disables reporting of execution contexts creation.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.DisableCommandSettings.html">DisableCommandSettings</a></dt>
-      <dd><p>Disable</p>
+      <dd><p>Disables reporting of execution contexts creation.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.DiscardConsoleEntriesCommandResponse.html">DiscardConsoleEntriesCommandResponse</a></dt>
-      <dd><p>Response for DiscardConsoleEntries</p>
+      <dd><p>Response for Discards collected exceptions and console API calls.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.DiscardConsoleEntriesCommandSettings.html">DiscardConsoleEntriesCommandSettings</a></dt>
-      <dd><p>DiscardConsoleEntries</p>
+      <dd><p>Discards collected exceptions and console API calls.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.EnableCommandResponse.html">EnableCommandResponse</a></dt>
-      <dd><p>Response for Enable</p>
+      <dd><p>Response for Enables reporting of execution contexts creation by means of <code>executionContextCreated</code> event.
+When the reporting gets enabled the event will be sent immediately for each existing execution
+context.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.EnableCommandSettings.html">EnableCommandSettings</a></dt>
-      <dd><p>Enable</p>
+      <dd><p>Enables reporting of execution contexts creation by means of <code>executionContextCreated</code> event.
+When the reporting gets enabled the event will be sent immediately for each existing execution
+context.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -201,122 +218,136 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.EvaluateCommandResponse.html">EvaluateCommandResponse</a></dt>
-      <dd><p>Response for Evaluate</p>
+      <dd><p>Response for Evaluates expression on global object.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.EvaluateCommandSettings.html">EvaluateCommandSettings</a></dt>
-      <dd><p>Evaluate</p>
+      <dd><p>Evaluates expression on global object.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.ExceptionDetails.html">ExceptionDetails</a></dt>
-      <dd><p>ExceptionDetails</p>
+      <dd><p>Detailed information about exception (or error) that was thrown during script compilation or
+execution.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.ExceptionRevokedEventArgs.html">ExceptionRevokedEventArgs</a></dt>
-      <dd><p>ExceptionRevoked</p>
+      <dd><p>Issued when unhandled exception was revoked.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.ExceptionThrownEventArgs.html">ExceptionThrownEventArgs</a></dt>
-      <dd><p>ExceptionThrown</p>
+      <dd><p>Issued when exception was thrown and unhandled.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.ExecutionContextCreatedEventArgs.html">ExecutionContextCreatedEventArgs</a></dt>
-      <dd><p>ExecutionContextCreated</p>
+      <dd><p>Issued when new execution context is created.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.ExecutionContextDescription.html">ExecutionContextDescription</a></dt>
-      <dd><p>ExecutionContextDescription</p>
+      <dd><p>Description of an isolated world.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.ExecutionContextDestroyedEventArgs.html">ExecutionContextDestroyedEventArgs</a></dt>
-      <dd><p>ExecutionContextDestroyed</p>
+      <dd><p>Issued when execution context is destroyed.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.ExecutionContextsClearedEventArgs.html">ExecutionContextsClearedEventArgs</a></dt>
-      <dd><p>ExecutionContextsCleared</p>
+      <dd><p>Issued when all executionContexts were cleared in browser</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.GetExceptionDetailsCommandResponse.html">GetExceptionDetailsCommandResponse</a></dt>
-      <dd><p>Response for GetExceptionDetails</p>
+      <dd><p>Response for This method tries to lookup and populate exception details for a
+JavaScript Error object.
+Note that the stackTrace portion of the resulting exceptionDetails will
+only be populated if the Runtime domain was enabled at the time when the
+Error was thrown.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.GetExceptionDetailsCommandSettings.html">GetExceptionDetailsCommandSettings</a></dt>
-      <dd><p>GetExceptionDetails</p>
+      <dd><p>This method tries to lookup and populate exception details for a
+JavaScript Error object.
+Note that the stackTrace portion of the resulting exceptionDetails will
+only be populated if the Runtime domain was enabled at the time when the
+Error was thrown.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.GetHeapUsageCommandResponse.html">GetHeapUsageCommandResponse</a></dt>
-      <dd><p>Response for GetHeapUsage</p>
+      <dd><p>Response for Returns the JavaScript heap usage.
+It is the total usage of the corresponding isolate not scoped to a particular Runtime.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.GetHeapUsageCommandSettings.html">GetHeapUsageCommandSettings</a></dt>
-      <dd><p>GetHeapUsage</p>
+      <dd><p>Returns the JavaScript heap usage.
+It is the total usage of the corresponding isolate not scoped to a particular Runtime.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.GetIsolateIdCommandResponse.html">GetIsolateIdCommandResponse</a></dt>
-      <dd><p>Response for GetIsolateId</p>
+      <dd><p>Response for Returns the isolate id.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.GetIsolateIdCommandSettings.html">GetIsolateIdCommandSettings</a></dt>
-      <dd><p>GetIsolateId</p>
+      <dd><p>Returns the isolate id.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.GetPropertiesCommandResponse.html">GetPropertiesCommandResponse</a></dt>
-      <dd><p>Response for GetProperties</p>
+      <dd><p>Response for Returns properties of a given object. Object group of the result is inherited from the target
+object.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.GetPropertiesCommandSettings.html">GetPropertiesCommandSettings</a></dt>
-      <dd><p>GetProperties</p>
+      <dd><p>Returns properties of a given object. Object group of the result is inherited from the target
+object.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.GlobalLexicalScopeNamesCommandResponse.html">GlobalLexicalScopeNamesCommandResponse</a></dt>
-      <dd><p>Response for GlobalLexicalScopeNames</p>
+      <dd><p>Response for Returns all let, const and class variables from global scope.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.GlobalLexicalScopeNamesCommandSettings.html">GlobalLexicalScopeNamesCommandSettings</a></dt>
-      <dd><p>GlobalLexicalScopeNames</p>
+      <dd><p>Returns all let, const and class variables from global scope.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.InspectRequestedEventArgs.html">InspectRequestedEventArgs</a></dt>
-      <dd><p>InspectRequested</p>
+      <dd><p>Issued when object should be inspected (for example, as a result of inspect() command line API
+call).</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.InternalPropertyDescriptor.html">InternalPropertyDescriptor</a></dt>
-      <dd><p>InternalPropertyDescriptor</p>
+      <dd><p>Object internal property descriptor. This property isn't normally visible in JavaScript code.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.ObjectPreview.html">ObjectPreview</a></dt>
-      <dd><p>ObjectPreview</p>
+      <dd><p>Object containing abbreviated remote object value.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.PrivatePropertyDescriptor.html">PrivatePropertyDescriptor</a></dt>
-      <dd><p>PrivatePropertyDescriptor</p>
+      <dd><p>Object private field descriptor.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.PropertyDescriptor.html">PropertyDescriptor</a></dt>
-      <dd><p>PropertyDescriptor</p>
+      <dd><p>Object property descriptor.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -336,57 +367,59 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.ReleaseObjectCommandResponse.html">ReleaseObjectCommandResponse</a></dt>
-      <dd><p>Response for ReleaseObject</p>
+      <dd><p>Response for Releases remote object with given id.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.ReleaseObjectCommandSettings.html">ReleaseObjectCommandSettings</a></dt>
-      <dd><p>ReleaseObject</p>
+      <dd><p>Releases remote object with given id.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.ReleaseObjectGroupCommandResponse.html">ReleaseObjectGroupCommandResponse</a></dt>
-      <dd><p>Response for ReleaseObjectGroup</p>
+      <dd><p>Response for Releases all remote objects that belong to a given group.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.ReleaseObjectGroupCommandSettings.html">ReleaseObjectGroupCommandSettings</a></dt>
-      <dd><p>ReleaseObjectGroup</p>
+      <dd><p>Releases all remote objects that belong to a given group.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.RemoteObject.html">RemoteObject</a></dt>
-      <dd><p>RemoteObject</p>
+      <dd><p>Mirror object referencing original JavaScript object.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.RemoveBindingCommandResponse.html">RemoveBindingCommandResponse</a></dt>
-      <dd><p>Response for RemoveBinding</p>
+      <dd><p>Response for This method does not remove binding function from global object but
+unsubscribes current runtime agent from Runtime.bindingCalled notifications.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.RemoveBindingCommandSettings.html">RemoveBindingCommandSettings</a></dt>
-      <dd><p>RemoveBinding</p>
+      <dd><p>This method does not remove binding function from global object but
+unsubscribes current runtime agent from Runtime.bindingCalled notifications.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.RunIfWaitingForDebuggerCommandResponse.html">RunIfWaitingForDebuggerCommandResponse</a></dt>
-      <dd><p>Response for RunIfWaitingForDebugger</p>
+      <dd><p>Response for Tells inspected instance to run if it was waiting for debugger to attach.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.RunIfWaitingForDebuggerCommandSettings.html">RunIfWaitingForDebuggerCommandSettings</a></dt>
-      <dd><p>RunIfWaitingForDebugger</p>
+      <dd><p>Tells inspected instance to run if it was waiting for debugger to attach.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.RunScriptCommandResponse.html">RunScriptCommandResponse</a></dt>
-      <dd><p>Response for RunScript</p>
+      <dd><p>Response for Runs script with given id in a given context.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.RunScriptCommandSettings.html">RunScriptCommandSettings</a></dt>
-      <dd><p>RunScript</p>
+      <dd><p>Runs script with given id in a given context.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -396,17 +429,17 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.SerializationOptions.html">SerializationOptions</a></dt>
-      <dd><p>SerializationOptions</p>
+      <dd><p>Represents options for serialization. Overrides <code>generatePreview</code> and <code>returnByValue</code>.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.SetAsyncCallStackDepthCommandResponse.html">SetAsyncCallStackDepthCommandResponse</a></dt>
-      <dd><p>Response for SetAsyncCallStackDepth</p>
+      <dd><p>Response for Enables or disables async call stacks tracking.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.SetAsyncCallStackDepthCommandSettings.html">SetAsyncCallStackDepthCommandSettings</a></dt>
-      <dd><p>SetAsyncCallStackDepth</p>
+      <dd><p>Enables or disables async call stacks tracking.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -431,22 +464,25 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.StackTrace.html">StackTrace</a></dt>
-      <dd><p>StackTrace</p>
+      <dd><p>Call frames for assertions or error messages.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.StackTraceId.html">StackTraceId</a></dt>
-      <dd><p>StackTraceId</p>
+      <dd><p>If <code>debuggerId</code> is set stack trace comes from another debugger and can be resolved there. This
+allows to track cross-debugger calls. See <code>Runtime.StackTrace</code> and <code>Debugger.paused</code> for usages.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.TerminateExecutionCommandResponse.html">TerminateExecutionCommandResponse</a></dt>
-      <dd><p>Response for TerminateExecution</p>
+      <dd><p>Response for Terminate current or next JavaScript execution.
+Will cancel the termination when the outer-most script execution ends.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Runtime.TerminateExecutionCommandSettings.html">TerminateExecutionCommandSettings</a></dt>
-      <dd><p>TerminateExecution</p>
+      <dd><p>Terminate current or next JavaScript execution.
+Will cancel the termination when the outer-most script execution ends.</p>
 </dd>
     </dl>
     <h3 id="enums">

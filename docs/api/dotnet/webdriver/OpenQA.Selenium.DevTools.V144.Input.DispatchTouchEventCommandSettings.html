@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class DispatchTouchEventCommandSettings ">
       
-      <meta name="description" content="DispatchTouchEvent">
+      <meta name="description" content="Dispatches a touch event to the page.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class DispatchTouchEventCommandSettings  <a class="header-action link-secondary"
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>DispatchTouchEvent</p>
+  <div class="markdown summary"><p>Dispatches a touch event to the page.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -193,10 +193,11 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Input_DispatchTouchEventCommandSettings_Modifiers" data-uid="OpenQA.Selenium.DevTools.V144.Input.DispatchTouchEventCommandSettings.Modifiers">
   Modifiers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Input/DispatchTouchEventCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Input/DispatchTouchEventCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the modifiers</p>
+  <div class="markdown level1 summary"><p>Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8
+(default: 0).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +228,10 @@ public long? Modifiers { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Input_DispatchTouchEventCommandSettings_Timestamp" data-uid="OpenQA.Selenium.DevTools.V144.Input.DispatchTouchEventCommandSettings.Timestamp">
   Timestamp
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Input/DispatchTouchEventCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Input/DispatchTouchEventCommand.cs/#L50"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the timestamp</p>
+  <div class="markdown level1 summary"><p>Time at which the event occurred.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -261,10 +262,12 @@ public double? Timestamp { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Input_DispatchTouchEventCommandSettings_TouchPoints" data-uid="OpenQA.Selenium.DevTools.V144.Input.DispatchTouchEventCommandSettings.TouchPoints">
   TouchPoints
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Input/DispatchTouchEventCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Input/DispatchTouchEventCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the touchPoints</p>
+  <div class="markdown level1 summary"><p>Active touch points on the touch device. One event per any changed point (compared to
+previous touch event in a sequence) is generated, emulating pressing/moving/releasing points
+one by one.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -294,10 +297,11 @@ public TouchPoint[] TouchPoints { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Input_DispatchTouchEventCommandSettings_Type" data-uid="OpenQA.Selenium.DevTools.V144.Input.DispatchTouchEventCommandSettings.Type">
   Type
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Input/DispatchTouchEventCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Input/DispatchTouchEventCommand.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the type</p>
+  <div class="markdown level1 summary"><p>Type of the touch event. TouchEnd and TouchCancel must not contain any touch points, while
+TouchStart and TouchMove must contains at least one.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

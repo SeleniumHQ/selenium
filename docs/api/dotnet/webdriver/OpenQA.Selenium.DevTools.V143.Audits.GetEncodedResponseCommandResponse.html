@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetEncodedResponseCommandResponse ">
       
-      <meta name="description" content="Response for GetEncodedResponse">
+      <meta name="description" content="Response for Returns the response body and size if it were re-encoded with the specified settings. Only applies to images.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Audits_GetEncodedResponseCommandResponse" data-uid="OpenQA.Selenium.DevTools.V143.Audits.GetEncodedResponseCommandResponse" class="text-break">
-Class GetEncodedResponseCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/GetEncodedResponseCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
+Class GetEncodedResponseCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/GetEncodedResponseCommand.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class GetEncodedResponseCommandResponse  <a class="header-action link-secondary"
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Response for GetEncodedResponse</p>
+  <div class="markdown summary"><p>Response for Returns the response body and size if it were re-encoded with the specified settings. Only
+applies to images.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -168,10 +169,10 @@ Class GetEncodedResponseCommandResponse  <a class="header-action link-secondary"
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Audits_GetEncodedResponseCommandResponse_Body" data-uid="OpenQA.Selenium.DevTools.V143.Audits.GetEncodedResponseCommandResponse.Body">
   Body
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/GetEncodedResponseCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/GetEncodedResponseCommand.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the body</p>
+  <div class="markdown level1 summary"><p>The encoded body as a base64 string. Omitted if sizeOnly is true.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -202,10 +203,10 @@ public string? Body { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Audits_GetEncodedResponseCommandResponse_EncodedSize" data-uid="OpenQA.Selenium.DevTools.V143.Audits.GetEncodedResponseCommandResponse.EncodedSize">
   EncodedSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/GetEncodedResponseCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/GetEncodedResponseCommand.cs/#L76"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the encodedSize</p>
+  <div class="markdown level1 summary"><p>Size after re-encoding.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -235,10 +236,10 @@ public long EncodedSize { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Audits_GetEncodedResponseCommandResponse_OriginalSize" data-uid="OpenQA.Selenium.DevTools.V143.Audits.GetEncodedResponseCommandResponse.OriginalSize">
   OriginalSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/GetEncodedResponseCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/GetEncodedResponseCommand.cs/#L69"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the originalSize</p>
+  <div class="markdown level1 summary"><p>Size before re-encoding.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -268,7 +269,7 @@ public long OriginalSize { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/GetEncodedResponseCommand.cs/#L55" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/GetEncodedResponseCommand.cs/#L57" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetEventListenerBreakpointCommandSettings ">
       
-      <meta name="description" content="SetEventListenerBreakpoint">
+      <meta name="description" content="Sets breakpoint on particular DOM event.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class SetEventListenerBreakpointCommandSettings  <a class="header-action link-se
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SetEventListenerBreakpoint</p>
+  <div class="markdown summary"><p>Sets breakpoint on particular DOM event.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -196,7 +196,7 @@ public string CommandName { get; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/SetEventListenerBreakpointCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the eventName</p>
+  <div class="markdown level1 summary"><p>DOM Event name to stop on (any DOM event will do).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -226,10 +226,11 @@ public string EventName { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOMDebugger_SetEventListenerBreakpointCommandSettings_TargetName" data-uid="OpenQA.Selenium.DevTools.V144.DOMDebugger.SetEventListenerBreakpointCommandSettings.TargetName">
   TargetName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/SetEventListenerBreakpointCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/SetEventListenerBreakpointCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the targetName</p>
+  <div class="markdown level1 summary"><p>EventTarget interface name to stop on. If equal to <code>&quot;*&quot;</code> or not provided, will stop on any
+EventTarget.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

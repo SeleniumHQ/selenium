@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class BeginFrameCommandResponse ">
       
-      <meta name="description" content="Response for BeginFrame">
+      <meta name="description" content="Response for Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a screenshot from the resulting frame. Requires that the target was created with enabled BeginFrameControl. Designed for use with --run-all-compositor-stages-before-draw, see also https://goo.gle/chrome-headless-rendering for more background.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_HeadlessExperimental_BeginFrameCommandResponse" data-uid="OpenQA.Selenium.DevTools.V143.HeadlessExperimental.BeginFrameCommandResponse" class="text-break">
-Class BeginFrameCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/HeadlessExperimental/BeginFrameCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
+Class BeginFrameCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/HeadlessExperimental/BeginFrameCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,10 @@ Class BeginFrameCommandResponse  <a class="header-action link-secondary" title="
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Response for BeginFrame</p>
+  <div class="markdown summary"><p>Response for Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a
+screenshot from the resulting frame. Requires that the target was created with enabled
+BeginFrameControl. Designed for use with --run-all-compositor-stages-before-draw, see also
+<a href="https://goo.gle/chrome-headless-rendering">https://goo.gle/chrome-headless-rendering</a> for more background.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -168,10 +171,11 @@ Class BeginFrameCommandResponse  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_DevTools_V143_HeadlessExperimental_BeginFrameCommandResponse_HasDamage" data-uid="OpenQA.Selenium.DevTools.V143.HeadlessExperimental.BeginFrameCommandResponse.HasDamage">
   HasDamage
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/HeadlessExperimental/BeginFrameCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/HeadlessExperimental/BeginFrameCommand.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the hasDamage</p>
+  <div class="markdown level1 summary"><p>Whether the BeginFrame resulted in damage and, thus, a new frame was committed to the
+display. Reported for diagnostic uses, may be removed in the future.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -201,10 +205,10 @@ public bool HasDamage { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_HeadlessExperimental_BeginFrameCommandResponse_ScreenshotData" data-uid="OpenQA.Selenium.DevTools.V143.HeadlessExperimental.BeginFrameCommandResponse.ScreenshotData">
   ScreenshotData
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/HeadlessExperimental/BeginFrameCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/HeadlessExperimental/BeginFrameCommand.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the screenshotData</p>
+  <div class="markdown level1 summary"><p>Base64-encoded image data of the screenshot, if one was requested and successfully taken.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -235,7 +239,7 @@ public string? ScreenshotData { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/HeadlessExperimental/BeginFrameCommand.cs/#L55" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/HeadlessExperimental/BeginFrameCommand.cs/#L67" class="edit-link">Edit this page</a>
         </div>
 
 

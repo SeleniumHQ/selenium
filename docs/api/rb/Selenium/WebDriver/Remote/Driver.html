@@ -91,7 +91,7 @@
   
   <dl>
       <dt>Includes:</dt>
-      <dd><span class='object_link'><a href="../DriverExtensions/HasFileDownloads.html" title="Selenium::WebDriver::DriverExtensions::HasFileDownloads (module)">DriverExtensions::HasFileDownloads</a></span>, <span class='object_link'><a href="../DriverExtensions/HasSessionId.html" title="Selenium::WebDriver::DriverExtensions::HasSessionId (module)">DriverExtensions::HasSessionId</a></span>, <span class='object_link'><a href="../DriverExtensions/UploadsFiles.html" title="Selenium::WebDriver::DriverExtensions::UploadsFiles (module)">DriverExtensions::UploadsFiles</a></span></dd>
+      <dd><span class='object_link'><a href="../DriverExtensions/HasFileDownloads.html" title="Selenium::WebDriver::DriverExtensions::HasFileDownloads (module)">DriverExtensions::HasFileDownloads</a></span>, <span class='object_link'><a href="../DriverExtensions/HasSessionEvents.html" title="Selenium::WebDriver::DriverExtensions::HasSessionEvents (module)">DriverExtensions::HasSessionEvents</a></span>, <span class='object_link'><a href="../DriverExtensions/HasSessionId.html" title="Selenium::WebDriver::DriverExtensions::HasSessionId (module)">DriverExtensions::HasSessionId</a></span>, <span class='object_link'><a href="../DriverExtensions/UploadsFiles.html" title="Selenium::WebDriver::DriverExtensions::UploadsFiles (module)">DriverExtensions::UploadsFiles</a></span></dd>
   </dl>
   
   
@@ -171,6 +171,17 @@
     </ul>
   
 
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../DriverExtensions/HasSessionEvents.html" title="Selenium::WebDriver::DriverExtensions::HasSessionEvents (module)">DriverExtensions::HasSessionEvents</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../DriverExtensions/HasSessionEvents.html#fire_session_event-instance_method" title="Selenium::WebDriver::DriverExtensions::HasSessionEvents#fire_session_event (method)">#fire_session_event</a></span></p>
 
   
   
@@ -283,7 +294,6 @@
       <pre class="lines">
 
 
-33
 34
 35
 36
@@ -293,10 +303,11 @@
 40
 41
 42
-43</pre>
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/driver.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/driver.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>capabilities:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>options:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>service:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>url:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Can not set :service object on </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_service'>service</span>
@@ -320,7 +331,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sun Jan 18 18:47:56 2026 by
+  Generated on Thu May 14 15:42:37 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.38 (ruby-3.2.9).
 </div>

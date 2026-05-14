@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetFullAXTreeCommandSettings ">
       
-      <meta name="description" content="GetFullAXTree">
+      <meta name="description" content="Fetches the entire accessibility tree for the root Document">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class GetFullAXTreeCommandSettings  <a class="header-action link-secondary" titl
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>GetFullAXTree</p>
+  <div class="markdown summary"><p>Fetches the entire accessibility tree for the root Document</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -193,10 +193,11 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Accessibility_GetFullAXTreeCommandSettings_Depth" data-uid="OpenQA.Selenium.DevTools.V143.Accessibility.GetFullAXTreeCommandSettings.Depth">
   Depth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/GetFullAXTreeCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/GetFullAXTreeCommand.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the depth</p>
+  <div class="markdown level1 summary"><p>The maximum depth at which descendants of the root node should be retrieved.
+If omitted, the full tree is returned.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +228,11 @@ public long? Depth { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Accessibility_GetFullAXTreeCommandSettings_FrameId" data-uid="OpenQA.Selenium.DevTools.V143.Accessibility.GetFullAXTreeCommandSettings.FrameId">
   FrameId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/GetFullAXTreeCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/GetFullAXTreeCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the frameId</p>
+  <div class="markdown level1 summary"><p>The frame for whose document the AX tree should be retrieved.
+If omitted, the root frame is used.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

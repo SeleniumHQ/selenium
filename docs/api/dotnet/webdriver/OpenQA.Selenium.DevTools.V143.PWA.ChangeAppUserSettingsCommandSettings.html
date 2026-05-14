@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ChangeAppUserSettingsCommandSettings ">
       
-      <meta name="description" content="ChangeAppUserSettings">
+      <meta name="description" content="Changes user settings of the web app identified by its manifestId. If the app was not installed, this command returns an error. Unset parameters will be ignored; unrecognized values will cause an error. Unlike the ones defined in the manifest files of the web apps, these settings are provided by the browser and controlled by the users, they impact the way the browser handling the web apps. See the comment of each parameter.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_PWA_ChangeAppUserSettingsCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.PWA.ChangeAppUserSettingsCommandSettings" class="text-break">
-Class ChangeAppUserSettingsCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/ChangeAppUserSettingsCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class ChangeAppUserSettingsCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/ChangeAppUserSettingsCommand.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,13 @@ Class ChangeAppUserSettingsCommandSettings  <a class="header-action link-seconda
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>ChangeAppUserSettings</p>
+  <div class="markdown summary"><p>Changes user settings of the web app identified by its manifestId. If the
+app was not installed, this command returns an error. Unset parameters will
+be ignored; unrecognized values will cause an error.</p>
+<p>Unlike the ones defined in the manifest files of the web apps, these
+settings are provided by the browser and controlled by the users, they
+impact the way the browser handling the web apps.</p>
+<p>See the comment of each parameter.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +166,7 @@ Class ChangeAppUserSettingsCommandSettings  <a class="header-action link-seconda
 
   <h3 id="OpenQA_Selenium_DevTools_V143_PWA_ChangeAppUserSettingsCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.PWA.ChangeAppUserSettingsCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/ChangeAppUserSettingsCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/ChangeAppUserSettingsCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,7 +199,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_PWA_ChangeAppUserSettingsCommandSettings_DisplayMode" data-uid="OpenQA.Selenium.DevTools.V143.PWA.ChangeAppUserSettingsCommandSettings.DisplayMode">
   DisplayMode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/ChangeAppUserSettingsCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/ChangeAppUserSettingsCommand.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the displayMode</p>
@@ -227,10 +233,18 @@ public DisplayMode? DisplayMode { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_PWA_ChangeAppUserSettingsCommandSettings_LinkCapturing" data-uid="OpenQA.Selenium.DevTools.V143.PWA.ChangeAppUserSettingsCommandSettings.LinkCapturing">
   LinkCapturing
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/ChangeAppUserSettingsCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/ChangeAppUserSettingsCommand.cs/#L50"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the linkCapturing</p>
+  <div class="markdown level1 summary"><p>If user allows the links clicked on by the user in the app's scope, or
+extended scope if the manifest has scope extensions and the flags
+<code>DesktopPWAsLinkCapturingWithScopeExtensions</code> and
+<code>WebAppEnableScopeExtensions</code> are enabled.</p>
+<p>Note, the API does not support resetting the linkCapturing to the
+initial value, uninstalling and installing the web app again will reset
+it.</p>
+<p>TODO(crbug.com/339453269): Setting this value on ChromeOS is not
+supported yet.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -261,7 +275,7 @@ public bool? LinkCapturing { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_PWA_ChangeAppUserSettingsCommandSettings_ManifestId" data-uid="OpenQA.Selenium.DevTools.V143.PWA.ChangeAppUserSettingsCommandSettings.ManifestId">
   ManifestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/ChangeAppUserSettingsCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/ChangeAppUserSettingsCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the manifestId</p>
@@ -294,7 +308,7 @@ public string ManifestId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/ChangeAppUserSettingsCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/PWA/ChangeAppUserSettingsCommand.cs/#L20" class="edit-link">Edit this page</a>
         </div>
 
 

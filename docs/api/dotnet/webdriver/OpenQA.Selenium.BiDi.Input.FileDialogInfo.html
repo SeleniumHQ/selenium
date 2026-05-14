@@ -162,8 +162,8 @@ Class FileDialogInfo  <a class="header-action link-secondary" title="View source
 
   <a id="OpenQA_Selenium_BiDi_Input_FileDialogInfo__ctor_" data-uid="OpenQA.Selenium.BiDi.Input.FileDialogInfo.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Input_FileDialogInfo__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Boolean_OpenQA_Selenium_BiDi_Script_SharedReference_" data-uid="OpenQA.Selenium.BiDi.Input.FileDialogInfo.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Boolean,OpenQA.Selenium.BiDi.Script.SharedReference)">
-  FileDialogInfo(BrowsingContext, bool, SharedReference?)
+  <h3 id="OpenQA_Selenium_BiDi_Input_FileDialogInfo__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_Browser_UserContext_System_Boolean_OpenQA_Selenium_BiDi_Script_SharedReference_" data-uid="OpenQA.Selenium.BiDi.Input.FileDialogInfo.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.Browser.UserContext,System.Boolean,OpenQA.Selenium.BiDi.Script.SharedReference)">
+  FileDialogInfo(BrowsingContext, UserContext?, bool, SharedReference?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/FileDialogInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -171,12 +171,14 @@ Class FileDialogInfo  <a class="header-action link-secondary" title="View source
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public FileDialogInfo(BrowsingContext Context, bool Multiple, SharedReference? Element)</code></pre>
+    <pre><code class="lang-csharp hljs">public FileDialogInfo(BrowsingContext Context, UserContext? UserContext, bool Multiple, SharedReference? Element)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>Context</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
+    <dd></dd>
+    <dt><code>UserContext</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContext.html">UserContext</a></dt>
     <dd></dd>
     <dt><code>Multiple</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
     <dd></dd>
@@ -282,6 +284,37 @@ Class FileDialogInfo  <a class="header-action link-secondary" title="View source
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Input_FileDialogInfo_UserContext_" data-uid="OpenQA.Selenium.BiDi.Input.FileDialogInfo.UserContext*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Input_FileDialogInfo_UserContext" data-uid="OpenQA.Selenium.BiDi.Input.FileDialogInfo.UserContext">
+  UserContext
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/FileDialogInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserContext? UserContext { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContext.html">UserContext</a></dt>
     <dd></dd>
   </dl>
 

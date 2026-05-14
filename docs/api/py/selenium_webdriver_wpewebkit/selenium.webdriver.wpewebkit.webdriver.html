@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.wpewebkit.webdriver &#8212; Selenium 4.40.0 documentation</title>
+    <title>selenium.webdriver.wpewebkit.webdriver &#8212; Selenium 4.41.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=cb21b19a"></script>
+    <script src="../_static/documentation_options.js?v=baf4fbc3"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.40.0 documentation"
+        <a href="../index.html" title="Selenium 4.41.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.40.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.41.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.wpewebkit.webdriver </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.40.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.41.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.40.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.41.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.40.0 documentation">Selenium 4.40.0 documentation</a>
+       title="Selenium 4.41.0 documentation">Selenium 4.41.0 documentation</a>
   </label>
   
 
@@ -238,6 +238,8 @@
         <li class="md-nav__item"><a href="#selenium.webdriver.wpewebkit.webdriver.WebDriver.find_element" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">WebDriver.find_element()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#selenium.webdriver.wpewebkit.webdriver.WebDriver.find_elements" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">WebDriver.find_elements()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.wpewebkit.webdriver.WebDriver.fire_session_event" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">WebDriver.fire_session_event()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#selenium.webdriver.wpewebkit.webdriver.WebDriver.forward" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">WebDriver.forward()</span></code></a>
         </li>
@@ -700,6 +702,32 @@ or RelativeBy.</p>
 <dt>Returns:</dt><dd><p>List of WebElements matching locator strategy found on the page.</p>
 </dd>
 <dt>Example:</dt><dd><p><cite>element = driver.find_elements(By.ID, ‘foo’)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.wpewebkit.webdriver.WebDriver.fire_session_event">
+<span class="sig-name descname"><span class="pre">fire_session_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.fire_session_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.wpewebkit.webdriver.WebDriver.fire_session_event" title="Link to this definition">¶</a></dt>
+<dd><p>Fire a custom session event to the remote server event bus.</p>
+<p>This allows test code to trigger server-side utilities that subscribe to
+the event bus.</p>
+<dl>
+<dt>Args:</dt><dd><p>event_type: The type of event (e.g., “test:failed”, “log:collect”, “marker:add”).
+payload: Optional data to include with the event.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A dictionary containing the response data including success status,
+event type, and timestamp.</p>
+</dd>
+<dt>Raises:</dt><dd><p>WebDriverException: If the event cannot be fired.</p>
+</dd>
+<dt>Examples:</dt><dd><p>Simple event:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">fire_session_event</span><span class="p">(</span><span class="s2">"test:started"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Event with payload:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">fire_session_event</span><span class="p">(</span><span class="s2">"test:failed"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"testName"</span><span class="p">:</span> <span class="s2">"LoginTest"</span><span class="p">,</span> <span class="s2">"error"</span><span class="p">:</span> <span class="s2">"Element not found"</span><span class="p">})</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd></dl>

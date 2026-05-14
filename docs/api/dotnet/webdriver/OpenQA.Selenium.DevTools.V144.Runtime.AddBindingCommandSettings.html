@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AddBindingCommandSettings ">
       
-      <meta name="description" content="AddBinding">
+      <meta name="description" content="If executionContextId is empty, adds binding with the given name on the global objects of all inspected contexts, including those created later, bindings survive reloads. Binding function takes exactly one argument, this argument should be string, in case of any other input, function throws an exception. Each binding function call produces Runtime.bindingCalled notification.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Runtime_AddBindingCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.AddBindingCommandSettings" class="text-break">
-Class AddBindingCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/AddBindingCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class AddBindingCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/AddBindingCommand.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,12 @@ Class AddBindingCommandSettings  <a class="header-action link-secondary" title="
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>AddBinding</p>
+  <div class="markdown summary"><p>If executionContextId is empty, adds binding with the given name on the
+global objects of all inspected contexts, including those created later,
+bindings survive reloads.
+Binding function takes exactly one argument, this argument should be string,
+in case of any other input, function throws an exception.
+Each binding function call produces Runtime.bindingCalled notification.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +165,7 @@ Class AddBindingCommandSettings  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_AddBindingCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.AddBindingCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/AddBindingCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/AddBindingCommand.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +198,16 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_AddBindingCommandSettings_ExecutionContextId" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.AddBindingCommandSettings.ExecutionContextId">
   ExecutionContextId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/AddBindingCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/AddBindingCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the executionContextId</p>
+  <div class="markdown level1 summary"><p>If specified, the binding would only be exposed to the specified
+execution context. If omitted and <code>executionContextName</code> is not set,
+the binding is exposed to all execution contexts of the target.
+This parameter is mutually exclusive with <code>executionContextName</code>.
+Deprecated in favor of <code>executionContextName</code> due to an unclear use case
+and bugs in implementation (crbug.com/1169639). <code>executionContextId</code> will be
+removed in the future.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +238,14 @@ public long? ExecutionContextId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_AddBindingCommandSettings_ExecutionContextName" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.AddBindingCommandSettings.ExecutionContextName">
   ExecutionContextName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/AddBindingCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/AddBindingCommand.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the executionContextName</p>
+  <div class="markdown level1 summary"><p>If specified, the binding is exposed to the executionContext with
+matching name, even for contexts created after the binding is added.
+See also <code>ExecutionContext.name</code> and <code>worldName</code> parameter to
+<code>Page.addScriptToEvaluateOnNewDocument</code>.
+This parameter is mutually exclusive with <code>executionContextId</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -261,7 +276,7 @@ public string? ExecutionContextName { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_AddBindingCommandSettings_Name" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.AddBindingCommandSettings.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/AddBindingCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/AddBindingCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the name</p>
@@ -294,7 +309,7 @@ public string Name { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/AddBindingCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/AddBindingCommand.cs/#L17" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class EvaluateOnCallFrameCommandSettings ">
       
-      <meta name="description" content="EvaluateOnCallFrame">
+      <meta name="description" content="Evaluates expression on a given call frame.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class EvaluateOnCallFrameCommandSettings  <a class="header-action link-secondary
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>EvaluateOnCallFrame</p>
+  <div class="markdown summary"><p>Evaluates expression on a given call frame.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -163,7 +163,7 @@ Class EvaluateOnCallFrameCommandSettings  <a class="header-action link-secondary
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the callFrameId</p>
+  <div class="markdown level1 summary"><p>Call frame identifier to evaluate on.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -229,7 +229,7 @@ public string CommandName { get; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the expression</p>
+  <div class="markdown level1 summary"><p>Expression to evaluate.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -259,10 +259,10 @@ public string Expression { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Debugger_EvaluateOnCallFrameCommandSettings_GeneratePreview" data-uid="OpenQA.Selenium.DevTools.V143.Debugger.EvaluateOnCallFrameCommandSettings.GeneratePreview">
   GeneratePreview
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the generatePreview</p>
+  <div class="markdown level1 summary"><p>Whether preview should be generated for the result.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -293,10 +293,11 @@ public bool? GeneratePreview { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Debugger_EvaluateOnCallFrameCommandSettings_IncludeCommandLineAPI" data-uid="OpenQA.Selenium.DevTools.V143.Debugger.EvaluateOnCallFrameCommandSettings.IncludeCommandLineAPI">
   IncludeCommandLineAPI
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the includeCommandLineAPI</p>
+  <div class="markdown level1 summary"><p>Specifies whether command line API should be available to the evaluated expression, defaults
+to false.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -327,10 +328,11 @@ public bool? IncludeCommandLineAPI { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Debugger_EvaluateOnCallFrameCommandSettings_ObjectGroup" data-uid="OpenQA.Selenium.DevTools.V143.Debugger.EvaluateOnCallFrameCommandSettings.ObjectGroup">
   ObjectGroup
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the objectGroup</p>
+  <div class="markdown level1 summary"><p>String object group name to put result into (allows rapid releasing resulting object handles
+using <code>releaseObjectGroup</code>).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -361,10 +363,10 @@ public string? ObjectGroup { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Debugger_EvaluateOnCallFrameCommandSettings_ReturnByValue" data-uid="OpenQA.Selenium.DevTools.V143.Debugger.EvaluateOnCallFrameCommandSettings.ReturnByValue">
   ReturnByValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the returnByValue</p>
+  <div class="markdown level1 summary"><p>Whether the result is expected to be a JSON object that should be sent by value.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -395,10 +397,11 @@ public bool? ReturnByValue { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Debugger_EvaluateOnCallFrameCommandSettings_Silent" data-uid="OpenQA.Selenium.DevTools.V143.Debugger.EvaluateOnCallFrameCommandSettings.Silent">
   Silent
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the silent</p>
+  <div class="markdown level1 summary"><p>In silent mode exceptions thrown during evaluation are not reported and do not pause
+execution. Overrides <code>setPauseOnException</code> state.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -429,10 +432,10 @@ public bool? Silent { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Debugger_EvaluateOnCallFrameCommandSettings_ThrowOnSideEffect" data-uid="OpenQA.Selenium.DevTools.V143.Debugger.EvaluateOnCallFrameCommandSettings.ThrowOnSideEffect">
   ThrowOnSideEffect
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the throwOnSideEffect</p>
+  <div class="markdown level1 summary"><p>Whether to throw an exception if side effect cannot be ruled out during evaluation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -463,10 +466,10 @@ public bool? ThrowOnSideEffect { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Debugger_EvaluateOnCallFrameCommandSettings_Timeout" data-uid="OpenQA.Selenium.DevTools.V143.Debugger.EvaluateOnCallFrameCommandSettings.Timeout">
   Timeout
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Debugger/EvaluateOnCallFrameCommand.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the timeout</p>
+  <div class="markdown level1 summary"><p>Terminate execution after timing out (number of milliseconds).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

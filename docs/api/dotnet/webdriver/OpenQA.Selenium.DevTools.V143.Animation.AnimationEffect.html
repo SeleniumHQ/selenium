@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AnimationEffect ">
       
-      <meta name="description" content="AnimationEffect">
+      <meta name="description" content="AnimationEffect instance">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class AnimationEffect  <a class="header-action link-secondary" title="View sourc
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>AnimationEffect</p>
+  <div class="markdown summary"><p>AnimationEffect instance</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +154,10 @@ Class AnimationEffect  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Animation_AnimationEffect_BackendNodeId" data-uid="OpenQA.Selenium.DevTools.V143.Animation.AnimationEffect.BackendNodeId">
   BackendNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L69"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>backendNodeId</p>
+  <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s target node.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,7 +191,7 @@ public long? BackendNodeId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>delay</p>
+  <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s delay.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -221,10 +221,10 @@ public double Delay { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Animation_AnimationEffect_Direction" data-uid="OpenQA.Selenium.DevTools.V143.Animation.AnimationEffect.Direction">
   Direction
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>direction</p>
+  <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s playback direction.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -254,10 +254,13 @@ public string Direction { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Animation_AnimationEffect_Duration" data-uid="OpenQA.Selenium.DevTools.V143.Animation.AnimationEffect.Duration">
   Duration
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>duration</p>
+  <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s iteration duration.
+Milliseconds for time based animations and
+percentage [0 - 100] for scroll driven animations
+(i.e. when viewOrScrollTimeline exists).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -287,10 +290,10 @@ public double Duration { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Animation_AnimationEffect_Easing" data-uid="OpenQA.Selenium.DevTools.V143.Animation.AnimationEffect.Easing">
   Easing
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L83"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>easing</p>
+  <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s timing function.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -323,7 +326,7 @@ public string Easing { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>endDelay</p>
+  <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s end delay.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -353,10 +356,10 @@ public double EndDelay { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Animation_AnimationEffect_Fill" data-uid="OpenQA.Selenium.DevTools.V143.Animation.AnimationEffect.Fill">
   Fill
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>fill</p>
+  <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s fill mode.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -389,7 +392,7 @@ public string Fill { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>iterationStart</p>
+  <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s iteration start.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -422,7 +425,7 @@ public double IterationStart { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>iterations</p>
+  <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s iterations.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -452,10 +455,10 @@ public double Iterations { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Animation_AnimationEffect_KeyframesRule" data-uid="OpenQA.Selenium.DevTools.V143.Animation.AnimationEffect.KeyframesRule">
   KeyframesRule
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/AnimationEffect.cs/#L76"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>keyframesRule</p>
+  <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s keyframes.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

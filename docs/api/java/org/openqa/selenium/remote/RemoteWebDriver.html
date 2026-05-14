@@ -271,12 +271,23 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/BiFunction.html" title="class or interface in java.util.function" class="external-link">BiFunction</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>,<wbr><a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a>&gt;&nbsp;findCommand,
  <a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#fireSessionEvent(java.lang.String)" class="member-name-link">fireSessionEvent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;eventType)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Fires a custom session event to the remote server event bus without a payload.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#fireSessionEvent(java.lang.String,java.util.Map)" class="member-name-link">fireSessionEvent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;eventType,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;payload)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Fires a custom session event to the remote server event bus.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#get(java.lang.String)" class="member-name-link">get</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Load a new web page in the current browser window.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NonNull <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCapabilities()" class="member-name-link">getCapabilities</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></code></div>
@@ -615,7 +626,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <li>
 <section class="detail" id="getCapabilities()">
 <h3>getCapabilities</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></span>&nbsp;<span class="element-name">getCapabilities</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@NonNull <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></span>&nbsp;<span class="element-name">getCapabilities</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="../HasCapabilities.html#getCapabilities()">getCapabilities</a></code>&nbsp;in interface&nbsp;<code><a href="../HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></code></dd>
@@ -1279,6 +1290,58 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <dd><code><a href="../HasDownloads.html#deleteDownloadableFiles()">deleteDownloadableFiles</a></code>&nbsp;in interface&nbsp;<code><a href="../HasDownloads.html" title="interface in org.openqa.selenium">HasDownloads</a></code></dd>
 <dt>Throws:</dt>
 <dd><code><a href="../WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></code> - capability to enable downloads must be set</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="fireSessionEvent(java.lang.String,java.util.Map)">
+<h3>fireSessionEvent</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;</span>&nbsp;<span class="element-name">fireSessionEvent</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;eventType,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;payload)</span></div>
+<div class="block">Fires a custom session event to the remote server event bus. This allows test code to trigger
+ server-side utilities that subscribe to the event bus.
+
+ <p>Example usage:
+
+ <pre><code>
+ // Simple event
+ driver.fireSessionEvent("test:started");
+
+ // Event with payload
+ driver.fireSessionEvent("test:failed", Map.of(
+     "testName", "LoginTest",
+     "error", "Element not found"
+ ));
+ </code></pre></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>eventType</code> - the type of event (e.g., "test:failed", "log:collect", "marker:add")</dd>
+<dd><code>payload</code> - optional data to include with the event (maybe null or empty)</dd>
+<dt>Returns:</dt>
+<dd>the response data from the server</dd>
+<dt>Throws:</dt>
+<dd><code><a href="../WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></code> - if the event cannot be fired</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="fireSessionEvent(java.lang.String)">
+<h3>fireSessionEvent</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;</span>&nbsp;<span class="element-name">fireSessionEvent</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;eventType)</span></div>
+<div class="block">Fires a custom session event to the remote server event bus without a payload.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>eventType</code> - the type of event (e.g., "test:started", "log:collect")</dd>
+<dt>Returns:</dt>
+<dd>the response data from the server</dd>
+<dt>Throws:</dt>
+<dd><code><a href="../WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></code> - if the event cannot be fired</dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="tag-list-long">
+<li><a href="#fireSessionEvent(java.lang.String,java.util.Map)"><code>fireSessionEvent(String, Map)</code></a></li>
+</ul>
+</dd>
 </dl>
 </section>
 </li>

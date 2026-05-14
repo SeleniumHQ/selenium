@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class PlayerMessage ">
       
-      <meta name="description" content="PlayerMessage">
+      <meta name="description" content="Have one type per entry in MediaLogRecord::Type Corresponds to kMessage">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Media_PlayerMessage" data-uid="OpenQA.Selenium.DevTools.V143.Media.PlayerMessage" class="text-break">
-Class PlayerMessage  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerMessage.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class PlayerMessage  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerMessage.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class PlayerMessage  <a class="header-action link-secondary" title="View source"
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>PlayerMessage</p>
+  <div class="markdown summary"><p>Have one type per entry in MediaLogRecord::Type
+Corresponds to kMessage</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +155,18 @@ Class PlayerMessage  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Media_PlayerMessage_Level" data-uid="OpenQA.Selenium.DevTools.V143.Media.PlayerMessage.Level">
   Level
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerMessage.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerMessage.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>level</p>
+  <div class="markdown level1 summary"><p>Keep in sync with MediaLogMessageLevel
+We are currently keeping the message level 'error' separate from the
+PlayerError type because right now they represent different things,
+this one being a DVLOG(ERROR) style log message that gets printed
+based on what log level is selected in the UI, and the other is a
+representation of a media::PipelineStatus object. Soon however we're
+going to be moving away from using PipelineStatus for errors and
+introducing a new error type which should hopefully let us integrate
+the error log level into the PlayerError type.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -187,7 +196,7 @@ public PlayerMessageLevelValues Level { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Media_PlayerMessage_Message" data-uid="OpenQA.Selenium.DevTools.V143.Media.PlayerMessage.Message">
   Message
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerMessage.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerMessage.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>message</p>
@@ -220,7 +229,7 @@ public string Message { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerMessage.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerMessage.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

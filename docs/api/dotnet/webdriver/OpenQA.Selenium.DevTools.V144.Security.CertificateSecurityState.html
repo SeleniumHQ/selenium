@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CertificateSecurityState ">
       
-      <meta name="description" content="CertificateSecurityState">
+      <meta name="description" content="Details about the security state of the page certificate.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class CertificateSecurityState  <a class="header-action link-secondary" title="V
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>CertificateSecurityState</p>
+  <div class="markdown summary"><p>Details about the security state of the page certificate.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -157,7 +157,7 @@ Class CertificateSecurityState  <a class="header-action link-secondary" title="V
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>certificate</p>
+  <div class="markdown level1 summary"><p>Page certificate.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -190,7 +190,7 @@ public string[] Certificate { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L101"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>certificateHasSha1Signature</p>
+  <div class="markdown level1 summary"><p>True if the certificate has a SHA1 signature in the chain.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -223,7 +223,7 @@ public bool CertificateHasSha1Signature { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>certificateHasWeakSignature</p>
+  <div class="markdown level1 summary"><p>True if the certificate uses a weak signature algorithm.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -256,7 +256,7 @@ public bool CertificateHasWeakSignature { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>certificateNetworkError</p>
+  <div class="markdown level1 summary"><p>The highest priority network error code, if the certificate has an error.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -290,7 +290,7 @@ public string? CertificateNetworkError { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>cipher</p>
+  <div class="markdown level1 summary"><p>Cipher name.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -323,7 +323,7 @@ public string Cipher { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>issuer</p>
+  <div class="markdown level1 summary"><p>Name of the issuing CA.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -356,7 +356,7 @@ public string Issuer { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>keyExchange</p>
+  <div class="markdown level1 summary"><p>Key Exchange used by the connection, or the empty string if not applicable.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -389,7 +389,7 @@ public string KeyExchange { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>keyExchangeGroup</p>
+  <div class="markdown level1 summary"><p>(EC)DH group used by the connection, if applicable.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -423,7 +423,7 @@ public string? KeyExchangeGroup { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>mac</p>
+  <div class="markdown level1 summary"><p>TLS MAC. Note that AEAD ciphers do not have separate MACs.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -457,7 +457,7 @@ public string? Mac { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L108"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>modernSSL</p>
+  <div class="markdown level1 summary"><p>True if modern SSL</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -490,7 +490,7 @@ public bool ModernSSL { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L129"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>obsoleteSslCipher</p>
+  <div class="markdown level1 summary"><p>True if the connection is using an obsolete SSL cipher.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -523,7 +523,7 @@ public bool ObsoleteSslCipher { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L122"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>obsoleteSslKeyExchange</p>
+  <div class="markdown level1 summary"><p>True if the connection is using an obsolete SSL key exchange.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -556,7 +556,7 @@ public bool ObsoleteSslKeyExchange { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L115"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>obsoleteSslProtocol</p>
+  <div class="markdown level1 summary"><p>True if the connection is using an obsolete SSL protocol.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -589,7 +589,7 @@ public bool ObsoleteSslProtocol { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L136"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>obsoleteSslSignature</p>
+  <div class="markdown level1 summary"><p>True if the connection is using an obsolete SSL signature.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -622,7 +622,7 @@ public bool ObsoleteSslSignature { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>protocol</p>
+  <div class="markdown level1 summary"><p>Protocol name (e.g. &quot;TLS 1.2&quot; or &quot;QUIC&quot;).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -655,7 +655,7 @@ public string Protocol { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>subjectName</p>
+  <div class="markdown level1 summary"><p>Certificate subject name.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -688,7 +688,7 @@ public string SubjectName { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>validFrom</p>
+  <div class="markdown level1 summary"><p>Certificate valid from date.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -721,7 +721,7 @@ public double ValidFrom { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Security/CertificateSecurityState.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>validTo</p>
+  <div class="markdown level1 summary"><p>Certificate valid to (expiration) date</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

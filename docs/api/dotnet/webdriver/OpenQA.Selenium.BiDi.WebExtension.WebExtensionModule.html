@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_WebExtension_WebExtensionModule" data-uid="OpenQA.Selenium.BiDi.WebExtension.WebExtensionModule" class="text-break">
-Class WebExtensionModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/WebExtensionModule.cs/#L27"><i class="bi bi-code-slash"></i></a>
+Class WebExtensionModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/WebExtensionModule.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -122,6 +122,9 @@ Class WebExtensionModule  <a class="header-action link-secondary" title="View so
     <dt>Inherited Members</dt>
     <dd>
     <div>
+      <a class="xref" href="OpenQA.Selenium.BiDi.Module.html#OpenQA_Selenium_BiDi_Module_SubscribeAsync__1_System_String_System_Func___0_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Text_Json_Serialization_Metadata_JsonTypeInfo___0__System_Threading_CancellationToken_">Module.SubscribeAsync&lt;TEventArgs&gt;(string, Func&lt;TEventArgs, Task&gt;, SubscriptionOptions, JsonTypeInfo&lt;TEventArgs&gt;, CancellationToken)</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
     <div>
@@ -152,20 +155,22 @@ Class WebExtensionModule  <a class="header-action link-secondary" title="View so
 
   <a id="OpenQA_Selenium_BiDi_WebExtension_WebExtensionModule_Initialize_" data-uid="OpenQA.Selenium.BiDi.WebExtension.WebExtensionModule.Initialize*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_WebExtension_WebExtensionModule_Initialize_System_Text_Json_JsonSerializerOptions_" data-uid="OpenQA.Selenium.BiDi.WebExtension.WebExtensionModule.Initialize(System.Text.Json.JsonSerializerOptions)">
-  Initialize(JsonSerializerOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/WebExtensionModule.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_WebExtension_WebExtensionModule_Initialize_OpenQA_Selenium_BiDi_BiDi_System_Text_Json_JsonSerializerOptions_" data-uid="OpenQA.Selenium.BiDi.WebExtension.WebExtensionModule.Initialize(OpenQA.Selenium.BiDi.BiDi,System.Text.Json.JsonSerializerOptions)">
+  Initialize(BiDi, JsonSerializerOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/WebExtensionModule.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)</code></pre>
+    <pre><code class="lang-csharp hljs">protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
+    <dt><code>bidi</code> <a class="xref" href="OpenQA.Selenium.BiDi.BiDi.html">BiDi</a></dt>
+    <dd></dd>
     <dt><code>jsonSerializerOptions</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions">JsonSerializerOptions</a></dt>
     <dd></dd>
   </dl>
@@ -183,16 +188,16 @@ Class WebExtensionModule  <a class="header-action link-secondary" title="View so
 
   <a id="OpenQA_Selenium_BiDi_WebExtension_WebExtensionModule_InstallAsync_" data-uid="OpenQA.Selenium.BiDi.WebExtension.WebExtensionModule.InstallAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_WebExtension_WebExtensionModule_InstallAsync_OpenQA_Selenium_BiDi_WebExtension_ExtensionData_OpenQA_Selenium_BiDi_WebExtension_InstallOptions_" data-uid="OpenQA.Selenium.BiDi.WebExtension.WebExtensionModule.InstallAsync(OpenQA.Selenium.BiDi.WebExtension.ExtensionData,OpenQA.Selenium.BiDi.WebExtension.InstallOptions)">
-  InstallAsync(ExtensionData, InstallOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/WebExtensionModule.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_WebExtension_WebExtensionModule_InstallAsync_OpenQA_Selenium_BiDi_WebExtension_ExtensionData_OpenQA_Selenium_BiDi_WebExtension_InstallOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.WebExtension.WebExtensionModule.InstallAsync(OpenQA.Selenium.BiDi.WebExtension.ExtensionData,OpenQA.Selenium.BiDi.WebExtension.InstallOptions,System.Threading.CancellationToken)">
+  InstallAsync(ExtensionData, InstallOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/WebExtensionModule.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;InstallResult&gt; InstallAsync(ExtensionData extensionData, InstallOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;InstallResult&gt; InstallAsync(ExtensionData extensionData, InstallOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -200,6 +205,8 @@ Class WebExtensionModule  <a class="header-action link-secondary" title="View so
     <dt><code>extensionData</code> <a class="xref" href="OpenQA.Selenium.BiDi.WebExtension.ExtensionData.html">ExtensionData</a></dt>
     <dd></dd>
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.WebExtension.InstallOptions.html">InstallOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -221,16 +228,16 @@ Class WebExtensionModule  <a class="header-action link-secondary" title="View so
 
   <a id="OpenQA_Selenium_BiDi_WebExtension_WebExtensionModule_UninstallAsync_" data-uid="OpenQA.Selenium.BiDi.WebExtension.WebExtensionModule.UninstallAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_WebExtension_WebExtensionModule_UninstallAsync_OpenQA_Selenium_BiDi_WebExtension_Extension_OpenQA_Selenium_BiDi_WebExtension_UninstallOptions_" data-uid="OpenQA.Selenium.BiDi.WebExtension.WebExtensionModule.UninstallAsync(OpenQA.Selenium.BiDi.WebExtension.Extension,OpenQA.Selenium.BiDi.WebExtension.UninstallOptions)">
-  UninstallAsync(Extension, UninstallOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/WebExtensionModule.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_WebExtension_WebExtensionModule_UninstallAsync_OpenQA_Selenium_BiDi_WebExtension_Extension_OpenQA_Selenium_BiDi_WebExtension_UninstallOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.WebExtension.WebExtensionModule.UninstallAsync(OpenQA.Selenium.BiDi.WebExtension.Extension,OpenQA.Selenium.BiDi.WebExtension.UninstallOptions,System.Threading.CancellationToken)">
+  UninstallAsync(Extension, UninstallOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/WebExtensionModule.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;UninstallResult&gt; UninstallAsync(Extension extension, UninstallOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;UninstallResult&gt; UninstallAsync(Extension extension, UninstallOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -238,6 +245,8 @@ Class WebExtensionModule  <a class="header-action link-secondary" title="View so
     <dt><code>extension</code> <a class="xref" href="OpenQA.Selenium.BiDi.WebExtension.Extension.html">Extension</a></dt>
     <dd></dd>
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.WebExtension.UninstallOptions.html">UninstallOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -261,7 +270,7 @@ Class WebExtensionModule  <a class="header-action link-secondary" title="View so
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/WebExtensionModule.cs/#L27" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/WebExtensionModule.cs/#L26" class="edit-link">Edit this page</a>
         </div>
 
 

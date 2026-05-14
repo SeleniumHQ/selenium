@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetInterceptFileChooserDialogCommandSettings ">
       
-      <meta name="description" content="SetInterceptFileChooserDialog">
+      <meta name="description" content="Intercept file chooser requests and transfer control to protocol clients. When file chooser interception is enabled, native file chooser dialog is not shown. Instead, a protocol event Page.fileChooserOpened is emitted.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Page_SetInterceptFileChooserDialogCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.Page.SetInterceptFileChooserDialogCommandSettings" class="text-break">
-Class SetInterceptFileChooserDialogCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/SetInterceptFileChooserDialogCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class SetInterceptFileChooserDialogCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/SetInterceptFileChooserDialogCommand.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,9 @@ Class SetInterceptFileChooserDialogCommandSettings  <a class="header-action link
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SetInterceptFileChooserDialog</p>
+  <div class="markdown summary"><p>Intercept file chooser requests and transfer control to protocol clients.
+When file chooser interception is enabled, native file chooser dialog is not shown.
+Instead, a protocol event <code>Page.fileChooserOpened</code> is emitted.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,10 +162,12 @@ Class SetInterceptFileChooserDialogCommandSettings  <a class="header-action link
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_SetInterceptFileChooserDialogCommandSettings_Cancel" data-uid="OpenQA.Selenium.DevTools.V144.Page.SetInterceptFileChooserDialogCommandSettings.Cancel">
   Cancel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/SetInterceptFileChooserDialogCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/SetInterceptFileChooserDialogCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the cancel</p>
+  <div class="markdown level1 summary"><p>If true, cancels the dialog by emitting relevant events (if any)
+in addition to not showing it if the interception is enabled
+(default: false).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -194,7 +198,7 @@ public bool? Cancel { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_SetInterceptFileChooserDialogCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.Page.SetInterceptFileChooserDialogCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/SetInterceptFileChooserDialogCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/SetInterceptFileChooserDialogCommand.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -227,7 +231,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_SetInterceptFileChooserDialogCommandSettings_Enabled" data-uid="OpenQA.Selenium.DevTools.V144.Page.SetInterceptFileChooserDialogCommandSettings.Enabled">
   Enabled
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/SetInterceptFileChooserDialogCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/SetInterceptFileChooserDialogCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the enabled</p>
@@ -260,7 +264,7 @@ public bool Enabled { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/SetInterceptFileChooserDialogCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/SetInterceptFileChooserDialogCommand.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

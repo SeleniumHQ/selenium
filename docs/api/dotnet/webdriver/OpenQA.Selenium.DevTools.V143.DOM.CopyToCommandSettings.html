@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CopyToCommandSettings ">
       
-      <meta name="description" content="CopyTo">
+      <meta name="description" content="Creates a deep copy of the specified node and places it into the target container before the given anchor.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_DOM_CopyToCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.DOM.CopyToCommandSettings" class="text-break">
-Class CopyToCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOM/CopyToCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class CopyToCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOM/CopyToCommand.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class CopyToCommandSettings  <a class="header-action link-secondary" title="View
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>CopyTo</p>
+  <div class="markdown summary"><p>Creates a deep copy of the specified node and places it into the target container before the
+given anchor.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +161,7 @@ Class CopyToCommandSettings  <a class="header-action link-secondary" title="View
 
   <h3 id="OpenQA_Selenium_DevTools_V143_DOM_CopyToCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.DOM.CopyToCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOM/CopyToCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOM/CopyToCommand.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +194,11 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_DOM_CopyToCommandSettings_InsertBeforeNodeId" data-uid="OpenQA.Selenium.DevTools.V143.DOM.CopyToCommandSettings.InsertBeforeNodeId">
   InsertBeforeNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOM/CopyToCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOM/CopyToCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the insertBeforeNodeId</p>
+  <div class="markdown level1 summary"><p>Drop the copy before this node (if absent, the copy becomes the last child of
+<code>targetNodeId</code>).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +229,10 @@ public long? InsertBeforeNodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_DOM_CopyToCommandSettings_NodeId" data-uid="OpenQA.Selenium.DevTools.V143.DOM.CopyToCommandSettings.NodeId">
   NodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOM/CopyToCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOM/CopyToCommand.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the nodeId</p>
+  <div class="markdown level1 summary"><p>Id of the node to copy.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -260,10 +262,10 @@ public long NodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_DOM_CopyToCommandSettings_TargetNodeId" data-uid="OpenQA.Selenium.DevTools.V143.DOM.CopyToCommandSettings.TargetNodeId">
   TargetNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOM/CopyToCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOM/CopyToCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the targetNodeId</p>
+  <div class="markdown level1 summary"><p>Id of the element to drop the copy into.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -293,7 +295,7 @@ public long TargetNodeId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOM/CopyToCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOM/CopyToCommand.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

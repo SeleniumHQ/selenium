@@ -168,10 +168,10 @@ Class DisassembleWasmModuleCommandResponse  <a class="header-action link-seconda
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_DisassembleWasmModuleCommandResponse_Chunk" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.DisassembleWasmModuleCommandResponse.Chunk">
   Chunk
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/DisassembleWasmModuleCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/DisassembleWasmModuleCommand.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the chunk</p>
+  <div class="markdown level1 summary"><p>The first chunk of disassembly.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -201,10 +201,11 @@ public WasmDisassemblyChunk Chunk { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_DisassembleWasmModuleCommandResponse_FunctionBodyOffsets" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.DisassembleWasmModuleCommandResponse.FunctionBodyOffsets">
   FunctionBodyOffsets
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/DisassembleWasmModuleCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/DisassembleWasmModuleCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the functionBodyOffsets</p>
+  <div class="markdown level1 summary"><p>The offsets of all function bodies, in the format [start1, end1,
+start2, end2, ...] where all ends are exclusive.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -234,10 +235,11 @@ public long[] FunctionBodyOffsets { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_DisassembleWasmModuleCommandResponse_StreamId" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.DisassembleWasmModuleCommandResponse.StreamId">
   StreamId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/DisassembleWasmModuleCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/DisassembleWasmModuleCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the streamId</p>
+  <div class="markdown level1 summary"><p>For large modules, return a stream from which additional chunks of
+disassembly can be read successively.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -268,10 +270,10 @@ public string? StreamId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_DisassembleWasmModuleCommandResponse_TotalNumberOfLines" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.DisassembleWasmModuleCommandResponse.TotalNumberOfLines">
   TotalNumberOfLines
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/DisassembleWasmModuleCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/DisassembleWasmModuleCommand.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the totalNumberOfLines</p>
+  <div class="markdown level1 summary"><p>The total number of lines in the disassembly text.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class LifecycleEventEventArgs ">
       
-      <meta name="description" content="LifecycleEvent">
+      <meta name="description" content="Fired for lifecycle events (navigation, load, paint, etc) in the current target (including local frames).">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Page_LifecycleEventEventArgs" data-uid="OpenQA.Selenium.DevTools.V143.Page.LifecycleEventEventArgs" class="text-break">
-Class LifecycleEventEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/LifecycleEventEventArgs.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Class LifecycleEventEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/LifecycleEventEventArgs.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class LifecycleEventEventArgs  <a class="header-action link-secondary" title="Vi
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>LifecycleEvent</p>
+  <div class="markdown summary"><p>Fired for lifecycle events (navigation, load, paint, etc) in the current
+target (including local frames).</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +159,10 @@ Class LifecycleEventEventArgs  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Page_LifecycleEventEventArgs_FrameId" data-uid="OpenQA.Selenium.DevTools.V143.Page.LifecycleEventEventArgs.FrameId">
   FrameId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/LifecycleEventEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/LifecycleEventEventArgs.cs/#L19"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the frameId</p>
+  <div class="markdown level1 summary"><p>Id of the frame.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,10 +192,10 @@ public string FrameId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Page_LifecycleEventEventArgs_LoaderId" data-uid="OpenQA.Selenium.DevTools.V143.Page.LifecycleEventEventArgs.LoaderId">
   LoaderId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/LifecycleEventEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/LifecycleEventEventArgs.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the loaderId</p>
+  <div class="markdown level1 summary"><p>Loader identifier. Empty string if the request is fetched from worker.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -224,7 +225,7 @@ public string LoaderId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Page_LifecycleEventEventArgs_Name" data-uid="OpenQA.Selenium.DevTools.V143.Page.LifecycleEventEventArgs.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/LifecycleEventEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/LifecycleEventEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the name</p>
@@ -257,7 +258,7 @@ public string Name { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Page_LifecycleEventEventArgs_Timestamp" data-uid="OpenQA.Selenium.DevTools.V143.Page.LifecycleEventEventArgs.Timestamp">
   Timestamp
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/LifecycleEventEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/LifecycleEventEventArgs.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the timestamp</p>
@@ -290,7 +291,7 @@ public double Timestamp { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/LifecycleEventEventArgs.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/LifecycleEventEventArgs.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

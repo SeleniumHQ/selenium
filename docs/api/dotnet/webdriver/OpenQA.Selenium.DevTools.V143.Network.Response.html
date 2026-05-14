@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class Response ">
       
-      <meta name="description" content="Response">
+      <meta name="description" content="HTTP response data.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class Response  <a class="header-action link-secondary" title="View source" href
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Response</p>
+  <div class="markdown summary"><p>HTTP response data.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +154,10 @@ Class Response  <a class="header-action link-secondary" title="View source" href
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Response_AlternateProtocolUsage" data-uid="OpenQA.Selenium.DevTools.V143.Network.Response.AlternateProtocolUsage">
   AlternateProtocolUsage
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L185"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L188"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>alternateProtocolUsage</p>
+  <div class="markdown level1 summary"><p>The reason why Chrome uses a specific transport protocol for HTTP semantics.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -188,10 +188,10 @@ public AlternateProtocolUsage? AlternateProtocolUsage { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Response_CacheStorageCacheName" data-uid="OpenQA.Selenium.DevTools.V143.Network.Response.CacheStorageCacheName">
   CacheStorageCacheName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L171"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L174"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>cacheStorageCacheName</p>
+  <div class="markdown level1 summary"><p>Cache Storage Cache Name.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -225,7 +225,7 @@ public string? CacheStorageCacheName { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>charset</p>
+  <div class="markdown level1 summary"><p>Resource charset as determined by the browser (if applicable).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -258,7 +258,7 @@ public string Charset { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>connectionId</p>
+  <div class="markdown level1 summary"><p>Physical connection id that was actually used for this request.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -291,7 +291,7 @@ public double ConnectionId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>connectionReused</p>
+  <div class="markdown level1 summary"><p>Specifies whether physical connection was actually reused for this request.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -321,10 +321,10 @@ public bool ConnectionReused { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Response_EncodedDataLength" data-uid="OpenQA.Selenium.DevTools.V143.Network.Response.EncodedDataLength">
   EncodedDataLength
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L143"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L146"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>encodedDataLength</p>
+  <div class="markdown level1 summary"><p>Total number of bytes received for this request so far.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -357,7 +357,7 @@ public double EncodedDataLength { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L108"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>fromDiskCache</p>
+  <div class="markdown level1 summary"><p>Specifies that the request was served from the disk cache.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -391,7 +391,7 @@ public bool? FromDiskCache { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L129"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>fromEarlyHints</p>
+  <div class="markdown level1 summary"><p>Specifies that the request was served from the prefetch cache.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -425,7 +425,7 @@ public bool? FromEarlyHints { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L122"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>fromPrefetchCache</p>
+  <div class="markdown level1 summary"><p>Specifies that the request was served from the prefetch cache.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -459,7 +459,7 @@ public bool? FromPrefetchCache { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L115"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>fromServiceWorker</p>
+  <div class="markdown level1 summary"><p>Specifies that the request was served from the ServiceWorker.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -493,7 +493,7 @@ public bool? FromServiceWorker { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>headers</p>
+  <div class="markdown level1 summary"><p>HTTP response headers.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -526,7 +526,7 @@ public Headers Headers { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>headersText</p>
+  <div class="markdown level1 summary"><p>HTTP response headers text. This has been replaced by the headers in Network.responseReceivedExtraInfo.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -557,10 +557,11 @@ public string? HeadersText { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Response_IsIpProtectionUsed" data-uid="OpenQA.Selenium.DevTools.V143.Network.Response.IsIpProtectionUsed">
   IsIpProtectionUsed
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L206"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L210"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>isIpProtectionUsed</p>
+  <div class="markdown level1 summary"><p>Indicates whether the request was sent through IP Protection proxies. If
+set to true, the request used the IP Protection privacy feature.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -594,7 +595,7 @@ public bool? IsIpProtectionUsed { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>mimeType</p>
+  <div class="markdown level1 summary"><p>Resource mimeType as determined by the browser.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -624,10 +625,10 @@ public string MimeType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Response_Protocol" data-uid="OpenQA.Selenium.DevTools.V143.Network.Response.Protocol">
   Protocol
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L178"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L181"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>protocol</p>
+  <div class="markdown level1 summary"><p>Protocol used to fetch this request.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -661,7 +662,7 @@ public string? Protocol { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>remoteIPAddress</p>
+  <div class="markdown level1 summary"><p>Remote IP address.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -695,7 +696,7 @@ public string? RemoteIPAddress { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L101"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>remotePort</p>
+  <div class="markdown level1 summary"><p>Remote port.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -729,7 +730,7 @@ public long? RemotePort { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>requestHeaders</p>
+  <div class="markdown level1 summary"><p>Refined HTTP request headers that were actually transmitted over the network.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -763,7 +764,7 @@ public Headers? RequestHeaders { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>requestHeadersText</p>
+  <div class="markdown level1 summary"><p>HTTP request headers text. This has been replaced by the headers in Network.requestWillBeSentExtraInfo.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -794,10 +795,10 @@ public string? RequestHeadersText { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Response_ResponseTime" data-uid="OpenQA.Selenium.DevTools.V143.Network.Response.ResponseTime">
   ResponseTime
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L164"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L167"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>responseTime</p>
+  <div class="markdown level1 summary"><p>The time at which the returned response was generated.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -828,10 +829,10 @@ public double? ResponseTime { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Response_SecurityDetails" data-uid="OpenQA.Selenium.DevTools.V143.Network.Response.SecurityDetails">
   SecurityDetails
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L199"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L202"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>securityDetails</p>
+  <div class="markdown level1 summary"><p>Security details for the request.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -862,10 +863,10 @@ public SecurityDetails? SecurityDetails { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Response_SecurityState" data-uid="OpenQA.Selenium.DevTools.V143.Network.Response.SecurityState">
   SecurityState
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L192"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L195"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>securityState</p>
+  <div class="markdown level1 summary"><p>Security state of the request resource.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -895,10 +896,10 @@ public SecurityState SecurityState { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Response_ServiceWorkerResponseSource" data-uid="OpenQA.Selenium.DevTools.V143.Network.Response.ServiceWorkerResponseSource">
   ServiceWorkerResponseSource
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L157"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L160"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>serviceWorkerResponseSource</p>
+  <div class="markdown level1 summary"><p>Response source of response from ServiceWorker.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -929,10 +930,13 @@ public ServiceWorkerResponseSource? ServiceWorkerResponseSource { get; set; }</c
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Response_ServiceWorkerRouterInfo" data-uid="OpenQA.Selenium.DevTools.V143.Network.Response.ServiceWorkerRouterInfo">
   ServiceWorkerRouterInfo
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L139"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>serviceWorkerRouterInfo</p>
+  <div class="markdown level1 summary"><p>Information about how ServiceWorker Static Router API was used. If this
+field is set with <code>matchedSourceType</code> field, a matching rule is found.
+If this field is set without <code>matchedSource</code>, no matching rule is found.
+Otherwise, the API is not used.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -966,7 +970,7 @@ public ServiceWorkerRouterInfo? ServiceWorkerRouterInfo { get; set; }</code></pr
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>status</p>
+  <div class="markdown level1 summary"><p>HTTP response status code.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -999,7 +1003,7 @@ public long Status { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>statusText</p>
+  <div class="markdown level1 summary"><p>HTTP response status text.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1029,10 +1033,10 @@ public string StatusText { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Response_Timing" data-uid="OpenQA.Selenium.DevTools.V143.Network.Response.Timing">
   Timing
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L150"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L153"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>timing</p>
+  <div class="markdown level1 summary"><p>Timing information for the given request.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1066,7 +1070,7 @@ public ResourceTiming? Timing { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Response.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>url</p>
+  <div class="markdown level1 summary"><p>Response URL. This URL can be different from CachedResource.url in case of redirect.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

@@ -502,7 +502,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">GeckoDriverInfo.</span><code><a href="../firefox/GeckoDriverInfo.html#getCanonicalCapabilities()" class="member-name-link">getCanonicalCapabilities</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
+<div class="col-first odd-row-color"><code>@NonNull <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">FirefoxDriver.</span><code><a href="../firefox/FirefoxDriver.html#getCapabilities()" class="member-name-link">getCapabilities</a>()</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
@@ -578,14 +578,23 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color"><span class="type-name-label">Session.</span><code><a href="../grid/data/Session.html#getCapabilities()" class="member-name-link">getCapabilities</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SessionClosedData.</span><code><a href="../grid/data/SessionClosedData.html#getCapabilities()" class="member-name-link">getCapabilities</a>()</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SessionCreatedData.</span><code><a href="../grid/data/SessionCreatedData.html#getCapabilities()" class="member-name-link">getCapabilities</a>()</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">CreateSessionRequest.</span><code><a href="../grid/data/CreateSessionRequest.html#getDesiredCapabilities()" class="member-name-link">getDesiredCapabilities</a>()</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">Session.</span><code><a href="../grid/data/Session.html#getStereotype()" class="member-name-link">getStereotype</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">Slot.</span><code><a href="../grid/data/Slot.html#getStereotype()" class="member-name-link">getStereotype</a>()</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SessionCreatedData.</span><code><a href="../grid/data/SessionCreatedData.html#getStereotype()" class="member-name-link">getStereotype</a>()</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Slot.</span><code><a href="../grid/data/Slot.html#getStereotype()" class="member-name-link">getStereotype</a>()</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Methods in <a href="../grid/data/package-summary.html">org.openqa.selenium.grid.data</a> that return types with arguments of type <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></span></div>
 <div class="summary-table three-column-summary">
@@ -646,6 +655,26 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri,
  <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
  <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;startTime)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../grid/data/SessionClosedData.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,org.openqa.selenium.grid.data.SessionClosedReason,org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.Capabilities,java.time.Instant,java.time.Instant)" class="member-name-link">SessionClosedData</a><wbr>(<a href="../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
+ <a href="../grid/data/SessionClosedReason.html" title="enum class in org.openqa.selenium.grid.data">SessionClosedReason</a>&nbsp;reason,
+ <a href="../grid/data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri,
+ <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;startTime,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;endTime)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Full constructor with all session context for sidecar services.</div>
+</div>
+<div class="col-first odd-row-color"><code>&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../grid/data/SessionCreatedData.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,org.openqa.selenium.grid.data.NodeId,java.net.URI,java.net.URI,org.openqa.selenium.Capabilities,org.openqa.selenium.Capabilities,java.time.Instant)" class="member-name-link">SessionCreatedData</a><wbr>(<a href="../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
+ <a href="../grid/data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;sessionUri,
+ <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;startTime)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
@@ -762,6 +791,19 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">SessionFactory.</span><code><a href="../grid/node/SessionFactory.html#getStereotype()" class="member-name-link">getStereotype</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+</div>
+<div class="caption"><span>Methods in <a href="../grid/node/package-summary.html">org.openqa.selenium.grid.node</a> that return types with arguments of type <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../grid/node/SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">NodeSessionFactoryProvider.</span><code><a href="../grid/node/NodeSessionFactoryProvider.html#loadFactories(org.openqa.selenium.grid.config.Config,org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory)" class="member-name-link">loadFactories</a><wbr>(<a href="../grid/config/Config.html" title="interface in org.openqa.selenium.grid.config">Config</a>&nbsp;config,
+ <a href="../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+ <a href="../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Creates session factories for the capabilities this provider handles.</div>
+</div>
 </div>
 <div class="caption"><span>Methods in <a href="../grid/node/package-summary.html">org.openqa.selenium.grid.node</a> with parameters of type <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></span></div>
 <div class="summary-table three-column-summary">
@@ -1234,7 +1276,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Describes the smallest set of <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> that could be used to create an instance of
  this <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
+<div class="col-first odd-row-color"><code>@NonNull <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">RemoteWebDriver.</span><code><a href="../remote/RemoteWebDriver.html#getCapabilities()" class="member-name-link">getCapabilities</a>()</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>

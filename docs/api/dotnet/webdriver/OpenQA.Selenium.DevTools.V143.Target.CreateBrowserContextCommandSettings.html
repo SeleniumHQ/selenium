@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CreateBrowserContextCommandSettings ">
       
-      <meta name="description" content="CreateBrowserContext">
+      <meta name="description" content="Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than one.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Target_CreateBrowserContextCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.Target.CreateBrowserContextCommandSettings" class="text-break">
-Class CreateBrowserContextCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/CreateBrowserContextCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class CreateBrowserContextCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/CreateBrowserContextCommand.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class CreateBrowserContextCommandSettings  <a class="header-action link-secondar
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>CreateBrowserContext</p>
+  <div class="markdown summary"><p>Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
+one.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +161,7 @@ Class CreateBrowserContextCommandSettings  <a class="header-action link-secondar
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Target_CreateBrowserContextCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.Target.CreateBrowserContextCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/CreateBrowserContextCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/CreateBrowserContextCommand.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +194,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Target_CreateBrowserContextCommandSettings_DisposeOnDetach" data-uid="OpenQA.Selenium.DevTools.V143.Target.CreateBrowserContextCommandSettings.DisposeOnDetach">
   DisposeOnDetach
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/CreateBrowserContextCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/CreateBrowserContextCommand.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the disposeOnDetach</p>
+  <div class="markdown level1 summary"><p>If specified, disposes this context when debugging session disconnects.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +228,11 @@ public bool? DisposeOnDetach { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Target_CreateBrowserContextCommandSettings_OriginsWithUniversalNetworkAccess" data-uid="OpenQA.Selenium.DevTools.V143.Target.CreateBrowserContextCommandSettings.OriginsWithUniversalNetworkAccess">
   OriginsWithUniversalNetworkAccess
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/CreateBrowserContextCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/CreateBrowserContextCommand.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the originsWithUniversalNetworkAccess</p>
+  <div class="markdown level1 summary"><p>An optional list of origins to grant unlimited cross-origin access to.
+Parts of the URL other than those constituting origin are ignored.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -261,10 +263,10 @@ public string[]? OriginsWithUniversalNetworkAccess { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Target_CreateBrowserContextCommandSettings_ProxyBypassList" data-uid="OpenQA.Selenium.DevTools.V143.Target.CreateBrowserContextCommandSettings.ProxyBypassList">
   ProxyBypassList
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/CreateBrowserContextCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/CreateBrowserContextCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the proxyBypassList</p>
+  <div class="markdown level1 summary"><p>Proxy bypass list, similar to the one passed to --proxy-bypass-list</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -295,10 +297,10 @@ public string? ProxyBypassList { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Target_CreateBrowserContextCommandSettings_ProxyServer" data-uid="OpenQA.Selenium.DevTools.V143.Target.CreateBrowserContextCommandSettings.ProxyServer">
   ProxyServer
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/CreateBrowserContextCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/CreateBrowserContextCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the proxyServer</p>
+  <div class="markdown level1 summary"><p>Proxy server, similar to the one passed to --proxy-server</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -329,7 +331,7 @@ public string? ProxyServer { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/CreateBrowserContextCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/CreateBrowserContextCommand.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

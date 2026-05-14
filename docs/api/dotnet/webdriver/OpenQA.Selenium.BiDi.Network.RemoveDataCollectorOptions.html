@@ -101,7 +101,7 @@ Class RemoveDataCollectorOptions  <a class="header-action link-secondary" title=
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class RemoveDataCollectorOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public record RemoveDataCollectorOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;RemoveDataCollectorOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class RemoveDataCollectorOptions  <a class="header-action link-secondary" title=
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.RemoveDataCollectorOptions.html">RemoveDataCollectorOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">

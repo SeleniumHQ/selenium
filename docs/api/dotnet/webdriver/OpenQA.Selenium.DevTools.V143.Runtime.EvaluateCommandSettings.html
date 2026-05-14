@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class EvaluateCommandSettings ">
       
-      <meta name="description" content="Evaluate">
+      <meta name="description" content="Evaluates expression on global object.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class EvaluateCommandSettings  <a class="header-action link-secondary" title="Vi
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Evaluate</p>
+  <div class="markdown summary"><p>Evaluates expression on global object.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,10 +160,13 @@ Class EvaluateCommandSettings  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_EvaluateCommandSettings_AllowUnsafeEvalBlockedByCSP" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.EvaluateCommandSettings.AllowUnsafeEvalBlockedByCSP">
   AllowUnsafeEvalBlockedByCSP
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L128"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the allowUnsafeEvalBlockedByCSP</p>
+  <div class="markdown level1 summary"><p>The Content Security Policy (CSP) for the target might block 'unsafe-eval'
+which includes eval(), Function(), setTimeout() and setInterval()
+when called with non-callable arguments. This flag bypasses CSP for this
+evaluation and allows unsafe-eval. Defaults to true.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -194,10 +197,11 @@ public bool? AllowUnsafeEvalBlockedByCSP { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_EvaluateCommandSettings_AwaitPromise" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.EvaluateCommandSettings.AwaitPromise">
   AwaitPromise
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the awaitPromise</p>
+  <div class="markdown level1 summary"><p>Whether execution should <code>await</code> for resulting value and return once awaited promise is
+resolved.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -261,10 +265,14 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_EvaluateCommandSettings_ContextId" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.EvaluateCommandSettings.ContextId">
   ContextId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the contextId</p>
+  <div class="markdown level1 summary"><p>Specifies in which execution context to perform evaluation. If the parameter is omitted the
+evaluation will be performed in the context of the inspected page.
+This is mutually exclusive with <code>uniqueContextId</code>, which offers an
+alternative way to identify the execution context that is more reliable
+in a multi-process environment.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -295,10 +303,10 @@ public long? ContextId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_EvaluateCommandSettings_DisableBreaks" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.EvaluateCommandSettings.DisableBreaks">
   DisableBreaks
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L109"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the disableBreaks</p>
+  <div class="markdown level1 summary"><p>Disable breakpoints during execution.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -332,7 +340,7 @@ public bool? DisableBreaks { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the expression</p>
+  <div class="markdown level1 summary"><p>Expression to evaluate.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -362,10 +370,10 @@ public string Expression { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_EvaluateCommandSettings_GeneratePreview" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.EvaluateCommandSettings.GeneratePreview">
   GeneratePreview
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L72"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the generatePreview</p>
+  <div class="markdown level1 summary"><p>Whether preview should be generated for the result.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -399,7 +407,7 @@ public bool? GeneratePreview { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the includeCommandLineAPI</p>
+  <div class="markdown level1 summary"><p>Determines whether Command Line API should be available during the evaluation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -433,7 +441,7 @@ public bool? IncludeCommandLineAPI { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the objectGroup</p>
+  <div class="markdown level1 summary"><p>Symbolic group name that can be used to release multiple objects.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -464,10 +472,12 @@ public string? ObjectGroup { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_EvaluateCommandSettings_ReplMode" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.EvaluateCommandSettings.ReplMode">
   ReplMode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L118"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the replMode</p>
+  <div class="markdown level1 summary"><p>Setting this flag to true enables <code>let</code> re-declaration and top-level <code>await</code>.
+Note that <code>let</code> variables can only be re-declared if they originate from
+<code>replMode</code> themselves.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -498,10 +508,10 @@ public bool? ReplMode { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_EvaluateCommandSettings_ReturnByValue" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.EvaluateCommandSettings.ReturnByValue">
   ReturnByValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the returnByValue</p>
+  <div class="markdown level1 summary"><p>Whether the result is expected to be a JSON object that should be sent by value.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -532,10 +542,11 @@ public bool? ReturnByValue { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_EvaluateCommandSettings_SerializationOptions" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.EvaluateCommandSettings.SerializationOptions">
   SerializationOptions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L148"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the serializationOptions</p>
+  <div class="markdown level1 summary"><p>Specifies the result serialization. If provided, overrides
+<code>generatePreview</code> and <code>returnByValue</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -566,10 +577,11 @@ public SerializationOptions? SerializationOptions { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_EvaluateCommandSettings_Silent" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.EvaluateCommandSettings.Silent">
   Silent
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the silent</p>
+  <div class="markdown level1 summary"><p>In silent mode exceptions thrown during evaluation are not reported and do not pause
+execution. Overrides <code>setPauseOnException</code> state.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -600,10 +612,11 @@ public bool? Silent { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_EvaluateCommandSettings_ThrowOnSideEffect" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.EvaluateCommandSettings.ThrowOnSideEffect">
   ThrowOnSideEffect
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L95"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the throwOnSideEffect</p>
+  <div class="markdown level1 summary"><p>Whether to throw an exception if side effect cannot be ruled out during evaluation.
+This implies <code>disableBreaks</code> below.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -634,10 +647,10 @@ public bool? ThrowOnSideEffect { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_EvaluateCommandSettings_Timeout" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.EvaluateCommandSettings.Timeout">
   Timeout
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L102"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the timeout</p>
+  <div class="markdown level1 summary"><p>Terminate execution after timing out (number of milliseconds).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -668,10 +681,15 @@ public double? Timeout { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_EvaluateCommandSettings_UniqueContextId" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.EvaluateCommandSettings.UniqueContextId">
   UniqueContextId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L123"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L140"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the uniqueContextId</p>
+  <div class="markdown level1 summary"><p>An alternative way to specify the execution context to evaluate in.
+Compared to contextId that may be reused across processes, this is guaranteed to be
+system-unique, so it can be used to prevent accidental evaluation of the expression
+in context different than intended (e.g. as a result of navigation across process
+boundaries).
+This is mutually exclusive with <code>contextId</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -702,10 +720,10 @@ public string? UniqueContextId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_EvaluateCommandSettings_UserGesture" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.EvaluateCommandSettings.UserGesture">
   UserGesture
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/EvaluateCommand.cs/#L79"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the userGesture</p>
+  <div class="markdown level1 summary"><p>Whether execution should be treated as initiated by user in the UI.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

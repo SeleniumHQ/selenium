@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class EmulateNetworkConditionsCommandSettings ">
       
-      <meta name="description" content="EmulateNetworkConditions">
+      <meta name="description" content="Activates emulation of network conditions. This command is deprecated in favor of the emulateNetworkConditionsByRule and overrideNetworkState commands, which can be used together to the same effect.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Network_EmulateNetworkConditionsCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.Network.EmulateNetworkConditionsCommandSettings" class="text-break">
-Class EmulateNetworkConditionsCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class EmulateNetworkConditionsCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class EmulateNetworkConditionsCommandSettings  <a class="header-action link-seco
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>EmulateNetworkConditions</p>
+  <div class="markdown summary"><p>Activates emulation of network conditions. This command is deprecated in favor of the emulateNetworkConditionsByRule
+and overrideNetworkState commands, which can be used together to the same effect.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +161,7 @@ Class EmulateNetworkConditionsCommandSettings  <a class="header-action link-seco
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_EmulateNetworkConditionsCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.Network.EmulateNetworkConditionsCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +194,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_EmulateNetworkConditionsCommandSettings_ConnectionType" data-uid="OpenQA.Selenium.DevTools.V143.Network.EmulateNetworkConditionsCommandSettings.ConnectionType">
   ConnectionType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the connectionType</p>
+  <div class="markdown level1 summary"><p>Connection type if known.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +228,10 @@ public ConnectionType? ConnectionType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_EmulateNetworkConditionsCommandSettings_DownloadThroughput" data-uid="OpenQA.Selenium.DevTools.V143.Network.EmulateNetworkConditionsCommandSettings.DownloadThroughput">
   DownloadThroughput
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the downloadThroughput</p>
+  <div class="markdown level1 summary"><p>Maximal aggregated download throughput (bytes/sec). -1 disables download throttling.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -260,10 +261,10 @@ public double DownloadThroughput { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_EmulateNetworkConditionsCommandSettings_Latency" data-uid="OpenQA.Selenium.DevTools.V143.Network.EmulateNetworkConditionsCommandSettings.Latency">
   Latency
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the latency</p>
+  <div class="markdown level1 summary"><p>Minimum latency from request sent to response headers received (ms).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -293,10 +294,10 @@ public double Latency { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_EmulateNetworkConditionsCommandSettings_Offline" data-uid="OpenQA.Selenium.DevTools.V143.Network.EmulateNetworkConditionsCommandSettings.Offline">
   Offline
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the offline</p>
+  <div class="markdown level1 summary"><p>True to emulate internet disconnection.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -326,10 +327,10 @@ public bool Offline { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_EmulateNetworkConditionsCommandSettings_PacketLoss" data-uid="OpenQA.Selenium.DevTools.V143.Network.EmulateNetworkConditionsCommandSettings.PacketLoss">
   PacketLoss
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L61"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the packetLoss</p>
+  <div class="markdown level1 summary"><p>WebRTC packet loss (percent, 0-100). 0 disables packet loss emulation, 100 drops all the packets.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -360,10 +361,10 @@ public double? PacketLoss { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_EmulateNetworkConditionsCommandSettings_PacketQueueLength" data-uid="OpenQA.Selenium.DevTools.V143.Network.EmulateNetworkConditionsCommandSettings.PacketQueueLength">
   PacketQueueLength
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L68"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the packetQueueLength</p>
+  <div class="markdown level1 summary"><p>WebRTC packet queue length (packet). 0 removes any queue length limitations.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -394,10 +395,10 @@ public long? PacketQueueLength { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_EmulateNetworkConditionsCommandSettings_PacketReordering" data-uid="OpenQA.Selenium.DevTools.V143.Network.EmulateNetworkConditionsCommandSettings.PacketReordering">
   PacketReordering
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the packetReordering</p>
+  <div class="markdown level1 summary"><p>WebRTC packetReordering feature.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -428,10 +429,10 @@ public bool? PacketReordering { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_EmulateNetworkConditionsCommandSettings_UploadThroughput" data-uid="OpenQA.Selenium.DevTools.V143.Network.EmulateNetworkConditionsCommandSettings.UploadThroughput">
   UploadThroughput
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the uploadThroughput</p>
+  <div class="markdown level1 summary"><p>Maximal aggregated upload throughput (bytes/sec).  -1 disables upload throttling.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -461,7 +462,7 @@ public double UploadThroughput { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EmulateNetworkConditionsCommand.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

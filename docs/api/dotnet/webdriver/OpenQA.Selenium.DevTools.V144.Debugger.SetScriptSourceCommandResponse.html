@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetScriptSourceCommandResponse ">
       
-      <meta name="description" content="Response for SetScriptSource">
+      <meta name="description" content="Response for Edits JavaScript source live. In general, functions that are currently on the stack can not be edited with a single exception: If the edited function is the top-most stack frame and that is the only activation of that function on the stack. In this case the live edit will be successful and a Debugger.restartFrame for the top-most function is automatically triggered.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Debugger_SetScriptSourceCommandResponse" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.SetScriptSourceCommandResponse" class="text-break">
-Class SetScriptSourceCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
+Class SetScriptSourceCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L69"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,12 @@ Class SetScriptSourceCommandResponse  <a class="header-action link-secondary" ti
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Response for SetScriptSource</p>
+  <div class="markdown summary"><p>Response for Edits JavaScript source live.</p>
+<p>In general, functions that are currently on the stack can not be edited with
+a single exception: If the edited function is the top-most stack frame and
+that is the only activation of that function on the stack. In this case
+the live edit will be successful and a <code>Debugger.restartFrame</code> for the
+top-most function is automatically triggered.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -168,10 +173,10 @@ Class SetScriptSourceCommandResponse  <a class="header-action link-secondary" ti
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_SetScriptSourceCommandResponse_AsyncStackTrace" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.SetScriptSourceCommandResponse.AsyncStackTrace">
   AsyncStackTrace
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the asyncStackTrace</p>
+  <div class="markdown level1 summary"><p>Async stack trace, if any.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -202,10 +207,10 @@ public StackTrace? AsyncStackTrace { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_SetScriptSourceCommandResponse_AsyncStackTraceId" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.SetScriptSourceCommandResponse.AsyncStackTraceId">
   AsyncStackTraceId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L95"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the asyncStackTraceId</p>
+  <div class="markdown level1 summary"><p>Async stack trace, if any.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -236,10 +241,10 @@ public StackTraceId? AsyncStackTraceId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_SetScriptSourceCommandResponse_CallFrames" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.SetScriptSourceCommandResponse.CallFrames">
   CallFrames
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the callFrames</p>
+  <div class="markdown level1 summary"><p>New stack trace in case editing has happened while VM was stopped.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -270,10 +275,10 @@ public CallFrame[]? CallFrames { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_SetScriptSourceCommandResponse_ExceptionDetails" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.SetScriptSourceCommandResponse.ExceptionDetails">
   ExceptionDetails
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L111"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the exceptionDetails</p>
+  <div class="markdown level1 summary"><p>Exception details if any. Only present when <code>status</code> is <code>CompileError</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -304,10 +309,10 @@ public ExceptionDetails? ExceptionDetails { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_SetScriptSourceCommandResponse_StackChanged" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.SetScriptSourceCommandResponse.StackChanged">
   StackChanged
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L81"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the stackChanged</p>
+  <div class="markdown level1 summary"><p>Whether current call stack  was modified after applying the changes.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -338,10 +343,12 @@ public bool? StackChanged { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_SetScriptSourceCommandResponse_Status" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.SetScriptSourceCommandResponse.Status">
   Status
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L104"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the status</p>
+  <div class="markdown level1 summary"><p>Whether the operation was successful or not. Only <code>Ok</code> denotes a
+successful live edit while the other enum variants denote why
+the live edit failed.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -371,7 +378,7 @@ public string Status { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L55" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetScriptSourceCommand.cs/#L69" class="edit-link">Edit this page</a>
         </div>
 
 

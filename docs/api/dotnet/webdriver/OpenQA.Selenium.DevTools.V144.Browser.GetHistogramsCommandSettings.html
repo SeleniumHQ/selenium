@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetHistogramsCommandSettings ">
       
-      <meta name="description" content="GetHistograms">
+      <meta name="description" content="Get Chrome histograms.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class GetHistogramsCommandSettings  <a class="header-action link-secondary" titl
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>GetHistograms</p>
+  <div class="markdown summary"><p>Get Chrome histograms.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -193,10 +193,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_GetHistogramsCommandSettings_Delta" data-uid="OpenQA.Selenium.DevTools.V144.Browser.GetHistogramsCommandSettings.Delta">
   Delta
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/GetHistogramsCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/GetHistogramsCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the delta</p>
+  <div class="markdown level1 summary"><p>If true, retrieve delta since last delta call.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +227,12 @@ public bool? Delta { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_GetHistogramsCommandSettings_Query" data-uid="OpenQA.Selenium.DevTools.V144.Browser.GetHistogramsCommandSettings.Query">
   Query
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/GetHistogramsCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/GetHistogramsCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the query</p>
+  <div class="markdown level1 summary"><p>Requested substring in name. Only histograms which have query as a
+substring in their name are extracted. An empty or absent query returns
+all histograms.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

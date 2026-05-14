@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetNodeForLocationCommandSettings ">
       
-      <meta name="description" content="GetNodeForLocation">
+      <meta name="description" content="Returns node id at given location. Depending on whether DOM domain is enabled, nodeId is either returned or not.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_DOM_GetNodeForLocationCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetNodeForLocationCommandSettings" class="text-break">
-Class GetNodeForLocationCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetNodeForLocationCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class GetNodeForLocationCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetNodeForLocationCommand.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class GetNodeForLocationCommandSettings  <a class="header-action link-secondary"
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>GetNodeForLocation</p>
+  <div class="markdown summary"><p>Returns node id at given location. Depending on whether DOM domain is enabled, nodeId is
+either returned or not.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +161,7 @@ Class GetNodeForLocationCommandSettings  <a class="header-action link-secondary"
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_GetNodeForLocationCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetNodeForLocationCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetNodeForLocationCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetNodeForLocationCommand.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +194,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_GetNodeForLocationCommandSettings_IgnorePointerEventsNone" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetNodeForLocationCommandSettings.IgnorePointerEventsNone">
   IgnorePointerEventsNone
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetNodeForLocationCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetNodeForLocationCommand.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the ignorePointerEventsNone</p>
+  <div class="markdown level1 summary"><p>Whether to ignore pointer-events: none on elements and hit test them.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +228,10 @@ public bool? IgnorePointerEventsNone { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_GetNodeForLocationCommandSettings_IncludeUserAgentShadowDOM" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetNodeForLocationCommandSettings.IncludeUserAgentShadowDOM">
   IncludeUserAgentShadowDOM
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetNodeForLocationCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetNodeForLocationCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the includeUserAgentShadowDOM</p>
+  <div class="markdown level1 summary"><p>False to skip to the nearest non-UA shadow root ancestor (default: false).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -261,10 +262,10 @@ public bool? IncludeUserAgentShadowDOM { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_GetNodeForLocationCommandSettings_X" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetNodeForLocationCommandSettings.X">
   X
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetNodeForLocationCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetNodeForLocationCommand.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the x</p>
+  <div class="markdown level1 summary"><p>X coordinate.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -294,10 +295,10 @@ public long X { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_GetNodeForLocationCommandSettings_Y" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetNodeForLocationCommandSettings.Y">
   Y
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetNodeForLocationCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetNodeForLocationCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the y</p>
+  <div class="markdown level1 summary"><p>Y coordinate.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -327,7 +328,7 @@ public long Y { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetNodeForLocationCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetNodeForLocationCommand.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

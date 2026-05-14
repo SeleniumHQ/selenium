@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class DeepSerializedValue ">
       
-      <meta name="description" content="DeepSerializedValue">
+      <meta name="description" content="Represents deep serialized value.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class DeepSerializedValue  <a class="header-action link-secondary" title="View s
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>DeepSerializedValue</p>
+  <div class="markdown summary"><p>Represents deep serialized value.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -255,10 +255,12 @@ public object? Value { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_DeepSerializedValue_WeakLocalObjectReference" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.DeepSerializedValue.WeakLocalObjectReference">
   WeakLocalObjectReference
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/DeepSerializedValue.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/DeepSerializedValue.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>weakLocalObjectReference</p>
+  <div class="markdown level1 summary"><p>Set if value reference met more then once during serialization. In such
+case, value is provided only to one of the serialized values. Unique
+per value in the scope of one CDP call.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

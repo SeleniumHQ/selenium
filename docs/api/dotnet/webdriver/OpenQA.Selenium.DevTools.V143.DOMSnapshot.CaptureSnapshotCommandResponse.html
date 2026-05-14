@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CaptureSnapshotCommandResponse ">
       
-      <meta name="description" content="Response for CaptureSnapshot">
+      <meta name="description" content="Response for Returns a document snapshot, including the full DOM tree of the root node (including iframes, template contents, and imported documents) in a flattened array, as well as layout and white-listed computed style information for the nodes. Shadow DOM in the returned DOM tree is flattened.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_DOMSnapshot_CaptureSnapshotCommandResponse" data-uid="OpenQA.Selenium.DevTools.V143.DOMSnapshot.CaptureSnapshotCommandResponse" class="text-break">
-Class CaptureSnapshotCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/CaptureSnapshotCommand.cs/#L62"><i class="bi bi-code-slash"></i></a>
+Class CaptureSnapshotCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/CaptureSnapshotCommand.cs/#L72"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,10 @@ Class CaptureSnapshotCommandResponse  <a class="header-action link-secondary" ti
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Response for CaptureSnapshot</p>
+  <div class="markdown summary"><p>Response for Returns a document snapshot, including the full DOM tree of the root node (including iframes,
+template contents, and imported documents) in a flattened array, as well as layout and
+white-listed computed style information for the nodes. Shadow DOM in the returned DOM tree is
+flattened.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -168,10 +171,10 @@ Class CaptureSnapshotCommandResponse  <a class="header-action link-secondary" ti
 
   <h3 id="OpenQA_Selenium_DevTools_V143_DOMSnapshot_CaptureSnapshotCommandResponse_Documents" data-uid="OpenQA.Selenium.DevTools.V143.DOMSnapshot.CaptureSnapshotCommandResponse.Documents">
   Documents
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/CaptureSnapshotCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/CaptureSnapshotCommand.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the documents</p>
+  <div class="markdown level1 summary"><p>The nodes in the DOM tree. The DOMNode at index 0 corresponds to the root document.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -201,10 +204,10 @@ public DocumentSnapshot[] Documents { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_DOMSnapshot_CaptureSnapshotCommandResponse_Strings" data-uid="OpenQA.Selenium.DevTools.V143.DOMSnapshot.CaptureSnapshotCommandResponse.Strings">
   Strings
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/CaptureSnapshotCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/CaptureSnapshotCommand.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the strings</p>
+  <div class="markdown level1 summary"><p>Shared string table that all string properties refer to with indexes.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -234,7 +237,7 @@ public string[] Strings { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/CaptureSnapshotCommand.cs/#L62" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/CaptureSnapshotCommand.cs/#L72" class="edit-link">Edit this page</a>
         </div>
 
 

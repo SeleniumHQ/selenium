@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_IWebDriver" data-uid="OpenQA.Selenium.IWebDriver" class="text-break">
-Interface IWebDriver  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L47"><i class="bi bi-code-slash"></i></a>
+Interface IWebDriver  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -129,7 +129,7 @@ Interface IWebDriver  <a class="header-action link-secondary" title="View source
     <dt>Extension Methods</dt>
     <dd>
   <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.WebDriverExtensions.html#OpenQA_Selenium_BiDi_WebDriverExtensions_AsBiDiAsync_OpenQA_Selenium_IWebDriver_OpenQA_Selenium_BiDi_BiDiOptions_">WebDriverExtensions.AsBiDiAsync(IWebDriver, BiDiOptions?)</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.WebDriverExtensions.html#OpenQA_Selenium_BiDi_WebDriverExtensions_AsBiDiAsync_OpenQA_Selenium_IWebDriver_OpenQA_Selenium_BiDi_BiDiOptions_System_Threading_CancellationToken_">WebDriverExtensions.AsBiDiAsync(IWebDriver, BiDiOptions?, CancellationToken)</a>
   </div>
   </dd></dl>
 
@@ -138,11 +138,13 @@ Interface IWebDriver  <a class="header-action link-secondary" title="View source
   <h2 id="OpenQA_Selenium_IWebDriver_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>The <a class="xref" href="OpenQA.Selenium.IWebDriver.html">IWebDriver</a> interface is the main interface to use for testing, which
 represents an idealized web browser. The methods in this class fall into three categories:</p>
-<ul><li>Control of the browser itself</li><li>Selection of <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElements</a></li><li>Debugging aids</li></ul><p>
+<ul><li>Control of the browser itself</li><li>Selection of <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElements</a></li><li>Debugging aids</li></ul>
+<p>
 Key properties and methods are <a class="xref" href="OpenQA.Selenium.IWebDriver.html#OpenQA_Selenium_IWebDriver_Url">Url</a>, which is used to
 load a new web page by setting the property, and the various methods similar
 to <a class="xref" href="OpenQA.Selenium.ISearchContext.html#OpenQA_Selenium_ISearchContext_FindElement_OpenQA_Selenium_By_">FindElement(By)</a>, which is used to find <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElements</a>.
-</p><p>
+</p>
+<p>
 You use the interface by instantiate drivers that implement of this interface.
 You should write your tests against this interface so that you may "swap in" a
 more fully featured browser when there is a requirement for one.
@@ -158,7 +160,7 @@ more fully featured browser when there is a requirement for one.
 
   <h3 id="OpenQA_Selenium_IWebDriver_CurrentWindowHandle" data-uid="OpenQA.Selenium.IWebDriver.CurrentWindowHandle">
   CurrentWindowHandle
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the current window handle, which is an opaque handle to this
@@ -191,7 +193,7 @@ window that uniquely identifies it within this driver instance.</p>
 
   <h3 id="OpenQA_Selenium_IWebDriver_PageSource" data-uid="OpenQA.Selenium.IWebDriver.PageSource">
   PageSource
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L81"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the source of the page last loaded by the browser.</p>
@@ -232,7 +234,7 @@ or escaped in the same way as the response sent from the web server.</p>
 
   <h3 id="OpenQA_Selenium_IWebDriver_Title" data-uid="OpenQA.Selenium.IWebDriver.Title">
   Title
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the title of the current browser window.</p>
@@ -264,7 +266,7 @@ or escaped in the same way as the response sent from the web server.</p>
 
   <h3 id="OpenQA_Selenium_IWebDriver_Url" data-uid="OpenQA.Selenium.IWebDriver.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the URL the browser is currently displaying.</p>
@@ -312,7 +314,7 @@ future calls against this interface will be against the freshly loaded page.</p>
 
   <h3 id="OpenQA_Selenium_IWebDriver_WindowHandles" data-uid="OpenQA.Selenium.IWebDriver.WindowHandles">
   WindowHandles
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L93"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L92"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the window handles of open browser windows.</p>
@@ -348,7 +350,7 @@ future calls against this interface will be against the freshly loaded page.</p>
 
   <h3 id="OpenQA_Selenium_IWebDriver_Close" data-uid="OpenQA.Selenium.IWebDriver.Close">
   Close()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L97"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Close the current window, quitting the browser if it is the last window currently open.</p>
@@ -375,7 +377,7 @@ future calls against this interface will be against the freshly loaded page.</p>
 
   <h3 id="OpenQA_Selenium_IWebDriver_Manage" data-uid="OpenQA.Selenium.IWebDriver.Manage">
   Manage()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L109"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Instructs the driver to change its settings.</p>
@@ -409,7 +411,7 @@ the settings of the driver.</p>
 
   <h3 id="OpenQA_Selenium_IWebDriver_Navigate" data-uid="OpenQA.Selenium.IWebDriver.Navigate">
   Navigate()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L117"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L116"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Instructs the driver to navigate the browser to another location.</p>
@@ -443,7 +445,7 @@ the browser's history and to navigate to a given URL.</p>
 
   <h3 id="OpenQA_Selenium_IWebDriver_Quit" data-uid="OpenQA.Selenium.IWebDriver.Quit">
   Quit()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L102"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Quits this driver, closing every associated window.</p>
@@ -470,7 +472,7 @@ the browser's history and to navigate to a given URL.</p>
 
   <h3 id="OpenQA_Selenium_IWebDriver_SwitchTo" data-uid="OpenQA.Selenium.IWebDriver.SwitchTo">
   SwitchTo()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L124"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L123"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Instructs the driver to send future commands to a different frame or window.</p>
@@ -504,7 +506,7 @@ a frame or window.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L47" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L46" class="edit-link">Edit this page</a>
         </div>
 
 

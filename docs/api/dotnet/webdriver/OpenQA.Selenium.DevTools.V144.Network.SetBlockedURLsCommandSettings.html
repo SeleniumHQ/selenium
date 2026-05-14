@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetBlockedURLsCommandSettings ">
       
-      <meta name="description" content="SetBlockedURLs">
+      <meta name="description" content="Blocks URLs from loading.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class SetBlockedURLsCommandSettings  <a class="header-action link-secondary" tit
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SetBlockedURLs</p>
+  <div class="markdown summary"><p>Blocks URLs from loading.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -193,10 +193,11 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_SetBlockedURLsCommandSettings_UrlPatterns" data-uid="OpenQA.Selenium.DevTools.V144.Network.SetBlockedURLsCommandSettings.UrlPatterns">
   UrlPatterns
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SetBlockedURLsCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SetBlockedURLsCommand.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the urlPatterns</p>
+  <div class="markdown level1 summary"><p>Patterns to match in the order in which they are given. These patterns
+also take precedence over any wildcard patterns defined in <code>urls</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +228,10 @@ public BlockPattern[]? UrlPatterns { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_SetBlockedURLsCommandSettings_Urls" data-uid="OpenQA.Selenium.DevTools.V144.Network.SetBlockedURLsCommandSettings.Urls">
   Urls
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SetBlockedURLsCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SetBlockedURLsCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the urls</p>
+  <div class="markdown level1 summary"><p>URL patterns to block. Wildcards ('*') are allowed.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

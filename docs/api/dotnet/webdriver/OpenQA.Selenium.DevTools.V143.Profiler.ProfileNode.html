@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ProfileNode ">
       
-      <meta name="description" content="ProfileNode">
+      <meta name="description" content="Profile node. Holds callsite information, execution statistics and child nodes.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class ProfileNode  <a class="header-action link-secondary" title="View source" h
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>ProfileNode</p>
+  <div class="markdown summary"><p>Profile node. Holds callsite information, execution statistics and child nodes.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -157,7 +157,7 @@ Class ProfileNode  <a class="header-action link-secondary" title="View source" h
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/ProfileNode.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>callFrame</p>
+  <div class="markdown level1 summary"><p>Function location.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -190,7 +190,7 @@ public CallFrame CallFrame { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/ProfileNode.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>children</p>
+  <div class="markdown level1 summary"><p>Child node ids.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -221,10 +221,11 @@ public long[]? Children { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Profiler_ProfileNode_DeoptReason" data-uid="OpenQA.Selenium.DevTools.V143.Profiler.ProfileNode.DeoptReason">
   DeoptReason
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/ProfileNode.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/ProfileNode.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>deoptReason</p>
+  <div class="markdown level1 summary"><p>The reason of being not optimized. The function may be deoptimized or marked as don't
+optimize.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -258,7 +259,7 @@ public string? DeoptReason { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/ProfileNode.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>hitCount</p>
+  <div class="markdown level1 summary"><p>Number of samples where this node was on top of the call stack.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -292,7 +293,7 @@ public long? HitCount { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/ProfileNode.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>id</p>
+  <div class="markdown level1 summary"><p>Unique id of the node.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -322,10 +323,10 @@ public long Id { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Profiler_ProfileNode_PositionTicks" data-uid="OpenQA.Selenium.DevTools.V143.Profiler.ProfileNode.PositionTicks">
   PositionTicks
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/ProfileNode.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/ProfileNode.cs/#L53"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>positionTicks</p>
+  <div class="markdown level1 summary"><p>An array of source position ticks.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

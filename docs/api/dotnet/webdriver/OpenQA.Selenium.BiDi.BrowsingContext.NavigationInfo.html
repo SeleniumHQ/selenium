@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo" class="text-break">
-Class NavigationInfo  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L24"><i class="bi bi-code-slash"></i></a>
+Class NavigationInfo  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -163,16 +163,16 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_DateTimeOffset_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.DateTimeOffset,System.String)">
-  NavigationInfo(BrowsingContext, Navigation?, DateTimeOffset, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_DateTimeOffset_System_String_OpenQA_Selenium_BiDi_Browser_UserContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.DateTimeOffset,System.String,OpenQA.Selenium.BiDi.Browser.UserContext)">
+  NavigationInfo(BrowsingContext, Navigation?, DateTimeOffset, string, UserContext?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public NavigationInfo(BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)</code></pre>
+    <pre><code class="lang-csharp hljs">public NavigationInfo(BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url, UserContext? UserContext)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -184,6 +184,8 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
     <dt><code>Timestamp</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
     <dd></dd>
     <dt><code>Url</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>UserContext</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContext.html">UserContext</a></dt>
     <dd></dd>
   </dl>
 
@@ -206,7 +208,7 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo_Context" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.Context">
   Context
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -237,7 +239,7 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo_Navigation" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.Navigation">
   Navigation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -268,7 +270,7 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo_Timestamp" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.Timestamp">
   Timestamp
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -299,7 +301,7 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo_Url" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -326,11 +328,42 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
 
 
 
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo_UserContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.UserContext*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo_UserContext" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.UserContext">
+  UserContext
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserContext? UserContext { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContext.html">UserContext</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L24" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AXNode ">
       
-      <meta name="description" content="AXNode">
+      <meta name="description" content="A node in the accessibility tree.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class AXNode  <a class="header-action link-secondary" title="View source" href="
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>AXNode</p>
+  <div class="markdown summary"><p>A node in the accessibility tree.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -157,7 +157,7 @@ Class AXNode  <a class="header-action link-secondary" title="View source" href="
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AXNode.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>backendDOMNodeId</p>
+  <div class="markdown level1 summary"><p>The backend ID for the associated DOM node, if any.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,7 +191,7 @@ public long? BackendDOMNodeId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AXNode.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>childIds</p>
+  <div class="markdown level1 summary"><p>IDs for each of this node's child nodes.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -225,7 +225,7 @@ public string[]? ChildIds { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AXNode.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>chromeRole</p>
+  <div class="markdown level1 summary"><p>This <code>Node</code>'s Chrome raw role.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -259,7 +259,7 @@ public AXValue? ChromeRole { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AXNode.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>description</p>
+  <div class="markdown level1 summary"><p>The accessible description for this <code>Node</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -293,7 +293,7 @@ public AXValue? Description { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AXNode.cs/#L101"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>frameId</p>
+  <div class="markdown level1 summary"><p>The frame ID for the frame associated with this nodes document.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -327,7 +327,7 @@ public string? FrameId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AXNode.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>ignored</p>
+  <div class="markdown level1 summary"><p>Whether this node is ignored for accessibility</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -360,7 +360,7 @@ public bool Ignored { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AXNode.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>ignoredReasons</p>
+  <div class="markdown level1 summary"><p>Collection of reasons why this node is hidden.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -394,7 +394,7 @@ public AXProperty[]? IgnoredReasons { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AXNode.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>name</p>
+  <div class="markdown level1 summary"><p>The accessible name for this <code>Node</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -428,7 +428,7 @@ public AXValue? Name { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AXNode.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>nodeId</p>
+  <div class="markdown level1 summary"><p>Unique identifier for this node.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -461,7 +461,7 @@ public string NodeId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AXNode.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>parentId</p>
+  <div class="markdown level1 summary"><p>ID for this node's parent.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -495,7 +495,7 @@ public string? ParentId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AXNode.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>properties</p>
+  <div class="markdown level1 summary"><p>All other properties</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -529,7 +529,7 @@ public AXProperty[]? Properties { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AXNode.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>role</p>
+  <div class="markdown level1 summary"><p>This <code>Node</code>'s role, whether explicit or implicit.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -563,7 +563,7 @@ public AXValue? Role { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Accessibility/AXNode.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>value</p>
+  <div class="markdown level1 summary"><p>The value for this <code>Node</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

@@ -96,12 +96,12 @@ Classes
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Extensions.ClearStorageItemsCommandResponse.html">ClearStorageItemsCommandResponse</a></dt>
-      <dd><p>Response for ClearStorageItems</p>
+      <dd><p>Response for Clears extension storage in the given <code>storageArea</code>.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Extensions.ClearStorageItemsCommandSettings.html">ClearStorageItemsCommandSettings</a></dt>
-      <dd><p>ClearStorageItems</p>
+      <dd><p>Clears extension storage in the given <code>storageArea</code>.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -111,52 +111,68 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Extensions.GetStorageItemsCommandResponse.html">GetStorageItemsCommandResponse</a></dt>
-      <dd><p>Response for GetStorageItems</p>
+      <dd><p>Response for Gets data from extension storage in the given <code>storageArea</code>. If <code>keys</code> is
+specified, these are used to filter the result.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Extensions.GetStorageItemsCommandSettings.html">GetStorageItemsCommandSettings</a></dt>
-      <dd><p>GetStorageItems</p>
+      <dd><p>Gets data from extension storage in the given <code>storageArea</code>. If <code>keys</code> is
+specified, these are used to filter the result.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Extensions.LoadUnpackedCommandResponse.html">LoadUnpackedCommandResponse</a></dt>
-      <dd><p>Response for LoadUnpacked</p>
+      <dd><p>Response for Installs an unpacked extension from the filesystem similar to
+--load-extension CLI flags. Returns extension ID once the extension
+has been installed. Available if the client is connected using the
+--remote-debugging-pipe flag and the --enable-unsafe-extension-debugging
+flag is set.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Extensions.LoadUnpackedCommandSettings.html">LoadUnpackedCommandSettings</a></dt>
-      <dd><p>LoadUnpacked</p>
+      <dd><p>Installs an unpacked extension from the filesystem similar to
+--load-extension CLI flags. Returns extension ID once the extension
+has been installed. Available if the client is connected using the
+--remote-debugging-pipe flag and the --enable-unsafe-extension-debugging
+flag is set.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Extensions.RemoveStorageItemsCommandResponse.html">RemoveStorageItemsCommandResponse</a></dt>
-      <dd><p>Response for RemoveStorageItems</p>
+      <dd><p>Response for Removes <code>keys</code> from extension storage in the given <code>storageArea</code>.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Extensions.RemoveStorageItemsCommandSettings.html">RemoveStorageItemsCommandSettings</a></dt>
-      <dd><p>RemoveStorageItems</p>
+      <dd><p>Removes <code>keys</code> from extension storage in the given <code>storageArea</code>.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Extensions.SetStorageItemsCommandResponse.html">SetStorageItemsCommandResponse</a></dt>
-      <dd><p>Response for SetStorageItems</p>
+      <dd><p>Response for Sets <code>values</code> in extension storage in the given <code>storageArea</code>. The provided <code>values</code>
+will be merged with existing values in the storage area.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Extensions.SetStorageItemsCommandSettings.html">SetStorageItemsCommandSettings</a></dt>
-      <dd><p>SetStorageItems</p>
+      <dd><p>Sets <code>values</code> in extension storage in the given <code>storageArea</code>. The provided <code>values</code>
+will be merged with existing values in the storage area.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Extensions.UninstallCommandResponse.html">UninstallCommandResponse</a></dt>
-      <dd><p>Response for Uninstall</p>
+      <dd><p>Response for Uninstalls an unpacked extension (others not supported) from the profile.
+Available if the client is connected using the --remote-debugging-pipe flag
+and the --enable-unsafe-extension-debugging.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Extensions.UninstallCommandSettings.html">UninstallCommandSettings</a></dt>
-      <dd><p>Uninstall</p>
+      <dd><p>Uninstalls an unpacked extension (others not supported) from the profile.
+Available if the client is connected using the --remote-debugging-pipe flag
+and the --enable-unsafe-extension-debugging.</p>
 </dd>
     </dl>
     <h3 id="enums">
@@ -164,7 +180,7 @@ Enums
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Extensions.StorageArea.html">StorageArea</a></dt>
-      <dd><p>StorageArea</p>
+      <dd><p>Storage areas.</p>
 </dd>
     </dl>
 

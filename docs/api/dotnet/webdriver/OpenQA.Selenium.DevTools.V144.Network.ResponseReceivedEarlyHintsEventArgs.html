@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ResponseReceivedEarlyHintsEventArgs ">
       
-      <meta name="description" content="ResponseReceivedEarlyHints">
+      <meta name="description" content="Fired when 103 Early Hints headers is received in addition to the common response. Not every responseReceived event will have an responseReceivedEarlyHints fired. Only one responseReceivedEarlyHints may be fired for eached responseReceived event.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Network_ResponseReceivedEarlyHintsEventArgs" data-uid="OpenQA.Selenium.DevTools.V144.Network.ResponseReceivedEarlyHintsEventArgs" class="text-break">
-Class ResponseReceivedEarlyHintsEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/ResponseReceivedEarlyHintsEventArgs.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Class ResponseReceivedEarlyHintsEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/ResponseReceivedEarlyHintsEventArgs.cs/#L15"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,9 @@ Class ResponseReceivedEarlyHintsEventArgs  <a class="header-action link-secondar
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>ResponseReceivedEarlyHints</p>
+  <div class="markdown summary"><p>Fired when 103 Early Hints headers is received in addition to the common response.
+Not every responseReceived event will have an responseReceivedEarlyHints fired.
+Only one responseReceivedEarlyHints may be fired for eached responseReceived event.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +160,13 @@ Class ResponseReceivedEarlyHintsEventArgs  <a class="header-action link-secondar
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_ResponseReceivedEarlyHintsEventArgs_Headers" data-uid="OpenQA.Selenium.DevTools.V144.Network.ResponseReceivedEarlyHintsEventArgs.Headers">
   Headers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/ResponseReceivedEarlyHintsEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/ResponseReceivedEarlyHintsEventArgs.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the headers</p>
+  <div class="markdown level1 summary"><p>Raw response headers as they were received over the wire.
+Duplicate headers in the response are represented as a single key with their values
+concatentated using <code>\n</code> as the separator.
+See also <code>headersText</code> that contains verbatim text for HTTP/1.*.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,10 +196,10 @@ public Headers Headers { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_ResponseReceivedEarlyHintsEventArgs_RequestId" data-uid="OpenQA.Selenium.DevTools.V144.Network.ResponseReceivedEarlyHintsEventArgs.RequestId">
   RequestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/ResponseReceivedEarlyHintsEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/ResponseReceivedEarlyHintsEventArgs.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the requestId</p>
+  <div class="markdown level1 summary"><p>Request identifier. Used to match this information to another responseReceived event.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -224,7 +229,7 @@ public string RequestId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/ResponseReceivedEarlyHintsEventArgs.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/ResponseReceivedEarlyHintsEventArgs.cs/#L15" class="edit-link">Edit this page</a>
         </div>
 
 

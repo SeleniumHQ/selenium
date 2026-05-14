@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SerializationOptions ">
       
-      <meta name="description" content="SerializationOptions">
+      <meta name="description" content="Represents options for serialization. Overrides generatePreview and returnByValue.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class SerializationOptions  <a class="header-action link-secondary" title="View 
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SerializationOptions</p>
+  <div class="markdown summary"><p>Represents options for serialization. Overrides <code>generatePreview</code> and <code>returnByValue</code>.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +154,12 @@ Class SerializationOptions  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_SerializationOptions_AdditionalParameters" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.SerializationOptions.AdditionalParameters">
   AdditionalParameters
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/SerializationOptions.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/SerializationOptions.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>additionalParameters</p>
+  <div class="markdown level1 summary"><p>Embedder-specific parameters. For example if connected to V8 in Chrome these control DOM
+serialization via <code>maxNodeDepth: integer</code> and <code>includeShadowTree: &quot;none&quot; | &quot;open&quot; | &quot;all&quot;</code>.
+Values can be only of type string or integer.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,7 +193,7 @@ public object? AdditionalParameters { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/SerializationOptions.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>maxDepth</p>
+  <div class="markdown level1 summary"><p>Deep serialization depth. Default is full depth. Respected only in <code>deep</code> serialization mode.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

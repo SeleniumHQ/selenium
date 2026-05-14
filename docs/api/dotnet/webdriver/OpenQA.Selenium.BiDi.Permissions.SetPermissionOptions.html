@@ -101,7 +101,7 @@ Class SetPermissionOptions  <a class="header-action link-secondary" title="View 
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class SetPermissionOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public record SetPermissionOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;SetPermissionOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class SetPermissionOptions  <a class="header-action link-secondary" title="View 
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Permissions.SetPermissionOptions.html">SetPermissionOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -167,7 +174,7 @@ Class SetPermissionOptions  <a class="header-action link-secondary" title="View 
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string? EmbeddedOrigin { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string? EmbeddedOrigin { get; init; }</code></pre>
   </div>
 
 
@@ -198,7 +205,7 @@ Class SetPermissionOptions  <a class="header-action link-secondary" title="View 
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserContext? UserContext { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public UserContext? UserContext { get; init; }</code></pre>
   </div>
 
 

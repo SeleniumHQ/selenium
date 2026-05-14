@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetStorageItemsCommandSettings ">
       
-      <meta name="description" content="GetStorageItems">
+      <meta name="description" content="Gets data from extension storage in the given storageArea. If keys is specified, these are used to filter the result.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Extensions_GetStorageItemsCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.Extensions.GetStorageItemsCommandSettings" class="text-break">
-Class GetStorageItemsCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Extensions/GetStorageItemsCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class GetStorageItemsCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Extensions/GetStorageItemsCommand.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class GetStorageItemsCommandSettings  <a class="header-action link-secondary" ti
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>GetStorageItems</p>
+  <div class="markdown summary"><p>Gets data from extension storage in the given <code>storageArea</code>. If <code>keys</code> is
+specified, these are used to filter the result.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +161,7 @@ Class GetStorageItemsCommandSettings  <a class="header-action link-secondary" ti
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Extensions_GetStorageItemsCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.Extensions.GetStorageItemsCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Extensions/GetStorageItemsCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Extensions/GetStorageItemsCommand.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +194,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Extensions_GetStorageItemsCommandSettings_Id" data-uid="OpenQA.Selenium.DevTools.V144.Extensions.GetStorageItemsCommandSettings.Id">
   Id
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Extensions/GetStorageItemsCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Extensions/GetStorageItemsCommand.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the id</p>
+  <div class="markdown level1 summary"><p>ID of extension.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -226,10 +227,10 @@ public string Id { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Extensions_GetStorageItemsCommandSettings_Keys" data-uid="OpenQA.Selenium.DevTools.V144.Extensions.GetStorageItemsCommandSettings.Keys">
   Keys
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Extensions/GetStorageItemsCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Extensions/GetStorageItemsCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the keys</p>
+  <div class="markdown level1 summary"><p>Keys to retrieve.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -260,10 +261,10 @@ public string[]? Keys { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Extensions_GetStorageItemsCommandSettings_StorageArea" data-uid="OpenQA.Selenium.DevTools.V144.Extensions.GetStorageItemsCommandSettings.StorageArea">
   StorageArea
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Extensions/GetStorageItemsCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Extensions/GetStorageItemsCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the storageArea</p>
+  <div class="markdown level1 summary"><p>StorageArea to retrieve data from.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -293,7 +294,7 @@ public StorageArea StorageArea { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Extensions/GetStorageItemsCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Extensions/GetStorageItemsCommand.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

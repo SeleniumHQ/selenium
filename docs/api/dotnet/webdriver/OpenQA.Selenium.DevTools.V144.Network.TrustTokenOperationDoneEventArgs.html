@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class TrustTokenOperationDoneEventArgs ">
       
-      <meta name="description" content="TrustTokenOperationDone">
+      <meta name="description" content="Fired exactly once for each Trust Token operation. Depending on the type of the operation and whether the operation succeeded or failed, the event is fired before the corresponding request was sent or after the response was received.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Network_TrustTokenOperationDoneEventArgs" data-uid="OpenQA.Selenium.DevTools.V144.Network.TrustTokenOperationDoneEventArgs" class="text-break">
-Class TrustTokenOperationDoneEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Class TrustTokenOperationDoneEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L16"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,10 @@ Class TrustTokenOperationDoneEventArgs  <a class="header-action link-secondary" 
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>TrustTokenOperationDone</p>
+  <div class="markdown summary"><p>Fired exactly once for each Trust Token operation. Depending on
+the type of the operation and whether the operation succeeded or
+failed, the event is fired before the corresponding request was sent
+or after the response was received.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +161,10 @@ Class TrustTokenOperationDoneEventArgs  <a class="header-action link-secondary" 
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_TrustTokenOperationDoneEventArgs_IssuedTokenCount" data-uid="OpenQA.Selenium.DevTools.V144.Network.TrustTokenOperationDoneEventArgs.IssuedTokenCount">
   IssuedTokenCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the issuedTokenCount</p>
+  <div class="markdown level1 summary"><p>The number of obtained Trust Tokens on a successful &quot;Issuance&quot; operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -192,10 +195,10 @@ public long? IssuedTokenCount { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_TrustTokenOperationDoneEventArgs_IssuerOrigin" data-uid="OpenQA.Selenium.DevTools.V144.Network.TrustTokenOperationDoneEventArgs.IssuerOrigin">
   IssuerOrigin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the issuerOrigin</p>
+  <div class="markdown level1 summary"><p>Origin of the issuer in case of a &quot;Issuance&quot; or &quot;Redemption&quot; operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -226,7 +229,7 @@ public string? IssuerOrigin { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_TrustTokenOperationDoneEventArgs_RequestId" data-uid="OpenQA.Selenium.DevTools.V144.Network.TrustTokenOperationDoneEventArgs.RequestId">
   RequestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the requestId</p>
@@ -259,10 +262,13 @@ public string RequestId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_TrustTokenOperationDoneEventArgs_Status" data-uid="OpenQA.Selenium.DevTools.V144.Network.TrustTokenOperationDoneEventArgs.Status">
   Status
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the status</p>
+  <div class="markdown level1 summary"><p>Detailed success or error status of the operation.
+'AlreadyExists' also signifies a successful operation, as the result
+of the operation already exists und thus, the operation was abort
+preemptively (e.g. a cache hit).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -292,10 +298,10 @@ public string Status { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_TrustTokenOperationDoneEventArgs_TopLevelOrigin" data-uid="OpenQA.Selenium.DevTools.V144.Network.TrustTokenOperationDoneEventArgs.TopLevelOrigin">
   TopLevelOrigin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the topLevelOrigin</p>
+  <div class="markdown level1 summary"><p>Top level origin. The context in which the operation was attempted.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -326,7 +332,7 @@ public string? TopLevelOrigin { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_TrustTokenOperationDoneEventArgs_Type" data-uid="OpenQA.Selenium.DevTools.V144.Network.TrustTokenOperationDoneEventArgs.Type">
   Type
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the type</p>
@@ -359,7 +365,7 @@ public TrustTokenOperationType Type { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenOperationDoneEventArgs.cs/#L16" class="edit-link">Edit this page</a>
         </div>
 
 

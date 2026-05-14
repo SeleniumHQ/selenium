@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ReadCommandSettings ">
       
-      <meta name="description" content="Read">
+      <meta name="description" content="Read a chunk of the stream">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class ReadCommandSettings  <a class="header-action link-secondary" title="View s
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Read</p>
+  <div class="markdown summary"><p>Read a chunk of the stream</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -196,7 +196,7 @@ public string CommandName { get; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/IO/ReadCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the handle</p>
+  <div class="markdown level1 summary"><p>Handle of the stream to read.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -226,10 +226,11 @@ public string Handle { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_IO_ReadCommandSettings_Offset" data-uid="OpenQA.Selenium.DevTools.V144.IO.ReadCommandSettings.Offset">
   Offset
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/IO/ReadCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/IO/ReadCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the offset</p>
+  <div class="markdown level1 summary"><p>Seek to the specified offset before reading (if not specified, proceed with offset
+following the last read). Some types of streams may only support sequential reads.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -260,10 +261,10 @@ public long? Offset { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_IO_ReadCommandSettings_Size" data-uid="OpenQA.Selenium.DevTools.V144.IO.ReadCommandSettings.Size">
   Size
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/IO/ReadCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/IO/ReadCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the size</p>
+  <div class="markdown level1 summary"><p>Maximum number of bytes to read (left upon the agent discretion if not specified).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

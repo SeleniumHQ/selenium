@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class BeginFrameCommandSettings ">
       
-      <meta name="description" content="BeginFrame">
+      <meta name="description" content="Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a screenshot from the resulting frame. Requires that the target was created with enabled BeginFrameControl. Designed for use with --run-all-compositor-stages-before-draw, see also https://goo.gle/chrome-headless-rendering for more background.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_HeadlessExperimental_BeginFrameCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.HeadlessExperimental.BeginFrameCommandSettings" class="text-break">
-Class BeginFrameCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeadlessExperimental/BeginFrameCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class BeginFrameCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeadlessExperimental/BeginFrameCommand.cs/#L15"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,10 @@ Class BeginFrameCommandSettings  <a class="header-action link-secondary" title="
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>BeginFrame</p>
+  <div class="markdown summary"><p>Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a
+screenshot from the resulting frame. Requires that the target was created with enabled
+BeginFrameControl. Designed for use with --run-all-compositor-stages-before-draw, see also
+<a href="https://goo.gle/chrome-headless-rendering">https://goo.gle/chrome-headless-rendering</a> for more background.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +163,7 @@ Class BeginFrameCommandSettings  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_DevTools_V144_HeadlessExperimental_BeginFrameCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.HeadlessExperimental.BeginFrameCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeadlessExperimental/BeginFrameCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeadlessExperimental/BeginFrameCommand.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +196,11 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_HeadlessExperimental_BeginFrameCommandSettings_FrameTimeTicks" data-uid="OpenQA.Selenium.DevTools.V144.HeadlessExperimental.BeginFrameCommandSettings.FrameTimeTicks">
   FrameTimeTicks
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeadlessExperimental/BeginFrameCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeadlessExperimental/BeginFrameCommand.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the frameTimeTicks</p>
+  <div class="markdown level1 summary"><p>Timestamp of this BeginFrame in Renderer TimeTicks (milliseconds of uptime). If not set,
+the current time will be used.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +231,11 @@ public double? FrameTimeTicks { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_HeadlessExperimental_BeginFrameCommandSettings_Interval" data-uid="OpenQA.Selenium.DevTools.V144.HeadlessExperimental.BeginFrameCommandSettings.Interval">
   Interval
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeadlessExperimental/BeginFrameCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeadlessExperimental/BeginFrameCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the interval</p>
+  <div class="markdown level1 summary"><p>The interval between BeginFrames that is reported to the compositor, in milliseconds.
+Defaults to a 60 frames/second interval, i.e. about 16.666 milliseconds.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -261,10 +266,12 @@ public double? Interval { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_HeadlessExperimental_BeginFrameCommandSettings_NoDisplayUpdates" data-uid="OpenQA.Selenium.DevTools.V144.HeadlessExperimental.BeginFrameCommandSettings.NoDisplayUpdates">
   NoDisplayUpdates
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeadlessExperimental/BeginFrameCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeadlessExperimental/BeginFrameCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the noDisplayUpdates</p>
+  <div class="markdown level1 summary"><p>Whether updates should not be committed and drawn onto the display. False by default. If
+true, only side effects of the BeginFrame will be run, such as layout and animations, but
+any visual updates may not be visible on the display or in screenshots.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -295,10 +302,12 @@ public bool? NoDisplayUpdates { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_HeadlessExperimental_BeginFrameCommandSettings_Screenshot" data-uid="OpenQA.Selenium.DevTools.V144.HeadlessExperimental.BeginFrameCommandSettings.Screenshot">
   Screenshot
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeadlessExperimental/BeginFrameCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeadlessExperimental/BeginFrameCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the screenshot</p>
+  <div class="markdown level1 summary"><p>If set, a screenshot of the frame will be captured and returned in the response. Otherwise,
+no screenshot will be captured. Note that capturing a screenshot can fail, for example,
+during renderer initialization. In such a case, no screenshot data will be returned.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -329,7 +338,7 @@ public ScreenshotParams? Screenshot { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeadlessExperimental/BeginFrameCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeadlessExperimental/BeginFrameCommand.cs/#L15" class="edit-link">Edit this page</a>
         </div>
 
 

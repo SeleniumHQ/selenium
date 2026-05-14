@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ReloadCommandSettings ">
       
-      <meta name="description" content="Reload">
+      <meta name="description" content="Reloads given page optionally ignoring the cache.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class ReloadCommandSettings  <a class="header-action link-secondary" title="View
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Reload</p>
+  <div class="markdown summary"><p>Reloads given page optionally ignoring the cache.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -196,7 +196,7 @@ public string CommandName { get; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/ReloadCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the ignoreCache</p>
+  <div class="markdown level1 summary"><p>If true, browser cache is ignored (as if the user pressed Shift+refresh).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +227,12 @@ public bool? IgnoreCache { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Page_ReloadCommandSettings_LoaderId" data-uid="OpenQA.Selenium.DevTools.V143.Page.ReloadCommandSettings.LoaderId">
   LoaderId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/ReloadCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/ReloadCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the loaderId</p>
+  <div class="markdown level1 summary"><p>If set, an error will be thrown if the target page's main frame's
+loader id does not match the provided id. This prevents accidentally
+reloading an unintended target in case there's a racing navigation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -261,10 +263,11 @@ public string? LoaderId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Page_ReloadCommandSettings_ScriptToEvaluateOnLoad" data-uid="OpenQA.Selenium.DevTools.V143.Page.ReloadCommandSettings.ScriptToEvaluateOnLoad">
   ScriptToEvaluateOnLoad
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/ReloadCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/ReloadCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the scriptToEvaluateOnLoad</p>
+  <div class="markdown level1 summary"><p>If set, the script will be injected into all frames of the inspected page after reload.
+Argument will be ignored if reloading dataURL origin.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

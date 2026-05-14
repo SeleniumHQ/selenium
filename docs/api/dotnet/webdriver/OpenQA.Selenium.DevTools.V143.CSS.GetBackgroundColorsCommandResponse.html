@@ -168,10 +168,14 @@ Class GetBackgroundColorsCommandResponse  <a class="header-action link-secondary
 
   <h3 id="OpenQA_Selenium_DevTools_V143_CSS_GetBackgroundColorsCommandResponse_BackgroundColors" data-uid="OpenQA.Selenium.DevTools.V143.CSS.GetBackgroundColorsCommandResponse.BackgroundColors">
   BackgroundColors
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetBackgroundColorsCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetBackgroundColorsCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the backgroundColors</p>
+  <div class="markdown level1 summary"><p>The range of background colors behind this element, if it contains any visible text. If no
+visible text is present, this will be undefined. In the case of a flat background color,
+this will consist of simply that color. In the case of a gradient, this will consist of each
+of the color stops. For anything more complicated, this will be an empty array. Images will
+be ignored (as if the image had failed to load).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -202,10 +206,10 @@ public string[]? BackgroundColors { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_CSS_GetBackgroundColorsCommandResponse_ComputedFontSize" data-uid="OpenQA.Selenium.DevTools.V143.CSS.GetBackgroundColorsCommandResponse.ComputedFontSize">
   ComputedFontSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetBackgroundColorsCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetBackgroundColorsCommand.cs/#L50"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the computedFontSize</p>
+  <div class="markdown level1 summary"><p>The computed font size for this node, as a CSS computed value string (e.g. '12px').</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -236,10 +240,11 @@ public string? ComputedFontSize { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_CSS_GetBackgroundColorsCommandResponse_ComputedFontWeight" data-uid="OpenQA.Selenium.DevTools.V143.CSS.GetBackgroundColorsCommandResponse.ComputedFontWeight">
   ComputedFontWeight
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetBackgroundColorsCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetBackgroundColorsCommand.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the computedFontWeight</p>
+  <div class="markdown level1 summary"><p>The computed font weight for this node, as a CSS computed value string (e.g. 'normal' or
+'100').</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

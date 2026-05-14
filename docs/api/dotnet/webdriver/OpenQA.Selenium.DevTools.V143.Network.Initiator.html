@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class Initiator ">
       
-      <meta name="description" content="Initiator">
+      <meta name="description" content="Information about the request initiator.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class Initiator  <a class="header-action link-secondary" title="View source" hre
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Initiator</p>
+  <div class="markdown summary"><p>Information about the request initiator.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +154,11 @@ Class Initiator  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Initiator_ColumnNumber" data-uid="OpenQA.Selenium.DevTools.V143.Network.Initiator.ColumnNumber">
   ColumnNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Initiator.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Initiator.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>columnNumber</p>
+  <div class="markdown level1 summary"><p>Initiator column number, set for Parser type or for Script type (when script is importing
+module) (0-based).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -188,10 +189,11 @@ public double? ColumnNumber { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Initiator_LineNumber" data-uid="OpenQA.Selenium.DevTools.V143.Network.Initiator.LineNumber">
   LineNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Initiator.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Initiator.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>lineNumber</p>
+  <div class="markdown level1 summary"><p>Initiator line number, set for Parser type or for Script type (when script is importing
+module) (0-based).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -222,10 +224,10 @@ public double? LineNumber { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Initiator_RequestId" data-uid="OpenQA.Selenium.DevTools.V143.Network.Initiator.RequestId">
   RequestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Initiator.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Initiator.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>requestId</p>
+  <div class="markdown level1 summary"><p>Set if another request triggered this request (e.g. preflight).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -256,10 +258,11 @@ public string? RequestId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Initiator_Stack" data-uid="OpenQA.Selenium.DevTools.V143.Network.Initiator.Stack">
   Stack
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Initiator.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Initiator.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>stack</p>
+  <div class="markdown level1 summary"><p>Initiator JavaScript stack trace, set for Script only.
+Requires the Debugger domain to be enabled.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -293,7 +296,7 @@ public StackTrace? Stack { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Initiator.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>type</p>
+  <div class="markdown level1 summary"><p>Type of this initiator.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -323,10 +326,10 @@ public InitiatorTypeValues Type { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Initiator_Url" data-uid="OpenQA.Selenium.DevTools.V143.Network.Initiator.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Initiator.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Initiator.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>url</p>
+  <div class="markdown level1 summary"><p>Initiator URL, set for Parser type or for Script type (when script is importing module) or for SignedExchange type.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

@@ -101,7 +101,7 @@ Class SerializationOptions  <a class="header-action link-secondary" title="View 
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class SerializationOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record SerializationOptions : IEquatable&lt;SerializationOptions&gt;</code></pre>
   </div>
 
 
@@ -115,6 +115,12 @@ Class SerializationOptions  <a class="header-action link-secondary" title="View 
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.SerializationOptions.html">SerializationOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -160,7 +166,7 @@ Class SerializationOptions  <a class="header-action link-secondary" title="View 
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ShadowTree? IncludeShadowTree { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ShadowTree? IncludeShadowTree { get; init; }</code></pre>
   </div>
 
 
@@ -191,7 +197,7 @@ Class SerializationOptions  <a class="header-action link-secondary" title="View 
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public long? MaxDomDepth { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public long? MaxDomDepth { get; init; }</code></pre>
   </div>
 
 
@@ -222,7 +228,7 @@ Class SerializationOptions  <a class="header-action link-secondary" title="View 
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public long? MaxObjectDepth { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public long? MaxObjectDepth { get; init; }</code></pre>
   </div>
 
 

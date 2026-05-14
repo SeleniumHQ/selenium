@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetStorageItemsCommandSettings ">
       
-      <meta name="description" content="SetStorageItems">
+      <meta name="description" content="Sets values in extension storage in the given storageArea. The provided values will be merged with existing values in the storage area.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Extensions_SetStorageItemsCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.Extensions.SetStorageItemsCommandSettings" class="text-break">
-Class SetStorageItemsCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Extensions/SetStorageItemsCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class SetStorageItemsCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Extensions/SetStorageItemsCommand.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class SetStorageItemsCommandSettings  <a class="header-action link-secondary" ti
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SetStorageItems</p>
+  <div class="markdown summary"><p>Sets <code>values</code> in extension storage in the given <code>storageArea</code>. The provided <code>values</code>
+will be merged with existing values in the storage area.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +161,7 @@ Class SetStorageItemsCommandSettings  <a class="header-action link-secondary" ti
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Extensions_SetStorageItemsCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.Extensions.SetStorageItemsCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Extensions/SetStorageItemsCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Extensions/SetStorageItemsCommand.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +194,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Extensions_SetStorageItemsCommandSettings_Id" data-uid="OpenQA.Selenium.DevTools.V143.Extensions.SetStorageItemsCommandSettings.Id">
   Id
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Extensions/SetStorageItemsCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Extensions/SetStorageItemsCommand.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the id</p>
+  <div class="markdown level1 summary"><p>ID of extension.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -226,10 +227,10 @@ public string Id { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Extensions_SetStorageItemsCommandSettings_StorageArea" data-uid="OpenQA.Selenium.DevTools.V143.Extensions.SetStorageItemsCommandSettings.StorageArea">
   StorageArea
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Extensions/SetStorageItemsCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Extensions/SetStorageItemsCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the storageArea</p>
+  <div class="markdown level1 summary"><p>StorageArea to set data in.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -259,10 +260,10 @@ public StorageArea StorageArea { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Extensions_SetStorageItemsCommandSettings_Values" data-uid="OpenQA.Selenium.DevTools.V143.Extensions.SetStorageItemsCommandSettings.Values">
   Values
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Extensions/SetStorageItemsCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Extensions/SetStorageItemsCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the values</p>
+  <div class="markdown level1 summary"><p>Values to set.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -292,7 +293,7 @@ public object Values { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Extensions/SetStorageItemsCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Extensions/SetStorageItemsCommand.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

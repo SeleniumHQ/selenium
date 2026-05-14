@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule" class="text-break">
-Class BrowsingContextScriptModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L26"><i class="bi bi-code-slash"></i></a>
+Class BrowsingContextScriptModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -153,7 +153,7 @@ Class BrowsingContextScriptModule  <a class="header-action link-secondary" title
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_Script_ScriptModule_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.Script.ScriptModule)">
   BrowsingContextScriptModule(BrowsingContext, ScriptModule)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -188,23 +188,25 @@ Class BrowsingContextScriptModule  <a class="header-action link-secondary" title
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_AddPreloadScriptAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.AddPreloadScriptAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_AddPreloadScriptAsync_System_String_OpenQA_Selenium_BiDi_Script_BrowsingContextAddPreloadScriptOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.AddPreloadScriptAsync(System.String,OpenQA.Selenium.BiDi.Script.BrowsingContextAddPreloadScriptOptions)">
-  AddPreloadScriptAsync(string, BrowsingContextAddPreloadScriptOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_AddPreloadScriptAsync_System_String_OpenQA_Selenium_BiDi_Script_ContextAddPreloadScriptOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.AddPreloadScriptAsync(System.String,OpenQA.Selenium.BiDi.Script.ContextAddPreloadScriptOptions,System.Threading.CancellationToken)">
+  AddPreloadScriptAsync(string, ContextAddPreloadScriptOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;AddPreloadScriptResult&gt; AddPreloadScriptAsync(string functionDeclaration, BrowsingContextAddPreloadScriptOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;AddPreloadScriptResult&gt; AddPreloadScriptAsync(string functionDeclaration, ContextAddPreloadScriptOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>functionDeclaration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.BrowsingContextAddPreloadScriptOptions.html">BrowsingContextAddPreloadScriptOptions</a></dt>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.ContextAddPreloadScriptOptions.html">ContextAddPreloadScriptOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -226,16 +228,16 @@ Class BrowsingContextScriptModule  <a class="header-action link-secondary" title
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_CallFunctionAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.CallFunctionAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_CallFunctionAsync_System_String_System_Boolean_OpenQA_Selenium_BiDi_Script_CallFunctionOptions_OpenQA_Selenium_BiDi_Script_ContextTargetOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.CallFunctionAsync(System.String,System.Boolean,OpenQA.Selenium.BiDi.Script.CallFunctionOptions,OpenQA.Selenium.BiDi.Script.ContextTargetOptions)">
-  CallFunctionAsync(string, bool, CallFunctionOptions?, ContextTargetOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_CallFunctionAsync_System_String_System_Boolean_OpenQA_Selenium_BiDi_Script_CallFunctionOptions_OpenQA_Selenium_BiDi_Script_ContextTargetOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.CallFunctionAsync(System.String,System.Boolean,OpenQA.Selenium.BiDi.Script.CallFunctionOptions,OpenQA.Selenium.BiDi.Script.ContextTargetOptions,System.Threading.CancellationToken)">
+  CallFunctionAsync(string, bool, CallFunctionOptions?, ContextTargetOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;EvaluateResult&gt; CallFunctionAsync(string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;EvaluateResult&gt; CallFunctionAsync(string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -247,6 +249,8 @@ Class BrowsingContextScriptModule  <a class="header-action link-secondary" title
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.CallFunctionOptions.html">CallFunctionOptions</a></dt>
     <dd></dd>
     <dt><code>targetOptions</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.ContextTargetOptions.html">ContextTargetOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -268,16 +272,16 @@ Class BrowsingContextScriptModule  <a class="header-action link-secondary" title
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_CallFunctionAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.CallFunctionAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_CallFunctionAsync__1_System_String_System_Boolean_OpenQA_Selenium_BiDi_Script_CallFunctionOptions_OpenQA_Selenium_BiDi_Script_ContextTargetOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.CallFunctionAsync``1(System.String,System.Boolean,OpenQA.Selenium.BiDi.Script.CallFunctionOptions,OpenQA.Selenium.BiDi.Script.ContextTargetOptions)">
-  CallFunctionAsync&lt;TResult&gt;(string, bool, CallFunctionOptions?, ContextTargetOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_CallFunctionAsync__1_System_String_System_Boolean_OpenQA_Selenium_BiDi_Script_CallFunctionOptions_OpenQA_Selenium_BiDi_Script_ContextTargetOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.CallFunctionAsync``1(System.String,System.Boolean,OpenQA.Selenium.BiDi.Script.CallFunctionOptions,OpenQA.Selenium.BiDi.Script.ContextTargetOptions,System.Threading.CancellationToken)">
+  CallFunctionAsync&lt;TResult&gt;(string, bool, CallFunctionOptions?, ContextTargetOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;TResult?&gt; CallFunctionAsync&lt;TResult&gt;(string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;TResult?&gt; CallFunctionAsync&lt;TResult&gt;(string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -289,6 +293,8 @@ Class BrowsingContextScriptModule  <a class="header-action link-secondary" title
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.CallFunctionOptions.html">CallFunctionOptions</a></dt>
     <dd></dd>
     <dt><code>targetOptions</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.ContextTargetOptions.html">ContextTargetOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -315,16 +321,16 @@ Class BrowsingContextScriptModule  <a class="header-action link-secondary" title
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_EvaluateAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.EvaluateAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_EvaluateAsync_System_String_System_Boolean_OpenQA_Selenium_BiDi_Script_EvaluateOptions_OpenQA_Selenium_BiDi_Script_ContextTargetOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.EvaluateAsync(System.String,System.Boolean,OpenQA.Selenium.BiDi.Script.EvaluateOptions,OpenQA.Selenium.BiDi.Script.ContextTargetOptions)">
-  EvaluateAsync(string, bool, EvaluateOptions?, ContextTargetOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_EvaluateAsync_System_String_System_Boolean_OpenQA_Selenium_BiDi_Script_EvaluateOptions_OpenQA_Selenium_BiDi_Script_ContextTargetOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.EvaluateAsync(System.String,System.Boolean,OpenQA.Selenium.BiDi.Script.EvaluateOptions,OpenQA.Selenium.BiDi.Script.ContextTargetOptions,System.Threading.CancellationToken)">
+  EvaluateAsync(string, bool, EvaluateOptions?, ContextTargetOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;EvaluateResult&gt; EvaluateAsync(string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;EvaluateResult&gt; EvaluateAsync(string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -336,6 +342,8 @@ Class BrowsingContextScriptModule  <a class="header-action link-secondary" title
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.EvaluateOptions.html">EvaluateOptions</a></dt>
     <dd></dd>
     <dt><code>targetOptions</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.ContextTargetOptions.html">ContextTargetOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -357,16 +365,16 @@ Class BrowsingContextScriptModule  <a class="header-action link-secondary" title
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_EvaluateAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.EvaluateAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_EvaluateAsync__1_System_String_System_Boolean_OpenQA_Selenium_BiDi_Script_EvaluateOptions_OpenQA_Selenium_BiDi_Script_ContextTargetOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.EvaluateAsync``1(System.String,System.Boolean,OpenQA.Selenium.BiDi.Script.EvaluateOptions,OpenQA.Selenium.BiDi.Script.ContextTargetOptions)">
-  EvaluateAsync&lt;TResult&gt;(string, bool, EvaluateOptions?, ContextTargetOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_EvaluateAsync__1_System_String_System_Boolean_OpenQA_Selenium_BiDi_Script_EvaluateOptions_OpenQA_Selenium_BiDi_Script_ContextTargetOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.EvaluateAsync``1(System.String,System.Boolean,OpenQA.Selenium.BiDi.Script.EvaluateOptions,OpenQA.Selenium.BiDi.Script.ContextTargetOptions,System.Threading.CancellationToken)">
+  EvaluateAsync&lt;TResult&gt;(string, bool, EvaluateOptions?, ContextTargetOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;TResult?&gt; EvaluateAsync&lt;TResult&gt;(string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;TResult?&gt; EvaluateAsync&lt;TResult&gt;(string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -378,6 +386,8 @@ Class BrowsingContextScriptModule  <a class="header-action link-secondary" title
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.EvaluateOptions.html">EvaluateOptions</a></dt>
     <dd></dd>
     <dt><code>targetOptions</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.ContextTargetOptions.html">ContextTargetOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -404,21 +414,23 @@ Class BrowsingContextScriptModule  <a class="header-action link-secondary" title
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_GetRealmsAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.GetRealmsAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_GetRealmsAsync_OpenQA_Selenium_BiDi_Script_GetRealmsOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.GetRealmsAsync(OpenQA.Selenium.BiDi.Script.GetRealmsOptions)">
-  GetRealmsAsync(GetRealmsOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextScriptModule_GetRealmsAsync_OpenQA_Selenium_BiDi_Script_ContextGetRealmsOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextScriptModule.GetRealmsAsync(OpenQA.Selenium.BiDi.Script.ContextGetRealmsOptions,System.Threading.CancellationToken)">
+  GetRealmsAsync(ContextGetRealmsOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;GetRealmsResult&gt; GetRealmsAsync(GetRealmsOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;GetRealmsResult&gt; GetRealmsAsync(ContextGetRealmsOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.GetRealmsOptions.html">GetRealmsOptions</a></dt>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.ContextGetRealmsOptions.html">ContextGetRealmsOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -442,7 +454,7 @@ Class BrowsingContextScriptModule  <a class="header-action link-secondary" title
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L26" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextScriptModule.cs/#L25" class="edit-link">Edit this page</a>
         </div>
 
 

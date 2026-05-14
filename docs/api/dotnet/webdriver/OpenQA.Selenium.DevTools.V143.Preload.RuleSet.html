@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class RuleSet ">
       
-      <meta name="description" content="RuleSet">
+      <meta name="description" content="Corresponds to SpeculationRuleSet">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class RuleSet  <a class="header-action link-secondary" title="View source" href=
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>RuleSet</p>
+  <div class="markdown summary"><p>Corresponds to SpeculationRuleSet</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +154,20 @@ Class RuleSet  <a class="header-action link-secondary" title="View source" href=
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Preload_RuleSet_BackendNodeId" data-uid="OpenQA.Selenium.DevTools.V143.Preload.RuleSet.BackendNodeId">
   BackendNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Preload/RuleSet.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Preload/RuleSet.cs/#L53"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>backendNodeId</p>
+  <div class="markdown level1 summary"><p>A speculation rule set is either added through an inline
+<code>script</code> tag or through an external resource via the
+'Speculation-Rules' HTTP header. For the first case, we include
+the BackendNodeId of the relevant <code>script</code> tag. For the second
+case, we include the external URL where the rule set was loaded
+from, and also RequestId if Network domain is enabled.</p>
+<p>See also:</p>
+<ul>
+<li><a href="https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-script">https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-script</a></li>
+<li><a href="https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-header">https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-header</a></li>
+</ul>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -188,10 +198,10 @@ public long? BackendNodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Preload_RuleSet_ErrorMessage" data-uid="OpenQA.Selenium.DevTools.V143.Preload.RuleSet.ErrorMessage">
   ErrorMessage
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Preload/RuleSet.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Preload/RuleSet.cs/#L82"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>errorMessage</p>
+  <div class="markdown level1 summary"><p>TODO(<a href="https://crbug.com/1425354">https://crbug.com/1425354</a>): Replace this property with structured error.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -222,10 +232,11 @@ public string? ErrorMessage { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Preload_RuleSet_ErrorType" data-uid="OpenQA.Selenium.DevTools.V143.Preload.RuleSet.ErrorType">
   ErrorType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Preload/RuleSet.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Preload/RuleSet.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>errorType</p>
+  <div class="markdown level1 summary"><p>Error information
+<code>errorMessage</code> is null iff <code>errorType</code> is null.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -292,7 +303,7 @@ public string Id { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Preload/RuleSet.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>loaderId</p>
+  <div class="markdown level1 summary"><p>Identifies a document which the rule set is associated with.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -322,7 +333,7 @@ public string LoaderId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Preload_RuleSet_RequestId" data-uid="OpenQA.Selenium.DevTools.V143.Preload.RuleSet.RequestId">
   RequestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Preload/RuleSet.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Preload/RuleSet.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>requestId</p>
@@ -356,10 +367,17 @@ public string? RequestId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Preload_RuleSet_SourceText" data-uid="OpenQA.Selenium.DevTools.V143.Preload.RuleSet.SourceText">
   SourceText
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Preload/RuleSet.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Preload/RuleSet.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>sourceText</p>
+  <div class="markdown level1 summary"><p>Source text of JSON representing the rule set. If it comes from
+<code>script</code> tag, it is the textContent of the node. Note that it is
+a JSON for valid case.</p>
+<p>See also:</p>
+<ul>
+<li><a href="https://wicg.github.io/nav-speculation/speculation-rules.html">https://wicg.github.io/nav-speculation/speculation-rules.html</a></li>
+<li><a href="https://github.com/WICG/nav-speculation/blob/main/triggers.md">https://github.com/WICG/nav-speculation/blob/main/triggers.md</a></li>
+</ul>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -389,10 +407,11 @@ public string SourceText { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Preload_RuleSet_Tag" data-uid="OpenQA.Selenium.DevTools.V143.Preload.RuleSet.Tag">
   Tag
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Preload/RuleSet.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Preload/RuleSet.cs/#L90"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>tag</p>
+  <div class="markdown level1 summary"><p>For more details, see:
+<a href="https://github.com/WICG/nav-speculation/blob/main/speculation-rules-tags.md">https://github.com/WICG/nav-speculation/blob/main/speculation-rules-tags.md</a></p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -423,7 +442,7 @@ public string? Tag { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Preload_RuleSet_Url" data-uid="OpenQA.Selenium.DevTools.V143.Preload.RuleSet.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Preload/RuleSet.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Preload/RuleSet.cs/#L60"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>url</p>

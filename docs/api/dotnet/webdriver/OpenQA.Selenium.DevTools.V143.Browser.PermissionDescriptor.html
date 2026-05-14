@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class PermissionDescriptor ">
       
-      <meta name="description" content="PermissionDescriptor">
+      <meta name="description" content="Definition of PermissionDescriptor defined in the Permissions API: https://w3c.github.io/permissions/#dom-permissiondescriptor.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Browser_PermissionDescriptor" data-uid="OpenQA.Selenium.DevTools.V143.Browser.PermissionDescriptor" class="text-break">
-Class PermissionDescriptor  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class PermissionDescriptor  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class PermissionDescriptor  <a class="header-action link-secondary" title="View 
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>PermissionDescriptor</p>
+  <div class="markdown summary"><p>Definition of PermissionDescriptor defined in the Permissions API:
+<a href="https://w3c.github.io/permissions/#dom-permissiondescriptor">https://w3c.github.io/permissions/#dom-permissiondescriptor</a>.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +155,10 @@ Class PermissionDescriptor  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Browser_PermissionDescriptor_AllowWithoutGesture" data-uid="OpenQA.Selenium.DevTools.V143.Browser.PermissionDescriptor.AllowWithoutGesture">
   AllowWithoutGesture
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>allowWithoutGesture</p>
+  <div class="markdown level1 summary"><p>For &quot;fullscreen&quot; permission, must specify allowWithoutGesture:true.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -188,10 +189,10 @@ public bool? AllowWithoutGesture { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Browser_PermissionDescriptor_AllowWithoutSanitization" data-uid="OpenQA.Selenium.DevTools.V143.Browser.PermissionDescriptor.AllowWithoutSanitization">
   AllowWithoutSanitization
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>allowWithoutSanitization</p>
+  <div class="markdown level1 summary"><p>For &quot;clipboard&quot; permission, may specify allowWithoutSanitization.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -222,10 +223,11 @@ public bool? AllowWithoutSanitization { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Browser_PermissionDescriptor_Name" data-uid="OpenQA.Selenium.DevTools.V143.Browser.PermissionDescriptor.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L19"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>name</p>
+  <div class="markdown level1 summary"><p>Name of permission.
+See <a href="https://cs.chromium.org/chromium/src/third_party/blink/renderer/modules/permissions/permission_descriptor.idl">https://cs.chromium.org/chromium/src/third_party/blink/renderer/modules/permissions/permission_descriptor.idl</a> for valid permission names.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -255,10 +257,10 @@ public string Name { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Browser_PermissionDescriptor_PanTiltZoom" data-uid="OpenQA.Selenium.DevTools.V143.Browser.PermissionDescriptor.PanTiltZoom">
   PanTiltZoom
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>panTiltZoom</p>
+  <div class="markdown level1 summary"><p>For &quot;camera&quot; permission, may specify panTiltZoom.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -289,10 +291,10 @@ public bool? PanTiltZoom { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Browser_PermissionDescriptor_Sysex" data-uid="OpenQA.Selenium.DevTools.V143.Browser.PermissionDescriptor.Sysex">
   Sysex
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>sysex</p>
+  <div class="markdown level1 summary"><p>For &quot;midi&quot; permission, may also specify sysex control.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -323,10 +325,11 @@ public bool? Sysex { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Browser_PermissionDescriptor_UserVisibleOnly" data-uid="OpenQA.Selenium.DevTools.V143.Browser.PermissionDescriptor.UserVisibleOnly">
   UserVisibleOnly
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>userVisibleOnly</p>
+  <div class="markdown level1 summary"><p>For &quot;push&quot; permission, may specify userVisibleOnly.
+Note that userVisibleOnly = true is the only currently supported type.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -357,7 +360,7 @@ public bool? UserVisibleOnly { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/PermissionDescriptor.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

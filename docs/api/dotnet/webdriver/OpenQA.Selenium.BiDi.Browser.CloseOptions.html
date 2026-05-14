@@ -101,7 +101,7 @@ Class CloseOptions  <a class="header-action link-secondary" title="View source" 
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class CloseOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record CloseOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;CloseOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class CloseOptions  <a class="header-action link-secondary" title="View source" 
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.CloseOptions.html">CloseOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">

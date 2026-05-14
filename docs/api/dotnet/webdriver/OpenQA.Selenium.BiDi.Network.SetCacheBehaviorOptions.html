@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Network_SetCacheBehaviorOptions" data-uid="OpenQA.Selenium.BiDi.Network.SetCacheBehaviorOptions" class="text-break">
-Class SetCacheBehaviorOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/SetCacheBehaviorCommand.cs/#L31"><i class="bi bi-code-slash"></i></a>
+Class SetCacheBehaviorOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/SetCacheBehaviorCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class SetCacheBehaviorOptions  <a class="header-action link-secondary" title="Vi
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class SetCacheBehaviorOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record SetCacheBehaviorOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;SetCacheBehaviorOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class SetCacheBehaviorOptions  <a class="header-action link-secondary" title="Vi
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.SetCacheBehaviorOptions.html">SetCacheBehaviorOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -149,36 +156,6 @@ Class SetCacheBehaviorOptions  <a class="header-action link-secondary" title="Vi
 
 
 
-  <h2 class="section" id="constructors">Constructors
-</h2>
-
-
-  <a id="OpenQA_Selenium_BiDi_Network_SetCacheBehaviorOptions__ctor_" data-uid="OpenQA.Selenium.BiDi.Network.SetCacheBehaviorOptions.#ctor*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Network_SetCacheBehaviorOptions__ctor" data-uid="OpenQA.Selenium.BiDi.Network.SetCacheBehaviorOptions.#ctor">
-  SetCacheBehaviorOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/SetCacheBehaviorCommand.cs/#L31"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public SetCacheBehaviorOptions()</code></pre>
-  </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
   <h2 class="section" id="properties">Properties
 </h2>
 
@@ -187,14 +164,14 @@ Class SetCacheBehaviorOptions  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_BiDi_Network_SetCacheBehaviorOptions_Contexts" data-uid="OpenQA.Selenium.BiDi.Network.SetCacheBehaviorOptions.Contexts">
   Contexts
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/SetCacheBehaviorCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/SetCacheBehaviorCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;BrowsingContext&gt;? Contexts { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;BrowsingContext&gt;? Contexts { get; init; }</code></pre>
   </div>
 
 
@@ -218,7 +195,7 @@ Class SetCacheBehaviorOptions  <a class="header-action link-secondary" title="Vi
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/SetCacheBehaviorCommand.cs/#L31" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/SetCacheBehaviorCommand.cs/#L30" class="edit-link">Edit this page</a>
         </div>
 
 

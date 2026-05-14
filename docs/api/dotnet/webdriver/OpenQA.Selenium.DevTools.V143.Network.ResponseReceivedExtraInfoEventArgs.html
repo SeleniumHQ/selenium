@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ResponseReceivedExtraInfoEventArgs ">
       
-      <meta name="description" content="ResponseReceivedExtraInfo">
+      <meta name="description" content="Fired when additional information about a responseReceived event is available from the network stack. Not every responseReceived event will have an additional responseReceivedExtraInfo for it, and responseReceivedExtraInfo may be fired before or after responseReceived.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Network_ResponseReceivedExtraInfoEventArgs" data-uid="OpenQA.Selenium.DevTools.V143.Network.ResponseReceivedExtraInfoEventArgs" class="text-break">
-Class ResponseReceivedExtraInfoEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Class ResponseReceivedExtraInfoEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L15"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,9 @@ Class ResponseReceivedExtraInfoEventArgs  <a class="header-action link-secondary
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>ResponseReceivedExtraInfo</p>
+  <div class="markdown summary"><p>Fired when additional information about a responseReceived event is available from the network
+stack. Not every responseReceived event will have an additional responseReceivedExtraInfo for
+it, and responseReceivedExtraInfo may be fired before or after responseReceived.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +160,12 @@ Class ResponseReceivedExtraInfoEventArgs  <a class="header-action link-secondary
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ResponseReceivedExtraInfoEventArgs_BlockedCookies" data-uid="OpenQA.Selenium.DevTools.V143.Network.ResponseReceivedExtraInfoEventArgs.BlockedCookies">
   BlockedCookies
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the blockedCookies</p>
+  <div class="markdown level1 summary"><p>A list of cookies which were not stored from the response along with the corresponding
+reasons for blocking. The cookies here may not be valid due to syntax errors, which
+are represented by the invalid cookie line string instead of a proper cookie.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,10 +195,11 @@ public BlockedSetCookieWithReason[] BlockedCookies { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ResponseReceivedExtraInfoEventArgs_CookiePartitionKey" data-uid="OpenQA.Selenium.DevTools.V143.Network.ResponseReceivedExtraInfoEventArgs.CookiePartitionKey">
   CookiePartitionKey
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L72"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the cookiePartitionKey</p>
+  <div class="markdown level1 summary"><p>The cookie partition key that will be used to store partitioned cookies set in this response.
+Only sent when partitioned cookies are enabled.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -225,10 +230,10 @@ public CookiePartitionKey? CookiePartitionKey { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ResponseReceivedExtraInfoEventArgs_CookiePartitionKeyOpaque" data-uid="OpenQA.Selenium.DevTools.V143.Network.ResponseReceivedExtraInfoEventArgs.CookiePartitionKeyOpaque">
   CookiePartitionKeyOpaque
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L79"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the cookiePartitionKeyOpaque</p>
+  <div class="markdown level1 summary"><p>True if partitioned cookies are enabled, but the partition key is not serializable to string.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -259,10 +264,11 @@ public bool? CookiePartitionKeyOpaque { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ResponseReceivedExtraInfoEventArgs_ExemptedCookies" data-uid="OpenQA.Selenium.DevTools.V143.Network.ResponseReceivedExtraInfoEventArgs.ExemptedCookies">
   ExemptedCookies
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the exemptedCookies</p>
+  <div class="markdown level1 summary"><p>A list of cookies which should have been blocked by 3PCD but are exempted and stored from
+the response with the corresponding reason.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -293,10 +299,13 @@ public ExemptedSetCookieWithReason[]? ExemptedCookies { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ResponseReceivedExtraInfoEventArgs_Headers" data-uid="OpenQA.Selenium.DevTools.V143.Network.ResponseReceivedExtraInfoEventArgs.Headers">
   Headers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the headers</p>
+  <div class="markdown level1 summary"><p>Raw response headers as they were received over the wire.
+Duplicate headers in the response are represented as a single key with their values
+concatentated using <code>\n</code> as the separator.
+See also <code>headersText</code> that contains verbatim text for HTTP/1.*.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -326,10 +335,11 @@ public Headers Headers { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ResponseReceivedExtraInfoEventArgs_HeadersText" data-uid="OpenQA.Selenium.DevTools.V143.Network.ResponseReceivedExtraInfoEventArgs.HeadersText">
   HeadersText
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the headersText</p>
+  <div class="markdown level1 summary"><p>Raw response header text as it was received over the wire. The raw text may not always be
+available, such as in the case of HTTP/2 or QUIC.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -360,10 +370,10 @@ public string? HeadersText { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ResponseReceivedExtraInfoEventArgs_RequestId" data-uid="OpenQA.Selenium.DevTools.V143.Network.ResponseReceivedExtraInfoEventArgs.RequestId">
   RequestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the requestId</p>
+  <div class="markdown level1 summary"><p>Request identifier. Used to match this information to another responseReceived event.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -393,10 +403,11 @@ public string RequestId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ResponseReceivedExtraInfoEventArgs_ResourceIPAddressSpace" data-uid="OpenQA.Selenium.DevTools.V143.Network.ResponseReceivedExtraInfoEventArgs.ResourceIPAddressSpace">
   ResourceIPAddressSpace
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the resourceIPAddressSpace</p>
+  <div class="markdown level1 summary"><p>The IP address space of the resource. The address space can only be determined once the transport
+established the connection, so we can't send it in <code>requestWillBeSentExtraInfo</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -426,10 +437,12 @@ public IPAddressSpace ResourceIPAddressSpace { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ResponseReceivedExtraInfoEventArgs_StatusCode" data-uid="OpenQA.Selenium.DevTools.V143.Network.ResponseReceivedExtraInfoEventArgs.StatusCode">
   StatusCode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the statusCode</p>
+  <div class="markdown level1 summary"><p>The status code of the response. This is useful in cases the request failed and no responseReceived
+event is triggered, which is the case for, e.g., CORS errors. This is also the correct status code
+for cached requests, where the status in responseReceived is a 200 and this will be 304.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -459,7 +472,7 @@ public long StatusCode { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ResponseReceivedExtraInfoEventArgs.cs/#L15" class="edit-link">Edit this page</a>
         </div>
 
 

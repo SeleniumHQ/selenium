@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ExecutionContextDescription ">
       
-      <meta name="description" content="ExecutionContextDescription">
+      <meta name="description" content="Description of an isolated world.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class ExecutionContextDescription  <a class="header-action link-secondary" title
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>ExecutionContextDescription</p>
+  <div class="markdown summary"><p>Description of an isolated world.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +154,10 @@ Class ExecutionContextDescription  <a class="header-action link-secondary" title
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_ExecutionContextDescription_AuxData" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.ExecutionContextDescription.AuxData">
   AuxData
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ExecutionContextDescription.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ExecutionContextDescription.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>auxData</p>
+  <div class="markdown level1 summary"><p>Embedder-specific auxiliary data likely matching {isDefault: boolean, type: 'default'|'isolated'|'worker', frameId: string}</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -188,10 +188,11 @@ public object? AuxData { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_ExecutionContextDescription_Id" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.ExecutionContextDescription.Id">
   Id
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ExecutionContextDescription.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ExecutionContextDescription.cs/#L18"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>id</p>
+  <div class="markdown level1 summary"><p>Unique id of the execution context. It can be used to specify in which execution context
+script evaluation should be performed.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -221,10 +222,10 @@ public long Id { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_ExecutionContextDescription_Name" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.ExecutionContextDescription.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ExecutionContextDescription.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ExecutionContextDescription.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>name</p>
+  <div class="markdown level1 summary"><p>Human readable name describing given context.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -254,10 +255,10 @@ public string Name { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_ExecutionContextDescription_Origin" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.ExecutionContextDescription.Origin">
   Origin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ExecutionContextDescription.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ExecutionContextDescription.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>origin</p>
+  <div class="markdown level1 summary"><p>Execution context origin.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -287,10 +288,12 @@ public string Origin { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_ExecutionContextDescription_UniqueId" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.ExecutionContextDescription.UniqueId">
   UniqueId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ExecutionContextDescription.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ExecutionContextDescription.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>uniqueId</p>
+  <div class="markdown level1 summary"><p>A system-unique execution context identifier. Unlike the id, this is unique across
+multiple processes, so can be reliably used to identify specific context while backend
+performs a cross-process navigation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

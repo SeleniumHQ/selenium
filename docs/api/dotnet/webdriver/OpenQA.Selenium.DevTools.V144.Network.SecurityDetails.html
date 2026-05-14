@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SecurityDetails ">
       
-      <meta name="description" content="SecurityDetails">
+      <meta name="description" content="Security details about a request.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class SecurityDetails  <a class="header-action link-secondary" title="View sourc
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SecurityDetails</p>
+  <div class="markdown summary"><p>Security details about a request.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -157,7 +157,7 @@ Class SecurityDetails  <a class="header-action link-secondary" title="View sourc
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>certificateId</p>
+  <div class="markdown level1 summary"><p>Certificate ID value.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -190,7 +190,7 @@ public long CertificateId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L101"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>certificateTransparencyCompliance</p>
+  <div class="markdown level1 summary"><p>Whether the request complied with Certificate Transparency policy</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -223,7 +223,7 @@ public CertificateTransparencyCompliance CertificateTransparencyCompliance { get
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>cipher</p>
+  <div class="markdown level1 summary"><p>Cipher name.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -253,10 +253,10 @@ public string Cipher { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_SecurityDetails_EncryptedClientHello" data-uid="OpenQA.Selenium.DevTools.V144.Network.SecurityDetails.EncryptedClientHello">
   EncryptedClientHello
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L117"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>encryptedClientHello</p>
+  <div class="markdown level1 summary"><p>Whether the connection used Encrypted ClientHello</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -289,7 +289,7 @@ public bool EncryptedClientHello { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>issuer</p>
+  <div class="markdown level1 summary"><p>Name of the issuing CA.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -322,7 +322,7 @@ public string Issuer { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>keyExchange</p>
+  <div class="markdown level1 summary"><p>Key Exchange used by the connection, or the empty string if not applicable.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -355,7 +355,7 @@ public string KeyExchange { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>keyExchangeGroup</p>
+  <div class="markdown level1 summary"><p>(EC)DH group used by the connection, if applicable.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -389,7 +389,7 @@ public string? KeyExchangeGroup { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>mac</p>
+  <div class="markdown level1 summary"><p>TLS MAC. Note that AEAD ciphers do not have separate MACs.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -423,7 +423,7 @@ public string? Mac { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>protocol</p>
+  <div class="markdown level1 summary"><p>Protocol name (e.g. &quot;TLS 1.2&quot; or &quot;QUIC&quot;).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -456,7 +456,7 @@ public string Protocol { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>sanList</p>
+  <div class="markdown level1 summary"><p>Subject Alternative Name (SAN) DNS names and IP addresses.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -486,10 +486,12 @@ public string[] SanList { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_SecurityDetails_ServerSignatureAlgorithm" data-uid="OpenQA.Selenium.DevTools.V144.Network.SecurityDetails.ServerSignatureAlgorithm">
   ServerSignatureAlgorithm
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L110"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>serverSignatureAlgorithm</p>
+  <div class="markdown level1 summary"><p>The signature algorithm used by the server in the TLS server signature,
+represented as a TLS SignatureScheme code point. Omitted if not
+applicable or not known.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -523,7 +525,7 @@ public long? ServerSignatureAlgorithm { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>signedCertificateTimestampList</p>
+  <div class="markdown level1 summary"><p>List of signed certificate timestamps (SCTs).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -556,7 +558,7 @@ public SignedCertificateTimestamp[] SignedCertificateTimestampList { get; set; }
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>subjectName</p>
+  <div class="markdown level1 summary"><p>Certificate subject name.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -589,7 +591,7 @@ public string SubjectName { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>validFrom</p>
+  <div class="markdown level1 summary"><p>Certificate valid from date.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -622,7 +624,7 @@ public double ValidFrom { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/SecurityDetails.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>validTo</p>
+  <div class="markdown level1 summary"><p>Certificate valid to (expiration) date</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class PreloadingAttemptSource ">
       
-      <meta name="description" content="PreloadingAttemptSource">
+      <meta name="description" content="Lists sources for a preloading attempt, specifically the ids of rule sets that had a speculation rule that triggered the attempt, and the BackendNodeIds of &amp;lt;a href&amp;gt; or &amp;lt;area href&amp;gt; elements that triggered the attempt (in the case of attempts triggered by a document rule). It is possible for multiple rule sets and links to trigger a single attempt.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Preload_PreloadingAttemptSource" data-uid="OpenQA.Selenium.DevTools.V144.Preload.PreloadingAttemptSource" class="text-break">
-Class PreloadingAttemptSource  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Preload/PreloadingAttemptSource.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class PreloadingAttemptSource  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Preload/PreloadingAttemptSource.cs/#L16"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,11 @@ Class PreloadingAttemptSource  <a class="header-action link-secondary" title="Vi
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>PreloadingAttemptSource</p>
+  <div class="markdown summary"><p>Lists sources for a preloading attempt, specifically the ids of rule sets
+that had a speculation rule that triggered the attempt, and the
+BackendNodeIds of &lt;a href&gt; or &lt;area href&gt; elements that triggered the
+attempt (in the case of attempts triggered by a document rule). It is
+possible for multiple rule sets and links to trigger a single attempt.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,7 +158,7 @@ Class PreloadingAttemptSource  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Preload_PreloadingAttemptSource_Key" data-uid="OpenQA.Selenium.DevTools.V144.Preload.PreloadingAttemptSource.Key">
   Key
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Preload/PreloadingAttemptSource.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Preload/PreloadingAttemptSource.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>key</p>
@@ -187,7 +191,7 @@ public PreloadingAttemptKey Key { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Preload_PreloadingAttemptSource_NodeIds" data-uid="OpenQA.Selenium.DevTools.V144.Preload.PreloadingAttemptSource.NodeIds">
   NodeIds
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Preload/PreloadingAttemptSource.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Preload/PreloadingAttemptSource.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>nodeIds</p>
@@ -220,7 +224,7 @@ public long[] NodeIds { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Preload_PreloadingAttemptSource_RuleSetIds" data-uid="OpenQA.Selenium.DevTools.V144.Preload.PreloadingAttemptSource.RuleSetIds">
   RuleSetIds
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Preload/PreloadingAttemptSource.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Preload/PreloadingAttemptSource.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>ruleSetIds</p>
@@ -253,7 +257,7 @@ public string[] RuleSetIds { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Preload/PreloadingAttemptSource.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Preload/PreloadingAttemptSource.cs/#L16" class="edit-link">Edit this page</a>
         </div>
 
 

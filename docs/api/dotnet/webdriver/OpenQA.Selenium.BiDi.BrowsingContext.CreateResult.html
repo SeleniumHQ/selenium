@@ -159,8 +159,8 @@ Class CreateResult  <a class="header-action link-secondary" title="View source" 
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_CreateResult__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.CreateResult.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_CreateResult__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.CreateResult.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext)">
-  CreateResult(BrowsingContext)
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_CreateResult__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_Browser_UserContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.CreateResult.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.Browser.UserContext)">
+  CreateResult(BrowsingContext, UserContext?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/CreateCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -168,12 +168,14 @@ Class CreateResult  <a class="header-action link-secondary" title="View source" 
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public CreateResult(BrowsingContext Context)</code></pre>
+    <pre><code class="lang-csharp hljs">public CreateResult(BrowsingContext Context, UserContext? UserContext)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>Context</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
+    <dd></dd>
+    <dt><code>UserContext</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContext.html">UserContext</a></dt>
     <dd></dd>
   </dl>
 
@@ -213,6 +215,37 @@ Class CreateResult  <a class="header-action link-secondary" title="View source" 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_CreateResult_UserContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.CreateResult.UserContext*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_CreateResult_UserContext" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.CreateResult.UserContext">
+  UserContext
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/CreateCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserContext? UserContext { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContext.html">UserContext</a></dt>
     <dd></dd>
   </dl>
 

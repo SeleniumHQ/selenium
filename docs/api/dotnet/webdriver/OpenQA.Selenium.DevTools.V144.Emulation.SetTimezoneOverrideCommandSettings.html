@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetTimezoneOverrideCommandSettings ">
       
-      <meta name="description" content="SetTimezoneOverride">
+      <meta name="description" content="Overrides default host system timezone with the specified one.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class SetTimezoneOverrideCommandSettings  <a class="header-action link-secondary
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SetTimezoneOverride</p>
+  <div class="markdown summary"><p>Overrides default host system timezone with the specified one.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -193,10 +193,12 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Emulation_SetTimezoneOverrideCommandSettings_TimezoneId" data-uid="OpenQA.Selenium.DevTools.V144.Emulation.SetTimezoneOverrideCommandSettings.TimezoneId">
   TimezoneId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetTimezoneOverrideCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Emulation/SetTimezoneOverrideCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the timezoneId</p>
+  <div class="markdown level1 summary"><p>The timezone identifier. List of supported timezones:
+<a href="https://source.chromium.org/chromium/chromium/deps/icu.git/+/faee8bc70570192d82d2978a71e2a615788597d1:source/data/misc/metaZones.txt">https://source.chromium.org/chromium/chromium/deps/icu.git/+/faee8bc70570192d82d2978a71e2a615788597d1:source/data/misc/metaZones.txt</a>
+If empty, disables the override and restores default host system timezone.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

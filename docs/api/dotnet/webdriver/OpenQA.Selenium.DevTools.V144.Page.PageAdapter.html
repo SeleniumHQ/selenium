@@ -236,10 +236,11 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_AddCompilationCache_OpenQA_Selenium_DevTools_V144_Page_AddCompilationCacheCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.AddCompilationCache(OpenQA.Selenium.DevTools.V144.Page.AddCompilationCacheCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   AddCompilationCache(AddCompilationCacheCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L626"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L660"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>addCompilationCache</p>
+  <div class="markdown level1 summary"><p>Seeds compilation cache for given url. Compilation cache does not survive
+cross-process navigation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -279,10 +280,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_AddScriptToEvaluateOnLoad_OpenQA_Selenium_DevTools_V144_Page_AddScriptToEvaluateOnLoadCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.AddScriptToEvaluateOnLoad(OpenQA.Selenium.DevTools.V144.Page.AddScriptToEvaluateOnLoadCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   AddScriptToEvaluateOnLoad(AddScriptToEvaluateOnLoadCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L210"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L227"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>addScriptToEvaluateOnLoad</p>
+  <div class="markdown level1 summary"><p>Deprecated, please use addScriptToEvaluateOnNewDocument instead.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -322,10 +323,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_AddScriptToEvaluateOnNewDocument_OpenQA_Selenium_DevTools_V144_Page_AddScriptToEvaluateOnNewDocumentCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.AddScriptToEvaluateOnNewDocument(OpenQA.Selenium.DevTools.V144.Page.AddScriptToEvaluateOnNewDocumentCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   AddScriptToEvaluateOnNewDocument(AddScriptToEvaluateOnNewDocumentCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L218"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L235"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>addScriptToEvaluateOnNewDocument</p>
+  <div class="markdown level1 summary"><p>Evaluates given script in every frame upon creation (before loading frame's scripts).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -365,10 +366,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_BringToFront_OpenQA_Selenium_DevTools_V144_Page_BringToFrontCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.BringToFront(OpenQA.Selenium.DevTools.V144.Page.BringToFrontCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   BringToFront(BringToFrontCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L226"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L243"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>bringToFront</p>
+  <div class="markdown level1 summary"><p>Brings page to front (activates tab).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -408,10 +409,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_CaptureScreenshot_OpenQA_Selenium_DevTools_V144_Page_CaptureScreenshotCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.CaptureScreenshot(OpenQA.Selenium.DevTools.V144.Page.CaptureScreenshotCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   CaptureScreenshot(CaptureScreenshotCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L234"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L251"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>captureScreenshot</p>
+  <div class="markdown level1 summary"><p>Capture page screenshot.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -451,10 +452,11 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_CaptureSnapshot_OpenQA_Selenium_DevTools_V144_Page_CaptureSnapshotCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.CaptureSnapshot(OpenQA.Selenium.DevTools.V144.Page.CaptureSnapshotCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   CaptureSnapshot(CaptureSnapshotCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L242"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L260"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>captureSnapshot</p>
+  <div class="markdown level1 summary"><p>Returns a snapshot of the page as a string. For MHTML format, the serialization includes
+iframes, shadow DOM, external resources, and element-inline styles.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -494,10 +496,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_ClearCompilationCache_OpenQA_Selenium_DevTools_V144_Page_ClearCompilationCacheCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.ClearCompilationCache(OpenQA.Selenium.DevTools.V144.Page.ClearCompilationCacheCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   ClearCompilationCache(ClearCompilationCacheCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L634"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L668"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>clearCompilationCache</p>
+  <div class="markdown level1 summary"><p>Clears seeded compilation cache.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -537,10 +539,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_ClearDeviceMetricsOverride_OpenQA_Selenium_DevTools_V144_Page_ClearDeviceMetricsOverrideCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.ClearDeviceMetricsOverride(OpenQA.Selenium.DevTools.V144.Page.ClearDeviceMetricsOverrideCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   ClearDeviceMetricsOverride(ClearDeviceMetricsOverrideCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L250"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L268"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>clearDeviceMetricsOverride</p>
+  <div class="markdown level1 summary"><p>Clears the overridden device metrics.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -580,10 +582,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_ClearDeviceOrientationOverride_OpenQA_Selenium_DevTools_V144_Page_ClearDeviceOrientationOverrideCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.ClearDeviceOrientationOverride(OpenQA.Selenium.DevTools.V144.Page.ClearDeviceOrientationOverrideCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   ClearDeviceOrientationOverride(ClearDeviceOrientationOverrideCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L258"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L276"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>clearDeviceOrientationOverride</p>
+  <div class="markdown level1 summary"><p>Clears the overridden Device Orientation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -623,10 +625,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_ClearGeolocationOverride_OpenQA_Selenium_DevTools_V144_Page_ClearGeolocationOverrideCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.ClearGeolocationOverride(OpenQA.Selenium.DevTools.V144.Page.ClearGeolocationOverrideCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   ClearGeolocationOverride(ClearGeolocationOverrideCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L266"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L284"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>clearGeolocationOverride</p>
+  <div class="markdown level1 summary"><p>Clears the overridden Geolocation Position and Error.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -666,10 +668,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_Close_OpenQA_Selenium_DevTools_V144_Page_CloseCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.Close(OpenQA.Selenium.DevTools.V144.Page.CloseCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Close(CloseCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L594"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L620"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>close</p>
+  <div class="markdown level1 summary"><p>Tries to close page, running its beforeunload hooks, if any.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -709,10 +711,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_Crash_OpenQA_Selenium_DevTools_V144_Page_CrashCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.Crash(OpenQA.Selenium.DevTools.V144.Page.CrashCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Crash(CrashCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L586"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L612"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>crash</p>
+  <div class="markdown level1 summary"><p>Crashes renderer on the IO thread, generates minidumps.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -752,10 +754,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_CreateIsolatedWorld_OpenQA_Selenium_DevTools_V144_Page_CreateIsolatedWorldCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.CreateIsolatedWorld(OpenQA.Selenium.DevTools.V144.Page.CreateIsolatedWorldCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   CreateIsolatedWorld(CreateIsolatedWorldCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L274"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L292"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>createIsolatedWorld</p>
+  <div class="markdown level1 summary"><p>Creates an isolated world for the given frame.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -795,10 +797,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_DeleteCookie_OpenQA_Selenium_DevTools_V144_Page_DeleteCookieCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.DeleteCookie(OpenQA.Selenium.DevTools.V144.Page.DeleteCookieCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   DeleteCookie(DeleteCookieCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L282"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L300"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>deleteCookie</p>
+  <div class="markdown level1 summary"><p>Deletes browser cookie with given name, domain and path.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -838,10 +840,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_Disable_OpenQA_Selenium_DevTools_V144_Page_DisableCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.Disable(OpenQA.Selenium.DevTools.V144.Page.DisableCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Disable(DisableCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L290"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L308"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>disable</p>
+  <div class="markdown level1 summary"><p>Disables page domain notifications.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -881,10 +883,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_Enable_OpenQA_Selenium_DevTools_V144_Page_EnableCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.Enable(OpenQA.Selenium.DevTools.V144.Page.EnableCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Enable(EnableCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L298"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L316"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>enable</p>
+  <div class="markdown level1 summary"><p>Enables page domain notifications.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -924,10 +926,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_GenerateTestReport_OpenQA_Selenium_DevTools_V144_Page_GenerateTestReportCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.GenerateTestReport(OpenQA.Selenium.DevTools.V144.Page.GenerateTestReportCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GenerateTestReport(GenerateTestReportCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L658"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L694"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>generateTestReport</p>
+  <div class="markdown level1 summary"><p>Generates a report for testing.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -967,7 +969,7 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_GetAdScriptAncestry_OpenQA_Selenium_DevTools_V144_Page_GetAdScriptAncestryCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.GetAdScriptAncestry(OpenQA.Selenium.DevTools.V144.Page.GetAdScriptAncestryCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetAdScriptAncestry(GetAdScriptAncestryCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L338"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L361"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>getAdScriptAncestry</p>
@@ -1010,10 +1012,11 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_GetAnnotatedPageContent_OpenQA_Selenium_DevTools_V144_Page_GetAnnotatedPageContentCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.GetAnnotatedPageContent(OpenQA.Selenium.DevTools.V144.Page.GetAnnotatedPageContentCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetAnnotatedPageContent(GetAnnotatedPageContentCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L690"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L735"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getAnnotatedPageContent</p>
+  <div class="markdown level1 summary"><p>Get the annotated page content for the main frame.
+This is an experimental command that is subject to change.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1053,10 +1056,11 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_GetAppId_OpenQA_Selenium_DevTools_V144_Page_GetAppIdCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.GetAppId(OpenQA.Selenium.DevTools.V144.Page.GetAppIdCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetAppId(GetAppIdCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L330"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L353"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getAppId</p>
+  <div class="markdown level1 summary"><p>Returns the unique (PWA) app id.
+Only returns values if the feature flag 'WebAppEnableManifestId' is enabled</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1096,10 +1100,14 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_GetAppManifest_OpenQA_Selenium_DevTools_V144_Page_GetAppManifestCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.GetAppManifest(OpenQA.Selenium.DevTools.V144.Page.GetAppManifestCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetAppManifest(GetAppManifestCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L306"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L328"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getAppManifest</p>
+  <div class="markdown level1 summary"><p>Gets the processed manifest for this current document.
+This API always waits for the manifest to be loaded.
+If manifestId is provided, and it does not match the manifest of the
+current document, this API errors out.
+If there is not a loaded page, this API errors out immediately.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1139,10 +1147,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_GetFrameTree_OpenQA_Selenium_DevTools_V144_Page_GetFrameTreeCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.GetFrameTree(OpenQA.Selenium.DevTools.V144.Page.GetFrameTreeCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetFrameTree(GetFrameTreeCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L346"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L369"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getFrameTree</p>
+  <div class="markdown level1 summary"><p>Returns present frame tree structure.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1182,7 +1190,7 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_GetInstallabilityErrors_OpenQA_Selenium_DevTools_V144_Page_GetInstallabilityErrorsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.GetInstallabilityErrors(OpenQA.Selenium.DevTools.V144.Page.GetInstallabilityErrorsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetInstallabilityErrors(GetInstallabilityErrorsCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L314"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L336"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>getInstallabilityErrors</p>
@@ -1225,10 +1233,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_GetLayoutMetrics_OpenQA_Selenium_DevTools_V144_Page_GetLayoutMetricsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.GetLayoutMetrics(OpenQA.Selenium.DevTools.V144.Page.GetLayoutMetricsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetLayoutMetrics(GetLayoutMetricsCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L354"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L377"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getLayoutMetrics</p>
+  <div class="markdown level1 summary"><p>Returns metrics relating to the layouting of the page, such as viewport bounds/scale.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1268,10 +1276,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_GetManifestIcons_OpenQA_Selenium_DevTools_V144_Page_GetManifestIconsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.GetManifestIcons(OpenQA.Selenium.DevTools.V144.Page.GetManifestIconsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetManifestIcons(GetManifestIconsCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L322"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L344"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getManifestIcons</p>
+  <div class="markdown level1 summary"><p>Deprecated because it's not guaranteed that the returned icon is in fact the one used for PWA installation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1311,10 +1319,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_GetNavigationHistory_OpenQA_Selenium_DevTools_V144_Page_GetNavigationHistoryCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.GetNavigationHistory(OpenQA.Selenium.DevTools.V144.Page.GetNavigationHistoryCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetNavigationHistory(GetNavigationHistoryCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L362"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L385"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getNavigationHistory</p>
+  <div class="markdown level1 summary"><p>Returns navigation history for the current page.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1354,10 +1362,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_GetOriginTrials_OpenQA_Selenium_DevTools_V144_Page_GetOriginTrialsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.GetOriginTrials(OpenQA.Selenium.DevTools.V144.Page.GetOriginTrialsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetOriginTrials(GetOriginTrialsCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L490"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L513"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getOriginTrials</p>
+  <div class="markdown level1 summary"><p>Get Origin Trials on given frame.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1397,10 +1405,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_GetPermissionsPolicyState_OpenQA_Selenium_DevTools_V144_Page_GetPermissionsPolicyStateCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.GetPermissionsPolicyState(OpenQA.Selenium.DevTools.V144.Page.GetPermissionsPolicyStateCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetPermissionsPolicyState(GetPermissionsPolicyStateCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L482"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L505"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getPermissionsPolicyState</p>
+  <div class="markdown level1 summary"><p>Get Permissions Policy state on given frame.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1440,10 +1448,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_GetResourceContent_OpenQA_Selenium_DevTools_V144_Page_GetResourceContentCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.GetResourceContent(OpenQA.Selenium.DevTools.V144.Page.GetResourceContentCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetResourceContent(GetResourceContentCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L378"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L401"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getResourceContent</p>
+  <div class="markdown level1 summary"><p>Returns content of the given resource.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1483,10 +1491,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_GetResourceTree_OpenQA_Selenium_DevTools_V144_Page_GetResourceTreeCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.GetResourceTree(OpenQA.Selenium.DevTools.V144.Page.GetResourceTreeCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetResourceTree(GetResourceTreeCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L386"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L409"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getResourceTree</p>
+  <div class="markdown level1 summary"><p>Returns present frame / resource tree structure.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1526,10 +1534,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_HandleJavaScriptDialog_OpenQA_Selenium_DevTools_V144_Page_HandleJavaScriptDialogCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.HandleJavaScriptDialog(OpenQA.Selenium.DevTools.V144.Page.HandleJavaScriptDialogCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   HandleJavaScriptDialog(HandleJavaScriptDialogCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L394"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L417"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>handleJavaScriptDialog</p>
+  <div class="markdown level1 summary"><p>Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1569,10 +1577,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_Navigate_OpenQA_Selenium_DevTools_V144_Page_NavigateCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.Navigate(OpenQA.Selenium.DevTools.V144.Page.NavigateCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Navigate(NavigateCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L402"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L425"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>navigate</p>
+  <div class="markdown level1 summary"><p>Navigates current page to the given URL.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1612,10 +1620,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_NavigateToHistoryEntry_OpenQA_Selenium_DevTools_V144_Page_NavigateToHistoryEntryCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.NavigateToHistoryEntry(OpenQA.Selenium.DevTools.V144.Page.NavigateToHistoryEntryCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   NavigateToHistoryEntry(NavigateToHistoryEntryCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L410"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L433"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>navigateToHistoryEntry</p>
+  <div class="markdown level1 summary"><p>Navigates current page to the given history entry.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1655,10 +1663,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_PrintToPDF_OpenQA_Selenium_DevTools_V144_Page_PrintToPDFCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.PrintToPDF(OpenQA.Selenium.DevTools.V144.Page.PrintToPDFCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   PrintToPDF(PrintToPDFCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L418"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L441"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>printToPDF</p>
+  <div class="markdown level1 summary"><p>Print page as PDF.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1698,10 +1706,15 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_ProduceCompilationCache_OpenQA_Selenium_DevTools_V144_Page_ProduceCompilationCacheCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.ProduceCompilationCache(OpenQA.Selenium.DevTools.V144.Page.ProduceCompilationCacheCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   ProduceCompilationCache(ProduceCompilationCacheCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L618"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L651"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>produceCompilationCache</p>
+  <div class="markdown level1 summary"><p>Requests backend to produce compilation cache for the specified scripts.
+<code>scripts</code> are appended to the list of scripts for which the cache
+would be produced. The list may be reset during page navigation.
+When script with a matching URL is encountered, the cache is optionally
+produced upon backend discretion, based on internal heuristics.
+See also: <code>Page.compilationCacheProduced</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1741,10 +1754,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_Reload_OpenQA_Selenium_DevTools_V144_Page_ReloadCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.Reload(OpenQA.Selenium.DevTools.V144.Page.ReloadCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Reload(ReloadCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L426"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L449"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>reload</p>
+  <div class="markdown level1 summary"><p>Reloads given page optionally ignoring the cache.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1784,10 +1797,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_RemoveScriptToEvaluateOnLoad_OpenQA_Selenium_DevTools_V144_Page_RemoveScriptToEvaluateOnLoadCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.RemoveScriptToEvaluateOnLoad(OpenQA.Selenium.DevTools.V144.Page.RemoveScriptToEvaluateOnLoadCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   RemoveScriptToEvaluateOnLoad(RemoveScriptToEvaluateOnLoadCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L434"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L457"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>removeScriptToEvaluateOnLoad</p>
+  <div class="markdown level1 summary"><p>Deprecated, please use removeScriptToEvaluateOnNewDocument instead.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1827,10 +1840,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_RemoveScriptToEvaluateOnNewDocument_OpenQA_Selenium_DevTools_V144_Page_RemoveScriptToEvaluateOnNewDocumentCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.RemoveScriptToEvaluateOnNewDocument(OpenQA.Selenium.DevTools.V144.Page.RemoveScriptToEvaluateOnNewDocumentCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   RemoveScriptToEvaluateOnNewDocument(RemoveScriptToEvaluateOnNewDocumentCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L442"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L465"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>removeScriptToEvaluateOnNewDocument</p>
+  <div class="markdown level1 summary"><p>Removes given script from the list.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1870,10 +1883,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_ResetNavigationHistory_OpenQA_Selenium_DevTools_V144_Page_ResetNavigationHistoryCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.ResetNavigationHistory(OpenQA.Selenium.DevTools.V144.Page.ResetNavigationHistoryCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   ResetNavigationHistory(ResetNavigationHistoryCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L370"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L393"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>resetNavigationHistory</p>
+  <div class="markdown level1 summary"><p>Resets navigation history for the current page.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1913,10 +1926,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_ScreencastFrameAck_OpenQA_Selenium_DevTools_V144_Page_ScreencastFrameAckCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.ScreencastFrameAck(OpenQA.Selenium.DevTools.V144.Page.ScreencastFrameAckCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   ScreencastFrameAck(ScreencastFrameAckCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L450"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L473"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>screencastFrameAck</p>
+  <div class="markdown level1 summary"><p>Acknowledges that a screencast frame has been received by the frontend.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1956,10 +1969,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SearchInResource_OpenQA_Selenium_DevTools_V144_Page_SearchInResourceCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SearchInResource(OpenQA.Selenium.DevTools.V144.Page.SearchInResourceCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SearchInResource(SearchInResourceCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L458"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L481"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>searchInResource</p>
+  <div class="markdown level1 summary"><p>Searches for given string in resource content.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1999,10 +2012,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetAdBlockingEnabled_OpenQA_Selenium_DevTools_V144_Page_SetAdBlockingEnabledCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetAdBlockingEnabled(OpenQA.Selenium.DevTools.V144.Page.SetAdBlockingEnabledCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetAdBlockingEnabled(SetAdBlockingEnabledCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L466"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L489"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setAdBlockingEnabled</p>
+  <div class="markdown level1 summary"><p>Enable Chrome's experimental ad filter on all sites.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2042,10 +2055,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetBypassCSP_OpenQA_Selenium_DevTools_V144_Page_SetBypassCSPCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetBypassCSP(OpenQA.Selenium.DevTools.V144.Page.SetBypassCSPCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetBypassCSP(SetBypassCSPCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L474"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L497"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setBypassCSP</p>
+  <div class="markdown level1 summary"><p>Enable page Content Security Policy by-passing.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2085,10 +2098,12 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetDeviceMetricsOverride_OpenQA_Selenium_DevTools_V144_Page_SetDeviceMetricsOverrideCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetDeviceMetricsOverride(OpenQA.Selenium.DevTools.V144.Page.SetDeviceMetricsOverrideCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetDeviceMetricsOverride(SetDeviceMetricsOverrideCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L498"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L523"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setDeviceMetricsOverride</p>
+  <div class="markdown level1 summary"><p>Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
+window.innerWidth, window.innerHeight, and &quot;device-width&quot;/&quot;device-height&quot;-related CSS media
+query results).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2128,10 +2143,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetDeviceOrientationOverride_OpenQA_Selenium_DevTools_V144_Page_SetDeviceOrientationOverrideCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetDeviceOrientationOverride(OpenQA.Selenium.DevTools.V144.Page.SetDeviceOrientationOverrideCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetDeviceOrientationOverride(SetDeviceOrientationOverrideCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L506"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L531"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setDeviceOrientationOverride</p>
+  <div class="markdown level1 summary"><p>Overrides the Device Orientation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2171,10 +2186,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetDocumentContent_OpenQA_Selenium_DevTools_V144_Page_SetDocumentContentCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetDocumentContent(OpenQA.Selenium.DevTools.V144.Page.SetDocumentContentCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetDocumentContent(SetDocumentContentCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L530"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L555"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setDocumentContent</p>
+  <div class="markdown level1 summary"><p>Sets given markup as the document's HTML.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2214,10 +2229,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetDownloadBehavior_OpenQA_Selenium_DevTools_V144_Page_SetDownloadBehaviorCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetDownloadBehavior(OpenQA.Selenium.DevTools.V144.Page.SetDownloadBehaviorCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetDownloadBehavior(SetDownloadBehaviorCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L538"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L563"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setDownloadBehavior</p>
+  <div class="markdown level1 summary"><p>Set the behavior when downloading a file.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2257,10 +2272,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetFontFamilies_OpenQA_Selenium_DevTools_V144_Page_SetFontFamiliesCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetFontFamilies(OpenQA.Selenium.DevTools.V144.Page.SetFontFamiliesCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetFontFamilies(SetFontFamiliesCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L514"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L539"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setFontFamilies</p>
+  <div class="markdown level1 summary"><p>Set generic font families.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2300,10 +2315,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetFontSizes_OpenQA_Selenium_DevTools_V144_Page_SetFontSizesCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetFontSizes(OpenQA.Selenium.DevTools.V144.Page.SetFontSizesCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetFontSizes(SetFontSizesCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L522"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L547"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setFontSizes</p>
+  <div class="markdown level1 summary"><p>Set default font sizes.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2343,10 +2358,11 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetGeolocationOverride_OpenQA_Selenium_DevTools_V144_Page_SetGeolocationOverrideCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetGeolocationOverride(OpenQA.Selenium.DevTools.V144.Page.SetGeolocationOverrideCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetGeolocationOverride(SetGeolocationOverrideCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L546"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L572"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setGeolocationOverride</p>
+  <div class="markdown level1 summary"><p>Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
+unavailable.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2386,10 +2402,12 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetInterceptFileChooserDialog_OpenQA_Selenium_DevTools_V144_Page_SetInterceptFileChooserDialogCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetInterceptFileChooserDialog(OpenQA.Selenium.DevTools.V144.Page.SetInterceptFileChooserDialogCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetInterceptFileChooserDialog(SetInterceptFileChooserDialogCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L674"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L712"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setInterceptFileChooserDialog</p>
+  <div class="markdown level1 summary"><p>Intercept file chooser requests and transfer control to protocol clients.
+When file chooser interception is enabled, native file chooser dialog is not shown.
+Instead, a protocol event <code>Page.fileChooserOpened</code> is emitted.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2429,10 +2447,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetLifecycleEventsEnabled_OpenQA_Selenium_DevTools_V144_Page_SetLifecycleEventsEnabledCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetLifecycleEventsEnabled(OpenQA.Selenium.DevTools.V144.Page.SetLifecycleEventsEnabledCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetLifecycleEventsEnabled(SetLifecycleEventsEnabledCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L554"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L580"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setLifecycleEventsEnabled</p>
+  <div class="markdown level1 summary"><p>Controls whether page will emit lifecycle events.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2472,10 +2490,14 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetPrerenderingAllowed_OpenQA_Selenium_DevTools_V144_Page_SetPrerenderingAllowedCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetPrerenderingAllowed(OpenQA.Selenium.DevTools.V144.Page.SetPrerenderingAllowedCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetPrerenderingAllowed(SetPrerenderingAllowedCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L682"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L726"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setPrerenderingAllowed</p>
+  <div class="markdown level1 summary"><p>Enable/disable prerendering manually.</p>
+<p>This command is a short-term solution for <a href="https://crbug.com/1440085">https://crbug.com/1440085</a>.
+See <a href="https://docs.google.com/document/d/12HVmFxYj5Jc-eJr5OmWsa2bqTJsbgGLKI6ZIyx0_wpA">https://docs.google.com/document/d/12HVmFxYj5Jc-eJr5OmWsa2bqTJsbgGLKI6ZIyx0_wpA</a>
+for more details.</p>
+<p>TODO(<a href="https://crbug.com/1440085">https://crbug.com/1440085</a>): Remove this once Puppeteer supports tab targets.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2515,10 +2537,11 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetRPHRegistrationMode_OpenQA_Selenium_DevTools_V144_Page_SetRPHRegistrationModeCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetRPHRegistrationMode(OpenQA.Selenium.DevTools.V144.Page.SetRPHRegistrationModeCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetRPHRegistrationMode(SetRPHRegistrationModeCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L650"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L686"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setRPHRegistrationMode</p>
+  <div class="markdown level1 summary"><p>Extensions for Custom Handlers API:
+<a href="https://html.spec.whatwg.org/multipage/system-state.html#rph-automation">https://html.spec.whatwg.org/multipage/system-state.html#rph-automation</a></p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2558,10 +2581,11 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetSPCTransactionMode_OpenQA_Selenium_DevTools_V144_Page_SetSPCTransactionModeCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetSPCTransactionMode(OpenQA.Selenium.DevTools.V144.Page.SetSPCTransactionModeCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetSPCTransactionMode(SetSPCTransactionModeCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L642"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L677"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setSPCTransactionMode</p>
+  <div class="markdown level1 summary"><p>Sets the Secure Payment Confirmation transaction mode.
+<a href="https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode">https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode</a></p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2601,10 +2625,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetTouchEmulationEnabled_OpenQA_Selenium_DevTools_V144_Page_SetTouchEmulationEnabledCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetTouchEmulationEnabled(OpenQA.Selenium.DevTools.V144.Page.SetTouchEmulationEnabledCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetTouchEmulationEnabled(SetTouchEmulationEnabledCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L562"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L588"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setTouchEmulationEnabled</p>
+  <div class="markdown level1 summary"><p>Toggles mouse event-based touch event emulation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2644,10 +2668,12 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_SetWebLifecycleState_OpenQA_Selenium_DevTools_V144_Page_SetWebLifecycleStateCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.SetWebLifecycleState(OpenQA.Selenium.DevTools.V144.Page.SetWebLifecycleStateCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetWebLifecycleState(SetWebLifecycleStateCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L602"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L630"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setWebLifecycleState</p>
+  <div class="markdown level1 summary"><p>Tries to update the web lifecycle state of the page.
+It will transition the page to the given state according to:
+<a href="https://github.com/WICG/web-lifecycle/">https://github.com/WICG/web-lifecycle/</a></p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2687,10 +2713,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_StartScreencast_OpenQA_Selenium_DevTools_V144_Page_StartScreencastCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.StartScreencast(OpenQA.Selenium.DevTools.V144.Page.StartScreencastCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   StartScreencast(StartScreencastCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L570"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L596"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>startScreencast</p>
+  <div class="markdown level1 summary"><p>Starts sending each frame using the <code>screencastFrame</code> event.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2730,10 +2756,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_StopLoading_OpenQA_Selenium_DevTools_V144_Page_StopLoadingCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.StopLoading(OpenQA.Selenium.DevTools.V144.Page.StopLoadingCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   StopLoading(StopLoadingCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L578"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L604"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>stopLoading</p>
+  <div class="markdown level1 summary"><p>Force the page stop all navigations and pending resource fetches.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2773,10 +2799,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_StopScreencast_OpenQA_Selenium_DevTools_V144_Page_StopScreencastCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.StopScreencast(OpenQA.Selenium.DevTools.V144.Page.StopScreencastCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   StopScreencast(StopScreencastCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L610"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L638"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>stopScreencast</p>
+  <div class="markdown level1 summary"><p>Stops sending each frame in the <code>screencastFrame</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2816,10 +2842,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_WaitForDebugger_OpenQA_Selenium_DevTools_V144_Page_WaitForDebuggerCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.WaitForDebugger(OpenQA.Selenium.DevTools.V144.Page.WaitForDebuggerCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   WaitForDebugger(WaitForDebuggerCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L666"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L702"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>waitForDebugger</p>
+  <div class="markdown level1 summary"><p>Pauses page execution. Can be resumed using generic Runtime.runIfWaitingForDebugger.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2862,10 +2888,13 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_BackForwardCacheNotUsed" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.BackForwardCacheNotUsed">
   BackForwardCacheNotUsed
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L173"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L189"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>backForwardCacheNotUsed</p>
+  <div class="markdown level1 summary"><p>Fired for failed bfcache history navigations if BackForwardCache feature is enabled. Do
+not assume any ordering with the Page.frameNavigated event. This event is fired only for
+main-frame history navigation where the document changes (non-same-document navigations),
+when bfcache navigation fails.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2893,10 +2922,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_CompilationCacheProduced" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.CompilationCacheProduced">
   CompilationCacheProduced
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L203"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L220"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>compilationCacheProduced</p>
+  <div class="markdown level1 summary"><p>Issued for every compilation cache generated.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2924,10 +2953,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_DocumentOpened" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.DocumentOpened">
   DocumentOpened
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L104"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>documentOpened</p>
+  <div class="markdown level1 summary"><p>Fired when opening document to write to.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2986,10 +3015,11 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_DownloadProgress" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.DownloadProgress">
   DownloadProgress
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L143"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L153"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>downloadProgress</p>
+  <div class="markdown level1 summary"><p>Fired when download makes progress. Last call has |done| == true.
+Deprecated. Use Browser.downloadProgress instead.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3017,10 +3047,11 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_DownloadWillBegin" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.DownloadWillBegin">
   DownloadWillBegin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L138"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L147"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>downloadWillBegin</p>
+  <div class="markdown level1 summary"><p>Fired when page is about to start a download.
+Deprecated. Use Browser.downloadWillBegin instead.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3051,7 +3082,7 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>fileChooserOpened</p>
+  <div class="markdown level1 summary"><p>Emitted only when <code>page.interceptFileChooser</code> is enabled.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3082,7 +3113,7 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L78"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>frameAttached</p>
+  <div class="markdown level1 summary"><p>Fired when frame has been attached to its parent.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3113,7 +3144,7 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L83"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>frameClearedScheduledNavigation</p>
+  <div class="markdown level1 summary"><p>Fired when frame no longer has a scheduled navigation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3144,7 +3175,7 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>frameDetached</p>
+  <div class="markdown level1 summary"><p>Fired when frame has been detached from its parent.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3172,10 +3203,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_FrameNavigated" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.FrameNavigated">
   FrameNavigated
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L99"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>frameNavigated</p>
+  <div class="markdown level1 summary"><p>Fired once navigation of the frame has completed. Frame is now associated with the new loader.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3203,10 +3234,11 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_FrameRequestedNavigation" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.FrameRequestedNavigation">
   FrameRequestedNavigation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L126"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>frameRequestedNavigation</p>
+  <div class="markdown level1 summary"><p>Fired when a renderer-initiated navigation is requested.
+Navigation may still be cancelled after the event is issued.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3234,7 +3266,7 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_FrameResized" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.FrameResized">
   FrameResized
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L109"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>frameResized</p>
@@ -3265,10 +3297,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_FrameScheduledNavigation" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.FrameScheduledNavigation">
   FrameScheduledNavigation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L123"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L131"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>frameScheduledNavigation</p>
+  <div class="markdown level1 summary"><p>Fired when frame schedules a potential navigation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3296,10 +3328,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_FrameStartedLoading" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.FrameStartedLoading">
   FrameStartedLoading
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L136"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>frameStartedLoading</p>
+  <div class="markdown level1 summary"><p>Fired when frame has started loading.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3327,10 +3359,16 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_FrameStartedNavigating" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.FrameStartedNavigating">
   FrameStartedNavigating
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L120"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>frameStartedNavigating</p>
+  <div class="markdown level1 summary"><p>Fired when a navigation starts. This event is fired for both
+renderer-initiated and browser-initiated navigations. For renderer-initiated
+navigations, the event is fired after <code>frameRequestedNavigation</code>.
+Navigation may still be cancelled after the event is issued. Multiple events
+can be fired for a single navigation, for example, when a same-document
+navigation becomes a cross-document navigation (such as in the case of a
+frameset).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3358,10 +3396,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_FrameStoppedLoading" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.FrameStoppedLoading">
   FrameStoppedLoading
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L133"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L141"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>frameStoppedLoading</p>
+  <div class="markdown level1 summary"><p>Fired when frame has stopped loading.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3389,10 +3427,11 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_FrameSubtreeWillBeDetached" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.FrameSubtreeWillBeDetached">
   FrameSubtreeWillBeDetached
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L93"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>frameSubtreeWillBeDetached</p>
+  <div class="markdown level1 summary"><p>Fired before frame subtree is detached. Emitted before any frame of the
+subtree is actually detached.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3420,10 +3459,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_InterstitialHidden" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.InterstitialHidden">
   InterstitialHidden
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L148"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L158"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>interstitialHidden</p>
+  <div class="markdown level1 summary"><p>Fired when interstitial page was hidden</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3451,10 +3490,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_InterstitialShown" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.InterstitialShown">
   InterstitialShown
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L153"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L163"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>interstitialShown</p>
+  <div class="markdown level1 summary"><p>Fired when interstitial page was shown</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3482,10 +3521,11 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_JavascriptDialogClosed" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.JavascriptDialogClosed">
   JavascriptDialogClosed
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L158"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L169"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>javascriptDialogClosed</p>
+  <div class="markdown level1 summary"><p>Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) has been
+closed.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3513,10 +3553,11 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_JavascriptDialogOpening" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.JavascriptDialogOpening">
   JavascriptDialogOpening
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L163"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L175"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>javascriptDialogOpening</p>
+  <div class="markdown level1 summary"><p>Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) is about to
+open.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3544,10 +3585,11 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_LifecycleEvent" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.LifecycleEvent">
   LifecycleEvent
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L181"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>lifecycleEvent</p>
+  <div class="markdown level1 summary"><p>Fired for lifecycle events (navigation, load, paint, etc) in the current
+target (including local frames).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3575,7 +3617,7 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_LoadEventFired" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.LoadEventFired">
   LoadEventFired
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L178"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L194"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>loadEventFired</p>
@@ -3606,10 +3648,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_NavigatedWithinDocument" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.NavigatedWithinDocument">
   NavigatedWithinDocument
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L183"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L199"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>navigatedWithinDocument</p>
+  <div class="markdown level1 summary"><p>Fired when same-document navigation happens, e.g. due to history API usage or anchor navigation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3637,10 +3679,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_ScreencastFrame" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.ScreencastFrame">
   ScreencastFrame
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L188"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L204"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>screencastFrame</p>
+  <div class="markdown level1 summary"><p>Compressed image data requested by the <code>startScreencast</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3668,10 +3710,10 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_ScreencastVisibilityChanged" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.ScreencastVisibilityChanged">
   ScreencastVisibilityChanged
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L193"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L209"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>screencastVisibilityChanged</p>
+  <div class="markdown level1 summary"><p>Fired when the page with currently enabled screencast was shown or hidden `.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -3699,10 +3741,11 @@ Class PageAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_PageAdapter_WindowOpen" data-uid="OpenQA.Selenium.DevTools.V144.Page.PageAdapter.WindowOpen">
   WindowOpen
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L198"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/PageAdapter.cs/#L215"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>windowOpen</p>
+  <div class="markdown level1 summary"><p>Fired when a new window is going to be opened, via window.open(), link click, form submission,
+etc.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

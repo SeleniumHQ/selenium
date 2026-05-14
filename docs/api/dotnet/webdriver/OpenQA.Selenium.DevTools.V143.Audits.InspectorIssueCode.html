@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Enum InspectorIssueCode ">
       
-      <meta name="description" content="InspectorIssueCode">
+      <meta name="description" content="A unique identifier for the type of issue. Each type may use one of the optional fields in InspectorIssueDetails to convey more specific information about the kind of issue.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -90,7 +90,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode" data-uid="OpenQA.Selenium.DevTools.V143.Audits.InspectorIssueCode" class="text-break">
-Enum InspectorIssueCode  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/InspectorIssueCode.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Enum InspectorIssueCode  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/InspectorIssueCode.cs/#L15"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -98,7 +98,9 @@ Enum InspectorIssueCode  <a class="header-action link-secondary" title="View sou
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>InspectorIssueCode</p>
+  <div class="markdown summary"><p>A unique identifier for the type of issue. Each type may use one of the
+optional fields in InspectorIssueDetails to convey more specific
+information about the kind of issue.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -120,107 +122,133 @@ public enum InspectorIssueCode</code></pre>
   <dl class="parameters">
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_AttributionReportingIssue"><code>[EnumMember(Value = &quot;AttributionReportingIssue&quot;)]
 AttributionReportingIssue = 8</code></dt>
-    <dd><p>Enumerated member for the AttributionReportingIssue value.</p>
+  
+  <dd><p>Enumerated member for the AttributionReportingIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_BlockedByResponseIssue"><code>[EnumMember(Value = &quot;BlockedByResponseIssue&quot;)]
 BlockedByResponseIssue = 2</code></dt>
-    <dd><p>Enumerated member for the BlockedByResponseIssue value.</p>
+  
+  <dd><p>Enumerated member for the BlockedByResponseIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_BounceTrackingIssue"><code>[EnumMember(Value = &quot;BounceTrackingIssue&quot;)]
 BounceTrackingIssue = 16</code></dt>
-    <dd><p>Enumerated member for the BounceTrackingIssue value.</p>
+  
+  <dd><p>Enumerated member for the BounceTrackingIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_ClientHintIssue"><code>[EnumMember(Value = &quot;ClientHintIssue&quot;)]
 ClientHintIssue = 14</code></dt>
-    <dd><p>Enumerated member for the ClientHintIssue value.</p>
+  
+  <dd><p>Enumerated member for the ClientHintIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_ContentSecurityPolicyIssue"><code>[EnumMember(Value = &quot;ContentSecurityPolicyIssue&quot;)]
 ContentSecurityPolicyIssue = 4</code></dt>
-    <dd><p>Enumerated member for the ContentSecurityPolicyIssue value.</p>
+  
+  <dd><p>Enumerated member for the ContentSecurityPolicyIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_CookieDeprecationMetadataIssue"><code>[EnumMember(Value = &quot;CookieDeprecationMetadataIssue&quot;)]
 CookieDeprecationMetadataIssue = 17</code></dt>
-    <dd><p>Enumerated member for the CookieDeprecationMetadataIssue value.</p>
+  
+  <dd><p>Enumerated member for the CookieDeprecationMetadataIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_CookieIssue"><code>[EnumMember(Value = &quot;CookieIssue&quot;)]
 CookieIssue = 0</code></dt>
-    <dd><p>Enumerated member for the CookieIssue value.</p>
+  
+  <dd><p>Enumerated member for the CookieIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_CorsIssue"><code>[EnumMember(Value = &quot;CorsIssue&quot;)]
 CorsIssue = 7</code></dt>
-    <dd><p>Enumerated member for the CorsIssue value.</p>
+  
+  <dd><p>Enumerated member for the CorsIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_DeprecationIssue"><code>[EnumMember(Value = &quot;DeprecationIssue&quot;)]
 DeprecationIssue = 13</code></dt>
-    <dd><p>Enumerated member for the DeprecationIssue value.</p>
+  
+  <dd><p>Enumerated member for the DeprecationIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_ElementAccessibilityIssue"><code>[EnumMember(Value = &quot;ElementAccessibilityIssue&quot;)]
 ElementAccessibilityIssue = 22</code></dt>
-    <dd><p>Enumerated member for the ElementAccessibilityIssue value.</p>
+  
+  <dd><p>Enumerated member for the ElementAccessibilityIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_FederatedAuthRequestIssue"><code>[EnumMember(Value = &quot;FederatedAuthRequestIssue&quot;)]
 FederatedAuthRequestIssue = 15</code></dt>
-    <dd><p>Enumerated member for the FederatedAuthRequestIssue value.</p>
+  
+  <dd><p>Enumerated member for the FederatedAuthRequestIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_FederatedAuthUserInfoRequestIssue"><code>[EnumMember(Value = &quot;FederatedAuthUserInfoRequestIssue&quot;)]
 FederatedAuthUserInfoRequestIssue = 19</code></dt>
-    <dd><p>Enumerated member for the FederatedAuthUserInfoRequestIssue value.</p>
+  
+  <dd><p>Enumerated member for the FederatedAuthUserInfoRequestIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_GenericIssue"><code>[EnumMember(Value = &quot;GenericIssue&quot;)]
 GenericIssue = 12</code></dt>
-    <dd><p>Enumerated member for the GenericIssue value.</p>
+  
+  <dd><p>Enumerated member for the GenericIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_HeavyAdIssue"><code>[EnumMember(Value = &quot;HeavyAdIssue&quot;)]
 HeavyAdIssue = 3</code></dt>
-    <dd><p>Enumerated member for the HeavyAdIssue value.</p>
+  
+  <dd><p>Enumerated member for the HeavyAdIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_LowTextContrastIssue"><code>[EnumMember(Value = &quot;LowTextContrastIssue&quot;)]
 LowTextContrastIssue = 6</code></dt>
-    <dd><p>Enumerated member for the LowTextContrastIssue value.</p>
+  
+  <dd><p>Enumerated member for the LowTextContrastIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_MixedContentIssue"><code>[EnumMember(Value = &quot;MixedContentIssue&quot;)]
 MixedContentIssue = 1</code></dt>
-    <dd><p>Enumerated member for the MixedContentIssue value.</p>
+  
+  <dd><p>Enumerated member for the MixedContentIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_NavigatorUserAgentIssue"><code>[EnumMember(Value = &quot;NavigatorUserAgentIssue&quot;)]
 NavigatorUserAgentIssue = 11</code></dt>
-    <dd><p>Enumerated member for the NavigatorUserAgentIssue value.</p>
+  
+  <dd><p>Enumerated member for the NavigatorUserAgentIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_PartitioningBlobURLIssue"><code>[EnumMember(Value = &quot;PartitioningBlobURLIssue&quot;)]
 PartitioningBlobURLIssue = 10</code></dt>
-    <dd><p>Enumerated member for the PartitioningBlobURLIssue value.</p>
+  
+  <dd><p>Enumerated member for the PartitioningBlobURLIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_PropertyRuleIssue"><code>[EnumMember(Value = &quot;PropertyRuleIssue&quot;)]
 PropertyRuleIssue = 20</code></dt>
-    <dd><p>Enumerated member for the PropertyRuleIssue value.</p>
+  
+  <dd><p>Enumerated member for the PropertyRuleIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_QuirksModeIssue"><code>[EnumMember(Value = &quot;QuirksModeIssue&quot;)]
 QuirksModeIssue = 9</code></dt>
-    <dd><p>Enumerated member for the QuirksModeIssue value.</p>
+  
+  <dd><p>Enumerated member for the QuirksModeIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_SRIMessageSignatureIssue"><code>[EnumMember(Value = &quot;SRIMessageSignatureIssue&quot;)]
 SRIMessageSignatureIssue = 23</code></dt>
-    <dd><p>Enumerated member for the SRIMessageSignatureIssue value.</p>
+  
+  <dd><p>Enumerated member for the SRIMessageSignatureIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_SharedArrayBufferIssue"><code>[EnumMember(Value = &quot;SharedArrayBufferIssue&quot;)]
 SharedArrayBufferIssue = 5</code></dt>
-    <dd><p>Enumerated member for the SharedArrayBufferIssue value.</p>
+  
+  <dd><p>Enumerated member for the SharedArrayBufferIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_SharedDictionaryIssue"><code>[EnumMember(Value = &quot;SharedDictionaryIssue&quot;)]
 SharedDictionaryIssue = 21</code></dt>
-    <dd><p>Enumerated member for the SharedDictionaryIssue value.</p>
+  
+  <dd><p>Enumerated member for the SharedDictionaryIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_StylesheetLoadingIssue"><code>[EnumMember(Value = &quot;StylesheetLoadingIssue&quot;)]
 StylesheetLoadingIssue = 18</code></dt>
-    <dd><p>Enumerated member for the StylesheetLoadingIssue value.</p>
+  
+  <dd><p>Enumerated member for the StylesheetLoadingIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_UnencodedDigestIssue"><code>[EnumMember(Value = &quot;UnencodedDigestIssue&quot;)]
 UnencodedDigestIssue = 24</code></dt>
-    <dd><p>Enumerated member for the UnencodedDigestIssue value.</p>
+  
+  <dd><p>Enumerated member for the UnencodedDigestIssue value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Audits_InspectorIssueCode_UserReidentificationIssue"><code>[EnumMember(Value = &quot;UserReidentificationIssue&quot;)]
 UserReidentificationIssue = 25</code></dt>
-    <dd><p>Enumerated member for the UserReidentificationIssue value.</p>
+  
+  <dd><p>Enumerated member for the UserReidentificationIssue value.</p>
 </dd>
   </dl>
 
@@ -229,7 +257,7 @@ UserReidentificationIssue = 25</code></dt>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/InspectorIssueCode.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/InspectorIssueCode.cs/#L15" class="edit-link">Edit this page</a>
         </div>
 
 

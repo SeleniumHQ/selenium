@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class LaunchFilesInAppCommandSettings ">
       
-      <meta name="description" content="LaunchFilesInApp">
+      <meta name="description" content="Opens one or more local files from an installed web app identified by its manifestId. The web app needs to have file handlers registered to process the files. The API returns one or more page Target.TargetIDs which can be used to attach to via Target.attachToTarget or similar APIs. If some files in the parameters cannot be handled by the web app, they will be ignored. If none of the files can be handled, this API returns an error. If no files are provided as the parameter, this API also returns an error. According to the definition of the file handlers in the manifest file, one Target.TargetID may represent a page handling one or more files. The order of the returned Target.TargetIDs is not guaranteed. TODO(crbug.com/339454034): Check the existences of the input files.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_PWA_LaunchFilesInAppCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.PWA.LaunchFilesInAppCommandSettings" class="text-break">
-Class LaunchFilesInAppCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class LaunchFilesInAppCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,17 @@ Class LaunchFilesInAppCommandSettings  <a class="header-action link-secondary" t
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>LaunchFilesInApp</p>
+  <div class="markdown summary"><p>Opens one or more local files from an installed web app identified by its
+manifestId. The web app needs to have file handlers registered to process
+the files. The API returns one or more page Target.TargetIDs which can be
+used to attach to via Target.attachToTarget or similar APIs.
+If some files in the parameters cannot be handled by the web app, they will
+be ignored. If none of the files can be handled, this API returns an error.
+If no files are provided as the parameter, this API also returns an error.</p>
+<p>According to the definition of the file handlers in the manifest file, one
+Target.TargetID may represent a page handling one or more files. The order
+of the returned Target.TargetIDs is not guaranteed.</p>
+<p>TODO(crbug.com/339454034): Check the existences of the input files.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +170,7 @@ Class LaunchFilesInAppCommandSettings  <a class="header-action link-secondary" t
 
   <h3 id="OpenQA_Selenium_DevTools_V144_PWA_LaunchFilesInAppCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.PWA.LaunchFilesInAppCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,7 +203,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_PWA_LaunchFilesInAppCommandSettings_Files" data-uid="OpenQA.Selenium.DevTools.V144.PWA.LaunchFilesInAppCommandSettings.Files">
   Files
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the files</p>
@@ -226,7 +236,7 @@ public string[] Files { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_PWA_LaunchFilesInAppCommandSettings_ManifestId" data-uid="OpenQA.Selenium.DevTools.V144.PWA.LaunchFilesInAppCommandSettings.ManifestId">
   ManifestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the manifestId</p>
@@ -259,7 +269,7 @@ public string ManifestId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L24" class="edit-link">Edit this page</a>
         </div>
 
 

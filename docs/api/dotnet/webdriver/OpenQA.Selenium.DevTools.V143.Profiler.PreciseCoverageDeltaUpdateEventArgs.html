@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class PreciseCoverageDeltaUpdateEventArgs ">
       
-      <meta name="description" content="PreciseCoverageDeltaUpdate">
+      <meta name="description" content="Reports coverage delta since the last poll (either from an event like this, or from takePreciseCoverage for the current isolate. May only be sent if precise code coverage has been started. This event can be trigged by the embedder to, for example, trigger collection of coverage data immediately at a certain point in time.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Profiler_PreciseCoverageDeltaUpdateEventArgs" data-uid="OpenQA.Selenium.DevTools.V143.Profiler.PreciseCoverageDeltaUpdateEventArgs" class="text-break">
-Class PreciseCoverageDeltaUpdateEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/PreciseCoverageDeltaUpdateEventArgs.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Class PreciseCoverageDeltaUpdateEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/PreciseCoverageDeltaUpdateEventArgs.cs/#L16"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,10 @@ Class PreciseCoverageDeltaUpdateEventArgs  <a class="header-action link-secondar
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>PreciseCoverageDeltaUpdate</p>
+  <div class="markdown summary"><p>Reports coverage delta since the last poll (either from an event like this, or from
+<code>takePreciseCoverage</code> for the current isolate. May only be sent if precise code
+coverage has been started. This event can be trigged by the embedder to, for example,
+trigger collection of coverage data immediately at a certain point in time.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +161,10 @@ Class PreciseCoverageDeltaUpdateEventArgs  <a class="header-action link-secondar
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Profiler_PreciseCoverageDeltaUpdateEventArgs_Occasion" data-uid="OpenQA.Selenium.DevTools.V143.Profiler.PreciseCoverageDeltaUpdateEventArgs.Occasion">
   Occasion
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/PreciseCoverageDeltaUpdateEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/PreciseCoverageDeltaUpdateEventArgs.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the occasion</p>
+  <div class="markdown level1 summary"><p>Identifier for distinguishing coverage events.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,10 +194,10 @@ public string Occasion { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Profiler_PreciseCoverageDeltaUpdateEventArgs_Result" data-uid="OpenQA.Selenium.DevTools.V143.Profiler.PreciseCoverageDeltaUpdateEventArgs.Result">
   Result
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/PreciseCoverageDeltaUpdateEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/PreciseCoverageDeltaUpdateEventArgs.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the result</p>
+  <div class="markdown level1 summary"><p>Coverage data for the current isolate.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -224,10 +227,10 @@ public ScriptCoverage[] Result { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Profiler_PreciseCoverageDeltaUpdateEventArgs_Timestamp" data-uid="OpenQA.Selenium.DevTools.V143.Profiler.PreciseCoverageDeltaUpdateEventArgs.Timestamp">
   Timestamp
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/PreciseCoverageDeltaUpdateEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/PreciseCoverageDeltaUpdateEventArgs.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the timestamp</p>
+  <div class="markdown level1 summary"><p>Monotonically increasing time (in seconds) when the coverage update was taken in the backend.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -257,7 +260,7 @@ public double Timestamp { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/PreciseCoverageDeltaUpdateEventArgs.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Profiler/PreciseCoverageDeltaUpdateEventArgs.cs/#L16" class="edit-link">Edit this page</a>
         </div>
 
 

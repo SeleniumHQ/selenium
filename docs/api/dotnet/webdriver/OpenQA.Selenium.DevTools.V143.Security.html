@@ -96,47 +96,50 @@ Classes
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.CertificateErrorEventArgs.html">CertificateErrorEventArgs</a></dt>
-      <dd><p>CertificateError</p>
+      <dd><p>There is a certificate error. If overriding certificate errors is enabled, then it should be
+handled with the <code>handleCertificateError</code> command. Note: this event does not fire if the
+certificate error has been allowed internally. Only one client per target should override
+certificate errors at the same time.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.CertificateSecurityState.html">CertificateSecurityState</a></dt>
-      <dd><p>CertificateSecurityState</p>
+      <dd><p>Details about the security state of the page certificate.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.DisableCommandResponse.html">DisableCommandResponse</a></dt>
-      <dd><p>Response for Disable</p>
+      <dd><p>Response for Disables tracking security state changes.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.DisableCommandSettings.html">DisableCommandSettings</a></dt>
-      <dd><p>Disable</p>
+      <dd><p>Disables tracking security state changes.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.EnableCommandResponse.html">EnableCommandResponse</a></dt>
-      <dd><p>Response for Enable</p>
+      <dd><p>Response for Enables tracking security state changes.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.EnableCommandSettings.html">EnableCommandSettings</a></dt>
-      <dd><p>Enable</p>
+      <dd><p>Enables tracking security state changes.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.HandleCertificateErrorCommandResponse.html">HandleCertificateErrorCommandResponse</a></dt>
-      <dd><p>Response for HandleCertificateError</p>
+      <dd><p>Response for Handles a certificate error that fired a certificateError event.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.HandleCertificateErrorCommandSettings.html">HandleCertificateErrorCommandSettings</a></dt>
-      <dd><p>HandleCertificateError</p>
+      <dd><p>Handles a certificate error that fired a certificateError event.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.InsecureContentStatus.html">InsecureContentStatus</a></dt>
-      <dd><p>InsecureContentStatus</p>
+      <dd><p>Information about insecure content on the page.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -151,42 +154,44 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.SecurityStateChangedEventArgs.html">SecurityStateChangedEventArgs</a></dt>
-      <dd><p>SecurityStateChanged</p>
+      <dd><p>The security state of the page changed. No longer being sent.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.SecurityStateExplanation.html">SecurityStateExplanation</a></dt>
-      <dd><p>SecurityStateExplanation</p>
+      <dd><p>An explanation of an factor contributing to the security state.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.SetIgnoreCertificateErrorsCommandResponse.html">SetIgnoreCertificateErrorsCommandResponse</a></dt>
-      <dd><p>Response for SetIgnoreCertificateErrors</p>
+      <dd><p>Response for Enable/disable whether all certificate errors should be ignored.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.SetIgnoreCertificateErrorsCommandSettings.html">SetIgnoreCertificateErrorsCommandSettings</a></dt>
-      <dd><p>SetIgnoreCertificateErrors</p>
+      <dd><p>Enable/disable whether all certificate errors should be ignored.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.SetOverrideCertificateErrorsCommandResponse.html">SetOverrideCertificateErrorsCommandResponse</a></dt>
-      <dd><p>Response for SetOverrideCertificateErrors</p>
+      <dd><p>Response for Enable/disable overriding certificate errors. If enabled, all certificate error events need to
+be handled by the DevTools client and should be answered with <code>handleCertificateError</code> commands.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.SetOverrideCertificateErrorsCommandSettings.html">SetOverrideCertificateErrorsCommandSettings</a></dt>
-      <dd><p>SetOverrideCertificateErrors</p>
+      <dd><p>Enable/disable overriding certificate errors. If enabled, all certificate error events need to
+be handled by the DevTools client and should be answered with <code>handleCertificateError</code> commands.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.VisibleSecurityState.html">VisibleSecurityState</a></dt>
-      <dd><p>VisibleSecurityState</p>
+      <dd><p>Security state information about the page.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.VisibleSecurityStateChangedEventArgs.html">VisibleSecurityStateChangedEventArgs</a></dt>
-      <dd><p>VisibleSecurityStateChanged</p>
+      <dd><p>The security state of the page changed.</p>
 </dd>
     </dl>
     <h3 id="enums">
@@ -194,12 +199,14 @@ Enums
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.CertificateErrorAction.html">CertificateErrorAction</a></dt>
-      <dd><p>CertificateErrorAction</p>
+      <dd><p>The action to take when a certificate error occurs. continue will continue processing the
+request and cancel will cancel the request.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.MixedContentType.html">MixedContentType</a></dt>
-      <dd><p>MixedContentType</p>
+      <dd><p>A description of mixed content (HTTP resources on HTTPS pages), as defined by
+<a href="https://www.w3.org/TR/mixed-content/#categories">https://www.w3.org/TR/mixed-content/#categories</a></p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -209,7 +216,7 @@ Enums
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Security.SecurityState.html">SecurityState</a></dt>
-      <dd><p>SecurityState</p>
+      <dd><p>The security level of a page or resource.</p>
 </dd>
     </dl>
 

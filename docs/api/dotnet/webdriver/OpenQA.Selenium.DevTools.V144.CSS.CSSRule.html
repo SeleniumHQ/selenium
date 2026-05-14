@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CSSRule ">
       
-      <meta name="description" content="CSSRule">
+      <meta name="description" content="CSS rule representation.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class CSSRule  <a class="header-action link-secondary" title="View source" href=
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>CSSRule</p>
+  <div class="markdown summary"><p>CSS rule representation.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +154,11 @@ Class CSSRule  <a class="header-action link-secondary" title="View source" href=
 
   <h3 id="OpenQA_Selenium_DevTools_V144_CSS_CSSRule_ContainerQueries" data-uid="OpenQA.Selenium.DevTools.V144.CSS.CSSRule.ContainerQueries">
   ContainerQueries
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L69"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>containerQueries</p>
+  <div class="markdown level1 summary"><p>Container query list array (for rules involving container queries).
+The array enumerates container queries starting with the innermost one, going outwards.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -188,10 +189,11 @@ public CSSContainerQuery[]? ContainerQueries { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_CSS_CSSRule_Layers" data-uid="OpenQA.Selenium.DevTools.V144.CSS.CSSRule.Layers">
   Layers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L85"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>layers</p>
+  <div class="markdown level1 summary"><p>Cascade layer array. Contains the layer hierarchy that this rule belongs to starting
+with the innermost layer and going outwards.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -222,10 +224,11 @@ public CSSLayer[]? Layers { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_CSS_CSSRule_Media" data-uid="OpenQA.Selenium.DevTools.V144.CSS.CSSRule.Media">
   Media
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L61"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>media</p>
+  <div class="markdown level1 summary"><p>Media list array (for rules involving media queries). The array enumerates media queries
+starting with the innermost one, going outwards.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -256,10 +259,10 @@ public CSSMedia[]? Media { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_CSS_CSSRule_NestingSelectors" data-uid="OpenQA.Selenium.DevTools.V144.CSS.CSSRule.NestingSelectors">
   NestingSelectors
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>nestingSelectors</p>
+  <div class="markdown level1 summary"><p>Array of selectors from ancestor style rules, sorted by distance from the current rule.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -290,10 +293,10 @@ public string[]? NestingSelectors { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_CSS_CSSRule_Origin" data-uid="OpenQA.Selenium.DevTools.V144.CSS.CSSRule.Origin">
   Origin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>origin</p>
+  <div class="markdown level1 summary"><p>Parent stylesheet's origin.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -323,10 +326,10 @@ public StyleSheetOrigin Origin { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_CSS_CSSRule_OriginTreeScopeNodeId" data-uid="OpenQA.Selenium.DevTools.V144.CSS.CSSRule.OriginTreeScopeNodeId">
   OriginTreeScopeNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L53"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>originTreeScopeNodeId</p>
+  <div class="markdown level1 summary"><p>The BackendNodeId of the DOM node that constitutes the origin tree scope of this rule.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -357,10 +360,10 @@ public long? OriginTreeScopeNodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_CSS_CSSRule_RuleTypes" data-uid="OpenQA.Selenium.DevTools.V144.CSS.CSSRule.RuleTypes">
   RuleTypes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L100"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>ruleTypes</p>
+  <div class="markdown level1 summary"><p>The array keeps the types of ancestor CSSRules from the innermost going outwards.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -391,10 +394,11 @@ public CSSRuleType[]? RuleTypes { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_CSS_CSSRule_Scopes" data-uid="OpenQA.Selenium.DevTools.V144.CSS.CSSRule.Scopes">
   Scopes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L93"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>scopes</p>
+  <div class="markdown level1 summary"><p>@scope CSS at-rule array.
+The array enumerates @scope at-rules starting with the innermost one, going outwards.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -425,10 +429,10 @@ public CSSScope[]? Scopes { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_CSS_CSSRule_SelectorList" data-uid="OpenQA.Selenium.DevTools.V144.CSS.CSSRule.SelectorList">
   SelectorList
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>selectorList</p>
+  <div class="markdown level1 summary"><p>Rule selector data.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -458,10 +462,11 @@ public SelectorList SelectorList { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_CSS_CSSRule_StartingStyles" data-uid="OpenQA.Selenium.DevTools.V144.CSS.CSSRule.StartingStyles">
   StartingStyles
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L108"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>startingStyles</p>
+  <div class="markdown level1 summary"><p>@starting-style CSS at-rule array.
+The array enumerates @starting-style at-rules starting with the innermost one, going outwards.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -492,10 +497,10 @@ public CSSStartingStyle[]? StartingStyles { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_CSS_CSSRule_Style" data-uid="OpenQA.Selenium.DevTools.V144.CSS.CSSRule.Style">
   Style
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>style</p>
+  <div class="markdown level1 summary"><p>Associated style declaration.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -525,10 +530,11 @@ public CSSStyle Style { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_CSS_CSSRule_StyleSheetId" data-uid="OpenQA.Selenium.DevTools.V144.CSS.CSSRule.StyleSheetId">
   StyleSheetId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L18"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>styleSheetId</p>
+  <div class="markdown level1 summary"><p>The css style sheet identifier (absent for user agent stylesheet and user-specified
+stylesheet rules) this rule came from.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -559,10 +565,11 @@ public string? StyleSheetId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_CSS_CSSRule_Supports" data-uid="OpenQA.Selenium.DevTools.V144.CSS.CSSRule.Supports">
   Supports
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/CSS/CSSRule.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>supports</p>
+  <div class="markdown level1 summary"><p>@supports CSS at-rule array.
+The array enumerates @supports at-rules starting with the innermost one, going outwards.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

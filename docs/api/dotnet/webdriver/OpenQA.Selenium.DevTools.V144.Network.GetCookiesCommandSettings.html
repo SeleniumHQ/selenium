@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetCookiesCommandSettings ">
       
-      <meta name="description" content="GetCookies">
+      <meta name="description" content="Returns all browser cookies for the current URL. Depending on the backend support, will return detailed cookie information in the cookies field.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Network_GetCookiesCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.Network.GetCookiesCommandSettings" class="text-break">
-Class GetCookiesCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/GetCookiesCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class GetCookiesCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/GetCookiesCommand.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class GetCookiesCommandSettings  <a class="header-action link-secondary" title="
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>GetCookies</p>
+  <div class="markdown summary"><p>Returns all browser cookies for the current URL. Depending on the backend support, will return
+detailed cookie information in the <code>cookies</code> field.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +161,7 @@ Class GetCookiesCommandSettings  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_GetCookiesCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.Network.GetCookiesCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/GetCookiesCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/GetCookiesCommand.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +194,12 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_GetCookiesCommandSettings_Urls" data-uid="OpenQA.Selenium.DevTools.V144.Network.GetCookiesCommandSettings.Urls">
   Urls
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/GetCookiesCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/GetCookiesCommand.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the urls</p>
+  <div class="markdown level1 summary"><p>The list of URLs for which applicable cookies will be fetched.
+If not specified, it's assumed to be set to the list containing
+the URLs of the page and all of its subframes.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,7 +230,7 @@ public string[]? Urls { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/GetCookiesCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/GetCookiesCommand.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

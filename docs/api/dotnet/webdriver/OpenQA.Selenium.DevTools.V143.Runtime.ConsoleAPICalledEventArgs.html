@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ConsoleAPICalledEventArgs ">
       
-      <meta name="description" content="ConsoleAPICalled">
+      <meta name="description" content="Issued when console API was called.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class ConsoleAPICalledEventArgs  <a class="header-action link-secondary" title="
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>ConsoleAPICalled</p>
+  <div class="markdown summary"><p>Issued when console API was called.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -161,7 +161,7 @@ Class ConsoleAPICalledEventArgs  <a class="header-action link-secondary" title="
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ConsoleAPICalledEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the args</p>
+  <div class="markdown level1 summary"><p>Call arguments.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,10 +191,12 @@ public RemoteObject[] Args { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_ConsoleAPICalledEventArgs_Context" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.ConsoleAPICalledEventArgs.Context">
   Context
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ConsoleAPICalledEventArgs.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ConsoleAPICalledEventArgs.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the context</p>
+  <div class="markdown level1 summary"><p>Console context descriptor for calls on non-default console context (not console.*):
+'anonymous#unique-logger-id' for call on unnamed context, 'name#unique-logger-id' for call
+on named context.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -228,7 +230,7 @@ public string? Context { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ConsoleAPICalledEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the executionContextId</p>
+  <div class="markdown level1 summary"><p>Identifier of the context where the call was made.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -258,10 +260,12 @@ public long ExecutionContextId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_ConsoleAPICalledEventArgs_StackTrace" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.ConsoleAPICalledEventArgs.StackTrace">
   StackTrace
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ConsoleAPICalledEventArgs.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ConsoleAPICalledEventArgs.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the stackTrace</p>
+  <div class="markdown level1 summary"><p>Stack trace captured when the call was made. The async stack chain is automatically reported for
+the following call types: <code>assert</code>, <code>error</code>, <code>trace</code>, <code>warning</code>. For other types the async call
+chain can be retrieved using <code>Debugger.getStackTrace</code> and <code>stackTrace.parentId</code> field.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -295,7 +299,7 @@ public StackTrace? StackTrace { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ConsoleAPICalledEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the timestamp</p>
+  <div class="markdown level1 summary"><p>Call timestamp.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -328,7 +332,7 @@ public double Timestamp { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/ConsoleAPICalledEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the type</p>
+  <div class="markdown level1 summary"><p>Type of the call.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

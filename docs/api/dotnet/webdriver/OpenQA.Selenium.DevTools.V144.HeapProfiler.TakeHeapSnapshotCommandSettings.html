@@ -160,10 +160,10 @@ Class TakeHeapSnapshotCommandSettings  <a class="header-action link-secondary" t
 
   <h3 id="OpenQA_Selenium_DevTools_V144_HeapProfiler_TakeHeapSnapshotCommandSettings_CaptureNumericValue" data-uid="OpenQA.Selenium.DevTools.V144.HeapProfiler.TakeHeapSnapshotCommandSettings.CaptureNumericValue">
   CaptureNumericValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeapProfiler/TakeHeapSnapshotCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeapProfiler/TakeHeapSnapshotCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the captureNumericValue</p>
+  <div class="markdown level1 summary"><p>If true, numerical values are included in the snapshot</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +227,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_HeapProfiler_TakeHeapSnapshotCommandSettings_ExposeInternals" data-uid="OpenQA.Selenium.DevTools.V144.HeapProfiler.TakeHeapSnapshotCommandSettings.ExposeInternals">
   ExposeInternals
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeapProfiler/TakeHeapSnapshotCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeapProfiler/TakeHeapSnapshotCommand.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the exposeInternals</p>
+  <div class="markdown level1 summary"><p>If true, exposes internals of the snapshot.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -264,7 +264,7 @@ public bool? ExposeInternals { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeapProfiler/TakeHeapSnapshotCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the reportProgress</p>
+  <div class="markdown level1 summary"><p>If true 'reportHeapSnapshotProgress' events will be generated while snapshot is being taken.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -295,10 +295,11 @@ public bool? ReportProgress { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_HeapProfiler_TakeHeapSnapshotCommandSettings_TreatGlobalObjectsAsRoots" data-uid="OpenQA.Selenium.DevTools.V144.HeapProfiler.TakeHeapSnapshotCommandSettings.TreatGlobalObjectsAsRoots">
   TreatGlobalObjectsAsRoots
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeapProfiler/TakeHeapSnapshotCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/HeapProfiler/TakeHeapSnapshotCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the treatGlobalObjectsAsRoots</p>
+  <div class="markdown level1 summary"><p>If true, a raw snapshot without artificial roots will be generated.
+Deprecated in favor of <code>exposeInternals</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

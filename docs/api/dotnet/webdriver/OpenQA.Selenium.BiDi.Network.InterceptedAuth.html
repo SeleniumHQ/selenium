@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Network_InterceptedAuth" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedAuth" class="text-break">
-Class InterceptedAuth  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L107"><i class="bi bi-code-slash"></i></a>
+Class InterceptedAuth  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L102"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -190,16 +190,16 @@ Class InterceptedAuth  <a class="header-action link-secondary" title="View sourc
 
   <a id="OpenQA_Selenium_BiDi_Network_InterceptedAuth_ContinueAsync_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedAuth.ContinueAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedAuth_ContinueAsync_OpenQA_Selenium_BiDi_Network_AuthCredentials_OpenQA_Selenium_BiDi_Network_ContinueWithAuthCredentialsOptions_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedAuth.ContinueAsync(OpenQA.Selenium.BiDi.Network.AuthCredentials,OpenQA.Selenium.BiDi.Network.ContinueWithAuthCredentialsOptions)">
-  ContinueAsync(AuthCredentials, ContinueWithAuthCredentialsOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedAuth_ContinueAsync_OpenQA_Selenium_BiDi_Network_AuthCredentials_OpenQA_Selenium_BiDi_Network_ContinueWithAuthCredentialsOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedAuth.ContinueAsync(OpenQA.Selenium.BiDi.Network.AuthCredentials,OpenQA.Selenium.BiDi.Network.ContinueWithAuthCredentialsOptions,System.Threading.CancellationToken)">
+  ContinueAsync(AuthCredentials, ContinueWithAuthCredentialsOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L110"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task ContinueAsync(AuthCredentials credentials, ContinueWithAuthCredentialsOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task ContinueAsync(AuthCredentials credentials, ContinueWithAuthCredentialsOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -208,41 +208,7 @@ Class InterceptedAuth  <a class="header-action link-secondary" title="View sourc
     <dd></dd>
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Network.ContinueWithAuthCredentialsOptions.html">ContinueWithAuthCredentialsOptions</a></dt>
     <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_Network_InterceptedAuth_ContinueAsync_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedAuth.ContinueAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedAuth_ContinueAsync_OpenQA_Selenium_BiDi_Network_ContinueWithAuthCancelCredentialsOptions_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedAuth.ContinueAsync(OpenQA.Selenium.BiDi.Network.ContinueWithAuthCancelCredentialsOptions)">
-  ContinueAsync(ContinueWithAuthCancelCredentialsOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L125"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task ContinueAsync(ContinueWithAuthCancelCredentialsOptions? options = null)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Network.ContinueWithAuthCancelCredentialsOptions.html">ContinueWithAuthCancelCredentialsOptions</a></dt>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -264,8 +230,8 @@ Class InterceptedAuth  <a class="header-action link-secondary" title="View sourc
 
   <a id="OpenQA_Selenium_BiDi_Network_InterceptedAuth_ContinueAsync_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedAuth.ContinueAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedAuth_ContinueAsync_OpenQA_Selenium_BiDi_Network_ContinueWithAuthDefaultCredentialsOptions_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedAuth.ContinueAsync(OpenQA.Selenium.BiDi.Network.ContinueWithAuthDefaultCredentialsOptions)">
-  ContinueAsync(ContinueWithAuthDefaultCredentialsOptions?)
+  <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedAuth_ContinueAsync_OpenQA_Selenium_BiDi_Network_ContinueWithAuthCancelCredentialsOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedAuth.ContinueAsync(OpenQA.Selenium.BiDi.Network.ContinueWithAuthCancelCredentialsOptions,System.Threading.CancellationToken)">
+  ContinueAsync(ContinueWithAuthCancelCredentialsOptions?, CancellationToken)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L120"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -273,12 +239,52 @@ Class InterceptedAuth  <a class="header-action link-secondary" title="View sourc
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task ContinueAsync(ContinueWithAuthDefaultCredentialsOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task ContinueAsync(ContinueWithAuthCancelCredentialsOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Network.ContinueWithAuthCancelCredentialsOptions.html">ContinueWithAuthCancelCredentialsOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Network_InterceptedAuth_ContinueAsync_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedAuth.ContinueAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedAuth_ContinueAsync_OpenQA_Selenium_BiDi_Network_ContinueWithAuthDefaultCredentialsOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedAuth.ContinueAsync(OpenQA.Selenium.BiDi.Network.ContinueWithAuthDefaultCredentialsOptions,System.Threading.CancellationToken)">
+  ContinueAsync(ContinueWithAuthDefaultCredentialsOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ContinueAsync(ContinueWithAuthDefaultCredentialsOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Network.ContinueWithAuthDefaultCredentialsOptions.html">ContinueWithAuthDefaultCredentialsOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -302,7 +308,7 @@ Class InterceptedAuth  <a class="header-action link-secondary" title="View sourc
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L107" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L102" class="edit-link">Edit this page</a>
         </div>
 
 

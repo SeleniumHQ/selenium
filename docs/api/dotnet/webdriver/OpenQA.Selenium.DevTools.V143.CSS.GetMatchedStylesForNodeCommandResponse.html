@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetMatchedStylesForNodeCommandResponse ">
       
-      <meta name="description" content="Response for GetMatchedStylesForNode">
+      <meta name="description" content="Response for Returns requested styles for a DOM node identified by nodeId.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class GetMatchedStylesForNodeCommandResponse  <a class="header-action link-secon
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Response for GetMatchedStylesForNode</p>
+  <div class="markdown summary"><p>Response for Returns requested styles for a DOM node identified by <code>nodeId</code>.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -168,10 +168,11 @@ Class GetMatchedStylesForNodeCommandResponse  <a class="header-action link-secon
 
   <h3 id="OpenQA_Selenium_DevTools_V143_CSS_GetMatchedStylesForNodeCommandResponse_ActivePositionFallbackIndex" data-uid="OpenQA.Selenium.DevTools.V143.CSS.GetMatchedStylesForNodeCommandResponse.ActivePositionFallbackIndex">
   ActivePositionFallbackIndex
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L96"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the activePositionFallbackIndex</p>
+  <div class="markdown level1 summary"><p>Index of the active fallback in the applied position-try-fallback property,
+will not be set if there is no active position-try fallback.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -205,7 +206,7 @@ public long? ActivePositionFallbackIndex { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the attributesStyle</p>
+  <div class="markdown level1 summary"><p>Attribute-defined element style (e.g. resulting from &quot;width=20 height=100%&quot;).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -236,10 +237,10 @@ public CSSStyle? AttributesStyle { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_CSS_GetMatchedStylesForNodeCommandResponse_CssFontPaletteValuesRule" data-uid="OpenQA.Selenium.DevTools.V143.CSS.GetMatchedStylesForNodeCommandResponse.CssFontPaletteValuesRule">
   CssFontPaletteValuesRule
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L117"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the cssFontPaletteValuesRule</p>
+  <div class="markdown level1 summary"><p>A font-palette-values rule matching this node.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -270,10 +271,10 @@ public CSSFontPaletteValuesRule? CssFontPaletteValuesRule { get; set; }</code></
 
   <h3 id="OpenQA_Selenium_DevTools_V143_CSS_GetMatchedStylesForNodeCommandResponse_CssFunctionRules" data-uid="OpenQA.Selenium.DevTools.V143.CSS.GetMatchedStylesForNodeCommandResponse.CssFunctionRules">
   CssFunctionRules
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L131"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the cssFunctionRules</p>
+  <div class="markdown level1 summary"><p>A list of CSS at-function rules referenced by styles of this node.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -307,7 +308,7 @@ public CSSFunctionRule[]? CssFunctionRules { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L81"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the cssKeyframesRules</p>
+  <div class="markdown level1 summary"><p>A list of CSS keyframed animations matching this node.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -341,7 +342,7 @@ public CSSKeyframesRule[]? CssKeyframesRules { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the cssPositionTryRules</p>
+  <div class="markdown level1 summary"><p>A list of CSS @position-try rules matching this node, based on the position-try-fallbacks property.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -372,10 +373,10 @@ public CSSPositionTryRule[]? CssPositionTryRules { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_CSS_GetMatchedStylesForNodeCommandResponse_CssPropertyRegistrations" data-uid="OpenQA.Selenium.DevTools.V143.CSS.GetMatchedStylesForNodeCommandResponse.CssPropertyRegistrations">
   CssPropertyRegistrations
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L110"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the cssPropertyRegistrations</p>
+  <div class="markdown level1 summary"><p>A list of CSS property registrations matching this node.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -406,10 +407,10 @@ public CSSPropertyRegistration[]? CssPropertyRegistrations { get; set; }</code><
 
   <h3 id="OpenQA_Selenium_DevTools_V143_CSS_GetMatchedStylesForNodeCommandResponse_CssPropertyRules" data-uid="OpenQA.Selenium.DevTools.V143.CSS.GetMatchedStylesForNodeCommandResponse.CssPropertyRules">
   CssPropertyRules
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L103"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the cssPropertyRules</p>
+  <div class="markdown level1 summary"><p>A list of CSS at-property rules matching this node.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -443,7 +444,7 @@ public CSSPropertyRule[]? CssPropertyRules { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the inherited</p>
+  <div class="markdown level1 summary"><p>A chain of inherited styles (from the immediate node parent up to the DOM tree root).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -477,7 +478,7 @@ public InheritedStyleEntry[]? Inherited { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the inheritedPseudoElements</p>
+  <div class="markdown level1 summary"><p>A chain of inherited pseudo element styles (from the immediate node parent up to the DOM tree root).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -511,7 +512,7 @@ public InheritedPseudoElementMatches[]? InheritedPseudoElements { get; set; }</c
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the inlineStyle</p>
+  <div class="markdown level1 summary"><p>Inline style for the specified DOM node.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -545,7 +546,7 @@ public CSSStyle? InlineStyle { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the matchedCSSRules</p>
+  <div class="markdown level1 summary"><p>CSS rules matching this node, from all applicable stylesheets.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -576,10 +577,10 @@ public RuleMatch[]? MatchedCSSRules { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_CSS_GetMatchedStylesForNodeCommandResponse_ParentLayoutNodeId" data-uid="OpenQA.Selenium.DevTools.V143.CSS.GetMatchedStylesForNodeCommandResponse.ParentLayoutNodeId">
   ParentLayoutNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L123"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L124"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the parentLayoutNodeId</p>
+  <div class="markdown level1 summary"><p>Id of the first parent element that does not have display: contents.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -613,7 +614,7 @@ public long? ParentLayoutNodeId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/GetMatchedStylesForNodeCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the pseudoElements</p>
+  <div class="markdown level1 summary"><p>Pseudo style matches for this node.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

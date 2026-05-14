@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class EventListener ">
       
-      <meta name="description" content="EventListener">
+      <meta name="description" content="Object event listener.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class EventListener  <a class="header-action link-secondary" title="View source"
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>EventListener</p>
+  <div class="markdown summary"><p>Object event listener.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -157,7 +157,7 @@ Class EventListener  <a class="header-action link-secondary" title="View source"
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/EventListener.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>backendNodeId</p>
+  <div class="markdown level1 summary"><p>Node the listener is added to (if any).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,7 +191,7 @@ public long? BackendNodeId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/EventListener.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>columnNumber</p>
+  <div class="markdown level1 summary"><p>Column number in the script (0-based).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -224,7 +224,7 @@ public long ColumnNumber { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/EventListener.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>handler</p>
+  <div class="markdown level1 summary"><p>Event handler function value.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -258,7 +258,7 @@ public RemoteObject? Handler { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/EventListener.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>lineNumber</p>
+  <div class="markdown level1 summary"><p>Line number in the script (0-based).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -291,7 +291,7 @@ public long LineNumber { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/EventListener.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>once</p>
+  <div class="markdown level1 summary"><p><code>EventListener</code>'s once flag.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -324,7 +324,7 @@ public bool Once { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/EventListener.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>originalHandler</p>
+  <div class="markdown level1 summary"><p>Event original handler function value.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -358,7 +358,7 @@ public RemoteObject? OriginalHandler { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/EventListener.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>passive</p>
+  <div class="markdown level1 summary"><p><code>EventListener</code>'s passive flag.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -391,7 +391,7 @@ public bool Passive { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/EventListener.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>scriptId</p>
+  <div class="markdown level1 summary"><p>Script id of the handler code.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -424,7 +424,7 @@ public string ScriptId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/EventListener.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>type</p>
+  <div class="markdown level1 summary"><p><code>EventListener</code>'s type.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -457,7 +457,7 @@ public string Type { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMDebugger/EventListener.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>useCapture</p>
+  <div class="markdown level1 summary"><p><code>EventListener</code>'s useCapture.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

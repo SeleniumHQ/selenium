@@ -97,6 +97,15 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">JavascriptLogEntry</span>
 <span class="extends-implements">extends <a href="GenericLogEntry.html" title="class in org.openqa.selenium.bidi.log">GenericLogEntry</a></span></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="tag-list">
+<li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-logjavascriptlogentry">BiDi
+     spec</a></li>
+</ul>
+</dd>
+</dl>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -123,7 +132,7 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -132,12 +141,12 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="JavascriptLogEntry.html" title="class in org.openqa.selenium.bidi.log">JavascriptLogEntry</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../../json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getType()" class="member-name-link">getType</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
+<div class="inherited-list">
+<h3 id="methods-inherited-from-class-org.openqa.selenium.bidi.log.GenericLogEntry">Methods inherited from class&nbsp;org.openqa.selenium.bidi.log.<a href="GenericLogEntry.html" title="class in org.openqa.selenium.bidi.log">GenericLogEntry</a></h3>
+<code><a href="GenericLogEntry.html#getType()">getType</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.openqa.selenium.bidi.log.BaseLogEntry">Methods inherited from class&nbsp;org.openqa.selenium.bidi.log.<a href="BaseLogEntry.html" title="class in org.openqa.selenium.bidi.log">BaseLogEntry</a></h3>
 <code><a href="BaseLogEntry.html#getLevel()">getLevel</a>, <a href="BaseLogEntry.html#getSource()">getSource</a>, <a href="BaseLogEntry.html#getStackTrace()">getStackTrace</a>, <a href="BaseLogEntry.html#getText()">getText</a>, <a href="BaseLogEntry.html#getTimestamp()">getTimestamp</a></code></div>
@@ -174,16 +183,6 @@ loadScripts(document, 'script');</script>
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
-<li>
-<section class="detail" id="getType()">
-<h3>getType</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getType</span>()</div>
-<dl class="notes">
-<dt>Overrides:</dt>
-<dd><code><a href="GenericLogEntry.html#getType()">getType</a></code>&nbsp;in class&nbsp;<code><a href="GenericLogEntry.html" title="class in org.openqa.selenium.bidi.log">GenericLogEntry</a></code></dd>
-</dl>
-</section>
-</li>
 <li>
 <section class="detail" id="fromJson(org.openqa.selenium.json.JsonInput)">
 <h3>fromJson</h3>

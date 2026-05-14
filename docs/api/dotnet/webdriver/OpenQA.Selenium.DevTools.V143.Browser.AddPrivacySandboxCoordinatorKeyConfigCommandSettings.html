@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AddPrivacySandboxCoordinatorKeyConfigCommandSettings ">
       
-      <meta name="description" content="AddPrivacySandboxCoordinatorKeyConfig">
+      <meta name="description" content="Configures encryption keys used with a given privacy sandbox API to talk to a trusted coordinator.  Since this is intended for test automation only, coordinatorOrigin must be a .test domain. No existing coordinator configuration for the origin may exist.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Browser_AddPrivacySandboxCoordinatorKeyConfigCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.Browser.AddPrivacySandboxCoordinatorKeyConfigCommandSettings" class="text-break">
-Class AddPrivacySandboxCoordinatorKeyConfigCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/AddPrivacySandboxCoordinatorKeyConfigCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class AddPrivacySandboxCoordinatorKeyConfigCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/AddPrivacySandboxCoordinatorKeyConfigCommand.cs/#L15"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,10 @@ Class AddPrivacySandboxCoordinatorKeyConfigCommandSettings  <a class="header-act
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>AddPrivacySandboxCoordinatorKeyConfig</p>
+  <div class="markdown summary"><p>Configures encryption keys used with a given privacy sandbox API to talk
+to a trusted coordinator.  Since this is intended for test automation only,
+coordinatorOrigin must be a .test domain. No existing coordinator
+configuration for the origin may exist.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +163,7 @@ Class AddPrivacySandboxCoordinatorKeyConfigCommandSettings  <a class="header-act
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Browser_AddPrivacySandboxCoordinatorKeyConfigCommandSettings_Api" data-uid="OpenQA.Selenium.DevTools.V143.Browser.AddPrivacySandboxCoordinatorKeyConfigCommandSettings.Api">
   Api
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/AddPrivacySandboxCoordinatorKeyConfigCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/AddPrivacySandboxCoordinatorKeyConfigCommand.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the api</p>
@@ -193,10 +196,11 @@ public PrivacySandboxAPI Api { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Browser_AddPrivacySandboxCoordinatorKeyConfigCommandSettings_BrowserContextId" data-uid="OpenQA.Selenium.DevTools.V143.Browser.AddPrivacySandboxCoordinatorKeyConfigCommandSettings.BrowserContextId">
   BrowserContextId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/AddPrivacySandboxCoordinatorKeyConfigCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/AddPrivacySandboxCoordinatorKeyConfigCommand.cs/#L50"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the browserContextId</p>
+  <div class="markdown level1 summary"><p>BrowserContext to perform the action in. When omitted, default browser
+context is used.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,7 +231,7 @@ public string? BrowserContextId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Browser_AddPrivacySandboxCoordinatorKeyConfigCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.Browser.AddPrivacySandboxCoordinatorKeyConfigCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/AddPrivacySandboxCoordinatorKeyConfigCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/AddPrivacySandboxCoordinatorKeyConfigCommand.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -260,7 +264,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Browser_AddPrivacySandboxCoordinatorKeyConfigCommandSettings_CoordinatorOrigin" data-uid="OpenQA.Selenium.DevTools.V143.Browser.AddPrivacySandboxCoordinatorKeyConfigCommandSettings.CoordinatorOrigin">
   CoordinatorOrigin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/AddPrivacySandboxCoordinatorKeyConfigCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/AddPrivacySandboxCoordinatorKeyConfigCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the coordinatorOrigin</p>
@@ -293,7 +297,7 @@ public string CoordinatorOrigin { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Browser_AddPrivacySandboxCoordinatorKeyConfigCommandSettings_KeyConfig" data-uid="OpenQA.Selenium.DevTools.V143.Browser.AddPrivacySandboxCoordinatorKeyConfigCommandSettings.KeyConfig">
   KeyConfig
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/AddPrivacySandboxCoordinatorKeyConfigCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/AddPrivacySandboxCoordinatorKeyConfigCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the keyConfig</p>
@@ -326,7 +330,7 @@ public string KeyConfig { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/AddPrivacySandboxCoordinatorKeyConfigCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Browser/AddPrivacySandboxCoordinatorKeyConfigCommand.cs/#L15" class="edit-link">Edit this page</a>
         </div>
 
 

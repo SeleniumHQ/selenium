@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetSearchResultsCommandSettings ">
       
-      <meta name="description" content="GetSearchResults">
+      <meta name="description" content="Returns search results from given fromIndex to given toIndex from the search with the given identifier.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_DOM_GetSearchResultsCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetSearchResultsCommandSettings" class="text-break">
-Class GetSearchResultsCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetSearchResultsCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class GetSearchResultsCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetSearchResultsCommand.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class GetSearchResultsCommandSettings  <a class="header-action link-secondary" t
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>GetSearchResults</p>
+  <div class="markdown summary"><p>Returns search results from given <code>fromIndex</code> to given <code>toIndex</code> from the search with the given
+identifier.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +161,7 @@ Class GetSearchResultsCommandSettings  <a class="header-action link-secondary" t
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_GetSearchResultsCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetSearchResultsCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetSearchResultsCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetSearchResultsCommand.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +194,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_GetSearchResultsCommandSettings_FromIndex" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetSearchResultsCommandSettings.FromIndex">
   FromIndex
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetSearchResultsCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetSearchResultsCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the fromIndex</p>
+  <div class="markdown level1 summary"><p>Start index of the search result to be returned.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -226,10 +227,10 @@ public long FromIndex { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_GetSearchResultsCommandSettings_SearchId" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetSearchResultsCommandSettings.SearchId">
   SearchId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetSearchResultsCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetSearchResultsCommand.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the searchId</p>
+  <div class="markdown level1 summary"><p>Unique search session identifier.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -259,10 +260,10 @@ public string SearchId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_GetSearchResultsCommandSettings_ToIndex" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetSearchResultsCommandSettings.ToIndex">
   ToIndex
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetSearchResultsCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetSearchResultsCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the toIndex</p>
+  <div class="markdown level1 summary"><p>End index of the search result to be returned.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -292,7 +293,7 @@ public long ToIndex { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetSearchResultsCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetSearchResultsCommand.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

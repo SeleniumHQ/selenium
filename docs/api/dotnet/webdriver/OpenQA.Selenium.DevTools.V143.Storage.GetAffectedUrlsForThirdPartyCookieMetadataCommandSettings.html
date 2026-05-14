@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetAffectedUrlsForThirdPartyCookieMetadataCommandSettings ">
       
-      <meta name="description" content="GetAffectedUrlsForThirdPartyCookieMetadata">
+      <meta name="description" content="Returns the list of URLs from a page and its embedded resources that match existing grace period URL pattern rules. https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Storage_GetAffectedUrlsForThirdPartyCookieMetadataCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.Storage.GetAffectedUrlsForThirdPartyCookieMetadataCommandSettings" class="text-break">
-Class GetAffectedUrlsForThirdPartyCookieMetadataCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/GetAffectedUrlsForThirdPartyCookieMetadataCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class GetAffectedUrlsForThirdPartyCookieMetadataCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/GetAffectedUrlsForThirdPartyCookieMetadataCommand.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,9 @@ Class GetAffectedUrlsForThirdPartyCookieMetadataCommandSettings  <a class="heade
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>GetAffectedUrlsForThirdPartyCookieMetadata</p>
+  <div class="markdown summary"><p>Returns the list of URLs from a page and its embedded resources that match
+existing grace period URL pattern rules.
+<a href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period">https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period</a></p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +162,7 @@ Class GetAffectedUrlsForThirdPartyCookieMetadataCommandSettings  <a class="heade
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_GetAffectedUrlsForThirdPartyCookieMetadataCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.Storage.GetAffectedUrlsForThirdPartyCookieMetadataCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/GetAffectedUrlsForThirdPartyCookieMetadataCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/GetAffectedUrlsForThirdPartyCookieMetadataCommand.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +195,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_GetAffectedUrlsForThirdPartyCookieMetadataCommandSettings_FirstPartyUrl" data-uid="OpenQA.Selenium.DevTools.V143.Storage.GetAffectedUrlsForThirdPartyCookieMetadataCommandSettings.FirstPartyUrl">
   FirstPartyUrl
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/GetAffectedUrlsForThirdPartyCookieMetadataCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/GetAffectedUrlsForThirdPartyCookieMetadataCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the firstPartyUrl</p>
+  <div class="markdown level1 summary"><p>The URL of the page currently being visited.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -226,10 +228,10 @@ public string FirstPartyUrl { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_GetAffectedUrlsForThirdPartyCookieMetadataCommandSettings_ThirdPartyUrls" data-uid="OpenQA.Selenium.DevTools.V143.Storage.GetAffectedUrlsForThirdPartyCookieMetadataCommandSettings.ThirdPartyUrls">
   ThirdPartyUrls
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/GetAffectedUrlsForThirdPartyCookieMetadataCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/GetAffectedUrlsForThirdPartyCookieMetadataCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the thirdPartyUrls</p>
+  <div class="markdown level1 summary"><p>The list of embedded resource URLs from the page.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -259,7 +261,7 @@ public string[] ThirdPartyUrls { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/GetAffectedUrlsForThirdPartyCookieMetadataCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/GetAffectedUrlsForThirdPartyCookieMetadataCommand.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

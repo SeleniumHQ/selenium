@@ -168,10 +168,14 @@ Class GetAdScriptAncestryCommandResponse  <a class="header-action link-secondary
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Page_GetAdScriptAncestryCommandResponse_AdScriptAncestry" data-uid="OpenQA.Selenium.DevTools.V143.Page.GetAdScriptAncestryCommandResponse.AdScriptAncestry">
   AdScriptAncestry
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/GetAdScriptAncestryCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/GetAdScriptAncestryCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the adScriptAncestry</p>
+  <div class="markdown level1 summary"><p>The ancestry chain of ad script identifiers leading to this frame's
+creation, along with the root script's filterlist rule. The ancestry
+chain is ordered from the most immediate script (in the frame creation
+stack) to more distant ancestors (that created the immediately preceding
+script). Only sent if frame is labelled as an ad and ids are available.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

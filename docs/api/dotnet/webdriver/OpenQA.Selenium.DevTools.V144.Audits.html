@@ -96,22 +96,23 @@ Classes
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.AffectedCookie.html">AffectedCookie</a></dt>
-      <dd><p>AffectedCookie</p>
+      <dd><p>Information about a cookie that is affected by an inspector issue.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.AffectedFrame.html">AffectedFrame</a></dt>
-      <dd><p>AffectedFrame</p>
+      <dd><p>Information about the frame affected by an inspector issue.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.AffectedRequest.html">AffectedRequest</a></dt>
-      <dd><p>AffectedRequest</p>
+      <dd><p>Information about a request that is affected by an inspector issue.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.AttributionReportingIssueDetails.html">AttributionReportingIssueDetails</a></dt>
-      <dd><p>AttributionReportingIssueDetails</p>
+      <dd><p>Details for issues around &quot;Attribution Reporting API&quot; usage.
+Explainer: <a href="https://github.com/WICG/attribution-reporting-api">https://github.com/WICG/attribution-reporting-api</a></p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -121,37 +122,48 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.BlockedByResponseIssueDetails.html">BlockedByResponseIssueDetails</a></dt>
-      <dd><p>BlockedByResponseIssueDetails</p>
+      <dd><p>Details for a request that has been blocked with the BLOCKED_BY_RESPONSE
+code. Currently only used for COEP/COOP, but may be extended to include
+some CSP errors in the future.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.BounceTrackingIssueDetails.html">BounceTrackingIssueDetails</a></dt>
-      <dd><p>BounceTrackingIssueDetails</p>
+      <dd><p>This issue warns about sites in the redirect chain of a finished navigation
+that may be flagged as trackers and have their state cleared if they don't
+receive a user interaction. Note that in this context 'site' means eTLD+1.
+For example, if the URL <code>https://example.test:80/bounce</code> was in the
+redirect chain, the site reported would be <code>example.test</code>.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.CheckContrastCommandResponse.html">CheckContrastCommandResponse</a></dt>
-      <dd><p>Response for CheckContrast</p>
+      <dd><p>Response for Runs the contrast check for the target page. Found issues are reported
+using Audits.issueAdded event.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.CheckContrastCommandSettings.html">CheckContrastCommandSettings</a></dt>
-      <dd><p>CheckContrast</p>
+      <dd><p>Runs the contrast check for the target page. Found issues are reported
+using Audits.issueAdded event.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.CheckFormsIssuesCommandResponse.html">CheckFormsIssuesCommandResponse</a></dt>
-      <dd><p>Response for CheckFormsIssues</p>
+      <dd><p>Response for Runs the form issues check for the target page. Found issues are reported
+using Audits.issueAdded event.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.CheckFormsIssuesCommandSettings.html">CheckFormsIssuesCommandSettings</a></dt>
-      <dd><p>CheckFormsIssues</p>
+      <dd><p>Runs the form issues check for the target page. Found issues are reported
+using Audits.issueAdded event.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.ClientHintIssueDetails.html">ClientHintIssueDetails</a></dt>
-      <dd><p>ClientHintIssueDetails</p>
+      <dd><p>This issue tracks client hints related issues. It's used to deprecate old
+features, encourage the use of new ones, and provide general guidance.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -161,52 +173,62 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.CookieDeprecationMetadataIssueDetails.html">CookieDeprecationMetadataIssueDetails</a></dt>
-      <dd><p>CookieDeprecationMetadataIssueDetails</p>
+      <dd><p>This issue warns about third-party sites that are accessing cookies on the
+current page, and have been permitted due to having a global metadata grant.
+Note that in this context 'site' means eTLD+1. For example, if the URL
+<code>https://example.test:80/web_page</code> was accessing cookies, the site reported
+would be <code>example.test</code>.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.CookieIssueDetails.html">CookieIssueDetails</a></dt>
-      <dd><p>CookieIssueDetails</p>
+      <dd><p>This information is currently necessary, as the front-end has a difficult
+time finding a specific cookie. With this, we can convey specific error
+information without the cookie.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.CookieIssueInsight.html">CookieIssueInsight</a></dt>
-      <dd><p>CookieIssueInsight</p>
+      <dd><p>Information about the suggested solution to a cookie issue.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.CorsIssueDetails.html">CorsIssueDetails</a></dt>
-      <dd><p>CorsIssueDetails</p>
+      <dd><p>Details for a CORS related issue, e.g. a warning or error related to
+CORS RFC1918 enforcement.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.DeprecationIssueDetails.html">DeprecationIssueDetails</a></dt>
-      <dd><p>DeprecationIssueDetails</p>
+      <dd><p>This issue tracks information needed to print a deprecation message.
+<a href="https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/third_party/blink/renderer/core/frame/deprecation/README.md">https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/third_party/blink/renderer/core/frame/deprecation/README.md</a></p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.DisableCommandResponse.html">DisableCommandResponse</a></dt>
-      <dd><p>Response for Disable</p>
+      <dd><p>Response for Disables issues domain, prevents further issues from being reported to the client.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.DisableCommandSettings.html">DisableCommandSettings</a></dt>
-      <dd><p>Disable</p>
+      <dd><p>Disables issues domain, prevents further issues from being reported to the client.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.ElementAccessibilityIssueDetails.html">ElementAccessibilityIssueDetails</a></dt>
-      <dd><p>ElementAccessibilityIssueDetails</p>
+      <dd><p>This issue warns about errors in the select or summary element content model.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.EnableCommandResponse.html">EnableCommandResponse</a></dt>
-      <dd><p>Response for Enable</p>
+      <dd><p>Response for Enables issues domain, sends the issues collected so far to the client by means of the
+<code>issueAdded</code> event.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.EnableCommandSettings.html">EnableCommandSettings</a></dt>
-      <dd><p>Enable</p>
+      <dd><p>Enables issues domain, sends the issues collected so far to the client by means of the
+<code>issueAdded</code> event.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -226,17 +248,19 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.GenericIssueDetails.html">GenericIssueDetails</a></dt>
-      <dd><p>GenericIssueDetails</p>
+      <dd><p>Depending on the concrete errorType, different properties are set.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.GetEncodedResponseCommandResponse.html">GetEncodedResponseCommandResponse</a></dt>
-      <dd><p>Response for GetEncodedResponse</p>
+      <dd><p>Response for Returns the response body and size if it were re-encoded with the specified settings. Only
+applies to images.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.GetEncodedResponseCommandSettings.html">GetEncodedResponseCommandSettings</a></dt>
-      <dd><p>GetEncodedResponse</p>
+      <dd><p>Returns the response body and size if it were re-encoded with the specified settings. Only
+applies to images.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -246,12 +270,14 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.InspectorIssue.html">InspectorIssue</a></dt>
-      <dd><p>InspectorIssue</p>
+      <dd><p>An inspector issue reported from the back-end.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.InspectorIssueDetails.html">InspectorIssueDetails</a></dt>
-      <dd><p>InspectorIssueDetails</p>
+      <dd><p>This struct holds a list of optional fields with additional information
+specific to the kind of issue. When adding a new issue code, please also
+add a new optional field to this type.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -281,17 +307,19 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.PermissionElementIssueDetails.html">PermissionElementIssueDetails</a></dt>
-      <dd><p>PermissionElementIssueDetails</p>
+      <dd><p>This issue warns about improper usage of the &lt;permission&gt; element.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.PropertyRuleIssueDetails.html">PropertyRuleIssueDetails</a></dt>
-      <dd><p>PropertyRuleIssueDetails</p>
+      <dd><p>This issue warns about errors in property rules that lead to property
+registrations being ignored.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.QuirksModeIssueDetails.html">QuirksModeIssueDetails</a></dt>
-      <dd><p>QuirksModeIssueDetails</p>
+      <dd><p>Details for issues about documents in Quirks Mode
+or Limited Quirks Mode that affects page layouting.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -301,7 +329,8 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.SharedArrayBufferIssueDetails.html">SharedArrayBufferIssueDetails</a></dt>
-      <dd><p>SharedArrayBufferIssueDetails</p>
+      <dd><p>Details for a issue arising from an SAB being instantiated in, or
+transferred to a context that is not cross-origin isolated.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -316,7 +345,7 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.StylesheetLoadingIssueDetails.html">StylesheetLoadingIssueDetails</a></dt>
-      <dd><p>StylesheetLoadingIssueDetails</p>
+      <dd><p>This issue warns when a referenced stylesheet couldn't be loaded.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -326,7 +355,8 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.UserReidentificationIssueDetails.html">UserReidentificationIssueDetails</a></dt>
-      <dd><p>UserReidentificationIssueDetails</p>
+      <dd><p>This issue warns about uses of APIs that may be considered misuse to
+re-identify users.</p>
 </dd>
     </dl>
     <h3 id="enums">
@@ -339,7 +369,8 @@ Enums
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.BlockedByResponseReason.html">BlockedByResponseReason</a></dt>
-      <dd><p>BlockedByResponseReason</p>
+      <dd><p>Enum indicating the reason a response has been blocked. These reasons are
+refinements of the net error BLOCKED_BY_RESPONSE.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -374,12 +405,17 @@ Enums
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.FederatedAuthRequestIssueReason.html">FederatedAuthRequestIssueReason</a></dt>
-      <dd><p>FederatedAuthRequestIssueReason</p>
+      <dd><p>Represents the failure reason when a federated authentication reason fails.
+Should be updated alongside RequestIdTokenStatus in
+third_party/blink/public/mojom/devtools/inspector_issue.mojom to include
+all cases except for success.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.FederatedAuthUserInfoRequestIssueReason.html">FederatedAuthUserInfoRequestIssueReason</a></dt>
-      <dd><p>FederatedAuthUserInfoRequestIssueReason</p>
+      <dd><p>Represents the failure reason when a getUserInfo() call fails.
+Should be updated alongside FederatedAuthUserInfoRequestResult in
+third_party/blink/public/mojom/devtools/inspector_issue.mojom.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -399,12 +435,14 @@ Enums
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.InsightType.html">InsightType</a></dt>
-      <dd><p>InsightType</p>
+      <dd><p>Represents the category of insight that a cookie issue falls under.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V144.Audits.InspectorIssueCode.html">InspectorIssueCode</a></dt>
-      <dd><p>InspectorIssueCode</p>
+      <dd><p>A unique identifier for the type of issue. Each type may use one of the
+optional fields in InspectorIssueDetails to convey more specific
+information about the kind of issue.</p>
 </dd>
     </dl>
     <dl class="jumplist">

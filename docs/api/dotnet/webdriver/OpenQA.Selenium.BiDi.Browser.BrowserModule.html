@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Browser_BrowserModule" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule" class="text-break">
-Class BrowserModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L27"><i class="bi bi-code-slash"></i></a>
+Class BrowserModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -122,6 +122,9 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
     <dt>Inherited Members</dt>
     <dd>
     <div>
+      <a class="xref" href="OpenQA.Selenium.BiDi.Module.html#OpenQA_Selenium_BiDi_Module_SubscribeAsync__1_System_String_System_Func___0_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Text_Json_Serialization_Metadata_JsonTypeInfo___0__System_Threading_CancellationToken_">Module.SubscribeAsync&lt;TEventArgs&gt;(string, Func&lt;TEventArgs, Task&gt;, SubscriptionOptions, JsonTypeInfo&lt;TEventArgs&gt;, CancellationToken)</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
     <div>
@@ -152,21 +155,23 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
 
   <a id="OpenQA_Selenium_BiDi_Browser_BrowserModule_CloseAsync_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.CloseAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_CloseAsync_OpenQA_Selenium_BiDi_Browser_CloseOptions_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.CloseAsync(OpenQA.Selenium.BiDi.Browser.CloseOptions)">
-  CloseAsync(CloseOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_CloseAsync_OpenQA_Selenium_BiDi_Browser_CloseOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.CloseAsync(OpenQA.Selenium.BiDi.Browser.CloseOptions,System.Threading.CancellationToken)">
+  CloseAsync(CloseOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;CloseResult&gt; CloseAsync(CloseOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;CloseResult&gt; CloseAsync(CloseOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.CloseOptions.html">CloseOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -188,21 +193,23 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
 
   <a id="OpenQA_Selenium_BiDi_Browser_BrowserModule_CreateUserContextAsync_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.CreateUserContextAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_CreateUserContextAsync_OpenQA_Selenium_BiDi_Browser_CreateUserContextOptions_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.CreateUserContextAsync(OpenQA.Selenium.BiDi.Browser.CreateUserContextOptions)">
-  CreateUserContextAsync(CreateUserContextOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_CreateUserContextAsync_OpenQA_Selenium_BiDi_Browser_CreateUserContextOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.CreateUserContextAsync(OpenQA.Selenium.BiDi.Browser.CreateUserContextOptions,System.Threading.CancellationToken)">
+  CreateUserContextAsync(CreateUserContextOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;CreateUserContextResult&gt; CreateUserContextAsync(CreateUserContextOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;CreateUserContextResult&gt; CreateUserContextAsync(CreateUserContextOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.CreateUserContextOptions.html">CreateUserContextOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -224,21 +231,23 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
 
   <a id="OpenQA_Selenium_BiDi_Browser_BrowserModule_GetClientWindowsAsync_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.GetClientWindowsAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_GetClientWindowsAsync_OpenQA_Selenium_BiDi_Browser_GetClientWindowsOptions_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.GetClientWindowsAsync(OpenQA.Selenium.BiDi.Browser.GetClientWindowsOptions)">
-  GetClientWindowsAsync(GetClientWindowsOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_GetClientWindowsAsync_OpenQA_Selenium_BiDi_Browser_GetClientWindowsOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.GetClientWindowsAsync(OpenQA.Selenium.BiDi.Browser.GetClientWindowsOptions,System.Threading.CancellationToken)">
+  GetClientWindowsAsync(GetClientWindowsOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;GetClientWindowsResult&gt; GetClientWindowsAsync(GetClientWindowsOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;GetClientWindowsResult&gt; GetClientWindowsAsync(GetClientWindowsOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.GetClientWindowsOptions.html">GetClientWindowsOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -260,21 +269,23 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
 
   <a id="OpenQA_Selenium_BiDi_Browser_BrowserModule_GetUserContextsAsync_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.GetUserContextsAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_GetUserContextsAsync_OpenQA_Selenium_BiDi_Browser_GetUserContextsOptions_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.GetUserContextsAsync(OpenQA.Selenium.BiDi.Browser.GetUserContextsOptions)">
-  GetUserContextsAsync(GetUserContextsOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_GetUserContextsAsync_OpenQA_Selenium_BiDi_Browser_GetUserContextsOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.GetUserContextsAsync(OpenQA.Selenium.BiDi.Browser.GetUserContextsOptions,System.Threading.CancellationToken)">
+  GetUserContextsAsync(GetUserContextsOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;GetUserContextsResult&gt; GetUserContextsAsync(GetUserContextsOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;GetUserContextsResult&gt; GetUserContextsAsync(GetUserContextsOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.GetUserContextsOptions.html">GetUserContextsOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -296,20 +307,22 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
 
   <a id="OpenQA_Selenium_BiDi_Browser_BrowserModule_Initialize_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.Initialize*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_Initialize_System_Text_Json_JsonSerializerOptions_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.Initialize(System.Text.Json.JsonSerializerOptions)">
-  Initialize(JsonSerializerOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_Initialize_OpenQA_Selenium_BiDi_BiDi_System_Text_Json_JsonSerializerOptions_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.Initialize(OpenQA.Selenium.BiDi.BiDi,System.Text.Json.JsonSerializerOptions)">
+  Initialize(BiDi, JsonSerializerOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)</code></pre>
+    <pre><code class="lang-csharp hljs">protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
+    <dt><code>bidi</code> <a class="xref" href="OpenQA.Selenium.BiDi.BiDi.html">BiDi</a></dt>
+    <dd></dd>
     <dt><code>jsonSerializerOptions</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions">JsonSerializerOptions</a></dt>
     <dd></dd>
   </dl>
@@ -327,16 +340,16 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
 
   <a id="OpenQA_Selenium_BiDi_Browser_BrowserModule_RemoveUserContextAsync_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.RemoveUserContextAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_RemoveUserContextAsync_OpenQA_Selenium_BiDi_Browser_UserContext_OpenQA_Selenium_BiDi_Browser_RemoveUserContextOptions_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.RemoveUserContextAsync(OpenQA.Selenium.BiDi.Browser.UserContext,OpenQA.Selenium.BiDi.Browser.RemoveUserContextOptions)">
-  RemoveUserContextAsync(UserContext, RemoveUserContextOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_RemoveUserContextAsync_OpenQA_Selenium_BiDi_Browser_UserContext_OpenQA_Selenium_BiDi_Browser_RemoveUserContextOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.RemoveUserContextAsync(OpenQA.Selenium.BiDi.Browser.UserContext,OpenQA.Selenium.BiDi.Browser.RemoveUserContextOptions,System.Threading.CancellationToken)">
+  RemoveUserContextAsync(UserContext, RemoveUserContextOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;RemoveUserContextResult&gt; RemoveUserContextAsync(UserContext userContext, RemoveUserContextOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;RemoveUserContextResult&gt; RemoveUserContextAsync(UserContext userContext, RemoveUserContextOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -344,6 +357,8 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
     <dt><code>userContext</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContext.html">UserContext</a></dt>
     <dd></dd>
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.RemoveUserContextOptions.html">RemoveUserContextOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -365,21 +380,23 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
 
   <a id="OpenQA_Selenium_BiDi_Browser_BrowserModule_SetDownloadBehaviorAllowedAsync_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.SetDownloadBehaviorAllowedAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_SetDownloadBehaviorAllowedAsync_OpenQA_Selenium_BiDi_Browser_SetDownloadBehaviorOptions_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.SetDownloadBehaviorAllowedAsync(OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorOptions)">
-  SetDownloadBehaviorAllowedAsync(SetDownloadBehaviorOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_SetDownloadBehaviorAllowedAsync_OpenQA_Selenium_BiDi_Browser_SetDownloadBehaviorOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.SetDownloadBehaviorAllowedAsync(OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorOptions,System.Threading.CancellationToken)">
+  SetDownloadBehaviorAllowedAsync(SetDownloadBehaviorOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;SetDownloadBehaviorResult&gt; SetDownloadBehaviorAllowedAsync(SetDownloadBehaviorOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;SetDownloadBehaviorResult&gt; SetDownloadBehaviorAllowedAsync(SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorOptions.html">SetDownloadBehaviorOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -401,16 +418,16 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
 
   <a id="OpenQA_Selenium_BiDi_Browser_BrowserModule_SetDownloadBehaviorAllowedAsync_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.SetDownloadBehaviorAllowedAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_SetDownloadBehaviorAllowedAsync_System_String_OpenQA_Selenium_BiDi_Browser_SetDownloadBehaviorOptions_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.SetDownloadBehaviorAllowedAsync(System.String,OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorOptions)">
-  SetDownloadBehaviorAllowedAsync(string, SetDownloadBehaviorOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_SetDownloadBehaviorAllowedAsync_System_String_OpenQA_Selenium_BiDi_Browser_SetDownloadBehaviorOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.SetDownloadBehaviorAllowedAsync(System.String,OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorOptions,System.Threading.CancellationToken)">
+  SetDownloadBehaviorAllowedAsync(string, SetDownloadBehaviorOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;SetDownloadBehaviorResult&gt; SetDownloadBehaviorAllowedAsync(string destinationFolder, SetDownloadBehaviorOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;SetDownloadBehaviorResult&gt; SetDownloadBehaviorAllowedAsync(string destinationFolder, SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -418,6 +435,8 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
     <dt><code>destinationFolder</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorOptions.html">SetDownloadBehaviorOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -439,21 +458,23 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
 
   <a id="OpenQA_Selenium_BiDi_Browser_BrowserModule_SetDownloadBehaviorDeniedAsync_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.SetDownloadBehaviorDeniedAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_SetDownloadBehaviorDeniedAsync_OpenQA_Selenium_BiDi_Browser_SetDownloadBehaviorOptions_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.SetDownloadBehaviorDeniedAsync(OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorOptions)">
-  SetDownloadBehaviorDeniedAsync(SetDownloadBehaviorOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_SetDownloadBehaviorDeniedAsync_OpenQA_Selenium_BiDi_Browser_SetDownloadBehaviorOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.SetDownloadBehaviorDeniedAsync(OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorOptions,System.Threading.CancellationToken)">
+  SetDownloadBehaviorDeniedAsync(SetDownloadBehaviorOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;SetDownloadBehaviorResult&gt; SetDownloadBehaviorDeniedAsync(SetDownloadBehaviorOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;SetDownloadBehaviorResult&gt; SetDownloadBehaviorDeniedAsync(SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorOptions.html">SetDownloadBehaviorOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -477,7 +498,7 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L27" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L26" class="edit-link">Edit this page</a>
         </div>
 
 

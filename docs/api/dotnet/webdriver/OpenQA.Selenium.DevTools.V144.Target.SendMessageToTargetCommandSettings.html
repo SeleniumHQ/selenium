@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SendMessageToTargetCommandSettings ">
       
-      <meta name="description" content="SendMessageToTarget">
+      <meta name="description" content="Sends protocol message over session with given id. Consider using flat mode instead; see commands attachToTarget, setAutoAttach, and crbug.com/991325.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Target_SendMessageToTargetCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.Target.SendMessageToTargetCommandSettings" class="text-break">
-Class SendMessageToTargetCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/SendMessageToTargetCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class SendMessageToTargetCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/SendMessageToTargetCommand.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,9 @@ Class SendMessageToTargetCommandSettings  <a class="header-action link-secondary
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SendMessageToTarget</p>
+  <div class="markdown summary"><p>Sends protocol message over session with given id.
+Consider using flat mode instead; see commands attachToTarget, setAutoAttach,
+and crbug.com/991325.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +162,7 @@ Class SendMessageToTargetCommandSettings  <a class="header-action link-secondary
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Target_SendMessageToTargetCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.Target.SendMessageToTargetCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/SendMessageToTargetCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/SendMessageToTargetCommand.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,7 +195,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Target_SendMessageToTargetCommandSettings_Message" data-uid="OpenQA.Selenium.DevTools.V144.Target.SendMessageToTargetCommandSettings.Message">
   Message
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/SendMessageToTargetCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/SendMessageToTargetCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the message</p>
@@ -226,10 +228,10 @@ public string Message { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Target_SendMessageToTargetCommandSettings_SessionId" data-uid="OpenQA.Selenium.DevTools.V144.Target.SendMessageToTargetCommandSettings.SessionId">
   SessionId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/SendMessageToTargetCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/SendMessageToTargetCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the sessionId</p>
+  <div class="markdown level1 summary"><p>Identifier of the session.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -260,10 +262,10 @@ public string? SessionId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Target_SendMessageToTargetCommandSettings_TargetId" data-uid="OpenQA.Selenium.DevTools.V144.Target.SendMessageToTargetCommandSettings.TargetId">
   TargetId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/SendMessageToTargetCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/SendMessageToTargetCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the targetId</p>
+  <div class="markdown level1 summary"><p>Deprecated.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -294,7 +296,7 @@ public string? TargetId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/SendMessageToTargetCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Target/SendMessageToTargetCommand.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

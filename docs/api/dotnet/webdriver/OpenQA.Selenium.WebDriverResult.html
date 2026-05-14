@@ -118,91 +118,120 @@ Enum WebDriverResult  <a class="header-action link-secondary" title="View source
 </h2>
   <dl class="parameters">
     <dt id="OpenQA_Selenium_WebDriverResult_AsyncScriptTimeout"><code>AsyncScriptTimeout = 28</code></dt>
-    <dd><p>A script did not complete before its timeout expired.</p>
+  
+  <dd><p>A script did not complete before its timeout expired.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_DetachedShadowRoot"><code>DetachedShadowRoot = 66</code></dt>
-    <dd><p>The referenced shadow root is no longer attached to the DOM.</p>
+  
+  <dd><p>The referenced shadow root is no longer attached to the DOM.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_ElementClickIntercepted"><code>ElementClickIntercepted = 64</code></dt>
-    <dd><p>The <a href="https://www.w3.org/TR/webdriver2/#dfn-element-click">Element Click</a> command could not be completed because the element receiving the events is <a href="https://www.w3.org/TR/webdriver2/#dfn-obscuring">obscuring</a> the element that was requested clicked.</p>
+  
+  <dd><p>The <a href="https://www.w3.org/TR/webdriver2/#dfn-element-click">Element Click</a> command could not be completed because the element receiving the events is <a href="https://www.w3.org/TR/webdriver2/#dfn-obscuring">obscuring</a> the element that was requested clicked.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_ElementNotInteractable"><code>ElementNotInteractable = 60</code></dt>
-    <dd><p>A command could not be completed because the element is not <a href="https://www.w3.org/TR/webdriver2/#dfn-pointer-interactable">pointer</a>- or <a href="https://www.w3.org/TR/webdriver2/#dfn-keyboard-interactable">keyboard</a> interactable.</p>
+  
+  <dd><p>A command could not be completed because the element is not <a href="https://www.w3.org/TR/webdriver2/#dfn-pointer-interactable">pointer</a>- or <a href="https://www.w3.org/TR/webdriver2/#dfn-keyboard-interactable">keyboard</a> interactable.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_InsecureCertificate"><code>InsecureCertificate = 59</code></dt>
-    <dd><p>Navigation caused the user agent to hit a certificate warning, which is usually the result of an expired or invalid TLS certificate.</p>
+  
+  <dd><p>Navigation caused the user agent to hit a certificate warning, which is usually the result of an expired or invalid TLS certificate.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_InvalidArgument"><code>InvalidArgument = 61</code></dt>
-    <dd><p>The arguments passed to a command are either invalid or malformed.</p>
+  
+  <dd><p>The arguments passed to a command are either invalid or malformed.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_InvalidCookieDomain"><code>InvalidCookieDomain = 24</code></dt>
-    <dd><p>An illegal attempt was made to set a cookie under a different domain than the current page.</p>
+  
+  <dd><p>An illegal attempt was made to set a cookie under a different domain than the current page.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_InvalidElementState"><code>InvalidElementState = 12</code></dt>
-    <dd><p>A command could not be completed because the element is in an invalid state, e.g. attempting to <a href="https://www.w3.org/TR/webdriver2/#dfn-element-clear">clear</a> an element that isn't both <a href="https://www.w3.org/TR/webdriver2/#dfn-editable">editable</a> and <a href="https://www.w3.org/TR/webdriver2/#dfn-resettable-elements">resettable</a>.</p>
+  
+  <dd><p>A command could not be completed because the element is in an invalid state, e.g. attempting to <a href="https://www.w3.org/TR/webdriver2/#dfn-element-clear">clear</a> an element that isn't both <a href="https://www.w3.org/TR/webdriver2/#dfn-editable">editable</a> and <a href="https://www.w3.org/TR/webdriver2/#dfn-resettable-elements">resettable</a>.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_InvalidSelector"><code>InvalidSelector = 32</code></dt>
-    <dd><p>Argument was an invalid selector.</p>
+  
+  <dd><p>Argument was an invalid selector.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_MoveTargetOutOfBounds"><code>MoveTargetOutOfBounds = 34</code></dt>
-    <dd><p>The target for mouse interaction is not in the browser's viewport and cannot be brought into that viewport.</p>
+  
+  <dd><p>The target for mouse interaction is not in the browser's viewport and cannot be brought into that viewport.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_NoAlertPresent"><code>NoAlertPresent = 27</code></dt>
-    <dd><p>An attempt was made to operate on a modal dialog when one was not open.</p>
+  
+  <dd><p>An attempt was made to operate on a modal dialog when one was not open.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_NoSuchCookie"><code>NoSuchCookie = 62</code></dt>
-    <dd><p>No cookie matching the given path name was found amongst the <a href="https://www.w3.org/TR/webdriver2/#dfn-associated-cookies">associated cookies</a> of session's current browsing context's active document.</p>
+  
+  <dd><p>No cookie matching the given path name was found amongst the <a href="https://www.w3.org/TR/webdriver2/#dfn-associated-cookies">associated cookies</a> of session's current browsing context's active document.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_NoSuchDriver"><code>NoSuchDriver = 6</code></dt>
-    <dd><p>Occurs if the given <a href="https://www.w3.org/TR/webdriver2/#dfn-session-id">session id</a> is not in the list of <a href="https://www.w3.org/TR/webdriver2/#dfn-active-sessions">active sessions</a>, meaning the session either does not exist or that it's not active.</p>
+  
+  <dd><p>Occurs if the given <a href="https://www.w3.org/TR/webdriver2/#dfn-session-id">session id</a> is not in the list of <a href="https://www.w3.org/TR/webdriver2/#dfn-active-sessions">active sessions</a>, meaning the session either does not exist or that it's not active.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_NoSuchElement"><code>NoSuchElement = 7</code></dt>
-    <dd><p>An element could not be located on the page using the given search parameters.</p>
+  
+  <dd><p>An element could not be located on the page using the given search parameters.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_NoSuchFrame"><code>NoSuchFrame = 8</code></dt>
-    <dd><p>A command to switch to a frame could not be satisfied because the frame could not be found.</p>
+  
+  <dd><p>A command to switch to a frame could not be satisfied because the frame could not be found.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_NoSuchShadowRoot"><code>NoSuchShadowRoot = 65</code></dt>
-    <dd><p>The element does not have a shadow root.</p>
+  
+  <dd><p>The element does not have a shadow root.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_NoSuchWindow"><code>NoSuchWindow = 23</code></dt>
-    <dd><p>A command to switch to a window could not be satisfied because the window could not be found.</p>
+  
+  <dd><p>A command to switch to a window could not be satisfied because the window could not be found.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_ObsoleteElement"><code>ObsoleteElement = 10</code></dt>
-    <dd><p>A command failed because the referenced element is no longer attached to the DOM.</p>
+  
+  <dd><p>A command failed because the referenced element is no longer attached to the DOM.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_SessionNotCreated"><code>SessionNotCreated = 33</code></dt>
-    <dd><p>A new <a href="https://www.w3.org/TR/webdriver2/#dfn-sessions">session</a> could not be created.</p>
+  
+  <dd><p>A new <a href="https://www.w3.org/TR/webdriver2/#dfn-sessions">session</a> could not be created.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_Success"><code>Success = 0</code></dt>
-    <dd><p>The action was successful.</p>
+  
+  <dd><p>The action was successful.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_Timeout"><code>Timeout = 21</code></dt>
-    <dd><p>An operation did not complete before its timeout expired.</p>
+  
+  <dd><p>An operation did not complete before its timeout expired.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_UnableToCaptureScreen"><code>UnableToCaptureScreen = 63</code></dt>
-    <dd><p>A screen capture was made impossible.</p>
+  
+  <dd><p>A screen capture was made impossible.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_UnableToSetCookie"><code>UnableToSetCookie = 25</code></dt>
-    <dd><p>A command to set a cookie's value could not be satisfied.</p>
+  
+  <dd><p>A command to set a cookie's value could not be satisfied.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_UnexpectedAlertOpen"><code>UnexpectedAlertOpen = 26</code></dt>
-    <dd><p>A modal dialog was open, blocking this operation.</p>
+  
+  <dd><p>A modal dialog was open, blocking this operation.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_UnexpectedJavaScriptError"><code>UnexpectedJavaScriptError = 17</code></dt>
-    <dd><p>An error occurred while executing JavaScript supplied by the user.</p>
+  
+  <dd><p>An error occurred while executing JavaScript supplied by the user.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_UnknownCommand"><code>UnknownCommand = 9</code></dt>
-    <dd><p>A command could not be executed because the <a href="https://www.w3.org/TR/webdriver2/#dfn-remote-ends">remote end</a> is not aware of it.</p>
+  
+  <dd><p>A command could not be executed because the <a href="https://www.w3.org/TR/webdriver2/#dfn-remote-ends">remote end</a> is not aware of it.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_UnknownError"><code>UnknownError = 13</code></dt>
-    <dd><p>An unknown error occurred in the <a href="https://www.w3.org/TR/webdriver2/#dfn-remote-ends">remote end</a> while processing the command.</p>
+  
+  <dd><p>An unknown error occurred in the <a href="https://www.w3.org/TR/webdriver2/#dfn-remote-ends">remote end</a> while processing the command.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_UnknownMethod"><code>UnknownMethod = 67</code></dt>
-    <dd><p>The requested command matched a known URL but did not match any method for that URL.</p>
+  
+  <dd><p>The requested command matched a known URL but did not match any method for that URL.</p>
 </dd>
     <dt id="OpenQA_Selenium_WebDriverResult_UnsupportedOperation"><code>UnsupportedOperation = 68</code></dt>
-    <dd><p>Indicates that a command that should have executed properly cannot be supported for some reason.</p>
+  
+  <dd><p>Indicates that a command that should have executed properly cannot be supported for some reason.</p>
 </dd>
   </dl>
 

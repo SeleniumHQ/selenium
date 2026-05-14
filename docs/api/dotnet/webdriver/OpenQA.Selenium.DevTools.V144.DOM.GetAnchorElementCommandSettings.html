@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetAnchorElementCommandSettings ">
       
-      <meta name="description" content="GetAnchorElement">
+      <meta name="description" content="Returns the target anchor element of the given anchor query according to https://www.w3.org/TR/css-anchor-position-1/#target.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_DOM_GetAnchorElementCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetAnchorElementCommandSettings" class="text-break">
-Class GetAnchorElementCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetAnchorElementCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class GetAnchorElementCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetAnchorElementCommand.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class GetAnchorElementCommandSettings  <a class="header-action link-secondary" t
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>GetAnchorElement</p>
+  <div class="markdown summary"><p>Returns the target anchor element of the given anchor query according to
+<a href="https://www.w3.org/TR/css-anchor-position-1/#target">https://www.w3.org/TR/css-anchor-position-1/#target</a>.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,10 +161,13 @@ Class GetAnchorElementCommandSettings  <a class="header-action link-secondary" t
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_GetAnchorElementCommandSettings_AnchorSpecifier" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetAnchorElementCommandSettings.AnchorSpecifier">
   AnchorSpecifier
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetAnchorElementCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetAnchorElementCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the anchorSpecifier</p>
+  <div class="markdown level1 summary"><p>An optional anchor specifier, as defined in
+<a href="https://www.w3.org/TR/css-anchor-position-1/#anchor-specifier">https://www.w3.org/TR/css-anchor-position-1/#anchor-specifier</a>.
+If not provided, it will return the implicit anchor element for
+the given positioned element.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -194,7 +198,7 @@ public string? AnchorSpecifier { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_GetAnchorElementCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetAnchorElementCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetAnchorElementCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetAnchorElementCommand.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -227,10 +231,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOM_GetAnchorElementCommandSettings_NodeId" data-uid="OpenQA.Selenium.DevTools.V144.DOM.GetAnchorElementCommandSettings.NodeId">
   NodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetAnchorElementCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetAnchorElementCommand.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the nodeId</p>
+  <div class="markdown level1 summary"><p>Id of the positioned element from which to find the anchor.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -260,7 +264,7 @@ public long NodeId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetAnchorElementCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOM/GetAnchorElementCommand.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

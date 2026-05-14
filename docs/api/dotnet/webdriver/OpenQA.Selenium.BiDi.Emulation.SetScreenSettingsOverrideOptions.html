@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Emulation_SetScreenSettingsOverrideOptions" data-uid="OpenQA.Selenium.BiDi.Emulation.SetScreenSettingsOverrideOptions" class="text-break">
-Class SetScreenSettingsOverrideOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetScreenSettingsOverrideCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
+Class SetScreenSettingsOverrideOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetScreenSettingsOverrideCommand.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class SetScreenSettingsOverrideOptions  <a class="header-action link-secondary" 
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class SetScreenSettingsOverrideOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record SetScreenSettingsOverrideOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;SetScreenSettingsOverrideOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class SetScreenSettingsOverrideOptions  <a class="header-action link-secondary" 
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetScreenSettingsOverrideOptions.html">SetScreenSettingsOverrideOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -157,14 +164,14 @@ Class SetScreenSettingsOverrideOptions  <a class="header-action link-secondary" 
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_SetScreenSettingsOverrideOptions_Contexts" data-uid="OpenQA.Selenium.BiDi.Emulation.SetScreenSettingsOverrideOptions.Contexts">
   Contexts
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetScreenSettingsOverrideCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetScreenSettingsOverrideCommand.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;BrowsingContext&gt;? Contexts { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;BrowsingContext&gt;? Contexts { get; init; }</code></pre>
   </div>
 
 
@@ -188,14 +195,14 @@ Class SetScreenSettingsOverrideOptions  <a class="header-action link-secondary" 
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_SetScreenSettingsOverrideOptions_UserContexts" data-uid="OpenQA.Selenium.BiDi.Emulation.SetScreenSettingsOverrideOptions.UserContexts">
   UserContexts
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetScreenSettingsOverrideCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetScreenSettingsOverrideCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;UserContext&gt;? UserContexts { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;UserContext&gt;? UserContexts { get; init; }</code></pre>
   </div>
 
 
@@ -219,7 +226,7 @@ Class SetScreenSettingsOverrideOptions  <a class="header-action link-secondary" 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetScreenSettingsOverrideCommand.cs/#L30" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/SetScreenSettingsOverrideCommand.cs/#L29" class="edit-link">Edit this page</a>
         </div>
 
 

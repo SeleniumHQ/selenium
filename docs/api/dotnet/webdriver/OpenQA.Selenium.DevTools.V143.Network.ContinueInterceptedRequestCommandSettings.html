@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ContinueInterceptedRequestCommandSettings ">
       
-      <meta name="description" content="ContinueInterceptedRequest">
+      <meta name="description" content="Response to Network.requestIntercepted which either modifies the request to continue with any modifications, or blocks it, or completes it with the provided response bytes. If a network fetch occurs as a result which encounters a redirect an additional Network.requestIntercepted event will be sent with the same InterceptionId. Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failRequest instead.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Network_ContinueInterceptedRequestCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.Network.ContinueInterceptedRequestCommandSettings" class="text-break">
-Class ContinueInterceptedRequestCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class ContinueInterceptedRequestCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L16"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,11 @@ Class ContinueInterceptedRequestCommandSettings  <a class="header-action link-se
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>ContinueInterceptedRequest</p>
+  <div class="markdown summary"><p>Response to Network.requestIntercepted which either modifies the request to continue with any
+modifications, or blocks it, or completes it with the provided response bytes. If a network
+fetch occurs as a result which encounters a redirect an additional Network.requestIntercepted
+event will be sent with the same InterceptionId.
+Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failRequest instead.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,10 +164,10 @@ Class ContinueInterceptedRequestCommandSettings  <a class="header-action link-se
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ContinueInterceptedRequestCommandSettings_AuthChallengeResponse" data-uid="OpenQA.Selenium.DevTools.V143.Network.ContinueInterceptedRequestCommandSettings.AuthChallengeResponse">
   AuthChallengeResponse
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the authChallengeResponse</p>
+  <div class="markdown level1 summary"><p>Response to a requestIntercepted with an authChallenge. Must not be set otherwise.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -194,7 +198,7 @@ public AuthChallengeResponse? AuthChallengeResponse { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ContinueInterceptedRequestCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.Network.ContinueInterceptedRequestCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L23"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -227,10 +231,12 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ContinueInterceptedRequestCommandSettings_ErrorReason" data-uid="OpenQA.Selenium.DevTools.V143.Network.ContinueInterceptedRequestCommandSettings.ErrorReason">
   ErrorReason
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the errorReason</p>
+  <div class="markdown level1 summary"><p>If set this causes the request to fail with the given reason. Passing <code>Aborted</code> for requests
+marked with <code>isNavigationRequest</code> also cancels the navigation. Must not be set in response
+to an authChallenge.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -261,10 +267,11 @@ public ErrorReason? ErrorReason { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ContinueInterceptedRequestCommandSettings_Headers" data-uid="OpenQA.Selenium.DevTools.V143.Network.ContinueInterceptedRequestCommandSettings.Headers">
   Headers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the headers</p>
+  <div class="markdown level1 summary"><p>If set this allows the request headers to be changed. Must not be set in response to an
+authChallenge.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -295,7 +302,7 @@ public Headers? Headers { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ContinueInterceptedRequestCommandSettings_InterceptionId" data-uid="OpenQA.Selenium.DevTools.V143.Network.ContinueInterceptedRequestCommandSettings.InterceptionId">
   InterceptionId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the interceptionId</p>
@@ -328,10 +335,11 @@ public string InterceptionId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ContinueInterceptedRequestCommandSettings_Method" data-uid="OpenQA.Selenium.DevTools.V143.Network.ContinueInterceptedRequestCommandSettings.Method">
   Method
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the method</p>
+  <div class="markdown level1 summary"><p>If set this allows the request method to be overridden. Must not be set in response to an
+authChallenge.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -362,10 +370,10 @@ public string? Method { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ContinueInterceptedRequestCommandSettings_PostData" data-uid="OpenQA.Selenium.DevTools.V143.Network.ContinueInterceptedRequestCommandSettings.PostData">
   PostData
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L69"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the postData</p>
+  <div class="markdown level1 summary"><p>If set this allows postData to be set. Must not be set in response to an authChallenge.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -396,10 +404,11 @@ public string? PostData { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ContinueInterceptedRequestCommandSettings_RawResponse" data-uid="OpenQA.Selenium.DevTools.V143.Network.ContinueInterceptedRequestCommandSettings.RawResponse">
   RawResponse
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the rawResponse</p>
+  <div class="markdown level1 summary"><p>If set the requests completes using with the provided base64 encoded raw response, including
+HTTP status line and headers etc... Must not be set in response to an authChallenge.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -430,10 +439,11 @@ public string? RawResponse { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_ContinueInterceptedRequestCommandSettings_Url" data-uid="OpenQA.Selenium.DevTools.V143.Network.ContinueInterceptedRequestCommandSettings.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the url</p>
+  <div class="markdown level1 summary"><p>If set the request url will be modified in a way that's not observable by page. Must not be
+set in response to an authChallenge.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -464,7 +474,7 @@ public string? Url { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/ContinueInterceptedRequestCommand.cs/#L16" class="edit-link">Edit this page</a>
         </div>
 
 

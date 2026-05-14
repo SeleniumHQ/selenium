@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Network_InterceptedRequest" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest" class="text-break">
-Class InterceptedRequest  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L69"><i class="bi bi-code-slash"></i></a>
+Class InterceptedRequest  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -190,21 +190,23 @@ Class InterceptedRequest  <a class="header-action link-secondary" title="View so
 
   <a id="OpenQA_Selenium_BiDi_Network_InterceptedRequest_ContinueAsync_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest.ContinueAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedRequest_ContinueAsync_OpenQA_Selenium_BiDi_Network_ContinueRequestOptions_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest.ContinueAsync(OpenQA.Selenium.BiDi.Network.ContinueRequestOptions)">
-  ContinueAsync(ContinueRequestOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedRequest_ContinueAsync_OpenQA_Selenium_BiDi_Network_ContinueRequestOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest.ContinueAsync(OpenQA.Selenium.BiDi.Network.ContinueRequestOptions,System.Threading.CancellationToken)">
+  ContinueAsync(ContinueRequestOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L72"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task ContinueAsync(ContinueRequestOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task ContinueAsync(ContinueRequestOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Network.ContinueRequestOptions.html">ContinueRequestOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -226,18 +228,25 @@ Class InterceptedRequest  <a class="header-action link-secondary" title="View so
 
   <a id="OpenQA_Selenium_BiDi_Network_InterceptedRequest_FailAsync_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest.FailAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedRequest_FailAsync" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest.FailAsync">
-  FailAsync()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedRequest_FailAsync_OpenQA_Selenium_BiDi_Network_FailRequestOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest.FailAsync(OpenQA.Selenium.BiDi.Network.FailRequestOptions,System.Threading.CancellationToken)">
+  FailAsync(FailRequestOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task FailAsync()</code></pre>
+    <pre><code class="lang-csharp hljs">public Task FailAsync(FailRequestOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Network.FailRequestOptions.html">FailRequestOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
@@ -257,21 +266,23 @@ Class InterceptedRequest  <a class="header-action link-secondary" title="View so
 
   <a id="OpenQA_Selenium_BiDi_Network_InterceptedRequest_ProvideResponseAsync_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest.ProvideResponseAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedRequest_ProvideResponseAsync_OpenQA_Selenium_BiDi_Network_ProvideResponseOptions_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest.ProvideResponseAsync(OpenQA.Selenium.BiDi.Network.ProvideResponseOptions)">
-  ProvideResponseAsync(ProvideResponseOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedRequest_ProvideResponseAsync_OpenQA_Selenium_BiDi_Network_ProvideResponseOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest.ProvideResponseAsync(OpenQA.Selenium.BiDi.Network.ProvideResponseOptions,System.Threading.CancellationToken)">
+  ProvideResponseAsync(ProvideResponseOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L82"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task ProvideResponseAsync(ProvideResponseOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task ProvideResponseAsync(ProvideResponseOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Network.ProvideResponseOptions.html">ProvideResponseOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -295,7 +306,7 @@ Class InterceptedRequest  <a class="header-action link-secondary" title="View so
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L69" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L64" class="edit-link">Edit this page</a>
         </div>
 
 

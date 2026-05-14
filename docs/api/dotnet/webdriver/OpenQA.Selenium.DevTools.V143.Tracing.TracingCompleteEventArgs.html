@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class TracingCompleteEventArgs ">
       
-      <meta name="description" content="TracingComplete">
+      <meta name="description" content="Signals that tracing is stopped and there is no trace buffers pending flush, all data were delivered via dataCollected events.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Tracing_TracingCompleteEventArgs" data-uid="OpenQA.Selenium.DevTools.V143.Tracing.TracingCompleteEventArgs" class="text-break">
-Class TracingCompleteEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingCompleteEventArgs.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Class TracingCompleteEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingCompleteEventArgs.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class TracingCompleteEventArgs  <a class="header-action link-secondary" title="V
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>TracingComplete</p>
+  <div class="markdown summary"><p>Signals that tracing is stopped and there is no trace buffers pending flush, all data were
+delivered via dataCollected events.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +159,11 @@ Class TracingCompleteEventArgs  <a class="header-action link-secondary" title="V
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Tracing_TracingCompleteEventArgs_DataLossOccurred" data-uid="OpenQA.Selenium.DevTools.V143.Tracing.TracingCompleteEventArgs.DataLossOccurred">
   DataLossOccurred
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingCompleteEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingCompleteEventArgs.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the dataLossOccurred</p>
+  <div class="markdown level1 summary"><p>Indicates whether some trace data is known to have been lost, e.g. because the trace ring
+buffer wrapped around.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,10 +193,10 @@ public bool DataLossOccurred { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Tracing_TracingCompleteEventArgs_Stream" data-uid="OpenQA.Selenium.DevTools.V143.Tracing.TracingCompleteEventArgs.Stream">
   Stream
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingCompleteEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingCompleteEventArgs.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the stream</p>
+  <div class="markdown level1 summary"><p>A handle of the stream that holds resulting trace data.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -225,10 +227,10 @@ public string? Stream { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Tracing_TracingCompleteEventArgs_StreamCompression" data-uid="OpenQA.Selenium.DevTools.V143.Tracing.TracingCompleteEventArgs.StreamCompression">
   StreamCompression
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingCompleteEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingCompleteEventArgs.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the streamCompression</p>
+  <div class="markdown level1 summary"><p>Compression format of returned stream.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -259,10 +261,10 @@ public StreamCompression? StreamCompression { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Tracing_TracingCompleteEventArgs_TraceFormat" data-uid="OpenQA.Selenium.DevTools.V143.Tracing.TracingCompleteEventArgs.TraceFormat">
   TraceFormat
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingCompleteEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingCompleteEventArgs.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the traceFormat</p>
+  <div class="markdown level1 summary"><p>Trace data format of returned stream.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -293,7 +295,7 @@ public StreamFormat? TraceFormat { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingCompleteEventArgs.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingCompleteEventArgs.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

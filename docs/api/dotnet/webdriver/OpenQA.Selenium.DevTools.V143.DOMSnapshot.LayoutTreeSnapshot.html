@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class LayoutTreeSnapshot ">
       
-      <meta name="description" content="LayoutTreeSnapshot">
+      <meta name="description" content="Table of details of an element in the DOM tree with a LayoutObject.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class LayoutTreeSnapshot  <a class="header-action link-secondary" title="View so
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>LayoutTreeSnapshot</p>
+  <div class="markdown summary"><p>Table of details of an element in the DOM tree with a LayoutObject.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +154,10 @@ Class LayoutTreeSnapshot  <a class="header-action link-secondary" title="View so
 
   <h3 id="OpenQA_Selenium_DevTools_V143_DOMSnapshot_LayoutTreeSnapshot_BlendedBackgroundColors" data-uid="OpenQA.Selenium.DevTools.V143.DOMSnapshot.LayoutTreeSnapshot.BlendedBackgroundColors">
   BlendedBackgroundColors
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L82"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>blendedBackgroundColors</p>
+  <div class="markdown level1 summary"><p>The list of background colors that are blended with colors of overlapping elements.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -191,7 +191,7 @@ public long[]? BlendedBackgroundColors { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>bounds</p>
+  <div class="markdown level1 summary"><p>The absolute position bounding box.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -221,10 +221,10 @@ public double[][] Bounds { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_DOMSnapshot_LayoutTreeSnapshot_ClientRects" data-uid="OpenQA.Selenium.DevTools.V143.DOMSnapshot.LayoutTreeSnapshot.ClientRects">
   ClientRects
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>clientRects</p>
+  <div class="markdown level1 summary"><p>The client rect of nodes. Only available when includeDOMRects is set to true</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -258,7 +258,7 @@ public double[][]? ClientRects { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>nodeIndex</p>
+  <div class="markdown level1 summary"><p>Index of the corresponding node in the <code>NodeTreeSnapshot</code> array returned by <code>captureSnapshot</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -288,10 +288,10 @@ public long[] NodeIndex { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_DOMSnapshot_LayoutTreeSnapshot_OffsetRects" data-uid="OpenQA.Selenium.DevTools.V143.DOMSnapshot.LayoutTreeSnapshot.OffsetRects">
   OffsetRects
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L61"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>offsetRects</p>
+  <div class="markdown level1 summary"><p>The offset rect of nodes. Only available when includeDOMRects is set to true</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -322,10 +322,12 @@ public double[][]? OffsetRects { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_DOMSnapshot_LayoutTreeSnapshot_PaintOrders" data-uid="OpenQA.Selenium.DevTools.V143.DOMSnapshot.LayoutTreeSnapshot.PaintOrders">
   PaintOrders
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>paintOrders</p>
+  <div class="markdown level1 summary"><p>Global paint order index, which is determined by the stacking order of the nodes. Nodes
+that are painted together will have the same index. Only provided if includePaintOrder in
+captureSnapshot was true.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -356,10 +358,10 @@ public long[]? PaintOrders { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_DOMSnapshot_LayoutTreeSnapshot_ScrollRects" data-uid="OpenQA.Selenium.DevTools.V143.DOMSnapshot.LayoutTreeSnapshot.ScrollRects">
   ScrollRects
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L68"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>scrollRects</p>
+  <div class="markdown level1 summary"><p>The scroll rect of nodes. Only available when includeDOMRects is set to true</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -393,7 +395,7 @@ public double[][]? ScrollRects { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>stackingContexts</p>
+  <div class="markdown level1 summary"><p>Stacking context information.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -426,7 +428,7 @@ public RareBooleanData StackingContexts { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>styles</p>
+  <div class="markdown level1 summary"><p>Array of indexes specifying computed style strings, filtered according to the <code>computedStyles</code> parameter passed to <code>captureSnapshot</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -459,7 +461,7 @@ public string[][] Styles { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>text</p>
+  <div class="markdown level1 summary"><p>Contents of the LayoutText, if any.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -489,10 +491,10 @@ public long[] Text { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_DOMSnapshot_LayoutTreeSnapshot_TextColorOpacities" data-uid="OpenQA.Selenium.DevTools.V143.DOMSnapshot.LayoutTreeSnapshot.TextColorOpacities">
   TextColorOpacities
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/DOMSnapshot/LayoutTreeSnapshot.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>textColorOpacities</p>
+  <div class="markdown level1 summary"><p>The list of computed text opacities.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

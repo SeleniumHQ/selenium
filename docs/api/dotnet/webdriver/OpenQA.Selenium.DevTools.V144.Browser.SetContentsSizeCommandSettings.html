@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetContentsSizeCommandSettings ">
       
-      <meta name="description" content="SetContentsSize">
+      <meta name="description" content="Set size of the browser contents resizing browser window as necessary.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class SetContentsSizeCommandSettings  <a class="header-action link-secondary" ti
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SetContentsSize</p>
+  <div class="markdown summary"><p>Set size of the browser contents resizing browser window as necessary.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -193,10 +193,11 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_SetContentsSizeCommandSettings_Height" data-uid="OpenQA.Selenium.DevTools.V144.Browser.SetContentsSizeCommandSettings.Height">
   Height
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/SetContentsSizeCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/SetContentsSizeCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the height</p>
+  <div class="markdown level1 summary"><p>The window contents height in DIP. Assumes current height if omitted.
+Must be specified if 'width' is omitted.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +228,11 @@ public long? Height { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_SetContentsSizeCommandSettings_Width" data-uid="OpenQA.Selenium.DevTools.V144.Browser.SetContentsSizeCommandSettings.Width">
   Width
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/SetContentsSizeCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/SetContentsSizeCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the width</p>
+  <div class="markdown level1 summary"><p>The window contents width in DIP. Assumes current width if omitted.
+Must be specified if 'height' is omitted.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -264,7 +266,7 @@ public long? Width { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/SetContentsSizeCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the windowId</p>
+  <div class="markdown level1 summary"><p>Browser window id.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

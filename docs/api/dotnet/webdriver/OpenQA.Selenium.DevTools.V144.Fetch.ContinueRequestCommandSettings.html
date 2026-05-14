@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ContinueRequestCommandSettings ">
       
-      <meta name="description" content="ContinueRequest">
+      <meta name="description" content="Continues the request, optionally modifying some of its parameters.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class ContinueRequestCommandSettings  <a class="header-action link-secondary" ti
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>ContinueRequest</p>
+  <div class="markdown summary"><p>Continues the request, optionally modifying some of its parameters.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -193,10 +193,12 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Fetch_ContinueRequestCommandSettings_Headers" data-uid="OpenQA.Selenium.DevTools.V144.Fetch.ContinueRequestCommandSettings.Headers">
   Headers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueRequestCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueRequestCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the headers</p>
+  <div class="markdown level1 summary"><p>If set, overrides the request headers. Note that the overrides do not
+extend to subsequent redirect hops, if a redirect happens. Another override
+may be applied to a different request produced by a redirect.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +229,10 @@ public HeaderEntry[]? Headers { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Fetch_ContinueRequestCommandSettings_InterceptResponse" data-uid="OpenQA.Selenium.DevTools.V144.Fetch.ContinueRequestCommandSettings.InterceptResponse">
   InterceptResponse
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueRequestCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueRequestCommand.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the interceptResponse</p>
+  <div class="markdown level1 summary"><p>If set, overrides response interception behavior for this request.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -264,7 +266,7 @@ public bool? InterceptResponse { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueRequestCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the method</p>
+  <div class="markdown level1 summary"><p>If set, the request method is overridden.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -298,7 +300,7 @@ public string? Method { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueRequestCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the postData</p>
+  <div class="markdown level1 summary"><p>If set, overrides the post data in the request.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -332,7 +334,7 @@ public string? PostData { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueRequestCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the requestId</p>
+  <div class="markdown level1 summary"><p>An id the client received in requestPaused event.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -365,7 +367,7 @@ public string RequestId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueRequestCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the url</p>
+  <div class="markdown level1 summary"><p>If set, the request url will be modified in a way that's not observable by page.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

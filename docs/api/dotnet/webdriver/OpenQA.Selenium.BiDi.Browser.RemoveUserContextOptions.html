@@ -101,7 +101,7 @@ Class RemoveUserContextOptions  <a class="header-action link-secondary" title="V
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class RemoveUserContextOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record RemoveUserContextOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;RemoveUserContextOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class RemoveUserContextOptions  <a class="header-action link-secondary" title="V
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.RemoveUserContextOptions.html">RemoveUserContextOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">

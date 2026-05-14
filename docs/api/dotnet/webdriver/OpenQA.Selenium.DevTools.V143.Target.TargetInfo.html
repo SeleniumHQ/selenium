@@ -157,7 +157,7 @@ Class TargetInfo  <a class="header-action link-secondary" title="View source" hr
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/TargetInfo.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>attached</p>
+  <div class="markdown level1 summary"><p>Whether the target has an attached client.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -224,7 +224,7 @@ public string? BrowserContextId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/TargetInfo.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>canAccessOpener</p>
+  <div class="markdown level1 summary"><p>Whether the target has access to the originating window.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -257,7 +257,7 @@ public bool CanAccessOpener { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/TargetInfo.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>openerFrameId</p>
+  <div class="markdown level1 summary"><p>Frame id of originating window (is only set if target has an opener).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -291,7 +291,7 @@ public string? OpenerFrameId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/TargetInfo.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>openerId</p>
+  <div class="markdown level1 summary"><p>Opener target Id</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -325,7 +325,7 @@ public string? OpenerId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/TargetInfo.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>parentFrameId</p>
+  <div class="markdown level1 summary"><p>Id of the parent frame, only present for the &quot;iframe&quot; targets.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -356,10 +356,11 @@ public string? ParentFrameId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Target_TargetInfo_Subtype" data-uid="OpenQA.Selenium.DevTools.V143.Target.TargetInfo.Subtype">
   Subtype
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/TargetInfo.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/TargetInfo.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>subtype</p>
+  <div class="markdown level1 summary"><p>Provides additional details for specific target types. For example, for
+the type of &quot;page&quot;, this may be set to &quot;prerender&quot;.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -459,7 +460,7 @@ public string Title { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Target/TargetInfo.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>type</p>
+  <div class="markdown level1 summary"><p>List of types: <a href="https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_agent_host_impl.cc?ss=chromium">https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_agent_host_impl.cc?ss=chromium</a>&amp;q=f:devtools%20-f:out%20%22::kTypeTab%5B%5D%22</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

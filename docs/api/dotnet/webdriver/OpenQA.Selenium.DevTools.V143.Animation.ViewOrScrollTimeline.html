@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ViewOrScrollTimeline ">
       
-      <meta name="description" content="ViewOrScrollTimeline">
+      <meta name="description" content="Timeline instance">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class ViewOrScrollTimeline  <a class="header-action link-secondary" title="View 
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>ViewOrScrollTimeline</p>
+  <div class="markdown summary"><p>Timeline instance</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +154,10 @@ Class ViewOrScrollTimeline  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Animation_ViewOrScrollTimeline_Axis" data-uid="OpenQA.Selenium.DevTools.V143.Animation.ViewOrScrollTimeline.Axis">
   Axis
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/ViewOrScrollTimeline.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/ViewOrScrollTimeline.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>axis</p>
+  <div class="markdown level1 summary"><p>Orientation of the scroll</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -187,10 +187,11 @@ public ScrollOrientation Axis { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Animation_ViewOrScrollTimeline_EndOffset" data-uid="OpenQA.Selenium.DevTools.V143.Animation.ViewOrScrollTimeline.EndOffset">
   EndOffset
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/ViewOrScrollTimeline.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/ViewOrScrollTimeline.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>endOffset</p>
+  <div class="markdown level1 summary"><p>Represents the ending scroll position of the timeline
+as a length offset in pixels from scroll origin.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -224,7 +225,7 @@ public double? EndOffset { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/ViewOrScrollTimeline.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>sourceNodeId</p>
+  <div class="markdown level1 summary"><p>Scroll container node</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -255,10 +256,11 @@ public long? SourceNodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Animation_ViewOrScrollTimeline_StartOffset" data-uid="OpenQA.Selenium.DevTools.V143.Animation.ViewOrScrollTimeline.StartOffset">
   StartOffset
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/ViewOrScrollTimeline.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/ViewOrScrollTimeline.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>startOffset</p>
+  <div class="markdown level1 summary"><p>Represents the starting scroll position of the timeline
+as a length offset in pixels from scroll origin.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -289,10 +291,12 @@ public double? StartOffset { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Animation_ViewOrScrollTimeline_SubjectNodeId" data-uid="OpenQA.Selenium.DevTools.V143.Animation.ViewOrScrollTimeline.SubjectNodeId">
   SubjectNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/ViewOrScrollTimeline.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Animation/ViewOrScrollTimeline.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>subjectNodeId</p>
+  <div class="markdown level1 summary"><p>The element whose principal box's visibility in the
+scrollport defined the progress of the timeline.
+Does not exist for animations with ScrollTimeline</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

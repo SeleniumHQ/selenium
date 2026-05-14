@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.chromium.service &#8212; Selenium 4.40.0 documentation</title>
+    <title>selenium.webdriver.chromium.service &#8212; Selenium 4.41.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=cb21b19a"></script>
+    <script src="../../../../_static/documentation_options.js?v=baf4fbc3"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.40.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.41.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.40.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.41.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.chromium.service </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.40.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.41.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.40.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.41.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.40.0 documentation">Selenium 4.40.0 documentation</a>
+       title="Selenium 4.41.0 documentation">Selenium 4.41.0 documentation</a>
   </label>
   
 
@@ -209,6 +209,7 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span>
@@ -251,9 +252,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span> <span class="o">=</span> <span class="n">log_output</span>
 
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"SE_DEBUG"</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">arg</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"log-level"</span><span class="p">,</span> <span class="s2">"log-path"</span><span class="p">,</span> <span class="s2">"silent"</span><span class="p">))</span>
-            <span class="p">]</span>
+            <span class="n">has_arg_conflicts</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"log-level"</span><span class="p">,</span> <span class="s2">"log-path"</span><span class="p">,</span> <span class="s2">"silent"</span><span class="p">))</span>
+            <span class="n">has_output_conflict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">has_arg_conflicts</span> <span class="ow">or</span> <span class="n">has_output_conflict</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">"Environment Variable `SE_DEBUG` is set; "</span>
+                    <span class="s2">"forcing ChromiumDriver --verbose and overriding log-level/log-output/silent settings."</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">has_arg_conflicts</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">arg</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"log-level"</span><span class="p">,</span> <span class="s2">"log-path"</span><span class="p">,</span> <span class="s2">"silent"</span><span class="p">))</span>
+                <span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"--verbose"</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span>
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ResolveValuesCommandResponse ">
       
-      <meta name="description" content="Response for ResolveValues">
+      <meta name="description" content="Response for Resolve the specified values in the context of the provided element. For example, a value of &#39;1em&#39; is evaluated according to the computed &#39;font-size&#39; of the element and a value &#39;calc(1px + 2px)&#39; will be resolved to &#39;3px&#39;. If the propertyName was specified the values are resolved as if they were property&#39;s declaration. If a value cannot be parsed according to the provided property syntax, the value is parsed using combined syntax as if null propertyName was provided. If the value cannot be resolved even then, return the provided value without any changes.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_CSS_ResolveValuesCommandResponse" data-uid="OpenQA.Selenium.DevTools.V143.CSS.ResolveValuesCommandResponse" class="text-break">
-Class ResolveValuesCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/ResolveValuesCommand.cs/#L62"><i class="bi bi-code-slash"></i></a>
+Class ResolveValuesCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/ResolveValuesCommand.cs/#L79"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,15 @@ Class ResolveValuesCommandResponse  <a class="header-action link-secondary" titl
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Response for ResolveValues</p>
+  <div class="markdown summary"><p>Response for Resolve the specified values in the context of the provided element.
+For example, a value of '1em' is evaluated according to the computed
+'font-size' of the element and a value 'calc(1px + 2px)' will be
+resolved to '3px'.
+If the <code>propertyName</code> was specified the <code>values</code> are resolved as if
+they were property's declaration. If a value cannot be parsed according
+to the provided property syntax, the value is parsed using combined
+syntax as if null <code>propertyName</code> was provided. If the value cannot be
+resolved even then, return the provided value without any changes.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -168,7 +176,7 @@ Class ResolveValuesCommandResponse  <a class="header-action link-secondary" titl
 
   <h3 id="OpenQA_Selenium_DevTools_V143_CSS_ResolveValuesCommandResponse_Results" data-uid="OpenQA.Selenium.DevTools.V143.CSS.ResolveValuesCommandResponse.Results">
   Results
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/ResolveValuesCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/ResolveValuesCommand.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the results</p>
@@ -201,7 +209,7 @@ public string[] Results { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/ResolveValuesCommand.cs/#L62" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/ResolveValuesCommand.cs/#L79" class="edit-link">Edit this page</a>
         </div>
 
 

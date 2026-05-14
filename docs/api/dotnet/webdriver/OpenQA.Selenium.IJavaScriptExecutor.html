@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_IJavaScriptExecutor" data-uid="OpenQA.Selenium.IJavaScriptExecutor" class="text-break">
-Interface IJavaScriptExecutor  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IJavascriptExecutor.cs/#L30"><i class="bi bi-code-slash"></i></a>
+Interface IJavaScriptExecutor  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IJavascriptExecutor.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -125,7 +125,7 @@ Interface IJavaScriptExecutor  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_IJavaScriptExecutor_ExecuteAsyncScript_System_String_System_Object___" data-uid="OpenQA.Selenium.IJavaScriptExecutor.ExecuteAsyncScript(System.String,System.Object[])">
   ExecuteAsyncScript(string, params object?[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IJavascriptExecutor.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IJavascriptExecutor.cs/#L110"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Executes JavaScript asynchronously in the context of the currently selected frame or window.</p>
@@ -167,7 +167,7 @@ Interface IJavaScriptExecutor  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_IJavaScriptExecutor_ExecuteScript_OpenQA_Selenium_PinnedScript_System_Object___" data-uid="OpenQA.Selenium.IJavaScriptExecutor.ExecuteScript(OpenQA.Selenium.PinnedScript,System.Object[])">
   ExecuteScript(PinnedScript, params object?[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IJavascriptExecutor.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IJavascriptExecutor.cs/#L102"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Executes JavaScript in the context of the currently selected frame or window.</p>
@@ -209,7 +209,7 @@ will refer to the current document. If the script has a return value, then the f
 steps will be taken:
 </p>
 <p>
-  <ul><li>For an HTML element, this method returns a <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a></li><li>For a number, a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a> is returned</li><li>For a boolean, a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a> is returned</li><li>For all other cases a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> is returned.</li><li>For an array,we check the first element, and attempt to return a
+<ul><li>For an HTML element, this method returns a <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a></li><li>For a number, a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a> is returned</li><li>For a boolean, a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a> is returned</li><li>For all other cases a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> is returned.</li><li>For an array,we check the first element, and attempt to return a
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List&lt;T&gt;</a> of that type, following the rules above. Nested lists are not
 supported.</li><li>If the value is null or there is no return value,
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> is returned.</li></ul>
@@ -237,7 +237,7 @@ variable, as if the function were called via "Function.apply"
 
   <h3 id="OpenQA_Selenium_IJavaScriptExecutor_ExecuteScript_System_String_System_Object___" data-uid="OpenQA.Selenium.IJavaScriptExecutor.ExecuteScript(System.String,System.Object[])">
   ExecuteScript(string, params object?[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IJavascriptExecutor.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IJavascriptExecutor.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Executes JavaScript in the context of the currently selected frame or window.</p>
@@ -279,7 +279,7 @@ will refer to the current document. If the script has a return value, then the f
 steps will be taken:
 </p>
 <p>
-  <ul><li>For an HTML element, this method returns a <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a></li><li>For a number, a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a> is returned</li><li>For a boolean, a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a> is returned</li><li>For all other cases a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> is returned.</li><li>For an array,we check the first element, and attempt to return a
+<ul><li>For an HTML element, this method returns a <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a></li><li>For a number, a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a> is returned</li><li>For a boolean, a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a> is returned</li><li>For all other cases a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> is returned.</li><li>For an array,we check the first element, and attempt to return a
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List&lt;T&gt;</a> of that type, following the rules above. Nested lists are not
 supported.</li><li>If the value is null or there is no return value,
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> is returned.</li></ul>
@@ -301,7 +301,7 @@ variable, as if the function were called via "Function.apply"
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IJavascriptExecutor.cs/#L30" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IJavascriptExecutor.cs/#L27" class="edit-link">Edit this page</a>
         </div>
 
 

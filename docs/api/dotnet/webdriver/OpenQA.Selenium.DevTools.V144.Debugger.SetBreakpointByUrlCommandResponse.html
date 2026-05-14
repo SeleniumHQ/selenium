@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetBreakpointByUrlCommandResponse ">
       
-      <meta name="description" content="Response for SetBreakpointByUrl">
+      <meta name="description" content="Response for Sets JavaScript breakpoint at given location specified either by URL or URL regex. Once this command is issued, all existing parsed scripts will have breakpoints resolved and returned in locations property. Further matching script parsing will result in subsequent breakpointResolved events issued. This logical breakpoint will survive page reloads.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Debugger_SetBreakpointByUrlCommandResponse" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.SetBreakpointByUrlCommandResponse" class="text-break">
-Class SetBreakpointByUrlCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBreakpointByUrlCommand.cs/#L69"><i class="bi bi-code-slash"></i></a>
+Class SetBreakpointByUrlCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBreakpointByUrlCommand.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,10 @@ Class SetBreakpointByUrlCommandResponse  <a class="header-action link-secondary"
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Response for SetBreakpointByUrl</p>
+  <div class="markdown summary"><p>Response for Sets JavaScript breakpoint at given location specified either by URL or URL regex. Once this
+command is issued, all existing parsed scripts will have breakpoints resolved and returned in
+<code>locations</code> property. Further matching script parsing will result in subsequent
+<code>breakpointResolved</code> events issued. This logical breakpoint will survive page reloads.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -168,10 +171,10 @@ Class SetBreakpointByUrlCommandResponse  <a class="header-action link-secondary"
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_SetBreakpointByUrlCommandResponse_BreakpointId" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.SetBreakpointByUrlCommandResponse.BreakpointId">
   BreakpointId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBreakpointByUrlCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBreakpointByUrlCommand.cs/#L82"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the breakpointId</p>
+  <div class="markdown level1 summary"><p>Id of the created breakpoint for further reference.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -201,10 +204,10 @@ public string BreakpointId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_SetBreakpointByUrlCommandResponse_Locations" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.SetBreakpointByUrlCommandResponse.Locations">
   Locations
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBreakpointByUrlCommand.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBreakpointByUrlCommand.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the locations</p>
+  <div class="markdown level1 summary"><p>List of the locations this breakpoint resolved into upon addition.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -234,7 +237,7 @@ public Location[] Locations { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBreakpointByUrlCommand.cs/#L69" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBreakpointByUrlCommand.cs/#L77" class="edit-link">Edit this page</a>
         </div>
 
 

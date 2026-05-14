@@ -101,7 +101,7 @@ Class CreateOptions  <a class="header-action link-secondary" title="View source"
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class CreateOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record CreateOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;CreateOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class CreateOptions  <a class="header-action link-secondary" title="View source"
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.CreateOptions.html">CreateOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -164,7 +171,7 @@ Class CreateOptions  <a class="header-action link-secondary" title="View source"
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool? Background { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public bool? Background { get; init; }</code></pre>
   </div>
 
 
@@ -195,7 +202,7 @@ Class CreateOptions  <a class="header-action link-secondary" title="View source"
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public BrowsingContext? ReferenceContext { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public BrowsingContext? ReferenceContext { get; init; }</code></pre>
   </div>
 
 
@@ -226,7 +233,7 @@ Class CreateOptions  <a class="header-action link-secondary" title="View source"
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserContext? UserContext { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public UserContext? UserContext { get; init; }</code></pre>
   </div>
 
 

@@ -101,62 +101,63 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.DataCollectedEventArgs.html">DataCollectedEventArgs</a></dt>
-      <dd><p>DataCollected</p>
+      <dd><p>Contains a bucket of collected trace events. When tracing is stopped collected events will be
+sent as a sequence of dataCollected events followed by tracingComplete event.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.EndCommandResponse.html">EndCommandResponse</a></dt>
-      <dd><p>Response for End</p>
+      <dd><p>Response for Stop trace events collection.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.EndCommandSettings.html">EndCommandSettings</a></dt>
-      <dd><p>End</p>
+      <dd><p>Stop trace events collection.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.GetCategoriesCommandResponse.html">GetCategoriesCommandResponse</a></dt>
-      <dd><p>Response for GetCategories</p>
+      <dd><p>Response for Gets supported tracing categories.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.GetCategoriesCommandSettings.html">GetCategoriesCommandSettings</a></dt>
-      <dd><p>GetCategories</p>
+      <dd><p>Gets supported tracing categories.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.MemoryDumpConfig.html">MemoryDumpConfig</a></dt>
-      <dd><p>MemoryDumpConfig</p>
+      <dd><p>Configuration for memory dump. Used only when &quot;memory-infra&quot; category is enabled.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.RecordClockSyncMarkerCommandResponse.html">RecordClockSyncMarkerCommandResponse</a></dt>
-      <dd><p>Response for RecordClockSyncMarker</p>
+      <dd><p>Response for Record a clock sync marker in the trace.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.RecordClockSyncMarkerCommandSettings.html">RecordClockSyncMarkerCommandSettings</a></dt>
-      <dd><p>RecordClockSyncMarker</p>
+      <dd><p>Record a clock sync marker in the trace.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.RequestMemoryDumpCommandResponse.html">RequestMemoryDumpCommandResponse</a></dt>
-      <dd><p>Response for RequestMemoryDump</p>
+      <dd><p>Response for Request a global memory dump.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.RequestMemoryDumpCommandSettings.html">RequestMemoryDumpCommandSettings</a></dt>
-      <dd><p>RequestMemoryDump</p>
+      <dd><p>Request a global memory dump.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.StartCommandResponse.html">StartCommandResponse</a></dt>
-      <dd><p>Response for Start</p>
+      <dd><p>Response for Start trace events collection.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.StartCommandSettings.html">StartCommandSettings</a></dt>
-      <dd><p>Start</p>
+      <dd><p>Start trace events collection.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -171,7 +172,8 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.TracingCompleteEventArgs.html">TracingCompleteEventArgs</a></dt>
-      <dd><p>TracingComplete</p>
+      <dd><p>Signals that tracing is stopped and there is no trace buffers pending flush, all data were
+delivered via dataCollected events.</p>
 </dd>
     </dl>
     <h3 id="enums">
@@ -179,17 +181,20 @@ Enums
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.MemoryDumpLevelOfDetail.html">MemoryDumpLevelOfDetail</a></dt>
-      <dd><p>MemoryDumpLevelOfDetail</p>
+      <dd><p>Details exposed when memory request explicitly declared.
+Keep consistent with memory_dump_request_args.h and
+memory_instrumentation.mojom</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.StreamCompression.html">StreamCompression</a></dt>
-      <dd><p>StreamCompression</p>
+      <dd><p>Compression type to use for traces returned via streams.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.StreamFormat.html">StreamFormat</a></dt>
-      <dd><p>StreamFormat</p>
+      <dd><p>Data format of a trace. Can be either the legacy JSON format or the
+protocol buffer format. Note that the JSON format will be deprecated soon.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -199,7 +204,11 @@ Enums
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Tracing.TracingBackend.html">TracingBackend</a></dt>
-      <dd><p>TracingBackend</p>
+      <dd><p>Backend type to use for tracing. <code>chrome</code> uses the Chrome-integrated
+tracing service and is supported on all platforms. <code>system</code> is only
+supported on Chrome OS and uses the Perfetto system tracing service.
+<code>auto</code> chooses <code>system</code> when the perfettoConfig provided to Tracing.start
+specifies at least one non-Chrome data source; otherwise uses <code>chrome</code>.</p>
 </dd>
     </dl>
 

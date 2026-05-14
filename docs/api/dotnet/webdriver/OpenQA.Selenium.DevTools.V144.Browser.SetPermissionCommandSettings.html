@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetPermissionCommandSettings ">
       
-      <meta name="description" content="SetPermission">
+      <meta name="description" content="Set permission settings for given embedding and embedded origins.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class SetPermissionCommandSettings  <a class="header-action link-secondary" titl
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SetPermission</p>
+  <div class="markdown summary"><p>Set permission settings for given embedding and embedded origins.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,10 +160,10 @@ Class SetPermissionCommandSettings  <a class="header-action link-secondary" titl
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_SetPermissionCommandSettings_BrowserContextId" data-uid="OpenQA.Selenium.DevTools.V144.Browser.SetPermissionCommandSettings.BrowserContextId">
   BrowserContextId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/SetPermissionCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/SetPermissionCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the browserContextId</p>
+  <div class="markdown level1 summary"><p>Context to override. When omitted, default browser context is used.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,10 +227,12 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Browser_SetPermissionCommandSettings_EmbeddedOrigin" data-uid="OpenQA.Selenium.DevTools.V144.Browser.SetPermissionCommandSettings.EmbeddedOrigin">
   EmbeddedOrigin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/SetPermissionCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/SetPermissionCommand.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the embeddedOrigin</p>
+  <div class="markdown level1 summary"><p>Embedded origin the permission applies to. It is ignored unless the embedding origin is
+present and valid. If the embedding origin is provided but the embedded origin isn't, the
+embedding origin is used as the embedded origin.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -264,7 +266,7 @@ public string? EmbeddedOrigin { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/SetPermissionCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the origin</p>
+  <div class="markdown level1 summary"><p>Embedding origin the permission applies to, all origins if not specified.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -298,7 +300,7 @@ public string? Origin { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/SetPermissionCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the permission</p>
+  <div class="markdown level1 summary"><p>Descriptor of permission to override.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -331,7 +333,7 @@ public PermissionDescriptor Permission { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Browser/SetPermissionCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the setting</p>
+  <div class="markdown level1 summary"><p>Setting of the permission.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

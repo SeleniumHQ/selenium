@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class HeapStatsUpdateEventArgs ">
       
-      <meta name="description" content="HeapStatsUpdate">
+      <meta name="description" content="If heap objects tracking has been started then backend may send update for one or more fragments">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class HeapStatsUpdateEventArgs  <a class="header-action link-secondary" title="V
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>HeapStatsUpdate</p>
+  <div class="markdown summary"><p>If heap objects tracking has been started then backend may send update for one or more fragments</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -158,10 +158,12 @@ Class HeapStatsUpdateEventArgs  <a class="header-action link-secondary" title="V
 
   <h3 id="OpenQA_Selenium_DevTools_V143_HeapProfiler_HeapStatsUpdateEventArgs_StatsUpdate" data-uid="OpenQA.Selenium.DevTools.V143.HeapProfiler.HeapStatsUpdateEventArgs.StatsUpdate">
   StatsUpdate
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/HeapProfiler/HeapStatsUpdateEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/HeapProfiler/HeapStatsUpdateEventArgs.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the statsUpdate</p>
+  <div class="markdown level1 summary"><p>An array of triplets. Each triplet describes a fragment. The first integer is the fragment
+index, the second integer is a total count of objects for the fragment, the third integer is
+a total size of the objects for the fragment.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

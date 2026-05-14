@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class EnableCommandSettings ">
       
-      <meta name="description" content="Enable">
+      <meta name="description" content="Enable the WebAuthn domain and start intercepting credential storage and retrieval with a virtual authenticator.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_WebAuthn_EnableCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.WebAuthn.EnableCommandSettings" class="text-break">
-Class EnableCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/EnableCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class EnableCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/EnableCommand.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class EnableCommandSettings  <a class="header-action link-secondary" title="View
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Enable</p>
+  <div class="markdown summary"><p>Enable the WebAuthn domain and start intercepting credential storage and
+retrieval with a virtual authenticator.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +161,7 @@ Class EnableCommandSettings  <a class="header-action link-secondary" title="View
 
   <h3 id="OpenQA_Selenium_DevTools_V143_WebAuthn_EnableCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.WebAuthn.EnableCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/EnableCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/EnableCommand.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +194,14 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_WebAuthn_EnableCommandSettings_EnableUI" data-uid="OpenQA.Selenium.DevTools.V143.WebAuthn.EnableCommandSettings.EnableUI">
   EnableUI
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/EnableCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/EnableCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the enableUI</p>
+  <div class="markdown level1 summary"><p>Whether to enable the WebAuthn user interface. Enabling the UI is
+recommended for debugging and demo purposes, as it is closer to the real
+experience. Disabling the UI is recommended for automated testing.
+Supported at the embedder's discretion if UI is available.
+Defaults to false.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -227,7 +232,7 @@ public bool? EnableUI { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/EnableCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/EnableCommand.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

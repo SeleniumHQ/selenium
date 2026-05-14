@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AdScriptAncestry ">
       
-      <meta name="description" content="AdScriptAncestry">
+      <meta name="description" content="Encapsulates the script ancestry and the root script filterlist rule that caused the frame to be labelled as an ad. Only created when ancestryChain is not empty.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Page_AdScriptAncestry" data-uid="OpenQA.Selenium.DevTools.V143.Page.AdScriptAncestry" class="text-break">
-Class AdScriptAncestry  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/AdScriptAncestry.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class AdScriptAncestry  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/AdScriptAncestry.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,9 @@ Class AdScriptAncestry  <a class="header-action link-secondary" title="View sour
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>AdScriptAncestry</p>
+  <div class="markdown summary"><p>Encapsulates the script ancestry and the root script filterlist rule that
+caused the frame to be labelled as an ad. Only created when <code>ancestryChain</code>
+is not empty.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +156,13 @@ Class AdScriptAncestry  <a class="header-action link-secondary" title="View sour
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Page_AdScriptAncestry_AncestryChain" data-uid="OpenQA.Selenium.DevTools.V143.Page.AdScriptAncestry.AncestryChain">
   AncestryChain
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/AdScriptAncestry.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/AdScriptAncestry.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>ancestryChain</p>
+  <div class="markdown level1 summary"><p>A chain of <code>AdScriptId</code>s representing the ancestry of an ad script that
+led to the creation of a frame. The chain is ordered from the script
+itself (lower level) up to its root ancestor that was flagged by
+filterlist.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -187,10 +192,12 @@ public AdScriptId[] AncestryChain { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Page_AdScriptAncestry_RootScriptFilterlistRule" data-uid="OpenQA.Selenium.DevTools.V143.Page.AdScriptAncestry.RootScriptFilterlistRule">
   RootScriptFilterlistRule
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/AdScriptAncestry.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/AdScriptAncestry.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>rootScriptFilterlistRule</p>
+  <div class="markdown level1 summary"><p>The filterlist rule that caused the root (last) script in
+<code>ancestryChain</code> to be ad-tagged. Only populated if the rule is
+available.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -221,7 +228,7 @@ public string? RootScriptFilterlistRule { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/AdScriptAncestry.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Page/AdScriptAncestry.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

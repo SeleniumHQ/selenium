@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetResponseOverrideBitsCommandSettings ">
       
-      <meta name="description" content="SetResponseOverrideBits">
+      <meta name="description" content="Resets parameters isBogusSignature, isBadUV, isBadUP to false if they are not present.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class SetResponseOverrideBitsCommandSettings  <a class="header-action link-secon
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SetResponseOverrideBits</p>
+  <div class="markdown summary"><p>Resets parameters isBogusSignature, isBadUV, isBadUP to false if they are not present.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -226,10 +226,11 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_WebAuthn_SetResponseOverrideBitsCommandSettings_IsBadUP" data-uid="OpenQA.Selenium.DevTools.V143.WebAuthn.SetResponseOverrideBitsCommandSettings.IsBadUP">
   IsBadUP
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/SetResponseOverrideBitsCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/SetResponseOverrideBitsCommand.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the isBadUP</p>
+  <div class="markdown level1 summary"><p>If isBadUP is set, overrides the UP bit in the flags in the authenticator response to
+be zero. Defaults to false.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -260,10 +261,11 @@ public bool? IsBadUP { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_WebAuthn_SetResponseOverrideBitsCommandSettings_IsBadUV" data-uid="OpenQA.Selenium.DevTools.V143.WebAuthn.SetResponseOverrideBitsCommandSettings.IsBadUV">
   IsBadUV
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/SetResponseOverrideBitsCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/SetResponseOverrideBitsCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the isBadUV</p>
+  <div class="markdown level1 summary"><p>If isBadUV is set, overrides the UV bit in the flags in the authenticator response to
+be zero. Defaults to false.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -294,10 +296,11 @@ public bool? IsBadUV { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_WebAuthn_SetResponseOverrideBitsCommandSettings_IsBogusSignature" data-uid="OpenQA.Selenium.DevTools.V143.WebAuthn.SetResponseOverrideBitsCommandSettings.IsBogusSignature">
   IsBogusSignature
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/SetResponseOverrideBitsCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/WebAuthn/SetResponseOverrideBitsCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the isBogusSignature</p>
+  <div class="markdown level1 summary"><p>If isBogusSignature is set, overrides the signature in the authenticator response to be zero.
+Defaults to false.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

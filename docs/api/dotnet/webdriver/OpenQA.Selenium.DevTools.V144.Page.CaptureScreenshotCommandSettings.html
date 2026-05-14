@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CaptureScreenshotCommandSettings ">
       
-      <meta name="description" content="CaptureScreenshot">
+      <meta name="description" content="Capture page screenshot.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class CaptureScreenshotCommandSettings  <a class="header-action link-secondary" 
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>CaptureScreenshot</p>
+  <div class="markdown summary"><p>Capture page screenshot.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -163,7 +163,7 @@ Class CaptureScreenshotCommandSettings  <a class="header-action link-secondary" 
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/CaptureScreenshotCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the captureBeyondViewport</p>
+  <div class="markdown level1 summary"><p>Capture the screenshot beyond the viewport. Defaults to false.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -197,7 +197,7 @@ public bool? CaptureBeyondViewport { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/CaptureScreenshotCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the clip</p>
+  <div class="markdown level1 summary"><p>Capture the screenshot of a given region only.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -264,7 +264,7 @@ public string CommandName { get; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/CaptureScreenshotCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the format</p>
+  <div class="markdown level1 summary"><p>Image compression format (defaults to png).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -298,7 +298,7 @@ public string? Format { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/CaptureScreenshotCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the fromSurface</p>
+  <div class="markdown level1 summary"><p>Capture the screenshot from the surface, rather than the view. Defaults to true.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -332,7 +332,7 @@ public bool? FromSurface { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/CaptureScreenshotCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the optimizeForSpeed</p>
+  <div class="markdown level1 summary"><p>Optimize image encoding for speed, not for resulting size (defaults to false)</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -366,7 +366,7 @@ public bool? OptimizeForSpeed { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/CaptureScreenshotCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the quality</p>
+  <div class="markdown level1 summary"><p>Compression quality from range [0..100] (jpeg only).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

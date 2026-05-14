@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_CommandOptions" data-uid="OpenQA.Selenium.BiDi.CommandOptions" class="text-break">
-Class CommandOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/CommandOptions.cs/#L24"><i class="bi bi-code-slash"></i></a>
+Class CommandOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/CommandOptions.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class CommandOptions  <a class="header-action link-secondary" title="View source
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract class CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract record CommandOptions : IEquatable&lt;CommandOptions&gt;</code></pre>
   </div>
 
 
@@ -115,6 +115,12 @@ Class CommandOptions  <a class="header-action link-secondary" title="View source
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
   <dl class="typelist derived">
     <dt>Derived</dt>
@@ -128,6 +134,8 @@ Class CommandOptions  <a class="header-action link-secondary" title="View source
       <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.ActivateOptions.html">ActivateOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.CaptureScreenshotOptions.html">CaptureScreenshotOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.CloseOptions.html">CloseOptions</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.ContextGetTreeOptions.html">ContextGetTreeOptions</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.ContextSetViewportOptions.html">ContextSetViewportOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.CreateOptions.html">CreateOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.GetTreeOptions.html">GetTreeOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.HandleUserPromptOptions.html">HandleUserPromptOptions</a></div>
@@ -140,16 +148,21 @@ Class CommandOptions  <a class="header-action link-secondary" title="View source
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetForcedColorsModeThemeOverrideOptions.html">SetForcedColorsModeThemeOverrideOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetGeolocationOverrideOptions.html">SetGeolocationOverrideOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetLocaleOverrideOptions.html">SetLocaleOverrideOptions</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetNetworkConditionsOptions.html">SetNetworkConditionsOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetScreenOrientationOverrideOptions.html">SetScreenOrientationOverrideOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetScreenSettingsOverrideOptions.html">SetScreenSettingsOverrideOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetScriptingEnabledOptions.html">SetScriptingEnabledOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetTimezoneOverrideOptions.html">SetTimezoneOverrideOptions</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetTouchOverrideOptions.html">SetTouchOverrideOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetUserAgentOverrideOptions.html">SetUserAgentOverrideOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.PerformActionsOptions.html">PerformActionsOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.ReleaseActionsOptions.html">ReleaseActionsOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.SetFilesOptions.html">SetFilesOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.AddDataCollectorOptions.html">AddDataCollectorOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.AddInterceptOptions.html">AddInterceptOptions</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.ContextAddDataCollectorOptions.html">ContextAddDataCollectorOptions</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.ContextAddInterceptOptions.html">ContextAddInterceptOptions</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.ContextSetCacheBehaviorOptions.html">ContextSetCacheBehaviorOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.ContinueRequestOptions.html">ContinueRequestOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.ContinueResponseOptions.html">ContinueResponseOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.ContinueWithAuthOptions.html">ContinueWithAuthOptions</a></div>
@@ -163,6 +176,8 @@ Class CommandOptions  <a class="header-action link-secondary" title="View source
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Permissions.SetPermissionOptions.html">SetPermissionOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Script.AddPreloadScriptOptions.html">AddPreloadScriptOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Script.CallFunctionOptions.html">CallFunctionOptions</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Script.ContextAddPreloadScriptOptions.html">ContextAddPreloadScriptOptions</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Script.ContextGetRealmsOptions.html">ContextGetRealmsOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Script.DisownOptions.html">DisownOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Script.EvaluateOptions.html">EvaluateOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Script.GetRealmsOptions.html">GetRealmsOptions</a></div>
@@ -172,6 +187,9 @@ Class CommandOptions  <a class="header-action link-secondary" title="View source
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Session.StatusOptions.html">StatusOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Session.SubscribeOptions.html">SubscribeOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Session.UnsubscribeByIdOptions.html">UnsubscribeByIdOptions</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Storage.ContextDeleteCookiesOptions.html">ContextDeleteCookiesOptions</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Storage.ContextGetCookiesOptions.html">ContextGetCookiesOptions</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Storage.ContextSetCookieOptions.html">ContextSetCookieOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Storage.DeleteCookiesOptions.html">DeleteCookiesOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Storage.GetCookiesOptions.html">GetCookiesOptions</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Storage.SetCookieOptions.html">SetCookieOptions</a></div>
@@ -219,14 +237,14 @@ Class CommandOptions  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_CommandOptions_Timeout" data-uid="OpenQA.Selenium.BiDi.CommandOptions.Timeout">
   Timeout
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/CommandOptions.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/CommandOptions.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TimeSpan? Timeout { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public TimeSpan? Timeout { get; init; }</code></pre>
   </div>
 
 
@@ -250,7 +268,7 @@ Class CommandOptions  <a class="header-action link-secondary" title="View source
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/CommandOptions.cs/#L24" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/CommandOptions.cs/#L22" class="edit-link">Edit this page</a>
         </div>
 
 

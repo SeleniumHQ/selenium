@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SharedStorageAccessParams ">
       
-      <meta name="description" content="SharedStorageAccessParams">
+      <meta name="description" content="Bundles the parameters for shared storage access events whose presence/absence can vary according to SharedStorageAccessType.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams" class="text-break">
-Class SharedStorageAccessParams  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class SharedStorageAccessParams  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class SharedStorageAccessParams  <a class="header-action link-secondary" title="
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SharedStorageAccessParams</p>
+  <div class="markdown summary"><p>Bundles the parameters for shared storage access events whose
+presence/absence can vary according to SharedStorageAccessType.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +155,11 @@ Class SharedStorageAccessParams  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_BatchSize" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.BatchSize">
   BatchSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L160"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>batchSize</p>
+  <div class="markdown level1 summary"><p>Number of modifier methods sent in batch.
+Present only for SharedStorageAccessMethod: batchUpdate.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -188,10 +190,13 @@ public long? BatchSize { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_BatchUpdateId" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.BatchUpdateId">
   BatchUpdateId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L152"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>batchUpdateId</p>
+  <div class="markdown level1 summary"><p>If the method has been called as part of a batchUpdate, then this
+number identifies the batch to which it belongs.
+Optionally present only for SharedStorageAccessMethods:
+batchUpdate (required), set, append, delete, and clear.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -222,10 +227,12 @@ public string? BatchUpdateId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_DataOrigin" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.DataOrigin">
   DataOrigin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>dataOrigin</p>
+  <div class="markdown level1 summary"><p>String denoting &quot;context-origin&quot;, &quot;script-origin&quot;, or a custom
+origin to be used as the worklet's data origin.
+Present only for SharedStorageAccessMethod: createWorklet.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -256,10 +263,11 @@ public string? DataOrigin { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_IgnoreIfPresent" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.IgnoreIfPresent">
   IgnoreIfPresent
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L112"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>ignoreIfPresent</p>
+  <div class="markdown level1 summary"><p>Whether or not to set an entry for a key if that key is already present.
+Present only for SharedStorageAccessMethod: set.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -290,10 +298,12 @@ public bool? IgnoreIfPresent { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_KeepAlive" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.KeepAlive">
   KeepAlive
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>keepAlive</p>
+  <div class="markdown level1 summary"><p>Whether or not to keep the worket alive for future run or selectURL
+calls.
+Present only for SharedStorageAccessMethods: run and selectURL.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -324,10 +334,12 @@ public bool? KeepAlive { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_Key" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.Key">
   Key
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L96"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>key</p>
+  <div class="markdown level1 summary"><p>Key for a specific entry in an origin's shared storage.
+Present only for SharedStorageAccessMethods: set, append, delete, and
+get.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -358,10 +370,11 @@ public string? Key { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_OperationId" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.OperationId">
   OperationId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>operationId</p>
+  <div class="markdown level1 summary"><p>ID of the operation call.
+Present only for SharedStorageAccessMethods: run and selectURL.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -392,10 +405,11 @@ public string? OperationId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_OperationName" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.OperationName">
   OperationName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>operationName</p>
+  <div class="markdown level1 summary"><p>Name of the registered operation to be run.
+Present only for SharedStorageAccessMethods: run and selectURL.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -426,10 +440,11 @@ public string? OperationName { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_PrivateAggregationConfig" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.PrivateAggregationConfig">
   PrivateAggregationConfig
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>privateAggregationConfig</p>
+  <div class="markdown level1 summary"><p>Configures the private aggregation options.
+Present only for SharedStorageAccessMethods: run and selectURL.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -460,10 +475,12 @@ public SharedStoragePrivateAggregationConfig? PrivateAggregationConfig { get; se
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_ScriptSourceUrl" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.ScriptSourceUrl">
   ScriptSourceUrl
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>scriptSourceUrl</p>
+  <div class="markdown level1 summary"><p>Spec of the module script URL.
+Present only for SharedStorageAccessMethods: addModule and
+createWorklet.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -494,10 +511,12 @@ public string? ScriptSourceUrl { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_SerializedData" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.SerializedData">
   SerializedData
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L71"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>serializedData</p>
+  <div class="markdown level1 summary"><p>The operation's serialized data in bytes (converted to a string).
+Present only for SharedStorageAccessMethods: run and selectURL.
+TODO(crbug.com/401011862): Consider updating this parameter to binary.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -528,10 +547,11 @@ public string? SerializedData { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_UrlsWithMetadata" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.UrlsWithMetadata">
   UrlsWithMetadata
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L79"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>urlsWithMetadata</p>
+  <div class="markdown level1 summary"><p>Array of candidate URLs' specs, along with any associated metadata.
+Present only for SharedStorageAccessMethod: selectURL.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -562,10 +582,11 @@ public SharedStorageUrlWithMetadata[]? UrlsWithMetadata { get; set; }</code></pr
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_UrnUuid" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.UrnUuid">
   UrnUuid
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>urnUuid</p>
+  <div class="markdown level1 summary"><p>Spec of the URN:UUID generated for a selectURL call.
+Present only for SharedStorageAccessMethod: selectURL.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -596,10 +617,11 @@ public string? UrnUuid { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_Value" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.Value">
   Value
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L104"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>value</p>
+  <div class="markdown level1 summary"><p>Value for a specific entry in an origin's shared storage.
+Present only for SharedStorageAccessMethods: set and append.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -630,10 +652,12 @@ public string? Value { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_WithLock" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.WithLock">
   WithLock
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L142"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>withLock</p>
+  <div class="markdown level1 summary"><p>Name of the lock to be acquired, if present.
+Optionally present only for SharedStorageAccessMethods: batchUpdate,
+set, append, delete, and clear.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -664,10 +688,13 @@ public string? WithLock { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_WorkletOrdinal" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.WorkletOrdinal">
   WorkletOrdinal
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L122"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>workletOrdinal</p>
+  <div class="markdown level1 summary"><p>A number denoting the (0-based) order of the worklet's
+creation relative to all other shared storage worklets created by
+documents using the current storage partition.
+Present only for SharedStorageAccessMethods: addModule, createWorklet.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -698,10 +725,14 @@ public long? WorkletOrdinal { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_SharedStorageAccessParams_WorkletTargetId" data-uid="OpenQA.Selenium.DevTools.V143.Storage.SharedStorageAccessParams.WorkletTargetId">
   WorkletTargetId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L133"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>workletTargetId</p>
+  <div class="markdown level1 summary"><p>Hex representation of the DevTools token used as the TargetID for the
+associated shared storage worklet.
+Present only for SharedStorageAccessMethods: addModule, createWorklet,
+run, selectURL, and any other SharedStorageAccessMethod when the
+SharedStorageAccessScope is sharedStorageWorklet.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -732,7 +763,7 @@ public string? WorkletTargetId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/SharedStorageAccessParams.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

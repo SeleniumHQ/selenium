@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule" class="text-break">
-Class BrowsingContextStorageModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L25"><i class="bi bi-code-slash"></i></a>
+Class BrowsingContextStorageModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -153,7 +153,7 @@ Class BrowsingContextStorageModule  <a class="header-action link-secondary" titl
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_Storage_StorageModule_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.Storage.StorageModule)">
   BrowsingContextStorageModule(BrowsingContext, StorageModule)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -188,27 +188,29 @@ Class BrowsingContextStorageModule  <a class="header-action link-secondary" titl
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule_DeleteCookiesAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.DeleteCookiesAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule_DeleteCookiesAsync_OpenQA_Selenium_BiDi_Storage_DeleteCookiesOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.DeleteCookiesAsync(OpenQA.Selenium.BiDi.Storage.DeleteCookiesOptions)">
-  DeleteCookiesAsync(DeleteCookiesOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule_DeleteCookiesAsync_OpenQA_Selenium_BiDi_Storage_ContextDeleteCookiesOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.DeleteCookiesAsync(OpenQA.Selenium.BiDi.Storage.ContextDeleteCookiesOptions,System.Threading.CancellationToken)">
+  DeleteCookiesAsync(ContextDeleteCookiesOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;PartitionKey&gt; DeleteCookiesAsync(DeleteCookiesOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;DeleteCookiesResult&gt; DeleteCookiesAsync(ContextDeleteCookiesOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Storage.DeleteCookiesOptions.html">DeleteCookiesOptions</a></dt>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Storage.ContextDeleteCookiesOptions.html">ContextDeleteCookiesOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Storage.PartitionKey.html">PartitionKey</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Storage.DeleteCookiesResult.html">DeleteCookiesResult</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -224,21 +226,23 @@ Class BrowsingContextStorageModule  <a class="header-action link-secondary" titl
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule_GetCookiesAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.GetCookiesAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule_GetCookiesAsync_OpenQA_Selenium_BiDi_Storage_GetCookiesOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.GetCookiesAsync(OpenQA.Selenium.BiDi.Storage.GetCookiesOptions)">
-  GetCookiesAsync(GetCookiesOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule_GetCookiesAsync_OpenQA_Selenium_BiDi_Storage_ContextGetCookiesOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.GetCookiesAsync(OpenQA.Selenium.BiDi.Storage.ContextGetCookiesOptions,System.Threading.CancellationToken)">
+  GetCookiesAsync(ContextGetCookiesOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;GetCookiesResult&gt; GetCookiesAsync(GetCookiesOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;GetCookiesResult&gt; GetCookiesAsync(ContextGetCookiesOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Storage.GetCookiesOptions.html">GetCookiesOptions</a></dt>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Storage.ContextGetCookiesOptions.html">ContextGetCookiesOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
@@ -260,29 +264,31 @@ Class BrowsingContextStorageModule  <a class="header-action link-secondary" titl
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule_SetCookieAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.SetCookieAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule_SetCookieAsync_OpenQA_Selenium_BiDi_Storage_PartialCookie_OpenQA_Selenium_BiDi_Storage_SetCookieOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.SetCookieAsync(OpenQA.Selenium.BiDi.Storage.PartialCookie,OpenQA.Selenium.BiDi.Storage.SetCookieOptions)">
-  SetCookieAsync(PartialCookie, SetCookieOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule_SetCookieAsync_OpenQA_Selenium_BiDi_Storage_PartialCookie_OpenQA_Selenium_BiDi_Storage_ContextSetCookieOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.SetCookieAsync(OpenQA.Selenium.BiDi.Storage.PartialCookie,OpenQA.Selenium.BiDi.Storage.ContextSetCookieOptions,System.Threading.CancellationToken)">
+  SetCookieAsync(PartialCookie, ContextSetCookieOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;PartitionKey&gt; SetCookieAsync(PartialCookie cookie, SetCookieOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;SetCookieResult&gt; SetCookieAsync(PartialCookie cookie, ContextSetCookieOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cookie</code> <a class="xref" href="OpenQA.Selenium.BiDi.Storage.PartialCookie.html">PartialCookie</a></dt>
     <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Storage.SetCookieOptions.html">SetCookieOptions</a></dt>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Storage.ContextSetCookieOptions.html">ContextSetCookieOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Storage.PartitionKey.html">PartitionKey</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Storage.SetCookieResult.html">SetCookieResult</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -300,7 +306,7 @@ Class BrowsingContextStorageModule  <a class="header-action link-secondary" titl
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L25" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L24" class="edit-link">Edit this page</a>
         </div>
 
 

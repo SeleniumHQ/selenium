@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetSnapshotCommandSettings ">
       
-      <meta name="description" content="GetSnapshot">
+      <meta name="description" content="Returns a document snapshot, including the full DOM tree of the root node (including iframes, template contents, and imported documents) in a flattened array, as well as layout and white-listed computed style information for the nodes. Shadow DOM in the returned DOM tree is flattened.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_DOMSnapshot_GetSnapshotCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.DOMSnapshot.GetSnapshotCommandSettings" class="text-break">
-Class GetSnapshotCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/GetSnapshotCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class GetSnapshotCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/GetSnapshotCommand.cs/#L15"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,10 @@ Class GetSnapshotCommandSettings  <a class="header-action link-secondary" title=
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>GetSnapshot</p>
+  <div class="markdown summary"><p>Returns a document snapshot, including the full DOM tree of the root node (including iframes,
+template contents, and imported documents) in a flattened array, as well as layout and
+white-listed computed style information for the nodes. Shadow DOM in the returned DOM tree is
+flattened.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +163,7 @@ Class GetSnapshotCommandSettings  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOMSnapshot_GetSnapshotCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.DOMSnapshot.GetSnapshotCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/GetSnapshotCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/GetSnapshotCommand.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,10 +196,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOMSnapshot_GetSnapshotCommandSettings_ComputedStyleWhitelist" data-uid="OpenQA.Selenium.DevTools.V144.DOMSnapshot.GetSnapshotCommandSettings.ComputedStyleWhitelist">
   ComputedStyleWhitelist
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/GetSnapshotCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/GetSnapshotCommand.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the computedStyleWhitelist</p>
+  <div class="markdown level1 summary"><p>Whitelist of computed styles to return.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -226,10 +229,10 @@ public string[] ComputedStyleWhitelist { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOMSnapshot_GetSnapshotCommandSettings_IncludeEventListeners" data-uid="OpenQA.Selenium.DevTools.V144.DOMSnapshot.GetSnapshotCommandSettings.IncludeEventListeners">
   IncludeEventListeners
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/GetSnapshotCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/GetSnapshotCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the includeEventListeners</p>
+  <div class="markdown level1 summary"><p>Whether or not to retrieve details of DOM listeners (default false).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -260,10 +263,10 @@ public bool? IncludeEventListeners { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOMSnapshot_GetSnapshotCommandSettings_IncludePaintOrder" data-uid="OpenQA.Selenium.DevTools.V144.DOMSnapshot.GetSnapshotCommandSettings.IncludePaintOrder">
   IncludePaintOrder
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/GetSnapshotCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/GetSnapshotCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the includePaintOrder</p>
+  <div class="markdown level1 summary"><p>Whether to determine and include the paint order index of LayoutTreeNodes (default false).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -294,10 +297,10 @@ public bool? IncludePaintOrder { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_DOMSnapshot_GetSnapshotCommandSettings_IncludeUserAgentShadowTree" data-uid="OpenQA.Selenium.DevTools.V144.DOMSnapshot.GetSnapshotCommandSettings.IncludeUserAgentShadowTree">
   IncludeUserAgentShadowTree
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/GetSnapshotCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/GetSnapshotCommand.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the includeUserAgentShadowTree</p>
+  <div class="markdown level1 summary"><p>Whether to include UA shadow tree in the snapshot (default false).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -328,7 +331,7 @@ public bool? IncludeUserAgentShadowTree { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/GetSnapshotCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/DOMSnapshot/GetSnapshotCommand.cs/#L15" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -96,22 +96,22 @@ Classes
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Media.DisableCommandResponse.html">DisableCommandResponse</a></dt>
-      <dd><p>Response for Disable</p>
+      <dd><p>Response for Disables the Media domain.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Media.DisableCommandSettings.html">DisableCommandSettings</a></dt>
-      <dd><p>Disable</p>
+      <dd><p>Disables the Media domain.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Media.EnableCommandResponse.html">EnableCommandResponse</a></dt>
-      <dd><p>Response for Enable</p>
+      <dd><p>Response for Enables the Media domain</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Media.EnableCommandSettings.html">EnableCommandSettings</a></dt>
-      <dd><p>Enable</p>
+      <dd><p>Enables the Media domain</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -126,52 +126,58 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Media.PlayerCreatedEventArgs.html">PlayerCreatedEventArgs</a></dt>
-      <dd><p>PlayerCreated</p>
+      <dd><p>Called whenever a player is created, or when a new agent joins and receives
+a list of active players. If an agent is restored, it will receive one
+event for each active player.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Media.PlayerError.html">PlayerError</a></dt>
-      <dd><p>PlayerError</p>
+      <dd><p>Corresponds to kMediaError</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Media.PlayerErrorSourceLocation.html">PlayerErrorSourceLocation</a></dt>
-      <dd><p>PlayerErrorSourceLocation</p>
+      <dd><p>Represents logged source line numbers reported in an error.
+NOTE: file and line are from chromium c++ implementation code, not js.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Media.PlayerErrorsRaisedEventArgs.html">PlayerErrorsRaisedEventArgs</a></dt>
-      <dd><p>PlayerErrorsRaised</p>
+      <dd><p>Send a list of any errors that need to be delivered.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Media.PlayerEvent.html">PlayerEvent</a></dt>
-      <dd><p>PlayerEvent</p>
+      <dd><p>Corresponds to kMediaEventTriggered</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Media.PlayerEventsAddedEventArgs.html">PlayerEventsAddedEventArgs</a></dt>
-      <dd><p>PlayerEventsAdded</p>
+      <dd><p>Send events as a list, allowing them to be batched on the browser for less
+congestion. If batched, events must ALWAYS be in chronological order.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Media.PlayerMessage.html">PlayerMessage</a></dt>
-      <dd><p>PlayerMessage</p>
+      <dd><p>Have one type per entry in MediaLogRecord::Type
+Corresponds to kMessage</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Media.PlayerMessagesLoggedEventArgs.html">PlayerMessagesLoggedEventArgs</a></dt>
-      <dd><p>PlayerMessagesLogged</p>
+      <dd><p>Send a list of any messages that need to be delivered.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Media.PlayerPropertiesChangedEventArgs.html">PlayerPropertiesChangedEventArgs</a></dt>
-      <dd><p>PlayerPropertiesChanged</p>
+      <dd><p>This can be called multiple times, and can be used to set / override /
+remove player properties. A null propValue indicates removal.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Media.PlayerProperty.html">PlayerProperty</a></dt>
-      <dd><p>PlayerProperty</p>
+      <dd><p>Corresponds to kMediaPropertyChange</p>
 </dd>
     </dl>
     <h3 id="enums">

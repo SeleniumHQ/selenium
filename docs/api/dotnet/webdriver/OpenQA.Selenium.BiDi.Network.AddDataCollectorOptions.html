@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Network_AddDataCollectorOptions" data-uid="OpenQA.Selenium.BiDi.Network.AddDataCollectorOptions" class="text-break">
-Class AddDataCollectorOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddDataCollectorCommand.cs/#L31"><i class="bi bi-code-slash"></i></a>
+Class AddDataCollectorOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddDataCollectorCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class AddDataCollectorOptions  <a class="header-action link-secondary" title="Vi
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class AddDataCollectorOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record AddDataCollectorOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;AddDataCollectorOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class AddDataCollectorOptions  <a class="header-action link-secondary" title="Vi
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.AddDataCollectorOptions.html">AddDataCollectorOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -142,40 +149,7 @@ Class AddDataCollectorOptions  <a class="header-action link-secondary" title="Vi
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
     </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
-    </div>
   </dd></dl>
-
-
-
-
-
-
-  <h2 class="section" id="constructors">Constructors
-</h2>
-
-
-  <a id="OpenQA_Selenium_BiDi_Network_AddDataCollectorOptions__ctor_" data-uid="OpenQA.Selenium.BiDi.Network.AddDataCollectorOptions.#ctor*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Network_AddDataCollectorOptions__ctor" data-uid="OpenQA.Selenium.BiDi.Network.AddDataCollectorOptions.#ctor">
-  AddDataCollectorOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddDataCollectorCommand.cs/#L31"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public AddDataCollectorOptions()</code></pre>
-  </div>
-
-
-
-
-
-
-
 
 
 
@@ -190,14 +164,14 @@ Class AddDataCollectorOptions  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_BiDi_Network_AddDataCollectorOptions_CollectorType" data-uid="OpenQA.Selenium.BiDi.Network.AddDataCollectorOptions.CollectorType">
   CollectorType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddDataCollectorCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddDataCollectorCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public CollectorType? CollectorType { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public CollectorType? CollectorType { get; init; }</code></pre>
   </div>
 
 
@@ -221,14 +195,14 @@ Class AddDataCollectorOptions  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_BiDi_Network_AddDataCollectorOptions_Contexts" data-uid="OpenQA.Selenium.BiDi.Network.AddDataCollectorOptions.Contexts">
   Contexts
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddDataCollectorCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddDataCollectorCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;BrowsingContext&gt;? Contexts { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;BrowsingContext&gt;? Contexts { get; init; }</code></pre>
   </div>
 
 
@@ -252,14 +226,14 @@ Class AddDataCollectorOptions  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_BiDi_Network_AddDataCollectorOptions_UserContexts" data-uid="OpenQA.Selenium.BiDi.Network.AddDataCollectorOptions.UserContexts">
   UserContexts
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddDataCollectorCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddDataCollectorCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;UserContext&gt;? UserContexts { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;UserContext&gt;? UserContexts { get; init; }</code></pre>
   </div>
 
 
@@ -283,7 +257,7 @@ Class AddDataCollectorOptions  <a class="header-action link-secondary" title="Vi
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddDataCollectorCommand.cs/#L31" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddDataCollectorCommand.cs/#L30" class="edit-link">Edit this page</a>
         </div>
 
 

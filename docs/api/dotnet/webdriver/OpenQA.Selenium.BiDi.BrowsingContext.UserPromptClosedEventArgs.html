@@ -162,8 +162,8 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Boolean_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Boolean,System.String)">
-  UserPromptClosedEventArgs(BrowsingContext, bool, string?)
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Boolean_OpenQA_Selenium_BiDi_BrowsingContext_UserPromptType_OpenQA_Selenium_BiDi_Browser_UserContext_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Boolean,OpenQA.Selenium.BiDi.BrowsingContext.UserPromptType,OpenQA.Selenium.BiDi.Browser.UserContext,System.String)">
+  UserPromptClosedEventArgs(BrowsingContext, bool, UserPromptType, UserContext?, string?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptClosedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -171,7 +171,7 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserPromptClosedEventArgs(BrowsingContext Context, bool Accepted, string? UserText)</code></pre>
+    <pre><code class="lang-csharp hljs">public UserPromptClosedEventArgs(BrowsingContext Context, bool Accepted, UserPromptType Type, UserContext? UserContext, string? UserText)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -179,6 +179,10 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
     <dt><code>Context</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
     <dd></dd>
     <dt><code>Accepted</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+    <dt><code>Type</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptType.html">UserPromptType</a></dt>
+    <dd></dd>
+    <dt><code>UserContext</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContext.html">UserContext</a></dt>
     <dd></dd>
     <dt><code>UserText</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
@@ -251,6 +255,68 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs_Type_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.Type*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs_Type" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.Type">
+  Type
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptClosedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserPromptType Type { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptType.html">UserPromptType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs_UserContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.UserContext*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs_UserContext" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.UserContext">
+  UserContext
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptClosedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserContext? UserContext { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContext.html">UserContext</a></dt>
     <dd></dd>
   </dl>
 

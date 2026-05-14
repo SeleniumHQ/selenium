@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Enum TracingBackend ">
       
-      <meta name="description" content="TracingBackend">
+      <meta name="description" content="Backend type to use for tracing. chrome uses the Chrome-integrated tracing service and is supported on all platforms. system is only supported on Chrome OS and uses the Perfetto system tracing service. auto chooses system when the perfettoConfig provided to Tracing.start specifies at least one non-Chrome data source; otherwise uses chrome.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -90,7 +90,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Tracing_TracingBackend" data-uid="OpenQA.Selenium.DevTools.V143.Tracing.TracingBackend" class="text-break">
-Enum TracingBackend  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingBackend.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Enum TracingBackend  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingBackend.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -98,7 +98,11 @@ Enum TracingBackend  <a class="header-action link-secondary" title="View source"
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>TracingBackend</p>
+  <div class="markdown summary"><p>Backend type to use for tracing. <code>chrome</code> uses the Chrome-integrated
+tracing service and is supported on all platforms. <code>system</code> is only
+supported on Chrome OS and uses the Perfetto system tracing service.
+<code>auto</code> chooses <code>system</code> when the perfettoConfig provided to Tracing.start
+specifies at least one non-Chrome data source; otherwise uses <code>chrome</code>.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -120,15 +124,18 @@ public enum TracingBackend</code></pre>
   <dl class="parameters">
     <dt id="OpenQA_Selenium_DevTools_V143_Tracing_TracingBackend_Auto"><code>[EnumMember(Value = &quot;auto&quot;)]
 Auto = 0</code></dt>
-    <dd><p>Enumerated member for the auto value.</p>
+  
+  <dd><p>Enumerated member for the auto value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Tracing_TracingBackend_Chrome"><code>[EnumMember(Value = &quot;chrome&quot;)]
 Chrome = 1</code></dt>
-    <dd><p>Enumerated member for the chrome value.</p>
+  
+  <dd><p>Enumerated member for the chrome value.</p>
 </dd>
     <dt id="OpenQA_Selenium_DevTools_V143_Tracing_TracingBackend_System"><code>[EnumMember(Value = &quot;system&quot;)]
 System = 2</code></dt>
-    <dd><p>Enumerated member for the system value.</p>
+  
+  <dd><p>Enumerated member for the system value.</p>
 </dd>
   </dl>
 
@@ -137,7 +144,7 @@ System = 2</code></dt>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingBackend.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Tracing/TracingBackend.cs/#L17" class="edit-link">Edit this page</a>
         </div>
 
 

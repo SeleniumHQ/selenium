@@ -236,10 +236,10 @@ Class FetchAdapter  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_FetchAdapter_ContinueRequest_OpenQA_Selenium_DevTools_V143_Fetch_ContinueRequestCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.FetchAdapter.ContinueRequest(OpenQA.Selenium.DevTools.V143.Fetch.ContinueRequestCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   ContinueRequest(ContinueRequestCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L98"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>continueRequest</p>
+  <div class="markdown level1 summary"><p>Continues the request, optionally modifying some of its parameters.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -279,10 +279,12 @@ Class FetchAdapter  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_FetchAdapter_ContinueResponse_OpenQA_Selenium_DevTools_V143_Fetch_ContinueResponseCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.FetchAdapter.ContinueResponse(OpenQA.Selenium.DevTools.V143.Fetch.ContinueResponseCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   ContinueResponse(ContinueResponseCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L116"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>continueResponse</p>
+  <div class="markdown level1 summary"><p>Continues loading of the paused response, optionally modifying the
+response headers. If either responseCode or headers are modified, all of them
+must be present.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -322,10 +324,10 @@ Class FetchAdapter  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_FetchAdapter_ContinueWithAuth_OpenQA_Selenium_DevTools_V143_Fetch_ContinueWithAuthCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.FetchAdapter.ContinueWithAuth(OpenQA.Selenium.DevTools.V143.Fetch.ContinueWithAuthCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   ContinueWithAuth(ContinueWithAuthCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L106"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>continueWithAuth</p>
+  <div class="markdown level1 summary"><p>Continues a request supplying authChallengeResponse following authRequired event.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -365,10 +367,10 @@ Class FetchAdapter  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_FetchAdapter_Disable_OpenQA_Selenium_DevTools_V143_Fetch_DisableCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.FetchAdapter.Disable(OpenQA.Selenium.DevTools.V143.Fetch.DisableCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Disable(DisableCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>disable</p>
+  <div class="markdown level1 summary"><p>Disables the fetch domain.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -408,10 +410,11 @@ Class FetchAdapter  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_FetchAdapter_Enable_OpenQA_Selenium_DevTools_V143_Fetch_EnableCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.FetchAdapter.Enable(OpenQA.Selenium.DevTools.V143.Fetch.EnableCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Enable(EnableCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>enable</p>
+  <div class="markdown level1 summary"><p>Enables issuing of requestPaused events. A request will be paused until client
+calls one of failRequest, fulfillRequest or continueRequest/continueWithAuth.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -451,10 +454,10 @@ Class FetchAdapter  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_FetchAdapter_FailRequest_OpenQA_Selenium_DevTools_V143_Fetch_FailRequestCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.FetchAdapter.FailRequest(OpenQA.Selenium.DevTools.V143.Fetch.FailRequestCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   FailRequest(FailRequestCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L82"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>failRequest</p>
+  <div class="markdown level1 summary"><p>Causes the request to fail with specified reason.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -494,10 +497,10 @@ Class FetchAdapter  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_FetchAdapter_FulfillRequest_OpenQA_Selenium_DevTools_V143_Fetch_FulfillRequestCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.FetchAdapter.FulfillRequest(OpenQA.Selenium.DevTools.V143.Fetch.FulfillRequestCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   FulfillRequest(FulfillRequestCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L90"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>fulfillRequest</p>
+  <div class="markdown level1 summary"><p>Provides response to the request.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -537,10 +540,19 @@ Class FetchAdapter  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_FetchAdapter_GetResponseBody_OpenQA_Selenium_DevTools_V143_Fetch_GetResponseBodyCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.FetchAdapter.GetResponseBody(OpenQA.Selenium.DevTools.V143.Fetch.GetResponseBodyCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetResponseBody(GetResponseBodyCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L133"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>getResponseBody</p>
+  <div class="markdown level1 summary"><p>Causes the body of the response to be received from the server and
+returned as a single string. May only be issued for a request that
+is paused in the Response stage and is mutually exclusive with
+takeResponseBodyForInterceptionAsStream. Calling other methods that
+affect the request or disabling fetch domain before body is received
+results in an undefined behavior.
+Note that the response body is not available for redirects. Requests
+paused in the <em>redirect received</em> state may be differentiated by
+<code>responseCode</code> and presence of <code>location</code> response header, see
+comments to <code>requestPaused</code> for details.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -580,10 +592,19 @@ Class FetchAdapter  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_FetchAdapter_TakeResponseBodyAsStream_OpenQA_Selenium_DevTools_V143_Fetch_TakeResponseBodyAsStreamCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.FetchAdapter.TakeResponseBodyAsStream(OpenQA.Selenium.DevTools.V143.Fetch.TakeResponseBodyAsStreamCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   TakeResponseBodyAsStream(TakeResponseBodyAsStreamCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L150"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>takeResponseBodyAsStream</p>
+  <div class="markdown level1 summary"><p>Returns a handle to the stream representing the response body.
+The request must be paused in the HeadersReceived stage.
+Note that after this command the request can't be continued
+as is -- client either needs to cancel it or to provide the
+response body.
+The stream only supports sequential read, IO.read will fail if the position
+is specified.
+This method is mutually exclusive with getResponseBody.
+Calling other methods that affect the request or disabling fetch
+domain before body is received results in an undefined behavior.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -626,10 +647,11 @@ Class FetchAdapter  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_FetchAdapter_AuthRequired" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.FetchAdapter.AuthRequired">
   AuthRequired
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>authRequired</p>
+  <div class="markdown level1 summary"><p>Issued when the domain is enabled with handleAuthRequests set to true.
+The request is paused until client responds with continueWithAuth.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -657,10 +679,20 @@ Class FetchAdapter  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Fetch_FetchAdapter_RequestPaused" data-uid="OpenQA.Selenium.DevTools.V143.Fetch.FetchAdapter.RequestPaused">
   RequestPaused
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Fetch/FetchAdapter.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>requestPaused</p>
+  <div class="markdown level1 summary"><p>Issued when the domain is enabled and the request URL matches the
+specified filter. The request is paused until the client responds
+with one of continueRequest, failRequest or fulfillRequest.
+The stage of the request can be determined by presence of responseErrorReason
+and responseStatusCode -- the request is at the response stage if either
+of these fields is present and in the request stage otherwise.
+Redirect responses and subsequent requests are reported similarly to regular
+responses and requests. Redirect responses may be distinguished by the value
+of <code>responseStatusCode</code> (which is one of 301, 302, 303, 307, 308) along with
+presence of the <code>location</code> header. Requests resulting from a redirect will
+have <code>redirectedRequestId</code> field set.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

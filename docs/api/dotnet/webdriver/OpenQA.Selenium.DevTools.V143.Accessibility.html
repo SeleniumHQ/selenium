@@ -96,7 +96,7 @@ Classes
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.AXNode.html">AXNode</a></dt>
-      <dd><p>AXNode</p>
+      <dd><p>A node in the accessibility tree.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -111,12 +111,12 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.AXValue.html">AXValue</a></dt>
-      <dd><p>AXValue</p>
+      <dd><p>A single computed AX property.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.AXValueSource.html">AXValueSource</a></dt>
-      <dd><p>AXValueSource</p>
+      <dd><p>A single source for a computed AX property.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -126,92 +126,109 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.DisableCommandResponse.html">DisableCommandResponse</a></dt>
-      <dd><p>Response for Disable</p>
+      <dd><p>Response for Disables the accessibility domain.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.DisableCommandSettings.html">DisableCommandSettings</a></dt>
-      <dd><p>Disable</p>
+      <dd><p>Disables the accessibility domain.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.EnableCommandResponse.html">EnableCommandResponse</a></dt>
-      <dd><p>Response for Enable</p>
+      <dd><p>Response for Enables the accessibility domain which causes <code>AXNodeId</code>s to remain consistent between method calls.
+This turns on accessibility for the page, which can impact performance until accessibility is disabled.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.EnableCommandSettings.html">EnableCommandSettings</a></dt>
-      <dd><p>Enable</p>
+      <dd><p>Enables the accessibility domain which causes <code>AXNodeId</code>s to remain consistent between method calls.
+This turns on accessibility for the page, which can impact performance until accessibility is disabled.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.GetAXNodeAndAncestorsCommandResponse.html">GetAXNodeAndAncestorsCommandResponse</a></dt>
-      <dd><p>Response for GetAXNodeAndAncestors</p>
+      <dd><p>Response for Fetches a node and all ancestors up to and including the root.
+Requires <code>enable()</code> to have been called previously.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.GetAXNodeAndAncestorsCommandSettings.html">GetAXNodeAndAncestorsCommandSettings</a></dt>
-      <dd><p>GetAXNodeAndAncestors</p>
+      <dd><p>Fetches a node and all ancestors up to and including the root.
+Requires <code>enable()</code> to have been called previously.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.GetChildAXNodesCommandResponse.html">GetChildAXNodesCommandResponse</a></dt>
-      <dd><p>Response for GetChildAXNodes</p>
+      <dd><p>Response for Fetches a particular accessibility node by AXNodeId.
+Requires <code>enable()</code> to have been called previously.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.GetChildAXNodesCommandSettings.html">GetChildAXNodesCommandSettings</a></dt>
-      <dd><p>GetChildAXNodes</p>
+      <dd><p>Fetches a particular accessibility node by AXNodeId.
+Requires <code>enable()</code> to have been called previously.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.GetFullAXTreeCommandResponse.html">GetFullAXTreeCommandResponse</a></dt>
-      <dd><p>Response for GetFullAXTree</p>
+      <dd><p>Response for Fetches the entire accessibility tree for the root Document</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.GetFullAXTreeCommandSettings.html">GetFullAXTreeCommandSettings</a></dt>
-      <dd><p>GetFullAXTree</p>
+      <dd><p>Fetches the entire accessibility tree for the root Document</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.GetPartialAXTreeCommandResponse.html">GetPartialAXTreeCommandResponse</a></dt>
-      <dd><p>Response for GetPartialAXTree</p>
+      <dd><p>Response for Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.GetPartialAXTreeCommandSettings.html">GetPartialAXTreeCommandSettings</a></dt>
-      <dd><p>GetPartialAXTree</p>
+      <dd><p>Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.GetRootAXNodeCommandResponse.html">GetRootAXNodeCommandResponse</a></dt>
-      <dd><p>Response for GetRootAXNode</p>
+      <dd><p>Response for Fetches the root node.
+Requires <code>enable()</code> to have been called previously.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.GetRootAXNodeCommandSettings.html">GetRootAXNodeCommandSettings</a></dt>
-      <dd><p>GetRootAXNode</p>
+      <dd><p>Fetches the root node.
+Requires <code>enable()</code> to have been called previously.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.LoadCompleteEventArgs.html">LoadCompleteEventArgs</a></dt>
-      <dd><p>LoadComplete</p>
+      <dd><p>The loadComplete event mirrors the load complete event sent by the browser to assistive
+technology when the web page has finished loading.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.NodesUpdatedEventArgs.html">NodesUpdatedEventArgs</a></dt>
-      <dd><p>NodesUpdated</p>
+      <dd><p>The nodesUpdated event is sent every time a previously requested node has changed the in tree.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.QueryAXTreeCommandResponse.html">QueryAXTreeCommandResponse</a></dt>
-      <dd><p>Response for QueryAXTree</p>
+      <dd><p>Response for Query a DOM node's accessibility subtree for accessible name and role.
+This command computes the name and role for all nodes in the subtree, including those that are
+ignored for accessibility, and returns those that match the specified name and role. If no DOM
+node is specified, or the DOM node does not exist, the command returns an error. If neither
+<code>accessibleName</code> or <code>role</code> is specified, it returns all the accessibility nodes in the subtree.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.QueryAXTreeCommandSettings.html">QueryAXTreeCommandSettings</a></dt>
-      <dd><p>QueryAXTree</p>
+      <dd><p>Query a DOM node's accessibility subtree for accessible name and role.
+This command computes the name and role for all nodes in the subtree, including those that are
+ignored for accessibility, and returns those that match the specified name and role. If no DOM
+node is specified, or the DOM node does not exist, the command returns an error. If neither
+<code>accessibleName</code> or <code>role</code> is specified, it returns all the accessibility nodes in the subtree.</p>
 </dd>
     </dl>
     <h3 id="enums">
@@ -219,22 +236,30 @@ Enums
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.AXPropertyName.html">AXPropertyName</a></dt>
-      <dd><p>AXPropertyName</p>
+      <dd><p>Values of AXProperty name:</p>
+<ul>
+<li>from 'busy' to 'roledescription': states which apply to every AX node</li>
+<li>from 'live' to 'root': attributes which apply to nodes in live regions</li>
+<li>from 'autocomplete' to 'valuetext': attributes which apply to widgets</li>
+<li>from 'checked' to 'selected': states which apply to widgets</li>
+<li>from 'activedescendant' to 'owns': relationships between elements other than parent/child/sibling</li>
+<li>from 'activeFullscreenElement' to 'uninteresting': reasons why this noode is hidden</li>
+</ul>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.AXValueNativeSourceType.html">AXValueNativeSourceType</a></dt>
-      <dd><p>AXValueNativeSourceType</p>
+      <dd><p>Enum of possible native property sources (as a subtype of a particular AXValueSourceType).</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.AXValueSourceType.html">AXValueSourceType</a></dt>
-      <dd><p>AXValueSourceType</p>
+      <dd><p>Enum of possible property sources.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V143.Accessibility.AXValueType.html">AXValueType</a></dt>
-      <dd><p>AXValueType</p>
+      <dd><p>Enum of possible property types.</p>
 </dd>
     </dl>
 

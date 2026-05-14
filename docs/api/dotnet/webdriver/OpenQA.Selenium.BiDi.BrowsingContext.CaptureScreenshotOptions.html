@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_CaptureScreenshotOptions" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.CaptureScreenshotOptions" class="text-break">
-Class CaptureScreenshotOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/CaptureScreenshotCommand.cs/#L31"><i class="bi bi-code-slash"></i></a>
+Class CaptureScreenshotOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/CaptureScreenshotCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class CaptureScreenshotOptions  <a class="header-action link-secondary" title="V
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class CaptureScreenshotOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record CaptureScreenshotOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;CaptureScreenshotOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class CaptureScreenshotOptions  <a class="header-action link-secondary" title="V
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.CaptureScreenshotOptions.html">CaptureScreenshotOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -157,14 +164,14 @@ Class CaptureScreenshotOptions  <a class="header-action link-secondary" title="V
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_CaptureScreenshotOptions_Clip" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.CaptureScreenshotOptions.Clip">
   Clip
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/CaptureScreenshotCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/CaptureScreenshotCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ClipRectangle? Clip { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ClipRectangle? Clip { get; init; }</code></pre>
   </div>
 
 
@@ -188,14 +195,14 @@ Class CaptureScreenshotOptions  <a class="header-action link-secondary" title="V
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_CaptureScreenshotOptions_Format" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.CaptureScreenshotOptions.Format">
   Format
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/CaptureScreenshotCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/CaptureScreenshotCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ImageFormat? Format { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ImageFormat? Format { get; init; }</code></pre>
   </div>
 
 
@@ -219,14 +226,14 @@ Class CaptureScreenshotOptions  <a class="header-action link-secondary" title="V
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_CaptureScreenshotOptions_Origin" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.CaptureScreenshotOptions.Origin">
   Origin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/CaptureScreenshotCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/CaptureScreenshotCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ScreenshotOrigin? Origin { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ScreenshotOrigin? Origin { get; init; }</code></pre>
   </div>
 
 
@@ -250,7 +257,7 @@ Class CaptureScreenshotOptions  <a class="header-action link-secondary" title="V
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/CaptureScreenshotCommand.cs/#L31" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/CaptureScreenshotCommand.cs/#L30" class="edit-link">Edit this page</a>
         </div>
 
 

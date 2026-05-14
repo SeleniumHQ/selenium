@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class BounceTrackingIssueDetails ">
       
-      <meta name="description" content="BounceTrackingIssueDetails">
+      <meta name="description" content="This issue warns about sites in the redirect chain of a finished navigation that may be flagged as trackers and have their state cleared if they don&#39;t receive a user interaction. Note that in this context &#39;site&#39; means eTLD+1. For example, if the URL https://example.test:80/bounce was in the redirect chain, the site reported would be example.test.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Audits_BounceTrackingIssueDetails" data-uid="OpenQA.Selenium.DevTools.V143.Audits.BounceTrackingIssueDetails" class="text-break">
-Class BounceTrackingIssueDetails  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/BounceTrackingIssueDetails.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class BounceTrackingIssueDetails  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/BounceTrackingIssueDetails.cs/#L16"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,11 @@ Class BounceTrackingIssueDetails  <a class="header-action link-secondary" title=
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>BounceTrackingIssueDetails</p>
+  <div class="markdown summary"><p>This issue warns about sites in the redirect chain of a finished navigation
+that may be flagged as trackers and have their state cleared if they don't
+receive a user interaction. Note that in this context 'site' means eTLD+1.
+For example, if the URL <code>https://example.test:80/bounce</code> was in the
+redirect chain, the site reported would be <code>example.test</code>.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,7 +158,7 @@ Class BounceTrackingIssueDetails  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Audits_BounceTrackingIssueDetails_TrackingSites" data-uid="OpenQA.Selenium.DevTools.V143.Audits.BounceTrackingIssueDetails.TrackingSites">
   TrackingSites
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/BounceTrackingIssueDetails.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/BounceTrackingIssueDetails.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>trackingSites</p>
@@ -187,7 +191,7 @@ public string[] TrackingSites { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/BounceTrackingIssueDetails.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Audits/BounceTrackingIssueDetails.cs/#L16" class="edit-link">Edit this page</a>
         </div>
 
 

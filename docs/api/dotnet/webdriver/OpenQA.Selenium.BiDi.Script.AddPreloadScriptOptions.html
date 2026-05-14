@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Script_AddPreloadScriptOptions" data-uid="OpenQA.Selenium.BiDi.Script.AddPreloadScriptOptions" class="text-break">
-Class AddPreloadScriptOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/AddPreloadScriptCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
+Class AddPreloadScriptOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/AddPreloadScriptCommand.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class AddPreloadScriptOptions  <a class="header-action link-secondary" title="Vi
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class AddPreloadScriptOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record AddPreloadScriptOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;AddPreloadScriptOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class AddPreloadScriptOptions  <a class="header-action link-secondary" title="Vi
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.AddPreloadScriptOptions.html">AddPreloadScriptOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -149,36 +156,6 @@ Class AddPreloadScriptOptions  <a class="header-action link-secondary" title="Vi
 
 
 
-  <h2 class="section" id="constructors">Constructors
-</h2>
-
-
-  <a id="OpenQA_Selenium_BiDi_Script_AddPreloadScriptOptions__ctor_" data-uid="OpenQA.Selenium.BiDi.Script.AddPreloadScriptOptions.#ctor*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Script_AddPreloadScriptOptions__ctor" data-uid="OpenQA.Selenium.BiDi.Script.AddPreloadScriptOptions.#ctor">
-  AddPreloadScriptOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/AddPreloadScriptCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public AddPreloadScriptOptions()</code></pre>
-  </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
   <h2 class="section" id="properties">Properties
 </h2>
 
@@ -187,14 +164,14 @@ Class AddPreloadScriptOptions  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_BiDi_Script_AddPreloadScriptOptions_Arguments" data-uid="OpenQA.Selenium.BiDi.Script.AddPreloadScriptOptions.Arguments">
   Arguments
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/AddPreloadScriptCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/AddPreloadScriptCommand.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;ChannelLocalValue&gt;? Arguments { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;ChannelLocalValue&gt;? Arguments { get; init; }</code></pre>
   </div>
 
 
@@ -218,14 +195,14 @@ Class AddPreloadScriptOptions  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_BiDi_Script_AddPreloadScriptOptions_Contexts" data-uid="OpenQA.Selenium.BiDi.Script.AddPreloadScriptOptions.Contexts">
   Contexts
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/AddPreloadScriptCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/AddPreloadScriptCommand.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;BrowsingContext&gt;? Contexts { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;BrowsingContext&gt;? Contexts { get; init; }</code></pre>
   </div>
 
 
@@ -249,14 +226,14 @@ Class AddPreloadScriptOptions  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_BiDi_Script_AddPreloadScriptOptions_Sandbox" data-uid="OpenQA.Selenium.BiDi.Script.AddPreloadScriptOptions.Sandbox">
   Sandbox
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/AddPreloadScriptCommand.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/AddPreloadScriptCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string? Sandbox { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string? Sandbox { get; init; }</code></pre>
   </div>
 
 
@@ -276,11 +253,42 @@ Class AddPreloadScriptOptions  <a class="header-action link-secondary" title="Vi
 
 
 
+  <a id="OpenQA_Selenium_BiDi_Script_AddPreloadScriptOptions_UserContexts_" data-uid="OpenQA.Selenium.BiDi.Script.AddPreloadScriptOptions.UserContexts*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_AddPreloadScriptOptions_UserContexts" data-uid="OpenQA.Selenium.BiDi.Script.AddPreloadScriptOptions.UserContexts">
+  UserContexts
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/AddPreloadScriptCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;UserContext&gt;? UserContexts { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContext.html">UserContext</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/AddPreloadScriptCommand.cs/#L30" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/AddPreloadScriptCommand.cs/#L29" class="edit-link">Edit this page</a>
         </div>
 
 

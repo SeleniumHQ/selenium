@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class LaunchFilesInAppCommandResponse ">
       
-      <meta name="description" content="Response for LaunchFilesInApp">
+      <meta name="description" content="Response for Opens one or more local files from an installed web app identified by its manifestId. The web app needs to have file handlers registered to process the files. The API returns one or more page Target.TargetIDs which can be used to attach to via Target.attachToTarget or similar APIs. If some files in the parameters cannot be handled by the web app, they will be ignored. If none of the files can be handled, this API returns an error. If no files are provided as the parameter, this API also returns an error. According to the definition of the file handlers in the manifest file, one Target.TargetID may represent a page handling one or more files. The order of the returned Target.TargetIDs is not guaranteed. TODO(crbug.com/339454034): Check the existences of the input files.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_PWA_LaunchFilesInAppCommandResponse" data-uid="OpenQA.Selenium.DevTools.V144.PWA.LaunchFilesInAppCommandResponse" class="text-break">
-Class LaunchFilesInAppCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
+Class LaunchFilesInAppCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,17 @@ Class LaunchFilesInAppCommandResponse  <a class="header-action link-secondary" t
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Response for LaunchFilesInApp</p>
+  <div class="markdown summary"><p>Response for Opens one or more local files from an installed web app identified by its
+manifestId. The web app needs to have file handlers registered to process
+the files. The API returns one or more page Target.TargetIDs which can be
+used to attach to via Target.attachToTarget or similar APIs.
+If some files in the parameters cannot be handled by the web app, they will
+be ignored. If none of the files can be handled, this API returns an error.
+If no files are provided as the parameter, this API also returns an error.</p>
+<p>According to the definition of the file handlers in the manifest file, one
+Target.TargetID may represent a page handling one or more files. The order
+of the returned Target.TargetIDs is not guaranteed.</p>
+<p>TODO(crbug.com/339454034): Check the existences of the input files.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -168,10 +178,10 @@ Class LaunchFilesInAppCommandResponse  <a class="header-action link-secondary" t
 
   <h3 id="OpenQA_Selenium_DevTools_V144_PWA_LaunchFilesInAppCommandResponse_TargetIds" data-uid="OpenQA.Selenium.DevTools.V144.PWA.LaunchFilesInAppCommandResponse.TargetIds">
   TargetIds
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the targetIds</p>
+  <div class="markdown level1 summary"><p>IDs of the tab targets created as the result.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -201,7 +211,7 @@ public string[] TargetIds { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L41" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/LaunchFilesInAppCommand.cs/#L65" class="edit-link">Edit this page</a>
         </div>
 
 

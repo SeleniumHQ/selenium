@@ -101,7 +101,7 @@ Class TraverseHistoryOptions  <a class="header-action link-secondary" title="Vie
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class TraverseHistoryOptions : CommandOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record TraverseHistoryOptions : CommandOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;TraverseHistoryOptions&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,13 @@ Class TraverseHistoryOptions  <a class="header-action link-secondary" title="Vie
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.TraverseHistoryOptions.html">TraverseHistoryOptions</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">

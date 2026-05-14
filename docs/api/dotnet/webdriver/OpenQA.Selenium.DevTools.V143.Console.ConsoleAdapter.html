@@ -239,7 +239,7 @@ Class ConsoleAdapter  <a class="header-action link-secondary" title="View source
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Console/ConsoleAdapter.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>clearMessages</p>
+  <div class="markdown level1 summary"><p>Does nothing.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -282,7 +282,7 @@ Class ConsoleAdapter  <a class="header-action link-secondary" title="View source
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Console/ConsoleAdapter.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>disable</p>
+  <div class="markdown level1 summary"><p>Disables console domain, prevents further console messages from being reported to the client.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -322,10 +322,11 @@ Class ConsoleAdapter  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Console_ConsoleAdapter_Enable_OpenQA_Selenium_DevTools_V143_Console_EnableCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V143.Console.ConsoleAdapter.Enable(OpenQA.Selenium.DevTools.V143.Console.EnableCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Enable(EnableCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Console/ConsoleAdapter.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Console/ConsoleAdapter.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>enable</p>
+  <div class="markdown level1 summary"><p>Enables console domain, sends the messages collected so far to the client by means of the
+<code>messageAdded</code> notification.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -371,7 +372,7 @@ Class ConsoleAdapter  <a class="header-action link-secondary" title="View source
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Console/ConsoleAdapter.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>messageAdded</p>
+  <div class="markdown level1 summary"><p>Issued when new console message is added.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

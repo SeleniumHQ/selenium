@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class EnableCommandSettings ">
       
-      <meta name="description" content="Enable">
+      <meta name="description" content="Enables network tracking, network events will now be delivered to the client.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class EnableCommandSettings  <a class="header-action link-secondary" title="View
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Enable</p>
+  <div class="markdown summary"><p>Enables network tracking, network events will now be delivered to the client.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -193,10 +193,12 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_EnableCommandSettings_EnableDurableMessages" data-uid="OpenQA.Selenium.DevTools.V143.Network.EnableCommandSettings.EnableDurableMessages">
   EnableDurableMessages
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EnableCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EnableCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the enableDurableMessages</p>
+  <div class="markdown level1 summary"><p>Enable storing response bodies outside of renderer, so that these survive
+a cross-process navigation. Requires maxTotalBufferSize to be set.
+Currently defaults to false.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -230,7 +232,7 @@ public bool? EnableDurableMessages { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EnableCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the maxPostDataSize</p>
+  <div class="markdown level1 summary"><p>Longest post body size (in bytes) that would be included in requestWillBeSent notification</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -264,7 +266,7 @@ public long? MaxPostDataSize { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EnableCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the maxResourceBufferSize</p>
+  <div class="markdown level1 summary"><p>Per-resource buffer size in bytes to use when preserving network payloads (XHRs, etc).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -298,7 +300,7 @@ public long? MaxResourceBufferSize { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EnableCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the maxTotalBufferSize</p>
+  <div class="markdown level1 summary"><p>Buffer size in bytes to use when preserving network payloads (XHRs, etc).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -332,7 +334,7 @@ public long? MaxTotalBufferSize { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/EnableCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the reportDirectSocketTraffic</p>
+  <div class="markdown level1 summary"><p>Whether DirectSocket chunk send/receive events should be reported.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

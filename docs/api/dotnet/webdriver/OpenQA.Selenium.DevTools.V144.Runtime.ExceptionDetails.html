@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ExceptionDetails ">
       
-      <meta name="description" content="ExceptionDetails">
+      <meta name="description" content="Detailed information about exception (or error) that was thrown during script compilation or execution.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Runtime_ExceptionDetails" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.ExceptionDetails" class="text-break">
-Class ExceptionDetails  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class ExceptionDetails  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class ExceptionDetails  <a class="header-action link-secondary" title="View sour
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>ExceptionDetails</p>
+  <div class="markdown summary"><p>Detailed information about exception (or error) that was thrown during script compilation or
+execution.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +155,10 @@ Class ExceptionDetails  <a class="header-action link-secondary" title="View sour
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_ExceptionDetails_ColumnNumber" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.ExceptionDetails.ColumnNumber">
   ColumnNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>columnNumber</p>
+  <div class="markdown level1 summary"><p>Column number of the exception location (0-based).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -187,10 +188,10 @@ public long ColumnNumber { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_ExceptionDetails_Exception" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.ExceptionDetails.Exception">
   Exception
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>exception</p>
+  <div class="markdown level1 summary"><p>Exception object if available.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -221,10 +222,10 @@ public RemoteObject? Exception { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_ExceptionDetails_ExceptionId" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.ExceptionDetails.ExceptionId">
   ExceptionId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L18"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>exceptionId</p>
+  <div class="markdown level1 summary"><p>Exception id.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -254,10 +255,12 @@ public long ExceptionId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_ExceptionDetails_ExceptionMetaData" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.ExceptionDetails.ExceptionMetaData">
   ExceptionMetaData
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L83"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>exceptionMetaData</p>
+  <div class="markdown level1 summary"><p>Dictionary with entries of meta data that the client associated
+with this exception, such as information about associated network
+requests, etc.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -288,10 +291,10 @@ public object? ExceptionMetaData { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_ExceptionDetails_ExecutionContextId" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.ExceptionDetails.ExecutionContextId">
   ExecutionContextId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>executionContextId</p>
+  <div class="markdown level1 summary"><p>Identifier of the context where exception happened.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -322,10 +325,10 @@ public long? ExecutionContextId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_ExceptionDetails_LineNumber" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.ExceptionDetails.LineNumber">
   LineNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>lineNumber</p>
+  <div class="markdown level1 summary"><p>Line number of the exception location (0-based).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -355,10 +358,10 @@ public long LineNumber { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_ExceptionDetails_ScriptId" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.ExceptionDetails.ScriptId">
   ScriptId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>scriptId</p>
+  <div class="markdown level1 summary"><p>Script ID of the exception location.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -389,10 +392,10 @@ public string? ScriptId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_ExceptionDetails_StackTrace" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.ExceptionDetails.StackTrace">
   StackTrace
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L60"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>stackTrace</p>
+  <div class="markdown level1 summary"><p>JavaScript stack trace if available.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -423,10 +426,10 @@ public StackTrace? StackTrace { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_ExceptionDetails_Text" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.ExceptionDetails.Text">
   Text
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>text</p>
+  <div class="markdown level1 summary"><p>Exception text, which should be used together with exception object when available.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -456,10 +459,10 @@ public string Text { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Runtime_ExceptionDetails_Url" data-uid="OpenQA.Selenium.DevTools.V144.Runtime.ExceptionDetails.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L53"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>url</p>
+  <div class="markdown level1 summary"><p>URL of the exception location, to be used when the script was not reported.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -490,7 +493,7 @@ public string? Url { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Runtime/ExceptionDetails.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

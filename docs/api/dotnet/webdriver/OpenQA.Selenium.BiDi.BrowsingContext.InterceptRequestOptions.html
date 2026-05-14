@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_InterceptRequestOptions" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.InterceptRequestOptions" class="text-break">
-Class InterceptRequestOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextNetworkModule.cs/#L214"><i class="bi bi-code-slash"></i></a>
+Class InterceptRequestOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextNetworkModule.cs/#L271"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class InterceptRequestOptions  <a class="header-action link-secondary" title="Vi
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record InterceptRequestOptions : BrowsingContextAddInterceptOptions, IEquatable&lt;BrowsingContextAddInterceptOptions&gt;, IEquatable&lt;InterceptRequestOptions&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record InterceptRequestOptions : ContextAddInterceptOptions, IEquatable&lt;CommandOptions&gt;, IEquatable&lt;ContextAddInterceptOptions&gt;, IEquatable&lt;InterceptRequestOptions&gt;</code></pre>
   </div>
 
 
@@ -111,7 +111,8 @@ Class InterceptRequestOptions  <a class="header-action link-secondary" title="Vi
     <dt>Inheritance</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.BrowsingContextAddInterceptOptions.html">BrowsingContextAddInterceptOptions</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.ContextAddInterceptOptions.html">ContextAddInterceptOptions</a></div>
       <div><span class="xref">InterceptRequestOptions</span></div>
     </dd>
   </dl>
@@ -119,7 +120,8 @@ Class InterceptRequestOptions  <a class="header-action link-secondary" title="Vi
   <dl class="typelist implements">
     <dt>Implements</dt>
     <dd>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.BrowsingContextAddInterceptOptions.html">BrowsingContextAddInterceptOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.ContextAddInterceptOptions.html">ContextAddInterceptOptions</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.InterceptRequestOptions.html">InterceptRequestOptions</a>&gt;</div>
     </dd>
   </dl>
@@ -129,7 +131,10 @@ Class InterceptRequestOptions  <a class="header-action link-secondary" title="Vi
     <dt>Inherited Members</dt>
     <dd>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.Network.BrowsingContextAddInterceptOptions.html#OpenQA_Selenium_BiDi_Network_BrowsingContextAddInterceptOptions_UrlPatterns">BrowsingContextAddInterceptOptions.UrlPatterns</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.Network.ContextAddInterceptOptions.html#OpenQA_Selenium_BiDi_Network_ContextAddInterceptOptions_UrlPatterns">ContextAddInterceptOptions.UrlPatterns</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html#OpenQA_Selenium_BiDi_CommandOptions_Timeout">CommandOptions.Timeout</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
@@ -160,7 +165,7 @@ Class InterceptRequestOptions  <a class="header-action link-secondary" title="Vi
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextNetworkModule.cs/#L214" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextNetworkModule.cs/#L271" class="edit-link">Edit this page</a>
         </div>
 
 

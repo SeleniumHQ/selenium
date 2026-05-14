@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class RestartFrameCommandResponse ">
       
-      <meta name="description" content="Response for RestartFrame">
+      <meta name="description" content="Response for Restarts particular call frame from the beginning. The old, deprecated behavior of restartFrame is to stay paused and allow further CDP commands after a restart was scheduled. This can cause problems with restarting, so we now continue execution immediatly after it has been scheduled until we reach the beginning of the restarted frame. To stay back-wards compatible, restartFrame now expects a mode parameter to be present. If the mode parameter is missing, restartFrame errors out. The various return values are deprecated and callFrames is always empty. Use the call frames from the Debugger#paused events instead, that fires once V8 pauses at the beginning of the restarted function.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Debugger_RestartFrameCommandResponse" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.RestartFrameCommandResponse" class="text-break">
-Class RestartFrameCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/RestartFrameCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
+Class RestartFrameCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/RestartFrameCommand.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,17 @@ Class RestartFrameCommandResponse  <a class="header-action link-secondary" title
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Response for RestartFrame</p>
+  <div class="markdown summary"><p>Response for Restarts particular call frame from the beginning. The old, deprecated
+behavior of <code>restartFrame</code> is to stay paused and allow further CDP commands
+after a restart was scheduled. This can cause problems with restarting, so
+we now continue execution immediatly after it has been scheduled until we
+reach the beginning of the restarted frame.</p>
+<p>To stay back-wards compatible, <code>restartFrame</code> now expects a <code>mode</code>
+parameter to be present. If the <code>mode</code> parameter is missing, <code>restartFrame</code>
+errors out.</p>
+<p>The various return values are deprecated and <code>callFrames</code> is always empty.
+Use the call frames from the <code>Debugger#paused</code> events instead, that fires
+once V8 pauses at the beginning of the restarted function.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -168,10 +178,10 @@ Class RestartFrameCommandResponse  <a class="header-action link-secondary" title
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_RestartFrameCommandResponse_AsyncStackTrace" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.RestartFrameCommandResponse.AsyncStackTrace">
   AsyncStackTrace
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/RestartFrameCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/RestartFrameCommand.cs/#L78"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the asyncStackTrace</p>
+  <div class="markdown level1 summary"><p>Async stack trace, if any.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -202,10 +212,10 @@ public StackTrace? AsyncStackTrace { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_RestartFrameCommandResponse_AsyncStackTraceId" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.RestartFrameCommandResponse.AsyncStackTraceId">
   AsyncStackTraceId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/RestartFrameCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/RestartFrameCommand.cs/#L85"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the asyncStackTraceId</p>
+  <div class="markdown level1 summary"><p>Async stack trace, if any.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -236,10 +246,10 @@ public StackTraceId? AsyncStackTraceId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_RestartFrameCommandResponse_CallFrames" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.RestartFrameCommandResponse.CallFrames">
   CallFrames
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/RestartFrameCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/RestartFrameCommand.cs/#L71"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the callFrames</p>
+  <div class="markdown level1 summary"><p>New stack trace.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -269,7 +279,7 @@ public CallFrame[] CallFrames { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/RestartFrameCommand.cs/#L41" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/RestartFrameCommand.cs/#L66" class="edit-link">Edit this page</a>
         </div>
 
 

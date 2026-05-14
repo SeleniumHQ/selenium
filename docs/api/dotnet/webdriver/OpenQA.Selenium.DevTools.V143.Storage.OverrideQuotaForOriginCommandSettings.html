@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class OverrideQuotaForOriginCommandSettings ">
       
-      <meta name="description" content="OverrideQuotaForOrigin">
+      <meta name="description" content="Override quota for the specified origin">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class OverrideQuotaForOriginCommandSettings  <a class="header-action link-second
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>OverrideQuotaForOrigin</p>
+  <div class="markdown summary"><p>Override quota for the specified origin</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -196,7 +196,7 @@ public string CommandName { get; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/OverrideQuotaForOriginCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the origin</p>
+  <div class="markdown level1 summary"><p>Security origin.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -226,10 +226,16 @@ public string Origin { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Storage_OverrideQuotaForOriginCommandSettings_QuotaSize" data-uid="OpenQA.Selenium.DevTools.V143.Storage.OverrideQuotaForOriginCommandSettings.QuotaSize">
   QuotaSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/OverrideQuotaForOriginCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Storage/OverrideQuotaForOriginCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the quotaSize</p>
+  <div class="markdown level1 summary"><p>The quota size (in bytes) to override the original quota with.
+If this is called multiple times, the overridden quota will be equal to
+the quotaSize provided in the final call. If this is called without
+specifying a quotaSize, the quota will be reset to the default value for
+the specified origin. If this is called multiple times with different
+origins, the override will be maintained for each origin until it is
+disabled (called without a quotaSize).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

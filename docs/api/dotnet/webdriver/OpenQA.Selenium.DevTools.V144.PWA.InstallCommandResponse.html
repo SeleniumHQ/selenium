@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class InstallCommandResponse ">
       
-      <meta name="description" content="Response for Install">
+      <meta name="description" content="Response for Installs the given manifest identity, optionally using the given installUrlOrBundleUrl IWA-specific install description: manifestId corresponds to isolated-app:// + web_package::SignedWebBundleId File installation mode: The installUrlOrBundleUrl can be either file:// or http(s):// pointing to a signed web bundle (.swbn). In this case SignedWebBundleId must correspond to The .swbn file&#39;s signing key. Dev proxy installation mode: installUrlOrBundleUrl must be http(s):// that serves dev mode IWA. web_package::SignedWebBundleId must be of type dev proxy. The advantage of dev proxy mode is that all changes to IWA automatically will be reflected in the running app without reinstallation. To generate bundle id for proxy mode:  Generate 32 random bytes. Add a specific suffix at the end following the documentation https://github.com/WICG/isolated-web-apps/blob/main/Scheme.md#suffix Encode the entire sequence using Base32 without padding.  If Chrome is not in IWA dev mode, the installation will fail, regardless of the state of the allowlist.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_PWA_InstallCommandResponse" data-uid="OpenQA.Selenium.DevTools.V144.PWA.InstallCommandResponse" class="text-break">
-Class InstallCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/InstallCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
+Class InstallCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/InstallCommand.cs/#L92"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,28 @@ Class InstallCommandResponse  <a class="header-action link-secondary" title="Vie
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Response for Install</p>
+  <div class="markdown summary"><p>Response for Installs the given manifest identity, optionally using the given installUrlOrBundleUrl</p>
+<p>IWA-specific install description:
+manifestId corresponds to isolated-app:// + web_package::SignedWebBundleId</p>
+<p>File installation mode:
+The installUrlOrBundleUrl can be either file:// or http(s):// pointing
+to a signed web bundle (.swbn). In this case SignedWebBundleId must correspond to
+The .swbn file's signing key.</p>
+<p>Dev proxy installation mode:
+installUrlOrBundleUrl must be http(s):// that serves dev mode IWA.
+web_package::SignedWebBundleId must be of type dev proxy.</p>
+<p>The advantage of dev proxy mode is that all changes to IWA
+automatically will be reflected in the running app without
+reinstallation.</p>
+<p>To generate bundle id for proxy mode:</p>
+<ol>
+<li>Generate 32 random bytes.</li>
+<li>Add a specific suffix at the end following the documentation
+<a href="https://github.com/WICG/isolated-web-apps/blob/main/Scheme.md#suffix">https://github.com/WICG/isolated-web-apps/blob/main/Scheme.md#suffix</a></li>
+<li>Encode the entire sequence using Base32 without padding.</li>
+</ol>
+<p>If Chrome is not in IWA dev
+mode, the installation will fail, regardless of the state of the allowlist.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -164,7 +185,7 @@ Class InstallCommandResponse  <a class="header-action link-secondary" title="Vie
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/InstallCommand.cs/#L41" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/PWA/InstallCommand.cs/#L92" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ContinueResponseCommandSettings ">
       
-      <meta name="description" content="ContinueResponse">
+      <meta name="description" content="Continues loading of the paused response, optionally modifying the response headers. If either responseCode or headers are modified, all of them must be present.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Fetch_ContinueResponseCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.Fetch.ContinueResponseCommandSettings" class="text-break">
-Class ContinueResponseCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class ContinueResponseCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,9 @@ Class ContinueResponseCommandSettings  <a class="header-action link-secondary" t
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>ContinueResponse</p>
+  <div class="markdown summary"><p>Continues loading of the paused response, optionally modifying the
+response headers. If either responseCode or headers are modified, all of them
+must be present.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,10 +162,13 @@ Class ContinueResponseCommandSettings  <a class="header-action link-secondary" t
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Fetch_ContinueResponseCommandSettings_BinaryResponseHeaders" data-uid="OpenQA.Selenium.DevTools.V144.Fetch.ContinueResponseCommandSettings.BinaryResponseHeaders">
   BinaryResponseHeaders
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the binaryResponseHeaders</p>
+  <div class="markdown level1 summary"><p>Alternative way of specifying response headers as a \0-separated
+series of name: value pairs. Prefer the above method unless you
+need to represent some non-UTF8 values that can't be transmitted
+over the protocol as text.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -194,7 +199,7 @@ public string? BinaryResponseHeaders { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Fetch_ContinueResponseCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.Fetch.ContinueResponseCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -227,10 +232,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Fetch_ContinueResponseCommandSettings_RequestId" data-uid="OpenQA.Selenium.DevTools.V144.Fetch.ContinueResponseCommandSettings.RequestId">
   RequestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the requestId</p>
+  <div class="markdown level1 summary"><p>An id the client received in requestPaused event.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -260,10 +265,10 @@ public string RequestId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Fetch_ContinueResponseCommandSettings_ResponseCode" data-uid="OpenQA.Selenium.DevTools.V144.Fetch.ContinueResponseCommandSettings.ResponseCode">
   ResponseCode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the responseCode</p>
+  <div class="markdown level1 summary"><p>An HTTP response code. If absent, original response code will be used.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -294,10 +299,10 @@ public long? ResponseCode { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Fetch_ContinueResponseCommandSettings_ResponseHeaders" data-uid="OpenQA.Selenium.DevTools.V144.Fetch.ContinueResponseCommandSettings.ResponseHeaders">
   ResponseHeaders
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the responseHeaders</p>
+  <div class="markdown level1 summary"><p>Response headers. If absent, original response headers will be used.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -328,10 +333,11 @@ public HeaderEntry[]? ResponseHeaders { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Fetch_ContinueResponseCommandSettings_ResponsePhrase" data-uid="OpenQA.Selenium.DevTools.V144.Fetch.ContinueResponseCommandSettings.ResponsePhrase">
   ResponsePhrase
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the responsePhrase</p>
+  <div class="markdown level1 summary"><p>A textual representation of responseCode.
+If absent, a standard phrase matching responseCode is used.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -362,7 +368,7 @@ public string? ResponsePhrase { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Fetch/ContinueResponseCommand.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetStyleTextsCommandSettings ">
       
-      <meta name="description" content="SetStyleTexts">
+      <meta name="description" content="Applies specified style edits one after another in the given order.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class SetStyleTextsCommandSettings  <a class="header-action link-secondary" titl
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SetStyleTexts</p>
+  <div class="markdown summary"><p>Applies specified style edits one after another in the given order.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -226,10 +226,12 @@ public StyleDeclarationEdit[] Edits { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_CSS_SetStyleTextsCommandSettings_NodeForPropertySyntaxValidation" data-uid="OpenQA.Selenium.DevTools.V143.CSS.SetStyleTextsCommandSettings.NodeForPropertySyntaxValidation">
   NodeForPropertySyntaxValidation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/SetStyleTextsCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/CSS/SetStyleTextsCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the nodeForPropertySyntaxValidation</p>
+  <div class="markdown level1 summary"><p>NodeId for the DOM node in whose context custom property declarations for registered properties should be
+validated. If omitted, declarations in the new rule text can only be validated statically, which may produce
+incorrect results if the declaration contains a var() for example.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

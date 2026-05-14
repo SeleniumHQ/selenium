@@ -154,10 +154,14 @@ Class BackForwardCacheNotRestoredExplanation  <a class="header-action link-secon
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_BackForwardCacheNotRestoredExplanation_Context" data-uid="OpenQA.Selenium.DevTools.V144.Page.BackForwardCacheNotRestoredExplanation.Context">
   Context
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotRestoredExplanation.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotRestoredExplanation.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>context</p>
+  <div class="markdown level1 summary"><p>Context associated with the reason. The meaning of this context is
+dependent on the reason:</p>
+<ul>
+<li>EmbedderExtensionSentMessageToCachedFrame: the extension ID.</li>
+</ul>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -188,7 +192,7 @@ public string? Context { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Page_BackForwardCacheNotRestoredExplanation_Details" data-uid="OpenQA.Selenium.DevTools.V144.Page.BackForwardCacheNotRestoredExplanation.Details">
   Details
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotRestoredExplanation.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotRestoredExplanation.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>details</p>
@@ -225,7 +229,7 @@ public BackForwardCacheBlockingDetails[]? Details { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotRestoredExplanation.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>reason</p>
+  <div class="markdown level1 summary"><p>Not restored reason</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -258,7 +262,7 @@ public BackForwardCacheNotRestoredReason Reason { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Page/BackForwardCacheNotRestoredExplanation.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>type</p>
+  <div class="markdown level1 summary"><p>Type of the reason</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

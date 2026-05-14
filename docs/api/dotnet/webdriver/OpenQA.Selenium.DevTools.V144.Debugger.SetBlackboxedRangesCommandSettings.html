@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetBlackboxedRangesCommandSettings ">
       
-      <meta name="description" content="SetBlackboxedRanges">
+      <meta name="description" content="Makes backend skip steps in the script in blackboxed ranges. VM will try leave blacklisted scripts by performing &#39;step in&#39; several times, finally resorting to &#39;step out&#39; if unsuccessful. Positions array contains positions where blackbox state is changed. First interval isn&#39;t blackboxed. Array should be sorted.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Debugger_SetBlackboxedRangesCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.SetBlackboxedRangesCommandSettings" class="text-break">
-Class SetBlackboxedRangesCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBlackboxedRangesCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class SetBlackboxedRangesCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBlackboxedRangesCommand.cs/#L15"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,10 @@ Class SetBlackboxedRangesCommandSettings  <a class="header-action link-secondary
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SetBlackboxedRanges</p>
+  <div class="markdown summary"><p>Makes backend skip steps in the script in blackboxed ranges. VM will try leave blacklisted
+scripts by performing 'step in' several times, finally resorting to 'step out' if unsuccessful.
+Positions array contains positions where blackbox state is changed. First interval isn't
+blackboxed. Array should be sorted.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,7 +163,7 @@ Class SetBlackboxedRangesCommandSettings  <a class="header-action link-secondary
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_SetBlackboxedRangesCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.SetBlackboxedRangesCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBlackboxedRangesCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBlackboxedRangesCommand.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -193,7 +196,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_SetBlackboxedRangesCommandSettings_Positions" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.SetBlackboxedRangesCommandSettings.Positions">
   Positions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBlackboxedRangesCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBlackboxedRangesCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the positions</p>
@@ -226,10 +229,10 @@ public ScriptPosition[] Positions { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Debugger_SetBlackboxedRangesCommandSettings_ScriptId" data-uid="OpenQA.Selenium.DevTools.V144.Debugger.SetBlackboxedRangesCommandSettings.ScriptId">
   ScriptId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBlackboxedRangesCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBlackboxedRangesCommand.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the scriptId</p>
+  <div class="markdown level1 summary"><p>Id of the script.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -259,7 +262,7 @@ public string ScriptId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBlackboxedRangesCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/SetBlackboxedRangesCommand.cs/#L15" class="edit-link">Edit this page</a>
         </div>
 
 

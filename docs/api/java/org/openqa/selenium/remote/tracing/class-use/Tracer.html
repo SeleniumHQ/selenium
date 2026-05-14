@@ -175,9 +175,8 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;purgeNodesInterval)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../../../grid/distributor/local/LocalNodeRegistry.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,int,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.security.Secret,java.time.Duration,java.util.concurrent.ScheduledExecutorService,java.time.Duration,java.util.concurrent.ScheduledExecutorService)" class="member-name-link">LocalNodeRegistry</a><wbr>(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<div class="col-second odd-row-color"><code><a href="../../../grid/distributor/local/LocalNodeRegistry.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.security.Secret,java.time.Duration,java.util.concurrent.ScheduledExecutorService,java.time.Duration,java.util.concurrent.ScheduledExecutorService)" class="member-name-link">LocalNodeRegistry</a><wbr>(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
  <a href="../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
- int&nbsp;newSessionThreadPoolSize,
  <a href="../../http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
  <a href="../../../grid/security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;healthcheckInterval,
@@ -248,6 +247,19 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>protected final <a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">Node.</span><code><a href="../../../grid/node/Node.html#tracer" class="member-name-link">tracer</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+</div>
+<div class="caption"><span>Methods in <a href="../../../grid/node/package-summary.html">org.openqa.selenium.grid.node</a> with parameters of type <a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../../../grid/node/SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">NodeSessionFactoryProvider.</span><code><a href="../../../grid/node/NodeSessionFactoryProvider.html#loadFactories(org.openqa.selenium.grid.config.Config,org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory)" class="member-name-link">loadFactories</a><wbr>(<a href="../../../grid/config/Config.html" title="interface in org.openqa.selenium.grid.config">Config</a>&nbsp;config,
+ <a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+ <a href="../../http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Creates session factories for the capabilities this provider handles.</div>
+</div>
 </div>
 <div class="caption"><span>Constructors in <a href="../../../grid/node/package-summary.html">org.openqa.selenium.grid.node</a> with parameters of type <a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a></span></div>
 <div class="summary-table three-column-summary">

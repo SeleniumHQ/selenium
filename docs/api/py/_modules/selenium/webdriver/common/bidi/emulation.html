@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.emulation &#8212; Selenium 4.40.0 documentation</title>
+    <title>selenium.webdriver.common.bidi.emulation &#8212; Selenium 4.41.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=cb21b19a"></script>
+    <script src="../../../../../_static/documentation_options.js?v=baf4fbc3"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.40.0 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.41.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.40.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.41.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.emulation </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.40.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.41.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.40.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.41.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.40.0 documentation">Selenium 4.40.0 documentation</a>
+       title="Selenium 4.41.0 documentation">Selenium 4.41.0 documentation</a>
   </label>
   
 
@@ -717,6 +717,54 @@
             <span class="n">params</span><span class="p">[</span><span class="s2">"userContexts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_contexts</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"emulation.setNetworkConditions"</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Emulation.set_screen_settings_override">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation.html#selenium.webdriver.common.bidi.emulation.Emulation.set_screen_settings_override">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_screen_settings_override</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">user_contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set screen settings override for the given contexts or user contexts.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            width: Screen width in pixels (&gt;= 0). None to clear the override.</span>
+<span class="sd">            height: Screen height in pixels (&gt;= 0). None to clear the override.</span>
+<span class="sd">            contexts: List of browsing context IDs to apply the override to.</span>
+<span class="sd">            user_contexts: List of user context IDs to apply the override to.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If only one of width/height is provided, or if both contexts</span>
+<span class="sd">                and user_contexts are provided, or if neither is provided.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">width</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">height</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Must provide both width and height, or neither to clear the override"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot specify both contexts and user_contexts"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Must specify either contexts or user_contexts"</span><span class="p">)</span>
+
+        <span class="n">screen_area</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">height</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"width and height must be integers"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">width</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">height</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"width and height must be &gt;= 0"</span><span class="p">)</span>
+            <span class="n">screen_area</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"width"</span><span class="p">:</span> <span class="n">width</span><span class="p">,</span> <span class="s2">"height"</span><span class="p">:</span> <span class="n">height</span><span class="p">}</span>
+
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"screenArea"</span><span class="p">:</span> <span class="n">screen_area</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"contexts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">contexts</span>
+        <span class="k">elif</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"userContexts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_contexts</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"emulation.setScreenSettingsOverride"</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span></div>
 </div>
 
 </pre></div>

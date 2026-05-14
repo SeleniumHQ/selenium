@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AddScreenCommandSettings ">
       
-      <meta name="description" content="AddScreen">
+      <meta name="description" content="Add a new screen to the device. Only supported in headless mode.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class AddScreenCommandSettings  <a class="header-action link-secondary" title="V
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>AddScreen</p>
+  <div class="markdown summary"><p>Add a new screen to the device. Only supported in headless mode.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -163,7 +163,7 @@ Class AddScreenCommandSettings  <a class="header-action link-secondary" title="V
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Emulation/AddScreenCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the colorDepth</p>
+  <div class="markdown level1 summary"><p>Specifies the screen's color depth in bits. Default is 24.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -230,7 +230,7 @@ public string CommandName { get; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Emulation/AddScreenCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the devicePixelRatio</p>
+  <div class="markdown level1 summary"><p>Specifies the screen's device pixel ratio. Default is 1.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -264,7 +264,7 @@ public double? DevicePixelRatio { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Emulation/AddScreenCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the height</p>
+  <div class="markdown level1 summary"><p>The height of the screen in pixels.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -297,7 +297,7 @@ public long Height { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Emulation/AddScreenCommand.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the isInternal</p>
+  <div class="markdown level1 summary"><p>Indicates whether the screen is internal to the device or external, attached to the device. Default is false.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -331,7 +331,7 @@ public bool? IsInternal { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Emulation/AddScreenCommand.cs/#L81"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the label</p>
+  <div class="markdown level1 summary"><p>Specifies the descriptive label for the screen. Default is none.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -365,7 +365,7 @@ public string? Label { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Emulation/AddScreenCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the left</p>
+  <div class="markdown level1 summary"><p>Offset of the left edge of the screen in pixels.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -398,7 +398,7 @@ public long Left { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Emulation/AddScreenCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the rotation</p>
+  <div class="markdown level1 summary"><p>Specifies the screen's rotation angle. Available values are 0, 90, 180 and 270. Default is 0.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -432,7 +432,7 @@ public long? Rotation { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Emulation/AddScreenCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the top</p>
+  <div class="markdown level1 summary"><p>Offset of the top edge of the screen in pixels.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -465,7 +465,7 @@ public long Top { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Emulation/AddScreenCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the width</p>
+  <div class="markdown level1 summary"><p>The width of the screen in pixels.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -498,7 +498,7 @@ public long Width { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Emulation/AddScreenCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the workAreaInsets</p>
+  <div class="markdown level1 summary"><p>Specifies the screen's work area. Default is entire screen.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class Cookie ">
       
-      <meta name="description" content="Cookie">
+      <meta name="description" content="Cookie object">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class Cookie  <a class="header-action link-secondary" title="View source" href="
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Cookie</p>
+  <div class="markdown summary"><p>Cookie object</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -157,7 +157,7 @@ Class Cookie  <a class="header-action link-secondary" title="View source" href="
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>domain</p>
+  <div class="markdown level1 summary"><p>Cookie domain.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -187,10 +187,13 @@ public string Domain { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Cookie_Expires" data-uid="OpenQA.Selenium.DevTools.V143.Network.Cookie.Expires">
   Expires
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>expires</p>
+  <div class="markdown level1 summary"><p>Cookie expiration date as the number of seconds since the UNIX epoch.
+The value is set to -1 if the expiry date is not set.
+The value can be null for values that cannot be represented in
+JSON (±Inf).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -220,10 +223,10 @@ public double Expires { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Cookie_HttpOnly" data-uid="OpenQA.Selenium.DevTools.V143.Network.Cookie.HttpOnly">
   HttpOnly
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>httpOnly</p>
+  <div class="markdown level1 summary"><p>True if cookie is http-only.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -256,7 +259,7 @@ public bool HttpOnly { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>name</p>
+  <div class="markdown level1 summary"><p>Cookie name.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -286,10 +289,10 @@ public string Name { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Cookie_PartitionKey" data-uid="OpenQA.Selenium.DevTools.V143.Network.Cookie.PartitionKey">
   PartitionKey
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L120"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>partitionKey</p>
+  <div class="markdown level1 summary"><p>Cookie partition key.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -320,10 +323,10 @@ public CookiePartitionKey? PartitionKey { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Cookie_PartitionKeyOpaque" data-uid="OpenQA.Selenium.DevTools.V143.Network.Cookie.PartitionKeyOpaque">
   PartitionKeyOpaque
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L127"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>partitionKeyOpaque</p>
+  <div class="markdown level1 summary"><p>True if cookie partition key is opaque.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -357,7 +360,7 @@ public bool? PartitionKeyOpaque { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>path</p>
+  <div class="markdown level1 summary"><p>Cookie path.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -387,10 +390,10 @@ public string Path { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Cookie_Priority" data-uid="OpenQA.Selenium.DevTools.V143.Network.Cookie.Priority">
   Priority
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L90"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>priority</p>
+  <div class="markdown level1 summary"><p>Cookie Priority</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -420,10 +423,10 @@ public CookiePriority Priority { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Cookie_SameParty" data-uid="OpenQA.Selenium.DevTools.V143.Network.Cookie.SameParty">
   SameParty
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L97"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>sameParty</p>
+  <div class="markdown level1 summary"><p>True if cookie is SameParty.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -453,10 +456,10 @@ public bool SameParty { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Cookie_SameSite" data-uid="OpenQA.Selenium.DevTools.V143.Network.Cookie.SameSite">
   SameSite
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L83"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>sameSite</p>
+  <div class="markdown level1 summary"><p>Cookie SameSite type.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -487,10 +490,10 @@ public CookieSameSite? SameSite { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Cookie_Secure" data-uid="OpenQA.Selenium.DevTools.V143.Network.Cookie.Secure">
   Secure
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L69"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>secure</p>
+  <div class="markdown level1 summary"><p>True if cookie is secure.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -520,10 +523,10 @@ public bool Secure { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Cookie_Session" data-uid="OpenQA.Selenium.DevTools.V143.Network.Cookie.Session">
   Session
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L76"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>session</p>
+  <div class="markdown level1 summary"><p>True in case of session cookie.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -553,10 +556,10 @@ public bool Session { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Cookie_Size" data-uid="OpenQA.Selenium.DevTools.V143.Network.Cookie.Size">
   Size
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>size</p>
+  <div class="markdown level1 summary"><p>Cookie size.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -586,10 +589,12 @@ public long Size { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Cookie_SourcePort" data-uid="OpenQA.Selenium.DevTools.V143.Network.Cookie.SourcePort">
   SourcePort
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L113"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>sourcePort</p>
+  <div class="markdown level1 summary"><p>Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified port.
+An unspecified port value allows protocol clients to emulate legacy cookie scope for the port.
+This is a temporary ability and it will be removed in the future.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -619,10 +624,10 @@ public long SourcePort { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_Cookie_SourceScheme" data-uid="OpenQA.Selenium.DevTools.V143.Network.Cookie.SourceScheme">
   SourceScheme
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L104"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>sourceScheme</p>
+  <div class="markdown level1 summary"><p>Cookie source scheme type.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -655,7 +660,7 @@ public CookieSourceScheme SourceScheme { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/Cookie.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>value</p>
+  <div class="markdown level1 summary"><p>Cookie value.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class HighlightRectCommandSettings ">
       
-      <meta name="description" content="HighlightRect">
+      <meta name="description" content="Highlights given rectangle. Coordinates are absolute with respect to the main frame viewport. Issue: the method does not handle device pixel ratio (DPR) correctly. The coordinates currently have to be adjusted by the client if DPR is not 1 (see crbug.com/437807128).">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Overlay_HighlightRectCommandSettings" data-uid="OpenQA.Selenium.DevTools.V144.Overlay.HighlightRectCommandSettings" class="text-break">
-Class HighlightRectCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class HighlightRectCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L15"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,10 @@ Class HighlightRectCommandSettings  <a class="header-action link-secondary" titl
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>HighlightRect</p>
+  <div class="markdown summary"><p>Highlights given rectangle. Coordinates are absolute with respect to the main frame viewport.
+Issue: the method does not handle device pixel ratio (DPR) correctly.
+The coordinates currently have to be adjusted by the client
+if DPR is not 1 (see crbug.com/437807128).</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,10 +163,10 @@ Class HighlightRectCommandSettings  <a class="header-action link-secondary" titl
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Overlay_HighlightRectCommandSettings_Color" data-uid="OpenQA.Selenium.DevTools.V144.Overlay.HighlightRectCommandSettings.Color">
   Color
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the color</p>
+  <div class="markdown level1 summary"><p>The highlight fill color (default: transparent).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -194,7 +197,7 @@ public RGBA? Color { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Overlay_HighlightRectCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V144.Overlay.HighlightRectCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -227,10 +230,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Overlay_HighlightRectCommandSettings_Height" data-uid="OpenQA.Selenium.DevTools.V144.Overlay.HighlightRectCommandSettings.Height">
   Height
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the height</p>
+  <div class="markdown level1 summary"><p>Rectangle height</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -260,10 +263,10 @@ public long Height { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Overlay_HighlightRectCommandSettings_OutlineColor" data-uid="OpenQA.Selenium.DevTools.V144.Overlay.HighlightRectCommandSettings.OutlineColor">
   OutlineColor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the outlineColor</p>
+  <div class="markdown level1 summary"><p>The highlight outline color (default: transparent).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -294,10 +297,10 @@ public RGBA? OutlineColor { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Overlay_HighlightRectCommandSettings_Width" data-uid="OpenQA.Selenium.DevTools.V144.Overlay.HighlightRectCommandSettings.Width">
   Width
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the width</p>
+  <div class="markdown level1 summary"><p>Rectangle width</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -327,10 +330,10 @@ public long Width { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Overlay_HighlightRectCommandSettings_X" data-uid="OpenQA.Selenium.DevTools.V144.Overlay.HighlightRectCommandSettings.X">
   X
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the x</p>
+  <div class="markdown level1 summary"><p>X coordinate</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -360,10 +363,10 @@ public long X { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Overlay_HighlightRectCommandSettings_Y" data-uid="OpenQA.Selenium.DevTools.V144.Overlay.HighlightRectCommandSettings.Y">
   Y
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the y</p>
+  <div class="markdown level1 summary"><p>Y coordinate</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -393,7 +396,7 @@ public long Y { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Overlay/HighlightRectCommand.cs/#L15" class="edit-link">Edit this page</a>
         </div>
 
 

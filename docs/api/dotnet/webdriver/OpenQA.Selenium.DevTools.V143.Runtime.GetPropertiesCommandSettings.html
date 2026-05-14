@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GetPropertiesCommandSettings ">
       
-      <meta name="description" content="GetProperties">
+      <meta name="description" content="Returns properties of a given object. Object group of the result is inherited from the target object.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Runtime_GetPropertiesCommandSettings" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.GetPropertiesCommandSettings" class="text-break">
-Class GetPropertiesCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class GetPropertiesCommandSettings  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class GetPropertiesCommandSettings  <a class="header-action link-secondary" titl
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>GetProperties</p>
+  <div class="markdown summary"><p>Returns properties of a given object. Object group of the result is inherited from the target
+object.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -160,10 +161,11 @@ Class GetPropertiesCommandSettings  <a class="header-action link-secondary" titl
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_GetPropertiesCommandSettings_AccessorPropertiesOnly" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.GetPropertiesCommandSettings.AccessorPropertiesOnly">
   AccessorPropertiesOnly
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the accessorPropertiesOnly</p>
+  <div class="markdown level1 summary"><p>If true, returns accessor properties (with getter/setter) only; internal properties are not
+returned either.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -194,7 +196,7 @@ public bool? AccessorPropertiesOnly { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_GetPropertiesCommandSettings_CommandName" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.GetPropertiesCommandSettings.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the command.</p>
@@ -227,10 +229,10 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_GetPropertiesCommandSettings_GeneratePreview" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.GetPropertiesCommandSettings.GeneratePreview">
   GeneratePreview
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the generatePreview</p>
+  <div class="markdown level1 summary"><p>Whether preview should be generated for the results.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -261,10 +263,10 @@ public bool? GeneratePreview { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_GetPropertiesCommandSettings_NonIndexedPropertiesOnly" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.GetPropertiesCommandSettings.NonIndexedPropertiesOnly">
   NonIndexedPropertiesOnly
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the nonIndexedPropertiesOnly</p>
+  <div class="markdown level1 summary"><p>If true, returns non-indexed properties only.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -295,10 +297,10 @@ public bool? NonIndexedPropertiesOnly { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_GetPropertiesCommandSettings_ObjectId" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.GetPropertiesCommandSettings.ObjectId">
   ObjectId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the objectId</p>
+  <div class="markdown level1 summary"><p>Identifier of the object to return properties for.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -328,10 +330,11 @@ public string ObjectId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Runtime_GetPropertiesCommandSettings_OwnProperties" data-uid="OpenQA.Selenium.DevTools.V143.Runtime.GetPropertiesCommandSettings.OwnProperties">
   OwnProperties
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the ownProperties</p>
+  <div class="markdown level1 summary"><p>If true, returns properties belonging only to the element itself, not to its prototype
+chain.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -362,7 +365,7 @@ public bool? OwnProperties { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Runtime/GetPropertiesCommand.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

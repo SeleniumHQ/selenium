@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AssociatedCookie ">
       
-      <meta name="description" content="AssociatedCookie">
+      <meta name="description" content="A cookie associated with the request which may or may not be sent with it. Includes the cookies itself and reasons for blocking or exemption.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V143_Network_AssociatedCookie" data-uid="OpenQA.Selenium.DevTools.V143.Network.AssociatedCookie" class="text-break">
-Class AssociatedCookie  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/AssociatedCookie.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class AssociatedCookie  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/AssociatedCookie.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,8 @@ Class AssociatedCookie  <a class="header-action link-secondary" title="View sour
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>AssociatedCookie</p>
+  <div class="markdown summary"><p>A cookie associated with the request which may or may not be sent with it.
+Includes the cookies itself and reasons for blocking or exemption.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +155,10 @@ Class AssociatedCookie  <a class="header-action link-secondary" title="View sour
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_AssociatedCookie_BlockedReasons" data-uid="OpenQA.Selenium.DevTools.V143.Network.AssociatedCookie.BlockedReasons">
   BlockedReasons
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/AssociatedCookie.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/AssociatedCookie.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>blockedReasons</p>
+  <div class="markdown level1 summary"><p>The reason(s) the cookie was blocked. If empty means the cookie is included.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -187,10 +188,10 @@ public CookieBlockedReason[] BlockedReasons { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_AssociatedCookie_Cookie" data-uid="OpenQA.Selenium.DevTools.V143.Network.AssociatedCookie.Cookie">
   Cookie
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/AssociatedCookie.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/AssociatedCookie.cs/#L18"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>cookie</p>
+  <div class="markdown level1 summary"><p>The cookie object representing the cookie which was not sent.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -220,10 +221,11 @@ public Cookie Cookie { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Network_AssociatedCookie_ExemptionReason" data-uid="OpenQA.Selenium.DevTools.V143.Network.AssociatedCookie.ExemptionReason">
   ExemptionReason
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/AssociatedCookie.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/AssociatedCookie.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>exemptionReason</p>
+  <div class="markdown level1 summary"><p>The reason the cookie should have been blocked by 3PCD but is exempted. A cookie could
+only have at most one exemption reason.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -254,7 +256,7 @@ public CookieExemptionReason? ExemptionReason { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/AssociatedCookie.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Network/AssociatedCookie.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

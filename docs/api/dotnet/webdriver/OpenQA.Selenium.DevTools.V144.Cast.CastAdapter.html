@@ -236,10 +236,10 @@ Class CastAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Cast_CastAdapter_Disable_OpenQA_Selenium_DevTools_V144_Cast_DisableCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Cast.CastAdapter.Disable(OpenQA.Selenium.DevTools.V144.Cast.DisableCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Disable(DisableCommandSettings?, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L68"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>disable</p>
+  <div class="markdown level1 summary"><p>Stops observing for sinks and issues.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -279,10 +279,14 @@ Class CastAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Cast_CastAdapter_Enable_OpenQA_Selenium_DevTools_V144_Cast_EnableCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Cast.CastAdapter.Enable(OpenQA.Selenium.DevTools.V144.Cast.EnableCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Enable(EnableCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L60"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>enable</p>
+  <div class="markdown level1 summary"><p>Starts observing for sinks that can be used for tab mirroring, and if set,
+sinks compatible with |presentationUrl| as well. When sinks are found, a
+|sinksUpdated| event is fired.
+Also starts observing for issue messages. When an issue is added or removed,
+an |issueUpdated| event is fired.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -322,10 +326,11 @@ Class CastAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Cast_CastAdapter_SetSinkToUse_OpenQA_Selenium_DevTools_V144_Cast_SetSinkToUseCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Cast.CastAdapter.SetSinkToUse(OpenQA.Selenium.DevTools.V144.Cast.SetSinkToUseCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetSinkToUse(SetSinkToUseCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>setSinkToUse</p>
+  <div class="markdown level1 summary"><p>Sets a sink to be used when the web page requests the browser to choose a
+sink via Presentation API, Remote Playback API, or Cast SDK.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -365,10 +370,10 @@ Class CastAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Cast_CastAdapter_StartDesktopMirroring_OpenQA_Selenium_DevTools_V144_Cast_StartDesktopMirroringCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Cast.CastAdapter.StartDesktopMirroring(OpenQA.Selenium.DevTools.V144.Cast.StartDesktopMirroringCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   StartDesktopMirroring(StartDesktopMirroringCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L85"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>startDesktopMirroring</p>
+  <div class="markdown level1 summary"><p>Starts mirroring the desktop to the sink.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -408,10 +413,10 @@ Class CastAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Cast_CastAdapter_StartTabMirroring_OpenQA_Selenium_DevTools_V144_Cast_StartTabMirroringCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Cast.CastAdapter.StartTabMirroring(OpenQA.Selenium.DevTools.V144.Cast.StartTabMirroringCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   StartTabMirroring(StartTabMirroringCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L93"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>startTabMirroring</p>
+  <div class="markdown level1 summary"><p>Starts mirroring the tab to the sink.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -451,10 +456,10 @@ Class CastAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Cast_CastAdapter_StopCasting_OpenQA_Selenium_DevTools_V144_Cast_StopCastingCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V144.Cast.CastAdapter.StopCasting(OpenQA.Selenium.DevTools.V144.Cast.StopCastingCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   StopCasting(StopCastingCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L101"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>stopCasting</p>
+  <div class="markdown level1 summary"><p>Stops the active Cast session on the sink.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -497,10 +502,11 @@ Class CastAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Cast_CastAdapter_IssueUpdated" data-uid="OpenQA.Selenium.DevTools.V144.Cast.CastAdapter.IssueUpdated">
   IssueUpdated
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>issueUpdated</p>
+  <div class="markdown level1 summary"><p>This is fired whenever the outstanding issue/error message changes.
+|issueMessage| is empty if there is no issue.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -528,10 +534,11 @@ Class CastAdapter  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Cast_CastAdapter_SinksUpdated" data-uid="OpenQA.Selenium.DevTools.V144.Cast.CastAdapter.SinksUpdated">
   SinksUpdated
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Cast/CastAdapter.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>sinksUpdated</p>
+  <div class="markdown level1 summary"><p>This is fired whenever the list of available sinks changes. A sink is a
+device or a software surface that you can cast to.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ScriptFailedToParseEventArgs ">
       
-      <meta name="description" content="ScriptFailedToParse">
+      <meta name="description" content="Fired when virtual machine fails to parse the script.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class ScriptFailedToParseEventArgs  <a class="header-action link-secondary" titl
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>ScriptFailedToParse</p>
+  <div class="markdown summary"><p>Fired when virtual machine fails to parse the script.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -161,7 +161,7 @@ Class ScriptFailedToParseEventArgs  <a class="header-action link-secondary" titl
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the buildId</p>
+  <div class="markdown level1 summary"><p>For Wasm modules, the content of the <code>build_id</code> custom section. For JavaScript the <code>debugId</code> magic comment.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -194,7 +194,7 @@ public string BuildId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L123"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the codeOffset</p>
+  <div class="markdown level1 summary"><p>If the scriptLanguage is WebAssembly, the code section offset in the module.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -228,7 +228,7 @@ public long? CodeOffset { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L137"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the embedderName</p>
+  <div class="markdown level1 summary"><p>The name the embedder supplied for this script.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -262,7 +262,7 @@ public string? EmbedderName { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L53"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the endColumn</p>
+  <div class="markdown level1 summary"><p>Length of the last line of the script.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -295,7 +295,7 @@ public long EndColumn { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the endLine</p>
+  <div class="markdown level1 summary"><p>Last line of the script.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -328,7 +328,7 @@ public long EndLine { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L81"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the executionContextAuxData</p>
+  <div class="markdown level1 summary"><p>Embedder-specific auxiliary data likely matching {isDefault: boolean, type: 'default'|'isolated'|'worker', frameId: string}</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -362,7 +362,7 @@ public object? ExecutionContextAuxData { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L60"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the executionContextId</p>
+  <div class="markdown level1 summary"><p>Specifies script creation context.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -395,7 +395,7 @@ public long ExecutionContextId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L95"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the hasSourceURL</p>
+  <div class="markdown level1 summary"><p>True, if this script has sourceURL.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -429,7 +429,7 @@ public bool? HasSourceURL { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the hash</p>
+  <div class="markdown level1 summary"><p>Content hash of the script, SHA-256.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -462,7 +462,7 @@ public string Hash { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L102"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the isModule</p>
+  <div class="markdown level1 summary"><p>True, if this script is ES6 module.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -496,7 +496,7 @@ public bool? IsModule { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L109"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the length</p>
+  <div class="markdown level1 summary"><p>This script length.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -530,7 +530,7 @@ public long? Length { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L18"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the scriptId</p>
+  <div class="markdown level1 summary"><p>Identifier of the script parsed.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -563,7 +563,7 @@ public string ScriptId { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L130"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the scriptLanguage</p>
+  <div class="markdown level1 summary"><p>The language of the script.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -597,7 +597,7 @@ public ScriptLanguage? ScriptLanguage { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the sourceMapURL</p>
+  <div class="markdown level1 summary"><p>URL of source map associated with script (if any).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -631,7 +631,7 @@ public string? SourceMapURL { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L116"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the stackTrace</p>
+  <div class="markdown level1 summary"><p>JavaScript top stack frame of where the script parsed event was triggered if available.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -665,7 +665,7 @@ public StackTrace? StackTrace { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the startColumn</p>
+  <div class="markdown level1 summary"><p>Column offset of the script within the resource with given URL.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -698,7 +698,7 @@ public long StartColumn { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the startLine</p>
+  <div class="markdown level1 summary"><p>Line offset of the script within the resource with given URL (for script tags).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -731,7 +731,7 @@ public long StartLine { get; set; }</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Debugger/ScriptFailedToParseEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the url</p>
+  <div class="markdown level1 summary"><p>URL or name of the script parsed (if any).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

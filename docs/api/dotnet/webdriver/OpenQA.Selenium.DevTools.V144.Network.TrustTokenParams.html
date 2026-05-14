@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class TrustTokenParams ">
       
-      <meta name="description" content="TrustTokenParams">
+      <meta name="description" content="Determines what type of Trust Token operation is executed and depending on the type, some additional parameters. The values are specified in third_party/blink/renderer/core/fetch/trust_token.idl.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V144_Network_TrustTokenParams" data-uid="OpenQA.Selenium.DevTools.V144.Network.TrustTokenParams" class="text-break">
-Class TrustTokenParams  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenParams.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class TrustTokenParams  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenParams.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,7 +97,9 @@ Class TrustTokenParams  <a class="header-action link-secondary" title="View sour
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>TrustTokenParams</p>
+  <div class="markdown summary"><p>Determines what type of Trust Token operation is executed and
+depending on the type, some additional parameters. The values
+are specified in third_party/blink/renderer/core/fetch/trust_token.idl.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +156,11 @@ Class TrustTokenParams  <a class="header-action link-secondary" title="View sour
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_TrustTokenParams_Issuers" data-uid="OpenQA.Selenium.DevTools.V144.Network.TrustTokenParams.Issuers">
   Issuers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenParams.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenParams.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>issuers</p>
+  <div class="markdown level1 summary"><p>Origins of issuers from whom to request tokens or redemption
+records.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -188,7 +191,7 @@ public string[]? Issuers { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_TrustTokenParams_Operation" data-uid="OpenQA.Selenium.DevTools.V144.Network.TrustTokenParams.Operation">
   Operation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenParams.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenParams.cs/#L19"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>operation</p>
@@ -221,10 +224,11 @@ public TrustTokenOperationType Operation { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V144_Network_TrustTokenParams_RefreshPolicy" data-uid="OpenQA.Selenium.DevTools.V144.Network.TrustTokenParams.RefreshPolicy">
   RefreshPolicy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenParams.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenParams.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>refreshPolicy</p>
+  <div class="markdown level1 summary"><p>Only set for &quot;token-redemption&quot; operation and determine whether
+to request a fresh SRR or use a still valid cached SRR.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -254,7 +258,7 @@ public TrustTokenParamsRefreshPolicyValues RefreshPolicy { get; set; }</code></p
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenParams.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v144/Network/TrustTokenParams.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

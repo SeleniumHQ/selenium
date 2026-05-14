@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SetLocaleOverrideCommandSettings ">
       
-      <meta name="description" content="SetLocaleOverride">
+      <meta name="description" content="Overrides default host system locale with the specified one.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class SetLocaleOverrideCommandSettings  <a class="header-action link-secondary" 
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>SetLocaleOverride</p>
+  <div class="markdown summary"><p>Overrides default host system locale with the specified one.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -193,10 +193,11 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Emulation_SetLocaleOverrideCommandSettings_Locale" data-uid="OpenQA.Selenium.DevTools.V143.Emulation.SetLocaleOverrideCommandSettings.Locale">
   Locale
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Emulation/SetLocaleOverrideCommand.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Emulation/SetLocaleOverrideCommand.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the locale</p>
+  <div class="markdown level1 summary"><p>ICU style C locale (e.g. &quot;en_US&quot;). If not specified or empty, disables the override and
+restores default host system locale.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

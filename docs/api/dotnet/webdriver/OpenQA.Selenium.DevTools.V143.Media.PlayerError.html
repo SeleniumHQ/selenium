@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class PlayerError ">
       
-      <meta name="description" content="PlayerError">
+      <meta name="description" content="Corresponds to kMediaError">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class PlayerError  <a class="header-action link-secondary" title="View source" h
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>PlayerError</p>
+  <div class="markdown summary"><p>Corresponds to kMediaError</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -154,10 +154,11 @@ Class PlayerError  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Media_PlayerError_Cause" data-uid="OpenQA.Selenium.DevTools.V143.Media.PlayerError.Cause">
   Cause
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerError.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerError.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>cause</p>
+  <div class="markdown level1 summary"><p>Errors potentially have a root cause error, ie, a DecoderError might be
+caused by an WindowsError</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -187,10 +188,11 @@ public PlayerError[] Cause { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Media_PlayerError_Code" data-uid="OpenQA.Selenium.DevTools.V143.Media.PlayerError.Code">
   Code
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerError.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerError.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>code</p>
+  <div class="markdown level1 summary"><p>Code is the numeric enum entry for a specific set of error codes, such
+as PipelineStatusCodes in media/base/pipeline_status.h</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -220,10 +222,10 @@ public long Code { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Media_PlayerError_Data" data-uid="OpenQA.Selenium.DevTools.V143.Media.PlayerError.Data">
   Data
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerError.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerError.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>data</p>
+  <div class="markdown level1 summary"><p>Extra data attached to an error, such as an HRESULT, Video Codec, etc.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -286,10 +288,10 @@ public string ErrorType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V143_Media_PlayerError_Stack" data-uid="OpenQA.Selenium.DevTools.V143.Media.PlayerError.Stack">
   Stack
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerError.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v143/Media/PlayerError.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>stack</p>
+  <div class="markdown level1 summary"><p>A trace of where this error was caused / where it passed through.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
