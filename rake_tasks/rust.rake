@@ -23,13 +23,24 @@ task :lint do
   puts '  Rust linting not configured'
 end
 
-desc 'Regenerate rust/Cargo.lock to match rust/Cargo.toml'
+desc 'Pin Rust dependencies'
+task :pin do
+  puts 'pinning Cargo.lock and Bazel crate metadata'
+  manifest = File.expand_path('rust/Cargo.toml')
+  Bazel.execute('run',
+                ['--', 'generate-lockfile', '--manifest-path', manifest],
+                '@rules_rust//tools/upstream_wrapper:cargo')
+  Bazel.execute('fetch', ['--repo_env=CARGO_BAZEL_REPIN=true'], '@crates//...')
+end
+
+desc 'Update Rust dependencies'
 task :update do
   puts 'updating Cargo.lock'
   manifest = File.expand_path('rust/Cargo.toml')
   Bazel.execute('run',
-                ['--', 'update', '-p', 'selenium-manager', '--manifest-path', manifest],
+                ['--', 'update', '--manifest-path', manifest],
                 '@rules_rust//tools/upstream_wrapper:cargo')
+  Rake::Task['rust:pin'].invoke
 end
 
 desc 'Update Rust changelog'

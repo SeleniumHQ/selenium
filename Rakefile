@@ -172,6 +172,7 @@ namespace :all do
   desc 'Pin dependencies for all language bindings'
   task :pin do
     Rake::Task['java:pin'].invoke
+    Rake::Task['py:pin'].invoke
     Rake::Task['rb:pin'].invoke
     Rake::Task['node:pin'].invoke
     Rake::Task['dotnet:pin'].invoke
@@ -180,6 +181,7 @@ namespace :all do
   desc 'Update dependencies for all language bindings'
   task :update do
     Rake::Task['java:update'].invoke
+    Rake::Task['py:update'].invoke
     Rake::Task['rb:update'].invoke
     Rake::Task['node:update'].invoke
     Rake::Task['dotnet:update'].invoke

@@ -44,12 +44,15 @@ task :pin do
   Bazel.execute('run', ['--', 'install', '--dir', Dir.pwd, '--lockfile-only'], '@pnpm//:pnpm')
 end
 
-desc 'Update JavaScript dependencies and refresh lockfile (use "latest" to bump ranges)'
-task :update, [:latest] do |_task, arguments|
-  args = ['--', 'update', '-r']
-  args << '--latest' if arguments[:latest] == 'latest'
-  args += ['--dir', Dir.pwd]
-  Bazel.execute('run', args, '@pnpm//:pnpm')
+desc 'Update JavaScript dependencies and refresh lockfile'
+task :update do
+  Bazel.execute('run', ['--', 'update', '-r', '--dir', Dir.pwd], '@pnpm//:pnpm')
+  Rake::Task['node:pin'].invoke
+end
+
+desc 'Upgrade JavaScript dependency declarations and refresh lockfile'
+task :upgrade do
+  Bazel.execute('run', ['--', 'update', '-r', '--latest', '--dir', Dir.pwd], '@pnpm//:pnpm')
   Rake::Task['node:pin'].invoke
 end
 

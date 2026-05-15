@@ -294,7 +294,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Reset Dependencies
-      run: ./go ${{ needs.parse-tag.outputs.language }}:update${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:update' || '' }}
+      run: ./go ${{ needs.parse-tag.outputs.language }}:pin${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:pin' || '' }}
       artifact-name: version-reset-deps
 
   commit-dependencies:
