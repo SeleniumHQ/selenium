@@ -1,4 +1,4 @@
-load("@crates//:defs.bzl", "all_crate_deps")
+load("@crates//:defs.bzl", "aliases", "all_crate_deps")
 load("//rust:defs.bzl", "rust_binary", "rust_library", "rust_test", "rustfmt_config")
 
 rustfmt_config(
@@ -76,8 +76,9 @@ rust_binary(
     # instead of an underscore
     name = "selenium-manager",
     srcs = ["src/main.rs"],
+    aliases = aliases(),
     edition = "2024",
-    version = "0.4.44-nightly",
+    version = "0.4.44",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium_manager",
@@ -91,7 +92,11 @@ rust_library(
         ["src/**/*.rs"],
         exclude = ["main.rs"],
     ),
-    compile_data = ["src/resources/skills.md"],
+    aliases = aliases(),
+    compile_data = [
+        "src/resources/rules.md",
+        "src/resources/skills.md",
+    ],
     crate_features = select({
         "//common:stamp": [],
         "//conditions:default": ["avoid_stats"],
@@ -106,6 +111,7 @@ filegroup(
     srcs = [
         "Cargo.lock",
         "Cargo.toml",
+        "src/resources/rules.md",
         "src/resources/skills.md",
         ":selenium_manager_rs_srcs",
     ],
@@ -120,6 +126,7 @@ filegroup(
 rust_test(
     name = "unit",
     size = "small",
+    aliases = aliases(),
     crate = ":selenium_manager",
     edition = "2024",
     tags = ["no-sandbox"],

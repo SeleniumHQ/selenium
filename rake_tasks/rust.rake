@@ -12,22 +12,6 @@ task :build do |_task, arguments|
   Bazel.execute('build', args, '//rust:selenium-manager')
 end
 
-desc 'Update the rust lock files'
-task :update do
-  # The first repin after a version bump can fail due to a stale checksum in
-  # Cargo.Bazel.lock; a second run lets Bazel reconcile and succeeds.
-  puts 'pinning cargo versions'
-  begin
-    Bazel.execute('fetch', ['--repo_env=CARGO_BAZEL_REPIN=true'], '@crates//:all')
-  rescue RuntimeError
-    puts 'repin failed, retrying...'
-    Bazel.execute('fetch', ['--repo_env=CARGO_BAZEL_REPIN=true'], '@crates//:all')
-  end
-end
-
-desc 'Pin Rust dependencies'
-task pin: :update
-
 desc 'Format Rust code with rustfmt'
 task :format do
   puts '  Running rustfmt...'
@@ -37,6 +21,15 @@ end
 desc 'Run Rust linter (no-op, clippy not configured)'
 task :lint do
   puts '  Rust linting not configured'
+end
+
+desc 'Regenerate rust/Cargo.lock to match rust/Cargo.toml'
+task :update do
+  puts 'updating Cargo.lock'
+  manifest = File.expand_path('rust/Cargo.toml')
+  Bazel.execute('run',
+                ['--', 'update', '-p', 'selenium-manager', '--manifest-path', manifest],
+                '@rules_rust//tools/upstream_wrapper:cargo')
 end
 
 desc 'Update Rust changelog'
@@ -60,8 +53,11 @@ task :version, [:version] do |_task, arguments|
   new_version = updated.split(/\.|-/).tap { |v| v.delete_at(2) }.unshift('0').join('.').gsub('.nightly', '-nightly')
   puts "Updating Rust from #{old_version} to #{new_version}"
 
+  # Replace only the selenium-manager package version field, not coincidental
+  # crate-version literals elsewhere (e.g. `tar = "0.4.44"` in Cargo.toml).
+  pattern = /(^\s*version\s*=\s*")#{Regexp.escape(old_version)}(")/
   ['rust/Cargo.toml', 'rust/BUILD.bazel'].each do |file|
-    text = File.read(file).gsub(old_version, new_version)
+    text = File.read(file).sub(pattern, "\\1#{new_version}\\2")
     File.open(file, 'w') { |f| f.puts text }
   end
 end

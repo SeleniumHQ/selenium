@@ -136,6 +136,24 @@ You can also build a Docker image suitable
 for building and testing Selenium using the Dockerfile in the
 [dev image](scripts/dev-image/Dockerfile) directory.
 
+### Using Worktrees
+
+Bazel keeps its build outputs and downloaded dependencies under each checkout by default, which means
+working from multiple worktrees re-downloads dependencies and rebuilds artifacts. 
+Pointing Bazel at user-level caches avoids that.
+
+Add the following to `/path/to/your/home/.bazelrc`
+
+```
+common --disk_cache=/path/to/your/home/.cache/bazel-disk
+common --repository_cache=/path/to/your/home/.cache/bazel-repo
+```
+
+`--disk_cache` stores compiled action outputs; `--repository_cache` stores downloaded external
+dependencies (e.g. `http_archive` tarballs). Both directories grow unbounded over time — prune them
+periodically if disk space matters. Keep the cache on the same filesystem as your checkouts so Bazel
+can hardlink instead of copy.
+
 ## Building
 
 Selenium is built using a common build tool called [Bazel](https://bazel.build/), to
@@ -237,7 +255,7 @@ There is also an auto-formatting script that can be run: `./scripts/format.sh`
 To run Python code locally without building/installing the package, you must first install the dependencies:
 
 ```shell
-pip install -r py/requirements.txt
+pip install -r py/requirements_lock.txt
 ```
 
 Then, build the generated files and copy them into your local source tree:
@@ -284,11 +302,7 @@ you can configure it use Bazel artifacts:
 
 ### Rust
 
-To keep `Cargo.Bazel.lock` synchronized with `Cargo.lock`, run:
-
-```shell
-CARGO_BAZEL_REPIN=true bazel run @crates//:all
-```
+Rust Bazel dependencies are generated directly from `rust/Cargo.toml` and `rust/Cargo.lock`.
 
 ## Testing
 

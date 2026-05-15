@@ -81,7 +81,13 @@ task :release do |_task, arguments|
     Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
 
     puts 'Releasing nightly WebDriver gem...'
-    Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release-nightly')
+    begin
+      Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release-nightly')
+    rescue RuntimeError => e
+      raise unless e.message.match?(/Repushing of gem versions is not allowed/i)
+
+      puts 'Nightly gem version already published to GitHub Packages — skipping.'
+    end
   else
     setup_gem_credentials
     patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?

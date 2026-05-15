@@ -9,7 +9,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v146:v146.publish
   //java/src/org/openqa/selenium/devtools/v147:v147.publish
-  //java/src/org/openqa/selenium/devtools/v145:v145.publish
+  //java/src/org/openqa/selenium/devtools/v148:v148.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
   //java/src/org/openqa/selenium/grid/node/kubernetes:kubernetes.publish
@@ -229,8 +229,7 @@ desc 'Install jars to local m2 directory'
 task :install do
   java_release_targets.each do |p|
     Bazel.execute('run',
-                  ['--stamp',
-                   '--define',
+                  ['--define',
                    "maven_repo=file://#{Dir.home}/.m2/repository",
                    '--define',
                    'gpg_sign=false'],

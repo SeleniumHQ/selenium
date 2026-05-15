@@ -9,7 +9,8 @@ BINDING_TARGETS = {
   'py' => '//py/...',
   'rb' => '//rb/...',
   'dotnet' => '//dotnet/...',
-  'javascript' => '//javascript/selenium-webdriver/...'
+  'javascript' => '//javascript/selenium-webdriver/...',
+  'rust' => '//rust/...'
 }.freeze
 
 # Shared utilities used by language-specific rake tasks

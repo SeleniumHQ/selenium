@@ -34,17 +34,12 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.logging.LocalLogs;
-import org.openqa.selenium.logging.LogEntry;
-import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.NeedsLocalLogs;
-import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
+public class HttpCommandExecutor implements CommandExecutor {
 
   private final URL remoteServer;
   public final HttpClient client;
@@ -52,9 +47,6 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   protected final Map<String, CommandInfo> additionalCommands;
   protected @Nullable CommandCodec<HttpRequest> commandCodec;
   protected @Nullable ResponseCodec<HttpResponse> responseCodec;
-
-  @SuppressWarnings("deprecation")
-  private LocalLogs logs = LocalLogs.getNullLogger();
 
   private static class DefaultClientFactoryHolder {
     static HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
@@ -155,27 +147,11 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     commandCodec.defineCommand(commandName, info.getMethod(), info.getUrl());
   }
 
-  /**
-   * @deprecated logging is not in the W3C WebDriver spec and is no longer supported.
-   */
-  @Override
-  @Deprecated(forRemoval = true)
-  @SuppressWarnings("deprecation")
-  public void setLocalLogs(LocalLogs logs) {
-    this.logs = logs;
-  }
-
-  @SuppressWarnings("deprecation")
-  private void log(String logType, LogEntry entry) {
-    logs.addEntry(logType, entry);
-  }
-
   public URL getAddressOfRemoteServer() {
     return remoteServer;
   }
 
   @Override
-  @SuppressWarnings("deprecation")
   public Response execute(Command command) throws IOException {
     if (command.getSessionId() == null) {
       if (QUIT.equals(command.getName())) {
@@ -192,7 +168,6 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         throw new SessionNotCreatedException("Session already exists");
       }
       ProtocolHandshake handshake = new ProtocolHandshake();
-      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
       ProtocolHandshake.Result result = handshake.createSession(client, command);
       Dialect dialect = result.getDialect();
       commandCodec = dialect.getCommandCodec();
@@ -200,7 +175,6 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         defineCommand(entry.getKey(), entry.getValue());
       }
       responseCodec = dialect.getResponseCodec();
-      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
       return result.createResponse();
     }
 
@@ -217,9 +191,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     }
 
     try {
-      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
       HttpResponse httpResponse = client.execute(httpRequest);
-      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
 
       Response response = responseCodec.decode(httpResponse);
       if (response.getSessionId() == null) {

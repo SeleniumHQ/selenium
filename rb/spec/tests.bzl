@@ -234,12 +234,13 @@ def rb_integration_test(name, srcs, deps = [], data = [], browsers = BROWSERS.ke
                 target_compatible_with = BROWSERS[browser]["target_compatible_with"],
             )
 
-def rb_unit_test(name, srcs, deps, data = []):
+def rb_unit_test(name, srcs, deps, data = [], flaky = False):
     rb_test(
         name = name,
         size = "small",
         srcs = srcs,
         args = ["rb/spec/"],
+        flaky = flaky,
         main = "@bundle//bin:rspec",
         data = data,
         tags = ["no-sandbox"],  # TODO: Do we need this?

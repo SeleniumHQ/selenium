@@ -52,15 +52,14 @@ jobs:
       - name: Check if release ruleset is active
         id: check
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          if ! ENFORCEMENT=$(gh api /repos/${{ github.repository }}/rulesets/11911909 --jq '.enforcement' 2>/dev/null); then
-            echo "::warning::Failed to check release ruleset, assuming release in progress"
+          rulesets=$(gh api "repos/$GH_REPO/rulesets" 2>/dev/null || echo '[{"name":"Release: api-error"}]')
+          if jq -e 'any(.[]; .name | startswith("Release:"))' <<<"$rulesets" >/dev/null; then
             echo "release-in-progress=true" >> "$GITHUB_OUTPUT"
-            exit 0
           fi
-          echo "release-in-progress=$([[ "$ENFORCEMENT" == "active" ]] && echo 'true' || echo 'false')" >> "$GITHUB_OUTPUT"
 
   nightly-release:
     name: Nightly ${{ matrix.language }}
