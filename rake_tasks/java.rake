@@ -311,8 +311,10 @@ def maven_stable_release(artifact)
   require 'rexml/document'
   group_id, artifact_id = artifact.split(':', 2)
   group_path = group_id.tr('.', '/')
-  url = "https://repo1.maven.org/maven2/#{group_path}/#{artifact_id}/maven-metadata.xml"
-  xml = Net::HTTP.get(URI(url))
+  uri = URI("https://repo1.maven.org/maven2/#{group_path}/#{artifact_id}/maven-metadata.xml")
+  xml = Net::HTTP.start(uri.host, uri.port, use_ssl: true, open_timeout: 5, read_timeout: 10) do |http|
+    http.get(uri.request_uri).body
+  end
   doc = REXML::Document.new(xml)
   versions = doc.elements.to_a('metadata/versioning/versions/version').map(&:text)
   stable = versions.grep(/\A\d+\.\d+(\.\d+)*\z/)
