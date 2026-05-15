@@ -6,13 +6,13 @@
 <title>
   Module: Selenium::WebDriver::Safari
   
-    &mdash; Documentation by YARD 0.9.39
+    &mdash; Documentation by YARD 0.9.43
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css">
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css">
 
 <script type="text/javascript">
   pathId = "Selenium::WebDriver::Safari";
@@ -27,6 +27,8 @@
 
   </head>
   <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
     <div class="nav_wrap">
       <iframe id="nav" src="../../class_list.html?1"></iframe>
       <div id="resizer"></div>
@@ -78,8 +80,9 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>rb/lib/selenium/webdriver/safari.rb<span class="defines">,<br />
-  rb/lib/selenium/webdriver/safari/driver.rb,<br /> rb/lib/selenium/webdriver/safari/options.rb,<br /> rb/lib/selenium/webdriver/safari/service.rb,<br /> rb/lib/selenium/webdriver/safari/features.rb</span>
+    <dd>rb/lib/selenium/webdriver/safari.rb<span class="defines">,<br>
+  rb/lib/selenium/webdriver/safari/driver.rb,<br> rb/lib/selenium/webdriver/safari/options.rb,<br> rb/lib/selenium/webdriver/safari/service.rb,<br> rb/lib/selenium/webdriver/safari/features.rb</span>
+
 </dd>
   </dl>
   
@@ -124,9 +127,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute use_technology_preview.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute use_technology_preview.</p></div></span>
   
 </li>
 
@@ -255,6 +256,7 @@
 
       
     </ul>
+    
   
 
 
@@ -274,9 +276,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the value of attribute use_technology_preview.</p>
-
+    <p>Returns the value of attribute use_technology_preview.</p>
 
   </div>
 </div>
@@ -457,7 +457,7 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_technology_preview!'>technology_preview!</span>
-  <span class='const'><span class='object_link'><a href="Safari/Service.html" title="Selenium::WebDriver::Safari::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_driver_path'><span class='object_link'><a href="Service.html#driver_path-class_method" title="Selenium::WebDriver::Service.driver_path (method)">driver_path</a></span></span> <span class='op'>=</span> <span class='id identifier rubyid_technology_preview'>technology_preview</span>
+  <span class='const'><span class='object_link'><a href="Safari/Service.html" title="Selenium::WebDriver::Safari::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span> <span class='op'>=</span> <span class='id identifier rubyid_technology_preview'>technology_preview</span>
   <span class='ivar'>@use_technology_preview</span> <span class='op'>=</span> <span class='kw'>true</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -522,9 +522,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu May 14 19:35:00 2026 by
+  Generated on Fri May 15 13:34:09 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.39 (ruby-3.2.9).
+  0.9.43 (ruby-3.2.9).
 </div>
 
     </div>

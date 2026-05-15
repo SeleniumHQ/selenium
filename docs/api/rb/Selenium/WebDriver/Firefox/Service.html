@@ -6,13 +6,13 @@
 <title>
   Class: Selenium::WebDriver::Firefox::Service
   
-    &mdash; Documentation by YARD 0.9.39
+    &mdash; Documentation by YARD 0.9.43
   
 </title>
 
-  <link rel="stylesheet" href="../../../css/style.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css">
 
-  <link rel="stylesheet" href="../../../css/common.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css">
 
 <script type="text/javascript">
   pathId = "Selenium::WebDriver::Firefox::Service";
@@ -27,6 +27,8 @@
 
   </head>
   <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
     <div class="nav_wrap">
       <iframe id="nav" src="../../../class_list.html?1"></iframe>
       <div id="resizer"></div>
@@ -69,12 +71,12 @@
   <dl>
     <dt>Inherits:</dt>
     <dd>
-      <span class="inheritName"><span class='object_link'><a href="../Service.html" title="Selenium::WebDriver::Service (class)">Service</a></span></span>
+      <span class="inheritName">WebDriver::Service</span>
       
         <ul class="fullTree">
           <li>Object</li>
           
-            <li class="next"><span class='object_link'><a href="../Service.html" title="Selenium::WebDriver::Service (class)">Service</a></span></li>
+            <li class="next">WebDriver::Service</li>
           
             <li class="next">Selenium::WebDriver::Firefox::Service</li>
           
@@ -96,7 +98,8 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>rb/lib/selenium/webdriver/firefox/service.rb</dd>
+    <dd>rb/lib/selenium/webdriver/firefox/service.rb
+</dd>
   </dl>
   
 </div>
@@ -138,11 +141,6 @@
 
 
 
-  <h2>Instance Attribute Summary</h2>
-  
-  <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="../Service.html" title="Selenium::WebDriver::Service (class)">Service</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Service.html#args-instance_method" title="Selenium::WebDriver::Service#args (method)">#args</a></span>, <span class='object_link'><a href="../Service.html#executable_path-instance_method" title="Selenium::WebDriver::Service#executable_path (method)">#executable_path</a></span>, <span class='object_link'><a href="../Service.html#host-instance_method" title="Selenium::WebDriver::Service#host (method)">#host</a></span>, <span class='object_link'><a href="../Service.html#log-instance_method" title="Selenium::WebDriver::Service#log (method)">#log</a></span>, <span class='object_link'><a href="../Service.html#port-instance_method" title="Selenium::WebDriver::Service#port (method)">#port</a></span></p>
-
 
   
     <h2>
@@ -171,28 +169,39 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>A new instance of Service.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>A new instance of Service.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#launch-instance_method" title="#launch (instance method)">#<strong>launch</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
       
     </ul>
+    
   
 
 
-  
-  
-  
-  
-  
-  
-  
-  
-  <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../Service.html" title="Selenium::WebDriver::Service (class)">Service</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Service.html#chrome-class_method" title="Selenium::WebDriver::Service.chrome (method)">chrome</a></span>, <span class='object_link'><a href="../Service.html#edge-class_method" title="Selenium::WebDriver::Service.edge (method)">edge</a></span>, <span class='object_link'><a href="../Service.html#env_path-instance_method" title="Selenium::WebDriver::Service#env_path (method)">#env_path</a></span>, <span class='object_link'><a href="../Service.html#find_driver_path-instance_method" title="Selenium::WebDriver::Service#find_driver_path (method)">#find_driver_path</a></span>, <span class='object_link'><a href="../Service.html#firefox-class_method" title="Selenium::WebDriver::Service.firefox (method)">firefox</a></span>, <span class='object_link'><a href="../Service.html#ie-class_method" title="Selenium::WebDriver::Service.ie (method)">ie</a></span>, <span class='object_link'><a href="../Service.html#launch-instance_method" title="Selenium::WebDriver::Service#launch (method)">#launch</a></span>, <span class='object_link'><a href="../Service.html#safari-class_method" title="Selenium::WebDriver::Service.safari (method)">safari</a></span>, <span class='object_link'><a href="../Service.html#shutdown_supported-instance_method" title="Selenium::WebDriver::Service#shutdown_supported (method)">#shutdown_supported</a></span></p>
-<div id="constructor_details" class="method_details_list">
+  <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
@@ -206,9 +215,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns a new instance of Service.</p>
-
+    <p>Returns a new instance of Service.</p>
 
   </div>
 </div>
@@ -231,10 +238,7 @@
 36
 37
 38
-39
-40
-41
-42</pre>
+39</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/service.rb', line 29</span>
@@ -246,10 +250,7 @@
     <span class='id identifier rubyid_args'>args</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0</span><span class='tstring_end'>&#39;</span></span>
   <span class='kw'>end</span>
 
-  <span class='kw'>if</span> <span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>SE_DEBUG</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_remove_log_args'>remove_log_args</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_args'>args</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>-v</span><span class='tstring_end'>&#39;</span></span>
-  <span class='kw'>end</span>
+  <span class='id identifier rubyid_configure_debug_args'>configure_debug_args</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>SE_DEBUG</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 
   <span class='kw'>super</span>
 <span class='kw'>end</span></pre>
@@ -261,12 +262,52 @@
 </div>
 
 
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="launch-instance_method">
+  
+    #<strong>launch</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+41
+42
+43
+44
+45</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/service.rb', line 41</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_launch'>launch</span>
+  <span class='id identifier rubyid_configure_debug_args'>configure_debug_args</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>SE_DEBUG</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+
+  <span class='kw'>super</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
 </div>
 
       <div id="footer">
-  Generated on Thu May 14 19:35:03 2026 by
+  Generated on Fri May 15 13:34:12 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.39 (ruby-3.2.9).
+  0.9.43 (ruby-3.2.9).
 </div>
 
     </div>

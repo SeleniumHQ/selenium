@@ -98,6 +98,7 @@ loadScripts(document, 'script');</script>
 <li><a href="org/openqa/selenium/grid/distributor/config/package-tree.html">org.openqa.selenium.grid.distributor.config</a>, </li>
 <li><a href="org/openqa/selenium/grid/distributor/httpd/package-tree.html">org.openqa.selenium.grid.distributor.httpd</a>, </li>
 <li><a href="org/openqa/selenium/grid/distributor/local/package-tree.html">org.openqa.selenium.grid.distributor.local</a>, </li>
+<li><a href="org/openqa/selenium/grid/distributor/redis/package-tree.html">org.openqa.selenium.grid.distributor.redis</a>, </li>
 <li><a href="org/openqa/selenium/grid/distributor/remote/package-tree.html">org.openqa.selenium.grid.distributor.remote</a>, </li>
 <li><a href="org/openqa/selenium/grid/distributor/selector/package-tree.html">org.openqa.selenium.grid.distributor.selector</a>, </li>
 <li><a href="org/openqa/selenium/grid/graphql/package-tree.html">org.openqa.selenium.grid.graphql</a>, </li>
@@ -138,6 +139,7 @@ loadScripts(document, 'script');</script>
 <li><a href="org/openqa/selenium/netty/server/package-tree.html">org.openqa.selenium.netty.server</a>, </li>
 <li><a href="org/openqa/selenium/os/package-tree.html">org.openqa.selenium.os</a>, </li>
 <li><a href="org/openqa/selenium/print/package-tree.html">org.openqa.selenium.print</a>, </li>
+<li><a href="org/openqa/selenium/redis/package-tree.html">org.openqa.selenium.redis</a>, </li>
 <li><a href="org/openqa/selenium/remote/package-tree.html">org.openqa.selenium.remote</a>, </li>
 <li><a href="org/openqa/selenium/remote/codec/package-tree.html">org.openqa.selenium.remote.codec</a>, </li>
 <li><a href="org/openqa/selenium/remote/codec/w3c/package-tree.html">org.openqa.selenium.remote.codec.w3c</a>, </li>
@@ -402,6 +404,7 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.openqa.selenium.grid.distributor.<a href="org/openqa/selenium/grid/distributor/Distributor.html" class="type-name-link" title="class in org.openqa.selenium.grid.distributor">Distributor</a> (implements org.openqa.selenium.status.<a href="org/openqa/selenium/status/HasReadyState.html" title="interface in org.openqa.selenium.status">HasReadyState</a>, java.util.function.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Predicate.html" title="class or interface in java.util.function" class="external-link">Predicate</a>&lt;T&gt;, org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a>)
 <ul>
 <li class="circle">org.openqa.selenium.grid.distributor.local.<a href="org/openqa/selenium/grid/distributor/local/LocalDistributor.html" class="type-name-link" title="class in org.openqa.selenium.grid.distributor.local">LocalDistributor</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Closeable.html" title="class or interface in java.io" class="external-link">Closeable</a>)</li>
+<li class="circle">org.openqa.selenium.grid.distributor.redis.<a href="org/openqa/selenium/grid/distributor/redis/RedisBackedDistributor.html" class="type-name-link" title="class in org.openqa.selenium.grid.distributor.redis">RedisBackedDistributor</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Closeable.html" title="class or interface in java.io" class="external-link">Closeable</a>)</li>
 <li class="circle">org.openqa.selenium.grid.distributor.remote.<a href="org/openqa/selenium/grid/distributor/remote/RemoteDistributor.html" class="type-name-link" title="class in org.openqa.selenium.grid.distributor.remote">RemoteDistributor</a></li>
 </ul>
 </li>
@@ -525,8 +528,10 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.openqa.selenium.grid.distributor.<a href="org/openqa/selenium/grid/distributor/GridModel.html" class="type-name-link" title="class in org.openqa.selenium.grid.distributor">GridModel</a>
 <ul>
 <li class="circle">org.openqa.selenium.grid.distributor.local.<a href="org/openqa/selenium/grid/distributor/local/LocalGridModel.html" class="type-name-link" title="class in org.openqa.selenium.grid.distributor.local">LocalGridModel</a></li>
+<li class="circle">org.openqa.selenium.grid.distributor.redis.<a href="org/openqa/selenium/grid/distributor/redis/RedisBackedGridModel.html" class="type-name-link" title="class in org.openqa.selenium.grid.distributor.redis">RedisBackedGridModel</a></li>
 </ul>
 </li>
+<li class="circle">org.openqa.selenium.redis.<a href="org/openqa/selenium/redis/GridRedisClient.html" class="type-name-link" title="class in org.openqa.selenium.redis">GridRedisClient</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Closeable.html" title="class or interface in java.io" class="external-link">Closeable</a>)</li>
 <li class="circle">org.openqa.selenium.grid.web.<a href="org/openqa/selenium/grid/web/GridUiRoute.html" class="type-name-link" title="class in org.openqa.selenium.grid.web">GridUiRoute</a> (implements org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a>)</li>
 <li class="circle">org.openqa.selenium.concurrent.<a href="org/openqa/selenium/concurrent/GuardedRunnable.html" class="type-name-link" title="class in org.openqa.selenium.concurrent">GuardedRunnable</a></li>
 <li class="circle">org.openqa.selenium.events.local.<a href="org/openqa/selenium/events/local/GuavaEventBus.html" class="type-name-link" title="class in org.openqa.selenium.events.local">GuavaEventBus</a> (implements org.openqa.selenium.events.<a href="org/openqa/selenium/events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>)</li>
@@ -758,6 +763,7 @@ loadScripts(document, 'script');</script>
 </ul>
 </li>
 <li class="circle">org.openqa.selenium.<a href="org/openqa/selenium/Rectangle.html" class="type-name-link" title="class in org.openqa.selenium">Rectangle</a></li>
+<li class="circle">org.openqa.selenium.grid.distributor.redis.<a href="org/openqa/selenium/grid/distributor/redis/RedisBackedNodeRegistry.html" class="type-name-link" title="class in org.openqa.selenium.grid.distributor.redis">RedisBackedNodeRegistry</a> (implements org.openqa.selenium.grid.distributor.<a href="org/openqa/selenium/grid/distributor/NodeRegistry.html" title="interface in org.openqa.selenium.grid.distributor">NodeRegistry</a>)</li>
 <li class="circle">org.openqa.selenium.docker.internal.<a href="org/openqa/selenium/docker/internal/Reference.html" class="type-name-link" title="class in org.openqa.selenium.docker.internal">Reference</a></li>
 <li class="circle">org.openqa.selenium.support.locators.<a href="org/openqa/selenium/support/locators/RelativeLocator.html" class="type-name-link" title="class in org.openqa.selenium.support.locators">RelativeLocator</a></li>
 <li class="circle">org.openqa.selenium.support.locators.<a href="org/openqa/selenium/support/locators/RelativeLocatorServerSide.html" class="type-name-link" title="class in org.openqa.selenium.support.locators">RelativeLocatorServerSide</a> (implements org.openqa.selenium.remote.locators.<a href="org/openqa/selenium/remote/locators/CustomLocator.html" title="interface in org.openqa.selenium.remote.locators">CustomLocator</a>)</li>

@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_BiDi_Log_ILogModule.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Log.ILogModule%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docfix/apiSpec/new?filename=OpenQA_Selenium_BiDi_Log_ILogModule.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Log.ILogModule%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,12 +89,12 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Log_ILogModule" data-uid="OpenQA.Selenium.BiDi.Log.ILogModule" class="text-break">
-Interface ILogModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Log/ILogModule.cs/#L22"><i class="bi bi-code-slash"></i></a>
+Interface ILogModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Log/ILogModule.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a>.<a class="xref" href="OpenQA.Selenium.BiDi.html">BiDi</a>.<a class="xref" href="OpenQA.Selenium.BiDi.Log.html">Log</a></dd></dl>
-  <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
+  <dl><dt>Assembly</dt><dd>Selenium.WebDriver.dll</dd></dl>
   </div>
 
   <div class="markdown summary"></div>
@@ -116,82 +116,33 @@ Interface ILogModule  <a class="header-action link-secondary" title="View source
 
 
 
-  <h2 class="section" id="methods">Methods
+  <h2 class="section" id="properties">Properties
 </h2>
 
 
-  <a id="OpenQA_Selenium_BiDi_Log_ILogModule_OnEntryAddedAsync_" data-uid="OpenQA.Selenium.BiDi.Log.ILogModule.OnEntryAddedAsync*"></a>
+  <a id="OpenQA_Selenium_BiDi_Log_ILogModule_EntryAdded_" data-uid="OpenQA.Selenium.BiDi.Log.ILogModule.EntryAdded*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Log_ILogModule_OnEntryAddedAsync_System_Action_OpenQA_Selenium_BiDi_Log_EntryAddedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Log.ILogModule.OnEntryAddedAsync(System.Action{OpenQA.Selenium.BiDi.Log.EntryAddedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnEntryAddedAsync(Action&lt;EntryAddedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Log/ILogModule.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Log_ILogModule_EntryAdded" data-uid="OpenQA.Selenium.BiDi.Log.ILogModule.EntryAdded">
+  EntryAdded
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Log/ILogModule.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnEntryAddedAsync(Action&lt;EntryAddedEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+    <pre><code class="lang-csharp hljs">IEventSource&lt;EntryAddedEventArgs&gt; EntryAdded { get; }</code></pre>
   </div>
 
-  <h4 class="section">Parameters</h4>
+
+
+
+
+  <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Log.EntryAddedEventArgs.html">EntryAddedEventArgs</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IEventSource-1.html">IEventSource</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Log.EntryAddedEventArgs.html">EntryAddedEventArgs</a>&gt;</dt>
     <dd></dd>
   </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_Log_ILogModule_OnEntryAddedAsync_" data-uid="OpenQA.Selenium.BiDi.Log.ILogModule.OnEntryAddedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Log_ILogModule_OnEntryAddedAsync_System_Func_OpenQA_Selenium_BiDi_Log_EntryAddedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Log.ILogModule.OnEntryAddedAsync(System.Func{OpenQA.Selenium.BiDi.Log.EntryAddedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnEntryAddedAsync(Func&lt;EntryAddedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Log/ILogModule.cs/#L24"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnEntryAddedAsync(Func&lt;EntryAddedEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Log.EntryAddedEventArgs.html">EntryAddedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
 
 
 
@@ -204,7 +155,7 @@ Interface ILogModule  <a class="header-action link-secondary" title="View source
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Log/ILogModule.cs/#L22" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Log/ILogModule.cs/#L22" class="edit-link">Edit this page</a>
         </div>
 
 

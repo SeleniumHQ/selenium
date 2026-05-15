@@ -6,13 +6,13 @@
 <title>
   Class: Selenium::WebDriver::DevTools::NetworkInterceptor
   
-    &mdash; Documentation by YARD 0.9.39
+    &mdash; Documentation by YARD 0.9.43
   
 </title>
 
-  <link rel="stylesheet" href="../../../css/style.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css">
 
-  <link rel="stylesheet" href="../../../css/common.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css">
 
 <script type="text/javascript">
   pathId = "Selenium::WebDriver::DevTools::NetworkInterceptor";
@@ -27,6 +27,8 @@
 
   </head>
   <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
     <div class="nav_wrap">
       <iframe id="nav" src="../../../class_list.html?1"></iframe>
       <div id="resizer"></div>
@@ -94,7 +96,8 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>rb/lib/selenium/webdriver/devtools/network_interceptor.rb</dd>
+    <dd>rb/lib/selenium/webdriver/devtools/network_interceptor.rb
+</dd>
   </dl>
   
 </div>
@@ -105,11 +108,10 @@
   <strong>This class is part of a private API.</strong>
   You should avoid using this class if possible, as it may be removed or be changed in the future.
 </p>
-
-<p>Wraps the network request/response interception, providing thread-safety guarantees and handling special cases such as browser canceling requests midst interception.</p>
-
+<p>Wraps the network request/response interception, providing
+thread-safety guarantees and handling special cases such as browser
+canceling requests midst interception.</p>
 <p>You should not be using this class directly, use Driver#intercept instead.</p>
-
 
   </div>
 </div>
@@ -132,9 +134,8 @@
   <strong>This constant is part of a private API.</strong>
   You should avoid using this constant if possible, as it may be removed or be changed in the future.
 </p>
-
-<p>CDP fails to get body on certain responses (301) and raises: “Can only get response body on requests captured after headers received.”</p>
-
+<p>CDP fails to get body on certain responses (301) and raises:
+&quot;Can only get response body on requests captured after headers received.&quot;</p>
 
   </div>
 </div>
@@ -152,9 +153,8 @@
   <strong>This constant is part of a private API.</strong>
   You should avoid using this constant if possible, as it may be removed or be changed in the future.
 </p>
-
-<p>CDP fails to operate with intercepted requests. Typical reason is browser cancelling intercepted requests/responses.</p>
-
+<p>CDP fails to operate with intercepted requests.
+Typical reason is browser cancelling intercepted requests/responses.</p>
 
   </div>
 </div>
@@ -201,9 +201,7 @@
   <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>A new instance of NetworkInterceptor.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>A new instance of NetworkInterceptor.</p></div></span>
   
 </li>
 
@@ -231,6 +229,7 @@
 
       
     </ul>
+    
   
 
 <div id="constructor_details" class="method_details_list">
@@ -251,9 +250,7 @@
   <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-
 <p>Returns a new instance of NetworkInterceptor.</p>
-
 
   </div>
 </div>
@@ -348,9 +345,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu May 14 19:35:04 2026 by
+  Generated on Fri May 15 13:34:13 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.39 (ruby-3.2.9).
+  0.9.43 (ruby-3.2.9).
 </div>
 
     </div>

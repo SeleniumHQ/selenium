@@ -6,13 +6,13 @@
 <title>
   Class: Selenium::Server
   
-    &mdash; Documentation by YARD 0.9.39
+    &mdash; Documentation by YARD 0.9.43
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css">
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css">
 
 <script type="text/javascript">
   pathId = "Selenium::Server";
@@ -27,6 +27,8 @@
 
   </head>
   <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
     <div class="nav_wrap">
       <iframe id="nav" src="../class_list.html?1"></iframe>
       <div id="resizer"></div>
@@ -94,47 +96,35 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>rb/lib/selenium/server.rb</dd>
+    <dd>rb/lib/selenium/server.rb
+</dd>
   </dl>
   
 </div>
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
-<p>Wraps the remote server jar</p>
-
+    <p>Wraps the remote server jar</p>
 <p>Usage:</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::Server#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/path/to/selenium-server-standalone.jar</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
 </code></pre>
-
 <p>Automatically download the given version:</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_get'><span class='object_link'><a href="#get-class_method" title="Selenium::Server.get (method)">get</a></span></span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>2.6.0</span><span class='tstring_end'>&#39;</span></span>
 <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
 </code></pre>
-
 <p>or the latest version:</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_get'><span class='object_link'><a href="#get-class_method" title="Selenium::Server.get (method)">get</a></span></span> <span class='symbol'>:latest</span>
 <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
 </code></pre>
-
 <p>Run the server in the background:</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::Server#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_jar'>jar</span><span class='comma'>,</span> <span class='symbol'>:background</span> <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
 </code></pre>
-
 <p>Add additional arguments:</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::Server#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_jar'>jar</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_server'>server</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>--additional</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>args</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
-<span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
-</code></pre>
-
+<span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span></code></pre>
 
   </div>
 </div>
@@ -194,9 +184,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>The Mode of the Server :standalone, #hub, #node.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>The Mode of the Server :standalone, #hub, #node.</p></div></span>
   
 </li>
 
@@ -221,9 +209,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>The Mode of the Server :standalone, #hub, #node.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>The Mode of the Server :standalone, #hub, #node.</p></div></span>
   
 </li>
 
@@ -248,9 +234,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>The Mode of the Server :standalone, #hub, #node.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>The Mode of the Server :standalone, #hub, #node.</p></div></span>
   
 </li>
 
@@ -275,9 +259,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>The Mode of the Server :standalone, #hub, #node.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>The Mode of the Server :standalone, #hub, #node.</p></div></span>
   
 </li>
 
@@ -302,9 +284,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>The Mode of the Server :standalone, #hub, #node.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>The Mode of the Server :standalone, #hub, #node.</p></div></span>
   
 </li>
 
@@ -329,9 +309,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>The Mode of the Server :standalone, #hub, #node.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>The Mode of the Server :standalone, #hub, #node.</p></div></span>
   
 </li>
 
@@ -388,9 +366,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Download the given version of the selenium-server jar and return location.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Download the given version of the selenium-server jar and return location.</p></div></span>
   
 </li>
 
@@ -434,9 +410,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Download the given version of the selenium-server jar and return instance.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Download the given version of the selenium-server jar and return instance.</p></div></span>
   
 </li>
 
@@ -458,9 +432,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Ask GitHub what the latest selenium-server version is.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Ask GitHub what the latest selenium-server version is.</p></div></span>
   
 </li>
 
@@ -488,6 +460,7 @@
 
       
     </ul>
+    
   
     <h2>
       Instance Method Summary
@@ -537,9 +510,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>A new instance of Server.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>A new instance of Server.</p></div></span>
   
 </li>
 
@@ -633,6 +604,7 @@
 
       
     </ul>
+    
   
 
 <div id="constructor_details" class="method_details_list">
@@ -649,9 +621,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns a new instance of Server.</p>
-
+    <p>Returns a new instance of Server.</p>
 
   </div>
 </div>
@@ -669,9 +639,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>Path to the server jar.</p>
-</div>
+        <div class='inline'><p>Path to the server jar.</p></div>
       
     </li>
   
@@ -687,9 +655,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the options to create the server process with</p>
-</div>
+        <div class='inline'><p>the options to create the server process with</p></div>
       
     </li>
   
@@ -710,9 +676,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>Port the server should listen on (default: 4444).</p>
-</div>
+            &mdash; <div class='inline'><p>Port the server should listen on (default: 4444).</p></div>
           
         </li>
       
@@ -723,9 +687,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>Seconds to wait for server launch/shutdown (default: 30)</p>
-</div>
+            &mdash; <div class='inline'><p>Seconds to wait for server launch/shutdown (default: 30)</p></div>
           
         </li>
       
@@ -736,9 +698,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>Run the server in the background (default: false)</p>
-</div>
+            &mdash; <div class='inline'><p>Run the server in the background (default: false)</p></div>
           
         </li>
       
@@ -749,9 +709,8 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>Either a path to a log file, or true to pass server log to stdout.</p>
-</div>
+            &mdash; <div class='inline'><p>Either a path to a log file,
+or true to pass server log to stdout.</p></div>
           
         </li>
       
@@ -769,9 +728,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>if the jar file does not exist</p>
-</div>
+        <div class='inline'><p>if the jar file does not exist</p></div>
       
     </li>
   
@@ -850,9 +807,8 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>The Mode of the Server :standalone, #hub, #node</p>
-
+    <p>The Mode of the Server
+:standalone, #hub, #node</p>
 
   </div>
 </div>
@@ -893,9 +849,8 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>The Mode of the Server :standalone, #hub, #node</p>
-
+    <p>The Mode of the Server
+:standalone, #hub, #node</p>
 
   </div>
 </div>
@@ -936,9 +891,8 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>The Mode of the Server :standalone, #hub, #node</p>
-
+    <p>The Mode of the Server
+:standalone, #hub, #node</p>
 
   </div>
 </div>
@@ -979,9 +933,8 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>The Mode of the Server :standalone, #hub, #node</p>
-
+    <p>The Mode of the Server
+:standalone, #hub, #node</p>
 
   </div>
 </div>
@@ -1022,9 +975,8 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>The Mode of the Server :standalone, #hub, #node</p>
-
+    <p>The Mode of the Server
+:standalone, #hub, #node</p>
 
   </div>
 </div>
@@ -1065,9 +1017,8 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>The Mode of the Server :standalone, #hub, #node</p>
-
+    <p>The Mode of the Server
+:standalone, #hub, #node</p>
 
   </div>
 </div>
@@ -1166,9 +1117,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Download the given version of the selenium-server jar and return location</p>
-
+    <p>Download the given version of the selenium-server jar and return location</p>
 
   </div>
 </div>
@@ -1188,9 +1137,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>X.Y.Z defaults to ‘:latest’</p>
-</div>
+        <div class='inline'><p>X.Y.Z defaults to ':latest'</p></div>
       
     </li>
   
@@ -1207,9 +1154,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>location of downloaded file</p>
-</div>
+        <div class='inline'><p>location of downloaded file</p></div>
       
     </li>
   
@@ -1357,9 +1302,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Download the given version of the selenium-server jar and return instance</p>
-
+    <p>Download the given version of the selenium-server jar and return instance</p>
 
   </div>
 </div>
@@ -1379,9 +1322,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>X.Y.Z defaults to ‘:latest’</p>
-</div>
+        <div class='inline'><p>X.Y.Z defaults to ':latest'</p></div>
       
     </li>
   
@@ -1446,9 +1387,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Ask GitHub what the latest selenium-server version is.</p>
-
+    <p>Ask GitHub what the latest selenium-server version is.</p>
 
   </div>
 </div>
@@ -1751,9 +1690,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu May 14 19:35:01 2026 by
+  Generated on Fri May 15 13:34:10 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.39 (ruby-3.2.9).
+  0.9.43 (ruby-3.2.9).
 </div>
 
     </div>

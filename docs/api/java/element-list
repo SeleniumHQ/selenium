@@ -43,6 +43,7 @@ org.openqa.selenium.grid.distributor
 org.openqa.selenium.grid.distributor.config
 org.openqa.selenium.grid.distributor.httpd
 org.openqa.selenium.grid.distributor.local
+org.openqa.selenium.grid.distributor.redis
 org.openqa.selenium.grid.distributor.remote
 org.openqa.selenium.grid.distributor.selector
 org.openqa.selenium.grid.graphql
@@ -83,6 +84,7 @@ org.openqa.selenium.net
 org.openqa.selenium.netty.server
 org.openqa.selenium.os
 org.openqa.selenium.print
+org.openqa.selenium.redis
 org.openqa.selenium.remote
 org.openqa.selenium.remote.codec
 org.openqa.selenium.remote.codec.w3c

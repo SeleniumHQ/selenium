@@ -64,12 +64,14 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.distributor.local">org.openqa.selenium.grid.distributor.local</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.distributor.remote">org.openqa.selenium.grid.distributor.remote</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.distributor.redis">org.openqa.selenium.grid.distributor.redis</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.graphql">org.openqa.selenium.grid.graphql</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.distributor.remote">org.openqa.selenium.grid.distributor.remote</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.router">org.openqa.selenium.grid.router</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.graphql">org.openqa.selenium.grid.graphql</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.router">org.openqa.selenium.grid.router</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -130,6 +132,31 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>static <a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">LocalDistributor.</span><code><a href="../local/LocalDistributor.html#create(org.openqa.selenium.grid.config.Config)" class="member-name-link">create</a><wbr>(<a href="../../config/Config.html" title="interface in org.openqa.selenium.grid.config">Config</a>&nbsp;config)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.grid.distributor.redis">
+<h2>Uses of <a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a> in <a href="../redis/package-summary.html">org.openqa.selenium.grid.distributor.redis</a></h2>
+<div class="caption"><span>Subclasses of <a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a> in <a href="../redis/package-summary.html">org.openqa.selenium.grid.distributor.redis</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../redis/RedisBackedDistributor.html" class="type-name-link" title="class in org.openqa.selenium.grid.distributor.redis">RedisBackedDistributor</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Stateless, horizontally-scalable implementation of <a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor"><code>Distributor</code></a> backed by Redis.</div>
+</div>
+</div>
+<div class="caption"><span>Methods in <a href="../redis/package-summary.html">org.openqa.selenium.grid.distributor.redis</a> that return <a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static <a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">RedisBackedDistributor.</span><code><a href="../redis/RedisBackedDistributor.html#create(org.openqa.selenium.grid.config.Config)" class="member-name-link">create</a><wbr>(<a href="../../config/Config.html" title="interface in org.openqa.selenium.grid.config">Config</a>&nbsp;config)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>

@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docfix/apiSpec/new?filename=OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,12 +89,12 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule" class="text-break">
-Interface IBrowsingContextModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L22"><i class="bi bi-code-slash"></i></a>
+Interface IBrowsingContextModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a>.<a class="xref" href="OpenQA.Selenium.BiDi.html">BiDi</a>.<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.html">BrowsingContext</a></dd></dl>
-  <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
+  <dl><dt>Assembly</dt><dd>Selenium.WebDriver.dll</dd></dl>
   </div>
 
   <div class="markdown summary"></div>
@@ -116,6 +116,444 @@ Interface IBrowsingContextModule  <a class="header-action link-secondary" title=
 
 
 
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_ContextCreated_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.ContextCreated*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_ContextCreated" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.ContextCreated">
+  ContextCreated
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEventSource&lt;ContextCreatedEventArgs&gt; ContextCreated { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IEventSource-1.html">IEventSource</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.ContextCreatedEventArgs.html">ContextCreatedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_ContextDestroyed_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.ContextDestroyed*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_ContextDestroyed" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.ContextDestroyed">
+  ContextDestroyed
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEventSource&lt;ContextDestroyedEventArgs&gt; ContextDestroyed { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IEventSource-1.html">IEventSource</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.ContextDestroyedEventArgs.html">ContextDestroyedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_DomContentLoaded_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.DomContentLoaded*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_DomContentLoaded" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.DomContentLoaded">
+  DomContentLoaded
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEventSource&lt;DomContentLoadedEventArgs&gt; DomContentLoaded { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IEventSource-1.html">IEventSource</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DomContentLoadedEventArgs.html">DomContentLoadedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_DownloadEnd_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.DownloadEnd*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_DownloadEnd" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.DownloadEnd">
+  DownloadEnd
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEventSource&lt;DownloadEndEventArgs&gt; DownloadEnd { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IEventSource-1.html">IEventSource</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.html">DownloadEndEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_DownloadWillBegin_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.DownloadWillBegin*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_DownloadWillBegin" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.DownloadWillBegin">
+  DownloadWillBegin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEventSource&lt;DownloadWillBeginEventArgs&gt; DownloadWillBegin { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IEventSource-1.html">IEventSource</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.html">DownloadWillBeginEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_FragmentNavigated_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.FragmentNavigated*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_FragmentNavigated" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.FragmentNavigated">
+  FragmentNavigated
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEventSource&lt;FragmentNavigatedEventArgs&gt; FragmentNavigated { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IEventSource-1.html">IEventSource</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.FragmentNavigatedEventArgs.html">FragmentNavigatedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_HistoryUpdated_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.HistoryUpdated*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_HistoryUpdated" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.HistoryUpdated">
+  HistoryUpdated
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEventSource&lt;HistoryUpdatedEventArgs&gt; HistoryUpdated { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IEventSource-1.html">IEventSource</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs.html">HistoryUpdatedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_Load_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.Load*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_Load" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.Load">
+  Load
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEventSource&lt;LoadEventArgs&gt; Load { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IEventSource-1.html">IEventSource</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.LoadEventArgs.html">LoadEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_NavigationAborted_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.NavigationAborted*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_NavigationAborted" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.NavigationAborted">
+  NavigationAborted
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEventSource&lt;NavigationAbortedEventArgs&gt; NavigationAborted { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IEventSource-1.html">IEventSource</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationAbortedEventArgs.html">NavigationAbortedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_NavigationCommitted_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.NavigationCommitted*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_NavigationCommitted" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.NavigationCommitted">
+  NavigationCommitted
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEventSource&lt;NavigationCommittedEventArgs&gt; NavigationCommitted { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IEventSource-1.html">IEventSource</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationCommittedEventArgs.html">NavigationCommittedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_NavigationFailed_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.NavigationFailed*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_NavigationFailed" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.NavigationFailed">
+  NavigationFailed
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEventSource&lt;NavigationFailedEventArgs&gt; NavigationFailed { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IEventSource-1.html">IEventSource</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationFailedEventArgs.html">NavigationFailedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_NavigationStarted_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.NavigationStarted*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_NavigationStarted" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.NavigationStarted">
+  NavigationStarted
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEventSource&lt;NavigationStartedEventArgs&gt; NavigationStarted { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IEventSource-1.html">IEventSource</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationStartedEventArgs.html">NavigationStartedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_UserPromptClosed_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.UserPromptClosed*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_UserPromptClosed" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.UserPromptClosed">
+  UserPromptClosed
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEventSource&lt;UserPromptClosedEventArgs&gt; UserPromptClosed { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IEventSource-1.html">IEventSource</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.html">UserPromptClosedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_UserPromptOpened_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.UserPromptOpened*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_UserPromptOpened" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.UserPromptOpened">
+  UserPromptOpened
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEventSource&lt;UserPromptOpenedEventArgs&gt; UserPromptOpened { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IEventSource-1.html">IEventSource</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.html">UserPromptOpenedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <h2 class="section" id="methods">Methods
 </h2>
 
@@ -124,7 +562,7 @@ Interface IBrowsingContextModule  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_ActivateAsync_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_ActivateOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.ActivateAsync(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.ActivateOptions,System.Threading.CancellationToken)">
   ActivateAsync(BrowsingContext, ActivateOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -164,7 +602,7 @@ Interface IBrowsingContextModule  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_CaptureScreenshotAsync_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_CaptureScreenshotOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.CaptureScreenshotAsync(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.CaptureScreenshotOptions,System.Threading.CancellationToken)">
   CaptureScreenshotAsync(BrowsingContext, CaptureScreenshotOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -204,7 +642,7 @@ Interface IBrowsingContextModule  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_CloseAsync_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_CloseOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.CloseAsync(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.CloseOptions,System.Threading.CancellationToken)">
   CloseAsync(BrowsingContext, CloseOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -244,7 +682,7 @@ Interface IBrowsingContextModule  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_CreateAsync_OpenQA_Selenium_BiDi_BrowsingContext_ContextType_OpenQA_Selenium_BiDi_BrowsingContext_CreateOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.CreateAsync(OpenQA.Selenium.BiDi.BrowsingContext.ContextType,OpenQA.Selenium.BiDi.BrowsingContext.CreateOptions,System.Threading.CancellationToken)">
   CreateAsync(ContextType, CreateOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -284,7 +722,7 @@ Interface IBrowsingContextModule  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_GetTreeAsync_OpenQA_Selenium_BiDi_BrowsingContext_GetTreeOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.GetTreeAsync(OpenQA.Selenium.BiDi.BrowsingContext.GetTreeOptions,System.Threading.CancellationToken)">
   GetTreeAsync(GetTreeOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -322,7 +760,7 @@ Interface IBrowsingContextModule  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_HandleUserPromptAsync_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_HandleUserPromptOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.HandleUserPromptAsync(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.HandleUserPromptOptions,System.Threading.CancellationToken)">
   HandleUserPromptAsync(BrowsingContext, HandleUserPromptOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -362,7 +800,7 @@ Interface IBrowsingContextModule  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_LocateNodesAsync_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_Locator_OpenQA_Selenium_BiDi_BrowsingContext_LocateNodesOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.LocateNodesAsync(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.Locator,OpenQA.Selenium.BiDi.BrowsingContext.LocateNodesOptions,System.Threading.CancellationToken)">
   LocateNodesAsync(BrowsingContext, Locator, LocateNodesOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -404,7 +842,7 @@ Interface IBrowsingContextModule  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_NavigateAsync_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_String_OpenQA_Selenium_BiDi_BrowsingContext_NavigateOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.NavigateAsync(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.String,OpenQA.Selenium.BiDi.BrowsingContext.NavigateOptions,System.Threading.CancellationToken)">
   NavigateAsync(BrowsingContext, string, NavigateOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -442,1131 +880,11 @@ Interface IBrowsingContextModule  <a class="header-action link-secondary" title=
 
 
 
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnContextCreatedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnContextCreatedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnContextCreatedAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_ContextCreatedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnContextCreatedAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.ContextCreatedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnContextCreatedAsync(Action&lt;ContextCreatedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L33"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnContextCreatedAsync(Action&lt;ContextCreatedEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.ContextCreatedEventArgs.html">ContextCreatedEventArgs</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnContextCreatedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnContextCreatedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnContextCreatedAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_ContextCreatedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnContextCreatedAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.ContextCreatedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnContextCreatedAsync(Func&lt;ContextCreatedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L32"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnContextCreatedAsync(Func&lt;ContextCreatedEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.ContextCreatedEventArgs.html">ContextCreatedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnContextDestroyedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnContextDestroyedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnContextDestroyedAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_ContextDestroyedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnContextDestroyedAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.ContextDestroyedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnContextDestroyedAsync(Action&lt;ContextDestroyedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L35"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnContextDestroyedAsync(Action&lt;ContextDestroyedEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.ContextDestroyedEventArgs.html">ContextDestroyedEventArgs</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnContextDestroyedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnContextDestroyedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnContextDestroyedAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_ContextDestroyedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnContextDestroyedAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.ContextDestroyedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnContextDestroyedAsync(Func&lt;ContextDestroyedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L34"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnContextDestroyedAsync(Func&lt;ContextDestroyedEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.ContextDestroyedEventArgs.html">ContextDestroyedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnDomContentLoadedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnDomContentLoadedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnDomContentLoadedAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_DomContentLoadedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnDomContentLoadedAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.DomContentLoadedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnDomContentLoadedAsync(Action&lt;DomContentLoadedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L37"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnDomContentLoadedAsync(Action&lt;DomContentLoadedEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DomContentLoadedEventArgs.html">DomContentLoadedEventArgs</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnDomContentLoadedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnDomContentLoadedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnDomContentLoadedAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_DomContentLoadedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnDomContentLoadedAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.DomContentLoadedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnDomContentLoadedAsync(Func&lt;DomContentLoadedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L36"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnDomContentLoadedAsync(Func&lt;DomContentLoadedEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DomContentLoadedEventArgs.html">DomContentLoadedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnDownloadEndAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnDownloadEndAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnDownloadEndAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnDownloadEndAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnDownloadEndAsync(Action&lt;DownloadEndEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L39"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnDownloadEndAsync(Action&lt;DownloadEndEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.html">DownloadEndEventArgs</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnDownloadEndAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnDownloadEndAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnDownloadEndAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnDownloadEndAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnDownloadEndAsync(Func&lt;DownloadEndEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L38"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnDownloadEndAsync(Func&lt;DownloadEndEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.html">DownloadEndEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnDownloadWillBeginAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnDownloadWillBeginAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnDownloadWillBeginAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnDownloadWillBeginAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnDownloadWillBeginAsync(Action&lt;DownloadWillBeginEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L41"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnDownloadWillBeginAsync(Action&lt;DownloadWillBeginEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.html">DownloadWillBeginEventArgs</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnDownloadWillBeginAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnDownloadWillBeginAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnDownloadWillBeginAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnDownloadWillBeginAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnDownloadWillBeginAsync(Func&lt;DownloadWillBeginEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L40"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnDownloadWillBeginAsync(Func&lt;DownloadWillBeginEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.html">DownloadWillBeginEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnFragmentNavigatedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnFragmentNavigatedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnFragmentNavigatedAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_FragmentNavigatedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnFragmentNavigatedAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.FragmentNavigatedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnFragmentNavigatedAsync(Action&lt;FragmentNavigatedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L43"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnFragmentNavigatedAsync(Action&lt;FragmentNavigatedEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.FragmentNavigatedEventArgs.html">FragmentNavigatedEventArgs</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnFragmentNavigatedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnFragmentNavigatedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnFragmentNavigatedAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_FragmentNavigatedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnFragmentNavigatedAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.FragmentNavigatedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnFragmentNavigatedAsync(Func&lt;FragmentNavigatedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L42"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnFragmentNavigatedAsync(Func&lt;FragmentNavigatedEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.FragmentNavigatedEventArgs.html">FragmentNavigatedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnHistoryUpdatedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnHistoryUpdatedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnHistoryUpdatedAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_HistoryUpdatedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnHistoryUpdatedAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnHistoryUpdatedAsync(Action&lt;HistoryUpdatedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L45"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnHistoryUpdatedAsync(Action&lt;HistoryUpdatedEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs.html">HistoryUpdatedEventArgs</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnHistoryUpdatedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnHistoryUpdatedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnHistoryUpdatedAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_HistoryUpdatedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnHistoryUpdatedAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnHistoryUpdatedAsync(Func&lt;HistoryUpdatedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L44"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnHistoryUpdatedAsync(Func&lt;HistoryUpdatedEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs.html">HistoryUpdatedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnLoadAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnLoadAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnLoadAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_LoadEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnLoadAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.LoadEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnLoadAsync(Action&lt;LoadEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L47"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnLoadAsync(Action&lt;LoadEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.LoadEventArgs.html">LoadEventArgs</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnLoadAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnLoadAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnLoadAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_LoadEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnLoadAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.LoadEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnLoadAsync(Func&lt;LoadEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L46"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnLoadAsync(Func&lt;LoadEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.LoadEventArgs.html">LoadEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationAbortedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationAbortedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationAbortedAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_NavigationAbortedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationAbortedAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.NavigationAbortedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnNavigationAbortedAsync(Action&lt;NavigationAbortedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L49"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnNavigationAbortedAsync(Action&lt;NavigationAbortedEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationAbortedEventArgs.html">NavigationAbortedEventArgs</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationAbortedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationAbortedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationAbortedAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_NavigationAbortedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationAbortedAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.NavigationAbortedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnNavigationAbortedAsync(Func&lt;NavigationAbortedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L48"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnNavigationAbortedAsync(Func&lt;NavigationAbortedEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationAbortedEventArgs.html">NavigationAbortedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationCommittedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationCommittedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationCommittedAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_NavigationCommittedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationCommittedAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.NavigationCommittedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnNavigationCommittedAsync(Action&lt;NavigationCommittedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L51"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnNavigationCommittedAsync(Action&lt;NavigationCommittedEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationCommittedEventArgs.html">NavigationCommittedEventArgs</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationCommittedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationCommittedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationCommittedAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_NavigationCommittedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationCommittedAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.NavigationCommittedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnNavigationCommittedAsync(Func&lt;NavigationCommittedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L50"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnNavigationCommittedAsync(Func&lt;NavigationCommittedEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationCommittedEventArgs.html">NavigationCommittedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationFailedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationFailedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationFailedAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_NavigationFailedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationFailedAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.NavigationFailedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnNavigationFailedAsync(Action&lt;NavigationFailedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L53"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnNavigationFailedAsync(Action&lt;NavigationFailedEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationFailedEventArgs.html">NavigationFailedEventArgs</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationFailedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationFailedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationFailedAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_NavigationFailedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationFailedAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.NavigationFailedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnNavigationFailedAsync(Func&lt;NavigationFailedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L52"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnNavigationFailedAsync(Func&lt;NavigationFailedEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationFailedEventArgs.html">NavigationFailedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationStartedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationStartedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationStartedAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_NavigationStartedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationStartedAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.NavigationStartedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnNavigationStartedAsync(Action&lt;NavigationStartedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L55"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnNavigationStartedAsync(Action&lt;NavigationStartedEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationStartedEventArgs.html">NavigationStartedEventArgs</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationStartedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationStartedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnNavigationStartedAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_NavigationStartedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnNavigationStartedAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.NavigationStartedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnNavigationStartedAsync(Func&lt;NavigationStartedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L54"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnNavigationStartedAsync(Func&lt;NavigationStartedEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationStartedEventArgs.html">NavigationStartedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnUserPromptClosedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnUserPromptClosedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnUserPromptClosedAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnUserPromptClosedAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnUserPromptClosedAsync(Action&lt;UserPromptClosedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L57"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnUserPromptClosedAsync(Action&lt;UserPromptClosedEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.html">UserPromptClosedEventArgs</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnUserPromptClosedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnUserPromptClosedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnUserPromptClosedAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnUserPromptClosedAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnUserPromptClosedAsync(Func&lt;UserPromptClosedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L56"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnUserPromptClosedAsync(Func&lt;UserPromptClosedEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.html">UserPromptClosedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnUserPromptOpenedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnUserPromptOpenedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnUserPromptOpenedAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_UserPromptOpenedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnUserPromptOpenedAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnUserPromptOpenedAsync(Action&lt;UserPromptOpenedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L59"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnUserPromptOpenedAsync(Action&lt;UserPromptOpenedEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.html">UserPromptOpenedEventArgs</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnUserPromptOpenedAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnUserPromptOpenedAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_OnUserPromptOpenedAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_UserPromptOpenedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.OnUserPromptOpenedAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
-  OnUserPromptOpenedAsync(Func&lt;UserPromptOpenedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L58"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnUserPromptOpenedAsync(Func&lt;UserPromptOpenedEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.html">UserPromptOpenedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_PrintAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.PrintAsync*"></a>
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_PrintAsync_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_PrintOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.PrintAsync(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.PrintOptions,System.Threading.CancellationToken)">
   PrintAsync(BrowsingContext, PrintOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1606,7 +924,7 @@ Interface IBrowsingContextModule  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_ReloadAsync_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_ReloadOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.ReloadAsync(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.ReloadOptions,System.Threading.CancellationToken)">
   ReloadAsync(BrowsingContext, ReloadOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1646,7 +964,7 @@ Interface IBrowsingContextModule  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_SetViewportAsync_OpenQA_Selenium_BiDi_BrowsingContext_SetViewportOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.SetViewportAsync(OpenQA.Selenium.BiDi.BrowsingContext.SetViewportOptions,System.Threading.CancellationToken)">
   SetViewportAsync(SetViewportOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1684,7 +1002,7 @@ Interface IBrowsingContextModule  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_IBrowsingContextModule_TraverseHistoryAsync_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Int32_OpenQA_Selenium_BiDi_BrowsingContext_TraverseHistoryOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.TraverseHistoryAsync(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Int32,OpenQA.Selenium.BiDi.BrowsingContext.TraverseHistoryOptions,System.Threading.CancellationToken)">
   TraverseHistoryAsync(BrowsingContext, int, TraverseHistoryOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1726,7 +1044,7 @@ Interface IBrowsingContextModule  <a class="header-action link-secondary" title=
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L22" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/IBrowsingContextModule.cs/#L22" class="edit-link">Edit this page</a>
         </div>
 
 

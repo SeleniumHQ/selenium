@@ -114,6 +114,45 @@ Classes
       <dd><p>Represents a log handler that writes log events to the given text writer.</p>
 </dd>
     </dl>
+    <h3 id="structs">
+Structs
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.Internal.Logging.DebugLogStringHandler.html">DebugLogStringHandler</a></dt>
+      <dd><p>Interpolated string handler for <a class="xref" href="OpenQA.Selenium.Internal.Logging.LogEventLevel.html#OpenQA_Selenium_Internal_Logging_LogEventLevel_Debug">Debug</a> log messages.
+Defers string construction until the log level is confirmed enabled.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.Internal.Logging.ErrorLogStringHandler.html">ErrorLogStringHandler</a></dt>
+      <dd><p>Interpolated string handler for <a class="xref" href="OpenQA.Selenium.Internal.Logging.LogEventLevel.html#OpenQA_Selenium_Internal_Logging_LogEventLevel_Error">Error</a> log messages.
+Defers string construction until the log level is confirmed enabled.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.Internal.Logging.InfoLogStringHandler.html">InfoLogStringHandler</a></dt>
+      <dd><p>Interpolated string handler for <a class="xref" href="OpenQA.Selenium.Internal.Logging.LogEventLevel.html#OpenQA_Selenium_Internal_Logging_LogEventLevel_Info">Info</a> log messages.
+Defers string construction until the log level is confirmed enabled.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.Internal.Logging.LogInterpolatedStringHandler.html">LogInterpolatedStringHandler</a></dt>
+      <dd><p>Core interpolated string handler that defers string construction until the log level is confirmed enabled,
+avoiding unnecessary string allocations when logging is disabled.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.Internal.Logging.TraceLogStringHandler.html">TraceLogStringHandler</a></dt>
+      <dd><p>Interpolated string handler for <a class="xref" href="OpenQA.Selenium.Internal.Logging.LogEventLevel.html#OpenQA_Selenium_Internal_Logging_LogEventLevel_Trace">Trace</a> log messages.
+Defers string construction until the log level is confirmed enabled.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.Internal.Logging.WarnLogStringHandler.html">WarnLogStringHandler</a></dt>
+      <dd><p>Interpolated string handler for <a class="xref" href="OpenQA.Selenium.Internal.Logging.LogEventLevel.html#OpenQA_Selenium_Internal_Logging_LogEventLevel_Warn">Warn</a> log messages.
+Defers string construction until the log level is confirmed enabled.</p>
+</dd>
+    </dl>
     <h3 id="interfaces">
 Interfaces
 </h3>

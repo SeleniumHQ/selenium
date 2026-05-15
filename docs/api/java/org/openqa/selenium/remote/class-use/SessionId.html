@@ -64,24 +64,26 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.distributor.local">org.openqa.selenium.grid.distributor.local</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.node">org.openqa.selenium.grid.node</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.distributor.redis">org.openqa.selenium.grid.distributor.redis</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.node.docker">org.openqa.selenium.grid.node.docker</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.node">org.openqa.selenium.grid.node</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.node.local">org.openqa.selenium.grid.node.local</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.node.docker">org.openqa.selenium.grid.node.docker</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.node.remote">org.openqa.selenium.grid.node.remote</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.node.local">org.openqa.selenium.grid.node.local</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.session">org.openqa.selenium.grid.session</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.node.remote">org.openqa.selenium.grid.node.remote</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.sessionmap">org.openqa.selenium.grid.sessionmap</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.session">org.openqa.selenium.grid.session</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.sessionmap.local">org.openqa.selenium.grid.sessionmap.local</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.sessionmap">org.openqa.selenium.grid.sessionmap</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.sessionmap.remote">org.openqa.selenium.grid.sessionmap.remote</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.sessionmap.local">org.openqa.selenium.grid.sessionmap.local</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.remote">org.openqa.selenium.remote</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.sessionmap.remote">org.openqa.selenium.grid.sessionmap.remote</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.remote">org.openqa.selenium.remote</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -225,6 +227,20 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">LocalGridModel.</span><code><a href="../../grid/distributor/local/LocalGridModel.html#release(org.openqa.selenium.remote.SessionId)" class="member-name-link">release</a><wbr>(@Nullable <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.grid.distributor.redis">
+<h2>Uses of <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a> in <a href="../../grid/distributor/redis/package-summary.html">org.openqa.selenium.grid.distributor.redis</a></h2>
+<div class="caption"><span>Methods in <a href="../../grid/distributor/redis/package-summary.html">org.openqa.selenium.grid.distributor.redis</a> with parameters of type <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">RedisBackedGridModel.</span><code><a href="../../grid/distributor/redis/RedisBackedGridModel.html#release(org.openqa.selenium.remote.SessionId)" class="member-name-link">release</a><wbr>(@Nullable <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -516,10 +532,10 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code><a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></code></div>
+<div class="col-first even-row-color"><code>@Nullable <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">Command.</span><code><a href="../Command.html#getSessionId()" class="member-name-link">getSessionId</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></code></div>
+<div class="col-first odd-row-color"><code>@Nullable <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">RemoteWebDriver.</span><code><a href="../RemoteWebDriver.html#getSessionId()" class="member-name-link">getSessionId</a>()</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
@@ -529,7 +545,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">RemoteWebDriver.</span><code><a href="../RemoteWebDriver.html#log(org.openqa.selenium.remote.SessionId,java.lang.String,java.lang.Object,org.openqa.selenium.remote.RemoteWebDriver.When)" class="member-name-link">log</a><wbr>(<a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
+<div class="col-second even-row-color"><span class="type-name-label">RemoteWebDriver.</span><code><a href="../RemoteWebDriver.html#log(org.openqa.selenium.remote.SessionId,java.lang.String,java.lang.Object,org.openqa.selenium.remote.RemoteWebDriver.When)" class="member-name-link">log</a><wbr>(@Nullable <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;commandName,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;toLog,
  <a href="../RemoteWebDriver.When.html" title="enum class in org.openqa.selenium.remote">RemoteWebDriver.When</a>&nbsp;when)</code></div>
@@ -543,17 +559,17 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../Command.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,java.lang.String)" class="member-name-link">Command</a><wbr>(<a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../Command.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,java.lang.String,java.util.Map)" class="member-name-link">Command</a><wbr>(<a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
+<div class="col-second even-row-color"><code><a href="../Command.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,java.lang.String,java.util.Map)" class="member-name-link">Command</a><wbr>(@Nullable <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>?&gt;&nbsp;parameters)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../Command.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,org.openqa.selenium.remote.CommandPayload)" class="member-name-link">Command</a><wbr>(@Nullable <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
+ <a href="../CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a>&nbsp;payload)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../Command.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,org.openqa.selenium.remote.CommandPayload)" class="member-name-link">Command</a><wbr>(<a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
- <a href="../CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a>&nbsp;payload)</code></div>
+<div class="col-second even-row-color"><code><a href="../Command.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,java.lang.String)" class="member-name-link">Command</a><wbr>(<a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="../Response.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId)" class="member-name-link">Response</a><wbr>(<a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId)</code></div>

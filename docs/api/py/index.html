@@ -46,10 +46,10 @@
   
   
   
-    <title>Selenium Client Driver &#8212; Selenium 4.43.0 documentation</title>
+    <title>Selenium Client Driver &#8212; Selenium 4.44.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
-    <script src="_static/documentation_options.js?v=595e6f71"></script>
+    <script src="_static/documentation_options.js?v=d7059ebf"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="#" title="Selenium 4.43.0 documentation"
+        <a href="#" title="Selenium 4.44.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.43.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.44.0 documentation</span>
           <span class="md-header-nav__topic"> Selenium Client Driver </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="#" class="md-tabs__link">Selenium 4.43.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="#" class="md-tabs__link">Selenium 4.44.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="#" title="Selenium 4.43.0 documentation" class="md-nav__button md-logo">
+    <a href="#" title="Selenium 4.44.0 documentation" class="md-nav__button md-logo">
       
         <img src="_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="#"
-       title="Selenium 4.43.0 documentation">Selenium 4.43.0 documentation</a>
+       title="Selenium 4.44.0 documentation">Selenium 4.44.0 documentation</a>
   </label>
   
 
@@ -197,11 +197,11 @@
         </li>
         <li class="md-nav__item"><a href="#example-2" class="md-nav__link">Example 2:</a>
         </li>
+        <li class="md-nav__item"><a href="#example-3" class="md-nav__link">Example 3:</a>
+        </li>
         <li class="md-nav__item"><a href="#selenium-grid-optional" class="md-nav__link">Selenium Grid (optional)</a>
         </li>
         <li class="md-nav__item"><a href="#use-the-source-luke" class="md-nav__link">Use The Source Luke!</a>
-        </li>
-        <li class="md-nav__item"><a href="#contributing" class="md-nav__link">Contributing</a>
         </li></ul>
             </nav>
         </li>
@@ -237,13 +237,13 @@
 <td><p><a class="reference external" href="https://pypi.org/project/selenium">https://pypi.org/project/selenium</a></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>IRC/Slack</strong>:</p></td>
-<td><p><a class="reference external" href="https://www.selenium.dev/support/#ChatRoom">https://www.selenium.dev/support/#ChatRoom</a></p></td>
+<td><p><a class="reference external" href="https://selenium.dev/support/#ChatRoom">https://selenium.dev/support/#ChatRoom</a></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>Docs</strong>:</p></td>
-<td><p><a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py">https://www.selenium.dev/selenium/docs/api/py</a></p></td>
+<td><p><a class="reference external" href="https://selenium.dev/selenium/docs/api/py">https://selenium.dev/selenium/docs/api/py</a></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>API Reference</strong>:</p></td>
-<td><p><a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/api.html">https://www.selenium.dev/selenium/docs/api/py/api.html</a></p></td>
+<td><p><a class="reference external" href="https://selenium.dev/selenium/docs/api/py/api.html">https://selenium.dev/selenium/docs/api/py/api.html</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -289,7 +289,7 @@ to create an isolated Python environment for installation.</p>
 <p>In older versions of Selenium, it was necessary to install and manage these drivers yourself. You had to make sure the
 driver executable was available on your system <cite>PATH</cite>, or specified explicitly in code. Modern versions of Selenium
 handle browser and driver installation for you with
-<a class="reference external" href="https://www.selenium.dev/documentation/selenium_manager">Selenium Manager</a>. You generally don’t have to worry about
+<a class="reference external" href="https://selenium.dev/documentation/selenium_manager">Selenium Manager</a>. You generally don’t have to worry about
 driver installation or configuration now that it’s done for you when you instantiate a WebDriver. Selenium Manager works
 with most supported platforms and browsers. If it doesn’t meet your needs, you can still install and specify browsers
 and drivers yourself.</p>
@@ -322,7 +322,7 @@ and drivers yourself.</p>
 
 
 <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">()</span>
-<span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'https://selenium.dev/'</span><span class="p">)</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://selenium.dev"</span><span class="p">)</span>
 <span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -332,7 +332,7 @@ and drivers yourself.</p>
 <ul class="simple">
 <li><p>launch a new Chrome browser</p></li>
 <li><p>load the Selenium documentation page</p></li>
-<li><p>find the “Webdriver” link</p></li>
+<li><p>find the “WebDriver” link</p></li>
 <li><p>click the “WebDriver” link</p></li>
 <li><p>close the browser</p></li>
 </ul>
@@ -342,12 +342,12 @@ and drivers yourself.</p>
 
 <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">()</span>
 
-<span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'https://selenium.dev/documentation'</span><span class="p">)</span>
-<span class="k">assert</span> <span class="s1">'Selenium'</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://selenium.dev/documentation"</span><span class="p">)</span>
+<span class="k">assert</span> <span class="s2">"Selenium"</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span>
 
-<span class="n">elem</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s1">'m-documentationwebdriver'</span><span class="p">)</span>
+<span class="n">elem</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"m-documentationwebdriver"</span><span class="p">)</span>
 <span class="n">elem</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
-<span class="k">assert</span> <span class="s1">'WebDriver'</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span>
+<span class="k">assert</span> <span class="s2">"WebDriver"</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span>
 
 <span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
 </pre></div>
@@ -355,24 +355,41 @@ and drivers yourself.</p>
 </section>
 <section id="example-2">
 <h2 id="example-2">Example 2:<a class="headerlink" href="#example-2" title="Link to this heading">¶</a></h2>
-<p>Selenium WebDriver is often used as a basis for testing web applications. Here is a simple example using Python’s
-standard <a class="reference external" href="http://docs.python.org/3/library/unittest.html">unittest</a> library:</p>
+<p>Selenium WebDriver is often used as a basis for testing web applications. Here is an example using Python’s
+standard <a class="reference external" href="https://docs.python.org/3/library/unittest.html">unittest</a> framework:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">unittest</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium</span><span class="w"> </span><span class="kn">import</span> <span class="n">webdriver</span>
 
 
-<span class="k">class</span><span class="w"> </span><span class="nc">GoogleTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SeleniumTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addCleanup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">test_page_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'https://www.google.com'</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s1">'Google'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://selenium.dev"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s2">"Selenium"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-3">
+<h2 id="example-3">Example 3:<a class="headerlink" href="#example-3" title="Link to this heading">¶</a></h2>
+<p>Here is an example using <a class="reference external" href="https://pytest.org">pytest</a> framework:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium</span><span class="w"> </span><span class="kn">import</span> <span class="n">webdriver</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">driver</span><span class="p">():</span>
+    <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">()</span>
+    <span class="k">yield</span> <span class="n">driver</span>
+    <span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_page_title</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
+    <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://selenium.dev"</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="s2">"Selenium"</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span>
 </pre></div>
 </div>
 </section>
@@ -380,8 +397,8 @@ standard <a class="reference external" href="http://docs.python.org/3/library/un
 <h2 id="selenium-grid-optional">Selenium Grid (optional)<a class="headerlink" href="#selenium-grid-optional" title="Link to this heading">¶</a></h2>
 <p>For local Selenium scripts, the Java server is not needed.</p>
 <p>To use Selenium remotely, you need to also run a Selenium Grid. For information on running Selenium Grid:
-<a class="reference external" href="https://www.selenium.dev/documentation/grid/getting_started/">https://www.selenium.dev/documentation/grid/getting_started/</a></p>
-<p>To use Remote WebDriver see: <a class="reference external" href="https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/?tab=python">https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/?tab=python</a></p>
+<a class="reference external" href="https://selenium.dev/documentation/grid/getting_started/">https://selenium.dev/documentation/grid/getting_started/</a></p>
+<p>To use Remote WebDriver see: <a class="reference external" href="https://selenium.dev/documentation/webdriver/drivers/remote_webdriver/?tab=python">https://selenium.dev/documentation/webdriver/drivers/remote_webdriver/?tab=python</a></p>
 </section>
 <section id="use-the-source-luke">
 <h2 id="use-the-source-luke">Use The Source Luke!<a class="headerlink" href="#use-the-source-luke" title="Link to this heading">¶</a></h2>
@@ -393,39 +410,6 @@ standard <a class="reference external" href="http://docs.python.org/3/library/un
 </tr>
 </tbody>
 </table>
-</section>
-<section id="contributing">
-<h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><ul class="simple">
-<li><p>Fork the selenium repo</p></li>
-<li><p>Clone your fork locally</p></li>
-<li><dl class="simple">
-<dt>Create a branch for your work</dt><dd><ul>
-<li><p><cite>git checkout -b my-cool-branch-name</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Create a virtual environment and install tox</dt><dd><ul>
-<li><p><cite>python -m venv venv &amp;&amp; source venv/bin/activate &amp;&amp; pip install tox</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>Make your changes</p></li>
-<li><dl class="simple">
-<dt>Run the linter/formatter</dt><dd><ul>
-<li><p><cite>tox -e linting</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>If tox exits <cite>0</cite>, commit and push. Otherwise, fix the newly introduced style violations</p></li>
-<li><p>Submit a Pull Request</p></li>
-</ul>
-</div></blockquote>
 </section>
 </section>
 

@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.options &#8212; Selenium 4.43.0 documentation</title>
+    <title>selenium.webdriver.common.options &#8212; Selenium 4.44.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=595e6f71"></script>
+    <script src="../../../../_static/documentation_options.js?v=d7059ebf"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.43.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.44.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.43.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.44.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.options </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.43.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.44.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.43.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.44.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.43.0 documentation">Selenium 4.43.0 documentation</a>
+       title="Selenium 4.44.0 documentation">Selenium 4.44.0 documentation</a>
   </label>
   
 
@@ -218,7 +218,7 @@
 
 
 <div class="viewcode-block" id="PageLoadStrategy">
-<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.edge.options.PageLoadStrategy">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PageLoadStrategy</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Enum of possible page load strategies.</span>
 
@@ -359,7 +359,7 @@
 
 
 <div class="viewcode-block" id="BaseOptions">
-<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.BaseOptions">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.edge.options.BaseOptions">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseOptions</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Base class for individual browser options."""</span>
 
@@ -544,14 +544,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span>
 
 <div class="viewcode-block" id="BaseOptions.set_capability">
-<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.BaseOptions.set_capability">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.edge.options.BaseOptions.set_capability">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_capability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Sets a capability."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
 
 <div class="viewcode-block" id="BaseOptions.enable_mobile">
-<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.BaseOptions.enable_mobile">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.edge.options.BaseOptions.enable_mobile">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">enable_mobile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">android_package</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -575,7 +575,7 @@
 
 
 <div class="viewcode-block" id="BaseOptions.to_capabilities">
-<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.BaseOptions.to_capabilities">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.edge.options.BaseOptions.to_capabilities">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Convert options into capabilities dictionary."""</span></div>
@@ -587,7 +587,7 @@
 <span class="w">        </span><span class="sd">"""Return minimal capabilities necessary as a dictionary."""</span>
 
 <div class="viewcode-block" id="BaseOptions.ignore_local_proxy_environment_variables">
-<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.BaseOptions.ignore_local_proxy_environment_variables">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.edge.options.BaseOptions.ignore_local_proxy_environment_variables">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">ignore_local_proxy_environment_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Ignore HTTP_PROXY and HTTPS_PROXY environment variables."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ignore_local_proxy</span> <span class="o">=</span> <span class="kc">True</span></div>
@@ -596,7 +596,7 @@
 
 
 <div class="viewcode-block" id="ArgOptions">
-<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.ArgOptions">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.edge.options.ArgOptions">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ArgOptions</span><span class="p">(</span><span class="n">BaseOptions</span><span class="p">):</span>
     <span class="n">BINARY_LOCATION_ERROR</span> <span class="o">=</span> <span class="s2">"Binary Location Must be a String"</span>
     <span class="c1"># FedCM capability key</span>
@@ -612,7 +612,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span>
 
 <div class="viewcode-block" id="ArgOptions.add_argument">
-<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.ArgOptions.add_argument">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.edge.options.ArgOptions.add_argument">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_argument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argument</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Adds an argument to the list.</span>
 
@@ -626,7 +626,7 @@
 
 
 <div class="viewcode-block" id="ArgOptions.ignore_local_proxy_environment_variables">
-<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.ArgOptions.ignore_local_proxy_environment_variables">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.edge.options.ArgOptions.ignore_local_proxy_environment_variables">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">ignore_local_proxy_environment_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Ignore HTTP_PROXY and HTTPS_PROXY environment variables.</span>
 
@@ -645,7 +645,7 @@
 
 
 <div class="viewcode-block" id="ArgOptions.to_capabilities">
-<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.ArgOptions.to_capabilities">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.edge.options.ArgOptions.to_capabilities">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span></div>
 

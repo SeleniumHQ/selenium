@@ -535,6 +535,24 @@ without sending the entire script across the wire for every execution.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.UserPromptHandler.html">UserPromptHandler</a></dt>
+      <dd><p>Represents a WebDriver session's user prompt handler, which defines how unhandled browser prompts
+(alerts, confirms, prompts, beforeunload dialogs, file selection dialogs) are managed during automation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.UserPromptHandler.PerPromptType.html">UserPromptHandler.PerPromptType</a></dt>
+      <dd><p>Represents a user prompt handler that specifies distinct <a class="xref" href="OpenQA.Selenium.UnhandledPromptBehavior.html">UnhandledPromptBehavior</a> values
+for individual prompt types (alert, confirm, prompt, beforeunload, file), with a fallback default.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.UserPromptHandler.Uniform.html">UserPromptHandler.Uniform</a></dt>
+      <dd><p>Represents a user prompt handler that applies a single <a class="xref" href="OpenQA.Selenium.UnhandledPromptBehavior.html">UnhandledPromptBehavior</a> value
+as the fallback default for all prompt types.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.WebDriver.html">WebDriver</a></dt>
       <dd><p>A base class representing a driver for a web browser.</p>
 </dd>
@@ -779,7 +797,7 @@ Enums
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.UnhandledPromptBehavior.html">UnhandledPromptBehavior</a></dt>
-      <dd><p>Specifies the behavior of handling unexpected alerts in the IE driver.</p>
+      <dd><p>Specifies how a WebDriver session handles an unhandled user prompt.</p>
 </dd>
     </dl>
     <dl class="jumplist">

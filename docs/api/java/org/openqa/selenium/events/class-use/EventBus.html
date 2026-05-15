@@ -61,14 +61,16 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.distributor.local">org.openqa.selenium.grid.distributor.local</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.node">org.openqa.selenium.grid.node</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.distributor.redis">org.openqa.selenium.grid.distributor.redis</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.node.local">org.openqa.selenium.grid.node.local</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.node">org.openqa.selenium.grid.node</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.server">org.openqa.selenium.grid.server</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.node.local">org.openqa.selenium.grid.node.local</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.sessionmap.local">org.openqa.selenium.grid.sessionmap.local</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.server">org.openqa.selenium.grid.server</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.sessionmap.local">org.openqa.selenium.grid.sessionmap.local</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -150,6 +152,48 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html" title="class or interface in java.util.concurrent" class="external-link">ScheduledExecutorService</a>&nbsp;nodeHealthCheckService,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;purgeNodesInterval,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html" title="class or interface in java.util.concurrent" class="external-link">ScheduledExecutorService</a>&nbsp;purgeDeadNodesService)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.grid.distributor.redis">
+<h2>Uses of <a href="../EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a> in <a href="../../grid/distributor/redis/package-summary.html">org.openqa.selenium.grid.distributor.redis</a></h2>
+<div class="caption"><span>Constructors in <a href="../../grid/distributor/redis/package-summary.html">org.openqa.selenium.grid.distributor.redis</a> with parameters of type <a href="../EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier</div>
+<div class="table-header col-second">Constructor</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../../grid/distributor/redis/RedisBackedDistributor.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.sessionmap.SessionMap,org.openqa.selenium.grid.sessionqueue.NewSessionQueue,org.openqa.selenium.grid.distributor.selector.SlotSelector,org.openqa.selenium.grid.security.Secret,java.time.Duration,boolean,java.time.Duration,int,org.openqa.selenium.grid.data.SlotMatcher,java.time.Duration,java.net.URI)" class="member-name-link">RedisBackedDistributor</a><wbr>(<a href="../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+ <a href="../EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
+ <a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+ <a href="../../grid/sessionmap/SessionMap.html" title="class in org.openqa.selenium.grid.sessionmap">SessionMap</a>&nbsp;sessions,
+ <a href="../../grid/sessionqueue/NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueue</a>&nbsp;sessionQueue,
+ <a href="../../grid/distributor/selector/SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a>&nbsp;slotSelector,
+ <a href="../../grid/security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;healthcheckInterval,
+ boolean&nbsp;rejectUnsupportedCaps,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;sessionRequestRetryInterval,
+ int&nbsp;newSessionThreadPoolSize,
+ <a href="../../grid/data/SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a>&nbsp;slotMatcher,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;purgeNodesInterval,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;redisUri)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../../grid/distributor/redis/RedisBackedGridModel.html#%3Cinit%3E(org.openqa.selenium.redis.GridRedisClient,org.openqa.selenium.events.EventBus)" class="member-name-link">RedisBackedGridModel</a><wbr>(<a href="../../redis/GridRedisClient.html" title="class in org.openqa.selenium.redis">GridRedisClient</a>&nbsp;redis,
+ <a href="../EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;events)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../../grid/distributor/redis/RedisBackedNodeRegistry.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.security.Secret,java.time.Duration,java.util.concurrent.ScheduledExecutorService,java.time.Duration,java.util.concurrent.ScheduledExecutorService,org.openqa.selenium.redis.GridRedisClient)" class="member-name-link">RedisBackedNodeRegistry</a><wbr>(<a href="../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+ <a href="../EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
+ <a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+ <a href="../../grid/security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;healthcheckInterval,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html" title="class or interface in java.util.concurrent" class="external-link">ScheduledExecutorService</a>&nbsp;nodeHealthCheckService,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;purgeNodesInterval,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html" title="class or interface in java.util.concurrent" class="external-link">ScheduledExecutorService</a>&nbsp;purgeDeadNodesService,
+ <a href="../../redis/GridRedisClient.html" title="class in org.openqa.selenium.redis">GridRedisClient</a>&nbsp;redis)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>

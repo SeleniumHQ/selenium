@@ -64,15 +64,19 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.distributor.local">org.openqa.selenium.grid.distributor.local</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.distributor.remote">org.openqa.selenium.grid.distributor.remote</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.distributor.redis">org.openqa.selenium.grid.distributor.redis</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.graphql">org.openqa.selenium.grid.graphql</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.distributor.remote">org.openqa.selenium.grid.distributor.remote</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.node">org.openqa.selenium.grid.node</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.graphql">org.openqa.selenium.grid.graphql</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.node.local">org.openqa.selenium.grid.node.local</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.node">org.openqa.selenium.grid.node</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.node.remote">org.openqa.selenium.grid.node.remote</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.node.local">org.openqa.selenium.grid.node.local</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.node.remote">org.openqa.selenium.grid.node.remote</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.redis">org.openqa.selenium.redis</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
@@ -315,6 +319,48 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="org.openqa.selenium.grid.distributor.redis">
+<h2>Uses of <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a> in <a href="../../distributor/redis/package-summary.html">org.openqa.selenium.grid.distributor.redis</a></h2>
+<div class="caption"><span>Methods in <a href="../../distributor/redis/package-summary.html">org.openqa.selenium.grid.distributor.redis</a> with parameters of type <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>boolean</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">RedisBackedDistributor.</span><code><a href="../../distributor/redis/RedisBackedDistributor.html#drain(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">drain</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>boolean</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">RedisBackedNodeRegistry.</span><code><a href="../../distributor/redis/RedisBackedNodeRegistry.html#drain(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">drain</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="../../node/Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">RedisBackedNodeRegistry.</span><code><a href="../../distributor/redis/RedisBackedNodeRegistry.html#getNode(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">getNode</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">RedisBackedDistributor.</span><code><a href="../../distributor/redis/RedisBackedDistributor.html#remove(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">remove</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">RedisBackedGridModel.</span><code><a href="../../distributor/redis/RedisBackedGridModel.html#remove(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">remove</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">RedisBackedNodeRegistry.</span><code><a href="../../distributor/redis/RedisBackedNodeRegistry.html#remove(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">remove</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">RedisBackedGridModel.</span><code><a href="../../distributor/redis/RedisBackedGridModel.html#setAvailability(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)" class="member-name-link">setAvailability</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+ <a href="../Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">RedisBackedGridModel.</span><code><a href="../../distributor/redis/RedisBackedGridModel.html#updateHealthCheckCount(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)" class="member-name-link">updateHealthCheckCount</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+ <a href="../Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">RedisBackedNodeRegistry.</span><code><a href="../../distributor/redis/RedisBackedNodeRegistry.html#updateNodeAvailability(java.net.URI,org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)" class="member-name-link">updateNodeAvailability</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri,
+ <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+ <a href="../Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
 <section class="detail" id="org.openqa.selenium.grid.distributor.remote">
 <h2>Uses of <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a> in <a href="../../distributor/remote/package-summary.html">org.openqa.selenium.grid.distributor.remote</a></h2>
 <div class="caption"><span>Methods in <a href="../../distributor/remote/package-summary.html">org.openqa.selenium.grid.distributor.remote</a> with parameters of type <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></span></div>
@@ -425,6 +471,59 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;sessionTimeout,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;capabilities)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.redis">
+<h2>Uses of <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a> in <a href="../../../redis/package-summary.html">org.openqa.selenium.redis</a></h2>
+<div class="caption"><span>Methods in <a href="../../../redis/package-summary.html">org.openqa.selenium.redis</a> that return types with arguments of type <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GridRedisClient.</span><code><a href="../../../redis/GridRedisClient.html#getAllNodes()" class="member-name-link">getAllNodes</a>()</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">GridRedisClient.</span><code><a href="../../../redis/GridRedisClient.html#getNodesByAvailability(org.openqa.selenium.grid.data.Availability)" class="member-name-link">getNodesByAvailability</a><wbr>(<a href="../Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+<div class="caption"><span>Methods in <a href="../../../redis/package-summary.html">org.openqa.selenium.redis</a> with parameters of type <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GridRedisClient.</span><code><a href="../../../redis/GridRedisClient.html#getNode(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">getNode</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>boolean</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">GridRedisClient.</span><code><a href="../../../redis/GridRedisClient.html#getNodeAvailability(org.openqa.selenium.grid.data.Availability,org.openqa.selenium.grid.data.NodeId)" class="member-name-link">getNodeAvailability</a><wbr>(<a href="../Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability,
+ <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GridRedisClient.</span><code><a href="../../../redis/GridRedisClient.html#removeNode(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">removeNode</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+<div class="caption"><span>Method parameters in <a href="../../../redis/package-summary.html">org.openqa.selenium.redis</a> with type arguments of type <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GridRedisClient.</span><code><a href="../../../redis/GridRedisClient.html#addAllNodeAvailability(org.openqa.selenium.grid.data.Availability,java.util.Set)" class="member-name-link">addAllNodeAvailability</a><wbr>(<a href="../Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&gt;&nbsp;nodes)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">GridRedisClient.</span><code><a href="../../../redis/GridRedisClient.html#getNodes(java.util.Set)" class="member-name-link">getNodes</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&gt;&nbsp;nodeIds)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GridRedisClient.</span><code><a href="../../../redis/GridRedisClient.html#removeAllNodeAvailability(org.openqa.selenium.grid.data.Availability,java.util.Set)" class="member-name-link">removeAllNodeAvailability</a><wbr>(<a href="../Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&gt;&nbsp;nodes)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">GridRedisClient.</span><code><a href="../../../redis/GridRedisClient.html#removeAllNodes(java.util.Set)" class="member-name-link">removeAllNodes</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&gt;&nbsp;nodeIds)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

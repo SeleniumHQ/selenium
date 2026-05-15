@@ -240,18 +240,18 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#execute(java.lang.String,java.util.Map)" class="member-name-link">execute</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;driverCommand,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>?&gt;&nbsp;parameters)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="Response.html" title="class in org.openqa.selenium.remote">Response</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected @Nullable <a href="Response.html" title="class in org.openqa.selenium.remote">Response</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#execute(org.openqa.selenium.remote.CommandPayload)" class="member-name-link">execute</a><wbr>(<a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a>&nbsp;payload)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#executeAsyncScript(java.lang.String,java.lang.Object...)" class="member-name-link">executeAsyncScript</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;args)</code></div>
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;args)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Execute an asynchronous piece of JavaScript in the context of the currently selected frame or
  window.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#executeScript(java.lang.String,java.lang.Object...)" class="member-name-link">executeScript</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#executeScript(java.lang.String,java.lang.Object...)" class="member-name-link">executeScript</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
  @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;args)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Executes JavaScript in the context of the currently selected frame or window.</div>
@@ -278,7 +278,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#fireSessionEvent(java.lang.String,java.util.Map)" class="member-name-link">fireSessionEvent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;eventType,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;payload)</code></div>
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;payload)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Fires a custom session event to the remote server event bus.</div>
 </div>
@@ -287,7 +287,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Load a new web page in the current browser window.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NonNull <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCapabilities()" class="member-name-link">getCapabilities</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></code></div>
@@ -322,7 +322,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getExecuteMethod()" class="member-name-link">getExecuteMethod</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../federatedcredentialmanagement/FederatedCredentialManagementDialog.html" title="interface in org.openqa.selenium.federatedcredentialmanagement">FederatedCredentialManagementDialog</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="../federatedcredentialmanagement/FederatedCredentialManagementDialog.html" title="interface in org.openqa.selenium.federatedcredentialmanagement">FederatedCredentialManagementDialog</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFederatedCredentialManagementDialog()" class="member-name-link">getFederatedCredentialManagementDialog</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets the currently open FedCM dialog, or null if there is no dialog.</div>
@@ -340,7 +340,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Capture the screenshot and store it in the specified location.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSessionId()" class="member-name-link">getSessionId</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
@@ -365,7 +365,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <div class="block">Checks if downloads are enabled</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#log(org.openqa.selenium.remote.SessionId,java.lang.String,java.lang.Object,org.openqa.selenium.remote.RemoteWebDriver.When)" class="member-name-link">log</a><wbr>(<a href="SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#log(org.openqa.selenium.remote.SessionId,java.lang.String,java.lang.Object,org.openqa.selenium.remote.RemoteWebDriver.When)" class="member-name-link">log</a><wbr>(@Nullable <a href="SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;commandName,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;toLog,
  <a href="RemoteWebDriver.When.html" title="enum class in org.openqa.selenium.remote">RemoteWebDriver.When</a>&nbsp;when)</code></div>
@@ -578,7 +578,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <li>
 <section class="detail" id="getSessionId()">
 <h3>getSessionId</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></span>&nbsp;<span class="element-name">getSessionId</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></span>&nbsp;<span class="element-name">getSessionId</span>()</div>
 </section>
 </li>
 <li>
@@ -626,7 +626,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <li>
 <section class="detail" id="getCapabilities()">
 <h3>getCapabilities</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@NonNull <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></span>&nbsp;<span class="element-name">getCapabilities</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></span>&nbsp;<span class="element-name">getCapabilities</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="../HasCapabilities.html#getCapabilities()">getCapabilities</a></code>&nbsp;in interface&nbsp;<code><a href="../HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></code></dd>
@@ -922,7 +922,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <li>
 <section class="detail" id="executeScript(java.lang.String,java.lang.Object...)">
 <h3>executeScript</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">executeScript</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">executeScript</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
  @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;args)</span></div>
 <div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../JavascriptExecutor.html#executeScript(java.lang.String,java.lang.Object...)">JavascriptExecutor</a></code></span></div>
 <div class="block">Executes JavaScript in the context of the currently selected frame or window. The script
@@ -965,8 +965,8 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <li>
 <section class="detail" id="executeAsyncScript(java.lang.String,java.lang.Object...)">
 <h3>executeAsyncScript</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">executeAsyncScript</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;args)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">executeAsyncScript</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;args)</span></div>
 <div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../JavascriptExecutor.html#executeAsyncScript(java.lang.String,java.lang.Object...)">JavascriptExecutor</a></code></span></div>
 <div class="block">Execute an asynchronous piece of JavaScript in the context of the currently selected frame or
  window. Unlike executing <a href="../JavascriptExecutor.html#executeScript(java.lang.String,java.lang.Object...)"><code>synchronous JavaScript</code></a>,
@@ -1145,7 +1145,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <li>
 <section class="detail" id="execute(org.openqa.selenium.remote.CommandPayload)">
 <h3>execute</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="Response.html" title="class in org.openqa.selenium.remote">Response</a></span>&nbsp;<span class="element-name">execute</span><wbr><span class="parameters">(<a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a>&nbsp;payload)</span></div>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">@Nullable <a href="Response.html" title="class in org.openqa.selenium.remote">Response</a></span>&nbsp;<span class="element-name">execute</span><wbr><span class="parameters">(<a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a>&nbsp;payload)</span></div>
 </section>
 </li>
 <li>
@@ -1170,8 +1170,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <li>
 <section class="detail" id="perform(java.util.Collection)">
 <h3>perform</h3>
-<div class="member-signature"><span class="annotations">@NullMarked
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">perform</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../interactions/Sequence.html" title="class in org.openqa.selenium.interactions">Sequence</a>&gt;&nbsp;actions)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">perform</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../interactions/Sequence.html" title="class in org.openqa.selenium.interactions">Sequence</a>&gt;&nbsp;actions)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="../interactions/Interactive.html#perform(java.util.Collection)">perform</a></code>&nbsp;in interface&nbsp;<code><a href="../interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a></code></dd>
@@ -1191,8 +1190,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <li>
 <section class="detail" id="addVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions)">
 <h3>addVirtualAuthenticator</h3>
-<div class="member-signature"><span class="annotations">@NullMarked
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../virtualauthenticator/VirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">VirtualAuthenticator</a></span>&nbsp;<span class="element-name">addVirtualAuthenticator</span><wbr><span class="parameters">(<a href="../virtualauthenticator/VirtualAuthenticatorOptions.html" title="class in org.openqa.selenium.virtualauthenticator">VirtualAuthenticatorOptions</a>&nbsp;options)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../virtualauthenticator/VirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">VirtualAuthenticator</a></span>&nbsp;<span class="element-name">addVirtualAuthenticator</span><wbr><span class="parameters">(<a href="../virtualauthenticator/VirtualAuthenticatorOptions.html" title="class in org.openqa.selenium.virtualauthenticator">VirtualAuthenticatorOptions</a>&nbsp;options)</span></div>
 <div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../virtualauthenticator/HasVirtualAuthenticator.html#addVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions)">HasVirtualAuthenticator</a></code></span></div>
 <div class="block">Adds a virtual authenticator with the given options.</div>
 <dl class="notes">
@@ -1206,8 +1204,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <li>
 <section class="detail" id="removeVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)">
 <h3>removeVirtualAuthenticator</h3>
-<div class="member-signature"><span class="annotations">@NullMarked
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">removeVirtualAuthenticator</span><wbr><span class="parameters">(<a href="../virtualauthenticator/VirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">VirtualAuthenticator</a>&nbsp;authenticator)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">removeVirtualAuthenticator</span><wbr><span class="parameters">(<a href="../virtualauthenticator/VirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">VirtualAuthenticator</a>&nbsp;authenticator)</span></div>
 <div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../virtualauthenticator/HasVirtualAuthenticator.html#removeVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)">HasVirtualAuthenticator</a></code></span></div>
 <div class="block">Removes a previously added virtual authenticator. The authenticator is no longer valid after
  removal, so no methods may be called.</div>
@@ -1300,7 +1297,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <section class="detail" id="fireSessionEvent(java.lang.String,java.util.Map)">
 <h3>fireSessionEvent</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;</span>&nbsp;<span class="element-name">fireSessionEvent</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;eventType,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;payload)</span></div>
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;payload)</span></div>
 <div class="block">Fires a custom session event to the remote server event bus. This allows test code to trigger
  server-side utilities that subscribe to the event bus.
 
@@ -1382,7 +1379,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <li>
 <section class="detail" id="getFederatedCredentialManagementDialog()">
 <h3>getFederatedCredentialManagementDialog</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../federatedcredentialmanagement/FederatedCredentialManagementDialog.html" title="interface in org.openqa.selenium.federatedcredentialmanagement">FederatedCredentialManagementDialog</a></span>&nbsp;<span class="element-name">getFederatedCredentialManagementDialog</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="../federatedcredentialmanagement/FederatedCredentialManagementDialog.html" title="interface in org.openqa.selenium.federatedcredentialmanagement">FederatedCredentialManagementDialog</a></span>&nbsp;<span class="element-name">getFederatedCredentialManagementDialog</span>()</div>
 <div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../federatedcredentialmanagement/HasFederatedCredentialManagement.html#getFederatedCredentialManagementDialog()">HasFederatedCredentialManagement</a></code></span></div>
 <div class="block">Gets the currently open FedCM dialog, or null if there is no dialog.
 
@@ -1397,7 +1394,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <li>
 <section class="detail" id="log(org.openqa.selenium.remote.SessionId,java.lang.String,java.lang.Object,org.openqa.selenium.remote.RemoteWebDriver.When)">
 <h3>log</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">log</span><wbr><span class="parameters">(<a href="SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">log</span><wbr><span class="parameters">(@Nullable <a href="SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;commandName,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;toLog,
  <a href="RemoteWebDriver.When.html" title="enum class in org.openqa.selenium.remote">RemoteWebDriver.When</a>&nbsp;when)</span></div>

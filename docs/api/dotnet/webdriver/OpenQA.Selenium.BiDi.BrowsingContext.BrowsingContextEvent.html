@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class BrowsingContextEvent </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class BrowsingContextEvent ">
+      
+      
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docfix/apiSpec/new?filename=OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Selenium .NET API">
+            Selenium .NET API
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent">
+
+
+
+  <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent" class="text-break">
+Class BrowsingContextEvent  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a>.<a class="xref" href="OpenQA.Selenium.BiDi.html">BiDi</a>.<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.html">BrowsingContext</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Selenium.WebDriver.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class BrowsingContextEvent</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">BrowsingContextEvent</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_ContextCreated_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.ContextCreated*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_ContextCreated" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.ContextCreated">
+  ContextCreated
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventDescriptor&lt;ContextCreatedEventArgs&gt; ContextCreated { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.EventDescriptor-1.html">EventDescriptor</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.ContextCreatedEventArgs.html">ContextCreatedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_ContextDestroyed_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.ContextDestroyed*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_ContextDestroyed" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.ContextDestroyed">
+  ContextDestroyed
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventDescriptor&lt;ContextDestroyedEventArgs&gt; ContextDestroyed { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.EventDescriptor-1.html">EventDescriptor</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.ContextDestroyedEventArgs.html">ContextDestroyedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_DomContentLoaded_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.DomContentLoaded*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_DomContentLoaded" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.DomContentLoaded">
+  DomContentLoaded
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventDescriptor&lt;DomContentLoadedEventArgs&gt; DomContentLoaded { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.EventDescriptor-1.html">EventDescriptor</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DomContentLoadedEventArgs.html">DomContentLoadedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_DownloadEnd_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.DownloadEnd*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_DownloadEnd" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.DownloadEnd">
+  DownloadEnd
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventDescriptor&lt;DownloadEndEventArgs&gt; DownloadEnd { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.EventDescriptor-1.html">EventDescriptor</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.html">DownloadEndEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_DownloadWillBegin_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.DownloadWillBegin*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_DownloadWillBegin" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.DownloadWillBegin">
+  DownloadWillBegin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventDescriptor&lt;DownloadWillBeginEventArgs&gt; DownloadWillBegin { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.EventDescriptor-1.html">EventDescriptor</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.html">DownloadWillBeginEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_FragmentNavigated_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.FragmentNavigated*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_FragmentNavigated" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.FragmentNavigated">
+  FragmentNavigated
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventDescriptor&lt;FragmentNavigatedEventArgs&gt; FragmentNavigated { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.EventDescriptor-1.html">EventDescriptor</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.FragmentNavigatedEventArgs.html">FragmentNavigatedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_HistoryUpdated_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.HistoryUpdated*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_HistoryUpdated" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.HistoryUpdated">
+  HistoryUpdated
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventDescriptor&lt;HistoryUpdatedEventArgs&gt; HistoryUpdated { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.EventDescriptor-1.html">EventDescriptor</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs.html">HistoryUpdatedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_Load_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.Load*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_Load" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.Load">
+  Load
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventDescriptor&lt;LoadEventArgs&gt; Load { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.EventDescriptor-1.html">EventDescriptor</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.LoadEventArgs.html">LoadEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_NavigationAborted_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.NavigationAborted*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_NavigationAborted" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.NavigationAborted">
+  NavigationAborted
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventDescriptor&lt;NavigationAbortedEventArgs&gt; NavigationAborted { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.EventDescriptor-1.html">EventDescriptor</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationAbortedEventArgs.html">NavigationAbortedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_NavigationCommitted_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.NavigationCommitted*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_NavigationCommitted" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.NavigationCommitted">
+  NavigationCommitted
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventDescriptor&lt;NavigationCommittedEventArgs&gt; NavigationCommitted { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.EventDescriptor-1.html">EventDescriptor</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationCommittedEventArgs.html">NavigationCommittedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_NavigationFailed_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.NavigationFailed*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_NavigationFailed" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.NavigationFailed">
+  NavigationFailed
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventDescriptor&lt;NavigationFailedEventArgs&gt; NavigationFailed { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.EventDescriptor-1.html">EventDescriptor</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationFailedEventArgs.html">NavigationFailedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_NavigationStarted_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.NavigationStarted*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_NavigationStarted" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.NavigationStarted">
+  NavigationStarted
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventDescriptor&lt;NavigationStartedEventArgs&gt; NavigationStarted { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.EventDescriptor-1.html">EventDescriptor</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationStartedEventArgs.html">NavigationStartedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_UserPromptClosed_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.UserPromptClosed*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_UserPromptClosed" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.UserPromptClosed">
+  UserPromptClosed
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventDescriptor&lt;UserPromptClosedEventArgs&gt; UserPromptClosed { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.EventDescriptor-1.html">EventDescriptor</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.html">UserPromptClosedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_UserPromptOpened_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.UserPromptOpened*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextEvent_UserPromptOpened" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextEvent.UserPromptOpened">
+  UserPromptOpened
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventDescriptor&lt;UserPromptOpenedEventArgs&gt; UserPromptOpened { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.EventDescriptor-1.html">EventDescriptor</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.html">UserPromptOpenedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextEvent.cs/#L24" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

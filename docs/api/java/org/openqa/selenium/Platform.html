@@ -205,14 +205,14 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Platform.html" title="enum class in org.openqa.selenium">Platform</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#extractFromSysProperty(java.lang.String)" class="member-name-link">extractFromSysProperty</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;osName)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#extractFromSysProperty(java.lang.String)" class="member-name-link">extractFromSysProperty</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;osName)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Extracts platforms based on system properties in Java and uses a heuristic to determine the
  most likely operating system.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Platform.html" title="enum class in org.openqa.selenium">Platform</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#extractFromSysProperty(java.lang.String,java.lang.String)" class="member-name-link">extractFromSysProperty</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;osName,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;osVersion)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#extractFromSysProperty(java.lang.String,java.lang.String)" class="member-name-link">extractFromSysProperty</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;osName,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;osVersion)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Extracts platforms based on system properties in Java and uses a heuristic to determine the
  most likely operating system.</div>
@@ -509,7 +509,7 @@ not permitted.)</div>
 <li>
 <section class="detail" id="extractFromSysProperty(java.lang.String)">
 <h3>extractFromSysProperty</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Platform.html" title="enum class in org.openqa.selenium">Platform</a></span>&nbsp;<span class="element-name">extractFromSysProperty</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;osName)</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Platform.html" title="enum class in org.openqa.selenium">Platform</a></span>&nbsp;<span class="element-name">extractFromSysProperty</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;osName)</span></div>
 <div class="block">Extracts platforms based on system properties in Java and uses a heuristic to determine the
  most likely operating system. If unable to determine the operating system, it will default to
  UNIX.</div>
@@ -524,8 +524,8 @@ not permitted.)</div>
 <li>
 <section class="detail" id="extractFromSysProperty(java.lang.String,java.lang.String)">
 <h3>extractFromSysProperty</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Platform.html" title="enum class in org.openqa.selenium">Platform</a></span>&nbsp;<span class="element-name">extractFromSysProperty</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;osName,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;osVersion)</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Platform.html" title="enum class in org.openqa.selenium">Platform</a></span>&nbsp;<span class="element-name">extractFromSysProperty</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;osName,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;osVersion)</span></div>
 <div class="block">Extracts platforms based on system properties in Java and uses a heuristic to determine the
  most likely operating system. If unable to determine the operating system, it will default to
  UNIX.</div>

@@ -6,13 +6,13 @@
 <title>
   Class: Selenium::WebDriver::Chromium::Options
   
-    &mdash; Documentation by YARD 0.9.39
+    &mdash; Documentation by YARD 0.9.43
   
 </title>
 
-  <link rel="stylesheet" href="../../../css/style.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css">
 
-  <link rel="stylesheet" href="../../../css/common.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css">
 
 <script type="text/javascript">
   pathId = "Selenium::WebDriver::Chromium::Options";
@@ -27,6 +27,8 @@
 
   </head>
   <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
     <div class="nav_wrap">
       <iframe id="nav" src="../../../class_list.html?1"></iframe>
       <div id="resizer"></div>
@@ -69,12 +71,12 @@
   <dl>
     <dt>Inherits:</dt>
     <dd>
-      <span class="inheritName"><span class='object_link'><a href="../Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></span>
+      <span class="inheritName">WebDriver::Options</span>
       
         <ul class="fullTree">
           <li>Object</li>
           
-            <li class="next"><span class='object_link'><a href="../Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></li>
+            <li class="next">WebDriver::Options</li>
           
             <li class="next">Selenium::WebDriver::Chromium::Options</li>
           
@@ -96,7 +98,8 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>rb/lib/selenium/webdriver/chromium/options.rb</dd>
+    <dd>rb/lib/selenium/webdriver/chromium/options.rb
+</dd>
   </dl>
   
 </div>
@@ -117,9 +120,7 @@
         <dt id="CAPABILITIES-constant" class="">CAPABILITIES =
           <div class="docstring">
   <div class="discussion">
-    
-<p>see: <a href="http://chromedriver.chromium.org/capabilities">chromedriver.chromium.org/capabilities</a></p>
-
+    <p>see: <a href="http://chromedriver.chromium.org/capabilities">http://chromedriver.chromium.org/capabilities</a></p>
 
   </div>
 </div>
@@ -149,12 +150,6 @@
 
 
 
-  
-  
-  <h3 class="inherited">Constants inherited
-     from <span class='object_link'><a href="../Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Options.html#GRID_OPTIONS-constant" title="Selenium::WebDriver::Options::GRID_OPTIONS (constant)">Options::GRID_OPTIONS</a></span>, <span class='object_link'><a href="../Options.html#W3C_OPTIONS-constant" title="Selenium::WebDriver::Options::W3C_OPTIONS (constant)">Options::W3C_OPTIONS</a></span></p>
-
 
   <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
   <ul class="summary">
@@ -179,9 +174,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>NOTE: special handling of ‘extensions’ to validate when set instead of when used.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>NOTE: special handling of 'extensions' to validate when set instead of when used.</p></div></span>
   
 </li>
 
@@ -206,9 +199,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute logging_prefs.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute logging_prefs.</p></div></span>
   
 </li>
 
@@ -233,9 +224,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute profile.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute profile.</p></div></span>
   
 </li>
 
@@ -243,11 +232,6 @@
   </ul>
 
 
-
-  
-  
-  <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="../Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Options.html#options-instance_method" title="Selenium::WebDriver::Options#options (method)">#options</a></span></p>
 
 
   
@@ -275,9 +259,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Add a command-line argument to use when starting Chrome.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Add a command-line argument to use when starting Chrome.</p></div></span>
   
 </li>
 
@@ -299,9 +281,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Add emulation device information.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Add emulation device information.</p></div></span>
   
 </li>
 
@@ -323,9 +303,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Add an extension by Base64-encoded string.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Add an extension by Base64-encoded string.</p></div></span>
   
 </li>
 
@@ -347,9 +325,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Add an extension by local path.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Add an extension by local path.</p></div></span>
   
 </li>
 
@@ -371,9 +347,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Add a preference that is only applied to the user profile in use.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Add a preference that is only applied to the user profile in use.</p></div></span>
   
 </li>
 
@@ -395,9 +369,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Enables mobile browser use on Android.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Enables mobile browser use on Android.</p></div></span>
   
 </li>
 
@@ -421,28 +393,17 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Create a new Options instance.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Create a new Options instance.</p></div></span>
   
 </li>
 
       
     </ul>
+    
   
 
 
-  
-  
-  
-  
-  
-  
-  
-  
-  <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Options.html#==-instance_method" title="Selenium::WebDriver::Options#== (method)">#==</a></span>, <span class='object_link'><a href="../Options.html#add_option-instance_method" title="Selenium::WebDriver::Options#add_option (method)">#add_option</a></span>, <span class='object_link'><a href="../Options.html#as_json-instance_method" title="Selenium::WebDriver::Options#as_json (method)">#as_json</a></span>, <span class='object_link'><a href="../Options.html#bidi%3F-instance_method" title="Selenium::WebDriver::Options#bidi? (method)">#bidi?</a></span>, <span class='object_link'><a href="../Options.html#chrome-class_method" title="Selenium::WebDriver::Options.chrome (method)">chrome</a></span>, <span class='object_link'><a href="../Options.html#edge-class_method" title="Selenium::WebDriver::Options.edge (method)">edge</a></span>, <span class='object_link'><a href="../Options.html#enable_bidi!-instance_method" title="Selenium::WebDriver::Options#enable_bidi! (method)">#enable_bidi!</a></span>, <span class='object_link'><a href="../Options.html#firefox-class_method" title="Selenium::WebDriver::Options.firefox (method)">firefox</a></span>, <span class='object_link'><a href="../Options.html#ie-class_method" title="Selenium::WebDriver::Options.ie (method)">ie</a></span>, <span class='object_link'><a href="../Options.html#safari-class_method" title="Selenium::WebDriver::Options.safari (method)">safari</a></span>, <span class='object_link'><a href="../Options.html#set_capabilities-class_method" title="Selenium::WebDriver::Options.set_capabilities (method)">set_capabilities</a></span></p>
-<div id="constructor_details" class="method_details_list">
+  <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
@@ -456,9 +417,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Create a new Options instance.</p>
-
+    <p>Create a new Options instance.</p>
 
   </div>
 </div>
@@ -487,9 +446,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>An instance of a Chrome::Profile Class</p>
-</div>
+        <div class='inline'><p>An instance of a Chrome::Profile Class</p></div>
       
     </li>
   
@@ -503,9 +460,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the pre-defined options to create the Chrome::Options with</p>
-</div>
+        <div class='inline'><p>the pre-defined options to create the Chrome::Options with</p></div>
       
     </li>
   
@@ -587,9 +542,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>NOTE: special handling of ‘extensions’ to validate when set instead of when used</p>
-
+    <p>NOTE: special handling of 'extensions' to validate when set instead of when used</p>
 
   </div>
 </div>
@@ -630,9 +583,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the value of attribute logging_prefs.</p>
-
+    <p>Returns the value of attribute logging_prefs.</p>
 
   </div>
 </div>
@@ -673,9 +624,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the value of attribute profile.</p>
-
+    <p>Returns the value of attribute profile.</p>
 
   </div>
 </div>
@@ -721,9 +670,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Add a command-line argument to use when starting Chrome.</p>
-
+    <p>Add a command-line argument to use when starting Chrome.</p>
 
   </div>
 </div>
@@ -733,9 +680,7 @@
     <h4 class="tag_title">Examples:</h4>
     
       
-        <h5 class="example_title"><div class='inline'>
-<p>Start Chrome maximized</p>
-</div></h5>
+        <h5 class="example_title"><div class='inline'><p>Start Chrome maximized</p></div></h5>
       
       <pre class="example code"><code><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Chrome/Options.html" title="Selenium::WebDriver::Chrome::Options (class)">Options</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Chromium::Options#initialize (method)">new</a></span></span>
 <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_add_argument'>add_argument</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>start-maximized</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></code></pre>
@@ -754,9 +699,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>The command-line argument to add</p>
-</div>
+        <div class='inline'><p>The command-line argument to add</p></div>
       
     </li>
   
@@ -795,11 +738,8 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Add emulation device information</p>
-
-<p>see: <a href="http://chromedriver.chromium.org/mobile-emulation">chromedriver.chromium.org/mobile-emulation</a></p>
-
+    <p>Add emulation device information</p>
+<p>see: <a href="http://chromedriver.chromium.org/mobile-emulation">http://chromedriver.chromium.org/mobile-emulation</a></p>
 
   </div>
 </div>
@@ -809,17 +749,13 @@
     <h4 class="tag_title">Examples:</h4>
     
       
-        <h5 class="example_title"><div class='inline'>
-<p>Start Chrome in mobile emulation mode by device name</p>
-</div></h5>
+        <h5 class="example_title"><div class='inline'><p>Start Chrome in mobile emulation mode by device name</p></div></h5>
       
       <pre class="example code"><code><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Chrome/Options.html" title="Selenium::WebDriver::Chrome::Options (class)">Options</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Chromium::Options#initialize (method)">new</a></span></span>
 <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_add_emulation'>add_emulation</span><span class='lparen'>(</span><span class='label'>device_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>iPhone 6</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></code></pre>
     
       
-        <h5 class="example_title"><div class='inline'>
-<p>Start Chrome in mobile emulation mode by device metrics</p>
-</div></h5>
+        <h5 class="example_title"><div class='inline'><p>Start Chrome in mobile emulation mode by device metrics</p></div></h5>
       
       <pre class="example code"><code><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Chrome/Options.html" title="Selenium::WebDriver::Chrome::Options (class)">Options</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Chromium::Options#initialize (method)">new</a></span></span>
 <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_add_emulation'>add_emulation</span><span class='lparen'>(</span><span class='label'>device_metrics:</span> <span class='lbrace'>{</span><span class='label'>width:</span> <span class='int'>400</span><span class='comma'>,</span> <span class='label'>height:</span> <span class='int'>800</span><span class='comma'>,</span> <span class='label'>pixelRatio:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>touch:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='rparen'>)</span></code></pre>
@@ -838,9 +774,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the pre-defined options for adding mobile emulation values</p>
-</div>
+        <div class='inline'><p>the pre-defined options for adding mobile emulation values</p></div>
       
     </li>
   
@@ -859,9 +793,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>A valid device name from the Chrome DevTools Emulation panel</p>
-</div>
+            &mdash; <div class='inline'><p>A valid device name from the Chrome DevTools Emulation panel</p></div>
           
         </li>
       
@@ -872,9 +804,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>Hash containing width, height, pixelRatio, touch</p>
-</div>
+            &mdash; <div class='inline'><p>Hash containing width, height, pixelRatio, touch</p></div>
           
         </li>
       
@@ -885,9 +815,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>Full user agent</p>
-</div>
+            &mdash; <div class='inline'><p>Full user agent</p></div>
           
         </li>
       
@@ -927,9 +855,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Add an extension by Base64-encoded string.</p>
-
+    <p>Add an extension by Base64-encoded string.</p>
 
   </div>
 </div>
@@ -956,9 +882,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>The Base64-encoded string of the .crx file</p>
-</div>
+        <div class='inline'><p>The Base64-encoded string of the .crx file</p></div>
       
     </li>
   
@@ -997,9 +921,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Add an extension by local path.</p>
-
+    <p>Add an extension by local path.</p>
 
   </div>
 </div>
@@ -1026,9 +948,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>The local path to the .crx file</p>
-</div>
+        <div class='inline'><p>The local path to the .crx file</p></div>
       
     </li>
   
@@ -1067,9 +987,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Add a preference that is only applied to the user profile in use.</p>
-
+    <p>Add a preference that is only applied to the user profile in use.</p>
 
   </div>
 </div>
@@ -1079,9 +997,7 @@
     <h4 class="tag_title">Examples:</h4>
     
       
-        <h5 class="example_title"><div class='inline'>
-<p>Set the default homepage</p>
-</div></h5>
+        <h5 class="example_title"><div class='inline'><p>Set the default homepage</p></div></h5>
       
       <pre class="example code"><code><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Chrome/Options.html" title="Selenium::WebDriver::Chrome::Options (class)">Options</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Chromium::Options#initialize (method)">new</a></span></span>
 <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_add_preference'>add_preference</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>homepage</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>http://www.seleniumhq.com/</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></code></pre>
@@ -1100,9 +1016,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>Key of the preference</p>
-</div>
+        <div class='inline'><p>Key of the preference</p></div>
       
     </li>
   
@@ -1116,9 +1030,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>Value of the preference</p>
-</div>
+        <div class='inline'><p>Value of the preference</p></div>
       
     </li>
   
@@ -1157,9 +1069,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Enables mobile browser use on Android.</p>
-
+    <p>Enables mobile browser use on Android.</p>
 
   </div>
 </div>
@@ -1179,9 +1089,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>The package name of the Chrome or WebView app.</p>
-</div>
+        <div class='inline'><p>The package name of the Chrome or WebView app.</p></div>
       
     </li>
   
@@ -1197,9 +1105,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>The device serial number on which to launch the Chrome or WebView app.</p>
-</div>
+        <div class='inline'><p>The device serial number on which to launch the Chrome or WebView app.</p></div>
       
     </li>
   
@@ -1215,9 +1121,8 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>When true uses an already-running Chrome or WebView app, instead of launching the app with a clear data directory.</p>
-</div>
+        <div class='inline'><p>When true uses an already-running Chrome or WebView app,
+instead of launching the app with a clear data directory.</p></div>
       
     </li>
   
@@ -1233,9 +1138,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>Name of the Activity hosting the WebView (Not available on Chrome Apps).</p>
-</div>
+        <div class='inline'><p>Name of the Activity hosting the WebView (Not available on Chrome Apps).</p></div>
       
     </li>
   
@@ -1281,9 +1184,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu May 14 19:35:03 2026 by
+  Generated on Fri May 15 13:34:12 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.39 (ruby-3.2.9).
+  0.9.43 (ruby-3.2.9).
 </div>
 
     </div>

@@ -6,13 +6,13 @@
 <title>
   Module: Selenium::WebDriver::DriverExtensions::HasLogEvents
   
-    &mdash; Documentation by YARD 0.9.39
+    &mdash; Documentation by YARD 0.9.43
   
 </title>
 
-  <link rel="stylesheet" href="../../../css/style.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css">
 
-  <link rel="stylesheet" href="../../../css/common.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css">
 
 <script type="text/javascript">
   pathId = "Selenium::WebDriver::DriverExtensions::HasLogEvents";
@@ -27,6 +27,8 @@
 
   </head>
   <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
     <div class="nav_wrap">
       <iframe id="nav" src="../../../class_list.html?1"></iframe>
       <div id="resizer"></div>
@@ -83,7 +85,8 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>rb/lib/selenium/webdriver/common/driver_extensions/has_log_events.rb</dd>
+    <dd>rb/lib/selenium/webdriver/common/driver_extensions/has_log_events.rb
+</dd>
   </dl>
   
 </div>
@@ -162,17 +165,17 @@
   <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Registers listener to be called whenever browser receives a new Console API message such as console.log() or an unhandled exception.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Registers listener to be called whenever browser receives a new Console API message such as console.log() or an unhandled exception.</p></div></span>
   
 </li>
 
       
     </ul>
+    
   
 
 
+  
   
   
   
@@ -204,11 +207,11 @@
   <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-
-<p>Registers listener to be called whenever browser receives a new Console API message such as console.log() or an unhandled exception.</p>
-
-<p>This currently relies on DevTools so is only supported in Chromium browsers.</p>
-
+<p>Registers listener to be called whenever browser receives
+a new Console API message such as console.log() or an unhandled
+exception.</p>
+<p>This currently relies on DevTools so is only supported in
+Chromium browsers.</p>
 
   </div>
 </div>
@@ -218,9 +221,7 @@
     <h4 class="tag_title">Examples:</h4>
     
       
-        <h5 class="example_title"><div class='inline'>
-<p>Collect console messages</p>
-</div></h5>
+        <h5 class="example_title"><div class='inline'><p>Collect console messages</p></div></h5>
       
       <pre class="example code"><code><span class='id identifier rubyid_logs'>logs</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_on_log_event'>on_log_event</span><span class='lparen'>(</span><span class='symbol'>:console</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_event'>event</span><span class='op'>|</span>
@@ -228,9 +229,7 @@
 <span class='kw'>end</span></code></pre>
     
       
-        <h5 class="example_title"><div class='inline'>
-<p>Collect JavaScript exceptions</p>
-</div></h5>
+        <h5 class="example_title"><div class='inline'><p>Collect JavaScript exceptions</p></div></h5>
       
       <pre class="example code"><code><span class='id identifier rubyid_exceptions'>exceptions</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_on_log_event'>on_log_event</span><span class='lparen'>(</span><span class='symbol'>:exception</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_event'>event</span><span class='op'>|</span>
@@ -238,9 +237,7 @@
 <span class='kw'>end</span></code></pre>
     
       
-        <h5 class="example_title"><div class='inline'>
-<p>Collect DOM mutations</p>
-</div></h5>
+        <h5 class="example_title"><div class='inline'><p>Collect DOM mutations</p></div></h5>
       
       <pre class="example code"><code><span class='id identifier rubyid_mutations'>mutations</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_on_log_event'>on_log_event</span><span class='lparen'>(</span><span class='symbol'>:mutation</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_event'>event</span><span class='op'>|</span>
@@ -261,9 +258,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>:console, :exception or :mutation</p>
-</div>
+        <div class='inline'><p>:console, :exception or :mutation</p></div>
       
     </li>
   
@@ -277,9 +272,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>which is called when event happens</p>
-</div>
+        <div class='inline'><p>which is called when event happens</p></div>
       
     </li>
   
@@ -368,9 +361,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu May 14 19:35:00 2026 by
+  Generated on Fri May 15 13:34:10 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.39 (ruby-3.2.9).
+  0.9.43 (ruby-3.2.9).
 </div>
 
     </div>

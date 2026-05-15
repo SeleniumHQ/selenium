@@ -70,20 +70,22 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.distributor.local">org.openqa.selenium.grid.distributor.local</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.distributor.remote">org.openqa.selenium.grid.distributor.remote</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.distributor.redis">org.openqa.selenium.grid.distributor.redis</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.sessionqueue">org.openqa.selenium.grid.sessionqueue</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.distributor.remote">org.openqa.selenium.grid.distributor.remote</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.sessionqueue.local">org.openqa.selenium.grid.sessionqueue.local</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.sessionqueue">org.openqa.selenium.grid.sessionqueue</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.sessionqueue.remote">org.openqa.selenium.grid.sessionqueue.remote</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.sessionqueue.local">org.openqa.selenium.grid.sessionqueue.local</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.ie">org.openqa.selenium.ie</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.sessionqueue.remote">org.openqa.selenium.grid.sessionqueue.remote</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.remote">org.openqa.selenium.remote</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.ie">org.openqa.selenium.ie</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.safari">org.openqa.selenium.safari</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.remote">org.openqa.selenium.remote</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.safari">org.openqa.selenium.safari</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -188,6 +190,29 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a><wbr>&lt;<a href="../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,<wbr><a href="../grid/data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">LocalDistributor.</span><code><a href="../grid/distributor/local/LocalDistributor.html#newSession(org.openqa.selenium.grid.data.SessionRequest)" class="member-name-link">newSession</a><wbr>(<a href="../grid/data/SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&nbsp;request)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.grid.distributor.redis">
+<h2>Uses of <a href="../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a> in <a href="../grid/distributor/redis/package-summary.html">org.openqa.selenium.grid.distributor.redis</a></h2>
+<div class="caption"><span>Methods in <a href="../grid/distributor/redis/package-summary.html">org.openqa.selenium.grid.distributor.redis</a> that return types with arguments of type <a href="../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a><wbr>&lt;<a href="../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,<wbr><a href="../grid/data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">RedisBackedDistributor.</span><code><a href="../grid/distributor/redis/RedisBackedDistributor.html#newSession(org.openqa.selenium.grid.data.SessionRequest)" class="member-name-link">newSession</a><wbr>(<a href="../grid/data/SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&nbsp;request)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+<div class="caption"><span>Methods in <a href="../grid/distributor/redis/package-summary.html">org.openqa.selenium.grid.distributor.redis</a> that throw <a href="../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a><wbr>&lt;<a href="../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,<wbr><a href="../grid/data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">RedisBackedDistributor.</span><code><a href="../grid/distributor/redis/RedisBackedDistributor.html#newSession(org.openqa.selenium.grid.data.SessionRequest)" class="member-name-link">newSession</a><wbr>(<a href="../grid/data/SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&nbsp;request)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>

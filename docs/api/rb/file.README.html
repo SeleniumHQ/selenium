@@ -6,13 +6,13 @@
 <title>
   File: README
   
-    &mdash; Documentation by YARD 0.9.39
+    &mdash; Documentation by YARD 0.9.43
   
 </title>
 
-  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css">
 
-  <link rel="stylesheet" href="css/common.css" type="text/css" />
+  <link rel="stylesheet" href="css/common.css" type="text/css">
 
 <script type="text/javascript">
   pathId = "README";
@@ -27,6 +27,8 @@
 
   </head>
   <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
     <div class="nav_wrap">
       <iframe id="nav" src="file_list.html?1"></iframe>
       <div id="resizer"></div>
@@ -57,43 +59,52 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><div id='filecontents'>
-<h1 id="selenium-webdriver">selenium-webdriver</h1>
-
-<p>This gem provides Ruby bindings for Selenium and supports MRI &gt;= 3.2.</p>
-
-<h2 id="install">Install</h2>
-
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_gem'>gem</span> <span class='id identifier rubyid_install'>install</span> <span class='id identifier rubyid_selenium'>selenium</span><span class='op'>-</span><span class='id identifier rubyid_webdriver'>webdriver</span>
+      <div id="content"><div id='filecontents'><h1 id="selenium_webdriver">selenium-webdriver</h1>
+<p>Ruby language bindings for <a href="https://www.selenium.dev">Selenium WebDriver</a>.
+Selenium automates browsers for testing and web-based task automation.</p>
+<p>Supports MRI &gt;= 3.2.</p>
+<h2 id="Installation">Installation</h2>
+<pre class="code bash"><code class="bash">gem install selenium-webdriver
 </code></pre>
+<h2 id="Quick_Start">Quick Start</h2>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>selenium-webdriver</span><span class='tstring_end'>&quot;</span></span>
 
-<h2 id="links">Links</h2>
-<ul><li>
-<p><a href="https://rubygems.org/gems/selenium-webdriver">rubygems.org/gems/selenium-webdriver</a></p>
-</li><li>
-<p><a href="https://www.selenium.dev/selenium/docs/api/rb/index.html">www.selenium.dev/selenium/docs/api/rb/index.html</a></p>
-</li><li>
-<p><a href="https://www.selenium.dev/documentation/?tab=ruby">www.selenium.dev/documentation/?tab=ruby</a></p>
-</li><li>
-<p><a href="https://github.com/SeleniumHQ/selenium/issues">github.com/SeleniumHQ/selenium/issues</a></p>
-</li></ul>
-
-<h2 id="license">License</h2>
-
-<p>Copyright 2009-2024 Software Freedom Conservancy</p>
-
-<p>Licensed to the Software Freedom Conservancy (SFC) under one or more contributor license agreements. See the NOTICE file distributed with this work for additional information regarding copyright ownership. The SFC licenses this file to you under the Apache License, Version 2.0 (the “License”); you may not use this file except in compliance with the License. You may obtain a copy of the License at</p>
-
-<pre class="code ruby"><code class="ruby"> <span class='id identifier rubyid_http'>http</span><span class='symbol'>:/</span><span class='op'>/</span><span class='id identifier rubyid_www'>www</span><span class='period'>.</span><span class='id identifier rubyid_apache'>apache</span><span class='period'>.</span><span class='id identifier rubyid_org'>org</span><span class='op'>/</span><span class='id identifier rubyid_licenses'>licenses</span><span class='op'>/</span><span class='const'>LICENSE</span><span class='op'>-</span><span class='float'>2.0</span>
+<span class='id identifier rubyid_driver'>driver</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Selenium/WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_for'><span class='object_link'><a href="Selenium/WebDriver.html#for-class_method" title="Selenium::WebDriver.for (method)">for</a></span></span> <span class='symbol'>:chrome</span>
+<span class='kw'>begin</span>
+  <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>https://www.selenium.dev</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_title'>title</span>
+<span class='kw'>ensure</span>
+  <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_quit'>quit</span>
+<span class='kw'>end</span>
 </code></pre>
-
-<p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an “AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</p>
-</div></div>
+<p>Selenium Manager automatically handles browser driver installation — no manual driver setup required.</p>
+<h2 id="Documentation">Documentation</h2>
+<ul>
+<li><a href="https://www.selenium.dev/documentation/webdriver/getting_started/">Getting Started</a></li>
+<li><a href="https://www.selenium.dev/selenium/docs/api/rb/index.html">Ruby API Docs</a></li>
+<li><a href="https://www.selenium.dev/documentation/selenium_manager/">Selenium Manager</a></li>
+<li><a href="https://www.selenium.dev/documentation/grid/">Selenium Grid</a></li>
+</ul>
+<h2 id="Support">Support</h2>
+<ul>
+<li><a href="https://www.selenium.dev/support/#ChatRoom">Selenium Chat</a></li>
+<li><a href="https://github.com/SeleniumHQ/selenium/issues">GitHub Issues</a></li>
+</ul>
+<h2 id="Contributing">Contributing</h2>
+<p>Contributions are welcome via <a href="https://github.com/SeleniumHQ/selenium/">GitHub</a> pull requests.
+See the <a href="https://github.com/SeleniumHQ/selenium/tree/trunk/rb">source code</a> for this binding.</p>
+<h2 id="Links">Links</h2>
+<ul>
+<li><a href="https://rubygems.org/gems/selenium-webdriver">RubyGems</a></li>
+<li><a href="https://www.selenium.dev/documentation/?tab=ruby">Documentation</a></li>
+</ul>
+<h2 id="License">License</h2>
+<p>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p></div></div>
 
       <div id="footer">
-  Generated on Thu May 14 19:35:00 2026 by
+  Generated on Fri May 15 13:34:09 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.39 (ruby-3.2.9).
+  0.9.43 (ruby-3.2.9).
 </div>
 
     </div>
