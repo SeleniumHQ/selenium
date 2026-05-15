@@ -20,10 +20,69 @@
       "rangeStrategy": "bump"
     },
     {
+      "description": "Do not propose runtime, package-manager, or Bazel toolchain upgrades in the dashboard baseline.",
+      "matchManagers": ["bazelisk", "node-version", "npm", "nuget", "ruby-version"],
+      "matchPackageNames": ["bazel", "node", "@types/node", "pnpm", "paket", "ruby"],
+      "enabled": false
+    },
+    {
+      "description": "Do not propose Bazel registry module upgrades for build rules/tooling in the dashboard baseline.",
+      "matchManagers": ["bazel-module"],
+      "matchDatasources": ["bazel"],
+      "enabled": false
+    },
+    {
+      "description": "Do not track Docker image references in this repository.",
+      "matchDatasources": ["docker"],
+      "enabled": false
+    },
+    {
+      "description": "Do not propose routine Grid UI dependency upgrades in the dashboard baseline; keep vulnerability fixes eligible.",
+      "matchFileNames": ["javascript/grid-ui/package.json"],
+      "matchJsonata": ["$not($exists(vulnerabilityFixVersion))"],
+      "enabled": false
+    },
+    {
+      "description": "Group Bazel and Bazel module dependency declarations in the dashboard.",
+      "matchManagers": ["bazel", "bazel-module", "bazelisk"],
+      "dependencyDashboardCategory": "Bazel and Toolchains"
+    },
+    {
       "description": "Use Maven version ordering for Maven artifacts found through Bazel managers.",
       "matchManagers": ["bazel", "bazel-module"],
       "matchDatasources": ["maven"],
-      "versioning": "maven"
+      "versioning": "maven",
+      "dependencyDashboardCategory": "Java and Maven"
+    },
+    {
+      "description": "Group GitHub Actions workflow dependencies in the dashboard.",
+      "matchManagers": ["github-actions"],
+      "dependencyDashboardCategory": "GitHub Actions"
+    },
+    {
+      "description": "Group JavaScript package declarations in the dashboard.",
+      "matchManagers": ["npm"],
+      "dependencyDashboardCategory": "JavaScript"
+    },
+    {
+      "description": "Group Python declarations and pinned requirements in the dashboard.",
+      "matchManagers": ["pep621", "pip_requirements", "poetry"],
+      "dependencyDashboardCategory": "Python"
+    },
+    {
+      "description": "Group Ruby declarations and runtime version files in the dashboard.",
+      "matchManagers": ["bundler", "ruby-version"],
+      "dependencyDashboardCategory": "Ruby"
+    },
+    {
+      "description": "Group Rust Cargo declarations in the dashboard.",
+      "matchManagers": ["cargo"],
+      "dependencyDashboardCategory": "Rust"
+    },
+    {
+      "description": "Group .NET package declarations and tools in the dashboard.",
+      "matchManagers": ["nuget"],
+      "dependencyDashboardCategory": ".NET"
     }
   ]
 }
