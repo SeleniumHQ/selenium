@@ -115,6 +115,20 @@ module Selenium
               end
             end
 
+            it "trims entries in #{no_proxy_var}" do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'foo.com, example.com') do
+                http = client.send :http
+                expect(http).not_to be_proxy
+              end
+            end
+
+            it "trims a single entry in #{no_proxy_var}" do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => ' example.com ') do
+                http = client.send :http
+                expect(http).not_to be_proxy
+              end
+            end
+
             it "understands subnetting in #{no_proxy_var}" do
               with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'localhost,127.0.0.0/8') do
                 client.server_url = URI.parse('http://127.0.0.1:4444/wd/hub')

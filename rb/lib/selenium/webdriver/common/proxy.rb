@@ -145,7 +145,7 @@ module Selenium
           'proxyType' => TYPES[type].downcase,
           'ftpProxy' => ftp,
           'httpProxy' => http,
-          'noProxy' => no_proxy.is_a?(String) ? no_proxy.split(', ') : no_proxy,
+          'noProxy' => no_proxy_list,
           'proxyAutoconfigUrl' => pac,
           'sslProxy' => ssl,
           'autodetect' => auto_detect,
@@ -160,6 +160,13 @@ module Selenium
 
       def to_json(*)
         JSON.generate as_json
+      end
+
+      # @api private
+      def no_proxy_list
+        return no_proxy unless no_proxy.is_a?(String)
+
+        no_proxy.split(',').map(&:strip).reject(&:empty?)
       end
     end # Proxy
   end # WebDriver

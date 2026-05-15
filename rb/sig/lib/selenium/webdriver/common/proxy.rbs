@@ -62,6 +62,8 @@ module Selenium
       def as_json: (*untyped) -> untyped
 
       def to_json: (*untyped) -> untyped
+
+      def no_proxy_list: () -> untyped
     end
   end
 end

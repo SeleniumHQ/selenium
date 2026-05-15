@@ -24,9 +24,9 @@ module Selenium
     module Remote
       describe Capabilities do
         it 'converts noProxy from string to array' do
-          proxy = Proxy.new(no_proxy: 'proxy_url, localhost')
+          proxy = Proxy.new(no_proxy: ' proxy_url,localhost, 127.0.0.1 ')
           caps = described_class.new(proxy: proxy)
-          expect(caps.as_json['proxy']['noProxy']).to eq(%w[proxy_url localhost])
+          expect(caps.as_json['proxy']['noProxy']).to eq(%w[proxy_url localhost 127.0.0.1])
         end
 
         it 'does not convert noProxy if it is already array' do
