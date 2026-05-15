@@ -13,27 +13,13 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.2.3)
-      base64
-      benchmark (>= 0.3)
-      bigdecimal
-      concurrent-ruby (~> 1.0, >= 1.3.1)
-      connection_pool (>= 2.2.5)
-      drb
-      i18n (>= 1.6, < 2)
-      logger (>= 1.4.2)
-      minitest (>= 5.1)
-      securerandom (>= 0.3)
-      tzinfo (~> 2.0, >= 2.0.5)
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
     ast (2.4.3)
     base64 (0.3.0)
-    benchmark (0.5.0)
     bigdecimal (4.1.2)
     bigdecimal (4.1.2-java)
     concurrent-ruby (1.3.6)
-    connection_pool (3.0.2)
     crack (1.0.1)
       bigdecimal
       rexml
@@ -44,7 +30,6 @@ GEM
       irb (~> 1.10)
       reline (>= 0.3.8)
     diff-lcs (1.6.2)
-    drb (2.2.3)
     erb (6.0.4)
     erb (6.0.4-java)
     ffi (1.17.4)
@@ -53,8 +38,6 @@ GEM
       addressable (~> 2.8)
       rchardet (~> 1.8)
     hashdiff (1.2.1)
-    i18n (1.14.8)
-      concurrent-ruby (~> 1.0)
     io-console (0.8.2)
     io-console (0.8.2-java)
     irb (1.18.0)
@@ -72,10 +55,6 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     logger (1.7.0)
-    minitest (6.0.6)
-      drb (~> 2.0)
-      prism (~> 1.5)
-    mutex_m (0.3.0)
     parallel (1.28.0)
     parser (3.3.11.1)
       ast (~> 2.4.1)
@@ -99,8 +78,9 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.11.1)
       ffi (~> 1.0)
-    rbs (3.10.4)
+    rbs (4.0.2)
       logger
+      prism (>= 1.6.0)
       tsort
     rchardet (1.10.0)
     rdoc (7.2.0)
@@ -124,7 +104,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.7)
-    rubocop (1.86.1)
+    rubocop (1.86.2)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -151,8 +131,7 @@ GEM
     ruby-progressbar (1.13.0)
     rubyzip (3.3.0)
     securerandom (0.4.1)
-    steep (1.10.0)
-      activesupport (>= 5.1)
+    steep (2.0.0)
       concurrent-ruby (>= 1.1.10)
       csv (>= 3.0.9)
       fileutils (>= 1.1.0)
@@ -160,10 +139,10 @@ GEM
       language_server-protocol (>= 3.17.0.4, < 4.0)
       listen (~> 3.0)
       logger (>= 1.3.0)
-      mutex_m (>= 0.3.0)
-      parser (>= 3.1)
+      parser (>= 3.2)
+      prism (>= 0.25.0)
       rainbow (>= 2.2.2, < 4.0)
-      rbs (~> 3.9)
+      rbs (~> 4.0)
       securerandom (>= 0.1)
       strscan (>= 1.0.0)
       terminal-table (>= 2, < 5)
@@ -174,8 +153,6 @@ GEM
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
     tsort (0.2.0)
-    tzinfo (2.0.6)
-      concurrent-ruby (~> 1.0)
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.2.0)
@@ -203,7 +180,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  activesupport (~> 7.0)
   debug (~> 1.7)
   git (~> 1.19)
   rack (~> 2.0)
@@ -215,7 +191,7 @@ DEPENDENCIES
   rubocop-rspec (~> 3.5)
   selenium-devtools!
   selenium-webdriver!
-  steep (~> 1.10.0)
+  steep (~> 2.0)
   webmock (~> 3.5)
   webrick (~> 1.7)
   yard (~> 0.9.11, >= 0.9.36)
