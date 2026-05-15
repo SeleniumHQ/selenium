@@ -1,84 +1,29 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
+  "dependencyDashboard": true,
+  "dependencyDashboardApproval": true,
+  "dependencyDashboardLabels": ["B-dependencies"],
+  "dependencyDashboardTitle": "Dependency Dashboard",
+  "dependencyDashboardHeader": "Renovate is configured to list discovered dependency updates here first. Do not approve dashboard items until the update scope has been reviewed.",
+  "prCreation": "approval",
+  "automerge": false,
+  "skipArtifactsUpdate": true,
+  "lockFileMaintenance": {
+    "enabled": false
+  },
+  "labels": ["B-dependencies"],
   "packageRules": [
     {
-      "matchManagers": [ "bazel", "bazel-module", "bazelisk" ],
-      "matchPackageNames": [ "!rules_java", "!rules_jvm_external", "!contrib_rules_jvm", "!rules_dotnet", "!aspect_rules_js", "!aspect_rules_ts", "!rules_nodejs", "!rules_python", "!rules_ruby", "!rules_cc" ],
-      "matchDatasources": [ "!maven" ],
-      "commitMessagePrefix": "[dotnet][java][js][py][rb][rust]",
-      "labels": [ "dependencies", "c-build" ]
+      "description": "Treat Renovate as the declaration upgrade mechanism; repo update/pin tasks own resolved lockfile changes.",
+      "matchManagers": ["bundler", "cargo", "npm", "pep621", "poetry"],
+      "rangeStrategy": "bump"
     },
     {
-      "matchManagers": [ "nuget" ],
-      "commitMessagePrefix": "[dotnet]",
-      "labels": [ "dependencies", "c-dotnet" ]
-    },
-    {
-      "matchPackageNames": [ "rules_dotnet" ],
-      "commitMessagePrefix": "[dotnet]",
-      "labels": [ "dependencies", "c-dotnet" ]
-    },
-    {
-      "matchManagers": [ "bazel", "bazel-module" ],
+      "description": "Use Maven version ordering for Maven artifacts found through Bazel managers.",
+      "matchManagers": ["bazel", "bazel-module"],
       "matchDatasources": ["maven"],
-      "versioning": "maven",
-      "commitMessagePrefix": "[java]",
-      "labels": [ "dependencies", "c-java" ]
-    },
-    {
-      "matchManagers": [ "bazel-module" ],
-      "matchPackageNames": [ "rules_java", "rules_jvm_external", "contrib_rules_jvm" ],
-      "commitMessagePrefix": "[java]",
-      "labels": [ "dependencies", "c-java" ]
-    },
-    {
-      "matchManagers": [ "maven" ],
-      "commitMessagePrefix": "[java]",
-      "labels": [ "dependencies", "c-java" ]
-    },
-    {
-      "matchManagers": [ "npm" ],
-      "rangeStrategy": "bump",
-      "commitMessagePrefix": "[js]",
-      "labels": [ "dependencies", "c-nodejs" ]
-    },
-    {
-      "matchPackageNames": [ "aspect_rules_js", "aspect_rules_ts", "rules_nodejs" ],
-      "commitMessagePrefix": "[js]",
-      "labels": [ "dependencies", "c-nodejs" ]
-    },
-    {
-      "matchManagers": [ "pip_requirements", "pip_setup" ],
-      "commitMessagePrefix": "[py]",
-      "labels": [ "dependencies", "c-py" ]
-    },
-    {
-      "matchPackageNames": [ "rules_python" ],
-      "commitMessagePrefix": "[py]",
-      "labels": [ "dependencies", "c-py" ]
-    },
-    {
-      "matchManagers": [ "bundler", "ruby-version" ],
-      "commitMessagePrefix": "[rb]",
-      "labels": [ "dependencies", "c-rb" ]
-    },
-    {
-      "matchPackageNames": [ "rules_ruby" ],
-      "commitMessagePrefix": "[rb]",
-      "labels": [ "dependencies", "c-rb" ]
-    },
-    {
-      "matchManagers": [ "cargo" ],
-      "rangeStrategy": "bump",
-      "commitMessagePrefix": "[rust]",
-      "labels": [ "dependencies", "c-rust" ]
-    },
-    {
-      "matchPackageNames": [ "rules_cc" ],
-      "commitMessagePrefix": "[rust]",
-      "labels": [ "dependencies", "c-rust" ]
+      "versioning": "maven"
     }
-  ],
-  "prConcurrentLimit": 10
+  ]
 }
