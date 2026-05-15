@@ -5,5 +5,6 @@
     "removeComments": true,
     "pretty": false,
     "strict": false
-  }
+  },
+  "files": ["get-attribute.ts"]
 }

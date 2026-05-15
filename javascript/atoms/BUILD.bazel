@@ -37,7 +37,7 @@ ts_project(
     srcs = ["typescript/get-attribute.ts"],
     declaration = False,
     source_map = False,
-    tsconfig = "typescript/tsconfig-cjs.json",
+    tsconfig = "typescript/tsconfig-get-attribute.json",
 )
 
 js_run_binary(
@@ -69,7 +69,7 @@ ts_project(
     srcs = ["typescript/find-elements.ts"],
     declaration = False,
     source_map = False,
-    tsconfig = "typescript/tsconfig-cjs.json",
+    tsconfig = "typescript/tsconfig-find-elements.json",
 )
 
 js_run_binary(
@@ -101,7 +101,7 @@ ts_project(
     srcs = ["typescript/is-displayed.ts"],
     declaration = False,
     source_map = False,
-    tsconfig = "typescript/tsconfig-cjs.json",
+    tsconfig = "typescript/tsconfig-is-displayed.json",
 )
 
 js_run_binary(
