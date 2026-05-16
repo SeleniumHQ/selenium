@@ -81,7 +81,7 @@ def _create_windows_script(ctx, dotnet):
     script_content = """@echo off
 setlocal
 
-set RUNFILES_DIR=%~dp0%~n0.runfiles
+set RUNFILES_DIR=%~dp0%~nx0.runfiles
 set DOTNET=%RUNFILES_DIR%\\{dotnet_path}
 
 if defined BUILD_WORKSPACE_DIRECTORY (
