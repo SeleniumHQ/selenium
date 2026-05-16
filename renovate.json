@@ -12,9 +12,9 @@
     "enabled": false
   },
   "labels": ["B-dependencies"],
+  "ignorePaths": ["**/requirements_lock.txt"],
   "constraintsFiltering": "strict",
   "constraints": {
-    "java": "11",
     "node": "22",
     "python": "3.10",
     "ruby": "3.3"
@@ -22,9 +22,9 @@
   "packageRules": [
     {
       "description": "Treat Renovate config language constraints as Selenium support policy, not update targets.",
-      "matchManagers": ["renovate-config"],
-      "matchDatasources": ["java-version", "node-version", "python-version", "ruby-version"],
-      "matchPackageNames": ["java", "node", "python", "ruby"],
+      "matchManagers": ["renovate-config", "renovate-config-presets"],
+      "matchDatasources": ["node-version", "python-version", "ruby-version"],
+      "matchPackageNames": ["node", "python", "ruby"],
       "enabled": false
     },
     {
@@ -52,12 +52,6 @@
       "allowedVersions": "<3.4"
     },
     {
-      "description": "Only propose Java runtime updates within the supported Java 11 line.",
-      "matchDatasources": ["java-version"],
-      "matchPackageNames": ["java", "java-jdk"],
-      "allowedVersions": "<12"
-    },
-    {
       "description": "Do not track Docker image references in this repository.",
       "matchDatasources": ["docker"],
       "enabled": false
@@ -67,6 +61,11 @@
       "matchFileNames": ["javascript/grid-ui/package.json"],
       "matchJsonata": ["$not($exists(vulnerabilityFixVersion))"],
       "enabled": false
+    },
+    {
+      "description": "Sphinx 8.x requires docutils<0.22 and Sphinx 9 needs Python >=3.11.",
+      "matchPackageNames": ["docutils"],
+      "allowedVersions": "<0.22"
     },
     {
       "description": "Group Bazel and Bazel module dependency declarations in the dashboard.",
