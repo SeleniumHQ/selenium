@@ -3,14 +3,14 @@ framework: net462,net8.0,netstandard2.0
 strategy: min
 source https://api.nuget.org/v3/index.json
 
-nuget BenderProxy 1.0.0
+nuget BenderProxy 1.1.2
 nuget CommandLineParser 2.8.0
 nuget Handlebars.Net 1.11.5
 nuget Humanizer.Core 2.8.26
 nuget Microsoft.Extensions.DependencyInjection 3.1.9
 nuget Moq 4.20.72
 nuget NETStandard.Library 2.0.3
-nuget NUnit 4.5.1
+nuget NUnit 4.6.0
 nuget NUnit3TestAdapter 6.2.0
 nuget Microsoft.Testing.Platform 2.1.0
 nuget Microsoft.Testing.Extensions.VSTestBridge 2.1.0
