@@ -42,15 +42,6 @@ changelog = "https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES"
 documentation = "https://www.selenium.dev/documentation/webdriver"
 issues = "https://github.com/SeleniumHQ/selenium/issues"
 
-[dependency-groups]
-lint = [
-    "ruff==0.15.12",
-]
-validate = [
-    "validate-pyproject==0.25",
-    "packaging==26.2",
-]
-
 [tool.setuptools]
 zip-safe = false
 
