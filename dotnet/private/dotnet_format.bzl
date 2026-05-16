@@ -59,7 +59,7 @@ if [[ ! -f "$SOLUTION" ]]; then
 fi
 
 echo "Running dotnet format $@ on Selenium.slnx..."
-"$DOTNET" format "$SOLUTION" "$@" || exit 1
+"$DOTNET" format "$@" "$SOLUTION" || exit 1
 
 echo "Done."
 """.format(
@@ -100,7 +100,7 @@ if not exist "%SOLUTION%" (
 )
 
 echo Running dotnet format %* on Selenium.slnx...
-"%DOTNET%" format "%SOLUTION%" %* || exit /b 1
+"%DOTNET%" format %* "%SOLUTION%" || exit /b 1
 
 echo Done.
 """.format(
