@@ -84,7 +84,7 @@ NUGET
       System.Buffers (>= 4.5.1) - restriction: || (== net462) (&& (== net8.0) (>= net462)) (&& (== net8.0) (< net6.0)) (== netstandard2.0)
       System.Memory (>= 4.5.5) - restriction: || (== net462) (&& (== net8.0) (>= net462)) (&& (== net8.0) (< net6.0)) (== netstandard2.0)
       System.Runtime.CompilerServices.Unsafe (>= 6.0) - restriction: || (== net462) (&& (== net8.0) (>= net462)) (&& (== net8.0) (< net6.0)) (&& (== net8.0) (< net7.0)) (== netstandard2.0)
-    System.Text.Json (8.0.5)
+    System.Text.Json (8.0.6)
       Microsoft.Bcl.AsyncInterfaces (>= 8.0) - restriction: || (== net462) (&& (== net8.0) (>= net462)) (&& (== net8.0) (< net6.0)) (== netstandard2.0)
       System.Buffers (>= 4.5.1) - restriction: || (== net462) (&& (== net8.0) (>= net462)) (&& (== net8.0) (< net6.0)) (== netstandard2.0)
       System.Memory (>= 4.5.5) - restriction: || (== net462) (&& (== net8.0) (>= net462)) (&& (== net8.0) (< net6.0)) (== netstandard2.0)
