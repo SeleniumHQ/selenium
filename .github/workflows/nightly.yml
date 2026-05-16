@@ -86,7 +86,7 @@ jobs:
       contents: write
     steps:
       - name: Download grid packages
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: nightly-grid
           path: build/dist
@@ -105,7 +105,7 @@ jobs:
     needs: [prepare, nightly-release, release-grid]
     if: failure()
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:

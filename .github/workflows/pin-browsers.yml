@@ -27,12 +27,12 @@ jobs:
       actions: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Download patch
         id: download
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: pinned-browsers
         continue-on-error: true
@@ -43,7 +43,7 @@ jobs:
           rm changes.patch
       - name: Create Pull Request
         if: steps.download.outcome == 'success'
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           commit-message: "Update pinned browser versions"

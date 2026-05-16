@@ -66,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
       - name: Delete rust release branch
@@ -253,11 +253,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout trunk
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
       - name: Download all patches
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           pattern: patch-*
           path: patches
@@ -291,7 +291,7 @@ jobs:
           apply_patch authors "update authors file"
           rm -rf patches
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           author: Selenium CI Bot <selenium-ci@users.noreply.github.com>
@@ -332,7 +332,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
       - name: Delete staging branch

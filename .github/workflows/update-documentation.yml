@@ -91,12 +91,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout gh-pages
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: gh-pages
           token: ${{ secrets.SELENIUM_CI_TOKEN || github.token }}
       - name: Download documentation
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: documentation-${{ needs.parse.outputs.language }}
           path: docs/api

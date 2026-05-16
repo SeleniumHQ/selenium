@@ -127,7 +127,7 @@ jobs:
             echo "val=$((COMMIT_COUNT + 1))" >> "$GITHUB_OUTPUT"
           fi
       - name: Checkout source tree
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.ref || github.ref }}
           fetch-depth: ${{ steps.depth.outputs.val }}
@@ -144,7 +144,7 @@ jobs:
           GIT_REF: ${{ github.ref }}
       - name: Restore cache
         if: inputs.cache-name != ''
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ${{ inputs.cache-name }}
           key: ${{ inputs.cache-name }}-
@@ -167,12 +167,12 @@ jobs:
         run: echo '${{ inputs.ruby-version }}' > rb/.ruby-version
       - name: Setup Node
         if: inputs.node-version != ''
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ inputs.node-version }}
       - name: Setup Bazel with caching
         if: inputs.caching
-        uses: bazel-contrib/setup-bazel@0.18.0
+        uses: bazel-contrib/setup-bazel@0.19.0
         with:
           cache-save: ${{ github.ref_name == 'trunk' }}
           bazelisk-cache: true
@@ -206,7 +206,7 @@ jobs:
           repository-cache: true
       - name: Setup Bazel without caching
         if: inputs.caching == false
-        uses: bazel-contrib/setup-bazel@0.18.0
+        uses: bazel-contrib/setup-bazel@0.19.0
         with:
           cache-save: false
           bazelisk-cache: true
@@ -233,7 +233,7 @@ jobs:
         run: sudo safaridriver --enable
       - name: Import GPG key
         if: inputs.gpg-sign
-        uses: crazy-max/ghaction-import-gpg@v6
+        uses: crazy-max/ghaction-import-gpg@v7
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
@@ -260,7 +260,7 @@ jobs:
         run: ./scripts/github-actions/collect-test-logs.sh
       - name: Upload failed test logs
         if: failure()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ inputs.browser }}
           retention-days: 7
@@ -278,7 +278,7 @@ jobs:
           [ -s changes.patch ] || rm -f changes.patch
       - name: Upload artifact
         if: always() && inputs.artifact-name != ''
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ inputs.artifact-name }}
           path: ${{ inputs.artifact-path || 'changes.patch' }}
