@@ -93,7 +93,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Generate release notes against previous minor release
@@ -168,7 +168,7 @@ jobs:
       actions: read
     steps:
       - name: Download Python distributions
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: pypi-distributions
           path: dist/
@@ -189,19 +189,19 @@ jobs:
     steps:
       - name: Checkout repo
         if: needs.parse-tag.outputs.language == 'all'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Download all release packages
         if: needs.parse-tag.outputs.language == 'all'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           pattern: release-packages-*
           merge-multiple: true
           path: "build/dist/"
       - name: Download release packages
         if: needs.parse-tag.outputs.language != 'all'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: release-packages-${{ needs.parse-tag.outputs.language }}
           path: "build/dist/"
@@ -334,7 +334,7 @@ jobs:
     needs: [publish, publish-python, docs, create-language-tag, github-release-draft, github-release-publish, update-version, reset-dependencies, commit-dependencies, nightly, mirror, verify]
     if: failure()
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:

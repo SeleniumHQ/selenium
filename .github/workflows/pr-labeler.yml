@@ -14,12 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout base repo to get config file
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.base.ref }}
           repository: seleniumhq/selenium
       - name: Auto label Pull Requests
-        uses: actions/labeler@v5
+        uses: actions/labeler@v6
         with:
           repo-token: ${{ secrets.SELENIUM_CI_TOKEN }}
           configuration-path: .github/pr-labeler-config.yml
