@@ -1239,7 +1239,7 @@ class WebDriver {
    * @return {!Promise<resolved>} A new CDP instance.
    */
   async createCDPConnection(target) {
-    let debuggerUrl = null
+    let debuggerUrl
 
     const caps = await this.getCapabilities()
 
@@ -1502,7 +1502,7 @@ class WebDriver {
       null,
     )
 
-    let mutationListener = ''
+    let mutationListener
     try {
       // Depending on what is running the code it could appear in 2 different places which is why we try
       // here and then the other location

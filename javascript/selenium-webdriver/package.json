@@ -29,9 +29,9 @@
     "ws": "^8.20.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.4",
+    "@eslint/js": "^10.0.1",
     "clean-jsdoc-theme": "^4.3.2",
-    "eslint": "^9.39.4",
+    "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-mocha": "^11.2.0",
     "eslint-plugin-n": "^18.0.1",
