@@ -7,7 +7,11 @@ They are typically downloaded from the
 [devtools source](https://github.com/ChromeDevTools/devtools-protocol/tree/master/json)
 
 * Edit `//java/src/org/openqa/selenium/devtools:versions.bzl` to include the new version number (and
-  possibly delete the old one, we tend to support only the last 3 versions)
+  possibly delete the old one, we tend to support only the last 3 versions). The last entry of
+  `CDP_VERSIONS` is automatically picked up as `LATEST_CDP_VERSION` and republished under the
+  `org.openqa.selenium.devtools.latest` package by
+  `//java/src/org/openqa/selenium/devtools/latest`, so users get the new CDP version under the
+  stable `selenium-devtools-latest` Maven coordinate without any extra work.
 * Copy the most recent `//java/src/org/openqa/selenium/devtools/vXX` to
   `//java/src/org/openqa/selenium/devtools/vXX+1`.
 * Do a search and replace in that directory, converting `XX` to `XX+1`

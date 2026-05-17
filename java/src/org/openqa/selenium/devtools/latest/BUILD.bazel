@@ -2,22 +2,17 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_export", "java_library")
 load("//java:version.bzl", "SE_VERSION")
+load("//java/src/org/openqa/selenium/devtools:versions.bzl", "LATEST_CDP_VERSION")
 
-cdp_version = "v148"
-
-# Hand-written shim sources reused by //java/src/org/openqa/selenium/devtools/latest
-# to produce a copy of this package under org.openqa.selenium.devtools.latest.
-filegroup(
-    name = "shim-sources",
-    srcs = glob(["*.java"]),
-    visibility = [
-        "//java/src/org/openqa/selenium/devtools/latest:__pkg__",
-    ],
-)
+# Publishes the most recent supported CDP version under the stable
+# `org.openqa.selenium.devtools.latest` package, so downstream consumers can
+# depend on a single coordinate that always tracks the newest CDP release
+# instead of bumping their pom each time Chrome ships a new major version.
+cdp_version = "latest"
 
 java_export(
     name = cdp_version,
-    srcs = glob(["*.java"]),
+    srcs = [":create-shim-srcs"],
     maven_coordinates = "org.seleniumhq.selenium:selenium-devtools-%s:%s" % (cdp_version, SE_VERSION),
     opens_to = [
         "org.seleniumhq.selenium.json",
@@ -73,12 +68,36 @@ genrule(
 
 copy_file(
     name = "browser_protocol",
-    src = "//common/devtools/chromium/%s:browser_protocol" % cdp_version,
+    src = "//common/devtools/chromium/%s:browser_protocol" % LATEST_CDP_VERSION,
     out = "browser_protocol.json",
 )
 
 copy_file(
     name = "js_protocol",
-    src = "//common/devtools/chromium/%s:js_protocol" % cdp_version,
+    src = "//common/devtools/chromium/%s:js_protocol" % LATEST_CDP_VERSION,
     out = "js_protocol.json",
+)
+
+# Derives the hand-written shim classes for the "latest" alias by rewriting
+# every occurrence of the latest CDP version slug (e.g. "v148") to "latest"
+# in the corresponding files from that version's package. This keeps the
+# alias in lockstep with the newest version without any source duplication.
+genrule(
+    name = "create-shim-srcs",
+    srcs = ["//java/src/org/openqa/selenium/devtools/%s:shim-sources" % LATEST_CDP_VERSION],
+    outs = [
+        "latestCdpInfo.java",
+        "latestDomains.java",
+        "latestEvents.java",
+        "latestJavascript.java",
+        "latestLog.java",
+        "latestNetwork.java",
+        "latestTarget.java",
+        "package-info.java",
+    ],
+    cmd = ("for src in $(SRCS); do " +
+           "base=$$(basename $$src); " +
+           "out=$$(echo $$base | sed -e 's/" + LATEST_CDP_VERSION + "/latest/g'); " +
+           "sed -e 's/" + LATEST_CDP_VERSION + "/latest/g' $$src > $(RULEDIR)/$$out; " +
+           "done"),
 )
