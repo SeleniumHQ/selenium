@@ -42,7 +42,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,8 +85,6 @@ import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
 import org.openqa.selenium.bidi.browsingcontext.UserPromptOpened;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.federatedcredentialmanagement.FederatedCredentialManagementDialog;
@@ -97,6 +94,8 @@ import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.Logs;
@@ -154,14 +153,6 @@ public class RemoteWebDriver
   // Cached page-load timeout used by BiDi navigation. Null until set by the user via
   // pageLoadTimeout() or lazily populated from the session's GET_TIMEOUTS response.
   private volatile Duration biDiPageLoadTimeout = null;
-
-  // Set to true once the one-time browsingContext.userPromptOpened listener is installed.
-  // Sending session.subscribe once is sufficient; subsequent navigations reuse it.
-  private final AtomicBoolean biDiPromptListenerInstalled = new AtomicBoolean(false);
-
-  // Non-null only while a BiDi navigation is in progress. The prompt handler uses this to
-  // ignore events that arrive outside of a navigation (e.g., user-triggered alerts).
-  private volatile String biDiNavigatingContextId = null;
 
   @SuppressWarnings("deprecation")
   private LocalLogs localLogs;
@@ -466,51 +457,36 @@ public class RemoteWebDriver
     return UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
   }
 
-  // Installs a single session-scoped browsingContext.userPromptOpened listener the first time
-  // BiDi navigation is used. The listener only acts while biDiNavigatingContextId is set,
-  // so it has no effect on user-triggered alerts outside of navigation.
-  private void ensureBiDiPromptListener() {
-    if (biDiPromptListenerInstalled.compareAndSet(false, true)) {
-      ((HasBiDi) this)
-          .getBiDi()
-          .addListener(
-              USER_PROMPT_OPENED_EVENT,
-              prompt -> {
-                String contextId = biDiNavigatingContextId;
-                if (contextId == null || !contextId.equals(prompt.getBrowsingContextId())) {
-                  return;
-                }
-                UnexpectedAlertBehaviour behaviour = getUnhandledPromptBehaviour();
-                if (behaviour == UnexpectedAlertBehaviour.IGNORE) {
-                  return;
-                }
-                boolean accept =
-                    behaviour == UnexpectedAlertBehaviour.ACCEPT
-                        || behaviour == UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY;
-                LOG.fine(
-                    () ->
-                        String.format(
-                            "Handling %s user prompt during BiDi navigation (%s)",
-                            prompt.getType(), accept ? "accept" : "dismiss"));
-                new BrowsingContext(this, contextId).handleUserPrompt(accept);
-              });
-    }
-  }
-
   // Wraps a BiDi navigation call with prompt handling that replicates, for BiDi, the automatic
-  // unhandledPromptBehavior that classic WebDriver delegates to the browser.
+  // unhandledPromptBehavior that classic WebDriver delegates to the browser. The listener is
+  // registered only for the duration of the navigation and removed in the finally block, so it
+  // cannot interfere with user-triggered alerts after the page loads.
   private void navigateViaBiDi(String contextId, Runnable navigation) {
-    ensureBiDiPromptListener();
     UnexpectedAlertBehaviour behaviour = getUnhandledPromptBehaviour();
     if (behaviour == UnexpectedAlertBehaviour.IGNORE) {
       navigation.run();
       return;
     }
-    biDiNavigatingContextId = contextId;
+    boolean accept =
+        behaviour == UnexpectedAlertBehaviour.ACCEPT
+            || behaviour == UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY;
+    BiDi biDi = ((HasBiDi) this).getBiDi();
+    long listenerId =
+        biDi.addListener(
+            contextId,
+            USER_PROMPT_OPENED_EVENT,
+            prompt -> {
+              LOG.fine(
+                  () ->
+                      String.format(
+                          "Handling %s user prompt during BiDi navigation (%s)",
+                          prompt.getType(), accept ? "accept" : "dismiss"));
+              new BrowsingContext(this, contextId).handleUserPrompt(accept);
+            });
     try {
       navigation.run();
     } finally {
-      biDiNavigatingContextId = null;
+      biDi.removeListener(listenerId);
     }
   }
 
