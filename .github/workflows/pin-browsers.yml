@@ -35,7 +35,6 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: pinned-browsers
-          digest-mismatch: warn
         continue-on-error: true
       - name: Apply Patch
         if: steps.download.outcome == 'success'

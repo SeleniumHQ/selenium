@@ -100,7 +100,6 @@ jobs:
         with:
           name: documentation-${{ needs.parse.outputs.language }}
           path: docs/api
-          digest-mismatch: warn
       - name: Commit documentation
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"

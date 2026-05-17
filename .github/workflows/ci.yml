@@ -69,7 +69,6 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: check-targets
-          digest-mismatch: warn
       - name: Read targets
         id: read
         env:

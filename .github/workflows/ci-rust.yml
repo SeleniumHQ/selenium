@@ -245,7 +245,6 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           path: artifacts
-          digest-mismatch: warn
       - name: "Prepare and Commit"
         run: |
           linux_sha=$(shasum -a 256 artifacts/selenium-manager-linux/selenium-manager-linux | awk '{print $1}')

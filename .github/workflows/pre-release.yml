@@ -261,7 +261,6 @@ jobs:
         with:
           pattern: patch-*
           path: patches
-          digest-mismatch: warn
       - name: Prep git
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"

@@ -90,7 +90,6 @@ jobs:
         with:
           name: nightly-grid
           path: build/dist
-          digest-mismatch: warn
       - name: Create nightly release
         uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
