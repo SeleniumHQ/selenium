@@ -44,6 +44,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
@@ -153,6 +154,20 @@ public class RemoteWebDriver
   // pageLoadTimeout() or lazily populated from the session's GET_TIMEOUTS response.
   // volatile is required for the outer unsynchronized read in getPageLoadDuration().
   private volatile @Nullable Duration biDiPageLoadTimeout = null;
+
+  // State for the single session-scoped browsingContext.userPromptOpened listener used by
+  // navigateViaBiDi. The listener is installed once (lazily) and gated on
+  // biDiNavigatingContextId so it has no effect outside of an active navigation.
+  //
+  // Ordering guarantee: biDiAcceptPrompt, biDiNotifyOnPrompt, and biDiHandledPrompt are always
+  // written before biDiNavigatingContextId (a volatile write). The listener's volatile read of
+  // biDiNavigatingContextId therefore establishes happens-before with those writes.
+  private final AtomicBoolean biDiPromptListenerInstalled = new AtomicBoolean(false);
+  private volatile @Nullable String biDiNavigatingContextId = null;
+  private volatile boolean biDiAcceptPrompt = false;
+  private volatile boolean biDiNotifyOnPrompt = false;
+  private final AtomicReference<@Nullable UserPromptOpened> biDiHandledPrompt =
+      new AtomicReference<>(null);
 
   @Nullable private Script remoteScript;
 
@@ -430,51 +445,69 @@ public class RemoteWebDriver
     return UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
   }
 
+  // Installs a single session-scoped browsingContext.userPromptOpened listener the first time a
+  // non-IGNORE navigation runs. A session-level subscribe is sent only once; subsequent
+  // navigations reuse it. The listener is gated on biDiNavigatingContextId so it has no
+  // effect outside of an active navigateViaBiDi call.
+  private void ensureBiDiPromptListener() {
+    if (!biDiPromptListenerInstalled.compareAndSet(false, true)) {
+      return;
+    }
+    ((HasBiDi) this)
+        .getBiDi()
+        .addListener(
+            USER_PROMPT_OPENED_EVENT,
+            prompt -> {
+              String contextId = biDiNavigatingContextId;
+              if (contextId == null || !contextId.equals(prompt.getBrowsingContextId())) {
+                return;
+              }
+              LOG.fine(
+                  () ->
+                      String.format(
+                          "Handling %s user prompt during BiDi navigation (%s)",
+                          prompt.getType(), biDiAcceptPrompt ? "accept" : "dismiss"));
+              if (biDiNotifyOnPrompt) {
+                biDiHandledPrompt.compareAndSet(null, prompt);
+              }
+              new BrowsingContext(this, contextId).handleUserPrompt(biDiAcceptPrompt);
+            });
+  }
+
   // Wraps a BiDi navigation call with prompt handling that replicates, for BiDi, the automatic
-  // unhandledPromptBehavior that classic WebDriver delegates to the browser. The listener is
-  // registered only for the duration of the navigation and removed in the finally block, so it
-  // cannot interfere with user-triggered alerts after the page loads.
+  // unhandledPromptBehavior that classic WebDriver delegates to the browser.
   //
-  // For *_AND_NOTIFY policies, the first handled prompt is captured and rethrown as
-  // UnhandledAlertException after navigation succeeds, matching classic WebDriver behaviour.
-  // Navigation exceptions take precedence: the notify throw only happens on a clean run.
+  // A single session-level listener is installed once and gated on biDiNavigatingContextId,
+  // so it only fires during an active navigation and never interferes with post-navigation alerts.
+  // For *_AND_NOTIFY policies, the first handled prompt is rethrown as UnhandledAlertException
+  // after navigation succeeds. Navigation exceptions take precedence.
   private void navigateViaBiDi(String contextId, Runnable navigation) {
     UnexpectedAlertBehaviour behaviour = getUnhandledPromptBehaviour();
     if (behaviour == UnexpectedAlertBehaviour.IGNORE) {
       navigation.run();
       return;
     }
+    ensureBiDiPromptListener();
     boolean accept =
         behaviour == UnexpectedAlertBehaviour.ACCEPT
             || behaviour == UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY;
     boolean notify =
         behaviour == UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY
             || behaviour == UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
-    AtomicReference<UserPromptOpened> handledPrompt = notify ? new AtomicReference<>() : null;
-    BiDi biDi = ((HasBiDi) this).getBiDi();
-    long listenerId =
-        biDi.addListener(
-            contextId,
-            USER_PROMPT_OPENED_EVENT,
-            prompt -> {
-              LOG.fine(
-                  () ->
-                      String.format(
-                          "Handling %s user prompt during BiDi navigation (%s)",
-                          prompt.getType(), accept ? "accept" : "dismiss"));
-              if (notify) {
-                handledPrompt.compareAndSet(null, prompt);
-              }
-              new BrowsingContext(this, contextId).handleUserPrompt(accept);
-            });
+    // Write accept/notify/handledPrompt before setting the gate (biDiNavigatingContextId) so
+    // the listener's volatile read of the gate establishes happens-before with these writes.
+    biDiAcceptPrompt = accept;
+    biDiNotifyOnPrompt = notify;
+    biDiHandledPrompt.set(null);
+    biDiNavigatingContextId = contextId;
     try {
       navigation.run();
     } finally {
-      biDi.removeListener(listenerId);
+      biDiNavigatingContextId = null;
     }
     // Navigation succeeded; notify the caller that a prompt was auto-handled.
     if (notify) {
-      UserPromptOpened prompt = handledPrompt.get();
+      UserPromptOpened prompt = biDiHandledPrompt.get();
       if (prompt != null) {
         throw new UnhandledAlertException(
             "Modal dialog auto-" + (accept ? "accepted" : "dismissed") + " during navigation",
