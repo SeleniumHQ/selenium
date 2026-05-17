@@ -260,7 +260,7 @@ jobs:
         run: ./scripts/github-actions/collect-test-logs.sh
       - name: Upload failed test logs
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ inputs.browser }}
           retention-days: 7
@@ -278,7 +278,7 @@ jobs:
           [ -s changes.patch ] || rm -f changes.patch
       - name: Upload artifact
         if: always() && inputs.artifact-name != ''
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ inputs.artifact-name }}
           path: ${{ inputs.artifact-path || 'changes.patch' }}

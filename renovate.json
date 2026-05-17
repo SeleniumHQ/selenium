@@ -108,6 +108,26 @@
       "description": "Group .NET package declarations and tools in the dashboard.",
       "matchManagers": ["nuget"],
       "dependencyDashboardCategory": ".NET"
+    },
+    {
+      "description": "Pin to v8 line; major bumps change shipped Selenium.WebDriver.dll assembly refs and force the new floor onto every NuGet consumer.",
+      "matchManagers": ["nuget"],
+      "matchPackageNames": [
+        "Microsoft.Bcl.AsyncInterfaces",
+        "Microsoft.Extensions.DependencyInjection",
+        "Microsoft.Extensions.DependencyInjection.Abstractions",
+        "System.Text.Json",
+        "System.Threading.Channels"
+      ],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "DevTools generator deps; major bumps risk renaming public Selenium.WebDriver.DevTools.* types on regeneration. Tracked in https://github.com/SeleniumHQ/selenium/issues/17489.",
+      "matchManagers": ["nuget"],
+      "matchPackageNames": ["Handlebars.Net", "Humanizer.Core"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ]
 }

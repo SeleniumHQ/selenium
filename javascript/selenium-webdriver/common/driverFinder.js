@@ -35,10 +35,11 @@ function getBinaryPaths(capabilities) {
     const args = getArgs(capabilities)
     return binaryPaths(args)
   } catch (e) {
-    throw Error(
+    throw new Error(
       `Unable to obtain browser driver.
         For more information on how to install drivers see
         https://www.selenium.dev/documentation/webdriver/troubleshooting/errors/driver_location/. ${e}`,
+      { cause: e },
     )
   }
 }
