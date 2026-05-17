@@ -46,7 +46,7 @@ jobs:
           token: ${{ secrets.SELENIUM_CI_TOKEN || github.token }}
       - name: Download patch
         id: download
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: ${{ inputs.artifact-name }}
         continue-on-error: true

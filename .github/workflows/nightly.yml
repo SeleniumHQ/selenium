@@ -86,7 +86,7 @@ jobs:
       contents: write
     steps:
       - name: Download grid packages
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: nightly-grid
           path: build/dist

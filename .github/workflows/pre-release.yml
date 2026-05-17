@@ -257,7 +257,7 @@ jobs:
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
       - name: Download all patches
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           pattern: patch-*
           path: patches
