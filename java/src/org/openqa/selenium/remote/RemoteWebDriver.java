@@ -96,6 +96,8 @@ import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -390,14 +392,17 @@ public class RemoteWebDriver
   // Returns the effective page load timeout for BiDi navigation commands. The value is cached so
   // repeated navigations don't incur an extra HTTP round-trip to GET_TIMEOUTS.
   private Duration getPageLoadDuration() {
-    if (biDiPageLoadTimeout == null) {
+    Duration cached = biDiPageLoadTimeout;
+    if (cached == null) {
       synchronized (this) {
-        if (biDiPageLoadTimeout == null) {
-          biDiPageLoadTimeout = manage().timeouts().getPageLoadTimeout();
+        cached = biDiPageLoadTimeout;
+        if (cached == null) {
+          cached = manage().timeouts().getPageLoadTimeout();
+          biDiPageLoadTimeout = cached;
         }
       }
     }
-    return biDiPageLoadTimeout;
+    return cached;
   }
 
   private static final Json BIDI_JSON = new Json();
