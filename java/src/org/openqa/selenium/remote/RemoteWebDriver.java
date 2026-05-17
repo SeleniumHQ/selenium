@@ -453,25 +453,31 @@ public class RemoteWebDriver
     if (!biDiPromptListenerInstalled.compareAndSet(false, true)) {
       return;
     }
-    ((HasBiDi) this)
-        .getBiDi()
-        .addListener(
-            USER_PROMPT_OPENED_EVENT,
-            prompt -> {
-              String contextId = biDiNavigatingContextId;
-              if (contextId == null || !contextId.equals(prompt.getBrowsingContextId())) {
-                return;
-              }
-              LOG.fine(
-                  () ->
-                      String.format(
-                          "Handling %s user prompt during BiDi navigation (%s)",
-                          prompt.getType(), biDiAcceptPrompt ? "accept" : "dismiss"));
-              if (biDiNotifyOnPrompt) {
-                biDiHandledPrompt.compareAndSet(null, prompt);
-              }
-              new BrowsingContext(this, contextId).handleUserPrompt(biDiAcceptPrompt);
-            });
+    try {
+      ((HasBiDi) this)
+          .getBiDi()
+          .addListener(
+              USER_PROMPT_OPENED_EVENT,
+              prompt -> {
+                String contextId = biDiNavigatingContextId;
+                if (contextId == null || !contextId.equals(prompt.getBrowsingContextId())) {
+                  return;
+                }
+                LOG.fine(
+                    () ->
+                        String.format(
+                            "Handling %s user prompt during BiDi navigation (%s)",
+                            prompt.getType(), biDiAcceptPrompt ? "accept" : "dismiss"));
+                if (biDiNotifyOnPrompt) {
+                  biDiHandledPrompt.compareAndSet(null, prompt);
+                }
+                new BrowsingContext(this, contextId).handleUserPrompt(biDiAcceptPrompt);
+              });
+    } catch (RuntimeException e) {
+      // Reset the flag so the next navigation can retry the subscription.
+      biDiPromptListenerInstalled.set(false);
+      throw e;
+    }
   }
 
   // Wraps a BiDi navigation call with prompt handling that replicates, for BiDi, the automatic
