@@ -44,6 +44,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -74,6 +75,7 @@ import org.openqa.selenium.PrintsPage;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -422,6 +424,10 @@ public class RemoteWebDriver
   // unhandledPromptBehavior that classic WebDriver delegates to the browser. The listener is
   // registered only for the duration of the navigation and removed in the finally block, so it
   // cannot interfere with user-triggered alerts after the page loads.
+  //
+  // For *_AND_NOTIFY policies, the first handled prompt is captured and rethrown as
+  // UnhandledAlertException after navigation succeeds, matching classic WebDriver behaviour.
+  // Navigation exceptions take precedence: the notify throw only happens on a clean run.
   private void navigateViaBiDi(String contextId, Runnable navigation) {
     UnexpectedAlertBehaviour behaviour = getUnhandledPromptBehaviour();
     if (behaviour == UnexpectedAlertBehaviour.IGNORE) {
@@ -431,6 +437,10 @@ public class RemoteWebDriver
     boolean accept =
         behaviour == UnexpectedAlertBehaviour.ACCEPT
             || behaviour == UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY;
+    boolean notify =
+        behaviour == UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY
+            || behaviour == UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
+    AtomicReference<UserPromptOpened> handledPrompt = notify ? new AtomicReference<>() : null;
     BiDi biDi = ((HasBiDi) this).getBiDi();
     long listenerId =
         biDi.addListener(
@@ -442,12 +452,24 @@ public class RemoteWebDriver
                       String.format(
                           "Handling %s user prompt during BiDi navigation (%s)",
                           prompt.getType(), accept ? "accept" : "dismiss"));
+              if (notify) {
+                handledPrompt.compareAndSet(null, prompt);
+              }
               new BrowsingContext(this, contextId).handleUserPrompt(accept);
             });
     try {
       navigation.run();
     } finally {
       biDi.removeListener(listenerId);
+    }
+    // Navigation succeeded; notify the caller that a prompt was auto-handled.
+    if (notify) {
+      UserPromptOpened prompt = handledPrompt.get();
+      if (prompt != null) {
+        throw new UnhandledAlertException(
+            "Modal dialog auto-" + (accept ? "accepted" : "dismissed") + " during navigation",
+            prompt.getMessage());
+      }
     }
   }
 
