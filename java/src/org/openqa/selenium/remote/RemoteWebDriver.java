@@ -147,6 +147,11 @@ public class RemoteWebDriver
 
   private final Logs remoteLogs = new RemoteLogs(executeMethod);
 
+  // Cached page-load timeout used by BiDi navigation. Null until set by the user via
+  // pageLoadTimeout() or lazily populated from the session's GET_TIMEOUTS response.
+  // volatile is required for the outer unsynchronized read in getPageLoadDuration().
+  private volatile @Nullable Duration biDiPageLoadTimeout = null;
+
   @Nullable private Script remoteScript;
 
   @Nullable private Network remoteNetwork;
@@ -1240,7 +1245,11 @@ public class RemoteWebDriver
       @Override
       public Timeouts pageLoadTimeout(Duration duration) {
         execute(DriverCommand.SET_PAGE_LOAD_TIMEOUT(duration));
-        biDiPageLoadTimeout = duration;
+        // Synchronized so this write cannot be overwritten by the lazy-init path in
+        // getPageLoadDuration() if both are called concurrently on different threads.
+        synchronized (RemoteWebDriver.this) {
+          biDiPageLoadTimeout = duration;
+        }
         return this;
       }
 
