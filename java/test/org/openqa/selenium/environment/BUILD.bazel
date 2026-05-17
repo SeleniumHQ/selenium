@@ -57,6 +57,7 @@ java_library(
         artifact("com.google.guava:guava"),
         artifact("dev.failsafe:failsafe"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ],
 )
 
@@ -97,6 +98,7 @@ java_library(
         "//java/test/org/openqa/selenium/testing/drivers",
         artifact("org.assertj:assertj-core"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )
 
@@ -115,5 +117,6 @@ java_test_suite(
         ":environment",
         ":test-base",
         artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.jspecify:jspecify"),
     ] + firefox["deps"] + JUNIT5_DEPS,
 )

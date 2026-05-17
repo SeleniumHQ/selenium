@@ -83,8 +83,8 @@ task :build_test_index, [:index_file] do |_task, args|
   end
   puts "Cached #{srcs_cache.size} dep → srcs lookups"
 
-  sorted_index = index.keys.sort.each_with_object({}) do |filepath, h|
-    h[filepath] = index[filepath].uniq.sort
+  sorted_index = index.keys.sort.to_h do |filepath|
+    [filepath, index[filepath].uniq.sort]
   end
 
   FileUtils.mkdir_p(File.dirname(output))

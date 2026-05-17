@@ -17,21 +17,23 @@
 
 package org.openqa.selenium.remote.http;
 
+import static java.util.Locale.ROOT;
+import static java.util.Objects.requireNonNullElse;
 import static org.openqa.selenium.remote.http.HttpHeader.UserAgent;
 
-import java.util.Locale;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Platform;
 
 public class AddSeleniumUserAgent implements Filter {
 
   public static final String USER_AGENT =
-      String.format(
-          "selenium/%s (java %s)",
-          new BuildInfo().getReleaseLabel(),
-          (Platform.getCurrent().family() == null
-              ? Platform.getCurrent().toString().toLowerCase(Locale.US)
-              : Platform.getCurrent().family().toString().toLowerCase(Locale.US)));
+      String.format("selenium/%s (java %s)", new BuildInfo().getReleaseLabel(), platformLabel());
+
+  private static String platformLabel() {
+    Platform platform = Platform.getCurrent();
+    Platform family = requireNonNullElse(platform.family(), platform);
+    return family.toString().toLowerCase(ROOT);
+  }
 
   @Override
   public HttpHandler apply(HttpHandler next) {

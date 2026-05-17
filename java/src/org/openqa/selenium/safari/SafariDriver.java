@@ -43,7 +43,7 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
   private final HasPermissions permissions;
   private final HasDebugger debugger;
 
-  /** Initializes a new SafariDriver} class with default {@link SafariOptions}. */
+  /** Initializes a new SafariDriver class with default {@link SafariOptions}. */
   public SafariDriver() {
     this(new SafariOptions());
   }

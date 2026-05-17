@@ -1,3 +1,21 @@
+## 4.44.0
+
+- Support CDP versions: v146, v147, v148
+- [Agents] Update agents to make sure do linting. (#17366)
+- Standardize README files across bindings (#17245)
+- Fix MaxListenersExceededWarning in BiDi send (#17423)
+- [JavaScript] Move 'isDisplayed' atom to be typescript (#17316)
+
+## 4.43.0
+
+- Support CDP versions: v145, v146, v147
+
+## 4.42.0
+
+- Support CDP versions: v144, v145, v146
+- [nodejs] Color Class for Javascript library (#16944)
+- Fix failing javascript tests (#17293)
+
 ## 4.41.0
 
 - Support CDP versions: v143, v144, v145

@@ -42,8 +42,9 @@ public class WebDriverNavigationEventArgs : EventArgs
     /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is <see langword="null"/>.</exception>
     public WebDriverNavigationEventArgs(IWebDriver driver, string? url)
     {
+        ArgumentNullException.ThrowIfNull(driver);
         this.Url = url;
-        this.Driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        this.Driver = driver;
     }
 
     /// <summary>

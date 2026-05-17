@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.testing.drivers;
 
+import static org.openqa.selenium.UnexpectedAlertBehaviour.IGNORE;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 
@@ -135,6 +136,7 @@ public enum Browser {
     @Override
     public Capabilities getCapabilities() {
       FirefoxOptions options = new FirefoxOptions().configureFromEnv();
+      options.setCapability(UNHANDLED_PROMPT_BEHAVIOUR, IGNORE);
 
       resolveDriverPath("webdriver.gecko.driver");
       String binary = InProject.resolveRunfilesPath(System.getProperty("webdriver.firefox.bin"));

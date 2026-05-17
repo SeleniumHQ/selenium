@@ -9,6 +9,12 @@ def ruby_version
   end
 end
 
+def devtools_version
+  File.foreach('rb/lib/selenium/devtools/version.rb') do |line|
+    return line.split('=').last.strip.tr("'", '') if line.include?('VERSION')
+  end
+end
+
 def setup_gem_credentials
   gem_dir = File.join(Dir.home, '.gem')
   credentials = File.join(gem_dir, 'credentials')
@@ -75,7 +81,13 @@ task :release do |_task, arguments|
     Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
 
     puts 'Releasing nightly WebDriver gem...'
-    Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release-nightly')
+    begin
+      Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release-nightly')
+    rescue RuntimeError => e
+      raise unless e.message.match?(/Repushing of gem versions is not allowed/i)
+
+      puts 'Nightly gem version already published to GitHub Packages — skipping.'
+    end
   else
     setup_gem_credentials
     patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?
@@ -92,7 +104,7 @@ task :verify do
 
   SeleniumRake.verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-webdriver/versions/#{ruby_version}.json")
   unless patch_release
-    SeleniumRake.verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-devtools/versions/#{ruby_version}.json")
+    SeleniumRake.verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-devtools/versions/#{devtools_version}.json")
   end
 end
 
@@ -147,9 +159,10 @@ task :format do
 end
 
 desc 'Run Ruby linters (rubocop, steep, docs)'
-task :lint do
+task :lint do |_task, arguments|
+  flag = arguments.to_a.include?('-A') ? '-A' : '-a'
   puts '  Running rubocop...'
-  Bazel.execute('run', ['--', '-a'], '//rb:rubocop')
+  Bazel.execute('run', ['--', flag], '//rb:rubocop')
   puts '  Running steep type checker...'
   Bazel.execute('run', [], '//rb:steep')
   Rake::Task['rb:docs_generate'].invoke

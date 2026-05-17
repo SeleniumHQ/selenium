@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.42.0.202602192150"
+version = "4.45.0.202605121853"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
@@ -26,7 +26,7 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "certifi>=2026.1.4",
+    "certifi>=2026.2.25",
     "trio>=0.31.0,<1.0",
     "trio-websocket>=0.12.2,<1.0",
     "typing_extensions>=4.15.0,<5.0",
@@ -44,11 +44,11 @@ issues = "https://github.com/SeleniumHQ/selenium/issues"
 
 [dependency-groups]
 lint = [
-    "ruff==0.15.6",
+    "ruff==0.15.12",
 ]
 validate = [
     "validate-pyproject==0.25",
-    "packaging==26.0",
+    "packaging==26.2",
 ]
 
 [tool.setuptools]
@@ -108,7 +108,6 @@ testpaths = ["test"]
 
 # mypy global options
 [tool.mypy]
-exclude = "selenium/webdriver/common/devtools"
 # The aim in future is we would be able to turn (most) of these flags on
 # warn about per-module sections in the config file that do not match any files processed.
 warn_unused_configs = true
@@ -137,9 +136,17 @@ warn_return_any = false
 # Shows a warning when encountering any code inferred to be unreachable after performing type analysis.
 warn_unreachable = false
 
+[[tool.mypy.overrides]]
+module = [
+    "selenium.webdriver.common.devtools.*",
+    "selenium.webdriver.common.bidi.*",
+]
+ignore_errors = true
+
 [tool.ruff]
 extend-exclude = [
     "selenium/webdriver/common/devtools/",
+    "selenium/webdriver/common/bidi/",
 ]
 line-length = 120
 respect-gitignore = true

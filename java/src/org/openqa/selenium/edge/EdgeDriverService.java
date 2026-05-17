@@ -100,7 +100,7 @@ public class EdgeDriverService extends DriverService {
   public EdgeDriverService(
       @Nullable File executable,
       int port,
-      @Nullable Duration timeout,
+      Duration timeout,
       @Nullable List<String> args,
       @Nullable Map<String, String> environment)
       throws IOException {
@@ -335,7 +335,7 @@ public class EdgeDriverService extends DriverService {
     protected EdgeDriverService createDriverService(
         @Nullable File exe,
         int port,
-        @Nullable Duration timeout,
+        Duration timeout,
         @Nullable List<String> args,
         @Nullable Map<String, String> environment) {
       try {

@@ -2,7 +2,6 @@ load("//java:defs.bzl", "JUNIT5_DEPS", "artifact", "java_selenium_test_suite", "
 
 SMALL_TEST_SRCS = [
     "LoggingTest.java",
-    "PerformanceLoggingMockTest.java",
 ]
 
 java_test_suite(
@@ -33,5 +32,6 @@ java_selenium_test_suite(
         "//java/test/org/openqa/selenium/testing/drivers",
         artifact("org.assertj:assertj-core"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )

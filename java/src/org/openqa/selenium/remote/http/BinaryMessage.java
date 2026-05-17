@@ -26,7 +26,7 @@ public class BinaryMessage implements Message {
 
   public BinaryMessage(ByteBuffer data) {
     ByteBuffer copy = Require.nonNull("Data to use", data).asReadOnlyBuffer();
-    this.data = new byte[copy.capacity()];
+    this.data = new byte[copy.remaining()];
     copy.get(this.data);
   }
 

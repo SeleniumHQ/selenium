@@ -17,14 +17,12 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using Moq;
-using NUnit.Framework;
+using OpenQA.Selenium.Support.Events;
 
-namespace OpenQA.Selenium.Support.Events;
+namespace OpenQA.Selenium.Support.Tests.Events;
 
 [TestFixture]
 public class EventFiringWebDriverTests

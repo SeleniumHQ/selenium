@@ -17,67 +17,57 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
+using static OpenQA.Selenium.BiDi.Input.InputJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-public sealed class InputModule : Module, IInputModule
+internal sealed class InputModule : Module, IInputModule
 {
-    private InputJsonSerializerContext _jsonContext = null!;
+    private static readonly Command<PerformActionsParameters, PerformActionsResult> PerformActionsCommand = new(
+        "input.performActions", Default.PerformActionsParameters, Default.PerformActionsResult);
+
+    private static readonly Command<ReleaseActionsParameters, ReleaseActionsResult> ReleaseActionsCommand = new(
+        "input.releaseActions", Default.ReleaseActionsParameters, Default.ReleaseActionsResult);
+
+    private static readonly Command<SetFilesParameters, SetFilesResult> SetFilesCommand = new(
+        "input.setFiles", Default.SetFilesParameters, Default.SetFilesResult);
 
     public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new PerformActionsParameters(context, actions);
 
-        return await ExecuteCommandAsync(new PerformActionsCommand(@params), options, _jsonContext.PerformActionsCommand, _jsonContext.PerformActionsResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(PerformActionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ReleaseActionsResult> ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ReleaseActionsParameters(context);
 
-        return await ExecuteCommandAsync(new ReleaseActionsCommand(@params), options, _jsonContext.ReleaseActionsCommand, _jsonContext.ReleaseActionsResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(ReleaseActionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetFilesResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetFilesParameters(context, element, files);
 
-        return await ExecuteCommandAsync(new SetFilesCommand(@params), options, _jsonContext.SetFilesCommand, _jsonContext.SetFilesResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetFilesCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync("input.fileDialogOpened", handler, options, _jsonContext.FileDialogEventArgs, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync("input.fileDialogOpened", handler, options, _jsonContext.FileDialogEventArgs, cancellationToken).ConfigureAwait(false);
-    }
-
-    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
-    {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new HandleConverter(bidi));
-
-        _jsonContext = new InputJsonSerializerContext(jsonSerializerOptions);
-    }
+    public IEventSource<FileDialogOpenedEventArgs> FileDialogOpened => _fileDialogOpened ?? Interlocked.CompareExchange(ref _fileDialogOpened, CreateEventSource(InputEvent.FileDialogOpened), null) ?? _fileDialogOpened;
+    private IEventSource<FileDialogOpenedEventArgs>? _fileDialogOpened;
 }
 
-[JsonSerializable(typeof(PerformActionsCommand))]
+[JsonSerializable(typeof(PerformActionsParameters))]
 [JsonSerializable(typeof(PerformActionsResult))]
-[JsonSerializable(typeof(ReleaseActionsCommand))]
+[JsonSerializable(typeof(ReleaseActionsParameters))]
 [JsonSerializable(typeof(ReleaseActionsResult))]
-[JsonSerializable(typeof(SetFilesCommand))]
+[JsonSerializable(typeof(SetFilesParameters))]
 [JsonSerializable(typeof(SetFilesResult))]
-[JsonSerializable(typeof(FileDialogEventArgs))]
-[JsonSerializable(typeof(IEnumerable<IPointerSourceAction>))]
-[JsonSerializable(typeof(IEnumerable<IKeySourceAction>))]
-[JsonSerializable(typeof(IEnumerable<INoneSourceAction>))]
-[JsonSerializable(typeof(IEnumerable<IWheelSourceAction>))]
 
+[JsonSerializable(typeof(FileDialogInfo))]
+
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class InputJsonSerializerContext : JsonSerializerContext;

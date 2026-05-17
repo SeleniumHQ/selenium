@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.tracing;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
 
@@ -48,7 +49,7 @@ public class HttpTracing {
     return parent.createSpan(name);
   }
 
-  public static void inject(Tracer tracer, TraceContext context, HttpRequest request) {
+  public static void inject(Tracer tracer, @Nullable TraceContext context, HttpRequest request) {
     if (context == null) {
       // Do nothing.
       return;

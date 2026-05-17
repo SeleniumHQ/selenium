@@ -18,6 +18,7 @@
 package org.openqa.selenium.io;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -53,8 +54,19 @@ public class Read {
     return new String(toByteArray(in), UTF_8);
   }
 
+  /**
+   * This method might not work in OSGI environment.
+   *
+   * @deprecated Use {@link #resourceAsString(Class, String)} instead
+   */
+  @Deprecated
   public static String resourceAsString(String resource) {
-    try (InputStream stream = Read.class.getResourceAsStream(resource)) {
+    return resourceAsString(Read.class, resource);
+  }
+
+  public static String resourceAsString(Class<?> resourceOwner, String resource) {
+    Class<?> clazz = requireNonNull(resourceOwner, "Class owning the resource");
+    try (InputStream stream = clazz.getResourceAsStream(resource)) {
       if (stream == null) {
         throw new IllegalArgumentException("Resource not found: " + resource);
       }

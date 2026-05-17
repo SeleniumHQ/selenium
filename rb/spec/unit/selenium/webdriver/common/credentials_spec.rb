@@ -95,7 +95,7 @@ module Selenium
           expect(credential.resident_credential?).to be(true)
           expect(credential.rp_id).to eq('localhost')
           expect(credential.user_handle).to eq(user_handle)
-          expect(credential.private_key).to eq(base64_encoded_pk)
+          expect(credential.private_key).to eq(private_key)
           expect(credential.sign_count).to eq(0)
         end
       end

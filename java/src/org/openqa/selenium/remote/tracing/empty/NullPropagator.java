@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.tracing.empty;
 
 import java.util.function.BiFunction;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
 
@@ -27,7 +28,7 @@ public class NullPropagator implements Propagator {
 
   @Override
   public <C> TraceContext extractContext(
-      TraceContext existing, C carrier, BiFunction<C, String, String> getter) {
+      TraceContext existing, C carrier, BiFunction<C, String, @Nullable String> getter) {
     return existing;
   }
 }

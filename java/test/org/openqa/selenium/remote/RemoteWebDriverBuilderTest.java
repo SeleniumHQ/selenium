@@ -42,9 +42,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -233,11 +236,12 @@ class RemoteWebDriverBuilderTest {
 
     assertThat(seen).hasValue(uri);
     assertThat(webDriver).isInstanceOf(RemoteWebDriver.class);
-    assertThat(((RemoteWebDriver) webDriver).capabilities.asMap())
+    assertThat(((HasCapabilities) webDriver).getCapabilities().asMap())
         .containsEntry("se:cheese", "primula");
   }
 
   @Test
+  @NullMarked
   void shouldUseGivenDriverServiceForUrlIfProvided() throws IOException {
     URI uri = URI.create("http://localhost:9898");
     URL url = uri.toURL();
@@ -250,7 +254,7 @@ class RemoteWebDriverBuilderTest {
           }
         };
 
-    AtomicReference<URI> seen = new AtomicReference<>();
+    AtomicReference<@Nullable URI> seen = new AtomicReference<>();
     RemoteWebDriver.builder()
         .oneOf(new FirefoxOptions())
         .withDriverService(service)
@@ -425,6 +429,7 @@ class RemoteWebDriverBuilderTest {
   }
 
   @Test
+  @NullMarked
   void shouldAugmentDriverWhenUsingDriverService() throws IOException {
     URI uri = URI.create("http://localhost:9898");
     URL url = uri.toURL();
@@ -467,6 +472,7 @@ class RemoteWebDriverBuilderTest {
   }
 
   @Test
+  @NullMarked
   void shouldAugmentWithDevToolsWhenUsingDriverService() throws IOException {
     URI uri = URI.create("http://localhost:9898");
     URL url = uri.toURL();
@@ -521,6 +527,7 @@ class RemoteWebDriverBuilderTest {
         .collect(Collectors.toList());
   }
 
+  @NullMarked
   static class FakeDriverService extends DriverService {
     private boolean started;
 
@@ -541,6 +548,16 @@ class RemoteWebDriverBuilderTest {
     @Override
     protected void waitUntilAvailable() {
       // return immediately
+    }
+
+    @Override
+    public String getDriverProperty() {
+      return "";
+    }
+
+    @Override
+    protected String getDriverEnvironmentVariable() {
+      return "";
     }
   }
 

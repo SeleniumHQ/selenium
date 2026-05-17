@@ -17,36 +17,14 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
-public sealed class LogModule : Module, ILogModule
+internal sealed class LogModule : Module, ILogModule
 {
-    private LogJsonSerializerContext _jsonContext = null!;
-
-    public async Task<Subscription> OnEntryAddedAsync(Func<LogEntryEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntryEventArgs, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription> OnEntryAddedAsync(Action<LogEntryEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntryEventArgs, cancellationToken).ConfigureAwait(false);
-    }
-
-    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
-    {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new RealmConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new InternalIdConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new HandleConverter(bidi));
-
-        _jsonContext = new LogJsonSerializerContext(jsonSerializerOptions);
-    }
+    public IEventSource<EntryAddedEventArgs> EntryAdded => _entryAdded ?? Interlocked.CompareExchange(ref _entryAdded, CreateEventSource(LogEvent.EntryAdded), null) ?? _entryAdded;
+    private IEventSource<EntryAddedEventArgs>? _entryAdded;
 }
 
 #region https://github.com/dotnet/runtime/issues/72604 Script.RemoteValue type dependency
@@ -78,12 +56,13 @@ public sealed class LogModule : Module, ILogModule
 [JsonSerializable(typeof(Script.WindowProxyRemoteValue))]
 #endregion
 
-[JsonSerializable(typeof(LogEntryEventArgs))]
+[JsonSerializable(typeof(LogEntry))]
+// https://github.com/dotnet/runtime/issues/72604
+[JsonSerializable(typeof(GenericLogEntry))]
+[JsonSerializable(typeof(ConsoleLogEntry))]
+[JsonSerializable(typeof(JavascriptLogEntry))]
 
-#region https://github.com/dotnet/runtime/issues/72604
-[JsonSerializable(typeof(GenericLogEntryEventArgs))]
-[JsonSerializable(typeof(ConsoleLogEntryEventArgs))]
-[JsonSerializable(typeof(JavascriptLogEntryEventArgs))]
-#endregion
-
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class LogJsonSerializerContext : JsonSerializerContext;

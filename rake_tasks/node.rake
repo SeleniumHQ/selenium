@@ -6,22 +6,6 @@ def node_version
   end
 end
 
-def setup_npm_auth
-  npmrc = File.join(Dir.home, '.npmrc')
-  return if File.exist?(npmrc) && File.read(npmrc).include?('//registry.npmjs.org/:_authToken=')
-
-  token = ENV.fetch('NODE_AUTH_TOKEN', nil)
-  raise 'Missing npm credentials: set NODE_AUTH_TOKEN or configure ~/.npmrc' if token.nil? || token.empty?
-
-  auth_line = "//registry.npmjs.org/:_authToken=#{token}"
-  if File.exist?(npmrc)
-    File.open(npmrc, 'a') { |f| f.puts(auth_line) }
-  else
-    File.write(npmrc, "#{auth_line}\n")
-  end
-  File.chmod(0o600, npmrc)
-end
-
 def setup_github_npm_auth
   token = ENV.fetch('GITHUB_TOKEN', nil)
   raise 'Missing GitHub token: set GITHUB_TOKEN for nightly npm publish' if token.nil? || token.empty?
@@ -76,8 +60,10 @@ task :check_credentials do |_task, arguments|
 
   npmrc = File.join(Dir.home, '.npmrc')
   has_file = File.exist?(npmrc) && File.read(npmrc).include?('//registry.npmjs.org/:_authToken=')
-  has_env = ENV.fetch('NODE_AUTH_TOKEN', nil) && !ENV['NODE_AUTH_TOKEN'].empty?
-  raise 'Missing npm credentials: set NODE_AUTH_TOKEN or configure ~/.npmrc' unless has_file || has_env
+  has_oidc = ENV.fetch('ACTIONS_ID_TOKEN_REQUEST_URL', nil) && !ENV['ACTIONS_ID_TOKEN_REQUEST_URL'].empty?
+  unless has_file || has_oidc
+    raise 'Missing npm credentials: configure ~/.npmrc via `npm login` or run via npm trusted publishing'
+  end
 end
 
 desc 'Release Node npm package (use dry-run to test without publishing)'
@@ -92,8 +78,6 @@ task :release do |_task, arguments|
     puts 'Updating Node version to nightly...'
     Rake::Task['node:version'].invoke('nightly')
     setup_github_npm_auth unless dry_run
-  else
-    setup_npm_auth unless dry_run
   end
 
   puts dry_run ? 'Running Node package dry-run...' : 'Running Node package release...'

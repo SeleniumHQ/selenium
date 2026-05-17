@@ -104,7 +104,7 @@ public class ChromeDriverService extends DriverService {
   public ChromeDriverService(
       @Nullable File executable,
       int port,
-      @Nullable Duration timeout,
+      Duration timeout,
       @Nullable List<String> args,
       @Nullable Map<String, String> environment)
       throws IOException {
@@ -328,7 +328,7 @@ public class ChromeDriverService extends DriverService {
     protected ChromeDriverService createDriverService(
         @Nullable File exe,
         int port,
-        @Nullable Duration timeout,
+        Duration timeout,
         @Nullable List<String> args,
         @Nullable Map<String, String> environment) {
       try {

@@ -3,8 +3,8 @@
   "__INPUT_ARTIFACTS_HASH": {
     "args4j:args4j": 1223353088,
     "com.beust:jcommander": -1790778431,
-    "com.github.ben-manes.caffeine:caffeine": -671916614,
-    "com.github.javaparser:javaparser-core": -1357501843,
+    "com.github.ben-manes.caffeine:caffeine": 1815596219,
+    "com.github.javaparser:javaparser-core": 1130010990,
     "com.github.spotbugs:spotbugs": 1913874159,
     "com.github.stephenc.jcip:jcip-annotations": -1909337358,
     "com.google.auto.service:auto-service": -1729498094,
@@ -12,27 +12,27 @@
     "com.google.auto:auto-common": -832702775,
     "com.google.closure-stylesheets:closure-stylesheets": -626365944,
     "com.google.code.findbugs:jsr305": 495355163,
-    "com.google.code.gson:gson": 245099245,
+    "com.google.code.gson:gson": 2063056812,
     "com.google.dagger:dagger-producers": 1903545965,
     "com.google.errorprone:error_prone_annotations": -1035138750,
-    "com.google.googlejavaformat:google-java-format": -1767345577,
-    "com.google.guava:guava": -1756621521,
+    "com.google.googlejavaformat:google-java-format": -1756842473,
+    "com.google.guava:guava": -249069712,
     "com.google.j2objc:j2objc-annotations": 2003271689,
     "com.google.javascript:closure-compiler": -882503383,
     "com.google.jimfs:jimfs": 803072898,
     "com.google.protobuf.nano:protobuf-javanano": 1507249733,
-    "com.google.protobuf:protobuf-java": 99127134,
-    "com.graphql-java:graphql-java": -1496602532,
-    "com.uber.nullaway:nullaway": -99678960,
+    "com.google.protobuf:protobuf-java": 1237026331,
+    "com.graphql-java:graphql-java": 1011916509,
+    "com.uber.nullaway:nullaway": -1227075053,
     "dev.failsafe:failsafe": -1314791755,
-    "io.fabric8:kubernetes-client": 1672932049,
-    "io.fabric8:kubernetes-client-api": -445588764,
-    "io.fabric8:kubernetes-model-batch": 742416478,
-    "io.fabric8:kubernetes-model-core": 2115640793,
-    "io.grpc:grpc-context": 2108848217,
-    "io.lettuce:lettuce-core": 838258304,
+    "io.fabric8:kubernetes-client": 1693938257,
+    "io.fabric8:kubernetes-client-api": -424582556,
+    "io.fabric8:kubernetes-model-batch": 763422686,
+    "io.fabric8:kubernetes-model-core": 2136647001,
+    "io.grpc:grpc-context": -566327376,
+    "io.lettuce:lettuce-core": -1594561469,
     "io.netty:netty-all": 41228384,
-    "io.netty:netty-bom": 1281741388,
+    "io.netty:netty-bom": 692200873,
     "io.netty:netty-buffer": 74326261,
     "io.netty:netty-codec-http": -920101484,
     "io.netty:netty-codec-http2": 590712764,
@@ -41,7 +41,7 @@
     "io.netty:netty-handler-proxy": -183560396,
     "io.netty:netty-transport": 320927026,
     "io.opentelemetry:opentelemetry-api": 237530819,
-    "io.opentelemetry:opentelemetry-bom": -205267930,
+    "io.opentelemetry:opentelemetry-bom": 481831694,
     "io.opentelemetry:opentelemetry-context": -543978024,
     "io.opentelemetry:opentelemetry-exporter-logging": -135306546,
     "io.opentelemetry:opentelemetry-sdk": -314306333,
@@ -50,15 +50,14 @@
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi": -62380802,
     "io.opentelemetry:opentelemetry-sdk-testing": -32635354,
     "io.opentelemetry:opentelemetry-sdk-trace": 1165401435,
-    "it.ozimov:embedded-redis": 2010455349,
     "javax.inject:javax.inject": -297932879,
     "junit:junit": -744267592,
-    "net.bytebuddy:byte-buddy": 1859026651,
+    "net.bytebuddy:byte-buddy": 1750588375,
     "net.java.dev.javacc:javacc": 520686333,
-    "org.apache.logging.log4j:log4j-core": -1557614427,
+    "org.apache.logging.log4j:log4j-core": 2067797603,
     "org.assertj:assertj-core": -1145412507,
-    "org.bouncycastle:bcpkix-jdk18on": 1954093523,
-    "org.checkerframework:checker-qual": 141708180,
+    "org.bouncycastle:bcpkix-jdk18on": 146639060,
+    "org.checkerframework:checker-qual": 115428613,
     "org.eclipse.mylyn.github:org.eclipse.egit.github.core": 801759887,
     "org.hamcrest:hamcrest-all": -1673756380,
     "org.hamcrest:hamcrest-core": 168210752,
@@ -75,13 +74,14 @@
     "org.junit.platform:junit-platform-launcher": -354104948,
     "org.junit.platform:junit-platform-reporting": 1896713402,
     "org.junit:junit-bom": 905501728,
-    "org.mockito:mockito-core": 629099222,
-    "org.redisson:redisson": 1829121092,
+    "org.mockito:mockito-core": 1330163800,
+    "org.redisson:redisson": -1764781626,
     "org.seleniumhq.selenium:selenium-api": 1359790425,
     "org.seleniumhq.selenium:selenium-remote-driver": -1144232444,
     "org.seleniumhq.selenium:selenium-support": 204710084,
-    "org.slf4j:slf4j-api": -197708565,
-    "org.slf4j:slf4j-jdk14": 1467713585,
+    "org.slf4j:slf4j-api": -2005163028,
+    "org.slf4j:slf4j-jdk14": -339740878,
+    "org.testcontainers:testcontainers": -1851951707,
     "org.tomlj:tomlj": -8705859,
     "org.zeromq:jeromq": -1244249324,
     "repositories": -1949687017,
@@ -101,210 +101,214 @@
     "com.esotericsoftware:minlog:jar:sources": 272312478,
     "com.esotericsoftware:reflectasm": 2111544468,
     "com.esotericsoftware:reflectasm:jar:sources": -1791654347,
-    "com.fasterxml.jackson.core:jackson-annotations": -85510638,
-    "com.fasterxml.jackson.core:jackson-annotations:jar:sources": 467665637,
-    "com.fasterxml.jackson.core:jackson-core": -959071160,
-    "com.fasterxml.jackson.core:jackson-core:jar:sources": 1813389773,
-    "com.fasterxml.jackson.core:jackson-databind": -2046812024,
-    "com.fasterxml.jackson.core:jackson-databind:jar:sources": -1481966519,
-    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml": -1515319520,
-    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:sources": 1951576667,
-    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310": -1295820332,
-    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:sources": -1702850488,
-    "com.github.ben-manes.caffeine:caffeine": -1877345241,
-    "com.github.ben-manes.caffeine:caffeine:jar:sources": -594702079,
-    "com.github.javaparser:javaparser-core": -1165910921,
-    "com.github.javaparser:javaparser-core:jar:sources": 939883591,
-    "com.github.spotbugs:spotbugs": 1458084532,
+    "com.fasterxml.jackson.core:jackson-annotations": 1145483352,
+    "com.fasterxml.jackson.core:jackson-annotations:jar:sources": -1434301790,
+    "com.fasterxml.jackson.core:jackson-core": -1238101265,
+    "com.fasterxml.jackson.core:jackson-core:jar:sources": -377498338,
+    "com.fasterxml.jackson.core:jackson-databind": 483859520,
+    "com.fasterxml.jackson.core:jackson-databind:jar:sources": 1515383902,
+    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml": 77044715,
+    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:sources": 1374882539,
+    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310": -1455495995,
+    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:sources": 963116346,
+    "com.github.ben-manes.caffeine:caffeine": -1434536938,
+    "com.github.ben-manes.caffeine:caffeine:jar:sources": -57104877,
+    "com.github.docker-java:docker-java-api": 1073735645,
+    "com.github.docker-java:docker-java-api:jar:sources": -964631834,
+    "com.github.docker-java:docker-java-transport": -1526601578,
+    "com.github.docker-java:docker-java-transport-zerodep": -168720568,
+    "com.github.docker-java:docker-java-transport-zerodep:jar:sources": -767880782,
+    "com.github.docker-java:docker-java-transport:jar:sources": -1920988041,
+    "com.github.javaparser:javaparser-core": -30839703,
+    "com.github.javaparser:javaparser-core:jar:sources": 1146718011,
+    "com.github.spotbugs:spotbugs": 705935320,
     "com.github.spotbugs:spotbugs-annotations": 1784664812,
     "com.github.spotbugs:spotbugs-annotations:jar:sources": -1367968760,
     "com.github.spotbugs:spotbugs:jar:sources": -270818245,
     "com.github.stephenc.jcip:jcip-annotations": 2084352561,
     "com.github.stephenc.jcip:jcip-annotations:jar:sources": 888192437,
-    "com.google.auto.service:auto-service": 1620030782,
+    "com.google.auto.service:auto-service": 1544178151,
     "com.google.auto.service:auto-service-annotations": 262983930,
     "com.google.auto.service:auto-service-annotations:jar:sources": -1392999316,
     "com.google.auto.service:auto-service:jar:sources": -1296332334,
-    "com.google.auto:auto-common": 2122639405,
+    "com.google.auto:auto-common": 232847482,
     "com.google.auto:auto-common:jar:sources": -2100626169,
-    "com.google.closure-stylesheets:closure-stylesheets": -1326118398,
+    "com.google.closure-stylesheets:closure-stylesheets": -1530421374,
     "com.google.closure-stylesheets:closure-stylesheets:jar:sources": -1461998056,
     "com.google.code.findbugs:jsr305": 870839855,
     "com.google.code.findbugs:jsr305:jar:sources": -935881202,
-    "com.google.code.gson:gson": 2071377705,
-    "com.google.code.gson:gson:jar:sources": 907899269,
+    "com.google.code.gson:gson": -1465758993,
+    "com.google.code.gson:gson:jar:sources": 935710753,
     "com.google.dagger:dagger": -1865829880,
-    "com.google.dagger:dagger-producers": 567941131,
+    "com.google.dagger:dagger-producers": -1432836002,
     "com.google.dagger:dagger-producers:jar:sources": -143178918,
     "com.google.dagger:dagger:jar:sources": 1572301086,
     "com.google.errorprone:error_prone_annotations": 967586345,
     "com.google.errorprone:error_prone_annotations:jar:sources": -1304692732,
-    "com.google.googlejavaformat:google-java-format": 957952288,
-    "com.google.googlejavaformat:google-java-format:jar:sources": -1737028914,
+    "com.google.googlejavaformat:google-java-format": -761497744,
+    "com.google.googlejavaformat:google-java-format:jar:sources": 863436563,
     "com.google.guava:failureaccess": 1715931538,
     "com.google.guava:failureaccess:jar:sources": 1303858893,
-    "com.google.guava:guava": -2132457458,
-    "com.google.guava:guava:jar:sources": 1246910673,
+    "com.google.guava:guava": 625139656,
+    "com.google.guava:guava:jar:sources": 129808367,
     "com.google.guava:listenablefuture": 1079558157,
     "com.google.j2objc:j2objc-annotations": 248818742,
     "com.google.j2objc:j2objc-annotations:jar:sources": -378364028,
     "com.google.javascript:closure-compiler": 199441762,
     "com.google.javascript:closure-compiler-externs": -1499626471,
-    "com.google.javascript:closure-compiler-unshaded": -1720269311,
+    "com.google.javascript:closure-compiler-unshaded": -829740299,
     "com.google.javascript:closure-compiler-unshaded:jar:sources": 953232666,
     "com.google.javascript:closure-compiler:jar:sources": -155332960,
-    "com.google.jimfs:jimfs": -38911252,
+    "com.google.jimfs:jimfs": -1932527879,
     "com.google.jimfs:jimfs:jar:sources": 2087504201,
     "com.google.protobuf.nano:protobuf-javanano": -942503907,
     "com.google.protobuf.nano:protobuf-javanano:jar:sources": -1736685757,
-    "com.google.protobuf:protobuf-java": -384462041,
-    "com.google.protobuf:protobuf-java:jar:sources": 1429614102,
-    "com.graphql-java:graphql-java": -428999358,
-    "com.graphql-java:graphql-java:jar:sources": 807352135,
-    "com.graphql-java:java-dataloader": 952679934,
-    "com.graphql-java:java-dataloader:jar:sources": -1301547853,
-    "com.uber.nullaway:nullaway": 916772103,
-    "com.uber.nullaway:nullaway:jar:sources": 1302013966,
-    "commons-io:commons-io": 1269754729,
-    "commons-io:commons-io:jar:sources": 1964843305,
-    "commons-logging:commons-logging": 1248790901,
-    "commons-logging:commons-logging:jar:sources": -740996845,
+    "com.google.protobuf:protobuf-java": 1198356280,
+    "com.google.protobuf:protobuf-java:jar:sources": 2013970572,
+    "com.graphql-java:graphql-java": 429142487,
+    "com.graphql-java:graphql-java:jar:sources": -1171565042,
+    "com.graphql-java:java-dataloader": -1559191244,
+    "com.graphql-java:java-dataloader:jar:sources": -1676833358,
+    "com.uber.nullaway:nullaway": -1264121999,
+    "com.uber.nullaway:nullaway:jar:sources": -1629029500,
+    "commons-codec:commons-codec": 1545666683,
+    "commons-codec:commons-codec:jar:sources": -1502704019,
+    "commons-io:commons-io": -515402013,
+    "commons-io:commons-io:jar:sources": 1974419956,
     "dev.failsafe:failsafe": -253921025,
     "dev.failsafe:failsafe:jar:sources": 890605467,
     "eu.neilalexander:jnacl": 1766068575,
     "eu.neilalexander:jnacl:jar:sources": 1104083541,
-    "io.fabric8:kubernetes-client": -844394053,
-    "io.fabric8:kubernetes-client-api": -55882904,
-    "io.fabric8:kubernetes-client-api:jar:sources": 309594795,
-    "io.fabric8:kubernetes-client:jar:sources": -1910274880,
-    "io.fabric8:kubernetes-httpclient-vertx": 353055266,
-    "io.fabric8:kubernetes-httpclient-vertx:jar:sources": 934894081,
-    "io.fabric8:kubernetes-model-admissionregistration": -444718968,
-    "io.fabric8:kubernetes-model-admissionregistration:jar:sources": 1096634485,
-    "io.fabric8:kubernetes-model-apiextensions": 680979331,
-    "io.fabric8:kubernetes-model-apiextensions:jar:sources": -1899794766,
-    "io.fabric8:kubernetes-model-apps": 752437953,
-    "io.fabric8:kubernetes-model-apps:jar:sources": 1950223925,
-    "io.fabric8:kubernetes-model-autoscaling": 1810324991,
-    "io.fabric8:kubernetes-model-autoscaling:jar:sources": -104377879,
-    "io.fabric8:kubernetes-model-batch": -1254322821,
-    "io.fabric8:kubernetes-model-batch:jar:sources": -1010472916,
-    "io.fabric8:kubernetes-model-certificates": 392734724,
-    "io.fabric8:kubernetes-model-certificates:jar:sources": 1596615226,
-    "io.fabric8:kubernetes-model-common": -1108104398,
-    "io.fabric8:kubernetes-model-common:jar:sources": 269982115,
-    "io.fabric8:kubernetes-model-coordination": 1634127231,
-    "io.fabric8:kubernetes-model-coordination:jar:sources": 189768815,
-    "io.fabric8:kubernetes-model-core": 1634365212,
-    "io.fabric8:kubernetes-model-core:jar:sources": -1053672626,
-    "io.fabric8:kubernetes-model-discovery": 1157757352,
-    "io.fabric8:kubernetes-model-discovery:jar:sources": 1686034495,
-    "io.fabric8:kubernetes-model-events": -621060417,
-    "io.fabric8:kubernetes-model-events:jar:sources": 708211225,
-    "io.fabric8:kubernetes-model-extensions": -1107899410,
-    "io.fabric8:kubernetes-model-extensions:jar:sources": 460111162,
-    "io.fabric8:kubernetes-model-flowcontrol": 164831106,
-    "io.fabric8:kubernetes-model-flowcontrol:jar:sources": -293266978,
-    "io.fabric8:kubernetes-model-gatewayapi": 364017487,
-    "io.fabric8:kubernetes-model-gatewayapi:jar:sources": 606860488,
-    "io.fabric8:kubernetes-model-metrics": 313604968,
-    "io.fabric8:kubernetes-model-metrics:jar:sources": 851969099,
-    "io.fabric8:kubernetes-model-networking": 2035705722,
-    "io.fabric8:kubernetes-model-networking:jar:sources": 1701061374,
-    "io.fabric8:kubernetes-model-node": -1682548143,
-    "io.fabric8:kubernetes-model-node:jar:sources": 1501194781,
-    "io.fabric8:kubernetes-model-policy": 873023854,
-    "io.fabric8:kubernetes-model-policy:jar:sources": -1309017506,
-    "io.fabric8:kubernetes-model-rbac": 1508582195,
-    "io.fabric8:kubernetes-model-rbac:jar:sources": -1876225450,
-    "io.fabric8:kubernetes-model-resource": -528559382,
-    "io.fabric8:kubernetes-model-resource:jar:sources": -2125130972,
-    "io.fabric8:kubernetes-model-scheduling": 169666067,
-    "io.fabric8:kubernetes-model-scheduling:jar:sources": -241671664,
-    "io.fabric8:kubernetes-model-storageclass": 1840307862,
-    "io.fabric8:kubernetes-model-storageclass:jar:sources": -754714434,
-    "io.fabric8:zjsonpatch": 83872492,
-    "io.fabric8:zjsonpatch:jar:sources": 510972773,
-    "io.grpc:grpc-api": -1430485676,
-    "io.grpc:grpc-api:jar:sources": -1532250068,
-    "io.grpc:grpc-context": 886023920,
-    "io.grpc:grpc-context:jar:sources": -1253435963,
-    "io.lettuce:lettuce-core": -1593385207,
-    "io.lettuce:lettuce-core:jar:sources": -91892792,
-    "io.netty:netty-buffer": -1943137003,
-    "io.netty:netty-buffer:jar:sources": -640914845,
-    "io.netty:netty-codec": -778940887,
-    "io.netty:netty-codec-base": 651240289,
-    "io.netty:netty-codec-base:jar:sources": -1141079145,
-    "io.netty:netty-codec-compression": 1712201831,
-    "io.netty:netty-codec-compression:jar:sources": -1453063129,
-    "io.netty:netty-codec-dns": -1321237672,
-    "io.netty:netty-codec-dns:jar:sources": 809405054,
-    "io.netty:netty-codec-http": -1566285368,
-    "io.netty:netty-codec-http2": -1695593867,
-    "io.netty:netty-codec-http2:jar:sources": -402369849,
-    "io.netty:netty-codec-http:jar:sources": 906618725,
-    "io.netty:netty-codec-marshalling": 943161433,
-    "io.netty:netty-codec-marshalling:jar:sources": -1212447837,
-    "io.netty:netty-codec-protobuf": 263325102,
-    "io.netty:netty-codec-protobuf:jar:sources": 1402080495,
-    "io.netty:netty-codec-socks": 63643706,
-    "io.netty:netty-codec-socks:jar:sources": -1494211914,
-    "io.netty:netty-codec:jar:sources": 1512437752,
-    "io.netty:netty-common": -1345132649,
-    "io.netty:netty-common:jar:sources": -96736157,
-    "io.netty:netty-handler": 76137042,
-    "io.netty:netty-handler-proxy": 131632365,
-    "io.netty:netty-handler-proxy:jar:sources": -107128959,
-    "io.netty:netty-handler:jar:sources": 2108145608,
-    "io.netty:netty-resolver": 242647953,
-    "io.netty:netty-resolver-dns": 718241645,
-    "io.netty:netty-resolver-dns:jar:sources": 1534163638,
-    "io.netty:netty-resolver:jar:sources": 277452337,
-    "io.netty:netty-transport": -1852576371,
-    "io.netty:netty-transport-native-unix-common": 1699605253,
-    "io.netty:netty-transport-native-unix-common:jar:sources": 1655883498,
-    "io.netty:netty-transport:jar:sources": 1061884307,
+    "io.fabric8:kubernetes-client": -67528928,
+    "io.fabric8:kubernetes-client-api": 335349116,
+    "io.fabric8:kubernetes-client-api:jar:sources": -1970850140,
+    "io.fabric8:kubernetes-client:jar:sources": -1808608902,
+    "io.fabric8:kubernetes-httpclient-vertx": -2125305362,
+    "io.fabric8:kubernetes-httpclient-vertx:jar:sources": -804902892,
+    "io.fabric8:kubernetes-model-admissionregistration": -553851330,
+    "io.fabric8:kubernetes-model-admissionregistration:jar:sources": 162258039,
+    "io.fabric8:kubernetes-model-apiextensions": -458045213,
+    "io.fabric8:kubernetes-model-apiextensions:jar:sources": -1314560722,
+    "io.fabric8:kubernetes-model-apps": -901377590,
+    "io.fabric8:kubernetes-model-apps:jar:sources": 1758137963,
+    "io.fabric8:kubernetes-model-autoscaling": -448936910,
+    "io.fabric8:kubernetes-model-autoscaling:jar:sources": 1342489405,
+    "io.fabric8:kubernetes-model-batch": -2124272280,
+    "io.fabric8:kubernetes-model-batch:jar:sources": -839252889,
+    "io.fabric8:kubernetes-model-certificates": -2073608266,
+    "io.fabric8:kubernetes-model-certificates:jar:sources": 1488883663,
+    "io.fabric8:kubernetes-model-common": -21152528,
+    "io.fabric8:kubernetes-model-common:jar:sources": 1921238659,
+    "io.fabric8:kubernetes-model-coordination": 1491696058,
+    "io.fabric8:kubernetes-model-coordination:jar:sources": -1181003416,
+    "io.fabric8:kubernetes-model-core": -259678765,
+    "io.fabric8:kubernetes-model-core:jar:sources": 1265978829,
+    "io.fabric8:kubernetes-model-discovery": -730214714,
+    "io.fabric8:kubernetes-model-discovery:jar:sources": -1382052789,
+    "io.fabric8:kubernetes-model-events": 1944071737,
+    "io.fabric8:kubernetes-model-events:jar:sources": -227616298,
+    "io.fabric8:kubernetes-model-extensions": 1662402525,
+    "io.fabric8:kubernetes-model-extensions:jar:sources": 1675199488,
+    "io.fabric8:kubernetes-model-flowcontrol": -1185377257,
+    "io.fabric8:kubernetes-model-flowcontrol:jar:sources": -69772166,
+    "io.fabric8:kubernetes-model-gatewayapi": 750290574,
+    "io.fabric8:kubernetes-model-gatewayapi:jar:sources": -1821916498,
+    "io.fabric8:kubernetes-model-metrics": -1658602,
+    "io.fabric8:kubernetes-model-metrics:jar:sources": 183994332,
+    "io.fabric8:kubernetes-model-networking": -1346320848,
+    "io.fabric8:kubernetes-model-networking:jar:sources": 809323607,
+    "io.fabric8:kubernetes-model-node": -2014458580,
+    "io.fabric8:kubernetes-model-node:jar:sources": 486168090,
+    "io.fabric8:kubernetes-model-policy": -467073646,
+    "io.fabric8:kubernetes-model-policy:jar:sources": 1092796698,
+    "io.fabric8:kubernetes-model-rbac": -1952227612,
+    "io.fabric8:kubernetes-model-rbac:jar:sources": 1119624396,
+    "io.fabric8:kubernetes-model-resource": -383265942,
+    "io.fabric8:kubernetes-model-resource:jar:sources": 1120636147,
+    "io.fabric8:kubernetes-model-scheduling": -96809339,
+    "io.fabric8:kubernetes-model-scheduling:jar:sources": 340362020,
+    "io.fabric8:kubernetes-model-storageclass": -1830812232,
+    "io.fabric8:kubernetes-model-storageclass:jar:sources": -1181960624,
+    "io.fabric8:zjsonpatch": 1564300809,
+    "io.fabric8:zjsonpatch:jar:sources": -89142185,
+    "io.grpc:grpc-api": -1626759364,
+    "io.grpc:grpc-api:jar:sources": 1733862366,
+    "io.grpc:grpc-context": 926705762,
+    "io.grpc:grpc-context:jar:sources": 1083041849,
+    "io.lettuce:lettuce-core": 1150333769,
+    "io.lettuce:lettuce-core:jar:sources": 303589290,
+    "io.netty:netty-buffer": 25941091,
+    "io.netty:netty-buffer:jar:sources": 1532636630,
+    "io.netty:netty-codec": -1015225185,
+    "io.netty:netty-codec-base": 1636949742,
+    "io.netty:netty-codec-base:jar:sources": 355697457,
+    "io.netty:netty-codec-compression": -1879850330,
+    "io.netty:netty-codec-compression:jar:sources": 1313336520,
+    "io.netty:netty-codec-dns": -332063289,
+    "io.netty:netty-codec-dns:jar:sources": 1776021881,
+    "io.netty:netty-codec-http": 2100618381,
+    "io.netty:netty-codec-http2": 1705398212,
+    "io.netty:netty-codec-http2:jar:sources": -1376884427,
+    "io.netty:netty-codec-http:jar:sources": 1147982570,
+    "io.netty:netty-codec-marshalling": -2135121552,
+    "io.netty:netty-codec-marshalling:jar:sources": -1902411724,
+    "io.netty:netty-codec-protobuf": -144874527,
+    "io.netty:netty-codec-protobuf:jar:sources": 1279500819,
+    "io.netty:netty-codec-socks": 829017471,
+    "io.netty:netty-codec-socks:jar:sources": 893584085,
+    "io.netty:netty-codec:jar:sources": -2135494044,
+    "io.netty:netty-common": -1086600805,
+    "io.netty:netty-common:jar:sources": 389633330,
+    "io.netty:netty-handler": -658626795,
+    "io.netty:netty-handler-proxy": -645777581,
+    "io.netty:netty-handler-proxy:jar:sources": -2138854029,
+    "io.netty:netty-handler:jar:sources": 469123494,
+    "io.netty:netty-resolver": 1440023003,
+    "io.netty:netty-resolver-dns": -746274153,
+    "io.netty:netty-resolver-dns:jar:sources": 798143297,
+    "io.netty:netty-resolver:jar:sources": -586576953,
+    "io.netty:netty-transport": 107813187,
+    "io.netty:netty-transport-native-unix-common": 832050892,
+    "io.netty:netty-transport-native-unix-common:jar:sources": -2000153024,
+    "io.netty:netty-transport:jar:sources": 772304830,
     "io.opentelemetry.semconv:opentelemetry-semconv": 216316849,
     "io.opentelemetry.semconv:opentelemetry-semconv:jar:sources": -1308379394,
-    "io.opentelemetry:opentelemetry-api": -1712884532,
-    "io.opentelemetry:opentelemetry-api:jar:sources": 78803466,
-    "io.opentelemetry:opentelemetry-common": -1676625512,
-    "io.opentelemetry:opentelemetry-common:jar:sources": -1324684263,
-    "io.opentelemetry:opentelemetry-context": 1719857992,
-    "io.opentelemetry:opentelemetry-context:jar:sources": -1366213897,
-    "io.opentelemetry:opentelemetry-exporter-logging": -824962341,
-    "io.opentelemetry:opentelemetry-exporter-logging:jar:sources": -216984516,
-    "io.opentelemetry:opentelemetry-sdk": 1187832136,
-    "io.opentelemetry:opentelemetry-sdk-common": 1683729037,
-    "io.opentelemetry:opentelemetry-sdk-common:jar:sources": 1832911156,
-    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure": 1475697355,
-    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi": 374081059,
-    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:jar:sources": -487967532,
-    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:jar:sources": -596293470,
-    "io.opentelemetry:opentelemetry-sdk-logs": 1427920526,
-    "io.opentelemetry:opentelemetry-sdk-logs:jar:sources": -1044011372,
-    "io.opentelemetry:opentelemetry-sdk-metrics": 715876913,
-    "io.opentelemetry:opentelemetry-sdk-metrics:jar:sources": -2107548716,
-    "io.opentelemetry:opentelemetry-sdk-testing": 1536812084,
-    "io.opentelemetry:opentelemetry-sdk-testing:jar:sources": -1372078653,
-    "io.opentelemetry:opentelemetry-sdk-trace": -1717773433,
-    "io.opentelemetry:opentelemetry-sdk-trace:jar:sources": 346430729,
-    "io.opentelemetry:opentelemetry-sdk:jar:sources": -1157236068,
+    "io.opentelemetry:opentelemetry-api": -541719127,
+    "io.opentelemetry:opentelemetry-api:jar:sources": -68803185,
+    "io.opentelemetry:opentelemetry-common": 596563631,
+    "io.opentelemetry:opentelemetry-common:jar:sources": -320742238,
+    "io.opentelemetry:opentelemetry-context": 1419774145,
+    "io.opentelemetry:opentelemetry-context:jar:sources": 1172504290,
+    "io.opentelemetry:opentelemetry-exporter-logging": 1188708874,
+    "io.opentelemetry:opentelemetry-exporter-logging:jar:sources": -2023276318,
+    "io.opentelemetry:opentelemetry-sdk": -797477471,
+    "io.opentelemetry:opentelemetry-sdk-common": 970545597,
+    "io.opentelemetry:opentelemetry-sdk-common:jar:sources": -625050211,
+    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure": 2130136508,
+    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi": 1738784907,
+    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:jar:sources": 467931269,
+    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:jar:sources": -559114530,
+    "io.opentelemetry:opentelemetry-sdk-logs": -17412482,
+    "io.opentelemetry:opentelemetry-sdk-logs:jar:sources": 1985988489,
+    "io.opentelemetry:opentelemetry-sdk-metrics": -1367295569,
+    "io.opentelemetry:opentelemetry-sdk-metrics:jar:sources": -1465442872,
+    "io.opentelemetry:opentelemetry-sdk-testing": -2101046865,
+    "io.opentelemetry:opentelemetry-sdk-testing:jar:sources": -2071151481,
+    "io.opentelemetry:opentelemetry-sdk-trace": -1401077298,
+    "io.opentelemetry:opentelemetry-sdk-trace:jar:sources": 1323721097,
+    "io.opentelemetry:opentelemetry-sdk:jar:sources": 647337095,
     "io.projectreactor:reactor-core": -2024052294,
     "io.projectreactor:reactor-core:jar:sources": 144494895,
-    "io.reactivex.rxjava3:rxjava": -590997371,
-    "io.reactivex.rxjava3:rxjava:jar:sources": -673564760,
-    "io.vertx:vertx-auth-common": -2048279019,
-    "io.vertx:vertx-auth-common:jar:sources": -926864419,
-    "io.vertx:vertx-core": 41540611,
-    "io.vertx:vertx-core:jar:sources": 1842538499,
-    "io.vertx:vertx-web-client": 1948430525,
-    "io.vertx:vertx-web-client:jar:sources": 347524565,
-    "io.vertx:vertx-web-common": 428344593,
-    "io.vertx:vertx-web-common:jar:sources": -471311804,
-    "it.ozimov:embedded-redis": -1799015663,
-    "it.ozimov:embedded-redis:jar:sources": -875120589,
+    "io.reactivex.rxjava3:rxjava": -320548188,
+    "io.reactivex.rxjava3:rxjava:jar:sources": 1421703233,
+    "io.vertx:vertx-auth-common": -392235203,
+    "io.vertx:vertx-auth-common:jar:sources": -1191336147,
+    "io.vertx:vertx-core": 721117540,
+    "io.vertx:vertx-core:jar:sources": 1402344372,
+    "io.vertx:vertx-web-client": 367297012,
+    "io.vertx:vertx-web-client:jar:sources": 486349193,
+    "io.vertx:vertx-web-common": -365814894,
+    "io.vertx:vertx-web-common:jar:sources": 1540683539,
     "javax.cache:cache-api": -340959387,
     "javax.cache:cache-api:jar:sources": -414663888,
     "javax.inject:javax.inject": 698155243,
@@ -313,49 +317,53 @@
     "jaxen:jaxen:jar:sources": -1282944954,
     "junit:junit": -149895345,
     "junit:junit:jar:sources": 940567721,
-    "net.bytebuddy:byte-buddy": -353339041,
+    "net.bytebuddy:byte-buddy": -749913489,
     "net.bytebuddy:byte-buddy-agent": 1099087346,
     "net.bytebuddy:byte-buddy-agent:jar:sources": 1414786109,
-    "net.bytebuddy:byte-buddy:jar:sources": 1725335768,
+    "net.bytebuddy:byte-buddy:jar:sources": -1341936733,
     "net.java.dev.javacc:javacc": 1095796166,
     "net.java.dev.javacc:javacc:jar:sources": -1183405047,
+    "net.java.dev.jna:jna": 154162148,
+    "net.java.dev.jna:jna:jar:sources": -1131590933,
     "net.sf.saxon:Saxon-HE": -560158028,
     "net.sf.saxon:Saxon-HE:jar:sources": 134942547,
     "org.antlr:antlr4-runtime": 745607488,
     "org.antlr:antlr4-runtime:jar:sources": -1096290475,
-    "org.apache.bcel:bcel": 416715537,
+    "org.apache.bcel:bcel": 901868717,
     "org.apache.bcel:bcel:jar:sources": 1242074929,
+    "org.apache.commons:commons-compress": 921631058,
+    "org.apache.commons:commons-compress:jar:sources": -1888643111,
     "org.apache.commons:commons-exec": 601232227,
     "org.apache.commons:commons-exec:jar:sources": -716664838,
     "org.apache.commons:commons-lang3": 1244192954,
     "org.apache.commons:commons-lang3:jar:sources": 321970823,
     "org.apache.commons:commons-text": -1029172223,
     "org.apache.commons:commons-text:jar:sources": 1814073236,
-    "org.apache.logging.log4j:log4j-api": -1309832419,
-    "org.apache.logging.log4j:log4j-api:jar:sources": 1005391514,
-    "org.apache.logging.log4j:log4j-core": 1967498783,
-    "org.apache.logging.log4j:log4j-core:jar:sources": 440878359,
+    "org.apache.logging.log4j:log4j-api": -79106511,
+    "org.apache.logging.log4j:log4j-api:jar:sources": 146262782,
+    "org.apache.logging.log4j:log4j-core": -1819849470,
+    "org.apache.logging.log4j:log4j-core:jar:sources": 1398564243,
     "org.apiguardian:apiguardian-api": 1279798469,
     "org.apiguardian:apiguardian-api:jar:sources": 729595858,
-    "org.assertj:assertj-core": -1498540538,
+    "org.assertj:assertj-core": 2064243319,
     "org.assertj:assertj-core:jar:sources": -697161745,
-    "org.bouncycastle:bcpkix-jdk18on": 234366076,
-    "org.bouncycastle:bcpkix-jdk18on:jar:sources": 256969312,
-    "org.bouncycastle:bcprov-jdk18on": 1775002659,
-    "org.bouncycastle:bcprov-jdk18on:jar:sources": -1585504180,
-    "org.bouncycastle:bcutil-jdk18on": 2088191088,
-    "org.bouncycastle:bcutil-jdk18on:jar:sources": -297807544,
+    "org.bouncycastle:bcpkix-jdk18on": -294727450,
+    "org.bouncycastle:bcpkix-jdk18on:jar:sources": 1412420619,
+    "org.bouncycastle:bcprov-jdk18on": 1743462207,
+    "org.bouncycastle:bcprov-jdk18on:jar:sources": 1198104999,
+    "org.bouncycastle:bcutil-jdk18on": 968717615,
+    "org.bouncycastle:bcutil-jdk18on:jar:sources": -1508579276,
     "org.checkerframework:checker-compat-qual": -1467856161,
     "org.checkerframework:checker-compat-qual:jar:sources": 896082574,
-    "org.checkerframework:checker-qual": 386068353,
-    "org.checkerframework:checker-qual:jar:sources": 177672168,
-    "org.checkerframework:dataflow-nullaway": -1089540249,
-    "org.checkerframework:dataflow-nullaway:jar:sources": -943424700,
+    "org.checkerframework:checker-qual": -805622774,
+    "org.checkerframework:checker-qual:jar:sources": 1303991860,
+    "org.checkerframework:dataflow-nullaway": -747734024,
+    "org.checkerframework:dataflow-nullaway:jar:sources": 1823161277,
     "org.dom4j:dom4j": -355280329,
     "org.dom4j:dom4j:jar:sources": 1794439119,
     "org.easymock:easymock": 1823521609,
     "org.easymock:easymock:jar:sources": 1100555462,
-    "org.eclipse.mylyn.github:org.eclipse.egit.github.core": -212158090,
+    "org.eclipse.mylyn.github:org.eclipse.egit.github.core": -1630476461,
     "org.eclipse.mylyn.github:org.eclipse.egit.github.core:jar:sources": -1002647383,
     "org.hsqldb:hsqldb": 331478029,
     "org.hsqldb:hsqldb:jar:sources": -212896903,
@@ -363,6 +371,8 @@
     "org.htmlunit:htmlunit-core-js:jar:sources": -277494304,
     "org.jboss.marshalling:jboss-marshalling": 1584464300,
     "org.jboss.marshalling:jboss-marshalling:jar:sources": -444808379,
+    "org.jetbrains:annotations": -845966580,
+    "org.jetbrains:annotations:jar:sources": 582621361,
     "org.jodd:jodd-util": 270788956,
     "org.jodd:jodd-util:jar:sources": 1012711698,
     "org.jsoup:jsoup": -1583305582,
@@ -383,8 +393,8 @@
     "org.junit.platform:junit-platform-launcher:jar:sources": -1783349551,
     "org.junit.platform:junit-platform-reporting": -708741566,
     "org.junit.platform:junit-platform-reporting:jar:sources": -479417393,
-    "org.mockito:mockito-core": -1871793786,
-    "org.mockito:mockito-core:jar:sources": 1004603810,
+    "org.mockito:mockito-core": -2004852378,
+    "org.mockito:mockito-core:jar:sources": 1900207417,
     "org.objenesis:objenesis": 1798216877,
     "org.objenesis:objenesis:jar:sources": 1586171112,
     "org.opentest4j.reporting:open-test-reporting-tooling-spi": 1212162497,
@@ -403,8 +413,10 @@
     "org.ow2.asm:asm:jar:sources": 1195325834,
     "org.reactivestreams:reactive-streams": -164947187,
     "org.reactivestreams:reactive-streams:jar:sources": -122882922,
-    "org.redisson:redisson": 1627790331,
-    "org.redisson:redisson:jar:sources": 1741198414,
+    "org.redisson:redisson": -1800881084,
+    "org.redisson:redisson:jar:sources": -241710797,
+    "org.rnorth.duct-tape:duct-tape": -1059401544,
+    "org.rnorth.duct-tape:duct-tape:jar:sources": -1798015648,
     "org.seleniumhq.selenium:selenium-api": -213282586,
     "org.seleniumhq.selenium:selenium-api:jar:sources": -2123713838,
     "org.seleniumhq.selenium:selenium-http": -1190813029,
@@ -415,32 +427,32 @@
     "org.seleniumhq.selenium:selenium-manager:jar:sources": -2122675189,
     "org.seleniumhq.selenium:selenium-os": 1831430020,
     "org.seleniumhq.selenium:selenium-os:jar:sources": -1535880779,
-    "org.seleniumhq.selenium:selenium-remote-driver": -551081503,
+    "org.seleniumhq.selenium:selenium-remote-driver": 2013695225,
     "org.seleniumhq.selenium:selenium-remote-driver:jar:sources": 593030798,
-    "org.seleniumhq.selenium:selenium-support": -1876915802,
+    "org.seleniumhq.selenium:selenium-support": -1698523336,
     "org.seleniumhq.selenium:selenium-support:jar:sources": 2073088656,
-    "org.slf4j:slf4j-api": -1521593912,
-    "org.slf4j:slf4j-api:jar:sources": -1050183387,
-    "org.slf4j:slf4j-jdk14": 1520377765,
-    "org.slf4j:slf4j-jdk14:jar:sources": -1140555513,
-    "org.slf4j:slf4j-simple": -396791445,
-    "org.slf4j:slf4j-simple:jar:sources": -1524585784,
-    "org.snakeyaml:snakeyaml-engine": 630414738,
-    "org.snakeyaml:snakeyaml-engine:jar:sources": 40371802,
-    "org.tomlj:tomlj": -349901497,
+    "org.slf4j:slf4j-api": 500377983,
+    "org.slf4j:slf4j-api:jar:sources": 1751644771,
+    "org.slf4j:slf4j-jdk14": -926053363,
+    "org.slf4j:slf4j-jdk14:jar:sources": -323036686,
+    "org.snakeyaml:snakeyaml-engine": -1273354013,
+    "org.snakeyaml:snakeyaml-engine:jar:sources": -1787221586,
+    "org.testcontainers:testcontainers": -1968318882,
+    "org.testcontainers:testcontainers:jar:sources": 375219890,
+    "org.tomlj:tomlj": 938414711,
     "org.tomlj:tomlj:jar:sources": 195810171,
     "org.xmlresolver:xmlresolver": -2072175398,
     "org.xmlresolver:xmlresolver:jar:data": 792867476,
     "org.xmlresolver:xmlresolver:jar:sources": 294380453,
-    "org.yaml:snakeyaml": 1308413731,
-    "org.yaml:snakeyaml:jar:sources": -140059451,
+    "org.yaml:snakeyaml": 1068613154,
+    "org.yaml:snakeyaml:jar:sources": -665563845,
     "org.zeromq:jeromq": 1328093465,
     "org.zeromq:jeromq:jar:sources": -1982898923,
-    "redis.clients.authentication:redis-authx-core": 442288662,
+    "redis.clients.authentication:redis-authx-core": 1112364113,
     "redis.clients.authentication:redis-authx-core:jar:sources": -376828222,
-    "uk.org.webcompere:system-stubs-core": 716939199,
+    "uk.org.webcompere:system-stubs-core": -133478800,
     "uk.org.webcompere:system-stubs-core:jar:sources": 550621394,
-    "uk.org.webcompere:system-stubs-jupiter": -32865993,
+    "uk.org.webcompere:system-stubs-jupiter": 701601246,
     "uk.org.webcompere:system-stubs-jupiter:jar:sources": 409043156
   },
   "artifacts": {
@@ -488,52 +500,73 @@
     },
     "com.fasterxml.jackson.core:jackson-annotations": {
       "shasums": {
-        "jar": "959a2ffb2d591436f51f183c6a521fc89347912f711bf0cae008cdf045d95319",
-        "sources": "6bdceeb142be2dc19f8ada2e7be1f028e47d94716d4b9ea8bd2c14b3cec0bca8"
+        "jar": "53ca085f4a150f703f49e1aabd935bd03b43e1ea3d55d135438292af22cef56b",
+        "sources": "71fe6323d91b16d5d1007fd1e1533fa06bb369abde74f68a42a68c0f8f061a8b"
       },
-      "version": "2.20"
+      "version": "2.21"
     },
     "com.fasterxml.jackson.core:jackson-core": {
       "shasums": {
-        "jar": "bc0cf46075877201f8406ee7de2741ae7df6c066f5f0457bd80632a718c06e72",
-        "sources": "675bf321a4d8fbae2257ff61986ea5064c95599a446c4eea81c215ffb8251b21"
+        "jar": "baf8b739e9d9b93bcdb33f25046bfdb8dbd74c97de2a8698539fbe0c7eeac0bb",
+        "sources": "642d2164c9a170c4ce8a793ea0ac618bad5aa7c614088453c8eb77fbf9f4b2f1"
       },
-      "version": "2.20.0"
+      "version": "2.21.3"
     },
     "com.fasterxml.jackson.core:jackson-databind": {
       "shasums": {
-        "jar": "a70e146a6bf2cba4f9cd367169787f50adcfbb57122bc2e9c8390cd0b397ac30",
-        "sources": "e192ebfb2a0d705121cfff7419c4d28b9cf589bf52ca8e5cbe83de990c54f10b"
+        "jar": "f397563d8e67630c10cab8c2334ca0e55af832fa3ebde160a379c2c96d43bf25",
+        "sources": "899c0e511057744d9466d7014fec7f1b9c75c6da918c94ba6e3c1f9df5f2bc55"
       },
-      "version": "2.20.0"
+      "version": "2.21.3"
     },
     "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml": {
       "shasums": {
-        "jar": "cc3dec9fb8b56574797bfef62641325508f0e5bc968bd268568402818d55baae",
-        "sources": "82bccc2d665556b3213d7a68554f9dd10b3b048a1cac81a2d2f8a687242cf4b6"
+        "jar": "f0aa297d46f9364af8b3617f8f16ee3d687bc11a8b20ea6266590a21e021c3a4",
+        "sources": "a11f3eee2771676b142a2bdced38292428b1d475bd82abb85f5d2a37e39dd513"
       },
-      "version": "2.20.0"
+      "version": "2.21.3"
     },
     "com.fasterxml.jackson.datatype:jackson-datatype-jsr310": {
       "shasums": {
-        "jar": "8c32155975a935b1f7bfd677647bd5c8cdee12b144b84e4492a447b5ea2e94d5",
-        "sources": "172ffd492fec51805a4cb21a0f34a7760660a4d31e6fe58f296af594b19de8c3"
+        "jar": "c6f721d6ea16f5557567a476069f7c08c598ff8f02766f229b45fe1e87139a20",
+        "sources": "fd39fc1f21020301b430c79e81c8e8e48cb5e9475c8ead38bc895b607e47a8e7"
       },
-      "version": "2.20.0"
+      "version": "2.21.3"
     },
     "com.github.ben-manes.caffeine:caffeine": {
       "shasums": {
-        "jar": "ca70c90a5d1ce1511880ce9c93d4ad22108f61111d3daf91eb52762b571bd179",
-        "sources": "60434a548af57d0dbe13b1aa4aaf08816e5bf1d3442264c669246f8929f4b757"
+        "jar": "9d9d2cfd681fd9272ded3d27c9930db12f89f732345975aa113ebc223bbf1224",
+        "sources": "5079e1b327d79e2fc8ae3f5927587e59c968603e63785fb33479acd8b732211d"
       },
-      "version": "3.2.3"
+      "version": "3.2.4"
+    },
+    "com.github.docker-java:docker-java-api": {
+      "shasums": {
+        "jar": "dad153d484b1f4ef009e2fdbad27e07aeb3191122da52b8985507ac504300081",
+        "sources": "57c9b5bc37d48c256a2a0de556095158f363b10eec58052e58f299c542cf9391"
+      },
+      "version": "3.7.1"
+    },
+    "com.github.docker-java:docker-java-transport": {
+      "shasums": {
+        "jar": "d15eec8034bf0f92c2a48ca9172691804048115c96dc853272f9486fa2695c3c",
+        "sources": "131ed62714d94125f89a3c3ad966e517c8ad48fbbc1905b08bcdafc0d6e9de45"
+      },
+      "version": "3.7.1"
+    },
+    "com.github.docker-java:docker-java-transport-zerodep": {
+      "shasums": {
+        "jar": "b89bdb1754160323597f9ea32a7fe7a4a3aa8f5b3b43b88e8d71fff3b267ab21",
+        "sources": "f4d1457f9e2e151d19713e46cf2b49796887d5a9744664a15a4ce07c76660883"
+      },
+      "version": "3.7.1"
     },
     "com.github.javaparser:javaparser-core": {
       "shasums": {
-        "jar": "d3852d78461c02602eb9bfc15e9fc21ad7c765e6013a1b6d5809a5d0e7db5309",
-        "sources": "f9e998cde659ebfbdab9facd9ac047754d568b1c3399f6e6606dbcb6a8b2023c"
+        "jar": "113742383cca4a46931008a961fbea54b2aa3a49ce8f0c54110930eac65f1876",
+        "sources": "f17da23a0dad15b8161abb55b0f3a9f670da0dce562d6c4f63245906ab051974"
       },
-      "version": "3.28.0"
+      "version": "3.28.1"
     },
     "com.github.spotbugs:spotbugs": {
       "shasums": {
@@ -593,10 +626,10 @@
     },
     "com.google.code.gson:gson": {
       "shasums": {
-        "jar": "dd0ce1b55a3ed2080cb70f9c655850cda86c206862310009dcb5e5c95265a5e0",
-        "sources": "058974b69cb7b0a04712278e11870e84ee8cd8fb5f551bd8401e72ba6638bfef"
+        "jar": "2cbd119bf1961c28788310963dc80ba65f58cdeec1dd139c8bdb1240faa2c36f",
+        "sources": "a4873f0ef88981cab520c3d7449cd89a68e605f15e9fe46e1aa2c77d5f87eb6f"
       },
-      "version": "2.13.2"
+      "version": "2.14.0"
     },
     "com.google.dagger:dagger": {
       "shasums": {
@@ -621,10 +654,10 @@
     },
     "com.google.googlejavaformat:google-java-format": {
       "shasums": {
-        "jar": "2ae242fd994b0982c1e462273b3e751d703f7ab7c9a14f9eedd1f39f3a6b5516",
-        "sources": "64bdd8ccf6b7a80ce43158290b464626aeabfcb29dbc7b044628d0b21de10367"
+        "jar": "b2a52e363d51dd86b3b38d1a8dd51538541b42ff1048769684681c676550f043",
+        "sources": "2c3195a5032287616b3839078bd82d19780b2c0cb75932d9f92153421b6c2c93"
       },
-      "version": "1.34.1"
+      "version": "1.35.0"
     },
     "com.google.guava:failureaccess": {
       "shasums": {
@@ -635,10 +668,10 @@
     },
     "com.google.guava:guava": {
       "shasums": {
-        "jar": "1e301f0c52ac248b0b14fdc3d12283c77252d4d6f48521d572e7d8c4c2cc4ac7",
-        "sources": "79423ae87a2203950e0e3ce2a00682b3b8d8557e631bbf662dba5494fe3b55cb"
+        "jar": "dc573e1fca4fd5454f4a5fd3d7da2df03002876a4175bafc14a95980dd7713b3",
+        "sources": "eff31867dd63a92d63ca856127a424a6836418d8bfa044162cac20430abd3500"
       },
-      "version": "33.5.0-jre"
+      "version": "33.6.0-jre"
     },
     "com.google.guava:listenablefuture": {
       "shasums": {
@@ -689,45 +722,45 @@
     },
     "com.google.protobuf:protobuf-java": {
       "shasums": {
-        "jar": "cb9e00d6e3d4b1305f3fdc147490ce347bfe8c05dc821a433b23b2ff28749bb1",
-        "sources": "efd3ceba03a47dbc38a8f95049d6885ad679d98514b0809ab4632884c4e97657"
+        "jar": "ae0459030b54a6f3058ad349aa01fc2edcbb2d4a84b73699675bbd125df2e96d",
+        "sources": "240db630888d78b6d67c0977416c8a48dd4bce42fb48424d054b128b72420b20"
       },
-      "version": "4.33.5"
+      "version": "4.34.1"
     },
     "com.graphql-java:graphql-java": {
       "shasums": {
-        "jar": "a9a9ffbbb20493b7b2ee4e07879d530096ce1b5c5cfc697bd28b9ee50daf0b1b",
-        "sources": "b0391a0c89d0e1fa196c68be26c5b6993cb3af43e43d53fd2f4939c2e1cbf945"
+        "jar": "c5ec18b13e1bd14300cca6535894621e4edc31bda63d9b47377008dd3e9ec05e",
+        "sources": "0569eadd1d4c725341ec3b0eec933c0c32950a4ebab4c36a8ec1726595d30cc1"
       },
-      "version": "24.1"
+      "version": "26.0"
     },
     "com.graphql-java:java-dataloader": {
       "shasums": {
-        "jar": "de05a85f5be5a35989877ba3e23504f41903ffc0c4f3432adf34a81b479f089c",
-        "sources": "447746999a3cec8b26729b2d12946feaebfe4cffa6fd406d65870d202f3c0c1a"
+        "jar": "1c9ef058308381312c350f943d185c9e451b0eee0acab74b7b80fc4f56625501",
+        "sources": "ea1b61592602f06976ee20026083b79ce7677e28591a12d381e5ac3d56a46170"
       },
-      "version": "5.0.0"
+      "version": "6.0.0"
     },
     "com.uber.nullaway:nullaway": {
       "shasums": {
-        "jar": "be9ad201b92de86c3e493a45b0861b1b3dd955d8e7dcb11f8d80d18d7425d164",
-        "sources": "36d70fbe4a3bf56ba03fbeb7aab6e95f974051ec5b50de067ed865f891731752"
+        "jar": "0255d6620ce9ec9b81f5bbce76a06f621c72f9cd10991d0b5a9ac4851aa1dd78",
+        "sources": "f820000e4c46cb0c2d5dce4344da5bcf6af6cd047a029c9c867f92389d50c1cf"
       },
-      "version": "0.13.1"
+      "version": "0.13.4"
+    },
+    "commons-codec:commons-codec": {
+      "shasums": {
+        "jar": "5c3881e4f556855e9c532927ee0c9dfde94cc66760d5805c031a59887070af5f",
+        "sources": "b0462142585d45fc15bc8091b7b02f1e3a85c83595068659548c82cac9cdc7a2"
+      },
+      "version": "1.19.0"
     },
     "commons-io:commons-io": {
       "shasums": {
-        "jar": "a10418348d234968600ccb1d988efcbbd08716e1d96936ccc1880e7d22513474",
-        "sources": "3b69b518d9a844732e35509b79e499fca63a960ee4301b1c96dc32e87f3f60a1"
+        "jar": "df90bba0fe3cb586b7f164e78fe8f8f4da3f2dd5c27fa645f888100ccc25dd72",
+        "sources": "7a87277538cce40da6389a7163a4d9458bc7a9c39937a329881b91d144be8e0d"
       },
-      "version": "2.5"
-    },
-    "commons-logging:commons-logging": {
-      "shasums": {
-        "jar": "daddea1ea0be0f56978ab3006b8ac92834afeefbd9b7e4e6316fca57df0fa636",
-        "sources": "44347acfe5860461728e9cb33251e97345be36f8a0dfd5c5130c172559455f41"
-      },
-      "version": "1.2"
+      "version": "2.20.0"
     },
     "dev.failsafe:failsafe": {
       "shasums": {
@@ -745,325 +778,325 @@
     },
     "io.fabric8:kubernetes-client": {
       "shasums": {
-        "jar": "91a49e4b8e8012eff2002d71ebad9b221d68856f652ceb04416c412ea80c03c9",
-        "sources": "a54415eea4bc27855960e31bfd37ad5aa99a5cea3f9320641df9af54afcd7a20"
+        "jar": "c4f9a7cbb4308ca3626929ecc28894be5b5ac7c0c3c5440fdf31398c65adff26",
+        "sources": "c5c39984873be570f2c8d3fddbb2071270e85037404c97bbb8b2ea217d076610"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-client-api": {
       "shasums": {
-        "jar": "bbcff742552af9fba4c309af6daafd2d95bdff466eadcf63c15e24cae5e6df1d",
-        "sources": "6165f30015765ba3d3182eb5b2d61b569e647ddc808aac34f4b17631318ed17d"
+        "jar": "2b59293737b8cf2dd9e4cff140610dbedc8cfafdde36a8fb6a2bd68a6a84ee14",
+        "sources": "fa225cd6451175559cb1d42b59a26a5ba87d76acc203cb5e0f9eea0d18f4fd00"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-httpclient-vertx": {
       "shasums": {
-        "jar": "41f56817b6f7f29dcaf434f95801fa3b985d3d72c783ca8ca711e45a98dd758e",
-        "sources": "d735252db7b6f93e5b2882e2fa62a31471ba4f6fadbfaa24cae4759ffe22ab3a"
+        "jar": "06593ad6c55d510b26f9680981210468edf12377f4b45c2992099a30e0066166",
+        "sources": "083b3ad804d2174f0540be478f00d40871e76d5a90ba06f051b67de09f9681d8"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-admissionregistration": {
       "shasums": {
-        "jar": "60c2a1460dcb84e7732b3af13583bda576d8f1b0c8db96d0b5bcda1d28afd582",
-        "sources": "9187c778cdd84b6f84b25705be634f0d93c674bcb1e02a698add538c77029f7c"
+        "jar": "63d4d42652b56a91e432617117d7ca6d66a69c923fa57074136dd6ac396ee678",
+        "sources": "1f6ec27d5426fa763861f68622fcd2e81d22e0d6b992506614b216922cf72ba8"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-apiextensions": {
       "shasums": {
-        "jar": "cfcfa7e21b23e04ac07e87ea2993b915c04a7264abc61a7f7f41adb1b30ef365",
-        "sources": "89173889c0a5f5201549f43212af8197beefd1406d606f32c36ac3f0c4be9711"
+        "jar": "03cfb628b662644d9f1c39f3d813e4f5d55ca49f100ec4cb056cc6c5a6d125fd",
+        "sources": "96005b3e41ae0bede3b05dfb0fdce82228a2ed4a029cbafcc4d7800af9600c88"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-apps": {
       "shasums": {
-        "jar": "f0241cba54c97cf9d3da787a4f876b708ed73b1e9dc1ae62d8e5d886edf44048",
-        "sources": "cfbc9923f719537a36763ec6944ff819356b481ea62187e23eedf866dfb2ca4c"
+        "jar": "09ad7d89dd5c6e898a1a1313f20f0429d14f91e664a3ff6b8ac3676fffd9df01",
+        "sources": "cd90d9acaedb80f5703d08a9987ecc387f836b04cb27a40fd22264da96b04bc8"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-autoscaling": {
       "shasums": {
-        "jar": "09577e86c1bbcfdcdf01b39e1b842301c6e12ff1f3ec18900f0c08a48b8eca8a",
-        "sources": "67f2eb37365635f29c028e56598ba8c5f2b677796a23843564a08e95a8795c0f"
+        "jar": "53ccc7bc627f4faed4c8fab7bda9917515bc60f3607de5aeb6b53a1ae2c8e361",
+        "sources": "8b267bb3206ff15ec5aeea6718c8a92e260db02f0b1941a995d2c754d55f224c"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-batch": {
       "shasums": {
-        "jar": "43ac039eab9c20efbb256e59c663325287a18657468d4068c46a3f1cf61416c6",
-        "sources": "4626b192b736fbcc99ebfe86ff125e780ed1925a223c4db8c54bf4e09f23f3b6"
+        "jar": "c3a8c64c8622e36c0869b7ab66239ba1a37f7a21b9bfdecbf1d2c1772aa21b8d",
+        "sources": "031af22038e19e8339de0a7eff4952db4e22432fea2d808bd4fcdd155d7c341c"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-certificates": {
       "shasums": {
-        "jar": "d1b757d62c9de14ef088ee25732457cc71154edff4d9fd8e6d0a95588eceecb6",
-        "sources": "3b10733ece9b997c7e0f65b221a675a32c7c9bfeba28f3c2c7d041e918262e24"
+        "jar": "022fb7a786c5198058ffe20b228d936923829bec6c81fb719a21be7509ef317a",
+        "sources": "9b3059c80d464b9b6ddb0ed3cd261ba2e24be4347d60c85ee081ac4140f5de4a"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-common": {
       "shasums": {
-        "jar": "2a8dbc736a2e1207567855e03cc598adec7e56a7f69bbec2e2ebe2f01099f168",
-        "sources": "9d9981f0e4289ba707cf02757023033a3246a628cfee3460194996bcf58fc2bd"
+        "jar": "44b1ec0b6d65a72ba906896f0e0fbfb0ac7d106d7f04fb897ff9951a20f65a84",
+        "sources": "060f72d3487c87d1afe4c109d0f504a34566ea786ab0f47059c8f631060ad059"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-coordination": {
       "shasums": {
-        "jar": "8bd012a8c2d127b283b9d29bb125588bf5723e255058ec57611a3b7e0e4d34e2",
-        "sources": "53315f5ebb05c0a0c2088a945f6ea8674e872e34f589794166f759c92ee75cd8"
+        "jar": "83aaf3f4bde7b82f27a02c4a20fbbc7cf2dd0460ffa9345c9ffca72b9596f348",
+        "sources": "6d39f592ce7e8d621a21b85d3915d310ef51d781db79760d32d23b4d041ac7ed"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-core": {
       "shasums": {
-        "jar": "a46dc5b1b6412e10895a7ce68046b0994750dd1daea68ce2307016d4cb0a4a9a",
-        "sources": "d46d61a7e0172366348194a5d62539be56c57fd9a0eba3a4cc28f509ba027a95"
+        "jar": "9a055b482685bb58931fdf4fbd1d45be3d155fec2b4464596b9bbe724ed01438",
+        "sources": "b6058192077b2d1c7fdfef381b4547d5a44df5ace694c6c8c5b764c38a8644d6"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-discovery": {
       "shasums": {
-        "jar": "6c035b394329c0073dc8cc1aeb5c8916698f077bbe8722673a285decfaa175df",
-        "sources": "f144d8048a9c8a65a804595262e2735e7a9ebf24d95cbf063f9c3ffe57d3006d"
+        "jar": "73205db2d6cbc4d48856d742308bb45666b980b1f7ea3c2beecbabe2fcf7c093",
+        "sources": "8e2203d51655f5cf509304e8a194a8c0853ba2eda0ee4a538983bc4fe195e722"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-events": {
       "shasums": {
-        "jar": "e49d43baf425c51095ee9dc00c52f548c0555d250ef45a12f248d5f0842d80c1",
-        "sources": "c1f34060b965709b4cd1cd8f0e49b791b836196360583486be8921c8b2097573"
+        "jar": "7f270c506ab00aede7fb49da249f26af3e2bde8aac4b02e13385e86c7a20371b",
+        "sources": "b5a80cde6b25640a639f9b7ec289d4b8ce2e19933649234556ccf5e98cd32618"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-extensions": {
       "shasums": {
-        "jar": "fb9f75bb0995957edc742ffda5d2ae382bfb5b2ca972cd43cc410ab9f688f544",
-        "sources": "aaf54473f67ba30277bd834a94eb8c35496ac0122fe95b83fce512fb3277ea16"
+        "jar": "50dae18a35c4a5c6751d9c4b8abe09639868f8e6ecd33aacc50cafe18677de47",
+        "sources": "ad99489a32adb492f6c7333e2716a8a207adcbf268ffb458d828eb345cdfcdd2"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-flowcontrol": {
       "shasums": {
-        "jar": "cff0e9de176d580c45c627495399f015562c4b8b95a6a179fe50aaff6103ca03",
-        "sources": "9a7fe133a3ca407d24b96c93315ffd9c5232fdd2857a902f6dd804361b65a04d"
+        "jar": "e31332809ee1005b4964cdd9d6a241482396e94be71029fd78bb55a89164b9a2",
+        "sources": "d07a6b6df002de4e35e6a7454dbab9e7847708482ca3f65d5e47b52b601ea5e4"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-gatewayapi": {
       "shasums": {
-        "jar": "7720b7eb92fa3f36c2df4b4ebdaac851a2c5c663083fe76120ae830cc02a0429",
-        "sources": "2cbe29c5aaea9b723caac0b57b8e30f79b5f5593cfe041c55412a70466ff1112"
+        "jar": "658b1cf82764c63c844a9494eb5987eb09776622ff792ab49956879f36e4a2cd",
+        "sources": "93295ba254c4d89350d16037122a1492621814538cff4b6e93d2ca992d249625"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-metrics": {
       "shasums": {
-        "jar": "a05144ec7539b9d8e9896fa64d30a39a6778ddd4d5718b9b403e262a2225f1ca",
-        "sources": "51a6000b91e9a1e70c66541d291a0f64e08a96469fe018152aae91e44d037abf"
+        "jar": "aec699560f896bc607761af8b7a744d894c7edd8d820a888d2ccd728752abfea",
+        "sources": "726c054e450685f9883b8274b5c13675c11ba3695f4738d20735a2bffb3cbc33"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-networking": {
       "shasums": {
-        "jar": "0e70e593cdad8703d87ca19502004bee4be96cc44b07f55f6e1363049da01648",
-        "sources": "e60f96c66920eb1de5cb144532405f4aabb7fda36e3a1caf3768c4407044416d"
+        "jar": "7e9948db2f7bb459bb3b5301fe49cdebf07cc30f811de92243d9679d47dc8168",
+        "sources": "ed4265877aea5b73412f75c4dc38a41fa0fa58fa35ba5e98aa393267301cdbfc"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-node": {
       "shasums": {
-        "jar": "458acb565abbaadcba0ee700cebe6d21cf99525829662bfa5473e3ad0f28709c",
-        "sources": "fd4c5620096734c50570ae63dbb1baf5cec39e61800cfec6fac9fb91c5d08bec"
+        "jar": "3401dc85e8a9c079adf3dd003c97f30478325934cb2bc083a3f549a2eff039ed",
+        "sources": "24d1458c174b75f97ad76e4aec0153ce842258940f9d84f88c03c244cf83e7a4"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-policy": {
       "shasums": {
-        "jar": "ef02bd79121452f28f72747e8e8801740d3ddfe18544f1c5e15f6551717f445d",
-        "sources": "bc9a1b29512a590e27a716964b733ae3ec2501878e6f41a0ac212098f75d4081"
+        "jar": "f02bfc8c4149a547583cf300fc7f9f44a49c7a4e84b646bfc2942c3cb7f27b90",
+        "sources": "4a33b7d81f70d4ff8df6f1088472fcf79e30668be1f72a54d52844ba1ca89148"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-rbac": {
       "shasums": {
-        "jar": "4a9522b24d5e03ab9f98252932e9f5d26c126dedb2917af1bfbfd1ae849f366a",
-        "sources": "8a30bc77b113997e487de86e3fc394f2026b31213c5eb0e5c22bc8d91d7e28ef"
+        "jar": "51fe545320123c678039e147f12719a87592bedfd4171126eaf26108ec83af10",
+        "sources": "bf1162086ba49efc5a110e9a66e7227674fa570fedb094ff006562f1ad44a092"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-resource": {
       "shasums": {
-        "jar": "0992466fc07856a9c6593122f9345126d5cf1addb20d1c2b318fa059815eb12a",
-        "sources": "f82c75fdde7db74b7e4a0b952b3b813d8991363bcada6672b0f29e6c6d27b10c"
+        "jar": "9efb036d5eb9a20743f8374b76f5d63502d88f87287384f8a7199ad15494711b",
+        "sources": "f11437343bfc8beaf0db5d082560669db4c43ee185140e2813695ec54f4f7e81"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-scheduling": {
       "shasums": {
-        "jar": "966e8593c1ee113044f94e8b1fb73c053626dbc6fb83bb33165abbebd8f056b6",
-        "sources": "24fd658d292d682b5cef88d5001f23f512ea733fa4dc0e34f20efc22e1329536"
+        "jar": "40eccf3ccc9f5780b9f8c528e0a03a82fccb81752b55eb0f315ebddc45bf7724",
+        "sources": "91d9aeaa6b8c194dae9df37ec54a6db23fe09001dc27f7307054e8b537827700"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:kubernetes-model-storageclass": {
       "shasums": {
-        "jar": "c56db3712e9057a502461ee0cb85b74686fb38667c19c13313d90b957d03b498",
-        "sources": "985698e19e9305b16987b8bddf7bab3cba34fcbd6e0ad012cdbe03636d9b8801"
+        "jar": "8ab8164115dcea4d9e943664c503f9145e311f523e112481a7dc5f6a32aa2d26",
+        "sources": "e72ad5da40d9d4905f7516b1f6e6f650a2193fcbd04264217f8160994146fcb3"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.fabric8:zjsonpatch": {
       "shasums": {
-        "jar": "649fe9a7dd1e50f5c319bd29a271ac09f79436800777250c3413de1655aa89a5",
-        "sources": "308247aed1e69affca1981adb4f122b7f777c3496829eee865913676ec6ae9ea"
+        "jar": "d8498bd1a699ffe66ace75d486ff219962affdae8b9c543d088f2cc7cf5742fb",
+        "sources": "d144a77104fff7174e7f132d7dcfb5689605a5df8f9c0da6263563873c5a36e8"
       },
-      "version": "7.5.2"
+      "version": "7.7.0"
     },
     "io.grpc:grpc-api": {
       "shasums": {
-        "jar": "f09410380ddb66cfe52a5c865624be8af750433f0b550efdfab3dff9df2b97ac",
-        "sources": "da30eec62596e05390e4ea28fa34d110e5d3e2596c8cecdedf98537f8054165d"
+        "jar": "3e6a659ba3edcdac730c857b27725e2e4d985c2241055e8326eb4fe0f9573d53",
+        "sources": "997363465fde902cafb0b500b2e4dddc8163ca443aba7b2738f63711d133dc1c"
       },
-      "version": "1.79.0"
+      "version": "1.81.0"
     },
     "io.grpc:grpc-context": {
       "shasums": {
-        "jar": "d911eb41290d3d6dd7ff521b77e80b455d58459e939fe8dbf21c4795d951655c",
-        "sources": "65a958201c9c9a34c4ecfc98d3ac33a498e52940ed43bfb1eeee9f551f41a288"
+        "jar": "05de695306f90ded01d41b083b7500eb13dc53763097ac8c5b0264842df06679",
+        "sources": "e73e5f95712087768c46e0fe01f380122349aa512227f70e164a1cfa93e2dc05"
       },
-      "version": "1.79.0"
+      "version": "1.81.0"
     },
     "io.lettuce:lettuce-core": {
       "shasums": {
-        "jar": "0470ce82eb8b390c41f2ab4895a8dbea1a7620d69872f47b5edd16265304482f",
-        "sources": "c01be4a27a07321c7a1b722634d1d104e88971b80b6ac61ce78bd5579a9d5a6b"
+        "jar": "86e245a6cfc36a40aaa1f54027e639a70cb4008d12717164041aefe9bbd072c1",
+        "sources": "e7f098188da0096ccf20be45c98d503466281b3a84d0d219457a924351e86b01"
       },
-      "version": "7.4.0.RELEASE"
+      "version": "7.5.2.RELEASE"
     },
     "io.netty:netty-buffer": {
       "shasums": {
-        "jar": "a430cfedce93c171a56a86d1d27c8d829db4793f1c59c381c65e84e5bcd5bcaa",
-        "sources": "d75039b6b5b89afd00bf57d2fb58527b0959d6776d7ee9765aea3b384b530f69"
+        "jar": "39e9ab9ecaff178898a5eb37568096f1efd4f768a7bd162e0cde3eefa19137d5",
+        "sources": "b2c4c237c4ef80ed99be1913cc18ec7cf916fa6e1c2a9b59f799b1cecf77e7b1"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-codec": {
       "shasums": {
-        "jar": "94ebf64dea2843649f3a0f75f804e60562ea74f2ed430e1d41ea7945e8e2ff03",
-        "sources": "6cf3cb2c78f2b30bf220902ddc684f9413cf75973d05e0ac0faf4520772ce133"
+        "jar": "ead6e40832fac34be975b66d21bbdac005f6e83f643406b146655777fa767d2a",
+        "sources": "f80968cc3f2af1a65d63c8fa764cf5e474b1a457fd1116a52cec1904d0384fbd"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-codec-base": {
       "shasums": {
-        "jar": "2a420ee609c1c4ad750609b6d7e2ee9f26a0431a8bbd7f48afb8ac576f1c40b9",
-        "sources": "26d2b8a409468bd65245dc247d9ad6e92020f5064bc612be1b0c428afc368231"
+        "jar": "a0407d1e9b77e9807aabf367e06602475faab567bfcb8e07ff5bd22c24cd923e",
+        "sources": "b71c6fc15b83149f6b84a830e9c3b3bbccfc7e5aff1017cfb37496708b67d620"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-codec-compression": {
       "shasums": {
-        "jar": "6ed70c21d6b4eb237dfab29214dfc029e1e85e9804751cb94924fa04f36c04cd",
-        "sources": "d10a76f66f5864acb11148e89052b81fa8ddcf21d1dc1ea76d7ced75b1ee107c"
+        "jar": "15a1cea261831a8b92c02aa5ca1a51a180a4c6ff873a01ecaaf53f0ebe1db6e3",
+        "sources": "ad9f0218ce09d9b22d2e263589362145c9d7a599466bbfcefe6dc02e1233c4fa"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-codec-dns": {
       "shasums": {
-        "jar": "bfcb362a4edf8960fe3c71dbdb94e71ac6e1437c00b825a4c08cfbbf0d93d992",
-        "sources": "e238b9153f41863be8ba06597540aff2cb1fb1890891aac9ceac5a238ea149fd"
+        "jar": "703f11b6d1c5f8566aa237b749046fe9f201928f305f541e21d445299e3f49e5",
+        "sources": "869ee5a86fff30a4f908bc3752a0c205d3d542a433e23f7f4dc4832b813911a9"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-codec-http": {
       "shasums": {
-        "jar": "faf833d3f557921264328c933ffeb055e9885e0d258a021355aa88a62181b540",
-        "sources": "cb4013a6e78d37c7b089ec0cd0dbbeffa47478bcbad7b9e0c831fab5bb69a74b"
+        "jar": "81b6c95341571c30cbdad977dfe140648fd3bf5fc13939f4d0be4d1929d544cb",
+        "sources": "47c72eb31bc69feab43d25d051a448971be67e164789ffa71ee38defebecbeec"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-codec-http2": {
       "shasums": {
-        "jar": "ac0962cb4bc795baa2217bdbe192e0e9f2dd97bb4ddcdd87f1ec4bbc21d781f2",
-        "sources": "925cec47c63d97cc1603252889a8e7587e77d5667eddf3d5f02b1f3f1850696a"
+        "jar": "2321f651bae1679ca1e646a1c1171b6a6cc21015bdfa2aee829ed9130f5b1da8",
+        "sources": "b33e20d7037d4b54e92a63438597ecb7cfa368d80dedb5ca8f9361a68d5ac215"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-codec-marshalling": {
       "shasums": {
-        "jar": "84ccf4e6e095434041f6ba47a003609ad42f2baf60136a2b0c7696c7056cf1aa",
-        "sources": "6bd5c09c95626250ac9c3299106e3400ea74203fdac06e87441317b22b3ffc8b"
+        "jar": "a10df1f0342bd75e4a615956bf11f1a86e0e0d7f7376138627b2ca308dfd6832",
+        "sources": "a0aaf90570d983fb251ee14fb8cdc5603a247962d978b2dfb28355f6e1f388cd"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-codec-protobuf": {
       "shasums": {
-        "jar": "df6390a29ffde35426fa5ad49cccc491c58e6ca2253e364825a204ed03d0fbfc",
-        "sources": "3316f2c0860de9b4a0faae3acb95ce5e228c9a339b93525094a2d174c48c414e"
+        "jar": "a131cc7e18d43e36e6f6f9a8180bcad619b7bb33a4971af3a98a0435d9292c2e",
+        "sources": "5843bbbb90e97e26932531b770c6f7a5beb4a80b6c7e9053526ee25046e4f56b"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-codec-socks": {
       "shasums": {
-        "jar": "658d1a5dea793c587ad61b8127380045799106fe4252c1c59ab4301f2c8d2d2b",
-        "sources": "3b0db11ab63cf93ddb9c5171f5f76db3236e4669f0f8a312460de83ab9eae4a1"
+        "jar": "b45100145a3a093bb4b9fc572409c771e8e78339dd91a2909574faf44f6d7832",
+        "sources": "b5ebdec08ea74650f7d9fc1d66e81b2a5f7f886d584784a40c57a7b9bd9baa70"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-common": {
       "shasums": {
-        "jar": "ad7ff0989d76be928069176754deec42c6a0e3305013df21814b4ac46b1ace9a",
-        "sources": "0e4ff3b834a728705103cdbcb07a64583b636daff1b7dd33c221c42537ac4994"
+        "jar": "cccffbdd68586b5473c67d6ac37145625e7abbfae304e7a512616576b0187697",
+        "sources": "1aa4934d4805a519617f123620c0ce48a391d5fbe7e744a5eebbdc2a536b7a9d"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-handler": {
       "shasums": {
-        "jar": "769fecbfbca5756c52a442da35563218ced4d6cc179da2a8e782aae6ce8a187b",
-        "sources": "d64e5b659bfd7dea1143e11b296cbd6cc5fde9874e0996224eb54eef52736027"
+        "jar": "50efc30aeca2ef21311f2502389e500bfc168c311edb1ae04a2db4d6bb5d7f7f",
+        "sources": "ce9e76c80939522b896051ab374013a8c8f865d86c019f94fc10cf650ec4fc78"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-handler-proxy": {
       "shasums": {
-        "jar": "a465b622897cd87deb5de714d3dbdf1abd66fff5af390d57271415345006d96c",
-        "sources": "04f2aaec7deefb69d82f2a5bca93a751a4b74318e70d7aa2e669cbd083f54564"
+        "jar": "7abd80166644f63b95dbe6fd9dd0e37402cd49067335d6af63ef1ce442430cf5",
+        "sources": "f4b65579d9f869da0ae9b496373d6e65f4ca8cea1d27194c1155d6e9a0f19e64"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-resolver": {
       "shasums": {
-        "jar": "14dfad791466ab2cc87316841c1c976af140bdb8c6ed5f84725e1225a1e0bbe6",
-        "sources": "0ca83c54133f66dee83b4d71a8a9a7e55822ab582b7d25d0ffd85c60f2874856"
+        "jar": "2cd68d6a746aeb2ec92923fa168d250526d7ad3dbe1877e7bcbe6e8acdb2c193",
+        "sources": "779a6a4e783a2a4430b28a32ff488fad48724284fd685757e23ae0e5874fa487"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-resolver-dns": {
       "shasums": {
-        "jar": "97d5b2069b1c2d0796442501a9556a5a7a8a7821693d37210a0090ddb0a67c96",
-        "sources": "4a0aa200777fa9bba634f4256f4dd1e495618855e50e4a898789b64dd1ceaa97"
+        "jar": "f77815b3423b3513856ab7b43ac3f6c743a9c22ed23946f7c056ff6f0a238282",
+        "sources": "8cc54d07f4cd624244704e0be25d41a1aa01abe900dea5ac816d50cca54ccb8a"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-transport": {
       "shasums": {
-        "jar": "aaff8b2958eea0e94d3e5521d795e65ea91faf58fa1152e45584b36348a81abd",
-        "sources": "b8bf337cb62a65210ce0158238929c0c5728acfbcbb06ec211702b0d85f21a9e"
+        "jar": "d9b2200bfe6e47c2dfa2f0952df6fbdfd42bf58bdd9007e9ac17c789274388c5",
+        "sources": "a6340e138f7a111c356b64c8e755def8cfdf9e9c20e3a0d06ad1a9f714b922cb"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.netty:netty-transport-native-unix-common": {
       "shasums": {
-        "jar": "6bea060f5ffe953acab6c922236d284ca8f1e8c6a59d8a13eaba053fa280a88f",
-        "sources": "f8c5f8eba7754460e14fcd544fccec5410cf2bff0f40fa196e3aebb84b3b407a"
+        "jar": "052b8429276ac96bd1f1067ce963b4e57c627ca331071f4df2e63f759234f6b1",
+        "sources": "9315ec1ac4dd5e6ad27af365064e221faa7d7ceacdb2045de54b7159c9dbb062"
       },
-      "version": "4.2.10.Final"
+      "version": "4.2.13.Final"
     },
     "io.opentelemetry.semconv:opentelemetry-semconv": {
       "shasums": {
@@ -1074,87 +1107,87 @@
     },
     "io.opentelemetry:opentelemetry-api": {
       "shasums": {
-        "jar": "a7384b93c0bab888a9152f36121b0414e569d91a8ecb45f6893ac9dcfe3ef3eb",
-        "sources": "10078828c9964f4529d9442d081bf3d1fc20414e866453e980c4a04f6d215468"
+        "jar": "d58143928c049233653e6bf1282ff8a767ebdd5e6a82b3f336158c30e40b431d",
+        "sources": "182c0bdb355f189ff4286c6dd250c5b809275b71512ad49417dc35b98dca30a1"
       },
-      "version": "1.59.0"
+      "version": "1.62.0"
     },
     "io.opentelemetry:opentelemetry-common": {
       "shasums": {
-        "jar": "28538e3f768fccd7338a7491f687d0281f0f773f31600879b35a694cafa30a0f",
-        "sources": "545b31c0c7f080241febb977455a85dac46340f41a2090380b59a5e34356f25a"
+        "jar": "d6310bebde67d65c1519696728d8604005315ed08ab14071956fc0826fd71815",
+        "sources": "22696f3363340992880596a7313f8cfca8ad01ca9a16a0deec283bad84619bb4"
       },
-      "version": "1.59.0"
+      "version": "1.62.0"
     },
     "io.opentelemetry:opentelemetry-context": {
       "shasums": {
-        "jar": "bcaffbe02934d460c3dfc2a034df017f292ded5eb7ae9d9a642ad96b0fbc3111",
-        "sources": "c80937f2a342e418098e3db6d800b925c17e35cddc0f66ac680b10ed0f8b617f"
+        "jar": "8ec86c3609222b9b6307bf40154c1f1c288d1f18ada0155409e7797adbdbe517",
+        "sources": "d00c426da2c3864f1b79c2d48273e8cb08b68891c5f46f00ab7f5d62f66baec0"
       },
-      "version": "1.59.0"
+      "version": "1.62.0"
     },
     "io.opentelemetry:opentelemetry-exporter-logging": {
       "shasums": {
-        "jar": "5693ea9b8adf93568235cae58729b2f5479d590ba6e82518cb8ec60bdcb188d7",
-        "sources": "390bd774b7f0562755621599da67aacafa4e4e18547cf829658adfb1d9512f38"
+        "jar": "2fa59f0b8b7e6ffbde3dbbafac995fb5191ff00c634bd193aa00093ef2601063",
+        "sources": "8bfa56fcf7eed6a08ba7f193785499d06db9aa0855f397ba780c9682c583e794"
       },
-      "version": "1.59.0"
+      "version": "1.62.0"
     },
     "io.opentelemetry:opentelemetry-sdk": {
       "shasums": {
-        "jar": "42a068576760bc308a853d5ce9dc20d194e741df75a816f1ea7ab14855d2e639",
-        "sources": "cb54694c064710e450a7fc304a49c67fd29f88add32c18dbd961e817d63e6fd2"
+        "jar": "99d421ea0e5a1ca8e45cb67f1d5db7f0e8a718dd55eeb86c1323597e1f10aed3",
+        "sources": "6e226131629d8d65f162fc7ab0ad1adf7e5f9c4d598928471bee6e6b502a0043"
       },
-      "version": "1.59.0"
+      "version": "1.62.0"
     },
     "io.opentelemetry:opentelemetry-sdk-common": {
       "shasums": {
-        "jar": "a1dfa5a20b94e7fbc32fcceb89ab442d9cf79540415be9d11547f05d98cd8537",
-        "sources": "542d417a37d4de7494d059c420762ac6852ecb5340de2ddf2a00499570742a2f"
+        "jar": "bf9d13df9a50e49a5db664ba8ebfad79f73f03219d2ac6f6709d432f6896eba0",
+        "sources": "b62f0390c5f89e4961b88bd8955fa919ea65ddf3972152a0312261f910d302fc"
       },
-      "version": "1.59.0"
+      "version": "1.62.0"
     },
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure": {
       "shasums": {
-        "jar": "bfb11b89a7ea8aa3a79f9ca6ce5ed49bfcf80d8f4d63edb7ac2c213712d766d6",
-        "sources": "1a5cd19c05f243a664986bf515eec2dfe50aab1a35ebd01d1ee7047b1223955e"
+        "jar": "4165984bdc3261486918a55815ae57d5e75ba08730d1e1ccf97908720659b619",
+        "sources": "1160b8a0cf56e9012d103ea5f32fdfc15970a623addd460ff43a6a4961c831a7"
       },
-      "version": "1.59.0"
+      "version": "1.62.0"
     },
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi": {
       "shasums": {
-        "jar": "ee365ee23687d035c5183efec4b72f2a86f525a96b2b113b824ad26a0dd27b69",
-        "sources": "73dba6f35d97d8f6d1b4614eac28d70e1f67c374f123e71c1252eb942a1d59b7"
+        "jar": "220c22bcf420faae59b7225c789f572eaa22e7af2304d55508aaf2a3efcfecf8",
+        "sources": "0e3f7ec5b623512b19a0945b3ba926c29c6f4bb122c3444d8aecf74073fcb3c1"
       },
-      "version": "1.59.0"
+      "version": "1.62.0"
     },
     "io.opentelemetry:opentelemetry-sdk-logs": {
       "shasums": {
-        "jar": "cb0ff19e104929474dc58e87c6849583c8cf314d2ba2c6785e31c059ed8878d3",
-        "sources": "cb4171eec2450f9cae17201073c9950e013e005ab817429ff473a3944ff57a1e"
+        "jar": "51c94329bc8e335ed79027d29d49c075c11b91b39e48679edf590e784a392406",
+        "sources": "166487b88e6a7b9e148a2b1dcf2b6c7ecf08211e738c53c3d3e5e0da148320b1"
       },
-      "version": "1.59.0"
+      "version": "1.62.0"
     },
     "io.opentelemetry:opentelemetry-sdk-metrics": {
       "shasums": {
-        "jar": "2031564671ad7ac36dfe23f5bc432987944a2806ea7f930e8e19c9943af4f342",
-        "sources": "9cd20e572c0e67d3d67a4566d27986f874aeb0f74a9dc37ef6b42cd15207b1cd"
+        "jar": "50b057fbf063f6801f623212f4b51b6a3fefc77837314a1316b2f54894c8b5d4",
+        "sources": "4977e8d083691a1c711b3208d89aae25a128fffeed6028704d77ac2f4a652e74"
       },
-      "version": "1.59.0"
+      "version": "1.62.0"
     },
     "io.opentelemetry:opentelemetry-sdk-testing": {
       "shasums": {
-        "jar": "4f4280244e98a4c6fdab4ee9f702fda58eb53f00ea648eaa90bffeae0cd6b696",
-        "sources": "086e959b37ed3d9adfa656418f19024f901c677a90352b63c95336f1887030b4"
+        "jar": "84d8c16bd34b4d51256d1d62a5c767641e24a84f4932ce7b2beea2fdf0c84b73",
+        "sources": "e95c581a9621775cf82f8982172f6134980c7256bafe2aa1e74989103a0a96f9"
       },
-      "version": "1.59.0"
+      "version": "1.62.0"
     },
     "io.opentelemetry:opentelemetry-sdk-trace": {
       "shasums": {
-        "jar": "79d7d861a488b55bd5bddc79c85d270f299b82687d9b354e6816ae3554e64dd6",
-        "sources": "79a1219a221d95c9a043a68cc3804e2049aa65b44c4e18125d684a2355fd9a94"
+        "jar": "fb6c0953b229a6da1db813135ae11a621bf9da56b7356c1e93049ed4b088c232",
+        "sources": "4fef31d6c890aff3de5a9d506a4a9dd4a52b0531d7c6bce42cc71099b9dd90a4"
       },
-      "version": "1.59.0"
+      "version": "1.62.0"
     },
     "io.projectreactor:reactor-core": {
       "shasums": {
@@ -1165,45 +1198,38 @@
     },
     "io.reactivex.rxjava3:rxjava": {
       "shasums": {
-        "jar": "6890becbd4646347928746a4421cc559fca9f34d06ef2a7a947bd7adf7473246",
-        "sources": "288b3dc26dccc5ac6c3e221872ffe2f9b94179cdd85aac519b10e5b151586757"
+        "jar": "1808a433ef55dcc2965523e512ab914a5d0d727228a2683ed7559d7cccf44e37",
+        "sources": "9658c659f8ae1fbd61d81bd1c265728d37a9ad21b04ace5bb3deac6f3387bd2b"
       },
-      "version": "3.1.8"
+      "version": "3.1.12"
     },
     "io.vertx:vertx-auth-common": {
       "shasums": {
-        "jar": "f0b6c0c7afe4368dbc2cdd9af7839fd341ff601587f58cc910cb5e2949827df3",
-        "sources": "9de0055a4fad53a72859e179f52ff21fe26e6a465f1f3fc620f034b3f7537682"
+        "jar": "ea3074af4de22fb2e560d4fc0e048eb2d0189eb9a94312b90f39bee597d79d11",
+        "sources": "0b58456a45a07cd2e80e1d3bb5e89de2d83780f48a899d8a3c70c99615364354"
       },
-      "version": "4.5.24"
+      "version": "4.5.27"
     },
     "io.vertx:vertx-core": {
       "shasums": {
-        "jar": "61293b447a367514925c5fec9fc390f6d4acfa731231775dfb32bccf41b638bb",
-        "sources": "d1a75026237b8f17e4dad94d8ac2c8ac70e6d5ff7baaee15c009ed80533e2387"
+        "jar": "8f411bfed688e27a9fdd01a0d86f19e37b91845af76f1a4a6810cabc61f3cd46",
+        "sources": "496bf727478e78d01ff1a581b60c97caf79a5776deb40f1518bb423448c1f192"
       },
-      "version": "4.5.24"
+      "version": "4.5.27"
     },
     "io.vertx:vertx-web-client": {
       "shasums": {
-        "jar": "a666884d633beb4a294abd15866b5664b65e1def18c2feddd2571664ef0967c5",
-        "sources": "58d348a60f47bdb5a72b4253654f90118252091dba63703623854fbb9ba97454"
+        "jar": "d984144a11e96516d81267b8cf5479966e363d7380ee8071a5ecc6471fe72108",
+        "sources": "9e588c4b3a16c47f47a6f69c6df0ce0839e3c0e110a7aa74f993535af4d07fdb"
       },
-      "version": "4.5.24"
+      "version": "4.5.27"
     },
     "io.vertx:vertx-web-common": {
       "shasums": {
-        "jar": "74ed11a7194f2322088f0a5571d3d783cf7886094b2884c92c4d3f7a8d5f1068",
-        "sources": "816615f5f70b5e9ba296bdfcc5c15cc420c01ef1cf030d62985b02d9f73b5d15"
+        "jar": "44e3ad1b98e39e8b2a16f79d9455f1e9fdb5af986339ddb8095ff5043de3c2f2",
+        "sources": "b41c369dad3e9d1051bd0a79b780ce85b98d35c78478ce9f9239aabacd32d7f8"
       },
-      "version": "4.5.24"
-    },
-    "it.ozimov:embedded-redis": {
-      "shasums": {
-        "jar": "f655f2ece0bb01b4d28b937877d4287d12bd7199e7cee83b00b1653dba00c1df",
-        "sources": "ed1140941696f0f1364dab3000a0805e86937cee8ec83b0974266ccc018c39e0"
-      },
-      "version": "0.7.3"
+      "version": "4.5.27"
     },
     "javax.cache:cache-api": {
       "shasums": {
@@ -1235,10 +1261,10 @@
     },
     "net.bytebuddy:byte-buddy": {
       "shasums": {
-        "jar": "e50ba78d8fd22e832c7a87bfa84cbdf93476ff4901b6e985ff66ebbde83f7f8a",
-        "sources": "c052324e5a6d8659b4f854581d0d5aed82c58baee48a34d53b816e6443e54cad"
+        "jar": "ac30c4b0778111fbf65594df7ed0fbd32939eeabef9b17d7f3445aa28696fb86",
+        "sources": "169adbaf8e064889b6b30514956baf0ca95ca3ef8f34dc405840a0c7f4e9cbb0"
       },
-      "version": "1.18.5"
+      "version": "1.18.8-jdk5"
     },
     "net.bytebuddy:byte-buddy-agent": {
       "shasums": {
@@ -1253,6 +1279,13 @@
         "sources": "3c062dd69ea40a8d2c93e2a62f6f3647cd611914abbf51bf2e4865c8d51e5427"
       },
       "version": "7.0.13"
+    },
+    "net.java.dev.jna:jna": {
+      "shasums": {
+        "jar": "260c4b1e22b1db9e110ee441c4f13ce115f841fa48c41d78750986214b395557",
+        "sources": "0b9224e215b3c6a464959e3f994ddd64c14d46fb4014facd6afa1cc18e469466"
+      },
+      "version": "5.18.1"
     },
     "net.sf.saxon:Saxon-HE": {
       "shasums": {
@@ -1274,6 +1307,13 @@
         "sources": "bcf0d437e54be1f51f27b14b05ea1457949c02a9763fe97fbbc8b33e9ad458b8"
       },
       "version": "6.11.0"
+    },
+    "org.apache.commons:commons-compress": {
+      "shasums": {
+        "jar": "e1522945218456f3649a39bc4afd70ce4bd466221519dba7d378f2141a4642ca",
+        "sources": "6de9de4559f12bba6d41789c72f6a2a424514f2d2a3f7f49e2a3c52414db9632"
+      },
+      "version": "1.28.0"
     },
     "org.apache.commons:commons-exec": {
       "shasums": {
@@ -1298,17 +1338,17 @@
     },
     "org.apache.logging.log4j:log4j-api": {
       "shasums": {
-        "jar": "e886682920fa0fb9d6eb6395dcb4de088443f8646c89c5e5846e168e327f406f",
-        "sources": "0610fe5eacd8d3df791fb7dd9dfda9572ae8ae6672ee5c64b90ad958d5cf0bc7"
+        "jar": "820de7bbaf430eaf2e3e5ccb92f23e2085797c5ac4d4f7fc6c8b660fbefa1dbc",
+        "sources": "1d99b59e4eb2b28d88ac61928f7d0a1baa259bb0590ba1de1f33012b47e3ebbb"
       },
-      "version": "2.25.3"
+      "version": "2.26.0"
     },
     "org.apache.logging.log4j:log4j-core": {
       "shasums": {
-        "jar": "362b7fcb65b73aa46cc4bc53abf4eb216f444a83b5d1a037cb6fdfff0ae9f0f9",
-        "sources": "357ea0920077b5b30c1db797eec37386ebd8d00c9d4abe6614fae8ae856ec00f"
+        "jar": "406bb3132c47a5d322e5c571feb0787ca84496469f346eb51f1ef2ee45499902",
+        "sources": "03358928efb94f10484d8ec3f28ad8f4ff3226de9b7c606fcb1ebdb24b9fd0dd"
       },
-      "version": "2.25.3"
+      "version": "2.26.0"
     },
     "org.apiguardian:apiguardian-api": {
       "shasums": {
@@ -1326,24 +1366,24 @@
     },
     "org.bouncycastle:bcpkix-jdk18on": {
       "shasums": {
-        "jar": "d3c4c6b700c74ef8164bb15e549d939721b8f14fc0ff89fe19b220243bcfcbd8",
-        "sources": "f1f0f0565a5d84f0bdde5e812d260a9abacf9be2f57c49e461bfe9ff58340bb9"
+        "jar": "c87f16ed9e5ec61bc94151e9f3646ac44e50cd448121ce84367fa4b7ec7ec1bb",
+        "sources": "fe00c12243c28ead30ad6c7742be40ff005ab29f493c350b83b637fe4a9b5597"
       },
-      "version": "1.83"
+      "version": "1.84"
     },
     "org.bouncycastle:bcprov-jdk18on": {
       "shasums": {
-        "jar": "82cf3a2af766c3bc874f6d36b9f20a8b99a8f09762dc776e8a227a45d8daaafb",
-        "sources": "0c335c8d599b92e264f4591087ca104615de0339bbba46ecc3a51af032de0b16"
+        "jar": "64d6c5a6121fcd927152dd182cbed39afe0fda641a970d9bcc0c9cb1858b2731",
+        "sources": "e5f04550f7740e588edcbd1654c59277cd7ee8725d8b674e44f7f8f4b9c5674a"
       },
-      "version": "1.83"
+      "version": "1.84"
     },
     "org.bouncycastle:bcutil-jdk18on": {
       "shasums": {
-        "jar": "ee7d0eb4e74de70a735f7fb36b604dd5c6ad35720d50b914604db042114a0185",
-        "sources": "935984a8b1d1893dd033a9f237b85898bcfa6ae7890a214f10bade935cd3536f"
+        "jar": "b374e16963421fb9cfb01cc20d7ad8fd2f8b8188e3eef0ec0a8965e245f7619a",
+        "sources": "192b719273dc33e8fd6edc3b30b126760b6740cf2e1ac3cc7cf845c7ffec9f2b"
       },
-      "version": "1.83"
+      "version": "1.84"
     },
     "org.checkerframework:checker-compat-qual": {
       "shasums": {
@@ -1354,17 +1394,17 @@
     },
     "org.checkerframework:checker-qual": {
       "shasums": {
-        "jar": "befe4b15773dc92ccc88ecb5ab1607786a10c3b889813cb39ef21c7f5e3643dc",
-        "sources": "91f2337a803f7cc6fdc069e77a7899c2a39053c23cefc3afa3c9b7fe3cb2fa68"
+        "jar": "a7e08a5400f6e1d97818ed01a8624473fee90b0ded941a44d190f1210c081790",
+        "sources": "25fe5d48d0b230b4c88cce90379fd3d21d6186df98c44db3d315938971a30774"
       },
-      "version": "3.53.1"
+      "version": "4.1.0"
     },
     "org.checkerframework:dataflow-nullaway": {
       "shasums": {
-        "jar": "d0bc6e121f27a803e09404ae2f247f0e2b1f6022897f801cd792ebf375edec27",
-        "sources": "a349a9c24e16d63a06c739c45234f67febcc09b923a0b7951d64f6b191524476"
+        "jar": "4038b94f4a58f5895a19dde9c9c04ee4cc8bf25e83d4ef10152428e760783f9a",
+        "sources": "440646716bf06c054ef7437ee3e3006e5be79b9076e9492f4c8124b2aad9587d"
       },
-      "version": "3.53.0"
+      "version": "4.0.0"
     },
     "org.dom4j:dom4j": {
       "shasums": {
@@ -1407,6 +1447,13 @@
         "sources": "d04a9e8debbe0de1fa66a43d70a7871e856ab267536b7f616d2557d185a2449a"
       },
       "version": "2.3.0"
+    },
+    "org.jetbrains:annotations": {
+      "shasums": {
+        "jar": "195fb0da046d55bb042e91543484cf1da68b02bb7afbfe031f229e45ac84b3f2",
+        "sources": "b2c0d02e0a32c56d359e99634e7d769f9b1a8cd6e25061995abad1c1baf86f56"
+      },
+      "version": "17.0.0"
     },
     "org.jodd:jodd-util": {
       "shasums": {
@@ -1480,10 +1527,10 @@
     },
     "org.mockito:mockito-core": {
       "shasums": {
-        "jar": "03db23de742cbca42aa3d6127fdace560fac37b036d931870801f84c288bd286",
-        "sources": "d1b3d1cfe46502804a5e73fe21f6bf385697c317efedd6b582431ef1dc7068f7"
+        "jar": "ae295bebd5d11fab97ab297815dc7617188b86003cbce3dfd5c0d5c3a6cc4a0c",
+        "sources": "38f869a12a1168ca8dc2a4acd090d8129a7f81afc8f1fc61582701894755fefd"
       },
-      "version": "5.21.0"
+      "version": "5.23.0"
     },
     "org.objenesis:objenesis": {
       "shasums": {
@@ -1550,10 +1597,17 @@
     },
     "org.redisson:redisson": {
       "shasums": {
-        "jar": "d192c4a44e38dbdfc5b7de80d2e6174859bc9eeddb7b8620f5a5078cdad3a241",
-        "sources": "1df18d63306bad7df282805a1fe6cbbdd3c6a20f5f7e7932c923f8e0c01b5fbb"
+        "jar": "882ea6d706e2add5ed8234b601fced2369f6a35f790b5529cf46b916409e945d",
+        "sources": "592992ee086a0d966e495c9123489cc0c6c337f7fe6452844c1f1fcc4b23fbd4"
       },
-      "version": "4.2.0"
+      "version": "4.4.0"
+    },
+    "org.rnorth.duct-tape:duct-tape": {
+      "shasums": {
+        "jar": "31cef12ddec979d1f86d7cf708c41a17da523d05c685fd6642e9d0b2addb7240",
+        "sources": "b385fd2c2b435c313b3f02988d351503230c9631bfb432261cbd8ce9765d2a26"
+      },
+      "version": "1.0.8"
     },
     "org.seleniumhq.selenium:selenium-api": {
       "shasums": {
@@ -1606,31 +1660,31 @@
     },
     "org.slf4j:slf4j-api": {
       "shasums": {
-        "jar": "7b751d952061954d5abfed7181c1f645d336091b679891591d63329c622eb832",
-        "sources": "db0d08d8efa05ad19d174d747bd9d8e68dbb02b596812fe7b3a681656e346694"
+        "jar": "44508fd1576500688c790b190acdd16fec4f8c79a3e0b900afd70503cf055f55",
+        "sources": "192e007cf7f2be41d40574e44521fc0b7ce55e01f13dbe0fa8707c8ae3329075"
       },
-      "version": "2.0.17"
+      "version": "2.0.18"
     },
     "org.slf4j:slf4j-jdk14": {
       "shasums": {
-        "jar": "ead25c1b15f59db1fb5552b76fe63de4164f0df40024d19287b75dece47ad3be",
-        "sources": "6d2fc49bf67e5f52ba91e69b78acdb35144cfd3d22d027e1f246da70c613e444"
+        "jar": "ab6ffe68caa8a0e3aed66022061b6cbabc76746784eff3c3ab4af0b0dd7dbb02",
+        "sources": "c25842ff125bacfae756145347655618f83a17a693d6185769335f60fd8e7add"
       },
-      "version": "2.0.17"
-    },
-    "org.slf4j:slf4j-simple": {
-      "shasums": {
-        "jar": "a20179cc3ded2d7e2f5def4ccb34b2d0836e2f8c9e79352a6babd6a6559cc8e0",
-        "sources": "a1b77bfe96ee85e8a80c447feb173ff23e7f2f16195d34cc18b9cebb81069d30"
-      },
-      "version": "1.7.21"
+      "version": "2.0.18"
     },
     "org.snakeyaml:snakeyaml-engine": {
       "shasums": {
-        "jar": "c99d9fd66c7c251d881a9cd95089b7c8044c29a1b02983d7036981bd4354ec37",
-        "sources": "4f8fdf83273cb26d83b3c262729fae4c59de96e745e2f5089431a8db113b7933"
+        "jar": "0b638c8806112215e02e58e95cbd9e9a69d4bd540991f47553d053919994cc94",
+        "sources": "a9ff0dd1deb1781fb478bb17dd5b9758859a0419531a543608d6ca391449562c"
       },
-      "version": "2.10"
+      "version": "3.0.1"
+    },
+    "org.testcontainers:testcontainers": {
+      "shasums": {
+        "jar": "0466f481343d5f350a91274cd7bf984308cbaf90d706247fd1cf4b1a8010c2e1",
+        "sources": "b4dfdb7d0f8dadc6bfa6d817df703b5c6881b83b6d0452148fd9a00434387e24"
+      },
+      "version": "2.0.5"
     },
     "org.tomlj:tomlj": {
       "shasums": {
@@ -1649,10 +1703,10 @@
     },
     "org.yaml:snakeyaml": {
       "shasums": {
-        "jar": "e6682acf1ace77508ef13649cbf4f8d09d2cf5457bdb61d25ffb6ac0233d78dd",
-        "sources": "7a7d307ca9fe1663219a60045a8e5a113a69331566f9ebbe1d3b12c6781909ac"
+        "jar": "c8f7a98e7394adda02f6317249710e4d1b4c7a25aa8c7eace0c2eea52eb8bf85",
+        "sources": "cd719ff3e52eec48ef7c541ba4f178c2eff0f6719fd0abe4f4e44bde41138ca2"
       },
-      "version": "2.5"
+      "version": "2.6"
     },
     "org.zeromq:jeromq": {
       "shasums": {
@@ -1684,16 +1738,16 @@
     }
   },
   "conflict_resolution": {
-    "com.fasterxml.jackson.core:jackson-core:2.16.1": "com.fasterxml.jackson.core:jackson-core:2.20.0",
+    "com.fasterxml.jackson.core:jackson-annotations:2.20": "com.fasterxml.jackson.core:jackson-annotations:2.21",
+    "com.fasterxml.jackson.core:jackson-core:2.18.6": "com.fasterxml.jackson.core:jackson-core:2.21.3",
     "com.google.guava:failureaccess:1.0.1": "com.google.guava:failureaccess:1.0.3",
-    "commons-io:commons-io:2.20.0": "commons-io:commons-io:2.5",
-    "io.projectreactor:reactor-core:3.6.2": "io.projectreactor:reactor-core:3.6.6",
+    "io.projectreactor:reactor-core:3.8.5": "io.projectreactor:reactor-core:3.6.6",
     "net.bytebuddy:byte-buddy-agent:1.17.4": "net.bytebuddy:byte-buddy-agent:1.17.7",
     "org.apache.commons:commons-lang3:3.18.0": "org.apache.commons:commons-lang3:3.19.0",
     "org.objenesis:objenesis:1.2": "org.objenesis:objenesis:3.3",
     "org.objenesis:objenesis:3.4": "org.objenesis:objenesis:3.3",
     "org.reactivestreams:reactive-streams:1.0.4": "org.reactivestreams:reactive-streams:1.0.3",
-    "org.yaml:snakeyaml:2.4": "org.yaml:snakeyaml:2.5"
+    "org.yaml:snakeyaml:2.5": "org.yaml:snakeyaml:2.6"
   },
   "dependencies": {
     "com.esotericsoftware:kryo": [
@@ -1718,6 +1772,15 @@
     "com.github.ben-manes.caffeine:caffeine": [
       "com.google.errorprone:error_prone_annotations",
       "org.jspecify:jspecify"
+    ],
+    "com.github.docker-java:docker-java-api": [
+      "com.fasterxml.jackson.core:jackson-annotations",
+      "org.slf4j:slf4j-api"
+    ],
+    "com.github.docker-java:docker-java-transport-zerodep": [
+      "com.github.docker-java:docker-java-transport",
+      "net.java.dev.jna:jna",
+      "org.slf4j:slf4j-api"
     ],
     "com.github.spotbugs:spotbugs": [
       "com.github.spotbugs:spotbugs-annotations",
@@ -2122,12 +2185,6 @@
     "io.vertx:vertx-web-common": [
       "io.vertx:vertx-core"
     ],
-    "it.ozimov:embedded-redis": [
-      "com.google.guava:guava",
-      "commons-io:commons-io",
-      "commons-logging:commons-logging",
-      "org.slf4j:slf4j-simple"
-    ],
     "net.java.dev.javacc:javacc": [
       "junit:junit"
     ],
@@ -2136,6 +2193,11 @@
       "org.xmlresolver:xmlresolver:jar:data"
     ],
     "org.apache.bcel:bcel": [
+      "commons-io:commons-io",
+      "org.apache.commons:commons-lang3"
+    ],
+    "org.apache.commons:commons-compress": [
+      "commons-codec:commons-codec",
       "commons-io:commons-io",
       "org.apache.commons:commons-lang3"
     ],
@@ -2243,6 +2305,9 @@
       "org.slf4j:slf4j-api",
       "org.yaml:snakeyaml"
     ],
+    "org.rnorth.duct-tape:duct-tape": [
+      "org.jetbrains:annotations"
+    ],
     "org.seleniumhq.selenium:selenium-api": [
       "org.jspecify:jspecify"
     ],
@@ -2294,7 +2359,11 @@
     "org.slf4j:slf4j-jdk14": [
       "org.slf4j:slf4j-api"
     ],
-    "org.slf4j:slf4j-simple": [
+    "org.testcontainers:testcontainers": [
+      "com.github.docker-java:docker-java-api",
+      "com.github.docker-java:docker-java-transport-zerodep",
+      "org.apache.commons:commons-compress",
+      "org.rnorth.duct-tape:duct-tape",
       "org.slf4j:slf4j-api"
     ],
     "org.tomlj:tomlj": [
@@ -2364,9 +2433,9 @@
       "com.fasterxml.jackson.core.exc",
       "com.fasterxml.jackson.core.filter",
       "com.fasterxml.jackson.core.format",
-      "com.fasterxml.jackson.core.internal.shaded.fdp.v2_20_0",
-      "com.fasterxml.jackson.core.internal.shaded.fdp.v2_20_0.bte",
-      "com.fasterxml.jackson.core.internal.shaded.fdp.v2_20_0.chr",
+      "com.fasterxml.jackson.core.internal.shaded.fdp.v2_21_3",
+      "com.fasterxml.jackson.core.internal.shaded.fdp.v2_21_3.bte",
+      "com.fasterxml.jackson.core.internal.shaded.fdp.v2_21_3.chr",
       "com.fasterxml.jackson.core.io",
       "com.fasterxml.jackson.core.io.schubfach",
       "com.fasterxml.jackson.core.json",
@@ -2416,6 +2485,92 @@
     "com.github.ben-manes.caffeine:caffeine": [
       "com.github.benmanes.caffeine.cache",
       "com.github.benmanes.caffeine.cache.stats"
+    ],
+    "com.github.docker-java:docker-java-api": [
+      "com.github.dockerjava.api",
+      "com.github.dockerjava.api.async",
+      "com.github.dockerjava.api.command",
+      "com.github.dockerjava.api.exception",
+      "com.github.dockerjava.api.model"
+    ],
+    "com.github.docker-java:docker-java-transport": [
+      "com.github.dockerjava.transport"
+    ],
+    "com.github.docker-java:docker-java-transport-zerodep": [
+      "com.github.dockerjava.zerodep",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.async",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.async.methods",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.auth",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.classic",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.classic.methods",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.config",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.cookie",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.entity",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.entity.mime",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.impl",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.impl.async",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.impl.auth",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.impl.classic",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.impl.compat",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.impl.cookie",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.impl.io",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.impl.nio",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.impl.routing",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.io",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.nio",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.protocol",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.psl",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.routing",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.socket",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.ssl",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.utils",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.validator",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.annotation",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.concurrent",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.function",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.config",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.impl",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.impl.bootstrap",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.impl.io",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.impl.nio",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.impl.routing",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.io",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.io.entity",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.io.ssl",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.io.support",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.message",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.nio",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.nio.command",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.nio.entity",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.nio.ssl",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.nio.support",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.nio.support.classic",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.protocol",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.ssl",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.support",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http2",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http2.config",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http2.frame",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http2.hpack",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http2.impl",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http2.impl.io",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http2.impl.nio",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http2.impl.nio.bootstrap",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http2.nio",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http2.nio.command",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http2.nio.pool",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http2.nio.support",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http2.protocol",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http2.ssl",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.io",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.net",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.pool",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.reactor",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.reactor.ssl",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.ssl",
+      "com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.util"
     ],
     "com.github.javaparser:javaparser-core": [
       "com.github.javaparser",
@@ -2766,7 +2921,6 @@
     ],
     "com.graphql-java:graphql-java": [
       "graphql",
-      "graphql.agent.result",
       "graphql.analysis",
       "graphql.analysis.values",
       "graphql.collect",
@@ -2823,8 +2977,8 @@
       "graphql.schema.visibility",
       "graphql.schema.visitor",
       "graphql.util",
-      "graphql.validation",
-      "graphql.validation.rules"
+      "graphql.util.querygenerator",
+      "graphql.validation"
     ],
     "com.graphql-java:java-dataloader": [
       "org.dataloader",
@@ -2855,18 +3009,31 @@
       "com.uber.nullaway.jarinfer",
       "com.uber.nullaway.librarymodel"
     ],
+    "commons-codec:commons-codec": [
+      "org.apache.commons.codec",
+      "org.apache.commons.codec.binary",
+      "org.apache.commons.codec.cli",
+      "org.apache.commons.codec.digest",
+      "org.apache.commons.codec.language",
+      "org.apache.commons.codec.language.bm",
+      "org.apache.commons.codec.net"
+    ],
     "commons-io:commons-io": [
       "org.apache.commons.io",
+      "org.apache.commons.io.build",
+      "org.apache.commons.io.channels",
+      "org.apache.commons.io.charset",
       "org.apache.commons.io.comparator",
+      "org.apache.commons.io.file",
+      "org.apache.commons.io.file.attribute",
+      "org.apache.commons.io.file.spi",
       "org.apache.commons.io.filefilter",
+      "org.apache.commons.io.function",
       "org.apache.commons.io.input",
+      "org.apache.commons.io.input.buffer",
       "org.apache.commons.io.monitor",
       "org.apache.commons.io.output",
       "org.apache.commons.io.serialization"
-    ],
-    "commons-logging:commons-logging": [
-      "org.apache.commons.logging",
-      "org.apache.commons.logging.impl"
     ],
     "dev.failsafe:failsafe": [
       "dev.failsafe",
@@ -2962,7 +3129,7 @@
     "io.fabric8:kubernetes-model-core": [
       "io.fabric8.kubernetes.api",
       "io.fabric8.kubernetes.api.model",
-      "io.fabric8.kubernetes.api.model.clusterapi.v1beta1",
+      "io.fabric8.kubernetes.api.model.clusterapi.core.v1beta1",
       "io.fabric8.kubernetes.api.model.runtime",
       "io.fabric8.kubernetes.api.model.version",
       "io.fabric8.kubernetes.internal"
@@ -3019,13 +3186,14 @@
     "io.fabric8:kubernetes-model-scheduling": [
       "io.fabric8.kubernetes.api.model.scheduling.v1",
       "io.fabric8.kubernetes.api.model.scheduling.v1alpha1",
+      "io.fabric8.kubernetes.api.model.scheduling.v1alpha2",
       "io.fabric8.kubernetes.api.model.scheduling.v1beta1"
     ],
     "io.fabric8:kubernetes-model-storageclass": [
       "io.fabric8.kubernetes.api.model.storage",
       "io.fabric8.kubernetes.api.model.storage.v1alpha1",
       "io.fabric8.kubernetes.api.model.storage.v1beta1",
-      "io.fabric8.kubernetes.api.model.storagemigration.v1alpha1"
+      "io.fabric8.kubernetes.api.model.storagemigration.v1beta1"
     ],
     "io.fabric8:zjsonpatch": [
       "io.fabric8.zjsonpatch",
@@ -3099,7 +3267,9 @@
       "io.lettuce.core.pubsub.api.sync",
       "io.lettuce.core.resource",
       "io.lettuce.core.search",
+      "io.lettuce.core.search.aggregateutils",
       "io.lettuce.core.search.arguments",
+      "io.lettuce.core.search.arguments.hybrid",
       "io.lettuce.core.sentinel",
       "io.lettuce.core.sentinel.api",
       "io.lettuce.core.sentinel.api.async",
@@ -3226,7 +3396,8 @@
       "io.opentelemetry.api.trace.propagation.internal"
     ],
     "io.opentelemetry:opentelemetry-common": [
-      "io.opentelemetry.common"
+      "io.opentelemetry.common",
+      "io.opentelemetry.common.impl"
     ],
     "io.opentelemetry:opentelemetry-context": [
       "io.opentelemetry.context",
@@ -3455,12 +3626,6 @@
       "io.vertx.ext.web.multipart",
       "io.vertx.ext.web.multipart.impl"
     ],
-    "it.ozimov:embedded-redis": [
-      "redis.embedded",
-      "redis.embedded.exceptions",
-      "redis.embedded.ports",
-      "redis.embedded.util"
-    ],
     "javax.cache:cache-api": [
       "javax.cache",
       "javax.cache.annotation",
@@ -3581,6 +3746,12 @@
       "org.javacc.parser",
       "org.javacc.utils"
     ],
+    "net.java.dev.jna:jna": [
+      "com.sun.jna",
+      "com.sun.jna.internal",
+      "com.sun.jna.ptr",
+      "com.sun.jna.win32"
+    ],
     "net.sf.saxon:Saxon-HE": [
       "net.sf.saxon",
       "net.sf.saxon.dom",
@@ -3660,6 +3831,44 @@
       "org.apache.bcel.verifier.exc",
       "org.apache.bcel.verifier.statics",
       "org.apache.bcel.verifier.structurals"
+    ],
+    "org.apache.commons:commons-compress": [
+      "org.apache.commons.compress",
+      "org.apache.commons.compress.archivers",
+      "org.apache.commons.compress.archivers.ar",
+      "org.apache.commons.compress.archivers.arj",
+      "org.apache.commons.compress.archivers.cpio",
+      "org.apache.commons.compress.archivers.dump",
+      "org.apache.commons.compress.archivers.examples",
+      "org.apache.commons.compress.archivers.jar",
+      "org.apache.commons.compress.archivers.sevenz",
+      "org.apache.commons.compress.archivers.tar",
+      "org.apache.commons.compress.archivers.zip",
+      "org.apache.commons.compress.changes",
+      "org.apache.commons.compress.compressors",
+      "org.apache.commons.compress.compressors.brotli",
+      "org.apache.commons.compress.compressors.bzip2",
+      "org.apache.commons.compress.compressors.deflate",
+      "org.apache.commons.compress.compressors.deflate64",
+      "org.apache.commons.compress.compressors.gzip",
+      "org.apache.commons.compress.compressors.lz4",
+      "org.apache.commons.compress.compressors.lz77support",
+      "org.apache.commons.compress.compressors.lzma",
+      "org.apache.commons.compress.compressors.lzw",
+      "org.apache.commons.compress.compressors.pack200",
+      "org.apache.commons.compress.compressors.snappy",
+      "org.apache.commons.compress.compressors.xz",
+      "org.apache.commons.compress.compressors.z",
+      "org.apache.commons.compress.compressors.zstandard",
+      "org.apache.commons.compress.harmony",
+      "org.apache.commons.compress.harmony.archive.internal.nls",
+      "org.apache.commons.compress.harmony.pack200",
+      "org.apache.commons.compress.harmony.unpack200",
+      "org.apache.commons.compress.harmony.unpack200.bytecode",
+      "org.apache.commons.compress.harmony.unpack200.bytecode.forms",
+      "org.apache.commons.compress.java.util.jar",
+      "org.apache.commons.compress.parallel",
+      "org.apache.commons.compress.utils"
     ],
     "org.apache.commons:commons-exec": [
       "org.apache.commons.exec",
@@ -3894,9 +4103,13 @@
       "org.bouncycastle.crypto.examples",
       "org.bouncycastle.crypto.fpe",
       "org.bouncycastle.crypto.generators",
+      "org.bouncycastle.crypto.hash2curve",
+      "org.bouncycastle.crypto.hash2curve.data",
+      "org.bouncycastle.crypto.hash2curve.impl",
       "org.bouncycastle.crypto.hpke",
       "org.bouncycastle.crypto.io",
       "org.bouncycastle.crypto.kems",
+      "org.bouncycastle.crypto.kems.mlkem",
       "org.bouncycastle.crypto.macs",
       "org.bouncycastle.crypto.modes",
       "org.bouncycastle.crypto.modes.gcm",
@@ -3907,6 +4120,8 @@
       "org.bouncycastle.crypto.prng",
       "org.bouncycastle.crypto.prng.drbg",
       "org.bouncycastle.crypto.signers",
+      "org.bouncycastle.crypto.signers.mldsa",
+      "org.bouncycastle.crypto.signers.slhdsa",
       "org.bouncycastle.crypto.threshold",
       "org.bouncycastle.crypto.tls",
       "org.bouncycastle.crypto.util",
@@ -3956,7 +4171,7 @@
       "org.bouncycastle.jcajce.provider.drbg",
       "org.bouncycastle.jcajce.provider.kdf",
       "org.bouncycastle.jcajce.provider.kdf.hkdf",
-      "org.bouncycastle.jcajce.provider.kdf.pbepbkdf2",
+      "org.bouncycastle.jcajce.provider.kdf.pbkdf2",
       "org.bouncycastle.jcajce.provider.kdf.scrypt",
       "org.bouncycastle.jcajce.provider.keystore",
       "org.bouncycastle.jcajce.provider.keystore.bc",
@@ -3974,6 +4189,7 @@
       "org.bouncycastle.jce.netscape",
       "org.bouncycastle.jce.provider",
       "org.bouncycastle.jce.spec",
+      "org.bouncycastle.ldap",
       "org.bouncycastle.math",
       "org.bouncycastle.math.ec",
       "org.bouncycastle.math.ec.custom.djb",
@@ -3987,7 +4203,6 @@
       "org.bouncycastle.math.raw",
       "org.bouncycastle.pqc.asn1",
       "org.bouncycastle.pqc.crypto",
-      "org.bouncycastle.pqc.crypto.bike",
       "org.bouncycastle.pqc.crypto.cmce",
       "org.bouncycastle.pqc.crypto.crystals.dilithium",
       "org.bouncycastle.pqc.crypto.falcon",
@@ -3999,14 +4214,12 @@
       "org.bouncycastle.pqc.crypto.mlkem",
       "org.bouncycastle.pqc.crypto.newhope",
       "org.bouncycastle.pqc.crypto.ntru",
+      "org.bouncycastle.pqc.crypto.ntruplus",
       "org.bouncycastle.pqc.crypto.ntruprime",
-      "org.bouncycastle.pqc.crypto.picnic",
-      "org.bouncycastle.pqc.crypto.rainbow",
       "org.bouncycastle.pqc.crypto.saber",
       "org.bouncycastle.pqc.crypto.slhdsa",
       "org.bouncycastle.pqc.crypto.snova",
       "org.bouncycastle.pqc.crypto.sphincs",
-      "org.bouncycastle.pqc.crypto.sphincsplus",
       "org.bouncycastle.pqc.crypto.util",
       "org.bouncycastle.pqc.crypto.xmss",
       "org.bouncycastle.pqc.crypto.xwing",
@@ -4023,6 +4236,7 @@
       "org.bouncycastle.pqc.jcajce.provider.mayo",
       "org.bouncycastle.pqc.jcajce.provider.newhope",
       "org.bouncycastle.pqc.jcajce.provider.ntru",
+      "org.bouncycastle.pqc.jcajce.provider.ntruplus",
       "org.bouncycastle.pqc.jcajce.provider.ntruprime",
       "org.bouncycastle.pqc.jcajce.provider.picnic",
       "org.bouncycastle.pqc.jcajce.provider.saber",
@@ -4032,6 +4246,10 @@
       "org.bouncycastle.pqc.jcajce.provider.util",
       "org.bouncycastle.pqc.jcajce.provider.xmss",
       "org.bouncycastle.pqc.jcajce.spec",
+      "org.bouncycastle.pqc.legacy.bike",
+      "org.bouncycastle.pqc.legacy.picnic",
+      "org.bouncycastle.pqc.legacy.rainbow",
+      "org.bouncycastle.pqc.legacy.sphincsplus",
       "org.bouncycastle.pqc.math.ntru",
       "org.bouncycastle.pqc.math.ntru.parameters",
       "org.bouncycastle.util",
@@ -4170,8 +4388,8 @@
       "org.checkerframework.nullaway.dataflow.reachingdef",
       "org.checkerframework.nullaway.dataflow.util",
       "org.checkerframework.nullaway.javacutil",
-      "org.checkerframework.nullaway.javacutil.javacparse",
       "org.checkerframework.nullaway.javacutil.trees",
+      "org.checkerframework.nullaway.org.plumelib.javacparse",
       "org.checkerframework.nullaway.org.plumelib.reflection",
       "org.checkerframework.nullaway.org.plumelib.util"
     ],
@@ -4259,6 +4477,10 @@
       "org.jboss.marshalling.cloner",
       "org.jboss.marshalling.reflect",
       "org.jboss.marshalling.util"
+    ],
+    "org.jetbrains:annotations": [
+      "org.intellij.lang.annotations",
+      "org.jetbrains.annotations"
     ],
     "org.jodd:jodd-util": [
       "jodd",
@@ -4465,9 +4687,12 @@
       "org.redisson",
       "org.redisson.api",
       "org.redisson.api.annotation",
+      "org.redisson.api.atomic",
+      "org.redisson.api.bitset",
       "org.redisson.api.bloomfilter",
       "org.redisson.api.bucket",
       "org.redisson.api.condition",
+      "org.redisson.api.cuckoofilter",
       "org.redisson.api.executor",
       "org.redisson.api.fanout",
       "org.redisson.api.geo",
@@ -4481,10 +4706,12 @@
       "org.redisson.api.pubsub.event",
       "org.redisson.api.queue",
       "org.redisson.api.queue.event",
+      "org.redisson.api.ratelimiter",
       "org.redisson.api.redisnode",
       "org.redisson.api.search",
       "org.redisson.api.search.aggregate",
       "org.redisson.api.search.index",
+      "org.redisson.api.search.profile",
       "org.redisson.api.search.query",
       "org.redisson.api.search.query.hybrid",
       "org.redisson.api.stream",
@@ -4530,6 +4757,14 @@
       "org.redisson.transaction.operation.bucket",
       "org.redisson.transaction.operation.map",
       "org.redisson.transaction.operation.set"
+    ],
+    "org.rnorth.duct-tape:duct-tape": [
+      "org.rnorth.ducttape",
+      "org.rnorth.ducttape.circuitbreakers",
+      "org.rnorth.ducttape.inconsistents",
+      "org.rnorth.ducttape.ratelimits",
+      "org.rnorth.ducttape.timeouts",
+      "org.rnorth.ducttape.unreliables"
     ],
     "org.seleniumhq.selenium:selenium-api": [
       "org.openqa.selenium",
@@ -4607,9 +4842,6 @@
     "org.slf4j:slf4j-jdk14": [
       "org.slf4j.jul"
     ],
-    "org.slf4j:slf4j-simple": [
-      "org.slf4j.impl"
-    ],
     "org.snakeyaml:snakeyaml-engine": [
       "org.snakeyaml.engine.external.com.google.gdata.util.common.base",
       "org.snakeyaml.engine.v2.api",
@@ -4633,6 +4865,459 @@
       "org.snakeyaml.engine.v2.serializer",
       "org.snakeyaml.engine.v2.tokens",
       "org.snakeyaml.engine.v2.util"
+    ],
+    "org.testcontainers:testcontainers": [
+      "org.testcontainers",
+      "org.testcontainers.containers",
+      "org.testcontainers.containers.output",
+      "org.testcontainers.containers.startupcheck",
+      "org.testcontainers.containers.traits",
+      "org.testcontainers.containers.wait.internal",
+      "org.testcontainers.containers.wait.strategy",
+      "org.testcontainers.core",
+      "org.testcontainers.dockerclient",
+      "org.testcontainers.images",
+      "org.testcontainers.images.builder",
+      "org.testcontainers.images.builder.dockerfile",
+      "org.testcontainers.images.builder.dockerfile.statement",
+      "org.testcontainers.images.builder.dockerfile.traits",
+      "org.testcontainers.images.builder.traits",
+      "org.testcontainers.jib",
+      "org.testcontainers.lifecycle",
+      "org.testcontainers.shaded.com.fasterxml.jackson.core",
+      "org.testcontainers.shaded.com.fasterxml.jackson.core.async",
+      "org.testcontainers.shaded.com.fasterxml.jackson.core.base",
+      "org.testcontainers.shaded.com.fasterxml.jackson.core.exc",
+      "org.testcontainers.shaded.com.fasterxml.jackson.core.filter",
+      "org.testcontainers.shaded.com.fasterxml.jackson.core.format",
+      "org.testcontainers.shaded.com.fasterxml.jackson.core.internal.shaded.fdp.v2_18_4",
+      "org.testcontainers.shaded.com.fasterxml.jackson.core.io",
+      "org.testcontainers.shaded.com.fasterxml.jackson.core.io.schubfach",
+      "org.testcontainers.shaded.com.fasterxml.jackson.core.json",
+      "org.testcontainers.shaded.com.fasterxml.jackson.core.json.async",
+      "org.testcontainers.shaded.com.fasterxml.jackson.core.sym",
+      "org.testcontainers.shaded.com.fasterxml.jackson.core.type",
+      "org.testcontainers.shaded.com.fasterxml.jackson.core.util",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.annotation",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.cfg",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.deser",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.impl",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.std",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.exc",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.ext",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.introspect",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.jdk14",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.json",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.jsonFormatVisitors",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.jsonschema",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.jsontype",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.jsontype.impl",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.module",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.node",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.ser",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.ser.impl",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.ser.std",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.type",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.util",
+      "org.testcontainers.shaded.com.fasterxml.jackson.databind.util.internal",
+      "org.testcontainers.shaded.com.github.dockerjava.core",
+      "org.testcontainers.shaded.com.github.dockerjava.core.async",
+      "org.testcontainers.shaded.com.github.dockerjava.core.command",
+      "org.testcontainers.shaded.com.github.dockerjava.core.dockerfile",
+      "org.testcontainers.shaded.com.github.dockerjava.core.exception",
+      "org.testcontainers.shaded.com.github.dockerjava.core.exec",
+      "org.testcontainers.shaded.com.github.dockerjava.core.util",
+      "org.testcontainers.shaded.com.google.common.annotations",
+      "org.testcontainers.shaded.com.google.common.base",
+      "org.testcontainers.shaded.com.google.common.base.internal",
+      "org.testcontainers.shaded.com.google.common.cache",
+      "org.testcontainers.shaded.com.google.common.collect",
+      "org.testcontainers.shaded.com.google.common.escape",
+      "org.testcontainers.shaded.com.google.common.eventbus",
+      "org.testcontainers.shaded.com.google.common.graph",
+      "org.testcontainers.shaded.com.google.common.hash",
+      "org.testcontainers.shaded.com.google.common.html",
+      "org.testcontainers.shaded.com.google.common.io",
+      "org.testcontainers.shaded.com.google.common.math",
+      "org.testcontainers.shaded.com.google.common.net",
+      "org.testcontainers.shaded.com.google.common.primitives",
+      "org.testcontainers.shaded.com.google.common.reflect",
+      "org.testcontainers.shaded.com.google.common.util.concurrent",
+      "org.testcontainers.shaded.com.google.common.util.concurrent.internal",
+      "org.testcontainers.shaded.com.google.common.xml",
+      "org.testcontainers.shaded.com.google.errorprone.annotations",
+      "org.testcontainers.shaded.com.google.errorprone.annotations.concurrent",
+      "org.testcontainers.shaded.com.google.thirdparty.publicsuffix",
+      "org.testcontainers.shaded.com.trilead.ssh2",
+      "org.testcontainers.shaded.com.trilead.ssh2.auth",
+      "org.testcontainers.shaded.com.trilead.ssh2.channel",
+      "org.testcontainers.shaded.com.trilead.ssh2.crypto",
+      "org.testcontainers.shaded.com.trilead.ssh2.crypto.cipher",
+      "org.testcontainers.shaded.com.trilead.ssh2.crypto.dh",
+      "org.testcontainers.shaded.com.trilead.ssh2.crypto.digest",
+      "org.testcontainers.shaded.com.trilead.ssh2.log",
+      "org.testcontainers.shaded.com.trilead.ssh2.packets",
+      "org.testcontainers.shaded.com.trilead.ssh2.sftp",
+      "org.testcontainers.shaded.com.trilead.ssh2.signature",
+      "org.testcontainers.shaded.com.trilead.ssh2.transport",
+      "org.testcontainers.shaded.com.trilead.ssh2.util",
+      "org.testcontainers.shaded.org.awaitility",
+      "org.testcontainers.shaded.org.awaitility.classpath",
+      "org.testcontainers.shaded.org.awaitility.constraint",
+      "org.testcontainers.shaded.org.awaitility.core",
+      "org.testcontainers.shaded.org.awaitility.pollinterval",
+      "org.testcontainers.shaded.org.awaitility.reflect",
+      "org.testcontainers.shaded.org.awaitility.reflect.exception",
+      "org.testcontainers.shaded.org.awaitility.spi",
+      "org.testcontainers.shaded.org.bouncycastle",
+      "org.testcontainers.shaded.org.bouncycastle.asn1",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.anssi",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.bc",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.bsi",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.cmc",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.cmp",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.cms",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.cms.ecc",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.crmf",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.cryptlib",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.cryptopro",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.dvcs",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.eac",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.edec",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.esf",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.ess",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.est",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.gm",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.gnu",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.iana",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.icao",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.isara",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.isismtt",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.isismtt.ocsp",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.isismtt.x509",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.iso",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.kisa",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.microsoft",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.misc",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.mod",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.mozilla",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.nist",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.nsri",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.ntt",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.ocsp",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.oiw",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.pkcs",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.rosstandart",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.sec",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.smime",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.teletrust",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.tsp",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.ua",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.util",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.x500",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.x500.style",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.x509",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.x509.qualified",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.x509.sigi",
+      "org.testcontainers.shaded.org.bouncycastle.asn1.x9",
+      "org.testcontainers.shaded.org.bouncycastle.cert",
+      "org.testcontainers.shaded.org.bouncycastle.cert.bc",
+      "org.testcontainers.shaded.org.bouncycastle.cert.cmp",
+      "org.testcontainers.shaded.org.bouncycastle.cert.crmf",
+      "org.testcontainers.shaded.org.bouncycastle.cert.crmf.bc",
+      "org.testcontainers.shaded.org.bouncycastle.cert.crmf.jcajce",
+      "org.testcontainers.shaded.org.bouncycastle.cert.dane",
+      "org.testcontainers.shaded.org.bouncycastle.cert.dane.fetcher",
+      "org.testcontainers.shaded.org.bouncycastle.cert.jcajce",
+      "org.testcontainers.shaded.org.bouncycastle.cert.ocsp",
+      "org.testcontainers.shaded.org.bouncycastle.cert.ocsp.jcajce",
+      "org.testcontainers.shaded.org.bouncycastle.cert.path",
+      "org.testcontainers.shaded.org.bouncycastle.cert.path.validations",
+      "org.testcontainers.shaded.org.bouncycastle.cert.selector",
+      "org.testcontainers.shaded.org.bouncycastle.cert.selector.jcajce",
+      "org.testcontainers.shaded.org.bouncycastle.cmc",
+      "org.testcontainers.shaded.org.bouncycastle.cms",
+      "org.testcontainers.shaded.org.bouncycastle.cms.bc",
+      "org.testcontainers.shaded.org.bouncycastle.cms.jcajce",
+      "org.testcontainers.shaded.org.bouncycastle.crypto",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.agreement",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.agreement.ecjpake",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.agreement.jpake",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.agreement.kdf",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.agreement.srp",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.commitments",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.constraints",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.digests",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.ec",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.encodings",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.engines",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.examples",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.fpe",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.generators",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.hpke",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.io",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.kems",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.macs",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.modes",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.modes.gcm",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.modes.kgcm",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.paddings",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.params",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.parsers",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.prng",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.prng.drbg",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.signers",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.threshold",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.tls",
+      "org.testcontainers.shaded.org.bouncycastle.crypto.util",
+      "org.testcontainers.shaded.org.bouncycastle.dvcs",
+      "org.testcontainers.shaded.org.bouncycastle.eac",
+      "org.testcontainers.shaded.org.bouncycastle.eac.jcajce",
+      "org.testcontainers.shaded.org.bouncycastle.eac.operator",
+      "org.testcontainers.shaded.org.bouncycastle.eac.operator.jcajce",
+      "org.testcontainers.shaded.org.bouncycastle.est",
+      "org.testcontainers.shaded.org.bouncycastle.est.jcajce",
+      "org.testcontainers.shaded.org.bouncycastle.i18n",
+      "org.testcontainers.shaded.org.bouncycastle.i18n.filter",
+      "org.testcontainers.shaded.org.bouncycastle.iana",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.bsi",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.cms",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.cryptlib",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.eac",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.edec",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.gnu",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.iana",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.isara",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.isismtt",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.iso",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.kisa",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.microsoft",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.misc",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.nsri",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.ntt",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.oiw",
+      "org.testcontainers.shaded.org.bouncycastle.internal.asn1.rosstandart",
+      "org.testcontainers.shaded.org.bouncycastle.its",
+      "org.testcontainers.shaded.org.bouncycastle.its.bc",
+      "org.testcontainers.shaded.org.bouncycastle.its.jcajce",
+      "org.testcontainers.shaded.org.bouncycastle.its.operator",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.interfaces",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.io",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.compositesignatures",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.dh",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.dsa",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.dstu",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.ec",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.ecgost",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.ecgost12",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.edec",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.elgamal",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.gost",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.ies",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.mldsa",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.mlkem",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.rsa",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.slhdsa",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.util",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.x509",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.config",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.digest",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.drbg",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.keystore",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.keystore.bc",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.keystore.bcfks",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.keystore.pkcs12",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.keystore.util",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.symmetric",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.symmetric.util",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.provider.util",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.spec",
+      "org.testcontainers.shaded.org.bouncycastle.jcajce.util",
+      "org.testcontainers.shaded.org.bouncycastle.jce",
+      "org.testcontainers.shaded.org.bouncycastle.jce.exception",
+      "org.testcontainers.shaded.org.bouncycastle.jce.interfaces",
+      "org.testcontainers.shaded.org.bouncycastle.jce.netscape",
+      "org.testcontainers.shaded.org.bouncycastle.jce.provider",
+      "org.testcontainers.shaded.org.bouncycastle.jce.spec",
+      "org.testcontainers.shaded.org.bouncycastle.math",
+      "org.testcontainers.shaded.org.bouncycastle.math.ec",
+      "org.testcontainers.shaded.org.bouncycastle.math.ec.custom.djb",
+      "org.testcontainers.shaded.org.bouncycastle.math.ec.custom.gm",
+      "org.testcontainers.shaded.org.bouncycastle.math.ec.custom.sec",
+      "org.testcontainers.shaded.org.bouncycastle.math.ec.endo",
+      "org.testcontainers.shaded.org.bouncycastle.math.ec.rfc7748",
+      "org.testcontainers.shaded.org.bouncycastle.math.ec.rfc8032",
+      "org.testcontainers.shaded.org.bouncycastle.math.ec.tools",
+      "org.testcontainers.shaded.org.bouncycastle.math.field",
+      "org.testcontainers.shaded.org.bouncycastle.math.raw",
+      "org.testcontainers.shaded.org.bouncycastle.mime",
+      "org.testcontainers.shaded.org.bouncycastle.mime.encoding",
+      "org.testcontainers.shaded.org.bouncycastle.mime.smime",
+      "org.testcontainers.shaded.org.bouncycastle.mozilla",
+      "org.testcontainers.shaded.org.bouncycastle.mozilla.jcajce",
+      "org.testcontainers.shaded.org.bouncycastle.oer",
+      "org.testcontainers.shaded.org.bouncycastle.oer.its",
+      "org.testcontainers.shaded.org.bouncycastle.oer.its.etsi102941",
+      "org.testcontainers.shaded.org.bouncycastle.oer.its.etsi102941.basetypes",
+      "org.testcontainers.shaded.org.bouncycastle.oer.its.etsi103097",
+      "org.testcontainers.shaded.org.bouncycastle.oer.its.etsi103097.extension",
+      "org.testcontainers.shaded.org.bouncycastle.oer.its.ieee1609dot2",
+      "org.testcontainers.shaded.org.bouncycastle.oer.its.ieee1609dot2.basetypes",
+      "org.testcontainers.shaded.org.bouncycastle.oer.its.ieee1609dot2dot1",
+      "org.testcontainers.shaded.org.bouncycastle.oer.its.template.etsi102941",
+      "org.testcontainers.shaded.org.bouncycastle.oer.its.template.etsi102941.basetypes",
+      "org.testcontainers.shaded.org.bouncycastle.oer.its.template.etsi103097",
+      "org.testcontainers.shaded.org.bouncycastle.oer.its.template.etsi103097.extension",
+      "org.testcontainers.shaded.org.bouncycastle.oer.its.template.ieee1609dot2",
+      "org.testcontainers.shaded.org.bouncycastle.oer.its.template.ieee1609dot2.basetypes",
+      "org.testcontainers.shaded.org.bouncycastle.oer.its.template.ieee1609dot2dot1",
+      "org.testcontainers.shaded.org.bouncycastle.openssl",
+      "org.testcontainers.shaded.org.bouncycastle.openssl.bc",
+      "org.testcontainers.shaded.org.bouncycastle.openssl.jcajce",
+      "org.testcontainers.shaded.org.bouncycastle.operator",
+      "org.testcontainers.shaded.org.bouncycastle.operator.bc",
+      "org.testcontainers.shaded.org.bouncycastle.operator.jcajce",
+      "org.testcontainers.shaded.org.bouncycastle.pkcs",
+      "org.testcontainers.shaded.org.bouncycastle.pkcs.bc",
+      "org.testcontainers.shaded.org.bouncycastle.pkcs.jcajce",
+      "org.testcontainers.shaded.org.bouncycastle.pkix",
+      "org.testcontainers.shaded.org.bouncycastle.pkix.jcajce",
+      "org.testcontainers.shaded.org.bouncycastle.pkix.util",
+      "org.testcontainers.shaded.org.bouncycastle.pkix.util.filter",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.asn1",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.bike",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.cmce",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.crystals.dilithium",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.falcon",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.frodo",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.hqc",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.lms",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.mayo",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.mldsa",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.mlkem",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.newhope",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.ntru",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.ntruprime",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.picnic",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.rainbow",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.saber",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.slhdsa",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.snova",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.sphincs",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.sphincsplus",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.util",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.xmss",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.crypto.xwing",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.interfaces",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.bike",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.cmce",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.dilithium",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.falcon",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.frodo",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.hqc",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.kyber",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.lms",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.mayo",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.newhope",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.ntru",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.ntruprime",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.picnic",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.saber",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.snova",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.sphincs",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.sphincsplus",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.util",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.provider.xmss",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.jcajce.spec",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.math.ntru",
+      "org.testcontainers.shaded.org.bouncycastle.pqc.math.ntru.parameters",
+      "org.testcontainers.shaded.org.bouncycastle.tsp",
+      "org.testcontainers.shaded.org.bouncycastle.tsp.cms",
+      "org.testcontainers.shaded.org.bouncycastle.tsp.ers",
+      "org.testcontainers.shaded.org.bouncycastle.util",
+      "org.testcontainers.shaded.org.bouncycastle.util.encoders",
+      "org.testcontainers.shaded.org.bouncycastle.util.io",
+      "org.testcontainers.shaded.org.bouncycastle.util.io.pem",
+      "org.testcontainers.shaded.org.bouncycastle.util.test",
+      "org.testcontainers.shaded.org.bouncycastle.voms",
+      "org.testcontainers.shaded.org.bouncycastle.x509",
+      "org.testcontainers.shaded.org.bouncycastle.x509.extension",
+      "org.testcontainers.shaded.org.bouncycastle.x509.util",
+      "org.testcontainers.shaded.org.checkerframework.checker.builder.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.calledmethods.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.compilermsgs.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.fenum.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.formatter.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.guieffect.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.i18n.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.i18nformatter.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.index.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.initialization.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.interning.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.lock.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.mustcall.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.nullness.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.optional.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.propkey.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.regex.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.signature.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.signedness.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.tainting.qual",
+      "org.testcontainers.shaded.org.checkerframework.checker.units.qual",
+      "org.testcontainers.shaded.org.checkerframework.common.aliasing.qual",
+      "org.testcontainers.shaded.org.checkerframework.common.initializedfields.qual",
+      "org.testcontainers.shaded.org.checkerframework.common.reflection.qual",
+      "org.testcontainers.shaded.org.checkerframework.common.returnsreceiver.qual",
+      "org.testcontainers.shaded.org.checkerframework.common.subtyping.qual",
+      "org.testcontainers.shaded.org.checkerframework.common.util.count.report.qual",
+      "org.testcontainers.shaded.org.checkerframework.common.value.qual",
+      "org.testcontainers.shaded.org.checkerframework.dataflow.qual",
+      "org.testcontainers.shaded.org.checkerframework.framework.qual",
+      "org.testcontainers.shaded.org.hamcrest",
+      "org.testcontainers.shaded.org.hamcrest.beans",
+      "org.testcontainers.shaded.org.hamcrest.collection",
+      "org.testcontainers.shaded.org.hamcrest.comparator",
+      "org.testcontainers.shaded.org.hamcrest.core",
+      "org.testcontainers.shaded.org.hamcrest.internal",
+      "org.testcontainers.shaded.org.hamcrest.io",
+      "org.testcontainers.shaded.org.hamcrest.number",
+      "org.testcontainers.shaded.org.hamcrest.object",
+      "org.testcontainers.shaded.org.hamcrest.text",
+      "org.testcontainers.shaded.org.hamcrest.xml",
+      "org.testcontainers.shaded.org.yaml.snakeyaml",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.comments",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.composer",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.constructor",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.emitter",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.env",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.error",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.events",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.extensions.compactnotation",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.external.com.google.gdata.util.common.base",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.inspector",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.internal",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.introspector",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.nodes",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.parser",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.reader",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.representer",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.resolver",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.scanner",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.serializer",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.tokens",
+      "org.testcontainers.shaded.org.yaml.snakeyaml.util",
+      "org.testcontainers.shaded.org.zeroturnaround.exec",
+      "org.testcontainers.shaded.org.zeroturnaround.exec.close",
+      "org.testcontainers.shaded.org.zeroturnaround.exec.listener",
+      "org.testcontainers.shaded.org.zeroturnaround.exec.stop",
+      "org.testcontainers.shaded.org.zeroturnaround.exec.stream",
+      "org.testcontainers.shaded.org.zeroturnaround.exec.stream.slf4j",
+      "org.testcontainers.utility"
     ],
     "org.tomlj:tomlj": [
       "org.tomlj",
@@ -4752,6 +5437,12 @@
       "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:sources",
       "com.github.ben-manes.caffeine:caffeine",
       "com.github.ben-manes.caffeine:caffeine:jar:sources",
+      "com.github.docker-java:docker-java-api",
+      "com.github.docker-java:docker-java-api:jar:sources",
+      "com.github.docker-java:docker-java-transport",
+      "com.github.docker-java:docker-java-transport-zerodep",
+      "com.github.docker-java:docker-java-transport-zerodep:jar:sources",
+      "com.github.docker-java:docker-java-transport:jar:sources",
       "com.github.javaparser:javaparser-core",
       "com.github.javaparser:javaparser-core:jar:sources",
       "com.github.spotbugs:spotbugs",
@@ -4804,10 +5495,10 @@
       "com.graphql-java:java-dataloader:jar:sources",
       "com.uber.nullaway:nullaway",
       "com.uber.nullaway:nullaway:jar:sources",
+      "commons-codec:commons-codec",
+      "commons-codec:commons-codec:jar:sources",
       "commons-io:commons-io",
       "commons-io:commons-io:jar:sources",
-      "commons-logging:commons-logging",
-      "commons-logging:commons-logging:jar:sources",
       "dev.failsafe:failsafe",
       "dev.failsafe:failsafe:jar:sources",
       "eu.neilalexander:jnacl",
@@ -4942,8 +5633,6 @@
       "io.vertx:vertx-web-client:jar:sources",
       "io.vertx:vertx-web-common",
       "io.vertx:vertx-web-common:jar:sources",
-      "it.ozimov:embedded-redis",
-      "it.ozimov:embedded-redis:jar:sources",
       "javax.cache:cache-api",
       "javax.cache:cache-api:jar:sources",
       "javax.inject:javax.inject",
@@ -4958,12 +5647,16 @@
       "net.bytebuddy:byte-buddy:jar:sources",
       "net.java.dev.javacc:javacc",
       "net.java.dev.javacc:javacc:jar:sources",
+      "net.java.dev.jna:jna",
+      "net.java.dev.jna:jna:jar:sources",
       "net.sf.saxon:Saxon-HE",
       "net.sf.saxon:Saxon-HE:jar:sources",
       "org.antlr:antlr4-runtime",
       "org.antlr:antlr4-runtime:jar:sources",
       "org.apache.bcel:bcel",
       "org.apache.bcel:bcel:jar:sources",
+      "org.apache.commons:commons-compress",
+      "org.apache.commons:commons-compress:jar:sources",
       "org.apache.commons:commons-exec",
       "org.apache.commons:commons-exec:jar:sources",
       "org.apache.commons:commons-lang3",
@@ -5002,6 +5695,8 @@
       "org.htmlunit:htmlunit-core-js:jar:sources",
       "org.jboss.marshalling:jboss-marshalling",
       "org.jboss.marshalling:jboss-marshalling:jar:sources",
+      "org.jetbrains:annotations",
+      "org.jetbrains:annotations:jar:sources",
       "org.jodd:jodd-util",
       "org.jodd:jodd-util:jar:sources",
       "org.jsoup:jsoup",
@@ -5044,6 +5739,8 @@
       "org.reactivestreams:reactive-streams:jar:sources",
       "org.redisson:redisson",
       "org.redisson:redisson:jar:sources",
+      "org.rnorth.duct-tape:duct-tape",
+      "org.rnorth.duct-tape:duct-tape:jar:sources",
       "org.seleniumhq.selenium:selenium-api",
       "org.seleniumhq.selenium:selenium-api:jar:sources",
       "org.seleniumhq.selenium:selenium-http",
@@ -5062,10 +5759,10 @@
       "org.slf4j:slf4j-api:jar:sources",
       "org.slf4j:slf4j-jdk14",
       "org.slf4j:slf4j-jdk14:jar:sources",
-      "org.slf4j:slf4j-simple",
-      "org.slf4j:slf4j-simple:jar:sources",
       "org.snakeyaml:snakeyaml-engine",
       "org.snakeyaml:snakeyaml-engine:jar:sources",
+      "org.testcontainers:testcontainers",
+      "org.testcontainers:testcontainers:jar:sources",
       "org.tomlj:tomlj",
       "org.tomlj:tomlj:jar:sources",
       "org.xmlresolver:xmlresolver",
@@ -5148,6 +5845,10 @@
       "io.fabric8.kubernetes.api.model.KubernetesResource": [
         "io.fabric8.kubernetes.api.model.admission.v1.AdmissionReview",
         "io.fabric8.kubernetes.api.model.admission.v1beta1.AdmissionReview",
+        "io.fabric8.kubernetes.api.model.admissionregistration.v1.MutatingAdmissionPolicy",
+        "io.fabric8.kubernetes.api.model.admissionregistration.v1.MutatingAdmissionPolicyBinding",
+        "io.fabric8.kubernetes.api.model.admissionregistration.v1.MutatingAdmissionPolicyBindingList",
+        "io.fabric8.kubernetes.api.model.admissionregistration.v1.MutatingAdmissionPolicyList",
         "io.fabric8.kubernetes.api.model.admissionregistration.v1.MutatingWebhookConfiguration",
         "io.fabric8.kubernetes.api.model.admissionregistration.v1.MutatingWebhookConfigurationList",
         "io.fabric8.kubernetes.api.model.admissionregistration.v1.ValidatingAdmissionPolicy",
@@ -5234,12 +5935,12 @@
         "io.fabric8.kubernetes.api.model.certificates.v1.CertificateSigningRequestList",
         "io.fabric8.kubernetes.api.model.certificates.v1alpha1.ClusterTrustBundle",
         "io.fabric8.kubernetes.api.model.certificates.v1alpha1.ClusterTrustBundleList",
-        "io.fabric8.kubernetes.api.model.certificates.v1alpha1.PodCertificateRequest",
-        "io.fabric8.kubernetes.api.model.certificates.v1alpha1.PodCertificateRequestList",
         "io.fabric8.kubernetes.api.model.certificates.v1beta1.CertificateSigningRequest",
         "io.fabric8.kubernetes.api.model.certificates.v1beta1.CertificateSigningRequestList",
         "io.fabric8.kubernetes.api.model.certificates.v1beta1.ClusterTrustBundle",
-        "io.fabric8.kubernetes.api.model.certificates.v1beta1.ClusterTrustBundleList"
+        "io.fabric8.kubernetes.api.model.certificates.v1beta1.ClusterTrustBundleList",
+        "io.fabric8.kubernetes.api.model.certificates.v1beta1.PodCertificateRequest",
+        "io.fabric8.kubernetes.api.model.certificates.v1beta1.PodCertificateRequestList"
       ]
     },
     "io.fabric8:kubernetes-model-coordination": {
@@ -5371,6 +6072,12 @@
         "io.fabric8.kubernetes.api.model.gatewayapi.v1.GatewayList",
         "io.fabric8.kubernetes.api.model.gatewayapi.v1.HTTPRoute",
         "io.fabric8.kubernetes.api.model.gatewayapi.v1.HTTPRouteList",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.ListenerSet",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.ListenerSetList",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.ReferenceGrant",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.ReferenceGrantList",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.TLSRoute",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.TLSRouteList",
         "io.fabric8.kubernetes.api.model.gatewayapi.v1alpha2.GRPCRoute",
         "io.fabric8.kubernetes.api.model.gatewayapi.v1alpha2.GRPCRouteList",
         "io.fabric8.kubernetes.api.model.gatewayapi.v1alpha2.ReferenceGrant",
@@ -5485,6 +6192,8 @@
         "io.fabric8.kubernetes.api.model.resource.v1alpha2.ResourceSliceList",
         "io.fabric8.kubernetes.api.model.resource.v1alpha3.DeviceTaintRule",
         "io.fabric8.kubernetes.api.model.resource.v1alpha3.DeviceTaintRuleList",
+        "io.fabric8.kubernetes.api.model.resource.v1alpha3.ResourcePoolStatusRequest",
+        "io.fabric8.kubernetes.api.model.resource.v1alpha3.ResourcePoolStatusRequestList",
         "io.fabric8.kubernetes.api.model.resource.v1beta1.DeviceClass",
         "io.fabric8.kubernetes.api.model.resource.v1beta1.DeviceClassList",
         "io.fabric8.kubernetes.api.model.resource.v1beta1.ResourceClaim",
@@ -5495,6 +6204,8 @@
         "io.fabric8.kubernetes.api.model.resource.v1beta1.ResourceSliceList",
         "io.fabric8.kubernetes.api.model.resource.v1beta2.DeviceClass",
         "io.fabric8.kubernetes.api.model.resource.v1beta2.DeviceClassList",
+        "io.fabric8.kubernetes.api.model.resource.v1beta2.DeviceTaintRule",
+        "io.fabric8.kubernetes.api.model.resource.v1beta2.DeviceTaintRuleList",
         "io.fabric8.kubernetes.api.model.resource.v1beta2.ResourceClaim",
         "io.fabric8.kubernetes.api.model.resource.v1beta2.ResourceClaimList",
         "io.fabric8.kubernetes.api.model.resource.v1beta2.ResourceClaimTemplate",
@@ -5509,6 +6220,10 @@
         "io.fabric8.kubernetes.api.model.scheduling.v1.PriorityClassList",
         "io.fabric8.kubernetes.api.model.scheduling.v1alpha1.PriorityClass",
         "io.fabric8.kubernetes.api.model.scheduling.v1alpha1.PriorityClassList",
+        "io.fabric8.kubernetes.api.model.scheduling.v1alpha2.PodGroup",
+        "io.fabric8.kubernetes.api.model.scheduling.v1alpha2.PodGroupList",
+        "io.fabric8.kubernetes.api.model.scheduling.v1alpha2.Workload",
+        "io.fabric8.kubernetes.api.model.scheduling.v1alpha2.WorkloadList",
         "io.fabric8.kubernetes.api.model.scheduling.v1beta1.PriorityClass",
         "io.fabric8.kubernetes.api.model.scheduling.v1beta1.PriorityClassList"
       ]
@@ -5531,8 +6246,6 @@
         "io.fabric8.kubernetes.api.model.storage.v1alpha1.CSIStorageCapacityList",
         "io.fabric8.kubernetes.api.model.storage.v1alpha1.VolumeAttachment",
         "io.fabric8.kubernetes.api.model.storage.v1alpha1.VolumeAttachmentList",
-        "io.fabric8.kubernetes.api.model.storage.v1alpha1.VolumeAttributesClass",
-        "io.fabric8.kubernetes.api.model.storage.v1alpha1.VolumeAttributesClassList",
         "io.fabric8.kubernetes.api.model.storage.v1beta1.CSIDriver",
         "io.fabric8.kubernetes.api.model.storage.v1beta1.CSIDriverList",
         "io.fabric8.kubernetes.api.model.storage.v1beta1.CSINode",
@@ -5545,8 +6258,8 @@
         "io.fabric8.kubernetes.api.model.storage.v1beta1.VolumeAttachmentList",
         "io.fabric8.kubernetes.api.model.storage.v1beta1.VolumeAttributesClass",
         "io.fabric8.kubernetes.api.model.storage.v1beta1.VolumeAttributesClassList",
-        "io.fabric8.kubernetes.api.model.storagemigration.v1alpha1.StorageVersionMigration",
-        "io.fabric8.kubernetes.api.model.storagemigration.v1alpha1.StorageVersionMigrationList"
+        "io.fabric8.kubernetes.api.model.storagemigration.v1beta1.StorageVersionMigration",
+        "io.fabric8.kubernetes.api.model.storagemigration.v1beta1.StorageVersionMigrationList"
       ]
     },
     "io.lettuce:lettuce-core": {
@@ -5716,6 +6429,23 @@
     "org.slf4j:slf4j-jdk14": {
       "org.slf4j.spi.SLF4JServiceProvider": [
         "org.slf4j.jul.JULServiceProvider"
+      ]
+    },
+    "org.testcontainers:testcontainers": {
+      "org.testcontainers.dockerclient.DockerClientProviderStrategy": [
+        "org.testcontainers.dockerclient.DockerDesktopClientProviderStrategy",
+        "org.testcontainers.dockerclient.DockerMachineClientProviderStrategy",
+        "org.testcontainers.dockerclient.EnvironmentAndSystemPropertyClientProviderStrategy",
+        "org.testcontainers.dockerclient.NpipeSocketClientProviderStrategy",
+        "org.testcontainers.dockerclient.RootlessDockerClientProviderStrategy",
+        "org.testcontainers.dockerclient.TestcontainersHostPropertyClientProviderStrategy",
+        "org.testcontainers.dockerclient.UnixSocketClientProviderStrategy"
+      ],
+      "org.testcontainers.shaded.com.fasterxml.jackson.core.JsonFactory": [
+        "org.testcontainers.shaded.com.fasterxml.jackson.core.JsonFactory"
+      ],
+      "org.testcontainers.shaded.com.fasterxml.jackson.core.ObjectCodec": [
+        "org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper"
       ]
     }
   },

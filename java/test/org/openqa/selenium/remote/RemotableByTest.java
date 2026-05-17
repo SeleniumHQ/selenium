@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -72,6 +73,7 @@ class RemotableByTest {
     driver.findElement(
         new By() {
           @Override
+          @NullMarked
           public List<WebElement> findElements(SearchContext context) {
             return context.findElements(By.cssSelector("#foo"));
           }
@@ -91,6 +93,7 @@ class RemotableByTest {
               return createResponse(new RemoteWebElement());
             });
 
+    @NullMarked
     class CustomBy extends By implements By.Remotable {
       @Override
       public Parameters getRemoteParameters() {
@@ -120,6 +123,7 @@ class RemotableByTest {
               return createResponse(singletonList(new RemoteWebElement()));
             });
 
+    @NullMarked
     class CustomBy extends By implements By.Remotable {
       @Override
       public Parameters getRemoteParameters() {
@@ -164,6 +168,7 @@ class RemotableByTest {
               return createResponse(singletonList(new RemoteWebElement()));
             });
 
+    @NullMarked
     class CustomBy extends By implements By.Remotable {
       private final String arg;
 
@@ -206,6 +211,7 @@ class RemotableByTest {
     return res;
   }
 
+  @NullMarked
   @SafeVarargs
   private WebDriver createDriver(Function<Command, Response>... responses) {
     Iterator<Function<Command, Response>> iterator = Arrays.stream(responses).iterator();

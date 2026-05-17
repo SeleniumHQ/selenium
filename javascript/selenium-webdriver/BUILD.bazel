@@ -13,12 +13,12 @@ load("//javascript/private:jsdoc.bzl", "jsdoc")
 
 npm_link_all_packages(name = "node_modules")
 
-VERSION = "4.42.0-nightly202602192150"
+VERSION = "4.45.0-nightly202605121853"
 
 BROWSER_VERSIONS = [
-    "v143",
-    "v144",
-    "v145",
+    "v146",
+    "v147",
+    "v148",
 ]
 
 js_library(
@@ -85,6 +85,7 @@ pkg_tar(
 )
 
 SMALL_TESTS = [
+    "test/bidi/index_test.js",
     "test/io/io_test.js",
     "test/io/zip_test.js",
     "test/lib/by_test.js",
@@ -142,6 +143,7 @@ mocha_test(
         ":node_modules/mocha",
         ":node_modules/mocha-junit-reporter",
         ":node_modules/sinon",
+        ":node_modules/ws",
         ":small-test-srcs",
         ":test-data",
         "//:node_modules/selenium-webdriver",

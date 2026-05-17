@@ -17,13 +17,45 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-[JsonConverter(typeof(InputOriginConverter))]
-public abstract record Origin;
+[JsonConverter(typeof(Converter))]
+public abstract record Origin
+{
+    internal sealed class Converter : JsonConverter<Origin>
+    {
+        public override Origin Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Write(Utf8JsonWriter writer, Origin value, JsonSerializerOptions options)
+        {
+            if (value is ViewportOrigin)
+            {
+                writer.WriteStringValue("viewport");
+            }
+            else if (value is PointerOrigin)
+            {
+                writer.WriteStringValue("pointer");
+            }
+            else if (value is ElementOrigin element)
+            {
+                writer.WriteStartObject();
+                writer.WriteString("type", "element");
+                writer.WritePropertyName("element");
+
+                JsonSerializer.Serialize(writer, element.Element, options.GetTypeInfo<Script.ISharedReference>());
+
+                writer.WriteEndObject();
+            }
+        }
+    }
+}
 
 public sealed record ViewportOrigin() : Origin;
 

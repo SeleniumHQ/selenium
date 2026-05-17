@@ -66,15 +66,9 @@ internal class Preferences
     /// </exception>
     internal void SetPreference(string key, string value)
     {
-        if (key is null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentNullException.ThrowIfNull(key);
 
-        if (value is null)
-        {
-            throw new ArgumentNullException(nameof(value));
-        }
+        ArgumentNullException.ThrowIfNull(value);
 
         if (IsWrappedAsString(value))
         {
@@ -96,10 +90,7 @@ internal class Preferences
     /// <exception cref="ArgumentException">If the specified preference is immutable.</exception>
     internal void SetPreference(string key, int value)
     {
-        if (key is null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentNullException.ThrowIfNull(key);
 
         this.ThrowIfPreferenceIsImmutable(key, value);
         this.preferences[key] = value.ToString(CultureInfo.InvariantCulture);
@@ -116,10 +107,7 @@ internal class Preferences
     /// <exception cref="ArgumentException">If the specified preference is immutable.</exception>
     internal void SetPreference(string key, bool value)
     {
-        if (key is null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentNullException.ThrowIfNull(key);
 
         this.ThrowIfPreferenceIsImmutable(key, value);
         this.preferences[key] = value ? "true" : "false";

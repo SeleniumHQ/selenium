@@ -1,3 +1,72 @@
+v4.44.0
+======
+* Support CDP versions: v146, v147, v148
+* Don't truncate internal log messages at error/warn levels (#17333)
+* Safe modifications of internal log handlers (#17334)
+* Remove planned obsoleted members for 4.44 (#17328)
+* [bidi] Statically declare commands (#17330)
+* [bidi] Statically declared events (#17331)
+* Add C# 14 extension to polyfill `ArgumentNullException.ThrowIfNull` (#16697)
+* [bidi] Align SetDownloadBehavior command (#17336)
+* [bidi] Align ContinueWithAuth command (#17337)
+* [bidi] Align SetGeolocation polymorphic command (#17338)
+* Fix stopping of network monitoring via DevTools (#17352)
+* [bidi] Obsolete Type(string) method in Input module (#17377)
+* Support `UnhandledPromptBehavior` option as string and map (breaking change) (#16557)
+* [build] Combine bazel targets (#17387)
+* Improve logging interpolated string allocation (#17391)
+* [build] Simplify version.bzl file name (#17399)
+* Strongly signed assemblies (#17397)
+* Standardize README files across bindings (#17245)
+* [bidi] Additional Event streaming (breaking change) (#17349)
+* [bidi] Add DisownData command in Network module (#17436)
+
+v4.43.0
+======
+* Support CDP versions: v145, v146, v147
+
+v4.42.0
+======
+* Support CDP versions: v144, v145, v146
+* [bidi] Unify all event arguments to be *EventArgs (#17125)
+* [bidi] Expose functionality via interface (#17127)
+* [bidi] Unregister cancelled commands (#17129)
+* [bidi] Properly handle websocket close handshake (#17132)
+* [bidi] Wait until events are dispatched when unsubscribing (#17142)
+* Any WebDriver can be disposed asynchronously (#17119)
+* [bidi] Preserve configurable options pattern (#17144)
+* [bidi] Add disposed guard (#17161)
+* [bidi] Convert RemoteValue to well-known types (#17027)
+* [bidi] Cache BrowsingContext/UserContext per session (#17172)
+* [bidi] Revert... Wait until events are dispatched (#17178)
+* Use props file for legacy sdk (#17180)
+* [bidi] Convert RemoteValue to IDictionary (#17181)
+* [bidi] Simplified how background tasks are started (#17198)
+* [bidi] Optimize commands via ReadOnlyMemory (#17205)
+* [bidi] Optimize processing of incoming messages (#17206)
+* [bidi] Add SetScrollbarTypeOverride command in Emulation module (#17171)
+* [bidi] Thread safe events registration (#17210)
+* [bidi] Keep events deserialization at transport layer (#17212)
+* [bidi] Parallel event handlers (#17213)
+* [bidi] ~Zero allocation per command/event (#17214)
+* Hide unnecessary chromium public fields (#17113)
+* [bidi] Don't propagate cancellation token for websocket (#17220)
+* [build] Bump up C# lang version to 14.0 (#17236)
+* [bidi] Dedicated RealmInfoEventArgs type for OnRealmCreated event (#17240)
+* [bidi] Protected Subscribe method in Module (#17260)
+* [build] Move build targets from cdp to DevTools (#17267)
+* [build] Simplify how we pack nuget package (#17270)
+* [test] Rename namespace for common test project (#17276)
+* [bidi] Remove high-level network interception (#17288)
+* [bidi] Remove enumerable json converter for Input module (#17285)
+* [bidi] Decouple transport and processing (#17291)
+* [bidi] Revise event args (#17304)
+* Fix domain lifecycle in CDP adapters (#17305)
+* [bidi] Testing infra for custom module (#17306)
+* [bidi] Improve json discriminator determination (#17309)
+* [bidi] IIdentifiable json converter factory (#17310)
+* [bidi] Fix commands cancelling callback (#17315)
+
 v4.41.0
 ======
 * Support CDP versions: v143, v144, v145

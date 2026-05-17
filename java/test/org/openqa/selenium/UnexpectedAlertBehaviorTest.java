@@ -18,11 +18,13 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
 import static org.openqa.selenium.UnexpectedAlertBehaviour.IGNORE;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.time.Duration;
@@ -58,7 +60,7 @@ class UnexpectedAlertBehaviorTest extends JupiterTestBase {
   @Ignore(value = EDGE, reason = "Unstable Chrome behavior")
   @NoDriverBeforeTest
   public void canDismissUnhandledAlert() {
-    runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY, "null", false);
+    runScenarioWithUnhandledAlert(DISMISS_AND_NOTIFY, "null", false);
   }
 
   @Test
@@ -72,6 +74,7 @@ class UnexpectedAlertBehaviorTest extends JupiterTestBase {
   @Test
   @Ignore(value = CHROME, reason = "Chrome uses IGNORE mode by default")
   @Ignore(value = EDGE, reason = "Edge uses IGNORE mode by default")
+  @Ignore(value = FIREFOX, reason = "Browser#FIREFOX sets IGNORE mode by default")
   @NoDriverBeforeTest
   public void canDismissUnhandledAlertsByDefault() {
     runScenarioWithUnhandledAlert(null, "null", false);

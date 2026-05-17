@@ -28,7 +28,13 @@ use std::path::{Path, PathBuf};
 
 #[allow(dead_code)]
 pub fn get_selenium_manager() -> Command {
-    let path = PathBuf::from(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut path = PathBuf::from(env!("CARGO_BIN_EXE_selenium-manager"));
+
+    if !path.is_absolute() {
+        path = std::env::current_dir()
+            .expect("Unable to get current directory")
+            .join(path);
+    }
 
     if path.exists() {
         return Command::new(path);
