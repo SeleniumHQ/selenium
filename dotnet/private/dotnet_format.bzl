@@ -53,6 +53,9 @@ SOLUTION="$DOTNET_DIR/Selenium.slnx"
 
 cd "$DOTNET_DIR"
 
+# Bazel-bundled SDK ref packs lack prune metadata; opt out of NETSDK1226.
+export AllowMissingPrunePackageData=true
+
 if [[ ! -f "$SOLUTION" ]]; then
     echo "ERROR: Could not find $SOLUTION" >&2
     exit 1
@@ -93,6 +96,9 @@ set DOTNET_DIR=%WORKSPACE_ROOT%\\dotnet
 set SOLUTION=%DOTNET_DIR%\\Selenium.slnx
 
 cd /d "%DOTNET_DIR%"
+
+rem Bazel-bundled SDK ref packs lack prune metadata; opt out of NETSDK1226.
+set AllowMissingPrunePackageData=true
 
 if not exist "%SOLUTION%" (
     echo ERROR: Could not find %SOLUTION% 1>&2
