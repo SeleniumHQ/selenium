@@ -128,7 +128,7 @@ end
 desc 'Run .NET linter (dotnet format analyzers, docs)'
 task :lint do
   puts '  Running dotnet format analyzers...'
-  Bazel.execute('run', ['--', 'analyzers', '--verify-no-changes', '--verbosity', 'diagnostic'], '//dotnet:format')
+  Bazel.execute('run', ['--', 'analyzers', '--verify-no-changes'], '//dotnet:format')
   Rake::Task['dotnet:docs_generate'].invoke
 
   # TODO: Identify specific diagnostics that we want to enforce but can't be auto-corrected (e.g., 'IDE0060'):
