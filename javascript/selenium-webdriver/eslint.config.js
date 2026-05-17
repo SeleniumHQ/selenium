@@ -19,13 +19,13 @@ const globals = require('globals')
 const noOnlyTests = require('eslint-plugin-no-only-tests')
 const js = require('@eslint/js')
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended')
-const mochaPlugin = require('eslint-plugin-mocha')
-const nodePlugin = require('eslint-plugin-n')
+const mochaPlugin = require('eslint-plugin-mocha').default
+const nodePlugin = require('eslint-plugin-n').default
 
 module.exports = [
   js.configs.recommended,
   eslintPluginPrettierRecommended,
-  mochaPlugin.configs.flat.recommended,
+  mochaPlugin.configs.recommended,
   nodePlugin.configs['flat/recommended-script'],
   {
     languageOptions: {
@@ -80,18 +80,18 @@ module.exports = [
         },
       ],
       'n/prefer-node-protocol': ['error'],
-      'mocha/no-skipped-tests': ['off'],
       'mocha/no-mocha-arrows': ['off'],
       'mocha/no-setup-in-describe': ['off'],
       'mocha/no-top-level-hooks': ['off'],
       'mocha/no-sibling-hooks': ['off'],
       'mocha/no-exports': ['off'],
-      'mocha/no-empty-description': ['off'],
+      'mocha/no-empty-title': ['off'],
       'mocha/max-top-level-suites': ['off'],
       'mocha/consistent-spacing-between-blocks': ['off'],
       'mocha/no-nested-tests': ['off'],
       'mocha/no-pending-tests': ['off'],
       'mocha/no-identical-title': ['off'],
+      'mocha/no-async-suite': ['off'],
       'prettier/prettier': [
         'error',
         {
