@@ -149,8 +149,10 @@ module Selenium
           def use_proxy?
             return false if proxy.nil?
 
-            if proxy.no_proxy
-              ignored = proxy.no_proxy_list.any? do |host|
+            no_proxy = no_proxy_list
+
+            if no_proxy
+              ignored = no_proxy.any? do |host|
                 host == '*' ||
                   host == server_url.host || (
                 begin
@@ -165,6 +167,16 @@ module Selenium
             else
               true
             end
+          end
+
+          def no_proxy_list
+            return proxy.no_proxy_list if proxy.respond_to?(:no_proxy_list)
+            return unless proxy.respond_to?(:no_proxy)
+
+            no_proxy = proxy.no_proxy
+            return no_proxy unless no_proxy.is_a?(String)
+
+            no_proxy.split(',').map(&:strip).reject(&:empty?)
           end
         end # Default
       end # Http

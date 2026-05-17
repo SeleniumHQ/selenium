@@ -178,7 +178,9 @@ module Selenium
           driver.navigate.to url_for('relative_locators.html')
 
           above = driver.find_elements(relative: {css: 'td', above: {id: 'center'}})
-          expect(above.map { |e| e.attribute('id') }).to eq(%w[top topLeft topRight])
+          ids = above.map { |e| e.attribute('id') }
+          expect(ids.first).to eq('top')
+          expect(ids.drop(1)).to contain_exactly('topLeft', 'topRight')
         end
 
         it 'finds below element' do

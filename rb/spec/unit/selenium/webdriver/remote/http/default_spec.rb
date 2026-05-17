@@ -68,6 +68,28 @@ module Selenium
             expect { client.send :http }.to raise_error(Error::WebDriverError)
           end
 
+          it 'supports duck-typed proxies with http only' do
+            client.proxy = Struct.new(:http).new('http://proxy.org:8080')
+
+            http = client.send :http
+            expect(http).to be_proxy
+            expect(http.proxy_address).to eq('proxy.org')
+          end
+
+          it 'supports duck-typed proxies without no_proxy_list' do
+            client.proxy = Struct.new(:http, :no_proxy).new('http://proxy.org:8080', 'foo.com, example.com')
+
+            http = client.send :http
+            expect(http).not_to be_proxy
+          end
+
+          it 'supports duck-typed proxies with no_proxy arrays' do
+            client.proxy = Struct.new(:http, :no_proxy).new('http://proxy.org:8080', %w[foo.com example.com])
+
+            http = client.send :http
+            expect(http).not_to be_proxy
+          end
+
           %w[http_proxy HTTP_PROXY].each do |proxy_var|
             it "honors the #{proxy_var} environment variable" do
               with_env(proxy_var => 'http://proxy.org:8080') do

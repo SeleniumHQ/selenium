@@ -51,6 +51,8 @@ RSpec.configure do |c|
   c.include(WebDriver::SpecSupport::Helpers)
 
   c.before(:suite) do
+    # Unit specs load WebMock; integration specs need real HTTP for drivers and downloads.
+    WebMock.allow_net_connect! if defined?(WebMock)
     GlobalTestEnv.ensure_grid if GlobalTestEnv.driver == :remote && ENV['WD_REMOTE_URL'].nil?
     GlobalTestEnv.print_env
   end

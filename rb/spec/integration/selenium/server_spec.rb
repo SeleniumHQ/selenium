@@ -34,10 +34,11 @@ module Selenium
     end
 
     it 'downloads specified version' do
-      @location = described_class.download('4.9.0')
+      version = described_class.latest
+      @location = described_class.download(version)
 
       expect(File.exist?(@location)).to be true
-      expect(@location).to eq('selenium-server-4.9.0.jar')
+      expect(@location).to eq("selenium-server-#{version}.jar")
     end
 
     it 'starts and stops server' do
@@ -63,7 +64,7 @@ module Selenium
 
     # Ruby Selenium is tagged one version ahead of release to support nightly gem
     def current_version
-      selenium_version = Gem::Version.new(Selenium::WebDriver::VERSION).segments
+      selenium_version = Gem::Version.new(Selenium::WebDriver::VERSION).segments.take(3)
       selenium_version[1] = selenium_version[1] - 1
       selenium_version.join('.')
     end
