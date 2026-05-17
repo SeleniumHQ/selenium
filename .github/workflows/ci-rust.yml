@@ -242,9 +242,10 @@ jobs:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           repository: SeleniumHQ/selenium_manager_artifacts
       - name: "Download Artifacts"
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: artifacts
+          digest-mismatch: warn
       - name: "Prepare and Commit"
         run: |
           linux_sha=$(shasum -a 256 artifacts/selenium-manager-linux/selenium-manager-linux | awk '{print $1}')

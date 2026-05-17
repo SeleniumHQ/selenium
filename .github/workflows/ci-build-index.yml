@@ -24,9 +24,10 @@ jobs:
     permissions: {}
     steps:
       - name: Download index
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: bazel-test-file-index
+          digest-mismatch: warn
       - name: Cache index
         uses: actions/cache/save@v5
         with:

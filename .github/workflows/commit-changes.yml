@@ -46,9 +46,10 @@ jobs:
           token: ${{ secrets.SELENIUM_CI_TOKEN || github.token }}
       - name: Download patch
         id: download
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.artifact-name }}
+          digest-mismatch: warn
         continue-on-error: true
       - name: Apply and commit
         id: commit

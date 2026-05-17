@@ -168,10 +168,11 @@ jobs:
       actions: read
     steps:
       - name: Download Python distributions
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: pypi-distributions
           path: dist/
+          digest-mismatch: warn
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
 
@@ -194,17 +195,19 @@ jobs:
           persist-credentials: false
       - name: Download all release packages
         if: needs.parse-tag.outputs.language == 'all'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: release-packages-*
           merge-multiple: true
           path: "build/dist/"
+          digest-mismatch: warn
       - name: Download release packages
         if: needs.parse-tag.outputs.language != 'all'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: release-packages-${{ needs.parse-tag.outputs.language }}
           path: "build/dist/"
+          digest-mismatch: warn
       - name: Delete nightly release and tag
         if: needs.parse-tag.outputs.language == 'all'
         env:

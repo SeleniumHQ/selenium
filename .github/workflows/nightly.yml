@@ -86,10 +86,11 @@ jobs:
       contents: write
     steps:
       - name: Download grid packages
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: nightly-grid
           path: build/dist
+          digest-mismatch: warn
       - name: Create nightly release
         uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
