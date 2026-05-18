@@ -111,12 +111,11 @@ task :docs_generate do
   Bazel.execute('run', [], '//javascript/selenium-webdriver:docs')
 end
 
-desc 'Install Node package locally via npm link'
+desc 'Install Node package locally via pnpm link'
 task :install do
   Bazel.execute('build', [], '//javascript/selenium-webdriver')
-  Dir.chdir('bazel-bin/javascript/selenium-webdriver/selenium-webdriver') do
-    sh 'npm', 'link'
-  end
+  pkg_dir = File.expand_path('bazel-bin/javascript/selenium-webdriver/selenium-webdriver')
+  Bazel.execute('run', ['--', '--dir', pkg_dir, 'link', '--global'], '@pnpm//:pnpm')
 end
 
 desc 'Update JavaScript changelog'
