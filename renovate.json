@@ -128,6 +128,12 @@
       "matchPackageNames": ["Handlebars.Net", "Humanizer.Core"],
       "matchUpdateTypes": ["major"],
       "enabled": false
+    },
+    {
+      "description": "llvm and rules_rs upgrades blocked pending Rust build work in https://github.com/SeleniumHQ/selenium/pull/17427.",
+      "matchManagers": ["bazel-module"],
+      "matchPackageNames": ["llvm", "rules_rs"],
+      "enabled": false
     }
   ]
 }
