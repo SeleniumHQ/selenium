@@ -50,12 +50,6 @@ task :update do
   Rake::Task['node:pin'].invoke
 end
 
-desc 'Upgrade JavaScript dependency declarations and refresh lockfile'
-task :upgrade do
-  Bazel.execute('run', ['--', 'update', '-r', '--latest', '--dir', Dir.pwd], '@pnpm//:pnpm')
-  Rake::Task['node:pin'].invoke
-end
-
 desc 'Validate Node release credentials'
 task :check_credentials do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')

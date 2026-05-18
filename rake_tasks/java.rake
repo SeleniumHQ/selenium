@@ -324,9 +324,6 @@ rescue StandardError => e
   nil
 end
 
-desc 'Upgrade Maven dependency declarations'
-task upgrade: :update
-
 desc 'Pin Maven dependencies'
 task :pin do
   args = ['--repo_env=RULES_JVM_EXTERNAL_REPIN=1']
