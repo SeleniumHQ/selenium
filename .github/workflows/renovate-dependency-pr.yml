@@ -13,7 +13,7 @@ on:
         type: string
     secrets:
       SELENIUM_CI_TOKEN:
-        required: false
+        required: true
 
 permissions:
   actions: read
@@ -31,13 +31,17 @@ jobs:
       - name: Detect branch
         id: detect
         env:
-          GH_TOKEN: ${{ github.token }}
+          KIND: ${{ inputs.kind }}
         run: |
-          case "${{ inputs.kind }}" in
+          case "$KIND" in
             minor|major) ;;
             *) echo "::error::kind must be minor or major"; exit 1 ;;
           esac
-          echo "exists=$(gh api repos/${{ github.repository }}/branches/renovate/${{ inputs.kind }}-eval --silent && echo "true" || echo "false")" >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code --heads origin "renovate/${KIND}-eval" >/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
 
   evaluate:
     name: Evaluate ${{ inputs.kind }} dependencies
@@ -51,6 +55,7 @@ jobs:
       run: |
         ./go all:pin
         ./go rust:pin
+        ./go format
         ./scripts/github-actions/ci-build.sh
       artifact-name: ${{ inputs.kind }}-dependency-pins
 

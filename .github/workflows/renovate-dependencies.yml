@@ -20,8 +20,22 @@ permissions:
   pull-requests: write
 
 jobs:
+  reset-update-branch:
+    name: Reset temp/bazel-updates to ${{ inputs.base-ref }}
+    if: github.event.repository.fork == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout base ref
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.base-ref }}
+          token: ${{ secrets.SELENIUM_CI_TOKEN || github.token }}
+      - name: Force-push to temp/bazel-updates
+        run: git push --force origin "HEAD:temp/bazel-updates"
+
   prepare-updates:
     name: Prepare Bazel updates
+    needs: reset-update-branch
     if: github.event.repository.fork == false
     uses: ./.github/workflows/bazel.yml
     with:
