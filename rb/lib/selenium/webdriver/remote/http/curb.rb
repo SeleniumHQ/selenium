@@ -26,20 +26,18 @@ module Selenium
         #
         # An alternative to the default Net::HTTP client.
         #
-        # This can be used for the Firefox and Remote drivers if you have Curb
-        # installed.
-        #
-        # @example Using Curb
-        #   require 'selenium/webdriver/remote/http/curb'
-        #   include Selenium
-        #
-        #   driver = WebDriver.for :firefox, :http_client => WebDriver::Remote::Http::Curb.new
+        # @deprecated Subclass {Selenium::WebDriver::Remote::Http::Common} to implement a custom HTTP client.
         #
 
         class Curb < Common
           attr_accessor :timeout
 
           def initialize(timeout: nil)
+            WebDriver.logger.deprecate(
+              'Selenium::WebDriver::Remote::Http::Curb',
+              'a custom subclass of Selenium::WebDriver::Remote::Http::Common',
+              id: :curb
+            )
             @timeout = timeout
             super()
           end

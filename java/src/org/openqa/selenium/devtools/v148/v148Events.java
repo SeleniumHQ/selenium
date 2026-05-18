@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v145;
+package org.openqa.selenium.devtools.v148;
 
 import java.time.Instant;
 import java.util.List;
@@ -28,15 +28,15 @@ import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.events.ConsoleEvent;
 import org.openqa.selenium.devtools.idealized.Events;
 import org.openqa.selenium.devtools.idealized.runtime.model.RemoteObject;
-import org.openqa.selenium.devtools.v145.runtime.Runtime;
-import org.openqa.selenium.devtools.v145.runtime.model.ConsoleAPICalled;
-import org.openqa.selenium.devtools.v145.runtime.model.ExceptionDetails;
-import org.openqa.selenium.devtools.v145.runtime.model.ExceptionThrown;
-import org.openqa.selenium.devtools.v145.runtime.model.StackTrace;
+import org.openqa.selenium.devtools.v148.runtime.Runtime;
+import org.openqa.selenium.devtools.v148.runtime.model.ConsoleAPICalled;
+import org.openqa.selenium.devtools.v148.runtime.model.ExceptionDetails;
+import org.openqa.selenium.devtools.v148.runtime.model.ExceptionThrown;
+import org.openqa.selenium.devtools.v148.runtime.model.StackTrace;
 
-public class v145Events extends Events<ConsoleAPICalled, ExceptionThrown> {
+public class v148Events extends Events<ConsoleAPICalled, ExceptionThrown> {
 
-  public v145Events(DevTools devtools) {
+  public v148Events(DevTools devtools) {
     super(devtools);
   }
 
@@ -77,7 +77,7 @@ public class v145Events extends Events<ConsoleAPICalled, ExceptionThrown> {
   protected JavascriptException toJsException(ExceptionThrown event) {
     ExceptionDetails details = event.getExceptionDetails();
     Optional<StackTrace> maybeTrace = details.getStackTrace();
-    Optional<org.openqa.selenium.devtools.v145.runtime.model.RemoteObject> maybeException =
+    Optional<org.openqa.selenium.devtools.v148.runtime.model.RemoteObject> maybeException =
         details.getException();
 
     String message =

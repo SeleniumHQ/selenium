@@ -93,16 +93,32 @@ jobs:
       contents: write
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
+      - name: Generate release notes against previous minor release
+        env:
+          TAG: ${{ needs.parse-tag.outputs.tag }}
+          SHA: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+        run: |
+          PREV=$(gh release list --exclude-drafts --json tagName \
+            -q 'map(.tagName | select(test("^selenium-[0-9]+\\.[0-9]+\\.0$")))[0]')
+          echo "Previous release tag: $PREV"
+          {
+            cat scripts/github-actions/release_header.md
+            echo ""
+            gh api -X POST "/repos/${{ github.repository }}/releases/generate-notes" \
+              -f tag_name="$TAG" \
+              -f previous_tag_name="$PREV" \
+              -f target_commitish="$SHA" \
+              --jq .body
+          } > release_body.md
       - name: Create draft GitHub release
         uses: ncipollo/release-action@v1
         with:
           draft: true
           allowUpdates: true
-          bodyFile: "scripts/github-actions/release_header.md"
-          generateReleaseNotes: true
+          bodyFile: "release_body.md"
           name: "Selenium ${{ needs.parse-tag.outputs.version }}"
           tag: "${{ needs.parse-tag.outputs.tag }}"
           commit: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
@@ -138,7 +154,7 @@ jobs:
       artifact-name: pypi-distributions
       artifact-path: |
         bazel-bin/py/selenium-*.whl
-        bazel-bin/py/selenium-*.tar.gz
+        bazel-bin/py/selenium-[0-9]*.tar.gz
     secrets: inherit
 
   publish-python:
@@ -152,7 +168,7 @@ jobs:
       actions: read
     steps:
       - name: Download Python distributions
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: pypi-distributions
           path: dist/
@@ -173,19 +189,19 @@ jobs:
     steps:
       - name: Checkout repo
         if: needs.parse-tag.outputs.language == 'all'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Download all release packages
         if: needs.parse-tag.outputs.language == 'all'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           pattern: release-packages-*
           merge-multiple: true
           path: "build/dist/"
       - name: Download release packages
         if: needs.parse-tag.outputs.language != 'all'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: release-packages-${{ needs.parse-tag.outputs.language }}
           path: "build/dist/"
@@ -272,9 +288,31 @@ jobs:
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
+  reset-dependencies:
+    name: Update Lockfiles for Nightly
+    needs: [parse-tag, update-version]
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Reset Dependencies
+      run: ./go ${{ needs.parse-tag.outputs.language }}:update${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:update' || '' }}
+      artifact-name: version-reset-deps
+
+  commit-dependencies:
+    name: Push Nightly Lockfiles
+    needs: [parse-tag, reset-dependencies]
+    permissions:
+      contents: write
+      actions: read
+    uses: ./.github/workflows/commit-changes.yml
+    with:
+      artifact-name: version-reset-deps
+      commit-message: "[build] Update lockfiles for nightly versions"
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+
   nightly:
     name: Publish Nightly Packages
-    needs: [parse-tag, update-version]
+    needs: [parse-tag, commit-dependencies]
     permissions:
       contents: write
       packages: write
@@ -293,10 +331,10 @@ jobs:
   on-release-failure:
     name: On Release Failure
     runs-on: ubuntu-latest
-    needs: [publish, publish-python, docs, create-language-tag, github-release-draft, github-release-publish, update-version, nightly, mirror, verify]
+    needs: [publish, publish-python, docs, create-language-tag, github-release-draft, github-release-publish, update-version, reset-dependencies, commit-dependencies, nightly, mirror, verify]
     if: failure()
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
@@ -313,6 +351,7 @@ jobs:
             • Docs Updated: ${{ needs.docs.result }}
             • GitHub Release Published: ${{ needs.github-release-publish.result }}
             • Nightly Version Updated: ${{ needs.update-version.result }}
+            • Nightly Lockfiles Updated: ${{ needs.commit-dependencies.result }}
             • Nightly Packages: ${{ needs.nightly.result }}
             • Mirror Updated: ${{ needs.mirror.result }}
             • Packages Verified: ${{ needs.verify.result }}

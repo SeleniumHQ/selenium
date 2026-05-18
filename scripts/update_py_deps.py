@@ -6,7 +6,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-# Updates py/requirements.txt with latest compatible versions using pip
+# Updates pinned repo tooling dependencies in py/requirements.txt using pip.
+# Published runtime dependency constraints are managed in py/pyproject.toml.
 # Run with: bazel run //scripts:update_py_deps
 
 
@@ -17,7 +18,7 @@ def main():
     if not requirements_file.exists():
         raise FileNotFoundError(f"{requirements_file} not found")
 
-    print(f"Checking {requirements_file}")
+    print(f"Checking repo tooling requirements in {requirements_file}")
 
     # Parse current requirements preserving original format
     current_lines = requirements_file.read_text().strip().split("\n")
@@ -26,7 +27,7 @@ def main():
         line = line.strip()
         if line and not line.startswith("#") and "==" in line:
             name_with_extras, version = line.split("==", 1)
-            # Normalize: remove extras for pip queries
+            # Normalize by removing extras for pip queries.
             name_normalized = name_with_extras.split("[")[0].lower()
             packages.append((line, name_with_extras, name_normalized))
 
@@ -50,7 +51,7 @@ def main():
             capture_output=True,
         )
 
-        # Install packages (with extras) to let pip resolve versions
+        # Install packages with extras to let pip resolve versions.
         install_names = [p[1] for p in packages]  # name_with_extras
         print(f"Installing {len(install_names)} packages...")
         result = subprocess.run(
@@ -85,7 +86,7 @@ def main():
                 updated_lines.append(orig_line)
 
         if not updates:
-            print("\nAll packages are up to date!")
+            print("\nAll repo tooling requirements are up to date!")
             return
 
         # Rebuild file preserving non-package lines

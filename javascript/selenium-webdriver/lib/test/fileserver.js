@@ -147,7 +147,7 @@ app
   .use(DATA_ROOT, serveIndex(dataDirectory), express.static(dataDirectory))
   .get(Path.ECHO, sendEcho)
   .get(Path.PAGE, sendInifinitePage)
-  .get(Path.PAGE + '/*', sendInifinitePage)
+  .get(Path.PAGE + '/*path', sendInifinitePage)
   .get(Path.REDIRECT, redirectToResultPage)
   .get(Path.SLEEP, sendDelayedResponse)
   .get(Path.BASIC_AUTH, sendBasicAuth)

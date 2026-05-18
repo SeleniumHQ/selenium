@@ -87,10 +87,7 @@ import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.Zip;
-import org.openqa.selenium.logging.LocalLogs;
-import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.Logs;
-import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
@@ -141,9 +138,6 @@ public class RemoteWebDriver
 
   private final Logs remoteLogs = new RemoteLogs(executeMethod);
 
-  @SuppressWarnings("deprecation")
-  private LocalLogs localLogs;
-
   @Nullable private Script remoteScript;
 
   @Nullable private Network remoteNetwork;
@@ -152,7 +146,6 @@ public class RemoteWebDriver
   @SuppressWarnings("DataFlowIssue")
   protected RemoteWebDriver() {
     this.capabilities = new ImmutableCapabilities();
-    this.localLogs = initLocalLogs();
     this.clientConfig = ClientConfig.defaultConfig();
     this.executor = null;
   }
@@ -197,7 +190,6 @@ public class RemoteWebDriver
         clientConfig);
   }
 
-  @SuppressWarnings("deprecation")
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
     this(executor, capabilities, ClientConfig.defaultConfig());
   }
@@ -207,11 +199,6 @@ public class RemoteWebDriver
     this.clientConfig = Require.nonNull("Client config", clientConfig);
     this.executor = Require.nonNull("Command executor", executor);
     this.capabilities = requireNonNullElseGet(capabilities, () -> new ImmutableCapabilities());
-    this.localLogs = initLocalLogs();
-
-    if (executor instanceof NeedsLocalLogs) {
-      ((NeedsLocalLogs) executor).setLocalLogs(localLogs);
-    }
 
     try {
       startSession(capabilities);
@@ -253,18 +240,6 @@ public class RemoteWebDriver
   @Beta
   public static RemoteWebDriverBuilder builder() {
     return new RemoteWebDriverBuilder();
-  }
-
-  @SuppressWarnings("deprecation")
-  private static LocalLogs initLocalLogs() {
-    LOG.addHandler(LoggingHandler.getInstance());
-
-    Set<String> logTypesToIgnore = Set.of();
-
-    LocalLogs performanceLogger = LocalLogs.getStoringLoggerInstance(logTypesToIgnore);
-    LocalLogs clientLogs =
-        LocalLogs.getHandlerBasedLoggerInstance(LoggingHandler.getInstance(), logTypesToIgnore);
-    return LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
   }
 
   @Nullable

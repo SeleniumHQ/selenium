@@ -18,8 +18,18 @@ on:
         required: true
 
 jobs:
+  needs-authorization:
+    name: Check Authorization
+    runs-on: ubuntu-latest
+    outputs:
+      required: ${{ !contains(fromJSON('["AutomatedTester","jimevans","p0deje","titusfortner","bonigarcia","diemol","pujagani","harsha509"]'), github.actor) }}
+    steps:
+      - run: echo "Triggered by ${{ github.actor }}"
+
   notify:
     name: Send Notification
+    needs: needs-authorization
+    if: needs.needs-authorization.outputs.required == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Slack Notification
@@ -30,13 +40,14 @@ jobs:
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: ${{ inputs.title }}
-          SLACK_MESSAGE: ${{ inputs.message }}
+          SLACK_MESSAGE: "${{ inputs.message }} (requested by @${{ github.actor }})"
           MSG_MINIMAL: actions url
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   authorize:
     name: Authorize
-    needs: notify
+    needs: [needs-authorization, notify]
+    if: needs.needs-authorization.outputs.required == 'true'
     runs-on: ubuntu-latest
     environment: production
     steps:

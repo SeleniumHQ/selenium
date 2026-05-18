@@ -15,15 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.logging;
+package org.openqa.selenium.devtools.v148;
 
-/**
- * Marker interface for executors that need local logs.
- *
- * @deprecated logging is not in the W3C WebDriver spec and is no longer supported. This class will
- *     be removed in a future release.
- */
-@Deprecated(forRemoval = true)
-public interface NeedsLocalLogs {
-  void setLocalLogs(LocalLogs logs);
+import com.google.auto.service.AutoService;
+import org.openqa.selenium.devtools.CdpInfo;
+
+@AutoService(CdpInfo.class)
+public class v148CdpInfo extends CdpInfo {
+
+  public v148CdpInfo() {
+    super(148, v148Domains::new);
+  }
 }

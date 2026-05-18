@@ -594,6 +594,9 @@ public class CdpClientGenerator {
     public String getFieldName() {
       if (Objects.equals(name, "this")) {
         return "_this";
+      } else if (Objects.equals(name, "input")) {
+        // Avoid shadowing the JsonInput parameter named "input" in generated fromJson methods.
+        return "_input";
       } else {
         return name;
       }

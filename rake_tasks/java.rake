@@ -9,7 +9,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v146:v146.publish
   //java/src/org/openqa/selenium/devtools/v147:v147.publish
-  //java/src/org/openqa/selenium/devtools/v145:v145.publish
+  //java/src/org/openqa/selenium/devtools/v148:v148.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
   //java/src/org/openqa/selenium/grid/node/kubernetes:kubernetes.publish
@@ -229,8 +229,7 @@ desc 'Install jars to local m2 directory'
 task :install do
   java_release_targets.each do |p|
     Bazel.execute('run',
-                  ['--stamp',
-                   '--define',
+                  ['--define',
                    "maven_repo=file://#{Dir.home}/.m2/repository",
                    '--define',
                    'gpg_sign=false'],
@@ -293,10 +292,12 @@ task :update do
 
   versions = output.scan(/(\S+) \[\S+ -> (\S+)\]/).to_h
   versions.each do |artifact, version|
-    if artifact.match?('graphql')
+    if artifact.match?('graphql') && version.match?(/\A(\d{6}-|0\.0\.0-)/)
+      # Maven Central indexes non-stable date-based artifacts that sort as "latest" which breaks for graphql
       # https://github.com/graphql-java/graphql-java/discussions/3187
-      puts 'WARNING — Cannot automatically update graphql'
-      next
+      # Fall back to calling maven directly for this
+      version = maven_stable_release(artifact)
+      next if version.nil?
     end
     content.sub!(/#{Regexp.escape(artifact)}:([\d.-]+(?:[-.]?[A-Za-z0-9]+)*)/, "#{artifact}:#{version}")
   end
@@ -304,6 +305,23 @@ task :update do
 
   Rake::Task['java:pin'].reenable
   Rake::Task['java:pin'].invoke
+end
+
+def maven_stable_release(artifact)
+  require 'rexml/document'
+  group_id, artifact_id = artifact.split(':', 2)
+  group_path = group_id.tr('.', '/')
+  uri = URI("https://repo1.maven.org/maven2/#{group_path}/#{artifact_id}/maven-metadata.xml")
+  xml = Net::HTTP.start(uri.host, uri.port, use_ssl: true, open_timeout: 5, read_timeout: 10) do |http|
+    http.get(uri.request_uri).body
+  end
+  doc = REXML::Document.new(xml)
+  versions = doc.elements.to_a('metadata/versioning/versions/version').map(&:text)
+  stable = versions.grep(/\A\d+\.\d+(\.\d+)*\z/)
+  stable.max_by { |v| Gem::Version.new(v) }
+rescue StandardError => e
+  puts "WARNING — Failed to fetch stable release for #{artifact}: #{e.message}"
+  nil
 end
 
 desc 'Pin Maven dependencies'

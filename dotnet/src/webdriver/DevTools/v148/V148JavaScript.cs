@@ -1,4 +1,4 @@
-// <copyright file="V145JavaScript.cs" company="Selenium Committers">
+// <copyright file="V148JavaScript.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,29 +17,31 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools.V145.Page;
-using OpenQA.Selenium.DevTools.V145.Runtime;
+using OpenQA.Selenium.DevTools.V148.Page;
+using OpenQA.Selenium.DevTools.V148.Runtime;
 
-namespace OpenQA.Selenium.DevTools.V145;
+namespace OpenQA.Selenium.DevTools.V148;
 
 /// <summary>
-/// Class containing the JavaScript implementation for version 145 of the DevTools Protocol.
+/// Class containing the JavaScript implementation for version 148 of the DevTools Protocol.
 /// </summary>
-public class V145JavaScript : JavaScript
+public class V148JavaScript : JavaScript
 {
     private readonly RuntimeAdapter runtime;
     private readonly PageAdapter page;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="V145JavaScript"/> class.
+    /// Initializes a new instance of the <see cref="V148JavaScript"/> class.
     /// </summary>
     /// <param name="runtime">The DevTools Protocol adapter for the Runtime domain.</param>
     /// <param name="page">The DevTools Protocol adapter for the Page domain.</param>
     /// <exception cref="ArgumentNullException">If <paramref name="runtime"/> or <paramref name="page"/> are <see langword="null"/>.</exception>
-    public V145JavaScript(RuntimeAdapter runtime, PageAdapter page)
+    public V148JavaScript(RuntimeAdapter runtime, PageAdapter page)
     {
-        this.runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
-        this.page = page ?? throw new ArgumentNullException(nameof(page));
+        ArgumentNullException.ThrowIfNull(runtime);
+        ArgumentNullException.ThrowIfNull(page);
+        this.runtime = runtime;
+        this.page = page;
         this.runtime.BindingCalled += OnRuntimeBindingCalled;
         this.runtime.ConsoleAPICalled += OnRuntimeConsoleApiCalled;
         this.runtime.ExceptionThrown += OnRuntimeExceptionThrown;

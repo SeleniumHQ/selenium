@@ -55,8 +55,8 @@ under the License.
       assertAttributeEquals(assert, null, byId('checky'), 'never_there');
     });
 
-    QUnit.test('should return null for missing class attribute', function (assert) {
-      assertAttributeEquals(assert, null, byId('no-class'), 'class');
+    QUnit.test('should return empty string for element with no class attribute', function (assert) {
+      assertAttributeEquals(assert, '', byId('no-class'), 'class');
     });
 
     QUnit.test('should return an empty string when attribute value is empty', function (assert) {
