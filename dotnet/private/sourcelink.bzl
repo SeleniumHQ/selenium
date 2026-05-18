@@ -33,10 +33,9 @@ def _compile_action(ctx, tfm):
     )
     sourcelink_json = _generate_sourcelink_json(ctx)
 
-    # Map the Bazel execution root to a stable prefix so that builds
-    # are byte-for-byte reproducible regardless of sandbox path.
-    exec_root = ctx.bin_dir.path.split("/bin/")[0] + "/"
-    pathmap = "/pathmap:{}=/_/".format(exec_root)
+    # Map Bazel output paths to a stable prefix so that generated file references
+    # (e.g. sourcelink.json) don't vary across configurations or platforms.
+    pathmap = "/pathmap:{}=/_/".format(ctx.bin_dir.path)
 
     return AssemblyAction(
         ctx.actions,
