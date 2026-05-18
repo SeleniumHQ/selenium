@@ -32,7 +32,7 @@ bazel_dep(name = "rules_dotnet", version = "0.21.5")
 
 # See below for actual version used
 bazel_dep(name = "rules_java", version = "9.6.1")
-bazel_dep(name = "rules_jvm_external", version = "6.10")
+bazel_dep(name = "rules_jvm_external", version = "7.0")
 bazel_dep(name = "rules_multitool", version = "1.11.1")
 bazel_dep(name = "rules_nodejs", version = "6.7.4")
 bazel_dep(name = "rules_oci", version = "2.3.0")
@@ -42,13 +42,11 @@ bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.26.0")
 bazel_dep(name = "rules_rs", version = "0.0.61")
 
-# Use latest rules_jvm_external for Bazel 9 compatibility
 single_version_override(
     module_name = "rules_jvm_external",
     patch_strip = 1,
     patches = [
         "//third_party/bazel:rules_jvm_external_javadoc.patch",
-        "//third_party/bazel:rules_jvm_external_maven_publisher.patch",
     ],
 )
 
