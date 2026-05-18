@@ -21,10 +21,6 @@ on:
         required: false
         type: string
         default: ''
-    outputs:
-      changes-committed:
-        description: Whether changes were committed and pushed
-        value: ${{ jobs.commit.outputs.committed }}
     secrets:
       SELENIUM_CI_TOKEN:
         required: false
@@ -33,8 +29,6 @@ jobs:
   commit:
     name: Commit Changes
     runs-on: ubuntu-latest
-    outputs:
-      committed: ${{ steps.commit.outputs.committed }}
     permissions:
       contents: write
       actions: read
@@ -45,30 +39,24 @@ jobs:
           ref: ${{ inputs.ref || github.ref }}
           token: ${{ secrets.SELENIUM_CI_TOKEN || github.token }}
       - name: Download patch
-        id: download
         uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.artifact-name }}
         continue-on-error: true
       - name: Apply and commit
-        id: commit
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
-          committed=false
-          if [ -s changes.patch ]; then
-            git apply --index changes.patch
-            git commit -m "$COMMIT_MESSAGE"
-            committed=true
+          if [ ! -s changes.patch ]; then
+            exit 0
           fi
-          if [ "$committed" = true ]; then
-            if [ -n "$PUSH_BRANCH" ]; then
-              git push --force origin HEAD:"$PUSH_BRANCH"
-            else
-              git push
-            fi
+          git apply --index changes.patch
+          git commit -m "$COMMIT_MESSAGE"
+          if [ -n "$PUSH_BRANCH" ]; then
+            git push --force origin HEAD:"$PUSH_BRANCH"
+          else
+            git push
           fi
-          echo "committed=$committed" >> "$GITHUB_OUTPUT"
         env:
           COMMIT_MESSAGE: ${{ inputs.commit-message }}
           PUSH_BRANCH: ${{ inputs.push-branch }}
