@@ -17,7 +17,7 @@ on:
         type: string
         default: ''
       push-branch:
-        description: Branch to push to (defaults to current branch, uses force push)
+        description: Branch to push to (defaults to current branch); always force-pushes
         required: false
         type: string
         default: ''
@@ -47,16 +47,13 @@ jobs:
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
-          if [ ! -s changes.patch ]; then
-            exit 0
-          fi
-          git apply --index changes.patch
-          git commit -m "$COMMIT_MESSAGE"
-          if [ -n "$PUSH_BRANCH" ]; then
+          if [ -s changes.patch ]; then
+            git apply --index changes.patch
+            git commit -m "$COMMIT_MESSAGE"
             git push --force origin HEAD:"$PUSH_BRANCH"
           else
-            git push
+            echo "::notice::No changes.patch found or patch is empty; skipping commit and push."
           fi
         env:
           COMMIT_MESSAGE: ${{ inputs.commit-message }}
-          PUSH_BRANCH: ${{ inputs.push-branch }}
+          PUSH_BRANCH: ${{ inputs.push-branch || github.ref_name }}
