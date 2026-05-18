@@ -31,11 +31,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby-version: 3.3.9
+          - ruby-version: 3.3.11
             os: ubuntu
-          - ruby-version: 3.3.9
+          - ruby-version: 3.3.11
             os: windows
-          - ruby-version: 3.3.9
+          - ruby-version: 3.3.11
             os: macos
           - ruby-version: 4.0.4
             os: ubuntu
