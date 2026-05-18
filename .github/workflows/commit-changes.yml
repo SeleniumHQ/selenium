@@ -56,4 +56,4 @@ jobs:
           fi
         env:
           COMMIT_MESSAGE: ${{ inputs.commit-message }}
-          PUSH_BRANCH: ${{ inputs.push-branch || github.ref_name }}
+          PUSH_BRANCH: ${{ inputs.push-branch || inputs.ref || github.ref_name }}
