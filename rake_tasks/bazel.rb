@@ -25,8 +25,8 @@ module Bazel
 
     puts "Executing: #{cmd.join(' ')}"
     if windows?
-      cmd += ['2>&1']
-      cmd_line = cmd.join(' ')
+      quoted = cmd.map { |a| a.match?(/[\s"]/) ? %("#{a.gsub('"', '\\"')}") : a }
+      cmd_line = "#{quoted.join(' ')} 2>&1"
       cmd_out = `#{cmd_line}`.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
       puts cmd_out if verbose
       cmd_exit_code = $CHILD_STATUS
