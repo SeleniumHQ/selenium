@@ -1,5 +1,5 @@
 load("//common:defs.bzl", "copy_file")
-load("//dotnet:defs.bzl", "csharp_library", "devtools_version_targets", "generated_assembly_info", "generated_resource_utilities", "nuget_pack", "nuget_package")
+load("//dotnet:defs.bzl", "csharp_sourcelink_library", "devtools_version_targets", "generated_assembly_info", "generated_resource_utilities", "nuget_pack", "nuget_package")
 load(
     "//dotnet:version.bzl",
     "ASSEMBLY_COMPANY",
@@ -41,7 +41,7 @@ generated_resource_utilities(
     },
 )
 
-csharp_library(
+csharp_sourcelink_library(
     name = "webdriver-net462",
     srcs = [
         ":assembly-info",
@@ -72,7 +72,7 @@ csharp_library(
     ],
 )
 
-csharp_library(
+csharp_sourcelink_library(
     name = "webdriver-netstandard2.0",
     srcs = [
         ":assembly-info",
@@ -104,7 +104,7 @@ csharp_library(
     ],
 )
 
-csharp_library(
+csharp_sourcelink_library(
     name = "webdriver-net8.0",
     srcs = [
         ":assembly-info",

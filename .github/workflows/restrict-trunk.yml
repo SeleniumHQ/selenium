@@ -56,7 +56,7 @@ jobs:
       GH_REPO: ${{ github.repository }}
     steps:
       - name: Checkout ruleset definitions
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           sparse-checkout: .github/rulesets
           sparse-checkout-cone-mode: false

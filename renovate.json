@@ -6,30 +6,50 @@
   "dependencyDashboardLabels": ["B-dependencies"],
   "dependencyDashboardTitle": "Dependency Dashboard",
   "dependencyDashboardHeader": "Renovate is configured to list discovered dependency updates here first. Do not approve dashboard items until the update scope has been reviewed.",
-  "prCreation": "approval",
   "automerge": false,
   "skipArtifactsUpdate": true,
   "lockFileMaintenance": {
     "enabled": false
   },
   "labels": ["B-dependencies"],
+  "ignorePaths": ["**/requirements_lock.txt", "renovate.json"],
+  "constraintsFiltering": "strict",
+  "constraints": {
+    "node": "22",
+    "python": "3.10",
+    "ruby": "3.3"
+  },
   "packageRules": [
     {
-      "description": "Treat Renovate as the declaration upgrade mechanism; repo update/pin tasks own resolved lockfile changes.",
-      "matchManagers": ["bundler", "cargo", "npm", "pep621", "poetry"],
-      "rangeStrategy": "bump"
-    },
-    {
-      "description": "Do not propose runtime, package-manager, or Bazel toolchain upgrades in the dashboard baseline.",
-      "matchManagers": ["bazelisk", "node-version", "npm", "nuget", "ruby-version"],
-      "matchPackageNames": ["bazel", "node", "@types/node", "pnpm", "paket", "ruby"],
+      "description": "Treat Renovate config language constraints as Selenium support policy, not update targets.",
+      "matchManagers": ["renovate-config", "renovate-config-presets"],
+      "matchDatasources": ["node-version", "python-version", "ruby-version"],
+      "matchPackageNames": ["node", "python", "ruby"],
       "enabled": false
     },
     {
-      "description": "Do not propose Bazel registry module upgrades for build rules/tooling in the dashboard baseline.",
-      "matchManagers": ["bazel-module"],
-      "matchDatasources": ["bazel"],
-      "enabled": false
+      "description": "Only propose Node.js runtime updates within the supported Node 22 line.",
+      "matchManagers": ["node-version", "npm", "github-actions"],
+      "matchPackageNames": ["node"],
+      "allowedVersions": "<23"
+    },
+    {
+      "description": "Only propose Node.js type definition updates within the supported Node 22 line.",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["@types/node"],
+      "allowedVersions": "<23"
+    },
+    {
+      "description": "Only propose Python runtime updates within the supported Python 3.10 line.",
+      "matchDatasources": ["python-version"],
+      "matchPackageNames": ["python"],
+      "allowedVersions": "<3.11"
+    },
+    {
+      "description": "Only propose Ruby runtime updates within the supported Ruby 3.3 line.",
+      "matchManagers": ["ruby-version"],
+      "matchPackageNames": ["ruby"],
+      "allowedVersions": "<3.4"
     },
     {
       "description": "Do not track Docker image references in this repository.",
@@ -41,6 +61,11 @@
       "matchFileNames": ["javascript/grid-ui/package.json"],
       "matchJsonata": ["$not($exists(vulnerabilityFixVersion))"],
       "enabled": false
+    },
+    {
+      "description": "Sphinx 8.x requires docutils<0.22 and Sphinx 9 needs Python >=3.11.",
+      "matchPackageNames": ["docutils"],
+      "allowedVersions": "<0.22"
     },
     {
       "description": "Group Bazel and Bazel module dependency declarations in the dashboard.",
@@ -83,6 +108,32 @@
       "description": "Group .NET package declarations and tools in the dashboard.",
       "matchManagers": ["nuget"],
       "dependencyDashboardCategory": ".NET"
+    },
+    {
+      "description": "Pin to v8 line; major bumps change shipped Selenium.WebDriver.dll assembly refs and force the new floor onto every NuGet consumer.",
+      "matchManagers": ["nuget"],
+      "matchPackageNames": [
+        "Microsoft.Bcl.AsyncInterfaces",
+        "Microsoft.Extensions.DependencyInjection",
+        "Microsoft.Extensions.DependencyInjection.Abstractions",
+        "System.Text.Json",
+        "System.Threading.Channels"
+      ],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "DevTools generator deps; major bumps risk renaming public Selenium.WebDriver.DevTools.* types on regeneration. Tracked in https://github.com/SeleniumHQ/selenium/issues/17489.",
+      "matchManagers": ["nuget"],
+      "matchPackageNames": ["Handlebars.Net", "Humanizer.Core"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "llvm and rules_rs upgrades blocked pending Rust build work in https://github.com/SeleniumHQ/selenium/pull/17427.",
+      "matchManagers": ["bazel-module"],
+      "matchPackageNames": ["llvm", "rules_rs"],
+      "enabled": false
     }
   ]
 }

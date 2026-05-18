@@ -159,9 +159,10 @@ task :format do
 end
 
 desc 'Run Ruby linters (rubocop, steep, docs)'
-task :lint do
+task :lint do |_task, arguments|
+  flag = arguments.to_a.include?('-A') ? '-A' : '-a'
   puts '  Running rubocop...'
-  Bazel.execute('run', ['--', '-a'], '//rb:rubocop')
+  Bazel.execute('run', ['--', flag], '//rb:rubocop')
   puts '  Running steep type checker...'
   Bazel.execute('run', [], '//rb:steep')
   Rake::Task['rb:docs_generate'].invoke

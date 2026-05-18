@@ -1,6 +1,6 @@
 load(
     "//dotnet:defs.bzl",
-    "csharp_library",
+    "csharp_sourcelink_library",
     "generated_assembly_info",
     "nuget_pack",
     "nuget_package",
@@ -26,7 +26,7 @@ generated_assembly_info(
     version = ASSEMBLY_VERSION,
 )
 
-csharp_library(
+csharp_sourcelink_library(
     name = "support",
     srcs = glob([
         "**/*.cs",
