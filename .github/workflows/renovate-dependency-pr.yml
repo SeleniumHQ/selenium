@@ -32,12 +32,13 @@ jobs:
         id: detect
         env:
           KIND: ${{ inputs.kind }}
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}.git
         run: |
           case "$KIND" in
             minor|major) ;;
             *) echo "::error::kind must be minor or major"; exit 1 ;;
           esac
-          if git ls-remote --exit-code --heads origin "renovate/${KIND}-eval" >/dev/null; then
+          if git ls-remote --exit-code --heads "$REPO_URL" "renovate/${KIND}-eval" >/dev/null; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
