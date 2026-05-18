@@ -1,0 +1,101 @@
+name: Renovate Dependency PR
+
+on:
+  workflow_call:
+    inputs:
+      base-ref:
+        description: Base branch or ref to target
+        required: true
+        type: string
+      kind:
+        description: Dependency update type. Must be minor or major.
+        required: true
+        type: string
+    secrets:
+      SELENIUM_CI_TOKEN:
+        required: false
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  detect-branch:
+    name: Detect ${{ inputs.kind }} branch
+    runs-on: ubuntu-latest
+    outputs:
+      exists: ${{ steps.detect.outputs.exists }}
+    steps:
+      - name: Detect branch
+        id: detect
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          case "${{ inputs.kind }}" in
+            minor|major) ;;
+            *) echo "::error::kind must be minor or major"; exit 1 ;;
+          esac
+          echo "exists=$(gh api repos/${{ github.repository }}/branches/renovate/${{ inputs.kind }}-eval --silent && echo "true" || echo "false")" >> "$GITHUB_OUTPUT"
+
+  evaluate:
+    name: Evaluate ${{ inputs.kind }} dependencies
+    needs: detect-branch
+    if: needs.detect-branch.outputs.exists == 'true'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Evaluate ${{ inputs.kind }} dependencies
+      ref: renovate/${{ inputs.kind }}-eval
+      ruby-version: jruby-10.1.0.0
+      run: |
+        ./go all:pin
+        ./go rust:pin
+        ./scripts/github-actions/ci-build.sh
+      artifact-name: ${{ inputs.kind }}-dependency-pins
+
+  commit-pins:
+    name: Commit ${{ inputs.kind }} pin changes
+    needs: evaluate
+    uses: ./.github/workflows/commit-changes.yml
+    with:
+      artifact-name: ${{ inputs.kind }}-dependency-pins
+      commit-message: "Repin dependencies"
+      ref: renovate/${{ inputs.kind }}-eval
+      push-branch: renovate/${{ inputs.kind }}-eval
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+
+  promote:
+    name: Promote ${{ inputs.kind }} dependencies
+    needs: [evaluate, commit-pins]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout eval branch
+        uses: actions/checkout@v6
+        with:
+          ref: renovate/${{ inputs.kind }}-eval
+      - name: Create or update PR
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          branch: renovate/${{ inputs.kind }}
+          base: ${{ inputs.base-ref }}
+          title: "[build] Update ${{ inputs.kind }} dependencies"
+          labels: |
+            C-build
+            B-dependencies
+          body: |
+            This PR contains the latest passing ${{ inputs.kind }} dependency updates.
+
+            Included changes:
+            - Repository dependency updates from `./go all:update` and `./go rust:update`
+            - Renovate dependency updates for this update type
+            - Generated dependency pins after `./go all:pin` and `./go rust:pin`
+
+            This branch only advances after pinning and RBE validation pass. If a later evaluation fails, the PR stays on the most recent passing dependency set and the workflow run shows what failed.
+
+            The Renovate [Dependency Dashboard](https://github.com/${{ github.repository }}/issues/13964) is independent of this PR and is used to inspect specific versions and evaluate updates; do not approve dashboard items to drive merges here.
+
+            Workflow runs: ${{ github.server_url }}/${{ github.repository }}/actions/workflows/renovate-dependencies.yml
+            This PR run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
