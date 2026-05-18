@@ -18,7 +18,7 @@
     "com.google.googlejavaformat:google-java-format": -1756842473,
     "com.google.guava:guava": -249069712,
     "com.google.j2objc:j2objc-annotations": 2003271689,
-    "com.google.javascript:closure-compiler": -882503383,
+    "com.google.javascript:closure-compiler": -648553916,
     "com.google.jimfs:jimfs": 803072898,
     "com.google.protobuf.nano:protobuf-javanano": 1507249733,
     "com.google.protobuf:protobuf-java": 1237026331,
@@ -154,11 +154,11 @@
     "com.google.guava:listenablefuture": 1079558157,
     "com.google.j2objc:j2objc-annotations": 248818742,
     "com.google.j2objc:j2objc-annotations:jar:sources": -378364028,
-    "com.google.javascript:closure-compiler": 199441762,
+    "com.google.javascript:closure-compiler": 495067644,
     "com.google.javascript:closure-compiler-externs": -1499626471,
     "com.google.javascript:closure-compiler-unshaded": -829740299,
     "com.google.javascript:closure-compiler-unshaded:jar:sources": 953232666,
-    "com.google.javascript:closure-compiler:jar:sources": -155332960,
+    "com.google.javascript:closure-compiler:jar:sources": 466877765,
     "com.google.jimfs:jimfs": -1932527879,
     "com.google.jimfs:jimfs:jar:sources": 2087504201,
     "com.google.protobuf.nano:protobuf-javanano": -942503907,
@@ -688,10 +688,10 @@
     },
     "com.google.javascript:closure-compiler": {
       "shasums": {
-        "jar": "6fcbd20f75994edc6856e336bc0147ce3dd7110c6b3a132e93edf580673c72bb",
-        "sources": "ab8e499c90faee6cf5a9c1d76aa99f91e5d798a799261de96230633a3709a7a7"
+        "jar": "8d3ec05cb9e12df784a2f3f68132985226e3ae79d616b0917e7b381b44c384cc",
+        "sources": "691b1b07cc75ab82b7869538e6fa8f138e381179903ce1d9ca889de652f414eb"
       },
-      "version": "v20250402"
+      "version": "v20260330"
     },
     "com.google.javascript:closure-compiler-externs": {
       "shasums": {
@@ -2870,6 +2870,7 @@
       "com.google.javascript.jscomp.jarjar.org.apache.tools.zip",
       "com.google.javascript.jscomp.jarjar.org.kohsuke.args4j",
       "com.google.javascript.jscomp.jarjar.org.kohsuke.args4j.spi",
+      "com.google.javascript.jscomp.js",
       "com.google.javascript.jscomp.lint",
       "com.google.javascript.jscomp.modules",
       "com.google.javascript.jscomp.parsing",
