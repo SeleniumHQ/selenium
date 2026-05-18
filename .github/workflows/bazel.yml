@@ -187,6 +187,9 @@ jobs:
       - name: Disable 8dot3 short names
         if: inputs.os == 'windows'
         run: fsutil 8dot3name set 0
+      - name: Enable Developer Mode
+        if: inputs.os == 'windows'
+        run: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v AllowDevelopmentWithoutDevLicense /d 1
       - name: Setup Safari
         if: inputs.needs-display && inputs.os == 'macos'
         run: sudo safaridriver --enable
