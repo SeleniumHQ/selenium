@@ -47,57 +47,23 @@ jobs:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
   renovate:
-    name: Renovate ${{ matrix.kind }} dependencies
+    name: Renovate dependencies
     needs: push-update-branch
     if: github.event.repository.fork == false
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        kind: [minor, major]
     steps:
       - name: Checkout update branch
         uses: actions/checkout@v6
         with:
           ref: temp/bazel-updates
-      - name: Reset eval branch
-        env:
-          EVAL_BRANCH: renovate/${{ matrix.kind }}-eval
+      - name: Reset eval branches
         run: |
-          if git ls-remote --exit-code --heads origin "$EVAL_BRANCH" >/dev/null; then
-            git push origin --delete "$EVAL_BRANCH"
-          fi
-      - name: Configure Renovate
-        env:
-          KIND: ${{ matrix.kind }}
-        run: |
-          if [ "$KIND" = "major" ]; then
-            update_rules='[{"enabled": false}, {"matchUpdateTypes": ["major"], "enabled": true}]'
-          else
-            update_rules='[{"matchUpdateTypes": ["major"], "enabled": false}]'
-          fi
-
-          {
-            echo "RENOVATE_FORCE<<RENOVATE_FORCE_EOF"
-            jq -n \
-              --arg kind "$KIND" \
-              --argjson update_rules "$update_rules" \
-              '{
-                baseBranchPatterns: ["temp/bazel-updates"],
-                dependencyDashboard: false,
-                dependencyDashboardApproval: false,
-                prCreation: "approval",
-                pruneStaleBranches: false,
-                schedule: null,
-                packageRules: ($update_rules + [
-                  {
-                    groupName: ($kind + " dependency updates"),
-                    groupSlug: ($kind + "-eval")
-                  }
-                ])
-              }'
-            echo "RENOVATE_FORCE_EOF"
-          } >> "$GITHUB_ENV"
+          for kind in minor major; do
+            branch="renovate/${kind}-eval"
+            if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then
+              git push origin --delete "$branch"
+            fi
+          done
       - name: Run Renovate
         uses: renovatebot/github-action@v46.1.14
         with:
@@ -106,6 +72,15 @@ jobs:
           LOG_LEVEL: info
           RENOVATE_PLATFORM: github
           RENOVATE_REPOSITORIES: ${{ github.repository }}
+          RENOVATE_FORCE: |
+            {
+              "baseBranchPatterns": ["temp/bazel-updates"],
+              "dependencyDashboard": false,
+              "dependencyDashboardApproval": false,
+              "prCreation": "approval",
+              "pruneStaleBranches": false,
+              "schedule": null
+            }
 
   dependency-pr:
     name: ${{ matrix.kind }} dependency PR

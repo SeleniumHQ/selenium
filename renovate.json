@@ -140,6 +140,20 @@
       "matchManagers": ["bazel-module"],
       "matchPackageNames": ["rules_python"],
       "allowedVersions": "<2"
+    },
+    {
+      "description": "Orchestrated workflow only: group major updates into the major-eval branch.",
+      "matchBaseBranches": ["temp/bazel-updates"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "major dependency updates",
+      "groupSlug": "major-eval"
+    },
+    {
+      "description": "Orchestrated workflow only: group non-major updates into the minor-eval branch.",
+      "matchBaseBranches": ["temp/bazel-updates"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "minor dependency updates",
+      "groupSlug": "minor-eval"
     }
   ]
 }
