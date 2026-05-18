@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       base-ref:
-        description: Base branch or ref to target
+        description: Base branch to target
         required: true
         type: string
       kind:
@@ -58,33 +58,36 @@ jobs:
         ./go rust:pin
         ./go format
         ./scripts/github-actions/ci-build.sh
-      artifact-name: ${{ inputs.kind }}-dependency-pins
-
-  commit-pins:
-    name: Commit ${{ inputs.kind }} pin changes
-    needs: evaluate
-    uses: ./.github/workflows/commit-changes.yml
-    with:
-      artifact-name: ${{ inputs.kind }}-dependency-pins
-      commit-message: "Repin dependencies"
-      ref: renovate/${{ inputs.kind }}-eval
-      push-branch: renovate/${{ inputs.kind }}-eval
-    secrets:
-      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+        git fetch origin "${{ inputs.base-ref }}" --depth=1
+        git add -A
+        git diff --binary --cached "origin/${{ inputs.base-ref }}" > full-changes.patch
+      artifact-name: ${{ inputs.kind }}-dependency-changes
+      artifact-path: full-changes.patch
 
   promote:
     name: Promote ${{ inputs.kind }} dependencies
-    needs: [evaluate, commit-pins]
+    needs: evaluate
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout eval branch
+      - name: Checkout base
         uses: actions/checkout@v6
         with:
-          ref: renovate/${{ inputs.kind }}-eval
+          ref: ${{ inputs.base-ref }}
+          persist-credentials: false
+      - name: Download patch
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ inputs.kind }}-dependency-changes
+      - name: Apply patch
+        run: |
+          git apply --index full-changes.patch
+          rm full-changes.patch
       - name: Create or update PR
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          commit-message: "[build] Update ${{ inputs.kind }} dependencies"
+          author: Selenium CI Bot <selenium-ci@users.noreply.github.com>
           branch: renovate/${{ inputs.kind }}
           base: ${{ inputs.base-ref }}
           title: "[build] Update ${{ inputs.kind }} dependencies"
@@ -92,14 +95,15 @@ jobs:
             C-build
             B-dependencies
           body: |
-            This PR contains the latest passing ${{ inputs.kind }} dependency updates.
+            This PR contains the latest passing ${{ inputs.kind }} dependency updates, squashed into a single commit.
 
             Included changes:
             - Repository dependency updates from `./go all:update` and `./go rust:update`
-            - Renovate dependency updates for this update type
+            - Renovate ${{ inputs.kind }} dependency updates
             - Generated dependency pins after `./go all:pin` and `./go rust:pin`
+            - Formatting fixes from `./go format`
 
-            This branch only advances after pinning and RBE validation pass. If a later evaluation fails, the PR stays on the most recent passing dependency set and the workflow run shows what failed.
+            This PR only advances when pinning, formatting, and RBE validation all pass. If a later evaluation fails, the PR stays on the most recent passing dependency set and the workflow run shows what failed.
 
             The Renovate [Dependency Dashboard](https://github.com/${{ github.repository }}/issues/13964) is independent of this PR and is used to inspect specific versions and evaluate updates; do not approve dashboard items to drive merges here.
 
