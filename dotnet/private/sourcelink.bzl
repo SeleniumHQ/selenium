@@ -10,14 +10,14 @@ load("@rules_dotnet//dotnet/private/transitions:tfm_transition.bzl", "tfm_transi
 def _generate_sourcelink_json(ctx):
     output = ctx.actions.declare_file(ctx.label.name + "_sourcelink.json")
     ctx.actions.run_shell(
-        inputs = [ctx.version_file],
+        inputs = [ctx.info_file],
         outputs = [output],
         command = """
-COMMIT=$(grep "^STABLE_GIT_REVISION " "{status}" | cut -d' ' -f2 | tr -d '*')
+COMMIT=$(grep "^STABLE_GIT_REVISION_FULL " "{status}" | cut -d' ' -f2 | tr -d '*')
 [ -z "$COMMIT" ] && COMMIT=HEAD
 printf '{{"documents":{{"*":"{repo}/raw/%s/*"}}}}\\n' "$COMMIT" > "{output}"
 """.format(
-            status = ctx.version_file.path,
+            status = ctx.info_file.path,
             repo = ctx.attr.repo_url.rstrip("/"),
             output = output.path,
         ),
