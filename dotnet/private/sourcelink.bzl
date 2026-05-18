@@ -32,6 +32,12 @@ def _compile_action(ctx, tfm):
         ctx.attr._windows_constraint[platform_common.ConstraintValueInfo],
     )
     sourcelink_json = _generate_sourcelink_json(ctx)
+
+    # Map the Bazel execution root to a stable prefix so that builds
+    # are byte-for-byte reproducible regardless of sandbox path.
+    exec_root = ctx.bin_dir.path.split("/bin/")[0] + "/"
+    pathmap = "/pathmap:{}=/_/".format(exec_root)
+
     return AssemblyAction(
         ctx.actions,
         ctx.executable._compiler_wrapper_bat if is_windows else ctx.executable._compiler_wrapper_sh,
@@ -70,7 +76,7 @@ def _compile_action(ctx, tfm):
         is_analyzer = ctx.attr.is_analyzer,
         is_language_specific_analyzer = ctx.attr.is_language_specific_analyzer,
         analyzer_configs = ctx.files.analyzer_configs,
-        compiler_options = ctx.attr.compiler_options + ["/sourcelink:" + sourcelink_json.path],
+        compiler_options = ctx.attr.compiler_options + [pathmap, "/sourcelink:" + sourcelink_json.path],
         is_windows = is_windows,
     )
 
