@@ -61,10 +61,12 @@ jobs:
             git commit -m "$COMMIT_MESSAGE"
             committed=true
           fi
-          if [ -n "$PUSH_BRANCH" ]; then
-            git push --force origin HEAD:"$PUSH_BRANCH"
-          elif [ "$committed" = true ]; then
-            git push
+          if [ "$committed" = true ]; then
+            if [ -n "$PUSH_BRANCH" ]; then
+              git push --force origin HEAD:"$PUSH_BRANCH"
+            else
+              git push
+            fi
           fi
           echo "committed=$committed" >> "$GITHUB_OUTPUT"
         env:
