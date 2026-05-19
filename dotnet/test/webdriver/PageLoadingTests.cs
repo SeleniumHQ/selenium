@@ -447,10 +447,10 @@ public class PageLoadingTests : DriverTestFixture
         AssertPageLoadTimeoutIsEnforced(() => driver.Url = slowLoadingPageUrl, webDriverPageLoadTimeoutInSeconds, pageLoadTimeBufferInSeconds);
     }
 
-    private void AssertPageLoadTimeoutIsEnforced(TestDelegate delegateToTest, long webDriverPageLoadTimeoutInSeconds, long pageLoadTimeBufferInSeconds)
+    private void AssertPageLoadTimeoutIsEnforced(Action action, long webDriverPageLoadTimeoutInSeconds, long pageLoadTimeBufferInSeconds)
     {
         DateTime start = DateTime.Now;
-        Assert.That(delegateToTest, Throws.InstanceOf<WebDriverTimeoutException>(), "I should have timed out after " + webDriverPageLoadTimeoutInSeconds + " seconds");
+        Assert.That(action, Throws.InstanceOf<WebDriverTimeoutException>(), "I should have timed out after " + webDriverPageLoadTimeoutInSeconds + " seconds");
         DateTime end = DateTime.Now;
         TimeSpan duration = end - start;
         Assert.That(duration.TotalSeconds, Is.GreaterThan(webDriverPageLoadTimeoutInSeconds));
