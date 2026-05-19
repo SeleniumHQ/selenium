@@ -134,6 +134,7 @@ public abstract class DriverTestFixture
     [OneTimeTearDown]
     public void TearDown()
     {
+        EnvironmentManager.Instance.CloseCurrentDriver();
         driver?.Dispose();
     }
 
