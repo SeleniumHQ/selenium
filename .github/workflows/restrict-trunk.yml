@@ -24,6 +24,11 @@ on:
         required: false
         type: string
         default: ''
+      skip_approval:
+        description: 'Skip the approval step (used for automatic failure recovery)'
+        required: false
+        type: boolean
+        default: false
     secrets:
       SELENIUM_CI_TOKEN:
         required: true
@@ -33,7 +38,7 @@ on:
 jobs:
   get-approval:
     name: Get Approval
-    if: inputs.restrict || github.event_name == 'workflow_dispatch'
+    if: ${{ !inputs.skip_approval && (inputs.restrict || github.event_name == 'workflow_dispatch') }}
     uses: ./.github/workflows/get-approval.yml
     with:
       title: ${{ inputs.restrict && 'Trunk branch locking' || 'Trunk branch unlocking' }}
@@ -45,13 +50,13 @@ jobs:
     name: Manage Trunk Branch
     needs: [get-approval]
     runs-on: ubuntu-latest
-    if: always() && (needs.get-approval.result == 'success' || (!inputs.restrict && github.event_name != 'workflow_dispatch'))
+    if: always() && (needs.get-approval.result == 'success' || inputs.skip_approval || (!inputs.restrict && github.event_name != 'workflow_dispatch'))
     env:
       GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
       GH_REPO: ${{ github.repository }}
     steps:
       - name: Checkout ruleset definitions
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           sparse-checkout: .github/rulesets
           sparse-checkout-cone-mode: false
@@ -89,17 +94,15 @@ jobs:
     needs: [manage-trunk]
     if: always() && needs.manage-trunk.result == 'success'
     runs-on: ubuntu-latest
-    env:
-      TRUNK_RESTRICTED: ${{ inputs.restrict }}
     steps:
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_ICON_EMOJI: ${{ env.TRUNK_RESTRICTED == 'true' && ':lock:' || ':unlock:' }}
-          SLACK_COLOR: ${{ env.TRUNK_RESTRICTED == 'true' && 'danger' || 'good' }}
+          SLACK_ICON_EMOJI: ${{ inputs.restrict && ':lock:' || ':unlock:' }}
+          SLACK_COLOR: ${{ inputs.restrict && 'danger' || 'good' }}
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: ${{ env.TRUNK_RESTRICTED == 'true' && 'Trunk locked' || 'Trunk unlocked' }}
-          SLACK_MESSAGE: ${{ inputs.message != '' && inputs.message || (env.TRUNK_RESTRICTED == 'true' && 'Trunk has been locked.' || 'Trunk has been unlocked.') }}
+          SLACK_TITLE: ${{ inputs.restrict && 'Trunk locked' || 'Trunk unlocked' }}
+          SLACK_MESSAGE: ${{ inputs.message != '' && inputs.message || (inputs.restrict && 'Trunk has been locked.' || 'Trunk has been unlocked.') }}
           MSG_MINIMAL: actions url
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -126,14 +126,13 @@ end
 
 desc 'Pin Python dependencies'
 task :pin do
-  Bazel.execute('run', [], '//scripts:update_py_deps')
   Bazel.execute('run', [], '//py:requirements.update')
-  SeleniumRake.git.add('py/requirements.txt')
-  SeleniumRake.git.add('py/requirements_lock.txt')
 end
 
-desc 'Update Python dependencies (alias for pin)'
-task update: :pin
+desc 'Update Python dependencies within declared ranges'
+task :update do
+  Bazel.execute('run', ['--', '--upgrade'], '//py:requirements.update')
+end
 
 desc 'Update Python changelog'
 task :changelogs do

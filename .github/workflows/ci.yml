@@ -39,10 +39,13 @@ jobs:
           echo "Running all targets for ${{ github.event_name }} event"
           echo "//java/... //py:all //rb/... //dotnet/... //rust/..." > bazel-targets.txt
         else
-          BASE_SHA="${{ github.event.pull_request.base.sha || github.event.before }}"
-          HEAD_SHA="${{ github.event.pull_request.head.sha || 'HEAD' }}"
+          if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
+            BASE_SHA="HEAD^1"
+          else
+            BASE_SHA="${{ github.event.before }}"
+          fi
           if [ -n "$BASE_SHA" ]; then
-            ./go bazel:affected_targets "${BASE_SHA}..${HEAD_SHA}" bazel-test-file-index
+            ./go bazel:affected_targets "${BASE_SHA}..HEAD" bazel-test-file-index
           else
             ./go bazel:affected_targets bazel-test-file-index
           fi
@@ -63,7 +66,7 @@ jobs:
       rust: ${{ steps.read.outputs.rust }}
     steps:
       - name: Download targets
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: check-targets
       - name: Read targets
@@ -75,16 +78,16 @@ jobs:
           targets=$(cat bazel-targets.txt 2>/dev/null || echo "")
           check_binding() {
             local pattern=$1 tag=$2
-            if [[ "$targets" == *"$pattern"* ]] || [[ "$COMMIT_MESSAGES" == *"[$tag]"* ]] || [[ "$PR_TITLE" == *"[$tag]"* ]]; then
+            if [[ "$targets" == *"${pattern}/"* ]] || [[ "$targets" == *"${pattern}:"* ]] || [[ "$COMMIT_MESSAGES" == *"[$tag]"* ]] || [[ "$PR_TITLE" == *"[$tag]"* ]]; then
               echo "$tag=true" >> "$GITHUB_OUTPUT"
             fi
           }
-          check_binding "//java/" "java"
+          check_binding "//java" "java"
           check_binding "openqa/selenium/grid" "grid"
           check_binding "//py" "py"
-          check_binding "//rb/" "rb"
-          check_binding "//dotnet/" "dotnet"
-          check_binding "//rust/" "rust"
+          check_binding "//rb" "rb"
+          check_binding "//dotnet" "dotnet"
+          check_binding "//rust" "rust"
   dotnet:
     name: .NET
     needs: read-targets

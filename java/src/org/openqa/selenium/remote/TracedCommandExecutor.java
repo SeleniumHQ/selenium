@@ -20,12 +20,10 @@ package org.openqa.selenium.remote;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
-import org.openqa.selenium.logging.LocalLogs;
-import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-public class TracedCommandExecutor implements CommandExecutor, NeedsLocalLogs {
+public class TracedCommandExecutor implements CommandExecutor {
 
   private final CommandExecutor delegate;
   private final Tracer tracer;
@@ -51,18 +49,6 @@ public class TracedCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         }
       }
       return delegate.execute(command);
-    }
-  }
-
-  /**
-   * @deprecated logging is not in the W3C WebDriver spec and LocalLogs are no longer supported.
-   */
-  @Override
-  @Deprecated(forRemoval = true)
-  @SuppressWarnings("deprecation")
-  public void setLocalLogs(LocalLogs logs) {
-    if (delegate instanceof NeedsLocalLogs) {
-      ((NeedsLocalLogs) delegate).setLocalLogs(logs);
     }
   }
 }

@@ -1,6 +1,7 @@
 load("@rules_dotnet//dotnet/private:common.bzl", "is_debug")
 load("@rules_dotnet//dotnet/private:providers.bzl", "DotnetAssemblyRuntimeInfo")
 load(":dotnet_utils.bzl", "dotnet_preamble")
+load(":providers.bzl", "NugetPackageInfo")
 
 _CSPROJ_TEMPLATE = """\
 <Project Sdk="Microsoft.NET.Sdk">
@@ -133,6 +134,10 @@ def nuget_pack_impl(ctx):
         DefaultInfo(
             files = depset([pkg, symbols_pkg]),
             runfiles = ctx.runfiles(files = [pkg, symbols_pkg]),
+        ),
+        NugetPackageInfo(
+            package = pkg,
+            symbols = symbols_pkg,
         ),
     ]
 

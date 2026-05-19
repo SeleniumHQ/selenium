@@ -225,6 +225,20 @@ closure_fragment(
     ],
 )
 
+copy_file(
+    name = "find-elements-typescript",
+    src = "//javascript/atoms:typescript/find-elements.generated.js",
+    out = "find-elements-typescript.js",
+    visibility = [
+        "//dotnet/src/webdriver:__pkg__",
+        "//java/src/org/openqa/selenium/support/locators:__pkg__",
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/selenium-webdriver/lib/atoms:__pkg__",
+        "//py:__pkg__",
+        "//rb/lib/selenium/webdriver/atoms:__pkg__",
+    ],
+)
+
 closure_fragment(
     name = "get-text",
     function = "bot.dom.getVisibleText",

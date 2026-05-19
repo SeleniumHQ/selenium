@@ -1,84 +1,164 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
+  "dependencyDashboard": true,
+  "dependencyDashboardApproval": true,
+  "dependencyDashboardLabels": ["B-dependencies"],
+  "dependencyDashboardTitle": "Dependency Dashboard",
+  "dependencyDashboardHeader": "Renovate is configured to list discovered dependency updates here first. Do not approve dashboard items until the update scope has been reviewed.",
+  "automerge": false,
+  "skipArtifactsUpdate": true,
+  "lockFileMaintenance": {
+    "enabled": false
+  },
+  "labels": ["B-dependencies"],
+  "baseBranchPatterns": ["trunk"],
+  "ignorePaths": [
+    "**/requirements_lock.txt",
+    "renovate.json",
+    "common/src/web/simpleTest.html"
+  ],
+  "constraintsFiltering": "strict",
+  "constraints": {
+    "node": "22",
+    "python": "3.10",
+    "ruby": "3.3"
+  },
   "packageRules": [
     {
-      "matchManagers": [ "bazel", "bazel-module", "bazelisk" ],
-      "matchPackageNames": [ "!rules_java", "!rules_jvm_external", "!contrib_rules_jvm", "!rules_dotnet", "!aspect_rules_js", "!aspect_rules_ts", "!rules_nodejs", "!rules_python", "!rules_ruby", "!rules_cc" ],
-      "matchDatasources": [ "!maven" ],
-      "commitMessagePrefix": "[dotnet][java][js][py][rb][rust]",
-      "labels": [ "dependencies", "c-build" ]
+      "description": "Treat Renovate config language constraints as Selenium support policy, not update targets.",
+      "matchManagers": ["renovate-config", "renovate-config-presets"],
+      "matchDatasources": ["node-version", "python-version", "ruby-version"],
+      "matchPackageNames": ["node", "python", "ruby"],
+      "enabled": false
     },
     {
-      "matchManagers": [ "nuget" ],
-      "commitMessagePrefix": "[dotnet]",
-      "labels": [ "dependencies", "c-dotnet" ]
+      "description": "Only propose Node.js runtime updates within the supported Node 22 line.",
+      "matchManagers": ["node-version", "npm", "github-actions"],
+      "matchPackageNames": ["node"],
+      "allowedVersions": "<23"
     },
     {
-      "matchPackageNames": [ "rules_dotnet" ],
-      "commitMessagePrefix": "[dotnet]",
-      "labels": [ "dependencies", "c-dotnet" ]
+      "description": "Only propose Node.js type definition updates within the supported Node 22 line.",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["@types/node"],
+      "allowedVersions": "<23"
     },
     {
-      "matchManagers": [ "bazel", "bazel-module" ],
+      "description": "Only propose Python runtime updates within the supported Python 3.10 line.",
+      "matchDatasources": ["python-version"],
+      "matchPackageNames": ["python"],
+      "allowedVersions": "<3.11"
+    },
+    {
+      "description": "Only propose Ruby runtime updates within the supported Ruby 3.3 line.",
+      "matchManagers": ["ruby-version"],
+      "matchPackageNames": ["ruby"],
+      "allowedVersions": "<3.4"
+    },
+    {
+      "description": "Do not track Docker image references in this repository.",
+      "matchDatasources": ["docker"],
+      "enabled": false
+    },
+    {
+      "description": "Do not propose routine Grid UI dependency upgrades in the dashboard baseline; keep vulnerability fixes eligible.",
+      "matchFileNames": ["javascript/grid-ui/package.json"],
+      "matchJsonata": ["$not($exists(vulnerabilityFixVersion))"],
+      "enabled": false
+    },
+    {
+      "description": "Sphinx 8.x requires docutils<0.22 and Sphinx 9 needs Python >=3.11.",
+      "matchPackageNames": ["docutils"],
+      "allowedVersions": "<0.22"
+    },
+    {
+      "description": "Group Bazel and Bazel module dependency declarations in the dashboard.",
+      "matchManagers": ["bazel", "bazel-module", "bazelisk"],
+      "dependencyDashboardCategory": "Bazel and Toolchains"
+    },
+    {
+      "description": "Use Maven version ordering for Maven artifacts found through Bazel managers.",
+      "matchManagers": ["bazel", "bazel-module"],
       "matchDatasources": ["maven"],
       "versioning": "maven",
-      "commitMessagePrefix": "[java]",
-      "labels": [ "dependencies", "c-java" ]
+      "dependencyDashboardCategory": "Java and Maven"
     },
     {
-      "matchManagers": [ "bazel-module" ],
-      "matchPackageNames": [ "rules_java", "rules_jvm_external", "contrib_rules_jvm" ],
-      "commitMessagePrefix": "[java]",
-      "labels": [ "dependencies", "c-java" ]
+      "description": "Group GitHub Actions workflow dependencies in the dashboard.",
+      "matchManagers": ["github-actions"],
+      "dependencyDashboardCategory": "GitHub Actions"
     },
     {
-      "matchManagers": [ "maven" ],
-      "commitMessagePrefix": "[java]",
-      "labels": [ "dependencies", "c-java" ]
+      "description": "Group JavaScript package declarations in the dashboard.",
+      "matchManagers": ["npm"],
+      "dependencyDashboardCategory": "JavaScript"
     },
     {
-      "matchManagers": [ "npm" ],
-      "rangeStrategy": "bump",
-      "commitMessagePrefix": "[js]",
-      "labels": [ "dependencies", "c-nodejs" ]
+      "description": "Group Python declarations and pinned requirements in the dashboard.",
+      "matchManagers": ["pep621", "pip_requirements", "poetry"],
+      "dependencyDashboardCategory": "Python"
     },
     {
-      "matchPackageNames": [ "aspect_rules_js", "aspect_rules_ts", "rules_nodejs" ],
-      "commitMessagePrefix": "[js]",
-      "labels": [ "dependencies", "c-nodejs" ]
+      "description": "Group Ruby declarations and runtime version files in the dashboard.",
+      "matchManagers": ["bundler", "ruby-version"],
+      "dependencyDashboardCategory": "Ruby"
     },
     {
-      "matchManagers": [ "pip_requirements", "pip_setup" ],
-      "commitMessagePrefix": "[py]",
-      "labels": [ "dependencies", "c-py" ]
+      "description": "Group Rust Cargo declarations in the dashboard.",
+      "matchManagers": ["cargo"],
+      "dependencyDashboardCategory": "Rust"
     },
     {
-      "matchPackageNames": [ "rules_python" ],
-      "commitMessagePrefix": "[py]",
-      "labels": [ "dependencies", "c-py" ]
+      "description": "Group .NET package declarations and tools in the dashboard.",
+      "matchManagers": ["nuget"],
+      "dependencyDashboardCategory": ".NET"
     },
     {
-      "matchManagers": [ "bundler", "ruby-version" ],
-      "commitMessagePrefix": "[rb]",
-      "labels": [ "dependencies", "c-rb" ]
+      "description": "Pin to v8 line; major bumps change shipped Selenium.WebDriver.dll assembly refs and force the new floor onto every NuGet consumer.",
+      "matchManagers": ["nuget"],
+      "matchPackageNames": [
+        "Microsoft.Bcl.AsyncInterfaces",
+        "Microsoft.Extensions.DependencyInjection",
+        "Microsoft.Extensions.DependencyInjection.Abstractions",
+        "System.Text.Json",
+        "System.Threading.Channels"
+      ],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     },
     {
-      "matchPackageNames": [ "rules_ruby" ],
-      "commitMessagePrefix": "[rb]",
-      "labels": [ "dependencies", "c-rb" ]
+      "description": "DevTools generator deps; major bumps risk renaming public Selenium.WebDriver.DevTools.* types on regeneration. Tracked in https://github.com/SeleniumHQ/selenium/issues/17489.",
+      "matchManagers": ["nuget"],
+      "matchPackageNames": ["Handlebars.Net", "Humanizer.Core"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     },
     {
-      "matchManagers": [ "cargo" ],
-      "rangeStrategy": "bump",
-      "commitMessagePrefix": "[rust]",
-      "labels": [ "dependencies", "c-rust" ]
+      "description": "llvm and rules_rs upgrades blocked pending Rust build work in https://github.com/SeleniumHQ/selenium/pull/17427.",
+      "matchManagers": ["bazel-module"],
+      "matchPackageNames": ["llvm", "rules_rs"],
+      "enabled": false
     },
     {
-      "matchPackageNames": [ "rules_cc" ],
-      "commitMessagePrefix": "[rust]",
-      "labels": [ "dependencies", "c-rust" ]
+      "description": "rules_python v2 upgrade blocked pending https://github.com/bazel-contrib/rules_python/pull/3790.",
+      "matchManagers": ["bazel-module"],
+      "matchPackageNames": ["rules_python"],
+      "allowedVersions": "<2"
+    },
+    {
+      "description": "Orchestrated workflow only: group major updates into the major-eval branch.",
+      "matchBaseBranches": ["temp/bazel-updates"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "major dependency updates",
+      "groupSlug": "major-eval"
+    },
+    {
+      "description": "Orchestrated workflow only: group non-major updates into the minor-eval branch.",
+      "matchBaseBranches": ["temp/bazel-updates"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "minor dependency updates",
+      "groupSlug": "minor-eval"
     }
-  ],
-  "prConcurrentLimit": 10
+  ]
 }

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.44.0.202604101016"
+version = "4.45.0.202605121853"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
@@ -41,15 +41,6 @@ download = "https://pypi.org/project/selenium"
 changelog = "https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES"
 documentation = "https://www.selenium.dev/documentation/webdriver"
 issues = "https://github.com/SeleniumHQ/selenium/issues"
-
-[dependency-groups]
-lint = [
-    "ruff==0.15.12",
-]
-validate = [
-    "validate-pyproject==0.25",
-    "packaging==26.2",
-]
 
 [tool.setuptools]
 zip-safe = false

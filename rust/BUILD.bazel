@@ -78,7 +78,7 @@ rust_binary(
     srcs = ["src/main.rs"],
     aliases = aliases(),
     edition = "2024",
-    version = "0.4.44-nightly",
+    version = "0.4.44",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium_manager",

@@ -1,3 +1,26 @@
+v4.44.0
+======
+* Support CDP versions: v146, v147, v148
+* Don't truncate internal log messages at error/warn levels (#17333)
+* Safe modifications of internal log handlers (#17334)
+* Remove planned obsoleted members for 4.44 (#17328)
+* [bidi] Statically declare commands (#17330)
+* [bidi] Statically declared events (#17331)
+* Add C# 14 extension to polyfill `ArgumentNullException.ThrowIfNull` (#16697)
+* [bidi] Align SetDownloadBehavior command (#17336)
+* [bidi] Align ContinueWithAuth command (#17337)
+* [bidi] Align SetGeolocation polymorphic command (#17338)
+* Fix stopping of network monitoring via DevTools (#17352)
+* [bidi] Obsolete Type(string) method in Input module (#17377)
+* Support `UnhandledPromptBehavior` option as string and map (breaking change) (#16557)
+* [build] Combine bazel targets (#17387)
+* Improve logging interpolated string allocation (#17391)
+* [build] Simplify version.bzl file name (#17399)
+* Strongly signed assemblies (#17397)
+* Standardize README files across bindings (#17245)
+* [bidi] Additional Event streaming (breaking change) (#17349)
+* [bidi] Add DisownData command in Network module (#17436)
+
 v4.43.0
 ======
 * Support CDP versions: v145, v146, v147

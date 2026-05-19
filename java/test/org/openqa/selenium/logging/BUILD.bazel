@@ -2,7 +2,6 @@ load("//java:defs.bzl", "JUNIT5_DEPS", "artifact", "java_selenium_test_suite", "
 
 SMALL_TEST_SRCS = [
     "LoggingTest.java",
-    "PerformanceLoggingMockTest.java",
 ]
 
 java_test_suite(
