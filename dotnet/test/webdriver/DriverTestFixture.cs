@@ -131,11 +131,18 @@ public abstract class DriverTestFixture
         driver = EnvironmentManager.Instance.GetCurrentDriver();
     }
 
+    [OneTimeTearDown]
+    public void TearDown()
+    {
+        driver?.Dispose();
+    }
+
     [TearDown]
     public void ResetOnError()
     {
         if (TestContext.CurrentContext.Result.Outcome == Error)
         {
+            driver?.Dispose();
             driver = EnvironmentManager.Instance.CreateFreshDriver();
         }
     }

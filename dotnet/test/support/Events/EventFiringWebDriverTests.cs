@@ -50,6 +50,12 @@ public class EventFiringWebDriverTests
         log = new StringBuilder();
     }
 
+    [TearDown]
+    public void TearDown()
+    {
+        stubDriver?.Dispose();
+    }
+
     [Test]
     public void ShouldFireNavigationEvents()
     {
