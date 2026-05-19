@@ -37,7 +37,7 @@ public class PageLoadingTests : DriverTestFixture
     {
         if (localDriver != null)
         {
-            localDriver.Quit();
+            localDriver.Dispose();
             localDriver = null;
         }
     }

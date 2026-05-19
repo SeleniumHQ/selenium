@@ -141,7 +141,7 @@ internal class BrowsingContextTests : BiDiTestFixture
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
-        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(window));
+        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(window.Context));
     }
 
     [Test]
@@ -153,7 +153,7 @@ internal class BrowsingContextTests : BiDiTestFixture
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
-        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(tab));
+        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(tab.Context));
     }
 
     [Test]
