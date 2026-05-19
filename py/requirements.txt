@@ -6,7 +6,7 @@
 # === Direct dev tooling ===
 filetype~=1.2
 inflection~=0.5
-mypy~=2.1
+mypy~=2.0.0
 pytest~=9.0
 pytest-instafail~=0.5
 pytest-mock~=3.15
@@ -14,7 +14,7 @@ pytest-trio~=0.8
 rich~=15.0
 Sphinx~=8.1
 sphinx-material~=0.0
-tox~=4.54
+tox~=4.53.0
 trio-typing~=0.10
 twine~=6.2
 types-certifi~=2021.10
