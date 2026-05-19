@@ -89,6 +89,9 @@ public class WebSocketFrameProxy extends SimpleChannelInboundHandler<WebSocketFr
     try {
       forwardFrame(frame);
     } catch (Exception e) {
+      // Mark the upstream as closing so the next frame on this connection short-circuits
+      // rather than retrying the same failing send while the close handshake runs.
+      upstreamClosing.set(true);
       LOG.log(Level.WARNING, "Failed to forward WebSocket frame to node", e);
       ctx.fireExceptionCaught(e);
     }

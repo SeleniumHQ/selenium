@@ -1,3 +1,10 @@
+0.4.44
+======
+* Initial Creation of the Selenium CLI Tool (#17327)
+* Add a skills flag that will install a skills.md file (#17364)
+* [Rust] Add a command for installing rules/rules.md into a repository (#17405)
+* Honor full chromedriver version if specified (#17298)
+
 0.4.43
 ======
 

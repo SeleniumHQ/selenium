@@ -33,7 +33,7 @@ internal class SpeculationTests : BiDiTestFixture
 
         var speculation = bidi.AsSpeculation();
 
-        await using var subscription = await speculation.OnPrefetchStatusUpdatedAsync(args =>
+        await using var subscription = await speculation.PrefetchStatusUpdated.SubscribeAsync(args =>
         {
             tcs.TrySetResult(args);
         });

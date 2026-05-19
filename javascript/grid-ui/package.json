@@ -56,7 +56,7 @@
     "jest-cli": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-junit": "^16.0.0",
-    "jest-util": "^30.3.0",
+    "jest-util": "^30.4.1",
     "ts-jest": "^29.4.9",
     "ts-standard": "12.0.2",
     "typescript": "5.8.3"

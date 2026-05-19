@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>find_elements_typescript_test</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="/filez/_main/javascript/atoms/typescript/find-elements-global.js"></script>
+</head>
+<body>
+<div id="qunit"></div>
+<div id="qunit-fixture">
+  <div id="outer">
+    <p id="para1" class="myclass">First paragraph</p>
+    <p id="para2" class="myclass otherclass">Second paragraph</p>
+    <p id="para3">Third paragraph</p>
+    <a id="link1" href="#" name="anchor1">Click me</a>
+    <a id="link2" href="#">Partial match link</a>
+    <input id="input1" name="myinput" type="text">
+    <span id="span1" class="myclass">A span</span>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var findElements = window.bot.locators.typescript.findElements;
+
+  function ids(elements) {
+    return elements.map(function(el) { return el.getAttribute('id'); });
+  }
+
+  var fixture = document.getElementById('qunit-fixture');
+
+  QUnit.test('finds elements by css selector', function(assert) {
+    var elements = findElements({'css selector': 'p'}, fixture);
+    assert.deepEqual(ids(elements).sort(), ['para1', 'para2', 'para3'].sort());
+  });
+
+  QUnit.test('finds elements by css selector alias', function(assert) {
+    var elements = findElements({'css': 'p.myclass'}, fixture);
+    assert.deepEqual(ids(elements).sort(), ['para1', 'para2'].sort());
+  });
+
+  QUnit.test('finds elements by id', function(assert) {
+    var elements = findElements({'id': 'para1'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0].getAttribute('id'), 'para1');
+  });
+
+  QUnit.test('returns empty list when id not found', function(assert) {
+    var elements = findElements({'id': 'nonexistent'}, fixture);
+    assert.equal(elements.length, 0);
+  });
+
+  QUnit.test('finds elements by class name', function(assert) {
+    var elements = findElements({'class name': 'myclass'}, fixture);
+    assert.deepEqual(ids(elements).sort(), ['para1', 'para2', 'span1'].sort());
+  });
+
+  QUnit.test('finds elements by className alias', function(assert) {
+    var elements = findElements({'className': 'otherclass'}, fixture);
+    assert.deepEqual(ids(elements), ['para2']);
+  });
+
+  QUnit.test('throws for empty class name', function(assert) {
+    assert.throws(function() {
+      findElements({'class name': ''}, fixture);
+    });
+  });
+
+  QUnit.test('throws for compound class name', function(assert) {
+    assert.throws(function() {
+      findElements({'class name': 'foo bar'}, fixture);
+    });
+  });
+
+  QUnit.test('finds elements by tag name', function(assert) {
+    var elements = findElements({'tag name': 'p'}, fixture);
+    assert.equal(elements.length, 3);
+  });
+
+  QUnit.test('finds elements by tagName alias', function(assert) {
+    var elements = findElements({'tagName': 'a'}, fixture);
+    assert.equal(elements.length, 2);
+  });
+
+  QUnit.test('throws for empty tag name', function(assert) {
+    assert.throws(function() {
+      findElements({'tag name': ''}, fixture);
+    });
+  });
+
+  QUnit.test('finds elements by link text', function(assert) {
+    var elements = findElements({'link text': 'Click me'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0].getAttribute('id'), 'link1');
+  });
+
+  QUnit.test('finds elements by linkText alias', function(assert) {
+    var elements = findElements({'linkText': 'Click me'}, fixture);
+    assert.equal(elements.length, 1);
+  });
+
+  QUnit.test('finds elements by partial link text', function(assert) {
+    var elements = findElements({'partial link text': 'match'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0].getAttribute('id'), 'link2');
+  });
+
+  QUnit.test('finds elements by name attribute', function(assert) {
+    var elements = findElements({'name': 'myinput'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0].getAttribute('id'), 'input1');
+  });
+
+  QUnit.test('finds elements by xpath', function(assert) {
+    var elements = findElements({'xpath': './/p'}, fixture);
+    assert.equal(elements.length, 3);
+  });
+
+  QUnit.test('finds elements by xpath with predicate', function(assert) {
+    var elements = findElements({'xpath': './/p[@id="para2"]'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0].getAttribute('id'), 'para2');
+  });
+
+  QUnit.test('throws for unsupported strategy', function(assert) {
+    assert.throws(function() {
+      findElements({'unsupported': 'value'}, fixture);
+    });
+  });
+
+  QUnit.test('uses document as default root', function(assert) {
+    var elements = findElements({'id': 'para1'});
+    assert.equal(elements.length, 1);
+  });
+
+  QUnit.test('finds no elements when none match css selector', function(assert) {
+    var elements = findElements({'css selector': 'table'}, fixture);
+    assert.equal(elements.length, 0);
+  });
+})();
+</script>
+</body>
+</html>

@@ -81,7 +81,13 @@ task :release do |_task, arguments|
     Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
 
     puts 'Releasing nightly WebDriver gem...'
-    Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release-nightly')
+    begin
+      Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release-nightly')
+    rescue RuntimeError => e
+      raise unless e.message.match?(/Repushing of gem versions is not allowed/i)
+
+      puts 'Nightly gem version already published to GitHub Packages — skipping.'
+    end
   else
     setup_gem_credentials
     patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?
@@ -153,9 +159,10 @@ task :format do
 end
 
 desc 'Run Ruby linters (rubocop, steep, docs)'
-task :lint do
+task :lint do |_task, arguments|
+  flag = arguments.to_a.include?('-A') ? '-A' : '-a'
   puts '  Running rubocop...'
-  Bazel.execute('run', ['--', '-a'], '//rb:rubocop')
+  Bazel.execute('run', ['--', flag], '//rb:rubocop')
   puts '  Running steep type checker...'
   Bazel.execute('run', [], '//rb:steep')
   Rake::Task['rb:docs_generate'].invoke
