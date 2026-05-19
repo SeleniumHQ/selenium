@@ -24,14 +24,16 @@ module Selenium
     module Support
       describe Select do
         let(:select) do
-          select_element = instance_double(Element, tag_name: 'select')
+          select_element = instance_double(Element, tag_name: 'select', enabled?: true)
           allow(select_element).to receive(:dom_attribute).with(:multiple)
+          allow(select_element).to receive(:css_value).and_return('')
           select_element
         end
 
         let(:multi_select) do
-          select_element = instance_double(Element, tag_name: 'select')
+          select_element = instance_double(Element, tag_name: 'select', enabled?: true)
           allow(select_element).to receive(:dom_attribute).with(:multiple).and_return 'multiple'
+          allow(select_element).to receive(:css_value).and_return('')
           select_element
         end
 
@@ -94,6 +96,7 @@ module Selenium
 
         it 'allows options to be selected by visible text' do
           option = instance_double(Element, selected?: false, enabled?: true, click: nil)
+          allow(option).to receive(:css_value).and_return('')
           allow(multi_select).to receive(:find_elements).and_return([option])
 
           described_class.new(multi_select).select_by(:text, 'fish')
@@ -185,6 +188,7 @@ module Selenium
 
         it 'falls back to slow lookups when "get by visible text fails" and there is a space' do
           first_option = instance_double(Element, selected?: false, enabled?: true, text: 'foo bar', click: nil)
+          allow(first_option).to receive(:css_value).and_return('')
           allow(select).to receive(:find_elements).and_return([], [first_option])
 
           described_class.new(select).select_by(:text, 'foo bar')

@@ -164,6 +164,9 @@ module Selenium
         private
 
         def select_by_text(text)
+          assert_select_enabled
+          assert_select_visible
+
           opts = find_by_text text
 
           raise Error::NoSuchElementError, "cannot locate element with text: #{text.inspect}" if opts.empty?
@@ -174,6 +177,20 @@ module Selenium
             select_option(opt)
             break unless multiple?
           end
+        end
+
+        def assert_select_enabled
+          return if @element.enabled?
+
+          raise Error::UnsupportedOperationError,
+                'You may not select an option in a disabled select'
+        end
+
+        def assert_select_visible
+          return if option_visible?(@element)
+
+          raise Error::UnsupportedOperationError,
+                'You may not select an option in an invisible select'
         end
 
         def select_by_index(index)
