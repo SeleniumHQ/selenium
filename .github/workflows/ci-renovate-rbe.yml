@@ -5,6 +5,10 @@ on:
     branches:
       - renovate/*
 
+concurrency:
+  group: ci-renovate-rbe-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
