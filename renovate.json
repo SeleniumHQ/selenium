@@ -2,15 +2,11 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
   "dependencyDashboard": true,
-  "dependencyDashboardApproval": true,
   "dependencyDashboardLabels": ["B-dependencies"],
-  "dependencyDashboardTitle": "Dependency Dashboard",
-  "dependencyDashboardHeader": "Renovate is configured to list discovered dependency updates here first. Do not approve dashboard items until the update scope has been reviewed.",
-  "automerge": false,
+  "dependencyDashboardHeader": "This dashboard exists for visibility into Renovate's state and for surfacing problems. Renovate creates branches automatically for eligible updates; each branch is pinned and tested by the CI - Renovate - RBE workflow. PRs are intentionally suppressed (prCreation: approval) — do not tick checkboxes under 'Pending Approval', as doing so would create a PR we don't want. For per-branch CI status, open the branch in GitHub and view its Actions runs.",
+  "prCreation": "approval",
+  "branchConcurrentLimit": 1,
   "skipArtifactsUpdate": true,
-  "lockFileMaintenance": {
-    "enabled": false
-  },
   "labels": ["B-dependencies"],
   "baseBranchPatterns": ["trunk"],
   "ignorePaths": [
@@ -145,20 +141,6 @@
       "matchManagers": ["bazel-module"],
       "matchPackageNames": ["rules_python"],
       "allowedVersions": "<2"
-    },
-    {
-      "description": "Orchestrated workflow only: group major updates into the major-eval branch.",
-      "matchBaseBranches": ["temp/bazel-updates"],
-      "matchUpdateTypes": ["major"],
-      "groupName": "major dependency updates",
-      "groupSlug": "major-eval"
-    },
-    {
-      "description": "Orchestrated workflow only: group non-major updates into the minor-eval branch.",
-      "matchBaseBranches": ["temp/bazel-updates"],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "groupName": "minor dependency updates",
-      "groupSlug": "minor-eval"
     }
   ]
 }
