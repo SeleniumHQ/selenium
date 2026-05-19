@@ -2,9 +2,26 @@ name: Renovate Dependencies
 
 on:
   workflow_dispatch:
+    inputs:
+      language:
+        description: Language scope (all runs every binding).
+        type: choice
+        default: all
+        options:
+          - all
+          - java
+          - py
+          - rb
+          - node
+          - dotnet
+          - rust
+      exclude:
+        description: Comma-separated package names to skip for this run (e.g. "rubocop, sphinx").
+        type: string
+        default: ""
 
 concurrency:
-  group: renovate-dependencies
+  group: renovate-dependencies-${{ inputs.language }}
   cancel-in-progress: true
 
 permissions:
@@ -15,7 +32,7 @@ permissions:
 
 jobs:
   reset-update-branch:
-    name: Reset temp/bazel-updates to ${{ github.ref_name }}
+    name: Reset updates/${{ inputs.language }} to ${{ github.ref_name }}
     if: github.event.repository.fork == false
     runs-on: ubuntu-latest
     steps:
@@ -23,31 +40,29 @@ jobs:
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN || github.token }}
-      - name: Force-push to temp/bazel-updates
-        run: git push --force origin "HEAD:temp/bazel-updates"
+      - name: Force-push to updates/${{ inputs.language }}
+        run: git push --force origin "HEAD:updates/${{ inputs.language }}"
 
   prepare-updates:
-    name: Prepare Bazel updates
+    name: Prepare ${{ inputs.language }} updates
     needs: reset-update-branch
     if: github.event.repository.fork == false
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Prepare Bazel updates
+      name: Prepare ${{ inputs.language }} updates
       caching: false
-      run: |
-        ./go all:update
-        ./go rust:update
+      run: ./go ${{ inputs.language }}:update${{ inputs.language == 'all' && ' && ./go rust:update' || '' }}
       artifact-name: bazel-updates
 
   push-update-branch:
-    name: Push Bazel update branch
+    name: Push update branch
     needs: prepare-updates
     if: github.event.repository.fork == false
     uses: ./.github/workflows/commit-changes.yml
     with:
       artifact-name: bazel-updates
       commit-message: "Update dependencies"
-      push-branch: temp/bazel-updates
+      push-branch: updates/${{ inputs.language }}
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
@@ -60,15 +75,27 @@ jobs:
       - name: Checkout update branch
         uses: actions/checkout@v6
         with:
-          ref: temp/bazel-updates
+          ref: updates/${{ inputs.language }}
       - name: Reset eval branches
+        env:
+          LANGUAGE: ${{ inputs.language }}
         run: |
-          for kind in minor major; do
-            branch="renovate/${kind}-eval"
+          if [[ "$LANGUAGE" == "all" ]]; then
+            slugs=(minor major)
+          else
+            slugs=("$LANGUAGE")
+          fi
+          for slug in "${slugs[@]}"; do
+            branch="renovate/${slug}-eval"
             if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then
               git push origin --delete "$branch"
             fi
           done
+      - name: Set ignored packages
+        if: inputs.exclude != ''
+        env:
+          EXCLUDE: ${{ inputs.exclude }}
+        run: echo "RENOVATE_IGNORE_DEPS=$(jq -Rc 'split(",")|map(gsub("^ +| +$";""))|map(select(length>0))' <<< "$EXCLUDE")" >> "$GITHUB_ENV"
       - name: Run Renovate
         uses: renovatebot/github-action@v46.1.14
         with:
@@ -79,10 +106,10 @@ jobs:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
           RENOVATE_FORCE: |
             {
-              "baseBranchPatterns": ["temp/bazel-updates"],
+              "baseBranchPatterns": ["updates/${{ inputs.language }}"],
               "dependencyDashboard": false,
               "dependencyDashboardApproval": false,
-              "prCreation": "approval",
+              "prHourlyLimit": 0,
               "pruneStaleBranches": false,
               "schedule": null
             }
@@ -94,9 +121,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        kind: [minor, major]
+        kind: ${{ inputs.language == 'all' && fromJSON('["minor","major"]') || fromJSON(format('["{0}"]', inputs.language)) }}
     uses: ./.github/workflows/renovate-dependency-pr.yml
     with:
       kind: ${{ matrix.kind }}
+      language: ${{ inputs.language }}
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}

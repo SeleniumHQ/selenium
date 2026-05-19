@@ -4,9 +4,14 @@ on:
   workflow_call:
     inputs:
       kind:
-        description: Dependency update type. Must be minor or major.
+        description: Eval branch slug (minor, major, or a language name).
         required: true
         type: string
+      language:
+        description: Language scope (all for the matrix split runs).
+        required: false
+        type: string
+        default: all
     secrets:
       SELENIUM_CI_TOKEN:
         required: true
@@ -31,8 +36,8 @@ jobs:
           REPO_URL: ${{ github.server_url }}/${{ github.repository }}.git
         run: |
           case "$KIND" in
-            minor|major) ;;
-            *) echo "::error::kind must be minor or major"; exit 1 ;;
+            minor|major|java|py|rb|node|dotnet|rust) ;;
+            *) echo "::error::kind must be minor, major, or a language name"; exit 1 ;;
           esac
           if git ls-remote --exit-code --heads "$REPO_URL" "renovate/${KIND}-eval" >/dev/null; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
@@ -50,8 +55,7 @@ jobs:
       ref: renovate/${{ inputs.kind }}-eval
       ruby-version: jruby-10.1.0.0
       run: |
-        ./go all:pin
-        ./go rust:pin
+        ./go ${{ inputs.language }}:pin${{ inputs.language == 'all' && ' && ./go rust:pin' || '' }}
         ./go format
         ./scripts/github-actions/ci-build.sh
         git fetch origin "${{ github.ref_name }}" --depth=1
@@ -93,9 +97,9 @@ jobs:
             This PR contains the latest passing ${{ inputs.kind }} dependency updates, squashed into a single commit.
 
             Included changes:
-            - Repository dependency updates from `./go all:update` and `./go rust:update`
+            - Repository dependency updates from `./go ${{ inputs.language }}:update`${{ inputs.language == 'all' && ' and `./go rust:update`' || '' }}
             - Renovate ${{ inputs.kind }} dependency updates
-            - Generated dependency pins after `./go all:pin` and `./go rust:pin`
+            - Generated dependency pins after `./go ${{ inputs.language }}:pin`${{ inputs.language == 'all' && ' and `./go rust:pin`' || '' }}
             - Formatting fixes from `./go format`
 
             This PR only advances when pinning, formatting, and RBE validation all pass. If a later evaluation fails, the PR stays on the most recent passing dependency set and the workflow run shows what failed.
