@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="NUnit" Version="4.6.0" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.13.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="6.2.0" />
   </ItemGroup>
 
