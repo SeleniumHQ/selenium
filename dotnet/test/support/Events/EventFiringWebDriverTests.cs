@@ -31,7 +31,6 @@ public class EventFiringWebDriverTests
     private Mock<IWebElement> mockElement;
     private Mock<ISearchContext> mockShadowRoot;
     private Mock<INavigation> mockNavigation;
-    private IWebDriver stubDriver;
     private StringBuilder log;
 
     [SetUp]
@@ -48,12 +47,6 @@ public class EventFiringWebDriverTests
         };
         mockNavigation = new Mock<INavigation>();
         log = new StringBuilder();
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        stubDriver?.Dispose();
     }
 
     [Test]
@@ -232,11 +225,14 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
     [Test]
     public void ShouldBeAbleToAccessWrappedInstanceFromEventCalls()
     {
-        stubDriver = new StubDriver();
+        var stubDriver = new StubDriver();
         EventFiringWebDriver testDriver = new EventFiringWebDriver(stubDriver);
         StubDriver wrapped = ((IWrapsDriver)testDriver).WrappedDriver as StubDriver;
         Assert.That(wrapped, Is.EqualTo(stubDriver));
-        testDriver.Navigating += new EventHandler<WebDriverNavigationEventArgs>(testDriver_Navigating);
+        testDriver.Navigating += new EventHandler<WebDriverNavigationEventArgs>((sender, e) =>
+        {
+            Assert.That(stubDriver, Is.EqualTo(e.Driver));
+        });
 
         testDriver.Url = "http://example.org";
     }
@@ -292,11 +288,6 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
         Assert.That(findElementCompletedArgs, Is.Not.Null);
         Assert.That(findElementCompletedArgs.Driver, Is.EqualTo(mockDriver.Object));
         Assert.That(findElementCompletedArgs.Element, Is.Null);
-    }
-
-    void testDriver_Navigating(object sender, WebDriverNavigationEventArgs e)
-    {
-        Assert.That(stubDriver, Is.EqualTo(e.Driver));
     }
 
     void firingDriver_ExceptionThrown(object sender, WebDriverExceptionEventArgs e)
