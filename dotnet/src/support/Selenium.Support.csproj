@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>net462;netstandard2.0;net8.0;</TargetFrameworks>
     <RootNamespace>OpenQA.Selenium.Support</RootNamespace>
     <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>

@@ -27,7 +27,32 @@ generated_assembly_info(
 )
 
 csharp_sourcelink_library(
-    name = "support",
+    name = "support-net462",
+    srcs = glob([
+        "**/*.cs",
+    ]) + [
+        ":assembly-info",
+        "//dotnet:source_files_support_needs_from_core",
+    ],
+    out = "Selenium.Support",
+    keyfile = "//dotnet:Selenium.snk",
+    langversion = "14.0",
+    nullable = "enable",
+    target_frameworks = [
+        "net462",
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
+    deps = [
+        "//dotnet/src/webdriver:webdriver-net462",
+        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
+        nuget_package("System.Threading.Tasks.Extensions"),
+    ],
+)
+
+csharp_sourcelink_library(
+    name = "support-netstandard2.0",
     srcs = glob([
         "**/*.cs",
     ]) + [
@@ -51,6 +76,41 @@ csharp_sourcelink_library(
     ],
 )
 
+csharp_sourcelink_library(
+    name = "support-net8.0",
+    srcs = glob([
+        "**/*.cs",
+    ]) + [
+        ":assembly-info",
+        "//dotnet:source_files_support_needs_from_core",
+    ],
+    out = "Selenium.Support",
+    defines = [
+        "NET8_0_OR_GREATER",
+    ],
+    keyfile = "//dotnet:Selenium.snk",
+    langversion = "14.0",
+    nullable = "enable",
+    target_frameworks = [
+        "net8.0",
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
+    deps = [
+        "//dotnet/src/webdriver:webdriver-net8.0",
+    ],
+)
+
+# Alias for backwards compatibility
+alias(
+    name = "support",
+    actual = ":support-netstandard2.0",
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
+)
+
 nuget_pack(
     name = "support-pack",
     files = {
@@ -58,7 +118,9 @@ nuget_pack(
     },
     id = "Selenium.Support",
     libs = {
-        ":support": "Selenium.Support",
+        ":support-net462": "Selenium.Support",
+        ":support-netstandard2.0": "Selenium.Support",
+        ":support-net8.0": "Selenium.Support",
     },
     nuspec_template = "Selenium.Support.nuspec",
     tags = [

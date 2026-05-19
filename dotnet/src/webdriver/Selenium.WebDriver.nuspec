@@ -24,10 +24,12 @@
     </releaseNotes>
     <dependencies>
       <group targetFramework="net462">
+        <dependency id="Microsoft.Bcl.AsyncInterfaces" version="8.0.0" exclude="Build,Analyzers" />
         <dependency id="System.Text.Json" version="8.0.6" exclude="Build,Analyzers" />
         <dependency id="System.Threading.Channels" version="8.0.0" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="netstandard2.0">
+        <dependency id="Microsoft.Bcl.AsyncInterfaces" version="8.0.0" exclude="Build,Analyzers" />
         <dependency id="System.Text.Json" version="8.0.6" exclude="Build,Analyzers" />
         <dependency id="System.Threading.Channels" version="8.0.0" exclude="Build,Analyzers" />
       </group>
