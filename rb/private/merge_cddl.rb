@@ -15,19 +15,17 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""Concatenate multiple CDDL files into a single output file.
-
-Usage:
-    merge_cddl.rb <output> <input1> [<input2> ...]
-"""
-
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+USAGE = <<~USAGE
+  Usage:
+      merge_cddl.rb <output> <input1> [<input2> ...]
+USAGE
+
 def main
   if ARGV.length < 2
-    usage = "Usage:\n    merge_cddl.rb <output> <input1> [<input2> ...]"
-    warn usage
+    warn USAGE
     exit 1
   end
 
