@@ -44,12 +44,36 @@ js_run_binary(
 )
 
 js_run_binary(
+    name = "get_attribute_typescript",
+    srcs = ["//javascript/atoms/fragments:get-attribute-typescript.js"],
+    outs = ["get-attribute-typescript.js"],
+    args = [
+        "$(rootpath //javascript/atoms/fragments:get-attribute-typescript.js)",
+        "$(rootpath :get-attribute-typescript.js)",
+    ],
+    tool = ":make_atoms_module",
+    visibility = ["//javascript/selenium-webdriver:__pkg__"],
+)
+
+js_run_binary(
     name = "find-elements",
     srcs = ["//javascript/atoms/fragments:find-elements.js"],
     outs = ["find-elements.js"],
     args = [
         "$(rootpath //javascript/atoms/fragments:find-elements.js)",
         "$(rootpath :find-elements.js)",
+    ],
+    tool = ":make_atoms_module",
+    visibility = ["//javascript/selenium-webdriver:__pkg__"],
+)
+
+js_run_binary(
+    name = "find-elements-typescript",
+    srcs = ["//javascript/atoms/fragments:find-elements-typescript.js"],
+    outs = ["find-elements-typescript.js"],
+    args = [
+        "$(rootpath //javascript/atoms/fragments:find-elements-typescript.js)",
+        "$(rootpath :find-elements-typescript.js)",
     ],
     tool = ":make_atoms_module",
     visibility = ["//javascript/selenium-webdriver:__pkg__"],

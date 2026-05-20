@@ -1,13 +1,42 @@
 {
-  "name": "selenium-atoms",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Build tools for Selenium Browser Automation Atoms",
-  "license": "Apache-2.0",
+  "name": "@seleniumhq/atoms",
+  "version": "4.45.0-nightly202605121853",
+  "description": "Browser injection atoms for Selenium WebDriver",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./get-attribute": {
+      "import": "./dist/typescript/get-attribute.js",
+      "require": "./dist/typescript/get-attribute.cjs",
+      "types": "./dist/typescript/get-attribute.d.ts"
+    },
+    "./find-elements": {
+      "import": "./dist/typescript/find-elements.js",
+      "require": "./dist/typescript/find-elements.cjs",
+      "types": "./dist/typescript/find-elements.d.ts"
+    },
+    "./is-displayed": {
+      "import": "./dist/typescript/is-displayed.js",
+      "require": "./dist/typescript/is-displayed.cjs",
+      "types": "./dist/typescript/is-displayed.d.ts"
+    }
+  },
+  "files": [
+    "dist/"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/SeleniumHQ/selenium.git"
+    "url": "https://github.com/SeleniumHQ/selenium.git",
+    "directory": "javascript/atoms"
   },
+  "license": "Apache-2.0",
   "devDependencies": {
     "google-closure-deps": "^20230802.0.0"
   }
