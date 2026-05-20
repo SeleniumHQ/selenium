@@ -51,6 +51,7 @@ NUGET
     NUnit (4.6)
       System.Threading.Tasks.Extensions (>= 4.5.4) - restriction: || (== net462) (&& (== net8.0) (>= net462)) (&& (== netstandard2.0) (>= net462))
       System.ValueTuple (>= 4.4) - restriction: || (== net462) (&& (== net8.0) (>= net462)) (&& (== netstandard2.0) (>= net462))
+    NUnit.Analyzers (4.13)
     NUnit3TestAdapter (6.2)
       Microsoft.Extensions.DependencyModel (>= 8.0.2) - restriction: || (&& (== net462) (>= net8.0)) (== net8.0) (&& (== netstandard2.0) (>= net8.0))
       Microsoft.Testing.Extensions.VSTestBridge (>= 2.1) - restriction: || (== net462) (== net8.0) (&& (== netstandard2.0) (>= net462)) (&& (== netstandard2.0) (>= net8.0))

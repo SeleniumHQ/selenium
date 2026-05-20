@@ -51,7 +51,7 @@ public sealed record WindowRealmInfo(
 public sealed record DedicatedWorkerRealmInfo(
     Realm Realm,
     string Origin,
-    IReadOnlyList<Realm> Owners) : RealmInfo(Realm, Origin);
+    ImmutableArray<Realm> Owners) : RealmInfo(Realm, Origin);
 
 public sealed record SharedWorkerRealmInfo(
     Realm Realm,

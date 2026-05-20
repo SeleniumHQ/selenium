@@ -28,15 +28,15 @@ internal sealed class EventDispatcher : IAsyncDisposable
 {
     private static readonly ILogger _logger = Internal.Logging.Log.GetLogger<EventDispatcher>();
 
-    private readonly Func<IEnumerable<string>, Session.SubscribeOptions?, CancellationToken, Task<Session.SubscribeResult>> _wireSubscribe;
-    private readonly Func<IEnumerable<Session.Subscription>, Session.UnsubscribeByIdOptions?, CancellationToken, Task<Session.UnsubscribeResult>> _wireUnsubscribe;
+    private readonly Func<ImmutableArray<string>, Session.SubscribeOptions?, CancellationToken, Task<Session.SubscribeResult>> _wireSubscribe;
+    private readonly Func<ImmutableArray<Session.Subscription>, Session.UnsubscribeByIdOptions?, CancellationToken, Task<Session.UnsubscribeResult>> _wireUnsubscribe;
     private readonly IBiDi _bidi;
 
     private readonly ConcurrentDictionary<string, EventSlot> _events = new();
 
     public EventDispatcher(
-        Func<IEnumerable<string>, Session.SubscribeOptions?, CancellationToken, Task<Session.SubscribeResult>> wireSubscribe,
-        Func<IEnumerable<Session.Subscription>, Session.UnsubscribeByIdOptions?, CancellationToken, Task<Session.UnsubscribeResult>> wireUnsubscribe,
+        Func<ImmutableArray<string>, Session.SubscribeOptions?, CancellationToken, Task<Session.SubscribeResult>> wireSubscribe,
+        Func<ImmutableArray<Session.Subscription>, Session.UnsubscribeByIdOptions?, CancellationToken, Task<Session.UnsubscribeResult>> wireUnsubscribe,
         IBiDi bidi)
     {
         _wireSubscribe = wireSubscribe;
@@ -47,7 +47,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
     public Task<ISubscription> SubscribeAsync<TEventArgs>(
         EventDescriptor<TEventArgs> descriptor,
         Func<TEventArgs, ValueTask> handler,
-        IEnumerable<BrowsingContext.BrowsingContext>? contexts = null,
+        ImmutableArray<BrowsingContext.BrowsingContext>? contexts = null,
         Func<TEventArgs, bool>? filter = null,
         CancellationToken cancellationToken = default)
         where TEventArgs : EventArgs
@@ -58,7 +58,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
     public async Task<ISubscription> SubscribeAsync<TEventArgs>(
         IEnumerable<EventDescriptor> descriptors,
         Func<TEventArgs, ValueTask> handler,
-        IEnumerable<BrowsingContext.BrowsingContext>? contexts = null,
+        ImmutableArray<BrowsingContext.BrowsingContext>? contexts = null,
         Func<TEventArgs, bool>? filter = null,
         CancellationToken cancellationToken = default)
         where TEventArgs : EventArgs
@@ -81,7 +81,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     public Task<EventStream<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
         EventDescriptor<TEventArgs> descriptor,
-        IEnumerable<BrowsingContext.BrowsingContext>? contexts = null,
+        ImmutableArray<BrowsingContext.BrowsingContext>? contexts = null,
         Func<TEventArgs, bool>? filter = null,
         CancellationToken cancellationToken = default)
         where TEventArgs : EventArgs
@@ -91,7 +91,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     public async Task<EventStream<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
         IEnumerable<EventDescriptor> descriptors,
-        IEnumerable<BrowsingContext.BrowsingContext>? contexts = null,
+        ImmutableArray<BrowsingContext.BrowsingContext>? contexts = null,
         Func<TEventArgs, bool>? filter = null,
         CancellationToken cancellationToken = default)
         where TEventArgs : EventArgs
@@ -173,8 +173,8 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private async Task<(Session.Subscription SubscribeResult, EventSlot[] Slots)> SubscribeCoreAsync(
         IEnumerable<EventDescriptor> descriptors,
-        IEnumerable<BrowsingContext.BrowsingContext>? contexts,
-        IEnumerable<Browser.UserContext>? userContexts,
+        ImmutableArray<BrowsingContext.BrowsingContext>? contexts,
+        ImmutableArray<Browser.UserContext>? userContexts,
         CancellationToken cancellationToken)
     {
         var uniqueNames = new HashSet<string>();
@@ -195,7 +195,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
             throw new ArgumentException("At least one event descriptor must be provided.", nameof(descriptors));
         }
 
-        var subscribeResult = await _wireSubscribe(names, new() { Contexts = contexts, UserContexts = userContexts }, cancellationToken)
+        var subscribeResult = await _wireSubscribe([.. names], new() { Contexts = contexts, UserContexts = userContexts }, cancellationToken)
             .ConfigureAwait(false);
 
         return (subscribeResult.Subscription, slots.ToArray());

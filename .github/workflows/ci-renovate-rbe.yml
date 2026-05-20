@@ -1,0 +1,50 @@
+name: CI - Renovate - RBE
+
+on:
+  push:
+    branches:
+      - renovate/*
+
+concurrency:
+  group: ci-renovate-rbe-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  pin:
+    name: Repin Dependencies
+    if: github.event.repository.fork == false
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Repin Dependencies
+      run: |
+        ./go all:pin
+        ./go rust:pin
+        ./go format
+      artifact-name: repin-changes
+
+  commit-repins:
+    name: Commit Repins
+    needs: pin
+    permissions:
+      contents: write
+      actions: read
+    uses: ./.github/workflows/commit-changes.yml
+    with:
+      artifact-name: repin-changes
+      commit-message: "Repin dependencies"
+
+  test:
+    name: Test
+    needs: commit-repins
+    permissions:
+      contents: read
+      packages: read
+    uses: ./.github/workflows/ci-rbe.yml
+
+  ci-gh:
+    name: CI - GitHub
+    needs: commit-repins
+    uses: ./.github/workflows/ci.yml

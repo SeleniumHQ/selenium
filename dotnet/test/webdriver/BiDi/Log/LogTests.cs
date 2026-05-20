@@ -48,8 +48,7 @@ internal class LogTests : BiDiTestFixture
 
         Assert.That(consoleLogEntry.Method, Is.EqualTo("log"));
 
-        Assert.That(consoleLogEntry.Args, Is.Not.Null);
-        Assert.That(consoleLogEntry.Args, Has.Count.EqualTo(1));
+        Assert.That(consoleLogEntry.Args, Has.Length.EqualTo(1));
         Assert.That(consoleLogEntry.Args[0], Is.AssignableFrom<StringRemoteValue>());
     }
 

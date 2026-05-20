@@ -224,7 +224,7 @@ maven.install(
         "io.opentelemetry:opentelemetry-sdk-trace",
         "org.testcontainers:testcontainers:2.0.5",
         "javax.inject:javax.inject:1",
-        "net.bytebuddy:byte-buddy:1.18.8-jdk5",
+        "net.bytebuddy:byte-buddy:1.18.8",
         "org.htmlunit:htmlunit-core-js:4.21.0",
         "org.apache.logging.log4j:log4j-core:2.26.0",
         "org.assertj:assertj-core:3.27.7",

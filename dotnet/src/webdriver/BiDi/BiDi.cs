@@ -101,17 +101,15 @@ public sealed class BiDi : IBiDi
         return SubscribeAsync([descriptor], handler, cancellationToken);
     }
 
-    public async Task<ISubscription> SubscribeAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Action<TEventArgs> handler, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public async Task<ISubscription> SubscribeAsync<TEventArgs>(ImmutableArray<EventDescriptor> descriptors, Action<TEventArgs> handler, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
-        ArgumentNullException.ThrowIfNull(descriptors);
         ArgumentNullException.ThrowIfNull(handler);
 
         return await EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => { handler(e); return default; }, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<ISubscription> SubscribeAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Func<TEventArgs, Task> handler, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public async Task<ISubscription> SubscribeAsync<TEventArgs>(ImmutableArray<EventDescriptor> descriptors, Func<TEventArgs, Task> handler, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
-        ArgumentNullException.ThrowIfNull(descriptors);
         ArgumentNullException.ThrowIfNull(handler);
 
         return await EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => new ValueTask(handler(e)), cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -124,10 +122,8 @@ public sealed class BiDi : IBiDi
         return StreamAsync<TEventArgs>([descriptor], cancellationToken);
     }
 
-    public async Task<IEventStream<TEventArgs>> StreamAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public async Task<IEventStream<TEventArgs>> StreamAsync<TEventArgs>(ImmutableArray<EventDescriptor> descriptors, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
-        ArgumentNullException.ThrowIfNull(descriptors);
-
         return await EventDispatcher.SubscribeReaderAsync<TEventArgs>(descriptors, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 

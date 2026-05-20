@@ -23,7 +23,7 @@ using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 
-public class DevToolsTestFixture : DriverTestFixture
+public abstract class DevToolsTestFixture : DriverTestFixture
 {
     protected IDevTools devTools;
     protected IDevToolsSession session;

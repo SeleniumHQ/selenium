@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public interface IBrowsingContextNetworkModule
 {
-    Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, ContextAddDataCollectorOptions? options = null, CancellationToken cancellationToken = default);
+    Task<AddDataCollectorResult> AddDataCollectorAsync(ImmutableArray<DataType> dataTypes, int maxEncodedDataSize, ContextAddDataCollectorOptions? options = null, CancellationToken cancellationToken = default);
     IEventSource<AuthRequiredEventArgs> AuthRequired { get; }
     IEventSource<BeforeRequestSentEventArgs> BeforeRequestSent { get; }
     IEventSource<FetchErrorEventArgs> FetchError { get; }

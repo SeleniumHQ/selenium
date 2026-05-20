@@ -299,6 +299,14 @@ task :update do
       version = maven_stable_release(artifact)
       next if version.nil?
     end
+    if artifact.start_with?('net.bytebuddy:') && version.match?(/-jdk\d/)
+      # Byte Buddy publishes -jdkN compat variants alongside regular releases; Maven sorts those
+      # variants as newer than the regular release. Selenium targets Java 8+ so we want the
+      # regular release without the JDK suffix.
+      # https://github.com/SeleniumHQ/selenium/issues/17355
+      version = maven_stable_release(artifact)
+      next if version.nil?
+    end
     content.sub!(/#{Regexp.escape(artifact)}:([\d.-]+(?:[-.]?[A-Za-z0-9]+)*)/, "#{artifact}:#{version}")
   end
   File.write(file_path, content)

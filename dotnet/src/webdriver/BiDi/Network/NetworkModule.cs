@@ -64,14 +64,14 @@ internal sealed partial class NetworkModule : Module, INetworkModule
     private static readonly Command<ContinueWithAuthParameters, ContinueWithAuthResult> ContinueWithAuthCommand = new(
         "network.continueWithAuth", Default.ContinueWithAuthParameters, Default.ContinueWithAuthResult);
 
-    public async Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, AddDataCollectorOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<AddDataCollectorResult> AddDataCollectorAsync(ImmutableArray<DataType> dataTypes, int maxEncodedDataSize, AddDataCollectorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new AddDataCollectorParameters(dataTypes, maxEncodedDataSize, options?.CollectorType, options?.Contexts, options?.UserContexts);
 
         return await ExecuteAsync(AddDataCollectorCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<AddInterceptResult> AddInterceptAsync(IEnumerable<InterceptPhase> phases, AddInterceptOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<AddInterceptResult> AddInterceptAsync(ImmutableArray<InterceptPhase> phases, AddInterceptOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new AddInterceptParameters(phases, options?.Contexts, options?.UrlPatterns);
 
@@ -99,7 +99,7 @@ internal sealed partial class NetworkModule : Module, INetworkModule
         return await ExecuteAsync(SetCacheBehaviorCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<SetExtraHeadersResult> SetExtraHeadersAsync(IEnumerable<Header> headers, SetExtraHeadersOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<SetExtraHeadersResult> SetExtraHeadersAsync(ImmutableArray<Header> headers, SetExtraHeadersOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetExtraHeadersParameters(headers, options?.Contexts, options?.UserContexts);
 

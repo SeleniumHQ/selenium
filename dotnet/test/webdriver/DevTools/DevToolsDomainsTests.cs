@@ -33,9 +33,14 @@ public class DevToolsDomainsTests : DevToolsTestFixture
     {
         var domains = ((DevToolsSession)session).Domains;
 
-        Assert.That(domains.Log, Is.SameAs(domains.Log));
-        Assert.That(domains.Network, Is.SameAs(domains.Network));
-        Assert.That(domains.Target, Is.SameAs(domains.Target));
-        Assert.That(domains.JavaScript, Is.SameAs(domains.JavaScript));
+        var log = domains.Log;
+        var network = domains.Network;
+        var target = domains.Target;
+        var javascript = domains.JavaScript;
+
+        Assert.That(domains.Log, Is.SameAs(log));
+        Assert.That(domains.Network, Is.SameAs(network));
+        Assert.That(domains.Target, Is.SameAs(target));
+        Assert.That(domains.JavaScript, Is.SameAs(javascript));
     }
 }

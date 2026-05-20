@@ -76,8 +76,8 @@ internal class CallFunctionParameterTests : BiDiTestFixture
         });
 
         Assert.That(res.AsSuccessResult(), Is.AssignableFrom<ArrayRemoteValue>());
-        Assert.That((string)(res.AsSuccessResult() as ArrayRemoteValue).Value[0], Is.EqualTo("abc"));
-        Assert.That((int)(res.AsSuccessResult() as ArrayRemoteValue).Value[1], Is.EqualTo(42));
+        Assert.That((string)(res.AsSuccessResult() as ArrayRemoteValue).Value.Value[0], Is.EqualTo("abc"));
+        Assert.That((int)(res.AsSuccessResult() as ArrayRemoteValue).Value.Value[1], Is.EqualTo(42));
     }
 
     [Test]
@@ -160,8 +160,8 @@ internal class CallFunctionParameterTests : BiDiTestFixture
 
         Assert.That(res, Is.Not.Null);
         Assert.That((res.AsSuccessResult() as ObjectRemoteValue).Handle, Is.Not.Null);
-        Assert.That((string)(res.AsSuccessResult() as ObjectRemoteValue).Value[0][0], Is.EqualTo("a"));
-        Assert.That((int)(res.AsSuccessResult() as ObjectRemoteValue).Value[0][1], Is.EqualTo(1));
+        Assert.That((string)(res.AsSuccessResult() as ObjectRemoteValue).Value.Value[0][0], Is.EqualTo("a"));
+        Assert.That((int)(res.AsSuccessResult() as ObjectRemoteValue).Value.Value[0][1], Is.EqualTo(1));
     }
 
     [Test]
@@ -174,8 +174,8 @@ internal class CallFunctionParameterTests : BiDiTestFixture
 
         Assert.That(res, Is.Not.Null);
         Assert.That((res.AsSuccessResult() as ObjectRemoteValue).Handle, Is.Null);
-        Assert.That((string)(res.AsSuccessResult() as ObjectRemoteValue).Value[0][0], Is.EqualTo("a"));
-        Assert.That((int)(res.AsSuccessResult() as ObjectRemoteValue).Value[0][1], Is.EqualTo(1));
+        Assert.That((string)(res.AsSuccessResult() as ObjectRemoteValue).Value.Value[0][0], Is.EqualTo("a"));
+        Assert.That((int)(res.AsSuccessResult() as ObjectRemoteValue).Value.Value[0][1], Is.EqualTo(1));
     }
 
     [Test]

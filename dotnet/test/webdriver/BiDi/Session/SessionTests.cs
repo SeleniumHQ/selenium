@@ -63,7 +63,9 @@ internal class SessionTests : BiDiTestFixture
     [Test]
     public void AsModuleShouldReturnSameInstanceForSameType()
     {
-        Assert.That(bidi.AsModule<CustomModule>(), Is.SameAs(bidi.AsModule<CustomModule>()));
+        var module = bidi.AsModule<CustomModule>();
+
+        Assert.That(bidi.AsModule<CustomModule>(), Is.SameAs(module));
     }
 
     [Test]

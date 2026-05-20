@@ -134,11 +134,13 @@ jobs:
           fetch-tags: ${{ inputs.fetch-depth != '' }}
       - name: Pull latest changes from head ref for PRs
         if: contains(github.head_ref, 'renovate/')
+        shell: bash
         run: git pull origin "$HEAD_REF"
         env:
           HEAD_REF: ${{ github.head_ref }}
       - name: Pull latest changes from ref for branch pushes
         if: contains(github.ref, 'renovate/')
+        shell: bash
         run: git pull origin "$GIT_REF"
         env:
           GIT_REF: ${{ github.ref }}

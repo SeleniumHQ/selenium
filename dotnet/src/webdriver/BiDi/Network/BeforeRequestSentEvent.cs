@@ -31,7 +31,7 @@ public record BeforeRequestSentEventArgs(
     DateTimeOffset Timestamp,
     Initiator Initiator,
     Browser.UserContext? UserContext,
-    IReadOnlyList<Intercept>? Intercepts) : EventArgs(BiDi);
+    ImmutableArray<Intercept>? Intercepts) : EventArgs(BiDi);
 
 internal record BeforeRequestSentParameters(
     BrowsingContext.BrowsingContext? Context,
@@ -42,5 +42,5 @@ internal record BeforeRequestSentParameters(
     DateTimeOffset Timestamp,
     Initiator Initiator,
     Browser.UserContext? UserContext,
-    IReadOnlyList<Intercept>? Intercepts)
+    ImmutableArray<Intercept>? Intercepts)
     : BaseParameters(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, UserContext, Intercepts);

@@ -26,7 +26,7 @@ internal sealed record SetViewportParameters(
     BrowsingContext? Context,
     [property: JsonConverter(typeof(OptionalConverter<Viewport?>))] Optional<Viewport?>? Viewport,
     [property: JsonConverter(typeof(OptionalConverter<double?>))] Optional<double?>? DevicePixelRatio,
-    IEnumerable<Browser.UserContext>? UserContexts)
+    ImmutableArray<Browser.UserContext>? UserContexts)
     : Parameters;
 
 public sealed record SetViewportOptions : CommandOptions
@@ -37,7 +37,7 @@ public sealed record SetViewportOptions : CommandOptions
 
     public Optional<double?>? DevicePixelRatio { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
+    public ImmutableArray<Browser.UserContext>? UserContexts { get; init; }
 }
 
 public sealed record ContextSetViewportOptions : CommandOptions

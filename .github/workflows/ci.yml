@@ -11,7 +11,7 @@ on:
   workflow_call:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  group: ci-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -44,7 +44,7 @@ jobs:
           else
             BASE_SHA="${{ github.event.before }}"
           fi
-          if [ -n "$BASE_SHA" ]; then
+          if [ -n "$BASE_SHA" ] && [ "$BASE_SHA" != "0000000000000000000000000000000000000000" ]; then
             ./go bazel:affected_targets "${BASE_SHA}..HEAD" bazel-test-file-index
           else
             ./go bazel:affected_targets bazel-test-file-index

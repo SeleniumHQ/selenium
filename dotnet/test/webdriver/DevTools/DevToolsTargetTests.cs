@@ -160,7 +160,7 @@ public class DevToolsTargetTests : DevToolsTestFixture
     private void ValidateTargetCrashed(CurrentCdpVersion.Target.TargetCrashedEventArgs targetCrashed)
     {
         Assert.That(targetCrashed, Is.Not.Null);
-        Assert.That(targetCrashed.ErrorCode, Is.Not.Null);
+        Assert.That(targetCrashed.ErrorCode, Is.Not.Zero);
         Assert.That(targetCrashed.Status, Is.Not.Null);
         Assert.That(targetCrashed.TargetId, Is.Not.Null);
     }

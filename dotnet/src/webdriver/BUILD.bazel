@@ -33,10 +33,10 @@ generated_resource_utilities(
     name = "resource-utilities",
     out = "ResourceUtilities.g.cs",
     resources = {
-        "//javascript/atoms/fragments:find-elements.js": "FindElementsAtom",
-        "//javascript/atoms/fragments:is-displayed.js": "IsDisplayedAtom",
+        "//javascript/atoms/fragments:find-elements-typescript.js": "FindElementsAtom",
+        "//javascript/atoms/fragments:is-displayed-typescript.js": "IsDisplayedAtom",
         "//javascript/cdp-support:mutation-listener.js": "MutationListenerAtom",
-        "//javascript/webdriver/atoms:get-attribute.js": "GetAttributeAtom",
+        "//javascript/atoms/fragments:get-attribute-typescript.js": "GetAttributeAtom",
         "//third_party/js/selenium:webdriver_json": "WebDriverPrefsJson",
     },
 )
@@ -62,6 +62,7 @@ csharp_sourcelink_library(
     deps = [
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
         nuget_package("System.Buffers"),
+        nuget_package("System.Collections.Immutable"),
         nuget_package("System.Threading.Tasks.Extensions"),
         nuget_package("System.Memory"),
         nuget_package("System.Runtime.CompilerServices.Unsafe"),
@@ -95,6 +96,7 @@ csharp_sourcelink_library(
         nuget_package("NETStandard.Library"),
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
         nuget_package("System.Buffers"),
+        nuget_package("System.Collections.Immutable"),
         nuget_package("System.Threading.Channels"),
         nuget_package("System.Threading.Tasks.Extensions"),
         nuget_package("System.Memory"),

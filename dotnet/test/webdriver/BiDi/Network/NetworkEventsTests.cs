@@ -97,7 +97,7 @@ internal class NetworkEventsTests : BiDiTestFixture
 
         var req = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
-        Assert.That(req.Request.Cookies, Has.Count.EqualTo(1));
+        Assert.That(req.Request.Cookies, Has.Length.EqualTo(1));
         Assert.That(req.Request.Cookies[0].Name, Is.EqualTo("foo"));
         Assert.That((req.Request.Cookies[0].Value as StringBytesValue).Value, Is.EqualTo("bar"));
     }
@@ -119,7 +119,7 @@ internal class NetworkEventsTests : BiDiTestFixture
         Assert.That(res.Request, Is.Not.Null);
         Assert.That(res.Request.Method, Is.EqualTo("GET"));
         Assert.That(res.Request.Url, Does.Contain("basicAuth"));
-        Assert.That(res.Response.Headers, Is.Not.Null.And.Count.GreaterThanOrEqualTo(1));
+        Assert.That(res.Response.Headers, Has.Length.GreaterThanOrEqualTo(1));
         Assert.That(res.Response.Status, Is.EqualTo(401));
     }
 

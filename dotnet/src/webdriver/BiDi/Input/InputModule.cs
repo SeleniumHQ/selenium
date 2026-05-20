@@ -33,7 +33,7 @@ internal sealed class InputModule : Module, IInputModule
     private static readonly Command<SetFilesParameters, SetFilesResult> SetFilesCommand = new(
         "input.setFiles", Default.SetFilesParameters, Default.SetFilesResult);
 
-    public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, ImmutableArray<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new PerformActionsParameters(context, actions);
 
@@ -47,7 +47,7 @@ internal sealed class InputModule : Module, IInputModule
         return await ExecuteAsync(ReleaseActionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<SetFilesResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<SetFilesResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, ImmutableArray<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetFilesParameters(context, element, files);
 
