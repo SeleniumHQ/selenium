@@ -134,7 +134,10 @@ interface Coordinate {
     var elemTagName = typeof (elem as Element).tagName === 'string' ? (elem as Element).tagName : '';
     if (elemTagName.toUpperCase() === 'HTML') {
       var doc = (elem as Element).ownerDocument;
-      return createRect(0, 0, doc.documentElement.clientWidth, doc.documentElement.clientHeight);
+      // In quirks mode (no DOCTYPE), viewport dimensions come from document.body;
+      // documentElement.clientWidth/Height is unreliable and can be 0.
+      var sizeElem = doc.compatMode === 'CSS1Compat' ? doc.documentElement : (doc.body || doc.documentElement);
+      return createRect(0, 0, sizeElem.clientWidth, sizeElem.clientHeight);
     }
 
     try {
