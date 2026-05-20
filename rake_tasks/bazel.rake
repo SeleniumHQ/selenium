@@ -3,9 +3,18 @@
 require 'json'
 require 'set'
 
-# Dirs that affect all bindings - changes here trigger "run all tests"
-HIGH_IMPACT_DIRS = %w[common rust/src javascript/atoms javascript/webdriver/atoms].freeze
-HIGH_IMPACT_PATTERN = %r{\A(?:#{HIGH_IMPACT_DIRS.map { |d| Regexp.escape(d) }.join('|')})(?:/|$)}
+# Paths that affect every binding - changes here trigger "run all tests"
+HIGH_IMPACT_PATHS = %w[common rust/src javascript/atoms javascript/webdriver/atoms MODULE.bazel].freeze
+HIGH_IMPACT_PATTERN = %r{\A(?:#{HIGH_IMPACT_PATHS.map { |p| Regexp.escape(p) }.join('|')})(?:/|$)}
+
+# Binding overrides for files the index can't reach (workspace dep files, root configs)
+TARGET_OVERRIDES = {
+  'dotnet/paket.lock' => 'dotnet',
+  'java/maven_install.json' => 'java',
+  'py/requirements_lock.txt' => 'py',
+  'rb/Gemfile.lock' => 'rb',
+  'javascript/selenium-webdriver/package.json' => 'javascript'
+}.freeze
 
 # ./go bazel:affected_targets                              --> HEAD^..HEAD with default index
 # ./go bazel:affected_targets abc123..def456               --> explicit range
@@ -33,11 +42,19 @@ task :affected_targets do |_task, args|
 
   targets = if changed_files.any? { |f| f.match?(HIGH_IMPACT_PATTERN) }
               BINDING_TARGETS.values
-            elsif File.exist?(index_file)
-              affected_targets_with_index(changed_files, index_file)
             else
-              puts 'No index found, using directory-based fallback'
-              affected_targets_by_directory(changed_files)
+              binding_overrides = changed_files.filter_map { |f| TARGET_OVERRIDES[f] }.uniq
+              remaining_files = changed_files.reject { |f| binding_overrides.any? { |b| f.start_with?("#{b}/") } }
+              override_targets = binding_overrides.map { |b| BINDING_TARGETS[b] }
+
+              index_targets = if File.exist?(index_file)
+                                affected_targets_with_index(remaining_files, index_file)
+                              else
+                                puts 'No index found, using directory-based fallback'
+                                affected_targets_by_directory(remaining_files)
+                              end
+
+              (override_targets + index_targets).uniq
             end
 
   if targets.empty?
@@ -98,8 +115,8 @@ def query_test_deps(test)
     deps = out.lines.map(&:strip).select { |l| l.start_with?('//') }
   end
   deps.reject do |d|
-    # Skip high-impact dirs and root package targets (generated files, LICENSE, etc)
-    HIGH_IMPACT_DIRS.any? { |dir| d.start_with?("//#{dir}") } || d.start_with?('//:')
+    # Skip high-impact paths and root package targets (generated files, LICENSE, etc)
+    HIGH_IMPACT_PATHS.any? { |path| d.start_with?("//#{path}") } || d.start_with?('//:')
   end
 rescue StandardError => e
   puts "  Warning: Failed to query deps for #{test}: #{e.message}"
