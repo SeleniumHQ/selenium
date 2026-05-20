@@ -89,14 +89,7 @@ public abstract record LocalValue
                 {
                     IEnumerable set = (IEnumerable)value;
 
-                    var setValues = ImmutableArray.CreateBuilder<LocalValue>();
-
-                    foreach (var obj in set)
-                    {
-                        setValues.Add(ConvertFrom(obj));
-                    }
-
-                    return new SetLocalValue(setValues.ToImmutable());
+                    return new SetLocalValue([.. set.Cast<object?>().Select(ConvertFrom)]);
                 }
 
             case IDictionary dictionary:
@@ -208,14 +201,7 @@ public abstract record LocalValue
             return new NullLocalValue();
         }
 
-        List<LocalValue> list = [];
-
-        foreach (var element in value)
-        {
-            list.Add(ConvertFrom(element));
-        }
-
-        return new ArrayLocalValue([.. list]);
+        return new ArrayLocalValue([.. value.Cast<object?>().Select(ConvertFrom)]);
     }
 
     public static LocalValue ConvertFrom(IDictionary? value)
