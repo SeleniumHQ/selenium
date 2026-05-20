@@ -17,7 +17,7 @@ on:
         type: string
         default: ''
       push-branch:
-        description: Branch to push to (defaults to current branch); always force-pushes
+        description: Branch to force push to; if unset, pushes to the checked-out branch without force
         required: false
         type: string
         default: ''
@@ -50,10 +50,14 @@ jobs:
           if [ -s changes.patch ]; then
             git apply --index changes.patch
             git commit -m "$COMMIT_MESSAGE"
-            git push --force origin HEAD:"$PUSH_BRANCH"
+            if [ -n "$PUSH_BRANCH" ]; then
+              git push --force origin HEAD:"$PUSH_BRANCH"
+            else
+              git push
+            fi
           else
             echo "::notice::No changes.patch found or patch is empty; skipping commit and push."
           fi
         env:
           COMMIT_MESSAGE: ${{ inputs.commit-message }}
-          PUSH_BRANCH: ${{ inputs.push-branch || inputs.ref || github.ref_name }}
+          PUSH_BRANCH: ${{ inputs.push-branch }}
