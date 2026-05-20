@@ -242,9 +242,7 @@ public abstract record LocalValue
             return new NullLocalValue();
         }
 
-        LocalValue[] convertedValues = [.. value.Select(x => ConvertFrom(x))];
-
-        return new SetLocalValue([.. convertedValues]);
+        return new SetLocalValue([.. value.Select(x => ConvertFrom(x))]);
     }
 
     private static LocalValue ReflectionBasedConvertFrom(object? value)
