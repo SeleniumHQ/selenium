@@ -33,10 +33,10 @@ generated_resource_utilities(
     name = "resource-utilities",
     out = "ResourceUtilities.g.cs",
     resources = {
-        "//javascript/atoms/fragments:find-elements.js": "FindElementsAtom",
-        "//javascript/atoms/fragments:is-displayed.js": "IsDisplayedAtom",
+        "//javascript/atoms/fragments:find-elements-typescript.js": "FindElementsAtom",
+        "//javascript/atoms/fragments:is-displayed-typescript.js": "IsDisplayedAtom",
         "//javascript/cdp-support:mutation-listener.js": "MutationListenerAtom",
-        "//javascript/webdriver/atoms:get-attribute.js": "GetAttributeAtom",
+        "//javascript/atoms/fragments:get-attribute-typescript.js": "GetAttributeAtom",
         "//third_party/js/selenium:webdriver_json": "WebDriverPrefsJson",
     },
 )
