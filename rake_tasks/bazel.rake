@@ -42,19 +42,14 @@ task :affected_targets do |_task, args|
 
   targets = if changed_files.any? { |f| f.match?(HIGH_IMPACT_PATTERN) }
               BINDING_TARGETS.values
-            else
-              binding_overrides = changed_files.filter_map { |f| TARGET_OVERRIDES[f] }.uniq
-              remaining_files = changed_files.reject { |f| binding_overrides.any? { |b| f.start_with?("#{b}/") } }
-              override_targets = binding_overrides.map { |b| BINDING_TARGETS[b] }
-
-              index_targets = if File.exist?(index_file)
-                                affected_targets_with_index(remaining_files, index_file)
-                              else
-                                puts 'No index found, using directory-based fallback'
-                                affected_targets_by_directory(remaining_files)
-                              end
-
+            elsif File.exist?(index_file)
+              override_targets = changed_files.filter_map { |f| BINDING_TARGETS[TARGET_OVERRIDES[f]] }
+              covered_pattern = Regexp.union(override_targets.map { |t| %r{\A#{Regexp.escape(t.delete_suffix('/...'))}[:/]} })
+              index_targets = affected_targets_with_index(changed_files, index_file).grep_v(covered_pattern)
               (override_targets + index_targets).uniq
+            else
+              puts 'No index found, using directory-based fallback'
+              affected_targets_by_directory(changed_files)
             end
 
   if targets.empty?
