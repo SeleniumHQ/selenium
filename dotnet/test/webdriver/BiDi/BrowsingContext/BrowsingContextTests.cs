@@ -105,8 +105,9 @@ internal class BrowsingContextTests : BiDiTestFixture
 
         Assert.That(tree.Contexts, Has.Length.EqualTo(1));
         Assert.That(tree.Contexts[0].Context, Is.EqualTo(context));
-        Assert.That(tree.Contexts[0].Children, Is.Not.Null.And.Has.Length.EqualTo(1));
-        Assert.That(tree.Contexts[0].Children[0].Url, Does.Contain("formPage.html"));
+        Assert.That(tree.Contexts[0].Children, Is.Not.Null);
+        Assert.That(tree.Contexts[0].Children.Value, Has.Length.EqualTo(1));
+        Assert.That(tree.Contexts[0].Children.Value[0].Url, Does.Contain("formPage.html"));
     }
 
     [Test]
