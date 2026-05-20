@@ -21,26 +21,32 @@ Usage:
     merge_cddl.rb <output> <input1> [<input2> ...]
 """
 
-import sys
+#!/usr/bin/env ruby
+# frozen_string_literal: true
 
+def main
+  if ARGV.length < 2
+    usage = "Usage:\n    merge_cddl.rb <output> <input1> [<input2> ...]"
+    warn usage
+    exit 1
+  end
 
-def main() -> None:
-    if len(sys.argv) < 3:
-        usage = (__doc__ or "Usage:\n    merge_cddl.rb <output> <input1> [<input2> ...]\n").strip()
-        print(usage, file=sys.stderr)
-        raise SystemExit(1)
+  out_path = ARGV.shift
+  input_paths = ARGV
 
-    out_path = sys.argv[1]
-    input_paths = sys.argv[2:]
-    with open(out_path, "wb") as out_f:
-        for index, input_path in enumerate(input_paths):
-            if index > 0:
-                # Ensure files that lack a trailing newline don't accidentally
-                # join their last and first tokens across the boundary.
-                out_f.write(b"\n")
-            with open(input_path, "rb") as in_f:
-                out_f.write(in_f.read())
+  File.open(out_path, 'wb') do |out_f|
+    input_paths.each_with_index do |input_path, index|
+      if index > 0
+        out_f.write("\n")
+      end
 
+      File.open(input_path, 'rb') do |in_f|
+        out_f.write(in_f.read)
+      end
+    end
+  end
+end
 
-if __name__ == "__main__":
-    main()
+if __FILE__ == $PROGRAM_NAME
+  main
+end
