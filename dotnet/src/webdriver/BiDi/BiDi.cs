@@ -103,7 +103,6 @@ public sealed class BiDi : IBiDi
 
     public async Task<ISubscription> SubscribeAsync<TEventArgs>(ImmutableArray<EventDescriptor> descriptors, Action<TEventArgs> handler, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
-        ArgumentNullException.ThrowIfNull(descriptors);
         ArgumentNullException.ThrowIfNull(handler);
 
         return await EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => { handler(e); return default; }, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -111,7 +110,6 @@ public sealed class BiDi : IBiDi
 
     public async Task<ISubscription> SubscribeAsync<TEventArgs>(ImmutableArray<EventDescriptor> descriptors, Func<TEventArgs, Task> handler, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
-        ArgumentNullException.ThrowIfNull(descriptors);
         ArgumentNullException.ThrowIfNull(handler);
 
         return await EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => new ValueTask(handler(e)), cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -126,8 +124,6 @@ public sealed class BiDi : IBiDi
 
     public async Task<IEventStream<TEventArgs>> StreamAsync<TEventArgs>(ImmutableArray<EventDescriptor> descriptors, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
-        ArgumentNullException.ThrowIfNull(descriptors);
-
         return await EventDispatcher.SubscribeReaderAsync<TEventArgs>(descriptors, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
