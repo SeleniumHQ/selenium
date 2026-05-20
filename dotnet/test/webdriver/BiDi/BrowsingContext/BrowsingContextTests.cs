@@ -103,9 +103,9 @@ internal class BrowsingContextTests : BiDiTestFixture
 
         var tree = await context.GetTreeAsync();
 
-        Assert.That(tree.Contexts, Has.Count.EqualTo(1));
+        Assert.That(tree.Contexts, Has.Length.EqualTo(1));
         Assert.That(tree.Contexts[0].Context, Is.EqualTo(context));
-        Assert.That(tree.Contexts[0].Children, Has.Count.EqualTo(1));
+        Assert.That(tree.Contexts[0].Children, Is.Not.Null.And.Has.Length.EqualTo(1));
         Assert.That(tree.Contexts[0].Children[0].Url, Does.Contain("formPage.html"));
     }
 
@@ -116,7 +116,7 @@ internal class BrowsingContextTests : BiDiTestFixture
 
         var tree = await context.GetTreeAsync(new() { MaxDepth = 0 });
 
-        Assert.That(tree.Contexts, Has.Count.EqualTo(1));
+        Assert.That(tree.Contexts, Has.Length.EqualTo(1));
         Assert.That(tree.Contexts[0].Context, Is.EqualTo(context));
         Assert.That(tree.Contexts[0].Children, Is.Null);
     }
@@ -129,7 +129,7 @@ internal class BrowsingContextTests : BiDiTestFixture
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
-        Assert.That(tree.Contexts, Has.Count.GreaterThanOrEqualTo(2));
+        Assert.That(tree.Contexts, Has.Length.GreaterThanOrEqualTo(2));
     }
 
     [Test]

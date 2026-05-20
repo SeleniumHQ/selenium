@@ -51,7 +51,7 @@ public sealed record ConsoleEntryAddedEventArgs(
     string? Text,
     DateTimeOffset Timestamp,
     string Method,
-    IReadOnlyList<Script.RemoteValue> Args)
+    ImmutableArray<Script.RemoteValue> Args)
     : EntryAddedEventArgs(BiDi, Level, Source, Text, Timestamp);
 
 public sealed record JavascriptEntryAddedEventArgs(
@@ -100,7 +100,7 @@ internal sealed record ConsoleLogEntry(
     string? Text,
     DateTimeOffset Timestamp,
     string Method,
-    IReadOnlyList<Script.RemoteValue> Args)
+    ImmutableArray<Script.RemoteValue> Args)
     : LogEntry(Level, Source, Text, Timestamp);
 
 internal sealed record JavascriptLogEntry(

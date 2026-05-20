@@ -31,7 +31,7 @@ public sealed record ResponseCompletedEventArgs(
     DateTimeOffset Timestamp,
     ResponseData Response,
     Browser.UserContext? UserContext,
-    IReadOnlyList<Intercept>? Intercepts)
+    ImmutableArray<Intercept>? Intercepts)
     : EventArgs(BiDi);
 
 internal sealed record ResponseCompletedParameters(
@@ -42,6 +42,6 @@ internal sealed record ResponseCompletedParameters(
     RequestData Request,
     DateTimeOffset Timestamp,
     Browser.UserContext? UserContext,
-    IReadOnlyList<Intercept>? Intercepts,
+    ImmutableArray<Intercept>? Intercepts,
     ResponseData Response)
     : BaseParameters(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, UserContext, Intercepts);

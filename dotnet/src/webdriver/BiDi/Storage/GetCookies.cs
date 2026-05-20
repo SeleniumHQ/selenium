@@ -43,7 +43,7 @@ public sealed record ContextGetCookiesOptions : CommandOptions
     };
 }
 
-public sealed record GetCookiesResult(IReadOnlyList<Network.Cookie> Cookies, PartitionKey PartitionKey) : EmptyResult;
+public sealed record GetCookiesResult(ImmutableArray<Network.Cookie> Cookies, PartitionKey PartitionKey) : EmptyResult;
 
 public sealed record CookieFilter
 {

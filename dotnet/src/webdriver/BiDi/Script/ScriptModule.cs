@@ -71,7 +71,7 @@ internal sealed class ScriptModule : Module, IScriptModule
         return result.AsSuccessResult().ConvertTo<TResult>();
     }
 
-    public async Task<DisownResult> DisownAsync(IEnumerable<Handle> handles, Target target, DisownOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<DisownResult> DisownAsync(ImmutableArray<Handle> handles, Target target, DisownOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new DisownParameters(handles, target);
 

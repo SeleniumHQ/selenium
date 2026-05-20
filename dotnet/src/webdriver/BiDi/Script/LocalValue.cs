@@ -89,14 +89,14 @@ public abstract record LocalValue
                 {
                     IEnumerable set = (IEnumerable)value;
 
-                    List<LocalValue> setValues = [];
+                    var setValues = ImmutableArray.CreateBuilder<LocalValue>();
 
                     foreach (var obj in set)
                     {
                         setValues.Add(ConvertFrom(obj));
                     }
 
-                    return new SetLocalValue(setValues);
+                    return new SetLocalValue(setValues.ToImmutable());
                 }
 
             case IDictionary dictionary:
@@ -215,7 +215,7 @@ public abstract record LocalValue
             list.Add(ConvertFrom(element));
         }
 
-        return new ArrayLocalValue(list);
+        return new ArrayLocalValue([.. list]);
     }
 
     public static LocalValue ConvertFrom(IDictionary? value)
@@ -232,7 +232,7 @@ public abstract record LocalValue
             bidiObject.Add([ConvertFrom(key), ConvertFrom(value[key])]);
         }
 
-        return new MapLocalValue(bidiObject);
+        return new MapLocalValue([.. bidiObject.Select(p => (ImmutableArray<LocalValue>)[.. p])]);
     }
 
     public static LocalValue ConvertFrom<T>(ISet<T?>? value)
@@ -244,7 +244,7 @@ public abstract record LocalValue
 
         LocalValue[] convertedValues = [.. value.Select(x => ConvertFrom(x))];
 
-        return new SetLocalValue(convertedValues);
+        return new SetLocalValue([.. convertedValues]);
     }
 
     private static LocalValue ReflectionBasedConvertFrom(object? value)
@@ -276,7 +276,7 @@ public abstract record LocalValue
             values.Add([property.Name, ConvertFrom(propertyValue)]);
         }
 
-        return new ObjectLocalValue(values);
+        return new ObjectLocalValue([.. values.Select(p => (ImmutableArray<LocalValue>)[.. p])]);
     }
 
     [JsonInclude]
@@ -338,7 +338,7 @@ public sealed record ChannelLocalValue(ChannelProperties Value) : LocalValue
     internal override string Type { get; } = "channel";
 }
 
-public sealed record ArrayLocalValue(IEnumerable<LocalValue> Value) : LocalValue
+public sealed record ArrayLocalValue(ImmutableArray<LocalValue> Value) : LocalValue
 {
     internal override string Type { get; } = "array";
 }
@@ -348,12 +348,12 @@ public sealed record DateLocalValue(string Value) : LocalValue
     internal override string Type { get; } = "date";
 }
 
-public sealed record MapLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue
+public sealed record MapLocalValue(ImmutableArray<ImmutableArray<LocalValue>> Value) : LocalValue
 {
     internal override string Type { get; } = "map";
 }
 
-public sealed record ObjectLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue
+public sealed record ObjectLocalValue(ImmutableArray<ImmutableArray<LocalValue>> Value) : LocalValue
 {
     internal override string Type { get; } = "object";
 }
@@ -363,7 +363,7 @@ public sealed record RegExpLocalValue(RegExpValue Value) : LocalValue
     internal override string Type { get; } = "regexp";
 }
 
-public sealed record SetLocalValue(IEnumerable<LocalValue> Value) : LocalValue
+public sealed record SetLocalValue(ImmutableArray<LocalValue> Value) : LocalValue
 {
     internal override string Type { get; } = "set";
 }

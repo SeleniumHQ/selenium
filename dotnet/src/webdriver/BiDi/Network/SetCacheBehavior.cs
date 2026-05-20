@@ -22,11 +22,11 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed record SetCacheBehaviorParameters(CacheBehavior CacheBehavior, IEnumerable<BrowsingContext.BrowsingContext>? Contexts) : Parameters;
+internal sealed record SetCacheBehaviorParameters(CacheBehavior CacheBehavior, ImmutableArray<BrowsingContext.BrowsingContext>? Contexts) : Parameters;
 
 public sealed record SetCacheBehaviorOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
+    public ImmutableArray<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 }
 
 public sealed record ContextSetCacheBehaviorOptions : CommandOptions

@@ -30,4 +30,4 @@ internal abstract record BaseParameters(
     RequestData Request,
     [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
     Browser.UserContext? UserContext,
-    IReadOnlyList<Intercept>? Intercepts);
+    ImmutableArray<Intercept>? Intercepts);

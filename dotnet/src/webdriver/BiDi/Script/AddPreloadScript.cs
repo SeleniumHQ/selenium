@@ -21,22 +21,22 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal sealed record AddPreloadScriptParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string FunctionDeclaration, IEnumerable<ChannelLocalValue>? Arguments, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts, string? Sandbox) : Parameters;
+internal sealed record AddPreloadScriptParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string FunctionDeclaration, ImmutableArray<ChannelLocalValue>? Arguments, ImmutableArray<BrowsingContext.BrowsingContext>? Contexts, ImmutableArray<Browser.UserContext>? UserContexts, string? Sandbox) : Parameters;
 
 public sealed record AddPreloadScriptOptions : CommandOptions
 {
-    public IEnumerable<ChannelLocalValue>? Arguments { get; init; }
+    public ImmutableArray<ChannelLocalValue>? Arguments { get; init; }
 
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
+    public ImmutableArray<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
+    public ImmutableArray<Browser.UserContext>? UserContexts { get; init; }
 
     public string? Sandbox { get; init; }
 }
 
 public sealed record ContextAddPreloadScriptOptions : CommandOptions
 {
-    public IEnumerable<ChannelLocalValue>? Arguments { get; init; }
+    public ImmutableArray<ChannelLocalValue>? Arguments { get; init; }
 
     public string? Sandbox { get; init; }
 
