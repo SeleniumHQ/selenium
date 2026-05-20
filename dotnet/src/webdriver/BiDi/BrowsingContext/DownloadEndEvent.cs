@@ -31,6 +31,7 @@ public abstract record DownloadEndEventArgs(
 
 public sealed record DownloadCanceledEventArgs(
     IBiDi BiDi,
+    Download Download,
     BrowsingContext Context,
     Navigation? Navigation,
     DateTimeOffset Timestamp,
@@ -39,6 +40,7 @@ public sealed record DownloadCanceledEventArgs(
 
 public sealed record DownloadCompleteEventArgs(
     IBiDi BiDi,
+    Download Download,
     string? Filepath,
     BrowsingContext Context,
     Navigation? Navigation,
@@ -54,6 +56,7 @@ public sealed record DownloadCompleteEventArgs(
 internal abstract record DownloadEndParams(BrowsingContext Context);
 
 internal sealed record DownloadCanceledParams(
+    Download Download,
     BrowsingContext Context,
     Navigation? Navigation,
     [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
@@ -61,6 +64,7 @@ internal sealed record DownloadCanceledParams(
     : DownloadEndParams(Context), IBaseNavigationInfo;
 
 internal sealed record DownloadCompleteParams(
+    Download Download,
     string? Filepath,
     BrowsingContext Context,
     Navigation? Navigation,

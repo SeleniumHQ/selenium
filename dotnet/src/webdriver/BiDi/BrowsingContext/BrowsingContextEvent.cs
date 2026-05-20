@@ -50,15 +50,15 @@ public static class BrowsingContextEvent
 
     public static EventDescriptor<DownloadWillBeginEventArgs> DownloadWillBegin { get; } = EventDescriptor<DownloadWillBeginEventArgs>.Create<DownloadWillBeginParams>(
         "browsingContext.downloadWillBegin",
-        static (bidi, p) => new DownloadWillBeginEventArgs(bidi, p.SuggestedFilename, p.Context, p.Navigation, p.Timestamp, p.Url),
+        static (bidi, p) => new DownloadWillBeginEventArgs(bidi, p.Download, p.SuggestedFilename, p.Context, p.Navigation, p.Timestamp, p.Url),
         Default.DownloadWillBeginParams);
 
     public static EventDescriptor<DownloadEndEventArgs> DownloadEnd { get; } = EventDescriptor<DownloadEndEventArgs>.Create<DownloadEndParams>(
         "browsingContext.downloadEnd",
         static (bidi, p) => p switch
         {
-            DownloadCanceledParams c => new DownloadCanceledEventArgs(bidi, c.Context, c.Navigation, c.Timestamp, c.Url),
-            DownloadCompleteParams c => new DownloadCompleteEventArgs(bidi, c.Filepath, c.Context, c.Navigation, c.Timestamp, c.Url),
+            DownloadCanceledParams c => new DownloadCanceledEventArgs(bidi, c.Download, c.Context, c.Navigation, c.Timestamp, c.Url),
+            DownloadCompleteParams c => new DownloadCompleteEventArgs(bidi, c.Download, c.Filepath, c.Context, c.Navigation, c.Timestamp, c.Url),
             _ => throw new BiDiException($"Unknown {nameof(DownloadEndParams)} type: {p.GetType()}")
         },
         Default.DownloadEndParams);
