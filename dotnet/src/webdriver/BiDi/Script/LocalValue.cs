@@ -225,14 +225,14 @@ public abstract record LocalValue
             return new NullLocalValue();
         }
 
-        var bidiObject = new List<List<LocalValue>>(value.Count);
+        var builder = ImmutableArray.CreateBuilder<ImmutableArray<LocalValue>>(value.Count);
 
-        foreach (var key in value.Keys)
+        foreach (DictionaryEntry entry in value)
         {
-            bidiObject.Add([ConvertFrom(key), ConvertFrom(value[key])]);
+            builder.Add([ConvertFrom(entry.Key), ConvertFrom(entry.Value)]);
         }
 
-        return new MapLocalValue([.. bidiObject.Select(p => (ImmutableArray<LocalValue>)[.. p])]);
+        return new MapLocalValue(builder.MoveToImmutable());
     }
 
     public static LocalValue ConvertFrom<T>(ISet<T?>? value)
@@ -258,7 +258,7 @@ public abstract record LocalValue
 
         System.Reflection.PropertyInfo[] properties = value.GetType().GetProperties(Flags);
 
-        var values = new List<List<LocalValue>>(properties.Length);
+        var builder = ImmutableArray.CreateBuilder<ImmutableArray<LocalValue>>(properties.Length);
 
         foreach (System.Reflection.PropertyInfo? property in properties)
         {
@@ -273,10 +273,10 @@ public abstract record LocalValue
                 throw new BiDiException($"Could not retrieve property {property.Name} from {property.DeclaringType}", ex);
             }
 
-            values.Add([property.Name, ConvertFrom(propertyValue)]);
+            builder.Add([property.Name, ConvertFrom(propertyValue)]);
         }
 
-        return new ObjectLocalValue([.. values.Select(p => (ImmutableArray<LocalValue>)[.. p])]);
+        return new ObjectLocalValue(builder.MoveToImmutable());
     }
 
     [JsonInclude]
