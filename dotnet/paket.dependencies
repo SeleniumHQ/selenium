@@ -15,6 +15,7 @@ nuget NUnit.Analyzers 4.13.0
 nuget NUnit3TestAdapter 6.2.0
 nuget Microsoft.Testing.Platform 2.1.0
 nuget Microsoft.Testing.Extensions.VSTestBridge 2.1.0
+nuget System.Collections.Immutable 8.0.0
 nuget System.Text.Json 8.0.6
 nuget System.Threading.Channels 8.0.0
 nuget Runfiles 0.14.0

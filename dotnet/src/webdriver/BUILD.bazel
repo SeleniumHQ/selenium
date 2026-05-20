@@ -62,6 +62,7 @@ csharp_sourcelink_library(
     deps = [
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
         nuget_package("System.Buffers"),
+        nuget_package("System.Collections.Immutable"),
         nuget_package("System.Threading.Tasks.Extensions"),
         nuget_package("System.Memory"),
         nuget_package("System.Runtime.CompilerServices.Unsafe"),
@@ -95,6 +96,7 @@ csharp_sourcelink_library(
         nuget_package("NETStandard.Library"),
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
         nuget_package("System.Buffers"),
+        nuget_package("System.Collections.Immutable"),
         nuget_package("System.Threading.Channels"),
         nuget_package("System.Threading.Tasks.Extensions"),
         nuget_package("System.Memory"),
