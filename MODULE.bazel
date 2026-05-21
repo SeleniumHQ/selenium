@@ -26,7 +26,6 @@ single_version_override(
     version = "33.5",
 )
 
-bazel_dep(name = "rules_android", version = "0.7.2")
 bazel_dep(name = "rules_closure", version = "0.16.0")
 bazel_dep(name = "rules_dotnet", version = "0.21.5")
 
