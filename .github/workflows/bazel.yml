@@ -112,6 +112,17 @@ jobs:
           sync
           after=$(df -BG / | tail -1 | awk '{print $4}')
           echo "Space after: ${after}"
+      - name: Remove extra tools to free disk space (Windows)
+        if: inputs.os == 'windows'
+        shell: pwsh
+        run: |
+          Write-Host "Removing extra tools to free disk space..."
+          Write-Host "Space before: $([math]::Round((Get-PSDrive C).Free / 1GB, 1))GB free on C:"
+          Remove-Item -Path "C:\Android" -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item -Path "C:\Miniconda" -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item -Path "C:\tools\ghc" -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item -Path "C:\Program Files\LLVM" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "Space after: $([math]::Round((Get-PSDrive C).Free / 1GB, 1))GB free on C:"
       - name: Calculate fetch depth
         id: depth
         shell: bash
@@ -222,9 +233,9 @@ jobs:
           repository-cache: true
           bazelrc: common --color=yes
       - name: Disk usage after cache restore
-        if: inputs.os == 'ubuntu'
+        if: inputs.os != 'macos'
         shell: bash
-        run: df -h /
+        run: df -h "$GITHUB_WORKSPACE"
       - name: Setup Fluxbox and Xvfb
         if: inputs.os == 'ubuntu' && inputs.browser != ''
         run: |
@@ -251,12 +262,12 @@ jobs:
         if: inputs.gem-trusted-publishing
         uses: rubygems/configure-rubygems-credentials@main
       - name: Check disk space before build
-        if: inputs.os == 'ubuntu'
+        if: inputs.os != 'macos'
         shell: bash
         run: |
-          avail=$(df -k / | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
+          avail=$(df -k "$GITHUB_WORKSPACE" | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
           echo "Available disk space before build: ${avail}GB"
-          df -h /
+          df -h "$GITHUB_WORKSPACE"
           if [ "$avail" -lt 10 ]; then
             echo "::error::Insufficient disk space: ${avail}GB available (need >=10GB)"
             exit 1
