@@ -105,7 +105,6 @@ jobs:
           sudo rm -rf /usr/local/share/boost || true
           sudo rm -rf /usr/share/swift || true
           sudo rm -rf /usr/local/julia* || true
-          sudo rm -rf /usr/local/lib/android || true
           sudo rm -rf /usr/lib/google-cloud-sdk || true
           sudo rm -rf /opt/hostedtoolcache/CodeQL || true
           docker image prune -af 2>/dev/null || true
@@ -118,7 +117,6 @@ jobs:
         run: |
           Write-Host "Removing extra tools to free disk space..."
           Write-Host "Space before: $([math]::Round((Get-PSDrive C).Free / 1GB, 1))GB free on C:"
-          Remove-Item -Path "C:\Android" -Recurse -Force -ErrorAction SilentlyContinue
           Remove-Item -Path "C:\Miniconda" -Recurse -Force -ErrorAction SilentlyContinue
           Remove-Item -Path "C:\tools\ghc" -Recurse -Force -ErrorAction SilentlyContinue
           Remove-Item -Path "C:\Program Files\LLVM" -Recurse -Force -ErrorAction SilentlyContinue
