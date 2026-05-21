@@ -21,7 +21,7 @@
     "com.google.javascript:closure-compiler": -648553916,
     "com.google.jimfs:jimfs": 803072898,
     "com.google.protobuf.nano:protobuf-javanano": 1507249733,
-    "com.google.protobuf:protobuf-java": 1237026331,
+    "com.google.protobuf:protobuf-java": 1247529435,
     "com.graphql-java:graphql-java": 1011916509,
     "com.uber.nullaway:nullaway": -1227075053,
     "dev.failsafe:failsafe": -1314791755,
@@ -133,7 +133,7 @@
     "com.google.auto.service:auto-service:jar:sources": -1296332334,
     "com.google.auto:auto-common": 232847482,
     "com.google.auto:auto-common:jar:sources": -2100626169,
-    "com.google.closure-stylesheets:closure-stylesheets": 1279450803,
+    "com.google.closure-stylesheets:closure-stylesheets": -2111229693,
     "com.google.closure-stylesheets:closure-stylesheets:jar:sources": -1461998056,
     "com.google.code.findbugs:jsr305": 870839855,
     "com.google.code.findbugs:jsr305:jar:sources": -935881202,
@@ -156,15 +156,15 @@
     "com.google.j2objc:j2objc-annotations:jar:sources": -378364028,
     "com.google.javascript:closure-compiler": 495067644,
     "com.google.javascript:closure-compiler-externs": -1499626471,
-    "com.google.javascript:closure-compiler-unshaded": -829740299,
+    "com.google.javascript:closure-compiler-unshaded": 1492048911,
     "com.google.javascript:closure-compiler-unshaded:jar:sources": 953232666,
     "com.google.javascript:closure-compiler:jar:sources": 466877765,
     "com.google.jimfs:jimfs": -1932527879,
     "com.google.jimfs:jimfs:jar:sources": 2087504201,
     "com.google.protobuf.nano:protobuf-javanano": -942503907,
     "com.google.protobuf.nano:protobuf-javanano:jar:sources": -1736685757,
-    "com.google.protobuf:protobuf-java": 1198356280,
-    "com.google.protobuf:protobuf-java:jar:sources": 2013970572,
+    "com.google.protobuf:protobuf-java": 1331070778,
+    "com.google.protobuf:protobuf-java:jar:sources": 133270104,
     "com.graphql-java:graphql-java": 429142487,
     "com.graphql-java:graphql-java:jar:sources": -1171565042,
     "com.graphql-java:java-dataloader": -1559191244,
@@ -722,10 +722,10 @@
     },
     "com.google.protobuf:protobuf-java": {
       "shasums": {
-        "jar": "ae0459030b54a6f3058ad349aa01fc2edcbb2d4a84b73699675bbd125df2e96d",
-        "sources": "240db630888d78b6d67c0977416c8a48dd4bce42fb48424d054b128b72420b20"
+        "jar": "400621a8f0aac52fab7ec88f492edd356f5a4355caa8f92028f217a8b5e4ac3b",
+        "sources": "63798a62a5f62575c814b92b1b951252bfd379ebe8207610db41622e03b007dc"
       },
-      "version": "4.34.1"
+      "version": "4.35.0"
     },
     "com.graphql-java:graphql-java": {
       "shasums": {
