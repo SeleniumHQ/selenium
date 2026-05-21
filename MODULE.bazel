@@ -195,7 +195,7 @@ maven.install(
         "com.google.auto.service:auto-service:1.1.1",
         "com.google.auto.service:auto-service-annotations:1.1.1",
         "com.google.googlejavaformat:google-java-format:1.35.0",
-        "com.google.protobuf:protobuf-java:4.34.1",
+        "com.google.protobuf:protobuf-java:4.35.0",
         "com.google.protobuf.nano:protobuf-javanano:3.1.0",
         "com.graphql-java:graphql-java:26.0",
         "com.uber.nullaway:nullaway:0.13.4",
