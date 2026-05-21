@@ -21,7 +21,7 @@
  *  Wrapper for getting information from the Selenium Manager binaries
  */
 
-const { platform } = require('node:process')
+const { platform, arch } = require('node:process')
 const path = require('node:path')
 const fs = require('node:fs')
 const spawnSync = require('node:child_process').spawnSync
@@ -35,18 +35,33 @@ let debugMessagePrinted = false
  * @returns {string}
  */
 function getBinary() {
-  const directory = {
+  const os = {
     darwin: 'macos',
     win32: 'windows',
     cygwin: 'windows',
     linux: 'linux',
   }[platform]
 
-  const file = directory === 'windows' ? 'selenium-manager.exe' : 'selenium-manager'
+  if (os === undefined) {
+    throw new Error(`Unsupported platform: ${platform}`)
+  }
 
-  let seleniumManagerBasePath = path.join(__dirname, '..', '/bin')
+  const cpu = {
+    arm64: 'aarch64',
+    x64: 'x86_64',
+  }[arch]
 
-  const filePath = process.env.SE_MANAGER_PATH || path.join(seleniumManagerBasePath, directory, file)
+  if (cpu === undefined) {
+    throw new Error(`Unsupported architecture: ${arch}`)
+  }
+
+  if (os === 'macos' && cpu !== 'aarch64') {
+    throw new Error('Selenium Manager only ships an aarch64 binary for macOS')
+  }
+
+  const file = os === 'windows' ? 'selenium-manager.exe' : 'selenium-manager'
+  const seleniumManagerBasePath = path.join(__dirname, '..', 'bin', 'manager')
+  const filePath = process.env.SE_MANAGER_PATH || path.join(seleniumManagerBasePath, `${os}-${cpu}`, file)
 
   if (!fs.existsSync(filePath)) {
     throw new Error(`Unable to obtain Selenium Manager at ${filePath}`)

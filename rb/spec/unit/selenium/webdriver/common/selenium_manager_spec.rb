@@ -35,27 +35,31 @@ module Selenium
         end
 
         it 'detects Windows' do
-          allow(Platform).to receive(:assert_executable).with(a_string_ending_with('/windows/selenium-manager.exe'))
-                                                        .and_return(true)
+          allow(RbConfig::CONFIG).to receive(:[]).with('host_cpu').and_return('x86_64')
+          allow(Platform).to receive(:assert_executable)
+            .with(a_string_ending_with('windows-x86_64/selenium-manager.exe'))
+            .and_return(true)
           allow(Platform).to receive(:windows?).and_return(true)
 
-          expect(described_class.send(:binary)).to match(%r{/windows/selenium-manager\.exe$})
+          expect(described_class.send(:binary)).to match(%r{windows-x86_64/selenium-manager\.exe$})
         end
 
         it 'detects Mac' do
-          allow(Platform).to receive(:assert_executable).with(a_string_ending_with('/macos/selenium-manager'))
+          allow(RbConfig::CONFIG).to receive(:[]).with('host_cpu').and_return('arm64')
+          allow(Platform).to receive(:assert_executable).with(a_string_ending_with('macos-aarch64/selenium-manager'))
                                                         .and_return(true)
           allow(Platform).to receive_messages(windows?: false, mac?: true)
 
-          expect(described_class.send(:binary)).to match(%r{/macos/selenium-manager$})
+          expect(described_class.send(:binary)).to match(%r{macos-aarch64/selenium-manager$})
         end
 
         it 'detects Linux' do
-          allow(Platform).to receive(:assert_executable).with(a_string_ending_with('/linux/selenium-manager'))
+          allow(RbConfig::CONFIG).to receive(:[]).with('host_cpu').and_return('x86_64')
+          allow(Platform).to receive(:assert_executable).with(a_string_ending_with('linux-x86_64/selenium-manager'))
                                                         .and_return(true)
           allow(Platform).to receive_messages(windows?: false, mac?: false, linux?: true)
 
-          expect(described_class.send(:binary)).to match(%r{/linux/selenium-manager$})
+          expect(described_class.send(:binary)).to match(%r{linux-x86_64/selenium-manager$})
         end
 
         it 'errors if cannot find' do
