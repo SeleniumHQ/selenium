@@ -105,6 +105,10 @@ jobs:
           sudo rm -rf /usr/local/share/boost || true
           sudo rm -rf /usr/share/swift || true
           sudo rm -rf /usr/local/julia* || true
+          sudo rm -rf /usr/local/lib/android || true
+          sudo rm -rf /usr/lib/google-cloud-sdk || true
+          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+          docker image prune -af 2>/dev/null || true
           sync
           after=$(df -BG / | tail -1 | awk '{print $4}')
           echo "Space after: ${after}"
@@ -217,6 +221,10 @@ jobs:
               crates: rust/Cargo.Bazel.lock
           repository-cache: true
           bazelrc: common --color=yes
+      - name: Disk usage after cache restore
+        if: inputs.os == 'ubuntu'
+        shell: bash
+        run: df -h /
       - name: Setup Fluxbox and Xvfb
         if: inputs.os == 'ubuntu' && inputs.browser != ''
         run: |
@@ -242,6 +250,17 @@ jobs:
       - name: Configure RubyGems credentials via OIDC
         if: inputs.gem-trusted-publishing
         uses: rubygems/configure-rubygems-credentials@main
+      - name: Check disk space before build
+        if: inputs.os == 'ubuntu'
+        shell: bash
+        run: |
+          avail=$(df -k / | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
+          echo "Available disk space before build: ${avail}GB"
+          df -h /
+          if [ "$avail" -lt 10 ]; then
+            echo "::error::Insufficient disk space: ${avail}GB available (need >=10GB)"
+            exit 1
+          fi
       - name: Run Bazel
         id: run-bazel
         shell: bash
