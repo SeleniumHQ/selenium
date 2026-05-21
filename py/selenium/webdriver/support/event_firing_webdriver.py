@@ -90,11 +90,11 @@ class EventFiringWebDriver:
     def forward(self) -> None:
         self._dispatch("navigate_forward", (self._driver,), "forward", ())
 
-    def execute_script(self, script: str, *args):
+    def execute_script(self, script: str, *args) -> Any:
         unwrapped_args = (script,) + self._unwrap_element_args(args)
         return self._dispatch("execute_script", (script, self._driver), "execute_script", unwrapped_args)
 
-    def execute_async_script(self, script, *args):
+    def execute_async_script(self, script: str, *args) -> Any:
         unwrapped_args = (script,) + self._unwrap_element_args(args)
         return self._dispatch("execute_script", (script, self._driver), "execute_async_script", unwrapped_args)
 
