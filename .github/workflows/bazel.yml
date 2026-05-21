@@ -116,11 +116,14 @@ jobs:
         shell: pwsh
         run: |
           Write-Host "Removing extra tools to free disk space..."
-          Write-Host "Space before: $([math]::Round((Get-PSDrive C).Free / 1GB, 1))GB free on C:"
+          Write-Host "Space before: C: $([math]::Round((Get-PSDrive C).Free / 1GB, 1))GB free, D: $([math]::Round((Get-PSDrive D).Free / 1GB, 1))GB free"
           Remove-Item -Path "C:\Miniconda" -Recurse -Force -ErrorAction SilentlyContinue
           Remove-Item -Path "C:\tools\ghc" -Recurse -Force -ErrorAction SilentlyContinue
           Remove-Item -Path "C:\Program Files\LLVM" -Recurse -Force -ErrorAction SilentlyContinue
-          Write-Host "Space after: $([math]::Round((Get-PSDrive C).Free / 1GB, 1))GB free on C:"
+          Remove-Item -Path "C:\Program Files\PostgreSQL" -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item -Path "C:\Program Files\MongoDB" -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item -Path "C:\Program Files\MySQL" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "Space after: C: $([math]::Round((Get-PSDrive C).Free / 1GB, 1))GB free, D: $([math]::Round((Get-PSDrive D).Free / 1GB, 1))GB free"
       - name: Calculate fetch depth
         id: depth
         shell: bash
@@ -233,7 +236,9 @@ jobs:
       - name: Disk usage after cache restore
         if: inputs.os != 'macos'
         shell: bash
-        run: df -h "$GITHUB_WORKSPACE"
+        run: |
+          df -h "$GITHUB_WORKSPACE"
+          if [[ "$RUNNER_OS" == "Windows" ]]; then df -h /c; fi
       - name: Setup Fluxbox and Xvfb
         if: inputs.os == 'ubuntu' && inputs.browser != ''
         run: |
@@ -263,9 +268,16 @@ jobs:
         if: inputs.os != 'macos'
         shell: bash
         run: |
-          avail=$(df -k "$GITHUB_WORKSPACE" | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
-          echo "Available disk space before build: ${avail}GB"
           df -h "$GITHUB_WORKSPACE"
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            # On Windows the workspace is on D: but C: is the constrained drive
+            avail=$(df -k /c | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
+            echo "Available disk space before build (C:): ${avail}GB"
+            df -h /c
+          else
+            avail=$(df -k "$GITHUB_WORKSPACE" | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
+            echo "Available disk space before build: ${avail}GB"
+          fi
           if [ "$avail" -lt 10 ]; then
             echo "::error::Insufficient disk space: ${avail}GB available (need >=10GB)"
             exit 1
