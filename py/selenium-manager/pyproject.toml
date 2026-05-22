@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "selenium-manager"
+version = "4.45.0"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+description = "Selenium Manager — browser and driver manager for the Selenium ecosystem"
+readme = "README.rst"
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Operating System :: POSIX",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS :: MacOS X",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Libraries",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "selenium-manager-linux-x86-64==4.45.0; sys_platform=='linux' and platform_machine=='x86_64'",
+    "selenium-manager-macos==4.45.0; sys_platform=='darwin'",
+    "selenium-manager-windows==4.45.0; sys_platform=='win32'",
+]
+
+[project.scripts]
+selenium-manager = "selenium_manager:main"
+
+[project.urls]
+homepage = "https://www.selenium.dev"
+source = "https://github.com/SeleniumHQ/selenium/tree/trunk/py/selenium-manager"
+download = "https://pypi.org/project/selenium-manager"
+documentation = "https://www.selenium.dev/documentation/selenium_manager"
+issues = "https://github.com/SeleniumHQ/selenium/issues"
+
+[tool.setuptools.packages.find]
+include = ["selenium_manager*"]

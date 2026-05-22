@@ -1,0 +1,28 @@
+{
+  "name": "@selenium/manager-darwin",
+  "version": "4.45.0",
+  "description": "Selenium Manager binary for macOS (universal binary, x64 + arm64)",
+  "license": "Apache-2.0",
+  "os": ["darwin"],
+  "homepage": "https://github.com/SeleniumHQ/selenium/tree/trunk/javascript/selenium-manager#readme",
+  "bugs": {
+    "url": "https://github.com/SeleniumHQ/selenium/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SeleniumHQ/selenium.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/SeleniumHQ"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/selenium"
+    }
+  ]
+}
