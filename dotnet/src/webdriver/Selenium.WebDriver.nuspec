@@ -22,23 +22,7 @@
     <releaseNotes>
       See the latest changes, included in this release, at https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/CHANGELOG.
     </releaseNotes>
-    <dependencies>
-      <group targetFramework="net462">
-        <dependency id="Microsoft.Bcl.AsyncInterfaces" version="8.0.0" exclude="Build,Analyzers" />
-        <dependency id="System.Collections.Immutable" version="8.0.0" exclude="Build,Analyzers" />
-        <dependency id="System.Text.Json" version="8.0.6" exclude="Build,Analyzers" />
-        <dependency id="System.Threading.Channels" version="8.0.0" exclude="Build,Analyzers" />
-      </group>
-      <group targetFramework="netstandard2.0">
-        <dependency id="Microsoft.Bcl.AsyncInterfaces" version="8.0.0" exclude="Build,Analyzers" />
-        <dependency id="System.Collections.Immutable" version="8.0.0" exclude="Build,Analyzers" />
-        <dependency id="System.Text.Json" version="8.0.6" exclude="Build,Analyzers" />
-        <dependency id="System.Threading.Channels" version="8.0.0" exclude="Build,Analyzers" />
-      </group>
-      <group targetFramework="net8.0">
-
-      </group>
-    </dependencies>
+    $dependencies$
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.IO.Compression" />
       <frameworkAssembly assemblyName="System.Drawing" />
