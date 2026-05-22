@@ -10,10 +10,11 @@
     <EnableNUnitRunner>true</EnableNUnitRunner>
   </PropertyGroup>
 
+  <!-- Versions for these PackageReferences come from dotnet/Directory.Packages.props (CPM). -->
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="4.6.0" />
-    <PackageReference Include="NUnit.Analyzers" Version="4.13.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="6.2.0" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit.Analyzers" />
+    <PackageReference Include="NUnit3TestAdapter" />
   </ItemGroup>
 
   <ItemGroup>
