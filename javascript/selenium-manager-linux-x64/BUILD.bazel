@@ -1,0 +1,34 @@
+load("@aspect_rules_js//npm:defs.bzl", "npm_package")
+load("//common:defs.bzl", "copy_file")
+
+SM_VERSION = "4.45.0"
+
+copy_file(
+    name = "manager-binary",
+    src = "//common/manager:selenium-manager-linux",
+    out = "bin/selenium-manager",
+)
+
+genrule(
+    name = "license",
+    srcs = ["//:license"],
+    outs = [
+        "LICENSE",
+        "NOTICE",
+    ],
+    cmd = "cp $(locations //:license) $(@D)",
+)
+
+npm_package(
+    name = "selenium-manager-linux-x64",
+    srcs = [
+        "package.json",
+        ":license",
+        ":manager-binary",
+    ],
+    package = "@selenium/manager-linux-x64",
+    publishable = True,
+    tags = ["release-artifact"],
+    version = SM_VERSION,
+    visibility = ["//visibility:public"],
+)

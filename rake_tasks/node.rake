@@ -6,6 +6,23 @@ def node_version
   end
 end
 
+def manager_npm_version
+  File.foreach('javascript/selenium-manager/package.json') do |line|
+    return line.split(':').last.strip.tr('",', '') if line.include?('version')
+  end
+end
+
+MANAGER_NPM_FILES = %w[
+  javascript/selenium-manager/package.json
+  javascript/selenium-manager/BUILD.bazel
+  javascript/selenium-manager-darwin/package.json
+  javascript/selenium-manager-darwin/BUILD.bazel
+  javascript/selenium-manager-linux-x64/package.json
+  javascript/selenium-manager-linux-x64/BUILD.bazel
+  javascript/selenium-manager-win32/package.json
+  javascript/selenium-manager-win32/BUILD.bazel
+].freeze unless defined?(MANAGER_NPM_FILES)
+
 def setup_github_npm_auth
   token = ENV.fetch('GITHUB_TOKEN', nil)
   raise 'Missing GitHub token: set GITHUB_TOKEN for nightly npm publish' if token.nil? || token.empty?
@@ -84,6 +101,40 @@ task :release do |_task, arguments|
   Bazel.execute('run', bazel_args, target)
 end
 
+desc 'Release @selenium/manager standalone packages to npm (use dry-run to test without publishing)'
+task :release_manager do |_task, arguments|
+  args = arguments.to_a
+  nightly = args.delete('nightly')
+  dry_run = args.delete('dry-run')
+
+  Rake::Task['node:check_credentials'].invoke(*(nightly ? ['nightly'] : [])) unless dry_run
+
+  if nightly
+    puts 'Updating @selenium/manager version to nightly...'
+    old_version = manager_npm_version
+    nightly_suffix = "-nightly#{Time.now.strftime('%Y%m%d%H%M')}"
+    base = old_version.split('-').first
+    new_version = "#{base}#{nightly_suffix}"
+    Rake::Task['node:version_manager'].invoke(new_version)
+    setup_github_npm_auth unless dry_run
+  end
+
+  bazel_args = ['--config=release']
+  bazel_args += ['--', '--dry-run=true'] if dry_run
+
+  targets = [
+    '//javascript/selenium-manager-linux-x64:selenium-manager-linux-x64.publish',
+    '//javascript/selenium-manager-darwin:selenium-manager-darwin.publish',
+    '//javascript/selenium-manager-win32:selenium-manager-win32.publish',
+    '//javascript/selenium-manager:selenium-manager.publish',
+  ]
+
+  targets.each do |target|
+    puts dry_run ? "Dry-run: #{target}" : "Publishing: #{target}"
+    Bazel.execute('run', bazel_args, target)
+  end
+end
+
 desc 'Verify Node package is published on npm'
 task :verify do
   SeleniumRake.verify_package_published("https://registry.npmjs.org/selenium-webdriver/#{node_version}")
@@ -130,6 +181,22 @@ task :version, [:version] do |_task, arguments|
   puts "Updating Node from #{old_version} to #{new_version}"
 
   %w[javascript/selenium-webdriver/package.json javascript/selenium-webdriver/BUILD.bazel].each do |file|
+    text = File.read(file).gsub(old_version, new_version)
+    File.open(file, 'w') { |f| f.puts text }
+  end
+
+  Rake::Task['node:version_manager'].invoke(new_version)
+end
+
+desc 'Update @selenium/manager package versions'
+task :version_manager, [:new_version] do |_task, arguments|
+  new_version = arguments[:new_version]
+  raise 'new_version argument required' if new_version.nil? || new_version.empty?
+
+  old_version = manager_npm_version
+  puts "Updating @selenium/manager packages from #{old_version} to #{new_version}"
+
+  MANAGER_NPM_FILES.each do |file|
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, 'w') { |f| f.puts text }
   end
