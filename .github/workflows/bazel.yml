@@ -189,7 +189,9 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
       - name: Setup Bazel with caching
+        id: setup-bazel-cached
         if: inputs.caching
+        continue-on-error: true
         uses: bazel-contrib/setup-bazel@0.19.0
         with:
           cache-save: ${{ github.ref_name == 'trunk' }}
@@ -222,8 +224,16 @@ jobs:
               "+pin_browsers_extension+mac_firefox": false
               "+pin_browsers_extension+mac_geckodriver": false
           repository-cache: true
+      - name: Report Bazel cache setup failure
+        if: steps.setup-bazel-cached.outcome == 'failure'
+        shell: bash
+        run: |
+          echo "::warning::Bazel cache setup failed — falling back to setup without cache"
+          echo "=== Disk space at time of cache failure ==="
+          df -h "$GITHUB_WORKSPACE" || true
+          if [[ "$RUNNER_OS" == "Windows" ]]; then df -h /c || true; fi
       - name: Setup Bazel without caching
-        if: inputs.caching == false
+        if: inputs.caching == false || steps.setup-bazel-cached.outcome == 'failure'
         uses: bazel-contrib/setup-bazel@0.19.0
         with:
           cache-save: false
