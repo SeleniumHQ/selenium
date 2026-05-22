@@ -12,16 +12,18 @@ def manager_npm_version
   end
 end
 
-MANAGER_NPM_FILES = %w[
-  javascript/selenium-manager/package.json
-  javascript/selenium-manager/BUILD.bazel
-  javascript/selenium-manager-darwin/package.json
-  javascript/selenium-manager-darwin/BUILD.bazel
-  javascript/selenium-manager-linux-x64/package.json
-  javascript/selenium-manager-linux-x64/BUILD.bazel
-  javascript/selenium-manager-win32/package.json
-  javascript/selenium-manager-win32/BUILD.bazel
-].freeze unless defined?(MANAGER_NPM_FILES)
+unless defined?(MANAGER_NPM_FILES)
+  MANAGER_NPM_FILES = %w[
+    javascript/selenium-manager/package.json
+    javascript/selenium-manager/BUILD.bazel
+    javascript/selenium-manager-darwin/package.json
+    javascript/selenium-manager-darwin/BUILD.bazel
+    javascript/selenium-manager-linux-x64/package.json
+    javascript/selenium-manager-linux-x64/BUILD.bazel
+    javascript/selenium-manager-win32/package.json
+    javascript/selenium-manager-win32/BUILD.bazel
+  ].freeze
+end
 
 def setup_github_npm_auth
   token = ENV.fetch('GITHUB_TOKEN', nil)
@@ -126,7 +128,7 @@ task :release_manager do |_task, arguments|
     '//javascript/selenium-manager-linux-x64:selenium-manager-linux-x64.publish',
     '//javascript/selenium-manager-darwin:selenium-manager-darwin.publish',
     '//javascript/selenium-manager-win32:selenium-manager-win32.publish',
-    '//javascript/selenium-manager:selenium-manager.publish',
+    '//javascript/selenium-manager:selenium-manager.publish'
   ]
 
   targets.each do |target|
