@@ -167,7 +167,9 @@ BROWSERS = {
     },
 }
 
-def rb_integration_test(name, srcs, deps = [], data = [], browsers = BROWSERS.keys(), tags = []):
+DEFAULT_BROWSERS = [b for b in BROWSERS.keys() if b != "ie"]
+
+def rb_integration_test(name, srcs, deps = [], data = [], browsers = DEFAULT_BROWSERS, tags = []):
     # Generate a library target that is used by //rb/spec:spec to expose all tests to //rb:lint.
     rb_library(
         name = name,

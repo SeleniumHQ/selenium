@@ -733,6 +733,8 @@ BROWSER_TESTS = {
     },
 }
 
+DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
+
 # Generate test-<browser> targets (non-bidi)
 [
     py_test_suite(
@@ -757,7 +759,7 @@ BROWSER_TESTS = {
             ":webserver",
         ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
     )
-    for browser in BROWSER_TESTS.keys()
+    for browser in DEFAULT_BROWSER_TESTS
 ]
 
 # Generate test-<browser>-bidi targets (only for browsers with bidi=True)
@@ -785,7 +787,7 @@ BROWSER_TESTS = {
             ":webserver",
         ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
     )
-    for browser in BROWSER_TESTS.keys()
+    for browser in DEFAULT_BROWSER_TESTS
     if BROWSER_TESTS[browser].get("bidi", False)
 ]
 

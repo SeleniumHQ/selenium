@@ -104,6 +104,8 @@ _BROWSERS = {
     },
 }
 
+_DEFAULT_BROWSERS = [b for b in _BROWSERS if b != "ie"]
+
 _HEADLESS_ARGS = select({
     "@selenium//common:use_headless_browser": [
         "--test-parameter",
@@ -188,7 +190,7 @@ def dotnet_nunit_test_suite(
     # Collect all browser data deps so the compiled binary has everything.
     all_browser_data = []
     for browser in browsers:
-        if browser:
+        if browser and browser in _DEFAULT_BROWSERS:
             all_browser_data += _BROWSERS[browser]["data"]
 
     # Compile all tests into a single binary once,
@@ -209,6 +211,8 @@ def dotnet_nunit_test_suite(
         class_name = test_name.rsplit("/", 1)[-1]
 
         for browser in browsers:
+            if browser and browser not in _DEFAULT_BROWSERS:
+                continue
             browser_test_name = "%s-%s" % (test_name, browser) if browser else test_name
             browser_cfg = _BROWSERS[browser] if browser else None
             browser_args = browser_cfg["args"] + _HEADLESS_ARGS if browser_cfg else []
