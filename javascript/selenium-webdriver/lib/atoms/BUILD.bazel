@@ -9,23 +9,11 @@ js_binary(
 
 js_run_binary(
     name = "is_displayed",
-    srcs = ["//javascript/atoms/fragments:is-displayed.js"],
+    srcs = ["//javascript/atoms/fragments:is-displayed-typescript.js"],
     outs = ["is-displayed.js"],
     args = [
-        "$(rootpath //javascript/atoms/fragments:is-displayed.js)",
-        "$(rootpath :is-displayed.js)",
-    ],
-    tool = ":make_atoms_module",
-    visibility = ["//javascript/selenium-webdriver:__pkg__"],
-)
-
-js_run_binary(
-    name = "is_displayed_typescript",
-    srcs = ["//javascript/atoms/fragments:is-displayed-typescript.js"],
-    outs = ["is-displayed-typescript.js"],
-    args = [
         "$(rootpath //javascript/atoms/fragments:is-displayed-typescript.js)",
-        "$(rootpath :is-displayed-typescript.js)",
+        "$(rootpath :is-displayed.js)",
     ],
     tool = ":make_atoms_module",
     visibility = ["//javascript/selenium-webdriver:__pkg__"],
@@ -45,10 +33,10 @@ js_run_binary(
 
 js_run_binary(
     name = "find-elements",
-    srcs = ["//javascript/atoms/fragments:find-elements.js"],
+    srcs = ["//javascript/atoms/fragments:find-elements-typescript.js"],
     outs = ["find-elements.js"],
     args = [
-        "$(rootpath //javascript/atoms/fragments:find-elements.js)",
+        "$(rootpath //javascript/atoms/fragments:find-elements-typescript.js)",
         "$(rootpath :find-elements.js)",
     ],
     tool = ":make_atoms_module",

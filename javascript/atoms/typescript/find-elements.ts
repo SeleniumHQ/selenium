@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-(function (): (target: Record<string, unknown>, root?: Document | Element) => Element[] {
+(function findElements(target: Record<string, unknown>, root?: Document | Element): Element[] {
   type LocatorTarget = Record<string, unknown>
   type Root = Document | Element
   type Rect = { left: number; top: number; width: number; height: number }
@@ -284,43 +284,39 @@
     return sortByProximity(lastAnchor, matched)
   }
 
-  function findElements(target: LocatorTarget, root?: Root): Element[] {
-    const actualRoot: Root = root || document
-    const keys = Object.keys(target).filter(k => Object.prototype.hasOwnProperty.call(target, k))
-    if (!keys.length) {
-      throw botError(INVALID_ARGUMENT, 'Unsupported locator strategy: (empty)')
-    }
-    const key = keys[0]
-    const value = target[key]
-
-    switch (key) {
-      case 'className':
-      case 'class name':
-        return classNameMany(value as string, actualRoot)
-      case 'css':
-      case 'css selector':
-        return cssMany(value as string, actualRoot)
-      case 'id':
-        return idMany(value as string, actualRoot)
-      case 'linkText':
-      case 'link text':
-        return linkTextMany(value as string, actualRoot, false)
-      case 'partialLinkText':
-      case 'partial link text':
-        return linkTextMany(value as string, actualRoot, true)
-      case 'name':
-        return nameMany(value as string, actualRoot)
-      case 'tagName':
-      case 'tag name':
-        return tagNameMany(value as string, actualRoot)
-      case 'xpath':
-        return xpathMany(value as string, actualRoot)
-      case 'relative':
-        return relativeMany(value as Record<string, unknown>, actualRoot)
-      default:
-        throw botError(INVALID_ARGUMENT, 'Unsupported locator strategy: ' + key)
-    }
+  const actualRoot: Root = root || document
+  const keys = Object.keys(target).filter(k => Object.prototype.hasOwnProperty.call(target, k))
+  if (!keys.length) {
+    throw botError(INVALID_ARGUMENT, 'Unsupported locator strategy: (empty)')
   }
+  const key = keys[0]
+  const value = target[key]
 
-  return findElements
-})()
+  switch (key) {
+    case 'className':
+    case 'class name':
+      return classNameMany(value as string, actualRoot)
+    case 'css':
+    case 'css selector':
+      return cssMany(value as string, actualRoot)
+    case 'id':
+      return idMany(value as string, actualRoot)
+    case 'linkText':
+    case 'link text':
+      return linkTextMany(value as string, actualRoot, false)
+    case 'partialLinkText':
+    case 'partial link text':
+      return linkTextMany(value as string, actualRoot, true)
+    case 'name':
+      return nameMany(value as string, actualRoot)
+    case 'tagName':
+    case 'tag name':
+      return tagNameMany(value as string, actualRoot)
+    case 'xpath':
+      return xpathMany(value as string, actualRoot)
+    case 'relative':
+      return relativeMany(value as Record<string, unknown>, actualRoot)
+    default:
+      throw botError(INVALID_ARGUMENT, 'Unsupported locator strategy: ' + key)
+  }
+})
