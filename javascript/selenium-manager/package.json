@@ -1,0 +1,45 @@
+{
+  "name": "@selenium/manager",
+  "version": "4.45.0",
+  "description": "Selenium Manager — browser and driver manager for the Selenium ecosystem",
+  "license": "Apache-2.0",
+  "keywords": [
+    "automation",
+    "selenium",
+    "testing",
+    "webdriver",
+    "browser-manager"
+  ],
+  "homepage": "https://github.com/SeleniumHQ/selenium/tree/trunk/javascript/selenium-manager#readme",
+  "bugs": {
+    "url": "https://github.com/SeleniumHQ/selenium/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SeleniumHQ/selenium.git"
+  },
+  "engines": {
+    "node": ">= 18.0.0"
+  },
+  "bin": {
+    "selenium-manager": "./bin/selenium-manager.js"
+  },
+  "optionalDependencies": {
+    "@selenium/manager-darwin": "4.45.0",
+    "@selenium/manager-linux-x64": "4.45.0",
+    "@selenium/manager-win32": "4.45.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/SeleniumHQ"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/selenium"
+    }
+  ]
+}
