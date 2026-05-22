@@ -14,23 +14,27 @@ def manager_python_version
   end
 end
 
-MANAGER_PYTHON_FILES = %w[
-  py/selenium-manager/pyproject.toml
-  py/selenium-manager/BUILD.bazel
-  py/selenium-manager-linux-x86-64/pyproject.toml
-  py/selenium-manager-linux-x86-64/BUILD.bazel
-  py/selenium-manager-macos/pyproject.toml
-  py/selenium-manager-macos/BUILD.bazel
-  py/selenium-manager-windows/pyproject.toml
-  py/selenium-manager-windows/BUILD.bazel
-].freeze unless defined?(MANAGER_PYTHON_FILES)
+unless defined?(MANAGER_PYTHON_FILES)
+  MANAGER_PYTHON_FILES = %w[
+    py/selenium-manager/pyproject.toml
+    py/selenium-manager/BUILD.bazel
+    py/selenium-manager-linux-x86-64/pyproject.toml
+    py/selenium-manager-linux-x86-64/BUILD.bazel
+    py/selenium-manager-macos/pyproject.toml
+    py/selenium-manager-macos/BUILD.bazel
+    py/selenium-manager-windows/pyproject.toml
+    py/selenium-manager-windows/BUILD.bazel
+  ].freeze
+end
 
-MANAGER_PYTHON_WHEEL_TARGETS = %w[
-  //py/selenium-manager-linux-x86-64:selenium-manager-linux-x86-64-wheel
-  //py/selenium-manager-macos:selenium-manager-macos-wheel
-  //py/selenium-manager-windows:selenium-manager-windows-wheel
-  //py/selenium-manager:selenium-manager-wheel
-].freeze unless defined?(MANAGER_PYTHON_WHEEL_TARGETS)
+unless defined?(MANAGER_PYTHON_WHEEL_TARGETS)
+  MANAGER_PYTHON_WHEEL_TARGETS = %w[
+    //py/selenium-manager-linux-x86-64:selenium-manager-linux-x86-64-wheel
+    //py/selenium-manager-macos:selenium-manager-macos-wheel
+    //py/selenium-manager-windows:selenium-manager-windows-wheel
+    //py/selenium-manager:selenium-manager-wheel
+  ].freeze
+end
 
 desc 'Build Python wheel and sdist with optional arguments'
 task :build do |_task, arguments|

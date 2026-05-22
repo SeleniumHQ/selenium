@@ -28,18 +28,12 @@ _PLATFORM_MODULES = {
 def main() -> None:
     module_name = _PLATFORM_MODULES.get(sys.platform)
     if module_name is None:
-        raise SystemExit(
-            f"Unsupported platform: {sys.platform}. "
-            f"Supported: linux, darwin, win32"
-        )
+        raise SystemExit(f"Unsupported platform: {sys.platform}. Supported: linux, darwin, win32")
 
     try:
         platform_module = importlib.import_module(module_name)
     except ImportError as exc:
         pkg_name = module_name.replace("_", "-")
-        raise SystemExit(
-            f"Platform package {pkg_name} is not installed.\n"
-            f"Run: pip install {pkg_name}"
-        ) from exc
+        raise SystemExit(f"Platform package {pkg_name} is not installed.\nRun: pip install {pkg_name}") from exc
 
     platform_module.main()
