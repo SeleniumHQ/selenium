@@ -21,8 +21,6 @@ import sys
 
 
 def main() -> None:
-    with importlib.resources.as_file(
-        importlib.resources.files(__package__) / "bin" / "selenium-manager.exe"
-    ) as binary:
+    with importlib.resources.as_file(importlib.resources.files(__package__) / "bin" / "selenium-manager.exe") as binary:
         result = subprocess.run([str(binary)] + sys.argv[1:])
     sys.exit(result.returncode)

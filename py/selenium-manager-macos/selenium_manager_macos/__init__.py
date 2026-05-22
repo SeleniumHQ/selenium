@@ -22,9 +22,7 @@ import sys
 
 
 def main() -> None:
-    with importlib.resources.as_file(
-        importlib.resources.files(__package__) / "bin" / "selenium-manager"
-    ) as binary:
+    with importlib.resources.as_file(importlib.resources.files(__package__) / "bin" / "selenium-manager") as binary:
         os.chmod(binary, os.stat(binary).st_mode | 0o755)
         result = subprocess.run([str(binary)] + sys.argv[1:])
     sys.exit(result.returncode)
