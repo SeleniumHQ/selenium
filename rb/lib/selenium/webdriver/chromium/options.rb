@@ -70,6 +70,14 @@ module Selenium
         def initialize(profile: nil, **)
           super(**)
 
+          if profile
+            WebDriver.logger.deprecate(
+              "#{self.class}.new(profile:) kwarg",
+              "Options#add_argument('--user-data-dir=...'), Options#add_preference, and Options#add_extension",
+              id: :chromium_options_profile
+            )
+          end
+
           @profile = profile
 
           @options = {args: [],
