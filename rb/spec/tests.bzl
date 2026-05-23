@@ -168,6 +168,16 @@ BROWSERS = {
 
 DEFAULT_BROWSERS = [b for b in BROWSERS.keys() if b not in ("ie", "safari-preview")]
 
+# Tags listed here apply only to the local target of the listed browsers.
+_BROWSER_TAG_FILTERS = {
+    "os-sensitive": ["chrome-beta", "edge", "firefox-beta", "safari"],
+}
+
+def _split_filtered_tags(tags, browser):
+    universal_tags = [t for t in tags if t not in _BROWSER_TAG_FILTERS]
+    local_tags = [t for t in tags if browser in _BROWSER_TAG_FILTERS.get(t, [])]
+    return universal_tags, local_tags
+
 def rb_integration_test(
         name,
         srcs,
@@ -185,6 +195,7 @@ def rb_integration_test(
     )
 
     for browser in browsers:
+        universal_tags, local_tags = _split_filtered_tags(tags, browser)
         if not bidi_only:
             # Generate a test target for local browser execution.
             rb_test(
@@ -195,7 +206,7 @@ def rb_integration_test(
                 data = BROWSERS[browser]["data"] + data + ["//common/src/web"],
                 env = BROWSERS[browser]["env"],
                 main = "@bundle//bin:rspec",
-                tags = COMMON_TAGS + BROWSERS[browser]["tags"] + tags + [browser],
+                tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + local_tags + [browser],
                 deps = ["//rb/spec/integration/selenium/webdriver:spec_helper"] + BROWSERS[browser]["deps"] + deps,
                 visibility = ["//rb:__subpackages__"],
                 target_compatible_with = BROWSERS[browser]["target_compatible_with"],
@@ -219,7 +230,7 @@ def rb_integration_test(
                         "WD_SPEC_DRIVER": "remote",
                     },
                     main = "@bundle//bin:rspec",
-                    tags = COMMON_TAGS + BROWSERS[browser]["tags"] + tags + ["{}-remote".format(browser)],
+                    tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + ["{}-remote".format(browser)],
                     deps = ["//rb/spec/integration/selenium/webdriver:spec_helper"] + BROWSERS[browser]["deps"] + deps,
                     visibility = ["//rb:__subpackages__"],
                     target_compatible_with = BROWSERS[browser]["target_compatible_with"],
@@ -235,7 +246,7 @@ def rb_integration_test(
                 data = BROWSERS[browser]["data"] + data + ["//common/src/web"],
                 env = BROWSERS[browser]["env"] | {"WEBDRIVER_BIDI": "true"},
                 main = "@bundle//bin:rspec",
-                tags = COMMON_TAGS + BROWSERS[browser]["tags"] + tags + ["{}-bidi".format(browser)],
+                tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + ["{}-bidi".format(browser)],
                 deps = {d: True for d in (
                     ["//rb/spec/integration/selenium/webdriver:spec_helper", "//rb/lib/selenium/webdriver:bidi"] +
                     BROWSERS[browser]["deps"] +
