@@ -25,6 +25,7 @@ rb_integration_test(
     ],
     tags = [
         "no-grid",
+        "os-sensitive",
         "skip-rbe",
     ],
 )

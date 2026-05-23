@@ -38,6 +38,7 @@ BROWSERS = {
         "deps": ["//rb/lib/selenium/webdriver:chrome"],
         "tags": [],
         "target_compatible_with": [],
+        "bidi": True,
         "env": {
             "WD_REMOTE_BROWSER": "chrome",
             "WD_SPEC_DRIVER": "chrome",
@@ -62,6 +63,7 @@ BROWSERS = {
         "deps": ["//rb/lib/selenium/webdriver:edge"],
         "tags": [],
         "target_compatible_with": [],
+        "bidi": True,
         "env": {
             "WD_REMOTE_BROWSER": "edge",
             "WD_SPEC_DRIVER": "edge",
@@ -108,6 +110,7 @@ BROWSERS = {
         "deps": ["//rb/lib/selenium/webdriver:firefox"],
         "tags": [],
         "target_compatible_with": [],
+        "bidi": True,
         "env": {
             "WD_REMOTE_BROWSER": "firefox",
             "WD_SPEC_DRIVER": "firefox",
@@ -165,7 +168,7 @@ BROWSERS = {
 
 DEFAULT_BROWSERS = [b for b in BROWSERS.keys() if b not in ("ie", "safari-preview")]
 
-def rb_integration_test(name, srcs, deps = [], data = [], browsers = DEFAULT_BROWSERS, tags = []):
+def rb_integration_test(name, srcs, deps = [], data = [], browsers = DEFAULT_BROWSERS, tags = [], bidi_only = False):
     # Generate a library target that is used by //rb/spec:spec to expose all tests to //rb:lint.
     rb_library(
         name = name,
@@ -174,46 +177,47 @@ def rb_integration_test(name, srcs, deps = [], data = [], browsers = DEFAULT_BRO
     )
 
     for browser in browsers:
-        # Generate a test target for local browser execution.
-        rb_test(
-            name = "{}-{}".format(name, browser),
-            size = "large",
-            srcs = srcs,
-            args = ["rb/spec/"],
-            data = BROWSERS[browser]["data"] + data + ["//common/src/web"],
-            env = BROWSERS[browser]["env"],
-            main = "@bundle//bin:rspec",
-            tags = COMMON_TAGS + BROWSERS[browser]["tags"] + tags + [browser],
-            deps = ["//rb/spec/integration/selenium/webdriver:spec_helper"] + BROWSERS[browser]["deps"] + deps,
-            visibility = ["//rb:__subpackages__"],
-            target_compatible_with = BROWSERS[browser]["target_compatible_with"],
-        )
+        if not bidi_only:
+            # Generate a test target for local browser execution.
+            rb_test(
+                name = "{}-{}".format(name, browser),
+                size = "large",
+                srcs = srcs,
+                args = ["rb/spec/"],
+                data = BROWSERS[browser]["data"] + data + ["//common/src/web"],
+                env = BROWSERS[browser]["env"],
+                main = "@bundle//bin:rspec",
+                tags = COMMON_TAGS + BROWSERS[browser]["tags"] + tags + [browser],
+                deps = ["//rb/spec/integration/selenium/webdriver:spec_helper"] + BROWSERS[browser]["deps"] + deps,
+                visibility = ["//rb:__subpackages__"],
+                target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+            )
 
-        # Generate a test target for remote browser execution (Grid).
-        rb_test(
-            name = "{}-{}-remote".format(name, browser),
-            size = "large",
-            srcs = srcs,
-            args = ["rb/spec/"],
-            data = BROWSERS[browser]["data"] + data + [
-                "//common/src/web",
-                "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
-                "//rb/spec:java-location",
-                "@bazel_tools//tools/jdk:current_java_runtime",
-            ],
-            env = BROWSERS[browser]["env"] | {
-                "WD_BAZEL_JAVA_LOCATION": "$(rootpath //rb/spec:java-location)",
-                "WD_SPEC_DRIVER": "remote",
-            },
-            main = "@bundle//bin:rspec",
-            tags = COMMON_TAGS + BROWSERS[browser]["tags"] + tags + ["{}-remote".format(browser)],
-            deps = ["//rb/spec/integration/selenium/webdriver:spec_helper"] + BROWSERS[browser]["deps"] + deps,
-            visibility = ["//rb:__subpackages__"],
-            target_compatible_with = BROWSERS[browser]["target_compatible_with"],
-        )
+            # Generate a test target for remote browser execution (Grid).
+            rb_test(
+                name = "{}-{}-remote".format(name, browser),
+                size = "large",
+                srcs = srcs,
+                args = ["rb/spec/"],
+                data = BROWSERS[browser]["data"] + data + [
+                    "//common/src/web",
+                    "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+                    "//rb/spec:java-location",
+                    "@bazel_tools//tools/jdk:current_java_runtime",
+                ],
+                env = BROWSERS[browser]["env"] | {
+                    "WD_BAZEL_JAVA_LOCATION": "$(rootpath //rb/spec:java-location)",
+                    "WD_SPEC_DRIVER": "remote",
+                },
+                main = "@bundle//bin:rspec",
+                tags = COMMON_TAGS + BROWSERS[browser]["tags"] + tags + ["{}-remote".format(browser)],
+                deps = ["//rb/spec/integration/selenium/webdriver:spec_helper"] + BROWSERS[browser]["deps"] + deps,
+                visibility = ["//rb:__subpackages__"],
+                target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+            )
 
-        # Generate a test target for bidi browser execution if there is a matching tag
-        if "bidi" in tags:
+        # Generate a test target for bidi browser execution on browsers that opt in.
+        if ("bidi" in tags or bidi_only) and BROWSERS[browser].get("bidi", False):
             rb_test(
                 name = "{}-{}-bidi".format(name, browser),
                 size = "large",
@@ -241,7 +245,7 @@ def rb_unit_test(name, srcs, deps, data = [], flaky = False):
         flaky = flaky,
         main = "@bundle//bin:rspec",
         data = data,
-        tags = ["no-sandbox"],  # TODO: Do we need this?
+        tags = ["unit"],
         deps = ["//rb/spec/unit/selenium/webdriver:spec_helper"] + deps,
         visibility = ["//rb:__subpackages__"],
     )

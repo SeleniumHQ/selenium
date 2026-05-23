@@ -19,6 +19,7 @@ rb_integration_test(
     browsers = ["edge"],
     tags = [
         "no-grid",
+        "os-sensitive",
         "skip-rbe",
     ],
 )
