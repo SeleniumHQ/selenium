@@ -247,6 +247,7 @@ def test_should_allow_auser_to_switch_from_an_iframe_back_to_the_main_content_of
     driver.find_element(By.ID, "iframe_page_heading")
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_allow_the_user_to_switch_to_an_iframe_and_remain_focused_on_it(driver, pages):
     pages.load("iframes.html")
     driver.switch_to.frame(0)
@@ -258,6 +259,7 @@ def get_text_of_greeting_element(driver):
     return WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "greeting"))).text
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_click_in_aframe(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame("third")
@@ -272,6 +274,7 @@ def test_should_be_able_to_click_in_aframe(driver, pages):
     assert get_text_of_greeting_element(driver) == "Success!"
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_click_in_aframe_that_rewrites_top_window_location(driver, pages):
     pages.load("click_tests/issue5237.html")
     driver.switch_to.frame(driver.find_element(By.ID, "search"))
@@ -280,6 +283,7 @@ def test_should_be_able_to_click_in_aframe_that_rewrites_top_window_location(dri
     WebDriverWait(driver, 3).until(EC.title_is("Target page for issue 5237"))
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_click_in_asub_frame(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame(driver.find_element(By.ID, "sixth"))
@@ -317,6 +321,7 @@ def test_get_current_url_returns_top_level_browsing_context_url_for_iframes(driv
     assert "iframes.html" in driver.current_url
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_switch_to_the_top_if_the_frame_is_deleted_from_under_us(driver, pages):
     pages.load("frame_switching_tests/deletingFrame.html")
     driver.switch_to.frame(driver.find_element(By.ID, "iframe1"))
@@ -333,6 +338,7 @@ def test_should_be_able_to_switch_to_the_top_if_the_frame_is_deleted_from_under_
     WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "success")))
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_switch_to_the_top_if_the_frame_is_deleted_from_under_us_with_frame_index(driver, pages):
     pages.load("frame_switching_tests/deletingFrame.html")
     iframe = 0
@@ -348,6 +354,7 @@ def test_should_be_able_to_switch_to_the_top_if_the_frame_is_deleted_from_under_
     WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "success")))
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_frame_to_be_available_and_switch_to_it_using_string_inputs(driver, pages):
     # Similar to above test, but using `iframe = "iframe1"` instead of `iframe = 0`
     pages.load("frame_switching_tests/deletingFrame.html")
@@ -364,6 +371,7 @@ def test_frame_to_be_available_and_switch_to_it_using_string_inputs(driver, page
     WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "success")))
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_switch_to_the_top_if_the_frame_is_deleted_from_under_us_with_webelement(driver, pages):
     pages.load("frame_switching_tests/deletingFrame.html")
     iframe = driver.find_element(By.ID, "iframe1")
