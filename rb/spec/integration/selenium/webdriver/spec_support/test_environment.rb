@@ -247,12 +247,11 @@ module Selenium
         end
 
         def remote_driver(**)
-          ensure_grid unless ENV['WD_REMOTE_URL']
-          url = ENV.fetch('WD_REMOTE_URL', remote_server.webdriver_url)
-
           attempts = 0
           begin
             attempts += 1
+            ensure_grid unless ENV['WD_REMOTE_URL']
+            url = ENV.fetch('WD_REMOTE_URL', remote_server.webdriver_url)
             WebDriver::Driver.for(:remote, url: url, **)
           rescue *REMOTE_DRIVER_ERRORS => e
             raise if attempts > 1
@@ -299,7 +298,7 @@ module Selenium
         end
 
         def chrome_options(args: [], **opts)
-          opts[:browser_version] = browser_version
+          opts[:browser_version] = browser_version unless ENV.key?('CHROME_BINARY')
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= rlocation(ENV['CHROME_BINARY']) if ENV.key?('CHROME_BINARY')
           args << '--headless' if ENV['HEADLESS']
@@ -310,7 +309,7 @@ module Selenium
         end
 
         def edge_options(args: [], **opts)
-          opts[:browser_version] = browser_version
+          opts[:browser_version] = browser_version unless ENV.key?('EDGE_BINARY')
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= rlocation(ENV['EDGE_BINARY']) if ENV.key?('EDGE_BINARY')
           args << '--headless' if ENV['HEADLESS']
