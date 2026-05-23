@@ -26,7 +26,7 @@ module Selenium
         before { driver.navigate.to url_for('xhtmlTest.html') }
 
         after do
-          if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome
+          if (GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome) || GlobalTestEnv.browser == :safari
             reset_driver!
           else
             driver.manage.delete_all_cookies

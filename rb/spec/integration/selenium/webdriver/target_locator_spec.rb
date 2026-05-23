@@ -168,8 +168,7 @@ module Selenium
         end
       end
 
-      context 'with more than two windows', except: [{browser: %i[safari safari_preview]},
-                                                     {driver: :remote, browser: :ie}] do
+      context 'with more than two windows', except: {driver: :remote, browser: :ie} do
         it 'closes current window via block' do
           driver.navigate.to url_for('xhtmlTest.html')
           wait_for_element(link: 'Create a new anonymous window')

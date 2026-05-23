@@ -38,7 +38,7 @@ module Selenium
           expect(driver.find_element(id: 'result').text.strip).to be_empty
         end
 
-        it 'sends keys to element', only: {browser: %i[chrome edge firefox]} do
+        it 'sends keys to element' do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
@@ -159,7 +159,7 @@ module Selenium
         # https://issues.chromium.org/issues/400087471
         before { reset_driver! if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome }
 
-        it 'presses pointer twice', except: {browser: %i[safari safari_preview]} do
+        it 'presses pointer twice' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
@@ -167,7 +167,7 @@ module Selenium
           expect(element.property(:value)).to eq('DoubleClicked')
         end
 
-        it 'executes with equivalent pointer methods', except: {browser: %i[safari safari_preview]} do
+        it 'executes with equivalent pointer methods' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
@@ -390,7 +390,7 @@ module Selenium
         end
 
         it 'raises MoveTargetOutOfBoundsError when origin offset is out of viewport',
-           only: {browser: %i[chrome edge firefox]} do
+           except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame.html')
           scroll_origin = WheelActions::ScrollOrigin.viewport(-10, -10)
 
