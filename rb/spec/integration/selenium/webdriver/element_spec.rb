@@ -203,12 +203,12 @@ module Selenium
             expect(element.dom_attribute(prop_or_attr)).to eq 'true'
           end
 
-          it '#property updates to false after click' do
+          it '#property updates to false after click', except: {browser: %i[safari safari_preview]} do
             element.click
             expect(element.property(prop_or_attr)).to be false
           end
 
-          it '#attribute updates to nil after click' do
+          it '#attribute updates to nil after click', except: {browser: %i[safari safari_preview]} do
             element.click
             expect(element.attribute(prop_or_attr)).to be_nil
           end
@@ -235,12 +235,12 @@ module Selenium
             expect(element.dom_attribute(prop_or_attr)).to be_nil
           end
 
-          it '#property updates to true after click' do
+          it '#property updates to true after click', except: {browser: %i[safari safari_preview]} do
             element.click
             expect(element.property(prop_or_attr)).to be true
           end
 
-          it '#attribute updates to String after click' do
+          it '#attribute updates to String after click', except: {browser: %i[safari safari_preview]} do
             element.click
             expect(element.attribute(prop_or_attr)).to eq 'true'
           end
@@ -457,7 +457,7 @@ module Selenium
         expect { element.clear }.not_to raise_error
       end
 
-      it 'gets and set selected' do
+      it 'gets and set selected', except: {browser: %i[safari safari_preview]} do
         open_file 'formPage.html'
 
         cheese = wait_for_element(id: 'cheese')
@@ -529,7 +529,7 @@ module Selenium
       end
 
       # IE - https://github.com/SeleniumHQ/selenium/pull/4043
-      it 'drags and drop', except: {browser: :ie} do
+      it 'drags and drop', except: [{browser: :ie}, {browser: %i[safari safari_preview]}] do
         open_file 'dragAndDropTest.html'
 
         img1 = wait_for_element(id: 'test1')

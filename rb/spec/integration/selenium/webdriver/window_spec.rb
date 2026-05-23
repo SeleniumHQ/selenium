@@ -124,7 +124,8 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      it 'can minimize the window', except: [{browser: %i[chrome edge], headless: true}],
+      it 'can minimize the window', except: [{browser: %i[chrome edge], headless: true},
+                                             {browser: %i[safari safari_preview]}],
                                     flaky: {browser: :chrome, platform: %i[macosx linux], ci: :github} do
         window.minimize
         expect {

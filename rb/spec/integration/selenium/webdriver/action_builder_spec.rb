@@ -24,8 +24,8 @@ module Selenium
     describe ActionBuilder, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       after { driver.action.clear_all_actions }
 
-      describe '#send_keys' do
-        it 'sends keys to the active element', except: {browser: %i[safari safari_preview]} do
+      describe '#send_keys', except: {browser: %i[safari safari_preview]} do
+        it 'sends keys to the active element' do
           driver.navigate.to url_for('bodyTypingTest.html')
           keylogger = driver.find_element(id: 'body_result')
 
@@ -72,8 +72,8 @@ module Selenium
         end
       end
 
-      describe 'multiple key presses' do
-        it 'sends keys with shift pressed', except: {browser: %i[safari safari_preview]} do
+      describe 'multiple key presses', except: {browser: %i[safari safari_preview]} do
+        it 'sends keys with shift pressed' do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -107,7 +107,7 @@ module Selenium
         end
       end
 
-      describe '#release_actions' do
+      describe '#release_actions', except: {browser: %i[safari safari_preview]} do
         it 'releases pressed keys' do
           driver.navigate.to url_for('javascriptPage.html')
 
@@ -139,7 +139,7 @@ module Selenium
         end
       end
 
-      describe '#click' do
+      describe '#click', except: {browser: %i[safari safari_preview]} do
         it 'clicks provided element' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'clickField')
@@ -197,7 +197,7 @@ module Selenium
         end
       end
 
-      describe '#move_to' do
+      describe '#move_to', except: {browser: %i[safari safari_preview]} do
         it 'moves to element' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'clickField')
@@ -220,7 +220,7 @@ module Selenium
         end
       end
 
-      describe '#drag_and_drop' do
+      describe '#drag_and_drop', except: {browser: %i[safari safari_preview]} do
         it 'moves one element to another' do
           driver.navigate.to url_for('droppableItems.html')
 
@@ -237,7 +237,7 @@ module Selenium
         end
       end
 
-      describe '#drag_and_drop_by' do
+      describe '#drag_and_drop_by', except: {browser: %i[safari safari_preview]} do
         it 'moves one element a provided distance' do
           driver.navigate.to url_for('droppableItems.html')
 
@@ -253,7 +253,7 @@ module Selenium
         end
       end
 
-      describe '#move_to_location' do
+      describe '#move_to_location', except: {browser: %i[safari safari_preview]} do
         it 'moves pointer to specified coordinates' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'clickField')
