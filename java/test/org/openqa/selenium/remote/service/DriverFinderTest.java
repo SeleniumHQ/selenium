@@ -203,7 +203,7 @@ class DriverFinderTest {
     when(service.getDriverEnvironmentVariable())
         .thenReturn("ENVIRONMENT_VARIABLE_IGNORES_SELENIUM_MANAGER");
 
-    ElectronOptions options = new ElectronOptions(browserFile.toString());
+    ElectronOptions options = new ElectronOptions(browserFile.toFile());
 
     Result result = new Result(0, "", driverFile.toString(), browserFile.toString());
     doReturn(result).when(seleniumManager).getBinaryPaths(any());

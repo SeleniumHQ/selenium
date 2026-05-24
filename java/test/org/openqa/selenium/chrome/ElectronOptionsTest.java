@@ -20,51 +20,29 @@ package org.openqa.selenium.chrome;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import org.junit.jupiter.api.BeforeAll;
+import java.io.File;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 @Tag("UnitTests")
 class ElectronOptionsTest {
 
-  @TempDir static Path tempDir;
-
-  static Path electronAppFile;
-  static Path electronAppBundle;
-
-  @BeforeAll
-  static void createElectronApp() throws IOException {
-    electronAppFile = Files.createFile(tempDir.resolve("Electron"));
-    electronAppBundle = Files.createDirectory(tempDir.resolve("Electron.app"));
-  }
+  private static final File ELECTRON_BINARY = new File("/path/to/electron/app");
 
   @Test
   void browserNameIsChromeOnTheWire() {
-    ElectronOptions options = new ElectronOptions(electronAppFile.toString());
+    ElectronOptions options = new ElectronOptions(ELECTRON_BINARY);
     assertThat(options.getBrowserName()).isEqualTo("chrome");
     assertThat(options.asMap()).containsEntry("browserName", "chrome");
   }
 
   @Test
   void constructorStoresBinary() {
-    ElectronOptions options = new ElectronOptions(electronAppFile.toString());
+    ElectronOptions options = new ElectronOptions(ELECTRON_BINARY);
     assertThat(options.asMap())
         .extractingByKey(ElectronOptions.CAPABILITY)
         .asInstanceOf(org.assertj.core.api.InstanceOfAssertFactories.MAP)
-        .containsEntry("binary", electronAppFile.toString());
-  }
-
-  @Test
-  void constructorAcceptsAppBundleDirectory() {
-    ElectronOptions options = new ElectronOptions(electronAppBundle.toString());
-    assertThat(options.asMap())
-        .extractingByKey(ElectronOptions.CAPABILITY)
-        .asInstanceOf(org.assertj.core.api.InstanceOfAssertFactories.MAP)
-        .containsEntry("binary", electronAppBundle.toString());
+        .containsEntry("binary", ELECTRON_BINARY.getPath());
   }
 
   @Test
@@ -74,16 +52,9 @@ class ElectronOptionsTest {
   }
 
   @Test
-  void constructorRejectsNonexistentPath() {
-    assertThatThrownBy(() -> new ElectronOptions("/does/not/exist/electron"))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessageContaining("must exist");
-  }
-
-  @Test
   void mergeReturnsElectronOptions() {
-    ElectronOptions options = new ElectronOptions(electronAppFile.toString());
-    ElectronOptions merged = options.merge(new ElectronOptions(electronAppFile.toString()));
+    ElectronOptions options = new ElectronOptions(ELECTRON_BINARY);
+    ElectronOptions merged = options.merge(new ElectronOptions(ELECTRON_BINARY));
 
     assertThat(merged.getBrowserName()).isEqualTo("chrome");
     assertThat(merged).isInstanceOf(ElectronOptions.class);

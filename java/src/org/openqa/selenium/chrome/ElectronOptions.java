@@ -19,8 +19,9 @@ package org.openqa.selenium.chrome;
 
 import static org.openqa.selenium.remote.Browser.CHROME;
 
-import java.nio.file.Path;
+import java.io.File;
 import java.util.Map;
+import java.util.Objects;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.internal.Require;
@@ -32,37 +33,39 @@ import org.openqa.selenium.remote.CapabilityType;
  * <p>Example usage:
  *
  * <pre><code>
- * ElectronOptions options = new ElectronOptions("/path/to/electron/app");
+ * ElectronOptions options = new ElectronOptions(new File("/path/to/electron/app"));
  * options.setBrowserVersion("29.0.0");
  *
  * ElectronDriver driver = new ElectronDriver(options);
  * </code></pre>
  *
- * <p>The binary must point to your Electron application (either the executable or, on macOS, the
- * {@code .app} bundle directory). The browser version should match your bundled Electron version
+ * <p>The binary must point to your Electron application's executable file. On macOS, this means the
+ * binary inside the {@code .app} not the bundle directory itself. The browser version, when set,
+ * should match your bundled Electron version.
  */
 public class ElectronOptions extends ChromiumOptions<ElectronOptions> {
 
   public static final String CAPABILITY = "goog:chromeOptions";
 
-  public ElectronOptions(String binary) {
+  public ElectronOptions(File binary) {
     super(CapabilityType.BROWSER_NAME, CHROME.browserName(), CAPABILITY);
-    Require.argument(
-            "Path to the Electron application",
-            Path.of(Require.nonNull("Path to the Electron application", binary)))
-        .exists();
-    setBinary(binary);
+    setBinary(Require.nonNull("Path to the Electron executable", binary));
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public ElectronOptions merge(Capabilities extraCapabilities) {
     Require.nonNull("Capabilities to merge", extraCapabilities);
-    Map<String, Object> goog = (Map<String, Object>) getCapability(CAPABILITY);
-    ElectronOptions newInstance = new ElectronOptions((String) goog.get("binary"));
+    ElectronOptions newInstance = new ElectronOptions(getBinary(this));
     newInstance.mergeInPlace(this);
     newInstance.mergeInPlace(extraCapabilities);
     newInstance.mergeInOptionsFromCaps(CAPABILITY, extraCapabilities);
+    Require.nonNull("Path to the Electron executable", getBinary(newInstance));
     return newInstance;
+  }
+
+  @SuppressWarnings("unchecked")
+  private static File getBinary(Capabilities options) {
+    Map<String, Object> goog = (Map<String, Object>) options.getCapability(CAPABILITY);
+    return new File((String) Objects.requireNonNull(goog).get("binary"));
   }
 }
