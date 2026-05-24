@@ -79,7 +79,7 @@ module Selenium
         expect(SeleniumManager).to have_received(:binary_paths).with('--browser',
                                                                      options.browser_name,
                                                                      '--browser-version',
-                                                                     options.browser_version,
+                                                                     'stable',
                                                                      '--browser-path',
                                                                      options.binary,
                                                                      '--proxy',

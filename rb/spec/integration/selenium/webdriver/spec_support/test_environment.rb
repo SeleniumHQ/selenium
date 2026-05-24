@@ -109,6 +109,7 @@ module Selenium
                    %w[--selenium-manager true]
                  end
           args += %w[--enable-managed-downloads true]
+          args += version_stereotype_args unless browser_version == 'stable'
 
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
@@ -119,6 +120,18 @@ module Selenium
             timeout: 60,
             args: args
           )
+        end
+
+        def version_stereotype_args
+          stereotype = {browserName: w3c_browser_name, browserVersion: browser_version}.to_json
+          ['--driver-configuration',
+           "display-name=#{browser} #{browser_version}",
+           'max-sessions=1',
+           "stereotype=#{stereotype}"]
+        end
+
+        def w3c_browser_name
+          browser == :edge ? 'MicrosoftEdge' : browser.to_s
         end
 
         def bazel_java
@@ -298,7 +311,7 @@ module Selenium
         end
 
         def chrome_options(args: [], **opts)
-          opts[:browser_version] = browser_version unless ENV.key?('CHROME_BINARY')
+          opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= rlocation(ENV['CHROME_BINARY']) if ENV.key?('CHROME_BINARY')
           args << '--headless' if ENV['HEADLESS']
@@ -309,7 +322,7 @@ module Selenium
         end
 
         def edge_options(args: [], **opts)
-          opts[:browser_version] = browser_version unless ENV.key?('EDGE_BINARY')
+          opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= rlocation(ENV['EDGE_BINARY']) if ENV.key?('EDGE_BINARY')
           args << '--headless' if ENV['HEADLESS']
@@ -320,7 +333,7 @@ module Selenium
         end
 
         def firefox_options(args: [], **opts)
-          opts[:browser_version] = browser_version unless ENV.key?('FIREFOX_BINARY')
+          opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= rlocation(ENV['FIREFOX_BINARY']) if ENV.key?('FIREFOX_BINARY')
           opts[:unhandled_prompt_behavior] ||= 'ignore'
