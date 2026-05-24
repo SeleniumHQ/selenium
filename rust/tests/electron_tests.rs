@@ -37,3 +37,21 @@ fn electron_version_test(#[case] driver_version: String) {
         .assert();
     cmd_assert.success();
 }
+
+#[rstest]
+#[case("36.2.1")]
+fn electron_browser_version_test(#[case] browser_version: String) {
+    // Regression for issue #17549: when the user pins --browser-version, the
+    // resolved driver version must be derived from the requested version, not
+    // from the /releases/latest redirect.
+    let mut cmd = get_selenium_manager();
+    let cmd_assert = cmd
+        .args([
+            "--browser",
+            "electron",
+            "--browser-version",
+            &browser_version,
+        ])
+        .assert();
+    cmd_assert.success();
+}

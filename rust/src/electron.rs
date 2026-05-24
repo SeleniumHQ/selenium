@@ -119,17 +119,30 @@ impl SeleniumManager for ElectronManager {
                 Ok(driver_version)
             }
             _ => {
-                self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
-
-                let latest_url = format!(
-                    "{}{}",
-                    self.get_driver_mirror_url_or_default(DRIVER_URL),
-                    LATEST_RELEASE
-                );
-                let driver_version =
-                    read_redirect_from_link(self.get_http_client(), latest_url, self.get_logger())?;
+                // Electron releases are tagged by Electron version, and the
+                // chromedriver asset shipped in each release matches that tag.
+                // When the user pins a concrete browser version (e.g.
+                // `--browser-version 36.2.1`), that version is the driver
+                // version we want; resolving via `/releases/latest` would
+                // discard the user's request and return the latest tag instead.
+                let browser_version = self.get_browser_version().to_string();
+                let driver_version = if !browser_version.is_empty()
+                    && !self.is_browser_version_stable()
+                    && !self.is_browser_version_unstable()
+                {
+                    browser_version
+                } else {
+                    self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
+                    let latest_url = format!(
+                        "{}{}",
+                        self.get_driver_mirror_url_or_default(DRIVER_URL),
+                        LATEST_RELEASE
+                    );
+                    read_redirect_from_link(self.get_http_client(), latest_url, self.get_logger())?
+                };
                 let driver_ttl = self.get_ttl();
-                if driver_ttl > 0 {
+                if driver_ttl > 0 && !major_browser_version.is_empty() && !driver_version.is_empty()
+                {
                     metadata.drivers.push(create_driver_metadata(
                         major_browser_version,
                         self.driver_name,
