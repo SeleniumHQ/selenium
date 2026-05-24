@@ -46,6 +46,7 @@ single_version_override(
     patch_strip = 1,
     patches = [
         "//third_party/bazel:rules_jvm_external_javadoc.patch",
+        "//third_party/bazel:rules_jvm_external_maven_publisher.patch",
     ],
 )
 
