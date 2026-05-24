@@ -100,14 +100,15 @@ jobs:
         run: |
           echo "Removing extra tools to free disk space..."
           echo "Space before: $(df -BG / | tail -1 | awk '{print $4}')"
-          sudo rm -rf /opt/ghc || true
-          sudo rm -rf /usr/local/.ghcup || true
-          sudo rm -rf /usr/local/share/boost || true
-          sudo rm -rf /usr/share/swift || true
-          sudo rm -rf /usr/local/julia* || true
-          sudo rm -rf /usr/lib/google-cloud-sdk || true
-          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
-          docker image prune -af 2>/dev/null || true
+          echo "$(date +%T) ghc";    sudo rm -rf /opt/ghc || true
+          echo "$(date +%T) ghcup";  sudo rm -rf /usr/local/.ghcup || true
+          echo "$(date +%T) boost";  sudo rm -rf /usr/local/share/boost || true
+          echo "$(date +%T) swift";  sudo rm -rf /usr/share/swift || true
+          echo "$(date +%T) julia";  sudo rm -rf /usr/local/julia* || true
+          echo "$(date +%T) gcloud"; sudo rm -rf /usr/lib/google-cloud-sdk || true
+          echo "$(date +%T) codeql"; sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+          echo "$(date +%T) docker"; docker image prune -af 2>/dev/null || true
+          echo "$(date +%T) done"
           sync
           after=$(df -BG / | tail -1 | awk '{print $4}')
           echo "Space after: ${after}"
@@ -117,12 +118,13 @@ jobs:
         run: |
           Write-Host "Removing extra tools to free disk space..."
           Write-Host "Space before: C: $([math]::Round((Get-PSDrive C).Free / 1GB, 1))GB free, D: $([math]::Round((Get-PSDrive D).Free / 1GB, 1))GB free"
-          Remove-Item -Path "C:\Miniconda" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "C:\tools\ghc" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "C:\Program Files\LLVM" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "C:\Program Files\PostgreSQL" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "C:\Program Files\MongoDB" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "C:\Program Files\MySQL" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "$(Get-Date -Format HH:mm:ss) miniconda";  Remove-Item -Path "C:\Miniconda" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "$(Get-Date -Format HH:mm:ss) ghc";        Remove-Item -Path "C:\tools\ghc" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "$(Get-Date -Format HH:mm:ss) llvm";       Remove-Item -Path "C:\Program Files\LLVM" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "$(Get-Date -Format HH:mm:ss) postgres";   Remove-Item -Path "C:\Program Files\PostgreSQL" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "$(Get-Date -Format HH:mm:ss) mongo";      Remove-Item -Path "C:\Program Files\MongoDB" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "$(Get-Date -Format HH:mm:ss) mysql";      Remove-Item -Path "C:\Program Files\MySQL" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "$(Get-Date -Format HH:mm:ss) done"
           Write-Host "Space after: C: $([math]::Round((Get-PSDrive C).Free / 1GB, 1))GB free, D: $([math]::Round((Get-PSDrive D).Free / 1GB, 1))GB free"
       - name: Calculate fetch depth
         id: depth
