@@ -42,10 +42,11 @@ module Selenium
           wait.until { driver.find_element(id: 'upload_label').displayed? }
 
           driver.switch_to.frame('upload_target')
-          wait.until { driver.find_element(xpath: '//body') }
+          body_text = wait(ignore: [Error::StaleElementReferenceError]).until do
+            driver.find_element(xpath: '//body').text
+          end
 
-          body = driver.find_element(xpath: '//body')
-          expect(body.text.scan('This is a dummy test file').count).to eq(1)
+          expect(body_text.scan('This is a dummy test file').count).to eq(1)
         end
 
         it 'lists downloads', exclude: {browser: :safari, reason: 'grid hangs'} do
