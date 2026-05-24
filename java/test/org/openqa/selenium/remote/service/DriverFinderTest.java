@@ -215,6 +215,7 @@ class DriverFinderTest {
     verify(seleniumManager).getBinaryPaths(captor.capture());
     assertThat(captor.getValue()).containsSequence("--browser", "electron");
     assertThat(options.getBrowserName()).isEqualTo("chrome");
+    assertThat(options.getCapability("se:browserName")).isEqualTo("electron");
   }
 
   private Path createExecutableFile(String prefix) {

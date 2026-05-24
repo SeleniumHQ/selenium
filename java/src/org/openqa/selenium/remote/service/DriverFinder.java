@@ -132,9 +132,9 @@ public class DriverFinder {
 
   private List<String> toArguments() {
     List<String> arguments = new ArrayList<>();
-    boolean isElectron = options.getClass().getName().toLowerCase().contains("electron");
+    String browserName = (String) options.getCapability("se:browserName");
     arguments.add("--browser");
-    arguments.add(isElectron ? "electron" : options.getBrowserName());
+    arguments.add(browserName != null ? browserName : options.getBrowserName());
 
     if (!options.getBrowserVersion().isEmpty()) {
       arguments.add("--browser-version");

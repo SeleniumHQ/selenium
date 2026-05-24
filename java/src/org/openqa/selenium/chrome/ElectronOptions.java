@@ -49,6 +49,7 @@ public class ElectronOptions extends ChromiumOptions<ElectronOptions> {
 
   public ElectronOptions(File binary) {
     super(CapabilityType.BROWSER_NAME, CHROME.browserName(), CAPABILITY);
+    setCapability("se:browserName", "electron");
     setBinary(Require.nonNull("Path to the Electron executable", binary));
   }
 
