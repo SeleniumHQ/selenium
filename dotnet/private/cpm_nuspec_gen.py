@@ -59,20 +59,13 @@ def build_dependencies_block(packages, versions, compat_tfms, all_tfms):
     deps = []
     for name in sorted(packages):
         if name not in versions:
-            sys.exit(
-                f"ERROR: package '{name}' referenced by csproj is not declared in "
-                "Directory.Packages.props"
-            )
-        deps.append(
-            f'        <dependency id="{name}" version="{versions[name]}" exclude="Build,Analyzers" />'
-        )
+            sys.exit(f"ERROR: package '{name}' referenced by csproj is not declared in Directory.Packages.props")
+        deps.append(f'        <dependency id="{name}" version="{versions[name]}" exclude="Build,Analyzers" />')
     deps_xml = "\n".join(deps)
     groups = []
     for tfm in sorted(all_tfms):
         if tfm in compat_tfms:
-            groups.append(
-                f'      <group targetFramework="{tfm}">\n{deps_xml}\n      </group>'
-            )
+            groups.append(f'      <group targetFramework="{tfm}">\n{deps_xml}\n      </group>')
         else:
             groups.append(f'      <group targetFramework="{tfm}">\n      </group>')
     return "<dependencies>\n{}\n    </dependencies>".format("\n".join(groups))
