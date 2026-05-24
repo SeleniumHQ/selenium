@@ -22,10 +22,6 @@ java_export(
         ":cdp",
         "//java/src/org/openqa/selenium/devtools/%s" % LATEST_CDP_VERSION,
     ],
-    runtime_deps = [
-        ":cdp",
-        "//java/src/org/openqa/selenium/devtools/%s" % LATEST_CDP_VERSION,
-    ],
 )
 
 java_library(
