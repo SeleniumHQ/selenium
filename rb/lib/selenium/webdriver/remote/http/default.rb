@@ -150,7 +150,7 @@ module Selenium
             return false if proxy.nil?
 
             if proxy.no_proxy
-              ignored = proxy.no_proxy.split(',').any? do |host|
+              ignored = proxy.no_proxy.split(',').map(&:strip).reject(&:empty?).any? do |host|
                 host == '*' ||
                   host == server_url.host || (
                 begin
