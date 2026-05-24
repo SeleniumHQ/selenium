@@ -132,7 +132,9 @@ public class DriverFinder {
 
   private List<String> toArguments() {
     List<String> arguments = new ArrayList<>();
-    String browserName = (String) options.getCapability("se:browserName");
+    Object value = options.getCapability("se:browserName");
+    String browserName = value instanceof String ? (String) value : null;
+
     arguments.add("--browser");
     arguments.add(browserName != null ? browserName : options.getBrowserName());
 
