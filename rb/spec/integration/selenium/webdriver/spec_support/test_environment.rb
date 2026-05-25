@@ -202,11 +202,12 @@ module Selenium
         def create_driver!(listener: nil, http_client: nil, **, &block)
           check_for_previous_error
           http_client ||= Remote::Http::Default.new(read_timeout: 30)
-          @safari_pairing_attempts = 0
+          @safari_pairing_attempts ||= 0
 
           method = :"#{driver}_driver"
           opts = {options: build_options(**), listener: listener, http_client: http_client}
           instance = private_methods.include?(method) ? send(method, **opts) : WebDriver::Driver.for(driver, **opts)
+          @safari_pairing_attempts = 0
           @create_driver_error_count -= 1 unless @create_driver_error_count.zero?
           if block
             begin
@@ -255,7 +256,7 @@ module Selenium
         def safari_pairing_retry?(error)
           msg = 'instance is already paired'
           return false unless browser.to_s.include?('safari') && error.message.to_s.include?(msg)
-          return false if @safari_pairing_attempts >= 5
+          return false if @safari_pairing_attempts >= SAFARI_PAIRING_RETRIES
 
           @safari_pairing_attempts += 1
           WebDriver.logger.warn("Safari pairing busy; retry #{@safari_pairing_attempts}/#{SAFARI_PAIRING_RETRIES}")
