@@ -298,7 +298,8 @@ jobs:
         env:
           MSYS_NO_PATHCONV: 1
           MSYS2_ARG_CONV_EXCL: "*"
-        run: ./scripts/github-actions/run-bazel-with-retry.sh "${{ inputs.run }}"
+          BAZEL_RUN_CMD: ${{ inputs.run }}
+        run: ./scripts/github-actions/run-bazel-with-retry.sh
       - name: Rerun failures with debug
         if: failure() && steps.run-bazel.outcome == 'failure'
         shell: bash
