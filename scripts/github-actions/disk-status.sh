@@ -13,6 +13,10 @@ if [[ "$RUNNER_OS" == "Windows" ]]; then
 else
   AVAIL_GB=$(df -k "$GITHUB_WORKSPACE" | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
 fi
+if ! [[ "$AVAIL_GB" =~ ^[0-9]+$ ]]; then
+  echo "::error::Could not determine available disk space (got: '${AVAIL_GB}')"
+  AVAIL_GB=0
+fi
 export AVAIL_GB
 echo "Available: ${AVAIL_GB}GB"
 

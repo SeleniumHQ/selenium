@@ -7,10 +7,14 @@ free_mb() { df -BM / | awk 'NR==2 {print $4}' | tr -d 'M'; }
 clean() {
   local label="$1" path="$2"
   local before after t0
+  if [ -z "$path" ]; then
+    printf "%s  %-13s (path not set, skipping)\n" "$(date +%T)" "$label"
+    return
+  fi
   before=$(free_mb)
   t0=$SECONDS
   # shellcheck disable=SC2086  # intentional word-split for globs (julia*)
-  sudo rm -rf $path
+  sudo rm -rf -- $path
   after=$(free_mb)
   printf "%s  %-13s %3ds  %3sG -> %3sG free  (freed %sM)\n" \
     "$(date +%T)" "$label" "$((SECONDS - t0))" \
