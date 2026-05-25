@@ -1,0 +1,27 @@
+name: Prune CodeQL caches
+
+on:
+  workflow_run:
+    workflows: ["CodeQL"]
+    types: [completed]
+    branches: [trunk]
+  workflow_dispatch:
+
+concurrency:
+  group: prune-codeql-caches
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  prune:
+    name: Prune
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Prune stale CodeQL caches
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./scripts/github-actions/prune-codeql-caches.sh --delete
