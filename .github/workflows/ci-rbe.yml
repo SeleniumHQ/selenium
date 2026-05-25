@@ -30,6 +30,5 @@ jobs:
     with:
       name: All RBE tests
       rerun-with-debug: true
-      caching: false
       ruby-version: jruby-10.1.0.0
       run: ./scripts/github-actions/ci-build.sh ${{ github.event.inputs.disable_test_cache }}
