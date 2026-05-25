@@ -163,6 +163,7 @@ jobs:
         uses: titusfortner/setup-bazel@repo-contents-cache
         with:
           cache-save: true
+          repo-contents-cache: false
           bazelisk-cache: true
           bazelrc: common --color=yes
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
