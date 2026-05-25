@@ -111,7 +111,7 @@ module Selenium
           end
         end
 
-        it 'switches to a window and back when given a block' do
+        it 'switches to a window and back when given a block', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('xhtmlTest.html')
 
           driver.find_element(link: 'Open new window').click
@@ -125,7 +125,7 @@ module Selenium
           wait.until { driver.title == 'XHTML Test Page' }
         end
 
-        it 'handles exceptions inside the block' do
+        it 'handles exceptions inside the block', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('xhtmlTest.html')
 
           driver.find_element(link: 'Open new window').click
@@ -139,7 +139,7 @@ module Selenium
           expect(driver.title).to eq('XHTML Test Page')
         end
 
-        it 'switches to a window without a block' do
+        it 'switches to a window without a block', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('xhtmlTest.html')
 
           driver.find_element(link: 'Open new window').click
@@ -151,7 +151,7 @@ module Selenium
           expect(driver.title).to eq('We Arrive Here')
         end
 
-        it 'uses the original window if the block closes the popup' do
+        it 'uses the original window if the block closes the popup', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('xhtmlTest.html')
 
           driver.find_element(link: 'Open new window').click
@@ -168,8 +168,8 @@ module Selenium
         end
       end
 
-      context 'with more than two windows', except: [{browser: %i[safari safari_preview]},
-                                                     {driver: :remote, browser: :ie}] do
+      context 'with more than two windows', except: [{driver: :remote, browser: :ie},
+                                                     {browser: %i[safari safari_preview]}] do
         it 'closes current window via block' do
           driver.navigate.to url_for('xhtmlTest.html')
           wait_for_element(link: 'Create a new anonymous window')
@@ -237,7 +237,8 @@ module Selenium
         end
       end
 
-      it 'switches to a window and execute a block when current window is closed' do
+      it 'switches to a window and execute a block when current window is closed',
+         except: {browser: %i[safari safari_preview]} do
         driver.navigate.to url_for('xhtmlTest.html')
         driver.find_element(link: 'Open new window').click
         wait.until { driver.window_handles.size == 2 }
@@ -265,7 +266,7 @@ module Selenium
 
       # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850030
       describe 'alerts' do
-        it 'allows the user to accept an alert' do
+        it 'allows the user to accept an alert', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('alerts.html')
           driver.find_element(id: 'alert').click
 
@@ -276,7 +277,7 @@ module Selenium
           expect(driver.title).to eq('Testing Alerts')
         end
 
-        it 'allows the user to dismiss an alert' do
+        it 'allows the user to dismiss an alert', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('alerts.html')
           driver.find_element(id: 'alert').click
 
@@ -287,7 +288,7 @@ module Selenium
           expect(driver.title).to eq('Testing Alerts')
         end
 
-        it 'allows the user to set the value of a prompt' do
+        it 'allows the user to set the value of a prompt', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('alerts.html')
           driver.find_element(id: 'prompt').click
 
@@ -299,7 +300,7 @@ module Selenium
           expect(text).to eq('cheese')
         end
 
-        it 'allows the user to get the text of an alert' do
+        it 'allows the user to get the text of an alert', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('alerts.html')
           driver.find_element(id: 'alert').click
 
@@ -311,7 +312,7 @@ module Selenium
           wait_for_no_alert
         end
 
-        it 'raises when calling #text on a closed alert' do
+        it 'raises when calling #text on a closed alert', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('alerts.html')
           wait_for_element(id: 'alert')
 
@@ -329,7 +330,8 @@ module Selenium
         end
 
         describe 'unhandled alert error' do
-          it 'raises an UnexpectedAlertOpenError if an alert has not been dealt with' do
+          it 'raises an UnexpectedAlertOpenError if an alert has not been dealt with',
+             except: {browser: %i[safari safari_preview]} do
             driver.navigate.to url_for('alerts.html')
             driver.find_element(id: 'alert').click
             wait_for_alert

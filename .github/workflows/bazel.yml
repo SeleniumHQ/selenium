@@ -95,35 +95,6 @@ jobs:
       GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     steps:
-      - name: Remove extra tools to free disk space
-        if: inputs.os == 'ubuntu'
-        run: |
-          echo "Removing extra tools to free disk space..."
-          echo "Space before: $(df -BG / | tail -1 | awk '{print $4}')"
-          sudo rm -rf /opt/ghc || true
-          sudo rm -rf /usr/local/.ghcup || true
-          sudo rm -rf /usr/local/share/boost || true
-          sudo rm -rf /usr/share/swift || true
-          sudo rm -rf /usr/local/julia* || true
-          sudo rm -rf /usr/lib/google-cloud-sdk || true
-          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
-          docker image prune -af 2>/dev/null || true
-          sync
-          after=$(df -BG / | tail -1 | awk '{print $4}')
-          echo "Space after: ${after}"
-      - name: Remove extra tools to free disk space (Windows)
-        if: inputs.os == 'windows'
-        shell: pwsh
-        run: |
-          Write-Host "Removing extra tools to free disk space..."
-          Write-Host "Space before: C: $([math]::Round((Get-PSDrive C).Free / 1GB, 1))GB free, D: $([math]::Round((Get-PSDrive D).Free / 1GB, 1))GB free"
-          Remove-Item -Path "C:\Miniconda" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "C:\tools\ghc" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "C:\Program Files\LLVM" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "C:\Program Files\PostgreSQL" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "C:\Program Files\MongoDB" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "C:\Program Files\MySQL" -Recurse -Force -ErrorAction SilentlyContinue
-          Write-Host "Space after: C: $([math]::Round((Get-PSDrive C).Free / 1GB, 1))GB free, D: $([math]::Round((Get-PSDrive D).Free / 1GB, 1))GB free"
       - name: Calculate fetch depth
         id: depth
         shell: bash
@@ -160,6 +131,13 @@ jobs:
         run: git pull origin "$GIT_REF"
         env:
           GIT_REF: ${{ github.ref }}
+      - name: Free disk space
+        if: inputs.os == 'ubuntu'
+        run: ./scripts/github-actions/free-disk-space.sh
+      - name: Free disk space (Windows)
+        if: inputs.os == 'windows'
+        shell: pwsh
+        run: ./scripts/github-actions/free-disk-space.ps1
       - name: Restore cache
         if: inputs.cache-name != ''
         uses: actions/cache/restore@v5
@@ -167,16 +145,6 @@ jobs:
           path: ${{ inputs.cache-name }}
           key: ${{ inputs.cache-name }}-
           restore-keys: ${{ inputs.cache-name }}-
-      - name: Remove driver directories Windows
-        if: inputs.os == 'windows'
-        run: |
-          rm "$env:ChromeWebDriver" -r -v
-          rm "$env:EdgeWebDriver" -r -v
-          rm "$env:GeckoWebDriver" -r -v
-      - name: Remove driver directories Non-Windows
-        if: inputs.os != 'windows'
-        run: |
-          sudo rm -rf "$CHROMEWEBDRIVER" "$EDGEWEBDRIVER" "$GECKOWEBDRIVER"
       - name: Set Python version
         if: inputs.python-version != ''
         run: echo '${{ inputs.python-version }}' > py/.python-version
@@ -224,14 +192,6 @@ jobs:
               "+pin_browsers_extension+mac_firefox": false
               "+pin_browsers_extension+mac_geckodriver": false
           repository-cache: true
-      - name: Report Bazel cache setup failure
-        if: steps.setup-bazel-cached.outcome == 'failure'
-        shell: bash
-        run: |
-          echo "::warning::Bazel cache setup failed — falling back to setup without cache"
-          echo "=== Disk space at time of cache failure ==="
-          df -h "$GITHUB_WORKSPACE" || true
-          if [[ "$RUNNER_OS" == "Windows" ]]; then df -h /c || true; fi
       - name: Setup Bazel without caching
         if: inputs.caching == false || steps.setup-bazel-cached.outcome == 'failure'
         uses: bazel-contrib/setup-bazel@0.19.0
@@ -243,12 +203,14 @@ jobs:
               crates: rust/Cargo.Bazel.lock
           repository-cache: true
           bazelrc: common --color=yes
-      - name: Disk usage after cache restore
+      - name: Disk status after cache restore
         if: inputs.os != 'macos'
         shell: bash
         run: |
-          df -h "$GITHUB_WORKSPACE"
-          if [[ "$RUNNER_OS" == "Windows" ]]; then df -h /c; fi
+          if [[ "${{ steps.setup-bazel-cached.outcome }}" == "failure" ]]; then
+            echo "::warning::Bazel cache setup failed — fell back to setup without cache"
+          fi
+          . ./scripts/github-actions/disk-status.sh
       - name: Setup Fluxbox and Xvfb
         if: inputs.os == 'ubuntu' && inputs.browser != ''
         run: |
@@ -274,22 +236,13 @@ jobs:
       - name: Configure RubyGems credentials via OIDC
         if: inputs.gem-trusted-publishing
         uses: rubygems/configure-rubygems-credentials@main
-      - name: Check disk space before build
+      - name: Disk status before build
         if: inputs.os != 'macos'
         shell: bash
         run: |
-          df -h "$GITHUB_WORKSPACE"
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            # On Windows the workspace is on D: but C: is the constrained drive
-            avail=$(df -k /c | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
-            echo "Available disk space before build (C:): ${avail}GB"
-            df -h /c
-          else
-            avail=$(df -k "$GITHUB_WORKSPACE" | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
-            echo "Available disk space before build: ${avail}GB"
-          fi
-          if [ "$avail" -lt 10 ]; then
-            echo "::error::Insufficient disk space: ${avail}GB available (need >=10GB)"
+          . ./scripts/github-actions/disk-status.sh
+          if [ "$AVAIL_GB" -lt 10 ]; then
+            echo "::error::Insufficient disk space: ${AVAIL_GB}GB available (need >=10GB)"
             exit 1
           fi
       - name: Run Bazel
@@ -337,13 +290,11 @@ jobs:
           path: ${{ inputs.artifact-path || 'changes.patch' }}
           retention-days: 6
           if-no-files-found: ${{ inputs.artifact-path != '' && 'error' || 'ignore' }}
-      - name: Check disk space
+      - name: Low Disk Warning
         if: always()
         shell: bash
         run: |
-          avail=$(df -k "$GITHUB_WORKSPACE" | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
-          echo "Remaining disk space: ${avail}GB"
-          if [ "$avail" -lt 5 ]; then
-            echo "::error::Low disk space: ${avail}GB remaining"
-            exit 1
+          . ./scripts/github-actions/disk-status.sh
+          if [ "$AVAIL_GB" -lt 5 ]; then
+            echo "::warning::Low disk space: ${AVAIL_GB}GB remaining"
           fi

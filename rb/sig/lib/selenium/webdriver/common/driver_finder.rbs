@@ -20,7 +20,7 @@ module Selenium
 
       def paths: -> untyped
 
-      def resolve_paths: -> Hash[Symbol, String]
+      def resolve_class_path: -> String?
 
       def paths_from_service: (String path) -> Hash[Symbol, String]
 

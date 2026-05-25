@@ -88,17 +88,12 @@ module Selenium
       end
 
       def launch
-        @executable_path ||= env_path || find_driver_path
+        @executable_path ||= env_path || DriverFinder.new(nil, self).driver_path
         ServiceManager.new(self).tap(&:start)
       end
 
       def shutdown_supported
         self.class::SHUTDOWN_SUPPORTED
-      end
-
-      def find_driver_path
-        default_options = WebDriver.const_get("#{self.class.name&.split('::')&.[](2)}::Options").new
-        DriverFinder.new(default_options, self).driver_path
       end
 
       def env_path

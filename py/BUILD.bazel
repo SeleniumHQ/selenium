@@ -754,6 +754,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         deps = [
             ":init-tree",
             ":webserver",
@@ -782,6 +783,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         deps = [
             ":init-tree",
             ":webserver",
