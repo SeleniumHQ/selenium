@@ -6,11 +6,13 @@ module Selenium
 
         CAPABILITIES: Hash[Symbol, String]
 
-        BROWSER: untyped
+        BROWSER: String
+
+        TECHNOLOGY_PREVIEW: String
 
         def add_option: (untyped name, ?untyped? value) -> untyped
 
-        def as_json: (*untyped) -> untyped
+        def browser_name: () -> String
       end
     end
   end
