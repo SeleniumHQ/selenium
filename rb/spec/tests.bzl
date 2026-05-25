@@ -130,9 +130,7 @@ BROWSERS = {
     "ie": {
         "data": [],
         "deps": ["//rb/lib/selenium/webdriver:ie"],
-        "tags": [
-            "skip-rbe",  # RBE is Linux-only.
-        ],
+        "tags": [],
         "target_compatible_with": ["@platforms//os:windows"],
         "env": {
             "WD_REMOTE_BROWSER": "ie",
@@ -144,7 +142,6 @@ BROWSERS = {
         "deps": ["//rb/lib/selenium/webdriver:safari"],
         "tags": [
             "exclusive-if-local",  # Safari cannot run in parallel.
-            "skip-rbe",  # RBE is Linux-only.
         ],
         "target_compatible_with": ["@platforms//os:macos"],
         "env": {
@@ -157,7 +154,6 @@ BROWSERS = {
         "deps": ["//rb/lib/selenium/webdriver:safari"],
         "tags": [
             "exclusive-if-local",  # Safari cannot run in parallel.
-            "skip-rbe",  # RBE is Linux-only.
         ],
         "target_compatible_with": ["@platforms//os:macos"],
         "env": {
