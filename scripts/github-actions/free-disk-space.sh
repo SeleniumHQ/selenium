@@ -31,6 +31,7 @@ clean gcloud-sdk /usr/lib/google-cloud-sdk
 clean codeql     /opt/hostedtoolcache/CodeQL
 
 # App SDKs that Selenium has no binding for
+clean android    /usr/local/lib/android
 clean dotnet     /usr/share/dotnet
 clean graalvm    /usr/local/graalvm
 clean powershell /usr/local/share/powershell
