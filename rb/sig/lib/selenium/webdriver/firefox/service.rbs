@@ -9,7 +9,7 @@ module Selenium
 
         SHUTDOWN_SUPPORTED: false
 
-        def initialize: (?path: String?, ?port: Integer?, ?log: untyped?, ?args: Array[String]?) -> void
+        def initialize: (?path: String?, ?port: Integer?, ?log: untyped?, ?args: Array[String]?, ?env: Hash[String, String]?) -> void
 
         private
 

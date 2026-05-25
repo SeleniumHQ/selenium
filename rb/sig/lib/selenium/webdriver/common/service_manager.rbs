@@ -11,6 +11,8 @@ module Selenium
 
       @extra_args: untyped
 
+      @env: Hash[String, String]
+
       @shutdown_supported: untyped
 
       @uri: untyped
