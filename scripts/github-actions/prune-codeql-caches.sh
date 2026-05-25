@@ -22,7 +22,7 @@ if [[ "${1:-}" == "--delete" ]]; then
 fi
 
 mapfile -t rows < <(
-  gh cache list --key "codeql" --limit 100 \
+  gh cache list --key "codeql" --limit 1000 \
     --json id,key,createdAt \
     --jq '.[] | [.id, .key, .createdAt] | @tsv'
 )
