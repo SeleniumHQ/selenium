@@ -2,18 +2,19 @@
 
 set -u
 
-free_gb() { df -BG / | awk 'NR==2 {print $4}' | tr -d 'G'; }
+free_mb() { df -BM / | awk 'NR==2 {print $4}' | tr -d 'M'; }
 
 clean() {
   local label="$1" path="$2"
   local before after t0
-  before=$(free_gb)
+  before=$(free_mb)
   t0=$SECONDS
   # shellcheck disable=SC2086  # intentional word-split for globs (julia*)
   sudo rm -rf $path
-  after=$(free_gb)
-  printf "%s  %-13s %3ds  %3sG -> %3sG free  (freed %sG)\n" \
-    "$(date +%T)" "$label" "$((SECONDS - t0))" "$before" "$after" "$((after - before))"
+  after=$(free_mb)
+  printf "%s  %-13s %3ds  %3sG -> %3sG free  (freed %sM)\n" \
+    "$(date +%T)" "$label" "$((SECONDS - t0))" \
+    "$((before / 1024))" "$((after / 1024))" "$((after - before))"
 }
 
 echo "=== Disk before cleanup ==="
@@ -42,11 +43,12 @@ clean edgedriver   "${EDGEWEBDRIVER:-}"
 clean geckodriver  "${GECKOWEBDRIVER:-}"
 
 # Docker images pre-pulled by the runner image
-before=$(free_gb); t0=$SECONDS
+before=$(free_mb); t0=$SECONDS
 docker image prune -af >/dev/null 2>&1 || true
-after=$(free_gb)
-printf "%s  %-13s %3ds  %3sG -> %3sG free  (freed %sG)\n" \
-  "$(date +%T)" "docker-images" "$((SECONDS - t0))" "$before" "$after" "$((after - before))"
+after=$(free_mb)
+printf "%s  %-13s %3ds  %3sG -> %3sG free  (freed %sM)\n" \
+  "$(date +%T)" "docker-images" "$((SECONDS - t0))" \
+  "$((before / 1024))" "$((after / 1024))" "$((after - before))"
 
 sync
 

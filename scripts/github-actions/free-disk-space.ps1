@@ -1,16 +1,17 @@
 #!/usr/bin/env pwsh
 
-function Free { [math]::Round((Get-PSDrive C).Free / 1GB, 1) }
+function FreeMB { [math]::Round((Get-PSDrive C).Free / 1MB, 0) }
 
 function Clean($Label, $Path) {
   if (-not $Path) { return }
-  $before = Free
+  $beforeMB = FreeMB
   $t0 = Get-Date
   Remove-Item -Path $Path -Recurse -Force -ErrorAction SilentlyContinue
-  $after = Free
+  $afterMB = FreeMB
   $duration = [math]::Round((Get-Date).Subtract($t0).TotalSeconds, 0)
-  "{0}  {1,-13} {2,3}s  {3,5}GB -> {4,5}GB free  (freed {5}GB)" -f `
-    (Get-Date -Format HH:mm:ss), $Label, $duration, $before, $after, ($after - $before)
+  "{0}  {1,-13} {2,3}s  {3,5}GB -> {4,5}GB free  (freed {5}MB)" -f `
+    (Get-Date -Format HH:mm:ss), $Label, $duration, `
+    [math]::Round($beforeMB/1024, 1), [math]::Round($afterMB/1024, 1), ($afterMB - $beforeMB)
 }
 
 Write-Host "=== Disk before cleanup ==="
