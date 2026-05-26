@@ -1,14 +1,28 @@
-name: CI Cache
+name: Github Cache
 
 on:
+  push:
+    branches: [trunk]
+    paths:
+      - 'MODULE.bazel'
+      - 'rust/Cargo.lock'
+      - 'java/maven_install.json'
+      - 'py/requirements_lock.txt'
+      - 'rb/Gemfile.lock'
+      - 'dotnet/paket.lock'
+      - 'common/repositories.bzl'
+      - 'common/browsers.bzl'
+  schedule:
+    - cron: '30 6 * * *'
   workflow_dispatch:
 
 concurrency:
-  group: ci-cache-${{ github.ref }}
+  group: gh-cache-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: read
+  actions: write
 
 jobs:
   populate:
@@ -21,9 +35,8 @@ jobs:
     with:
       name: ${{ matrix.os }}
       os: ${{ matrix.os }}
-      cache-save: false
-      run: >
-        bazel build --nobuild --build_tests_only --keep_going
-        --repo_contents_cache=
-        //java/... //py/... //rb/... //rust/...
-        //javascript/selenium-webdriver/... //dotnet/...
+      cache-save: true
+      run: >-
+        bazel build --nobuild --build_tests_only --keep_going --repo_contents_cache=
+        //java/test/... //py:* //rb/spec/... //rust/tests/...
+        //javascript/selenium-webdriver:* //dotnet/test/...
