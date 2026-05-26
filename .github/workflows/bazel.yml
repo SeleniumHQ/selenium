@@ -160,10 +160,9 @@ jobs:
         id: setup-bazel-cached
         if: inputs.caching
         continue-on-error: true
-        uses: titusfortner/setup-bazel@repo-contents-cache
+        uses: bazel-contrib/setup-bazel@0.19.0
         with:
           cache-save: true
-          repo-contents-cache: false
           bazelisk-cache: true
           bazelrc: common --color=yes
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
@@ -195,7 +194,7 @@ jobs:
           repository-cache: true
       - name: Setup Bazel without caching
         if: inputs.caching == false || steps.setup-bazel-cached.outcome == 'failure'
-        uses: titusfortner/setup-bazel@repo-contents-cache
+        uses: bazel-contrib/setup-bazel@0.19.0
         with:
           cache-save: false
           bazelisk-cache: true

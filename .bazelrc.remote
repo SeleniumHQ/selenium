@@ -61,6 +61,7 @@ build:rbe-ci --config=rbe
 build:rbe-ci --curses=no --color=yes --show_timestamps --show_progress_rate_limit=5
 build:rbe-ci --bes_upload_mode=wait_for_upload_complete
 build:rbe-ci --remote_download_minimal
+build:rbe-ci --repository_contents_cache=
 
 # Configuration changes suggested by EngFlow
 build:rbe --grpc_keepalive_time=30s
