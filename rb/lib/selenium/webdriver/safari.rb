@@ -45,9 +45,7 @@ module Selenium
           @path = path
         end
 
-        def path
-          @path ||= nil
-        end
+        attr_reader :path
       end
     end # Safari
   end # WebDriver
