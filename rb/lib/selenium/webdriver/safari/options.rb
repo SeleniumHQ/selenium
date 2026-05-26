@@ -36,6 +36,10 @@ module Selenium
           super
         end
 
+        def browser_name=(value)
+          @options[:browser_name] = value
+        end
+
         def browser_name
           @options[:browser_name] = Safari.technology_preview? ? TECHNOLOGY_PREVIEW : BROWSER
         end
