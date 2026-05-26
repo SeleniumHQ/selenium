@@ -13,6 +13,8 @@ module Selenium
         def add_option: (untyped name, ?untyped? value) -> untyped
 
         def browser_name: () -> String
+
+        def browser_name=: (String value) -> String
       end
     end
   end
