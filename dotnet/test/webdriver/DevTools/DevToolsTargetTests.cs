@@ -18,14 +18,14 @@
 // </copyright>
 
 using OpenQA.Selenium.Tests.Infrastructure.Environment;
-using CurrentCdpVersion = OpenQA.Selenium.DevTools.V147;
+using CurrentCdpVersion = OpenQA.Selenium.DevTools.V148;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 
 [TestFixture]
 public class DevToolsTargetTests : DevToolsTestFixture
 {
-    private const int id = 147;
+    private const int id = 148;
 
     [Test]
     [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
@@ -160,7 +160,7 @@ public class DevToolsTargetTests : DevToolsTestFixture
     private void ValidateTargetCrashed(CurrentCdpVersion.Target.TargetCrashedEventArgs targetCrashed)
     {
         Assert.That(targetCrashed, Is.Not.Null);
-        Assert.That(targetCrashed.ErrorCode, Is.Not.Null);
+        Assert.That(targetCrashed.ErrorCode, Is.Not.Zero);
         Assert.That(targetCrashed.Status, Is.Not.Null);
         Assert.That(targetCrashed.TargetId, Is.Not.Null);
     }

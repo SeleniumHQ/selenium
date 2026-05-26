@@ -30,7 +30,7 @@ internal class NetworkEventsTests : BiDiTestFixture
     {
         TaskCompletionSource<BeforeRequestSentEventArgs> tcs = new();
 
-        await using var subscription = await context.Network.OnBeforeRequestSentAsync(tcs.SetResult);
+        await using var subscription = await context.Network.BeforeRequestSent.SubscribeAsync(e => tcs.TrySetResult(e));
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
@@ -48,7 +48,7 @@ internal class NetworkEventsTests : BiDiTestFixture
     {
         TaskCompletionSource<ResponseStartedEventArgs> tcs = new();
 
-        await using var subscription = await context.Network.OnResponseStartedAsync(tcs.SetResult);
+        await using var subscription = await context.Network.ResponseStarted.SubscribeAsync(e => tcs.TrySetResult(e));
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
@@ -67,7 +67,7 @@ internal class NetworkEventsTests : BiDiTestFixture
     {
         TaskCompletionSource<ResponseCompletedEventArgs> tcs = new();
 
-        await using var subscription = await context.Network.OnResponseCompletedAsync(tcs.SetResult);
+        await using var subscription = await context.Network.ResponseCompleted.SubscribeAsync(e => tcs.TrySetResult(e));
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
@@ -91,13 +91,13 @@ internal class NetworkEventsTests : BiDiTestFixture
 
         driver.Manage().Cookies.AddCookie(new("foo", "bar"));
 
-        await using var subscription = await bidi.Network.OnBeforeRequestSentAsync(tcs.SetResult);
+        await using var subscription = await bidi.Network.BeforeRequestSent.SubscribeAsync(e => tcs.TrySetResult(e));
 
         await context.ReloadAsync();
 
         var req = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
-        Assert.That(req.Request.Cookies, Has.Count.EqualTo(1));
+        Assert.That(req.Request.Cookies, Has.Length.EqualTo(1));
         Assert.That(req.Request.Cookies[0].Name, Is.EqualTo("foo"));
         Assert.That((req.Request.Cookies[0].Value as StringBytesValue).Value, Is.EqualTo("bar"));
     }
@@ -109,7 +109,7 @@ internal class NetworkEventsTests : BiDiTestFixture
     {
         TaskCompletionSource<AuthRequiredEventArgs> tcs = new();
 
-        await using var subscription = await context.Network.OnAuthRequiredAsync(tcs.SetResult);
+        await using var subscription = await context.Network.AuthRequired.SubscribeAsync(e => tcs.TrySetResult(e));
 
         driver.Url = UrlBuilder.WhereIs("basicAuth");
 
@@ -119,7 +119,7 @@ internal class NetworkEventsTests : BiDiTestFixture
         Assert.That(res.Request, Is.Not.Null);
         Assert.That(res.Request.Method, Is.EqualTo("GET"));
         Assert.That(res.Request.Url, Does.Contain("basicAuth"));
-        Assert.That(res.Response.Headers, Is.Not.Null.And.Count.GreaterThanOrEqualTo(1));
+        Assert.That(res.Response.Headers, Has.Length.GreaterThanOrEqualTo(1));
         Assert.That(res.Response.Status, Is.EqualTo(401));
     }
 
@@ -128,7 +128,7 @@ internal class NetworkEventsTests : BiDiTestFixture
     {
         TaskCompletionSource<FetchErrorEventArgs> tcs = new();
 
-        await using var subscription = await context.Network.OnFetchErrorAsync(tcs.SetResult);
+        await using var subscription = await context.Network.FetchError.SubscribeAsync(e => tcs.TrySetResult(e));
 
         try
         {

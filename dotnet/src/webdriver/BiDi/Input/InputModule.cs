@@ -33,12 +33,7 @@ internal sealed class InputModule : Module, IInputModule
     private static readonly Command<SetFilesParameters, SetFilesResult> SetFilesCommand = new(
         "input.setFiles", Default.SetFilesParameters, Default.SetFilesResult);
 
-    private static readonly Event<FileDialogOpenedEventArgs, FileDialogInfo> FileDialogOpenedEvent = new(
-        "input.fileDialogOpened",
-        static (bidi, p) => new FileDialogOpenedEventArgs(bidi, p.Context, p.UserContext, p.Multiple, p.Element),
-        Default.FileDialogInfo);
-
-    public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, ImmutableArray<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new PerformActionsParameters(context, actions);
 
@@ -52,22 +47,15 @@ internal sealed class InputModule : Module, IInputModule
         return await ExecuteAsync(ReleaseActionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<SetFilesResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<SetFilesResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, ImmutableArray<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetFilesParameters(context, element, files);
 
         return await ExecuteAsync(SetFilesCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogOpenedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(FileDialogOpenedEvent, handler, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogOpenedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(FileDialogOpenedEvent, handler, options, cancellationToken).ConfigureAwait(false);
-    }
+    public IEventSource<FileDialogOpenedEventArgs> FileDialogOpened => _fileDialogOpened ?? Interlocked.CompareExchange(ref _fileDialogOpened, CreateEventSource(InputEvent.FileDialogOpened), null) ?? _fileDialogOpened;
+    private IEventSource<FileDialogOpenedEventArgs>? _fileDialogOpened;
 }
 
 [JsonSerializable(typeof(PerformActionsParameters))]

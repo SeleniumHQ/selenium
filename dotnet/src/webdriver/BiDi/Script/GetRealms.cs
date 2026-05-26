@@ -40,4 +40,4 @@ public sealed record ContextGetRealmsOptions : CommandOptions
     };
 }
 
-public sealed record GetRealmsResult(IReadOnlyList<RealmInfo> Realms) : EmptyResult;
+public sealed record GetRealmsResult(ImmutableArray<RealmInfo> Realms) : EmptyResult;

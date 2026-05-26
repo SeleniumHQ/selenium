@@ -28,7 +28,7 @@ public record AuthRequiredEventArgs(
     RequestData Request,
     DateTimeOffset Timestamp,
     Browser.UserContext? UserContext,
-    IReadOnlyList<Intercept>? Intercepts,
+    ImmutableArray<Intercept>? Intercepts,
     ResponseData Response)
     : EventArgs(BiDi);
 
@@ -41,5 +41,5 @@ internal record AuthRequiredParameters(
     DateTimeOffset Timestamp,
     ResponseData Response,
     Browser.UserContext? UserContext,
-    IReadOnlyList<Intercept>? Intercepts)
+    ImmutableArray<Intercept>? Intercepts)
     : BaseParameters(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, UserContext, Intercepts);

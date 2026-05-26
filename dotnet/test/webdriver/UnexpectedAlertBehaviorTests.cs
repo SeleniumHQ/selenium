@@ -37,7 +37,7 @@ public class UnexpectedAlertBehaviorTests : DriverTestFixture
     {
         if (localDriver != null)
         {
-            localDriver.Quit();
+            localDriver.Dispose();
             localDriver = null;
         }
 

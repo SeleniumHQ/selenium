@@ -31,7 +31,7 @@ public sealed record FetchErrorEventArgs(
     DateTimeOffset Timestamp,
     string ErrorText,
     Browser.UserContext? UserContext,
-    IReadOnlyList<Intercept>? Intercepts)
+    ImmutableArray<Intercept>? Intercepts)
      : EventArgs(BiDi);
 
 internal sealed record FetchErrorParameters(
@@ -43,5 +43,5 @@ internal sealed record FetchErrorParameters(
     DateTimeOffset Timestamp,
     string ErrorText,
     Browser.UserContext? UserContext,
-    IReadOnlyList<Intercept>? Intercepts)
+    ImmutableArray<Intercept>? Intercepts)
     : BaseParameters(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, UserContext, Intercepts);

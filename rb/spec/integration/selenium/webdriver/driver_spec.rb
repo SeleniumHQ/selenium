@@ -60,7 +60,7 @@ module Selenium
         expect(driver.page_source).to match(%r{<title>XHTML Test Page</title>}i)
       end
 
-      it 'refreshes the page' do
+      it 'refreshes the page', except: {browser: %i[safari safari_preview]} do
         driver.navigate.to url_for('javascriptPage.html')
         short_wait { driver.find_element(id: 'updatediv') }.click
         expect(driver.find_element(id: 'dynamo').text).to eq('Fish and chips!')

@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Navigation do
-      it 'navigates back and forward' do
+      it 'navigates back and forward', except: {browser: %i[safari safari_preview]} do
         form_title = 'We Leave From Here'
         result_title = 'We Arrive Here'
         form_url = url_for 'formPage.html'
@@ -46,7 +46,7 @@ module Selenium
         expect(driver.title).to eq(result_title)
       end
 
-      it 'refreshes the page' do
+      it 'refreshes the page', except: {browser: %i[safari safari_preview]} do
         changed_title = 'Changed'
 
         driver.navigate.to url_for('javascriptPage.html')

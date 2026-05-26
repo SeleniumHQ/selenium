@@ -48,7 +48,7 @@ public class ProxySettingTests : DriverTestFixture
     {
         if (localDriver != null)
         {
-            localDriver.Quit();
+            localDriver.Dispose();
             localDriver = null;
         }
 

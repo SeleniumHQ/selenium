@@ -50,7 +50,6 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
   public static void shouldTestBeRunAtAll() {
     // Until Firefox can initialise the Fetch domain, we need this check
     assumeThat(Browser.detect()).isNotEqualTo(Browser.FIREFOX);
-    assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
   }
 
   @BeforeEach

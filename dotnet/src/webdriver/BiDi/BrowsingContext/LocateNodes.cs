@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed record LocateNodesParameters(BrowsingContext Context, Locator Locator, long? MaxNodeCount, Script.SerializationOptions? SerializationOptions, IEnumerable<Script.ISharedReference>? StartNodes) : Parameters;
+internal sealed record LocateNodesParameters(BrowsingContext Context, Locator Locator, long? MaxNodeCount, Script.SerializationOptions? SerializationOptions, ImmutableArray<Script.ISharedReference>? StartNodes) : Parameters;
 
 public sealed record LocateNodesOptions : CommandOptions
 {
@@ -27,7 +27,7 @@ public sealed record LocateNodesOptions : CommandOptions
 
     public Script.SerializationOptions? SerializationOptions { get; init; }
 
-    public IEnumerable<Script.ISharedReference>? StartNodes { get; init; }
+    public ImmutableArray<Script.ISharedReference>? StartNodes { get; init; }
 }
 
-public sealed record LocateNodesResult(IReadOnlyList<Script.NodeRemoteValue> Nodes) : EmptyResult;
+public sealed record LocateNodesResult(ImmutableArray<Script.NodeRemoteValue> Nodes) : EmptyResult;

@@ -44,14 +44,14 @@ internal sealed class SessionModule : Module, ISessionModule
         return await ExecuteAsync(StatusCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<SubscribeResult> SubscribeAsync(IEnumerable<string> events, SubscribeOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<SubscribeResult> SubscribeAsync(ImmutableArray<string> events, SubscribeOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SubscribeParameters(events, options?.Contexts);
 
         return await ExecuteAsync(SubscribeCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<Subscription> subscriptions, UnsubscribeByIdOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<UnsubscribeResult> UnsubscribeAsync(ImmutableArray<Subscription> subscriptions, UnsubscribeByIdOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new UnsubscribeByIdParameters(subscriptions);
 

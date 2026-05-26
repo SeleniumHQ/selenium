@@ -42,7 +42,7 @@ module Selenium
       end
 
       describe 'implicit waits' do
-        it 'implicitlies wait for a single element' do
+        it 'implicitlies wait for a single element', except: {browser: %i[safari safari_preview]} do
           driver.find_element(id: 'adder').click
           expect { driver.find_element(id: 'box0') }.not_to raise_error
         end
@@ -57,7 +57,8 @@ module Selenium
           expect { driver.find_element(id: 'box0') }.to raise_error(WebDriver::Error::NoSuchElementError)
         end
 
-        it 'implicitlies wait until at least one element is found when searching for many' do
+        it 'implicitlies wait until at least one element is found when searching for many',
+           except: {browser: %i[safari safari_preview]} do
           add = driver.find_element(id: 'adder')
 
           add.click

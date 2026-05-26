@@ -33,10 +33,10 @@ js_run_binary(
 
 js_run_binary(
     name = "get_attribute",
-    srcs = ["//javascript/webdriver/atoms:get-attribute.js"],
+    srcs = ["//javascript/atoms/fragments:get-attribute-typescript.js"],
     outs = ["get-attribute.js"],
     args = [
-        "$(rootpath //javascript/webdriver/atoms:get-attribute.js)",
+        "$(rootpath //javascript/atoms/fragments:get-attribute-typescript.js)",
         "$(rootpath :get-attribute.js)",
     ],
     tool = ":make_atoms_module",

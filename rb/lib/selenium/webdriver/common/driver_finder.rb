@@ -26,6 +26,8 @@ module Selenium
         new(options, service_class.new).driver_path
       end
 
+      # @param options [Options, nil] when nil driver parsed from Service::EXECUTABLE
+      # @param service [Service]
       def initialize(options, service)
         @options = options
         @service = service
@@ -47,36 +49,39 @@ module Selenium
 
       def paths
         @paths ||= begin
-          path = @service.class.driver_path
-          path = path.call if path.is_a?(Proc)
-          exe = @service.class::EXECUTABLE
-          if path
-            WebDriver.logger.debug("Skipping Selenium Manager; path to #{exe} specified in service class: #{path}")
-            Platform.assert_executable(path)
-            {driver_path: path}
-          else
-            output = SeleniumManager.binary_paths(*to_args)
-            formatted = {driver_path: Platform.cygwin_path(output['driver_path'], only_cygwin: true),
-                         browser_path: Platform.cygwin_path(output['browser_path'], only_cygwin: true)}
-            Platform.assert_executable(formatted[:driver_path])
-
-            browser_path = formatted[:browser_path]
-            Platform.assert_executable(browser_path)
-            if @options.respond_to?(:binary) && @options.binary.nil?
-              @options.binary = browser_path
-              @options.browser_version = nil
-            end
-
-            formatted
-          end
+          path = @service.executable_path || resolve_class_path
+          path ? paths_from_service(path) : paths_from_manager
         rescue StandardError => e
           WebDriver.logger.error("Exception occurred: #{e.message}")
           WebDriver.logger.error("Backtrace:\n\t#{e.backtrace&.join("\n\t")}")
-          raise Error::NoSuchDriverError, "Unable to obtain #{exe}"
+          raise Error::NoSuchDriverError, "Unable to obtain #{@service.class::EXECUTABLE}"
         end
       end
 
+      def resolve_class_path
+        path = @service.class.driver_path
+        path.is_a?(Proc) ? path.call : path
+      end
+
+      def paths_from_service(path)
+        exe = @service.class::EXECUTABLE
+        WebDriver.logger.debug("Skipping Selenium Manager; path to #{exe} specified in service class: #{path}")
+        Platform.assert_executable(path)
+        {driver_path: path}
+      end
+
+      def paths_from_manager
+        output = SeleniumManager.binary_paths(*to_args)
+        formatted = {driver_path: Platform.cygwin_path(output['driver_path'], only_cygwin: true),
+                     browser_path: Platform.cygwin_path(output['browser_path'], only_cygwin: true)}
+        Platform.assert_executable(formatted[:driver_path])
+        Platform.assert_executable(formatted[:browser_path])
+        formatted
+      end
+
       def to_args
+        return ['--driver', @service.class::EXECUTABLE] unless @options
+
         args = ['--browser', @options.browser_name]
         if @options.browser_version
           args << '--browser-version'

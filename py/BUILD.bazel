@@ -6,12 +6,13 @@ load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
-load("@rules_python//sphinxdocs:sphinx.bzl", "sphinx_build_binary", "sphinx_docs")
+load("@rules_python//python/entry_points:py_console_script_binary.bzl", "py_console_script_binary")
 load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "generate_devtools", "generate_devtools_latest", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 load("//py/private:generate_bidi.bzl", "generate_bidi")
 load("//py/private:import.bzl", "py_import")
+load("//py/private:sphinx_docs.bzl", "sphinx_docs")
 
 exports_files(
     ["pyproject.toml"],
@@ -63,20 +64,23 @@ py_binary(
 compile_pip_requirements(
     # base name for generated targets, typically "requirements"
     name = "requirements",
+    srcs = [
+        "pyproject.toml",
+        "requirements.txt",
+    ],
     extra_args = ["--no-strip-extras"],
-    requirements_in = ":requirements.txt",
     requirements_txt = ":requirements_lock.txt",
     tags = [
         "skip-rbe",  # This test won't run on the RBE because of a lack of network connectivity
     ],
 )
 
-SE_VERSION = "4.44.0.202604101016"
+SE_VERSION = "4.45.0.202605121853"
 
 BROWSER_VERSIONS = [
     "v146",
     "v147",
-    "v145",
+    "v148",
 ]
 
 TEST_DEPS = [
@@ -130,7 +134,7 @@ copy_file(
 
 copy_file(
     name = "find-elements",
-    src = "//javascript/atoms/fragments:find-elements.js",
+    src = "//javascript/atoms/fragments:find-elements-typescript.js",
     out = "selenium/webdriver/remote/findElements.js",
 )
 
@@ -729,6 +733,8 @@ BROWSER_TESTS = {
     },
 }
 
+DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
+
 # Generate test-<browser> targets (non-bidi)
 [
     py_test_suite(
@@ -748,12 +754,13 @@ BROWSER_TESTS = {
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         deps = [
             ":init-tree",
             ":webserver",
         ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
     )
-    for browser in BROWSER_TESTS.keys()
+    for browser in DEFAULT_BROWSER_TESTS
 ]
 
 # Generate test-<browser>-bidi targets (only for browsers with bidi=True)
@@ -776,12 +783,13 @@ BROWSER_TESTS = {
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         deps = [
             ":init-tree",
             ":webserver",
         ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
     )
-    for browser in BROWSER_TESTS.keys()
+    for browser in DEFAULT_BROWSER_TESTS
     if BROWSER_TESTS[browser].get("bidi", False)
 ]
 
@@ -908,20 +916,20 @@ py_binary(
     ],
 )
 
-sphinx_build_binary(
+py_console_script_binary(
     name = "sphinx-build",
+    pkg = "@py_dev_requirements//sphinx",
+    script = "sphinx-build",
     deps = [
         ":selenium",
-        requirement("sphinx"),
         requirement("sphinx-material"),
     ],
 )
 
 sphinx_docs(
     name = "docs",
-    srcs = glob(["docs/source/**/*.rst"]) + ["docs/source/conf.py"],
+    srcs = glob(["docs/source/**/*.rst"]),
     config = "docs/source/conf.py",
-    formats = ["html"],
     sphinx = ":sphinx-build",
 )
 

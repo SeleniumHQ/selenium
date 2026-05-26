@@ -1728,7 +1728,6 @@ pub fn clear_cache(log: &Logger, path: &str) {
 pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Error> {
     let mut client_builder = Client::builder()
         .danger_accept_invalid_certs(true)
-        .use_rustls_tls()
         .timeout(Duration::from_secs(timeout));
     if !proxy.is_empty() {
         client_builder = client_builder.proxy(Proxy::all(proxy)?);

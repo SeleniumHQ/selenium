@@ -36,7 +36,7 @@ public sealed record DedicatedWorkerRealmCreatedEventArgs(
     IBiDi BiDi,
     Realm Realm,
     string Origin,
-    IReadOnlyList<Realm> Owners) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+    ImmutableArray<Realm> Owners) : RealmCreatedEventArgs(BiDi, Realm, Origin);
 
 public sealed record SharedWorkerRealmCreatedEventArgs(
     IBiDi BiDi,

@@ -103,10 +103,11 @@ internal class BrowsingContextTests : BiDiTestFixture
 
         var tree = await context.GetTreeAsync();
 
-        Assert.That(tree.Contexts, Has.Count.EqualTo(1));
+        Assert.That(tree.Contexts, Has.Length.EqualTo(1));
         Assert.That(tree.Contexts[0].Context, Is.EqualTo(context));
-        Assert.That(tree.Contexts[0].Children, Has.Count.EqualTo(1));
-        Assert.That(tree.Contexts[0].Children[0].Url, Does.Contain("formPage.html"));
+        Assert.That(tree.Contexts[0].Children, Is.Not.Null);
+        Assert.That(tree.Contexts[0].Children.Value, Has.Length.EqualTo(1));
+        Assert.That(tree.Contexts[0].Children.Value[0].Url, Does.Contain("formPage.html"));
     }
 
     [Test]
@@ -116,7 +117,7 @@ internal class BrowsingContextTests : BiDiTestFixture
 
         var tree = await context.GetTreeAsync(new() { MaxDepth = 0 });
 
-        Assert.That(tree.Contexts, Has.Count.EqualTo(1));
+        Assert.That(tree.Contexts, Has.Length.EqualTo(1));
         Assert.That(tree.Contexts[0].Context, Is.EqualTo(context));
         Assert.That(tree.Contexts[0].Children, Is.Null);
     }
@@ -129,7 +130,7 @@ internal class BrowsingContextTests : BiDiTestFixture
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
-        Assert.That(tree.Contexts, Has.Count.GreaterThanOrEqualTo(2));
+        Assert.That(tree.Contexts, Has.Length.GreaterThanOrEqualTo(2));
     }
 
     [Test]
@@ -141,7 +142,7 @@ internal class BrowsingContextTests : BiDiTestFixture
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
-        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(window));
+        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(window.Context));
     }
 
     [Test]
@@ -153,7 +154,7 @@ internal class BrowsingContextTests : BiDiTestFixture
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
-        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(tab));
+        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(tab.Context));
     }
 
     [Test]

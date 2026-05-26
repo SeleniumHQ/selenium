@@ -117,7 +117,7 @@ public abstract record RemoteValue
         return (TResult)value!;
     }
 
-    private static TResult ConvertRemoteValuesToArray<TResult>(IEnumerable<RemoteValue>? remoteValues, Type elementType)
+    private static TResult ConvertRemoteValuesToArray<TResult>(ImmutableArray<RemoteValue>? remoteValues, Type elementType)
     {
         if (remoteValues is null)
         {
@@ -125,10 +125,10 @@ public abstract record RemoteValue
         }
 
         var convertMethod = typeof(RemoteValue).GetMethod(nameof(ConvertTo))!.MakeGenericMethod(elementType);
-        var items = remoteValues.ToList();
-        var array = Array.CreateInstance(elementType, items.Count);
+        var items = remoteValues.Value;
+        var array = Array.CreateInstance(elementType, items.Length);
 
-        for (int i = 0; i < items.Count; i++)
+        for (int i = 0; i < items.Length; i++)
         {
             var convertedItem = convertMethod.Invoke(items[i], null);
             array.SetValue(convertedItem, i);
@@ -137,7 +137,7 @@ public abstract record RemoteValue
         return (TResult)(object)array;
     }
 
-    private static TResult ConvertRemoteValuesToGenericList<TResult>(IEnumerable<RemoteValue>? remoteValues, Type listType)
+    private static TResult ConvertRemoteValuesToGenericList<TResult>(ImmutableArray<RemoteValue>? remoteValues, Type listType)
     {
         var elementType = listType.GetGenericArguments()[0];
         var list = (System.Collections.IList)Activator.CreateInstance(listType)!;
@@ -146,7 +146,7 @@ public abstract record RemoteValue
         {
             var convertMethod = typeof(RemoteValue).GetMethod(nameof(ConvertTo))!.MakeGenericMethod(elementType);
 
-            foreach (var item in remoteValues)
+            foreach (var item in remoteValues.Value)
             {
                 var convertedItem = convertMethod.Invoke(item, null);
                 list.Add(convertedItem);
@@ -156,7 +156,7 @@ public abstract record RemoteValue
         return (TResult)list;
     }
 
-    private static TResult ConvertRemoteValuesToDictionary<TResult>(IReadOnlyList<IReadOnlyList<RemoteValue>>? remoteValues, Type dictionaryType)
+    private static TResult ConvertRemoteValuesToDictionary<TResult>(ImmutableArray<ImmutableArray<RemoteValue>>? remoteValues, Type dictionaryType)
     {
         var typeArgs = dictionaryType.GetGenericArguments();
         var dict = (System.Collections.IDictionary)Activator.CreateInstance(dictionaryType)!;
@@ -166,11 +166,11 @@ public abstract record RemoteValue
             var convertKeyMethod = typeof(RemoteValue).GetMethod(nameof(ConvertTo))!.MakeGenericMethod(typeArgs[0]);
             var convertValueMethod = typeof(RemoteValue).GetMethod(nameof(ConvertTo))!.MakeGenericMethod(typeArgs[1]);
 
-            foreach (var pair in remoteValues)
+            foreach (var pair in remoteValues.Value)
             {
-                if (pair.Count != 2)
+                if (pair.Length != 2)
                 {
-                    throw new FormatException($"Expected a pair of RemoteValues for dictionary entry, but got {pair.Count} values.");
+                    throw new FormatException($"Expected a pair of RemoteValues for dictionary entry, but got {pair.Length} values.");
                 }
 
                 var convertedKey = convertKeyMethod.Invoke(pair[0], null)!;
@@ -210,7 +210,7 @@ public sealed record ArrayRemoteValue : RemoteValue
 
     public InternalId? InternalId { get; init; }
 
-    public IReadOnlyList<RemoteValue>? Value { get; init; }
+    public ImmutableArray<RemoteValue>? Value { get; init; }
 }
 
 public sealed record ObjectRemoteValue : RemoteValue
@@ -219,7 +219,7 @@ public sealed record ObjectRemoteValue : RemoteValue
 
     public InternalId? InternalId { get; init; }
 
-    public IReadOnlyList<IReadOnlyList<RemoteValue>>? Value { get; init; }
+    public ImmutableArray<ImmutableArray<RemoteValue>>? Value { get; init; }
 }
 
 public sealed record FunctionRemoteValue : RemoteValue
@@ -249,7 +249,7 @@ public sealed record MapRemoteValue : RemoteValue
 
     public InternalId? InternalId { get; init; }
 
-    public IReadOnlyList<IReadOnlyList<RemoteValue>>? Value { get; init; }
+    public ImmutableArray<ImmutableArray<RemoteValue>>? Value { get; init; }
 }
 
 public sealed record SetRemoteValue : RemoteValue
@@ -258,7 +258,7 @@ public sealed record SetRemoteValue : RemoteValue
 
     public InternalId? InternalId { get; init; }
 
-    public IReadOnlyList<RemoteValue>? Value { get; init; }
+    public ImmutableArray<RemoteValue>? Value { get; init; }
 }
 
 public sealed record WeakMapRemoteValue : RemoteValue
@@ -323,7 +323,7 @@ public sealed record NodeListRemoteValue : RemoteValue
 
     public InternalId? InternalId { get; init; }
 
-    public IReadOnlyList<RemoteValue>? Value { get; init; }
+    public ImmutableArray<RemoteValue>? Value { get; init; }
 }
 
 public sealed record HtmlCollectionRemoteValue : RemoteValue
@@ -332,7 +332,7 @@ public sealed record HtmlCollectionRemoteValue : RemoteValue
 
     public InternalId? InternalId { get; init; }
 
-    public IReadOnlyList<RemoteValue>? Value { get; init; }
+    public ImmutableArray<RemoteValue>? Value { get; init; }
 }
 
 public sealed record NodeRemoteValue(string SharedId, NodeProperties? Value) : RemoteValue, ISharedReference

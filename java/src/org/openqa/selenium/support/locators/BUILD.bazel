@@ -21,6 +21,6 @@ java_library(
 
 copy_file(
     name = "find-elements",
-    src = "//javascript/atoms/fragments:find-elements.js",
+    src = "//javascript/atoms/fragments:find-elements-typescript.js",
     out = "findElements.js",
 )

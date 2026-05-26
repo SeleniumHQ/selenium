@@ -209,6 +209,7 @@ def test_missing_attributes_raise_error(driver, pages):
         element.attribute_should_not_exist
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_can_use_pointer_input_with_event_firing_webdriver(driver, pages):
     ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
     pages.load("javascriptPage.html")

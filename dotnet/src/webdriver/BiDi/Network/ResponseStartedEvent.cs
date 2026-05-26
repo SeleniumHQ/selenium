@@ -31,7 +31,7 @@ public record ResponseStartedEventArgs(
     DateTimeOffset Timestamp,
     ResponseData Response,
     Browser.UserContext? UserContext,
-    IReadOnlyList<Intercept>? Intercepts)
+    ImmutableArray<Intercept>? Intercepts)
     : EventArgs(BiDi);
 
 internal record ResponseStartedParameters(
@@ -43,5 +43,5 @@ internal record ResponseStartedParameters(
     DateTimeOffset Timestamp,
     ResponseData Response,
     Browser.UserContext? UserContext,
-    IReadOnlyList<Intercept>? Intercepts)
+    ImmutableArray<Intercept>? Intercepts)
     : BaseParameters(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, UserContext, Intercepts);

@@ -1,84 +1,143 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
+  "dependencyDashboard": true,
+  "dependencyDashboardLabels": ["B-dependencies"],
+  "dependencyDashboardHeader": "This dashboard exists for visibility into Renovate's state and for surfacing problems. Renovate creates a branch per eligible update and validates it with the CI - Renovate - RBE workflow. If the check passes, Renovate merges the branch directly into `trunk` with no PR. If the check fails, Renovate raises a draft PR as a fallback so a human can investigate.",
+  "automerge": true,
+  "automergeType": "branch",
+  "draftPR": true,
+  "branchConcurrentLimit": 1,
+  "skipArtifactsUpdate": true,
+  "labels": ["B-dependencies"],
+  "baseBranchPatterns": ["trunk"],
+  "ignorePaths": [
+    "**/requirements_lock.txt",
+    "renovate.json",
+    "common/src/web/simpleTest.html"
+  ],
+  "constraintsFiltering": "strict",
+  "constraints": {
+    "node": "22",
+    "python": "3.10",
+    "ruby": "3.3"
+  },
   "packageRules": [
     {
-      "matchManagers": [ "bazel", "bazel-module", "bazelisk" ],
-      "matchPackageNames": [ "!rules_java", "!rules_jvm_external", "!contrib_rules_jvm", "!rules_dotnet", "!aspect_rules_js", "!aspect_rules_ts", "!rules_nodejs", "!rules_python", "!rules_ruby", "!rules_cc" ],
-      "matchDatasources": [ "!maven" ],
-      "commitMessagePrefix": "[dotnet][java][js][py][rb][rust]",
-      "labels": [ "dependencies", "c-build" ]
+      "description": "Override the Mend hosted runner's admin packageRule that forces dependencyDashboardApproval=true for every package, which blocks automatic branch creation.",
+      "matchPackageNames": ["*"],
+      "dependencyDashboardApproval": false
     },
     {
-      "matchManagers": [ "nuget" ],
-      "commitMessagePrefix": "[dotnet]",
-      "labels": [ "dependencies", "c-dotnet" ]
+      "description": "Treat Renovate config language constraints as Selenium support policy, not update targets.",
+      "matchManagers": ["renovate-config"],
+      "matchDatasources": ["node-version", "python-version", "ruby-version"],
+      "matchPackageNames": ["node", "python", "ruby"],
+      "enabled": false
     },
     {
-      "matchPackageNames": [ "rules_dotnet" ],
-      "commitMessagePrefix": "[dotnet]",
-      "labels": [ "dependencies", "c-dotnet" ]
+      "description": "Only propose Node.js runtime updates within the supported Node 22 line.",
+      "matchManagers": ["node-version", "npm", "github-actions"],
+      "matchPackageNames": ["node"],
+      "allowedVersions": "<23"
     },
     {
-      "matchManagers": [ "bazel", "bazel-module" ],
+      "description": "Only propose Node.js type definition updates within the supported Node 22 line.",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["@types/node"],
+      "allowedVersions": "<23"
+    },
+    {
+      "description": "Only propose Python runtime updates within the supported Python 3.10 line.",
+      "matchDatasources": ["python-version"],
+      "matchPackageNames": ["python"],
+      "allowedVersions": "<3.11"
+    },
+    {
+      "description": "Only propose Ruby runtime updates within the supported Ruby 3.3 line.",
+      "matchManagers": ["ruby-version"],
+      "matchPackageNames": ["ruby"],
+      "allowedVersions": "<3.4"
+    },
+    {
+      "description": "Do not track Docker image references in this repository.",
+      "matchDatasources": ["docker"],
+      "enabled": false
+    },
+    {
+      "description": "Do not propose NuGet updates; bumping csproj references does not affect the published Selenium.WebDriver package consumers receive.",
+      "matchManagers": ["nuget"],
+      "enabled": false
+    },
+    {
+      "description": "Do not propose routine Grid UI dependency upgrades in the dashboard baseline; keep vulnerability fixes eligible.",
+      "matchFileNames": ["javascript/grid-ui/package.json"],
+      "matchJsonata": ["$not($exists(vulnerabilityFixVersion))"],
+      "enabled": false
+    },
+    {
+      "description": "Sphinx 8.x requires docutils<0.22 and Sphinx 9 needs Python >=3.11.",
+      "matchPackageNames": ["docutils"],
+      "allowedVersions": "<0.22"
+    },
+    {
+      "description": "Group Bazel and Bazel module dependency declarations in the dashboard.",
+      "matchManagers": ["bazel", "bazel-module", "bazelisk"],
+      "dependencyDashboardCategory": "Bazel and Toolchains"
+    },
+    {
+      "description": "Use Maven version ordering for Maven artifacts found through Bazel managers.",
+      "matchManagers": ["bazel", "bazel-module"],
       "matchDatasources": ["maven"],
       "versioning": "maven",
-      "commitMessagePrefix": "[java]",
-      "labels": [ "dependencies", "c-java" ]
+      "dependencyDashboardCategory": "Java and Maven"
     },
     {
-      "matchManagers": [ "bazel-module" ],
-      "matchPackageNames": [ "rules_java", "rules_jvm_external", "contrib_rules_jvm" ],
-      "commitMessagePrefix": "[java]",
-      "labels": [ "dependencies", "c-java" ]
+      "description": "Group GitHub Actions workflow dependencies in the dashboard.",
+      "matchManagers": ["github-actions"],
+      "dependencyDashboardCategory": "GitHub Actions"
     },
     {
-      "matchManagers": [ "maven" ],
-      "commitMessagePrefix": "[java]",
-      "labels": [ "dependencies", "c-java" ]
+      "description": "Group JavaScript package declarations in the dashboard.",
+      "matchManagers": ["npm"],
+      "dependencyDashboardCategory": "JavaScript"
     },
     {
-      "matchManagers": [ "npm" ],
-      "rangeStrategy": "bump",
-      "commitMessagePrefix": "[js]",
-      "labels": [ "dependencies", "c-nodejs" ]
+      "description": "Group Python declarations and pinned requirements in the dashboard.",
+      "matchManagers": ["pep621", "pip_requirements", "poetry"],
+      "dependencyDashboardCategory": "Python"
     },
     {
-      "matchPackageNames": [ "aspect_rules_js", "aspect_rules_ts", "rules_nodejs" ],
-      "commitMessagePrefix": "[js]",
-      "labels": [ "dependencies", "c-nodejs" ]
+      "description": "Group Ruby declarations and runtime version files in the dashboard.",
+      "matchManagers": ["bundler", "ruby-version"],
+      "dependencyDashboardCategory": "Ruby"
     },
     {
-      "matchManagers": [ "pip_requirements", "pip_setup" ],
-      "commitMessagePrefix": "[py]",
-      "labels": [ "dependencies", "c-py" ]
+      "description": "Group Rust Cargo declarations in the dashboard.",
+      "matchManagers": ["cargo"],
+      "dependencyDashboardCategory": "Rust"
     },
     {
-      "matchPackageNames": [ "rules_python" ],
-      "commitMessagePrefix": "[py]",
-      "labels": [ "dependencies", "c-py" ]
+      "description": "llvm and rules_rs upgrades blocked pending Rust build work in https://github.com/SeleniumHQ/selenium/pull/17427.",
+      "matchManagers": ["bazel-module"],
+      "matchPackageNames": ["llvm", "rules_rs"],
+      "enabled": false
     },
     {
-      "matchManagers": [ "bundler", "ruby-version" ],
-      "commitMessagePrefix": "[rb]",
-      "labels": [ "dependencies", "c-rb" ]
+      "description": "rules_python v2 upgrade blocked pending https://github.com/bazel-contrib/rules_python/pull/3790.",
+      "matchManagers": ["bazel-module"],
+      "matchPackageNames": ["rules_python"],
+      "allowedVersions": "<2"
     },
     {
-      "matchPackageNames": [ "rules_ruby" ],
-      "commitMessagePrefix": "[rb]",
-      "labels": [ "dependencies", "c-rb" ]
+      "description": "Byte Buddy publishes -jdkN compat variants alongside regular releases; Maven sorts those variants as newer. Selenium targets Java 8+ so we want the regular release without the JDK suffix. https://github.com/SeleniumHQ/selenium/issues/17355",
+      "matchPackageNames": ["net.bytebuddy:byte-buddy"],
+      "allowedVersions": "!/-jdk\\d/"
     },
     {
-      "matchManagers": [ "cargo" ],
-      "rangeStrategy": "bump",
-      "commitMessagePrefix": "[rust]",
-      "labels": [ "dependencies", "c-rust" ]
-    },
-    {
-      "matchPackageNames": [ "rules_cc" ],
-      "commitMessagePrefix": "[rust]",
-      "labels": [ "dependencies", "c-rust" ]
+      "description": "Maven Central indexes non-stable date-based graphql-java artifacts (e.g. 6-digit date prefixes or 0.0.0- prereleases) that sort as 'latest'. https://github.com/graphql-java/graphql-java/discussions/3187",
+      "matchPackageNames": ["com.graphql-java:graphql-java"],
+      "allowedVersions": "!/^(\\d{6}-|0\\.0\\.0-)/"
     }
-  ],
-  "prConcurrentLimit": 10
+  ]
 }

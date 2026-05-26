@@ -119,8 +119,8 @@ module Selenium
           wait_for_url(file_name)
         end
 
-        def wait(timeout = 10)
-          Wait.new(timeout: timeout)
+        def wait(timeout = 10, ignore: [Error::NoSuchElementError])
+          Wait.new(timeout: timeout, ignore:)
         end
 
         def png_size(path)

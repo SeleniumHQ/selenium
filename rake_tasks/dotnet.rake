@@ -13,7 +13,7 @@ end
 
 desc 'Package .NET bindings into zipped assets and stage for release'
 task :package do |_task, arguments|
-  args = arguments.to_a.empty? ? ['--stamp'] : arguments.to_a
+  args = arguments.to_a.empty? ? ['--config=release'] : arguments.to_a
   Rake::Task['dotnet:build'].invoke(*args)
   mkdir_p 'build/dist'
   FileUtils.rm_f(Dir.glob('build/dist/*dotnet*'))

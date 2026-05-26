@@ -22,6 +22,7 @@ dotnet_nunit_test_suite(
         "//dotnet/src/webdriver:webdriver-net8.0",
         "//dotnet/test/testing.webserver",
         "//dotnet/test/webdriver",
+        nuget_package("NUnit.Analyzers"),
         nuget_package("Runfiles"),
     ],
 )
