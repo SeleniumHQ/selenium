@@ -1,5 +1,5 @@
 load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
-load("@aspect_rules_js//js:defs.bzl", "js_library")
+load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_library")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("@npm//javascript/selenium-webdriver:eslint/package_json.bzl", eslint_bin = "bin")
@@ -10,8 +10,36 @@ load("//common:defs.bzl", "copy_file")
 load("//javascript:defs.bzl", "mocha_test")
 load("//javascript/private:browsers.bzl", "BROWSERS")
 load("//javascript/private:jsdoc.bzl", "jsdoc")
+load("//javascript/selenium-webdriver/private:generate_bidi.bzl", "generate_bidi_library")
 
 npm_link_all_packages(name = "node_modules")
+
+# Generator script that reads the merged CDDL spec and produces one .ts file per BiDi domain.
+js_binary(
+    name = "generate_bidi_script",
+    data = [
+        "generate_bidi.mjs",
+        ":node_modules/cddl",
+        ":node_modules/cddl2ts",
+    ],
+    entry_point = "generate_bidi.mjs",
+)
+
+# Generate WebDriver BiDi TypeScript modules from CDDL specification.
+# extra_cddl_files are merged with the primary BiDi spec before generation so that
+# adjacent specs (Permissions, Prefetch, UA Client Hints, Web Bluetooth) are included.
+generate_bidi_library(
+    name = "create-bidi-src",
+    cddl_file = "@webdriver_bidi_all_cddl//file:spec.cddl",
+    enhancements_manifest = "//javascript/selenium-webdriver/private:bidi_enhancements_manifest",
+    extra_cddl_files = [
+        "@permissions_all_cddl//file:spec.cddl",
+        "@prefetch_all_cddl//file:spec.cddl",
+        "@ua_client_hints_all_cddl//file:spec.cddl",
+        "@web_bluetooth_all_cddl//file:spec.cddl",
+    ],
+    spec_version = "1.0",
+)
 
 VERSION = "4.45.0-nightly202605121853"
 
@@ -53,6 +81,7 @@ js_library(
 npm_package(
     name = "selenium-webdriver",
     srcs = [
+        ":create-bidi-src",
         ":license",
         ":manager-linux",
         ":manager-macos",
