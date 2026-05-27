@@ -187,14 +187,9 @@ interface Coordinate {
   }
 
   function findImageUsingMap(mapName: string, doc: Document): Element | null {
-    var elements = doc.getElementsByTagName('*');
-    for (var index = 0; index < elements.length; index += 1) {
-      var useMap = elements[index].getAttribute('usemap');
-      if (useMap === '#' + mapName) {
-        return elements[index];
-      }
-    }
-    return null;
+    // Use querySelector instead of a full-DOM scan; escape the map name so
+    // special characters in the CSS attribute value string are handled safely.
+    return doc.querySelector('[usemap="#' + mapName.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"]');
   }
 
   function maybeFindImageMap(elem: Element): ImageMapResult | null {
