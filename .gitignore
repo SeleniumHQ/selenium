@@ -15,7 +15,6 @@ common/build
 /build/
 cpp/iedriver/IEReturnTypes.h
 dotnet/.idea/
-dotnet/.paket/
 dotnet/packages/
 java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
 java/server/test/org/openqa/selenium/example
