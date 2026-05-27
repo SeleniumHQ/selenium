@@ -85,7 +85,7 @@
   }
 
   function nameMany(target: string, root: Root): Element[] {
-    return Array.from(root.querySelectorAll('*')).filter(el => el.getAttribute('name') === target)
+    return Array.from(root.querySelectorAll('[name="' + target.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"]'))
   }
 
   function tagNameMany(target: string, root: Root): Element[] {
@@ -108,26 +108,30 @@
       return []
     }
     try {
-      const reversedNs: Record<string, string> = {}
-      const allNodes = doc.getElementsByTagName('*')
-      for (let i = 0; i < allNodes.length; i++) {
-        const n = allNodes[i]
-        const ns = n.namespaceURI
-        if (ns && !reversedNs[ns]) {
-          let prefix = n.lookupPrefix(ns)
-          if (!prefix) {
-            const m = ns.match('.*/(\\w+)/?$')
-            prefix = m ? m[1] : 'xhtml'
+      // Namespace prefixes require a colon in the XPath expression. Skip the
+      // expensive full-DOM scan when the expression contains no colon at all.
+      let resolver: ((prefix: string | null) => string | null) | null = null
+      if (target.indexOf(':') !== -1) {
+        const reversedNs: Record<string, string> = {}
+        const allNodes = doc.getElementsByTagName('*')
+        for (let i = 0; i < allNodes.length; i++) {
+          const n = allNodes[i]
+          const ns = n.namespaceURI
+          if (ns && !reversedNs[ns]) {
+            let prefix = n.lookupPrefix(ns)
+            if (!prefix) {
+              const m = ns.match('.*/(\\w+)/?$')
+              prefix = m ? m[1] : 'xhtml'
+            }
+            reversedNs[ns] = prefix!
           }
-          reversedNs[ns] = prefix!
         }
+        const namespaces: Record<string, string> = {}
+        for (const key in reversedNs) {
+          namespaces[reversedNs[key]] = key
+        }
+        resolver = (prefix: string | null): string | null => namespaces[prefix || ''] || null
       }
-      const namespaces: Record<string, string> = {}
-      for (const key in reversedNs) {
-        namespaces[reversedNs[key]] = key
-      }
-      let resolver: XPathNSResolver | ((prefix: string | null) => string | null) =
-        (prefix: string | null): string | null => namespaces[prefix || ''] || null
 
       let result: XPathResult | null = null
       try {
