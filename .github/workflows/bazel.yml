@@ -296,9 +296,3 @@ jobs:
           if [ "$AVAIL_GB" -lt 5 ]; then
             echo "::warning::Low disk space: ${AVAIL_GB}GB remaining"
           fi
-      - name: Cancel run on bazel failure to prevent poisoned cache save
-        if: failure() && steps.run-bazel.outcome == 'failure' && inputs.cache-save
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: bash
-        run: gh run cancel ${{ github.run_id }}

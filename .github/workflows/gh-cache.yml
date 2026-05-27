@@ -1,4 +1,4 @@
-name: Github Cache
+name: GitHub Cache
 
 on:
   push:
@@ -22,7 +22,6 @@ concurrency:
 
 permissions:
   contents: read
-  actions: write
 
 jobs:
   populate:
