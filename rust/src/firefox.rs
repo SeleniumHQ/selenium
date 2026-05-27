@@ -65,6 +65,7 @@ const MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC: i32 = 4;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX: i32 = 4;
 const UNAVAILABLE_DOWNLOAD_ERROR_MESSAGE: &str =
     "{} {} not available for downloading (minimum version: {})";
+const FIREFOX_RELEASES_URL: &str = "https://www.mozilla.org/en-US/firefox/releases/";
 const FIREFOX_SNAP_LINK: &str = "/snap/bin/firefox";
 const FIREFOX_SNAP_BINARY: &str = "/snap/firefox/current/usr/lib/firefox/firefox";
 
@@ -254,8 +255,11 @@ impl SeleniumManager for FirefoxManager {
                         ));
                         if filtered_versions.is_empty() {
                             return Err(anyhow!(format!(
-                                "Not valid {} version found for {} {}",
-                                &self.driver_name, &self.browser_name, major_browser_version_int
+                                "Not valid {} version found for {} {}. Check available versions at {}",
+                                &self.driver_name,
+                                &self.browser_name,
+                                major_browser_version_int,
+                                DRIVER_URL
                             )));
                         } else {
                             filtered_versions.first().unwrap().to_string()
@@ -466,11 +470,15 @@ impl SeleniumManager for FirefoxManager {
 
             let min_downloadable_version = self.get_min_browser_version_for_download()?;
             if major_browser_version < min_downloadable_version {
-                return Err(anyhow!(format_three_args(
-                    UNAVAILABLE_DOWNLOAD_ERROR_MESSAGE,
-                    browser_name,
-                    browser_version,
-                    &min_downloadable_version.to_string(),
+                return Err(anyhow!(format!(
+                    "{}. Check available versions at {}",
+                    format_three_args(
+                        UNAVAILABLE_DOWNLOAD_ERROR_MESSAGE,
+                        browser_name,
+                        browser_version,
+                        &min_downloadable_version.to_string(),
+                    ),
+                    FIREFOX_RELEASES_URL
                 )));
             }
 
@@ -617,6 +625,10 @@ impl SeleniumManager for FirefoxManager {
             FIREFOX_VOLUME
         };
         Ok(Some(browser_label))
+    }
+
+    fn get_browser_versions_url(&self) -> &str {
+        FIREFOX_RELEASES_URL
     }
 
     fn is_download_browser(&self) -> bool {

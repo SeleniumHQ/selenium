@@ -184,6 +184,10 @@ pub trait SeleniumManager {
     // Shared functions
     // ----------------------------------------------------------
 
+    fn get_browser_versions_url(&self) -> &str {
+        ""
+    }
+
     fn download_driver(&mut self) -> Result<(), Error> {
         let driver_path_in_cache = self.get_driver_path_in_cache()?;
         let driver_name_with_extension = self.get_driver_name_with_extension();
@@ -246,12 +250,17 @@ pub trait SeleniumManager {
             && !self.is_browser_version_empty()
             && major_browser_version_int < min_browser_version_for_download
         {
-            return Err(anyhow!(format_three_args(
+            let mut message = format_three_args(
                 UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
                 self.get_browser_name(),
                 &major_browser_version,
                 &min_browser_version_for_download.to_string(),
-            )));
+            );
+            let versions_url = self.get_browser_versions_url();
+            if !versions_url.is_empty() {
+                message = format!("{}. Check available versions at {}", message, versions_url);
+            }
+            return Err(anyhow!(message));
         }
 
         if self.is_version_specific(original_browser_version) {
@@ -1285,11 +1294,16 @@ pub trait SeleniumManager {
         } else {
             format!(" {}", browser_version)
         };
-        Err(anyhow!(format_two_args(
+        let mut message = format_two_args(
             error_message,
             self.get_browser_name(),
             &browser_version_label,
-        )))
+        );
+        let versions_url = self.get_browser_versions_url();
+        if !versions_url.is_empty() {
+            message = format!("{}. Check available versions at {}", message, versions_url);
+        }
+        Err(anyhow!(message))
     }
 
     // ----------------------------------------------------------
