@@ -952,7 +952,7 @@ pub trait SeleniumManager {
         is_driver_in_path: &bool,
         err: Error,
     ) -> Result<(), Error> {
-        if *is_driver_in_path && !self.is_fallback_driver_from_cache() {
+        if *is_driver_in_path && self.is_fallback_driver_from_cache() {
             self.get_logger().debug_or_warn(
                 format!("Exception managing {}: {}", self.get_browser_name(), err),
                 self.is_offline(),
