@@ -659,8 +659,10 @@ pub trait SeleniumManager {
     }
 
     fn find_driver_in_path(&self) -> (Option<String>, Option<String>) {
-        let driver_version_command =
-            Command::new(self.get_driver_name(), vec![String::from("--version")]);
+        let driver_version_command = Command::new(
+            self.get_driver_name(),
+            vec![String::from(DASH_DASH_VERSION)],
+        );
         match run_shell_command(driver_version_command) {
             Ok(output) => {
                 let parsed_version = parse_version(output, self.get_logger()).unwrap_or_default();
