@@ -49,24 +49,31 @@ DOTNET="$RUNFILES_DIR/{dotnet}"
 # Find the workspace root
 WORKSPACE_ROOT="${{BUILD_WORKSPACE_DIRECTORY:-$RUNFILES_DIR/_main}}"
 DOTNET_DIR="$WORKSPACE_ROOT/dotnet"
-SOLUTION="$DOTNET_DIR/Selenium.slnx"
-
-cd "$DOTNET_DIR"
-
-# Bazel-bundled SDK ref packs lack prune metadata; opt out of NETSDK1226.
-export AllowMissingPrunePackageData=true
+SOLUTION="$DOTNET_DIR/{solution}"
 
 if [[ ! -f "$SOLUTION" ]]; then
     echo "ERROR: Could not find $SOLUTION" >&2
     exit 1
 fi
 
-echo "Running dotnet format $@ on Selenium.slnx..."
-"$DOTNET" format "$@" "$SOLUTION" || exit 1
+cd "$DOTNET_DIR"
+
+# Bazel-bundled SDK ref packs lack prune metadata; opt out of NETSDK1226.
+export AllowMissingPrunePackageData=true
+
+echo "Restoring dotnet tools..."
+"$DOTNET" tool restore
+
+echo "Restoring packages..."
+"$DOTNET" tool run paket restore
+
+echo "Running dotnet format $@ on {solution}..."
+"$DOTNET" format "$@" --no-restore "$SOLUTION"
 
 echo "Done."
 """.format(
         dotnet = dotnet_runfiles_path,
+        solution = ctx.attr.solution,
     )
 
     script = ctx.actions.declare_file(ctx.label.name + ".sh")
@@ -93,24 +100,34 @@ if defined BUILD_WORKSPACE_DIRECTORY (
     set WORKSPACE_ROOT=%RUNFILES_DIR%\\_main
 )
 set DOTNET_DIR=%WORKSPACE_ROOT%\\dotnet
-set SOLUTION=%DOTNET_DIR%\\Selenium.slnx
-
-cd /d "%DOTNET_DIR%"
-
-rem Bazel-bundled SDK ref packs lack prune metadata; opt out of NETSDK1226.
-set AllowMissingPrunePackageData=true
+set SOLUTION=%DOTNET_DIR%\\{solution}
 
 if not exist "%SOLUTION%" (
     echo ERROR: Could not find %SOLUTION% 1>&2
     exit /b 1
 )
 
-echo Running dotnet format %* on Selenium.slnx...
-"%DOTNET%" format %* "%SOLUTION%" || exit /b 1
+cd /d "%DOTNET_DIR%"
+
+rem Bazel-bundled SDK ref packs lack prune metadata; opt out of NETSDK1226.
+set AllowMissingPrunePackageData=true
+
+echo Restoring dotnet tools...
+"%DOTNET%" tool restore
+if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
+
+echo Restoring packages...
+"%DOTNET%" tool run paket restore
+if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
+
+echo Running dotnet format %* on {solution}...
+"%DOTNET%" format %* --no-restore "%SOLUTION%"
+if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
 
 echo Done.
 """.format(
         dotnet_path = dotnet_runfiles_path,
+        solution = ctx.attr.solution,
     )
 
     script = ctx.actions.declare_file(ctx.label.name + ".bat")
@@ -124,6 +141,10 @@ echo Done.
 dotnet_format = rule(
     implementation = _dotnet_format_impl,
     attrs = {
+        "solution": attr.string(
+            doc = "Solution file to format, relative to the dotnet directory.",
+            default = "Selenium.slnx",
+        ),
         "_windows_constraint": attr.label(
             default = "@platforms//os:windows",
         ),
