@@ -952,7 +952,7 @@ pub trait SeleniumManager {
         is_driver_in_path: &bool,
         err: Error,
     ) -> Result<(), Error> {
-        if *is_driver_in_path {
+        if *is_driver_in_path && self.get_browser_path().is_empty() {
             self.get_logger().debug_or_warn(
                 format!("Exception managing {}: {}", self.get_browser_name(), err),
                 self.is_offline(),
@@ -1173,8 +1173,6 @@ pub trait SeleniumManager {
         cmd_version_arg: &str,
     ) -> Result<Option<String>, Error> {
         let mut browser_path = self.get_browser_path().to_string();
-        self.get_logger()
-            .trace(format!("*** Browser path {}", browser_path));
         if browser_path.is_empty() {
             if let Some(path) = self.detect_browser_path() {
                 browser_path = path_to_string(&path);
