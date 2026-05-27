@@ -18,6 +18,7 @@
 use assert_cmd::Command;
 use assert_cmd::assert::AssertResult;
 use is_executable::is_executable;
+use selenium_manager::DASH_DASH_VERSION;
 use selenium_manager::files::path_to_string;
 use selenium_manager::logger::JsonOutput;
 use selenium_manager::shell;
@@ -81,7 +82,8 @@ pub fn get_driver_path(cmd: &mut Command) -> String {
 pub fn exec_driver(cmd: &mut Command) -> String {
     let cmd_mut = cmd.borrow_mut();
     let driver_path = get_driver_path(cmd_mut);
-    let driver_version_command = shell::Command::new(&driver_path, vec![String::from("--version")]);
+    let driver_version_command =
+        shell::Command::new(&driver_path, vec![String::from(DASH_DASH_VERSION)]);
     let output = run_shell_command(driver_version_command).unwrap();
     println!("**** EXEC DRIVER: {}", output);
     output
