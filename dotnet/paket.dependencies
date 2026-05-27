@@ -1,9 +1,10 @@
 group nuget
-framework: net462,net8.0,netstandard2.0
+framework: net462,net8.0,net10.0,netstandard2.0
 strategy: min
 source https://api.nuget.org/v3/index.json
 
 nuget BenderProxy 1.1.2
+nuget Microsoft.Bcl.AsyncInterfaces 8.0.0
 nuget CommandLineParser 2.8.0
 nuget Handlebars.Net 1.11.5
 nuget Humanizer.Core 2.8.26

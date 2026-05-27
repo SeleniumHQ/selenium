@@ -1,0 +1,5 @@
+group nuget
+Microsoft.Bcl.AsyncInterfaces framework: net462, netstandard2.0
+System.Collections.Immutable framework: net462, netstandard2.0
+System.Text.Json framework: net462, netstandard2.0
+System.Threading.Channels framework: net462, netstandard2.0

@@ -1,0 +1,7 @@
+group nuget
+BenderProxy
+Moq
+NUnit
+NUnit.Analyzers
+NUnit3TestAdapter
+Runfiles

@@ -49,4 +49,6 @@
     <Compile Include="$(CsprojIncludePath)\Properties\ArgumentNullExceptionExtensions.cs" Link="Properties\ArgumentNullExceptionExtensions.cs" />
   </ItemGroup>
 
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
+
 </Project>

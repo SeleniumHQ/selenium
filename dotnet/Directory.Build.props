@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!-- Paket manages transitive dependencies explicitly; suppress .NET 10+ package pruning warnings -->
+    <NoWarn>$(NoWarn);NU1510</NoWarn>
+  </PropertyGroup>
+</Project>
