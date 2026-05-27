@@ -24,9 +24,8 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    BETA, DASH_VERSION, DEV, ESR, LATEST_RELEASE, Logger, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
-    REG_CURRENT_VERSION_ARG, STABLE, SeleniumManager, create_http_client, format_three_args,
-    format_two_args,
+    BETA, DASH_VERSION, DEV, ESR, LATEST_RELEASE, Logger, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, STABLE,
+    SeleniumManager, create_http_client, format_three_args, format_two_args,
 };
 use anyhow::Error;
 use anyhow::anyhow;
@@ -195,7 +194,7 @@ impl SeleniumManager for FirefoxManager {
     fn discover_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.general_discover_browser_version(
             r"HKCU\Software\Mozilla\Mozilla Firefox",
-            REG_CURRENT_VERSION_ARG,
+            "CurrentVersion",
             DASH_VERSION,
         )
     }

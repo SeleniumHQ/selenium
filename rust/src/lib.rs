@@ -39,9 +39,7 @@ use crate::metadata::{
 };
 use crate::safari::{SAFARI_NAME, SAFARIDRIVER_NAME, SafariManager};
 use crate::safaritp::{SAFARITP_NAMES, SafariTPManager};
-use crate::shell::{
-    Command, run_shell_command, run_shell_command_by_os, run_shell_command_with_log,
-};
+use crate::shell::{Command, run_shell_command, run_shell_command_with_log};
 use crate::stats::{Props, send_stats_to_plausible};
 use anyhow::Error;
 use anyhow::anyhow;
@@ -85,19 +83,9 @@ pub const CANARY: &str = "canary";
 pub const NIGHTLY: &str = "nightly";
 pub const ESR: &str = "esr";
 pub const REG_VERSION_ARG: &str = "version";
-pub const REG_CURRENT_VERSION_ARG: &str = "CurrentVersion";
 pub const REG_PV_ARG: &str = "pv";
-pub const PLIST_COMMAND: &str =
-    r#"/usr/libexec/PlistBuddy -c "print :CFBundleShortVersionString" {}/Contents/Info.plist"#;
-pub const HDIUTIL_ATTACH_COMMAND: &str = "hdiutil attach {}";
-pub const HDIUTIL_DETACH_COMMAND: &str = "hdiutil detach /Volumes/{}";
-pub const CP_VOLUME_COMMAND: &str = "cp -R /Volumes/{}/{}.app {}";
-pub const MSIEXEC_INSTALL_COMMAND: &str = "start /wait msiexec /i {} /qn ALLOWDOWNGRADE=1";
-pub const WINDOWS_CHECK_ADMIN_COMMAND: &str = "net session";
-pub const DASH_VERSION: &str = "{}{}{} -v";
-pub const DASH_DASH_VERSION: &str = "{}{}{} --version";
-pub const DOUBLE_QUOTE: &str = r#"""#;
-pub const SINGLE_QUOTE: &str = "'";
+pub const DASH_VERSION: &str = "-v";
+pub const DASH_DASH_VERSION: &str = "--version";
 pub const ENV_PROGRAM_FILES: &str = "PROGRAMFILES";
 pub const ENV_PROGRAM_FILES_X86: &str = "PROGRAMFILES(X86)";
 pub const ENV_LOCALAPPDATA: &str = "LOCALAPPDATA";
@@ -109,8 +97,6 @@ pub const ARCH_ARM64: &str = "arm64";
 pub const ARCH_ARM7L: &str = "arm7l";
 pub const ARCH_OTHER: &str = "other";
 pub const TTL_SEC: u64 = 3600;
-pub const UNAME_COMMAND: &str = "uname -{}";
-pub const ESCAPE_COMMAND: &str = r#"printf %q "{}""#;
 pub const SNAPSHOT: &str = "SNAPSHOT";
 pub const OFFLINE_REQUEST_ERR_MSG: &str = "Unable to discover proper {} version in offline mode";
 pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mode";
@@ -478,11 +464,8 @@ pub trait SeleniumManager {
         ));
         let mut browser_version: Option<String> = None;
         for driver_version_command in commands.into_iter() {
-            let output = match run_shell_command_with_log(
-                self.get_logger(),
-                self.get_os(),
-                driver_version_command,
-            ) {
+            let output = match run_shell_command_with_log(self.get_logger(), driver_version_command)
+            {
                 Ok(out) => out,
                 Err(_) => continue,
             };
@@ -676,13 +659,9 @@ pub trait SeleniumManager {
     }
 
     fn find_driver_in_path(&self) -> (Option<String>, Option<String>) {
-        let driver_version_command = Command::new_single(format_three_args(
-            DASH_DASH_VERSION,
-            self.get_driver_name(),
-            "",
-            "",
-        ));
-        match run_shell_command_by_os(self.get_os(), driver_version_command) {
+        let driver_version_command =
+            Command::new(self.get_driver_name(), vec![String::from("--version")]);
+        match run_shell_command(driver_version_command) {
             Ok(output) => {
                 let parsed_version = parse_version(output, self.get_logger()).unwrap_or_default();
                 if !parsed_version.is_empty() {
@@ -713,8 +692,8 @@ pub trait SeleniumManager {
     fn is_windows_admin(&self) -> bool {
         let os = self.get_os();
         if WINDOWS.is(os) {
-            let command = Command::new_single(WINDOWS_CHECK_ADMIN_COMMAND.to_string());
-            let output = run_shell_command_by_os(os, command).unwrap_or_default();
+            let command = Command::new("net", vec![String::from("session")]);
+            let output = run_shell_command(command).unwrap_or_default();
             !output.is_empty() && !output.contains("error") && !output.contains("not recognized")
         } else {
             false
@@ -973,7 +952,7 @@ pub trait SeleniumManager {
         is_driver_in_path: &bool,
         err: Error,
     ) -> Result<(), Error> {
-        if *is_driver_in_path {
+        if *is_driver_in_path && self.is_fallback_driver_from_cache() {
             self.get_logger().debug_or_warn(
                 format!("Exception managing {}: {}", self.get_browser_name(), err),
                 self.is_offline(),
@@ -1213,35 +1192,22 @@ pub trait SeleniumManager {
                 return Ok(get_win_file_version(&escaped_browser_path));
             }
             if !self.is_browser_version_unstable() {
-                let reg_command =
-                    Command::new_multiple(vec!["REG", "QUERY", reg_key, "/v", reg_version_arg]);
+                let reg_command = Command::new(
+                    "REG",
+                    vec![
+                        String::from("QUERY"),
+                        reg_key.to_string(),
+                        String::from("/v"),
+                        reg_version_arg.to_string(),
+                    ],
+                );
                 commands.push(reg_command);
             }
         } else if !escaped_browser_path.is_empty() {
-            commands.push(Command::new_single(format_three_args(
-                cmd_version_arg,
-                "",
-                &escaped_browser_path,
-                "",
-            )));
-            commands.push(Command::new_single(format_three_args(
-                cmd_version_arg,
-                DOUBLE_QUOTE,
-                &browser_path,
-                DOUBLE_QUOTE,
-            )));
-            commands.push(Command::new_single(format_three_args(
-                cmd_version_arg,
-                SINGLE_QUOTE,
-                &browser_path,
-                SINGLE_QUOTE,
-            )));
-            commands.push(Command::new_single(format_three_args(
-                cmd_version_arg,
-                "",
-                &browser_path,
-                "",
-            )));
+            commands.push(Command::new(
+                escaped_browser_path,
+                vec![cmd_version_arg.to_string()],
+            ));
         }
 
         Ok(self.detect_browser_version(commands))
@@ -1259,7 +1225,14 @@ pub trait SeleniumManager {
             }
         }
         if MACOS.is(self.get_os()) {
-            let plist_command = Command::new_single(format_one_arg(PLIST_COMMAND, &browser_path));
+            let plist_command = Command::new(
+                "/usr/libexec/PlistBuddy",
+                vec![
+                    String::from("-c"),
+                    String::from("print :CFBundleShortVersionString"),
+                    format!("{}/Contents/Info.plist", browser_path),
+                ],
+            );
             commands.push(plist_command);
         } else {
             return Ok(None);
@@ -1492,16 +1465,6 @@ pub trait SeleniumManager {
 
         if path.exists() {
             escaped_path = self.canonicalize_path(path.to_path_buf());
-            if WINDOWS.is(self.get_os()) {
-                escaped_path = escaped_path.replace('\\', "\\\\");
-            } else {
-                let escape_command =
-                    Command::new_single(format_one_arg(ESCAPE_COMMAND, escaped_path.as_str()));
-                escaped_path = run_shell_command("bash", "-c", escape_command).unwrap_or_default();
-                if escaped_path.is_empty() {
-                    escaped_path = string_path.clone();
-                }
-            }
         }
         if !string_path.eq(&escaped_path) {
             self.get_logger().trace(format!(
@@ -1733,6 +1696,23 @@ pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Error> {
         client_builder = client_builder.proxy(Proxy::all(proxy)?);
     }
     Ok(client_builder.build().unwrap_or_default())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn get_escaped_path_returns_canonical_path_without_shell_escaping() {
+        let tmp = tempfile::tempdir().unwrap();
+        let folder = tmp.path().join("space dir");
+        std::fs::create_dir(&folder).unwrap();
+
+        let manager = crate::chrome::ChromeManager::new().unwrap();
+        let escaped = manager.get_escaped_path(folder.to_string_lossy().to_string());
+
+        assert_eq!(escaped, manager.canonicalize_path(folder));
+    }
 }
 
 pub fn format_one_arg(string: &str, arg1: &str) -> String {

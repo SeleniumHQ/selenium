@@ -138,7 +138,8 @@ public class WebSocketFrameProxy extends SimpleChannelInboundHandler<WebSocketFr
             throw new UncheckedIOException("failed to read continuation frame", e);
           }
           if (cont.isFinalFragment()) {
-            upstream.send(new BinaryMessage(binaryBuffer.toByteArray()));
+            // toByteArray() returns a fresh copy we own; transfer it without re-copying.
+            upstream.send(BinaryMessage.wrap(binaryBuffer.toByteArray()));
             binaryBuffer.reset();
             next = Continuation.None;
           }
