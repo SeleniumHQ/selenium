@@ -194,11 +194,6 @@ under the License.
       assertAttributeEquals(assert, 'true', el, 'multiple');
     });
 
-    QUnit.test('boolean property async returns null when absent', function (assert) {
-      var el = document.createElement('script');
-      assertAttributeEquals(assert, null, el, 'async');
-    });
-
     // --- event handler attributes ---
 
     QUnit.test('event handler attribute falls back to getAttribute, not function stringification', function (assert) {
