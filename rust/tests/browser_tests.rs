@@ -155,6 +155,7 @@ fn invalid_browser_path_test() {
         "chrome",
         "--browser-path",
         "/bad/path/google-chrome-wrong",
+        "--trace",
     ])
     .assert()
     .code(DATAERR)
