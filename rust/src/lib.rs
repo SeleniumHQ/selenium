@@ -49,9 +49,9 @@ use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::mpsc::{Receiver, Sender};
-use std::time::Duration;
+use std::time::{Duration, SystemTime};
 use std::{env, fs, thread};
-use walkdir::DirEntry;
+use walkdir::{DirEntry, WalkDir};
 use which::which;
 
 pub mod chrome;
@@ -97,6 +97,7 @@ pub const ARCH_ARM64: &str = "arm64";
 pub const ARCH_ARM7L: &str = "arm7l";
 pub const ARCH_OTHER: &str = "other";
 pub const TTL_SEC: u64 = 3600;
+pub const CACHE_TTL_DAYS: u64 = 30;
 pub const SNAPSHOT: &str = "SNAPSHOT";
 pub const OFFLINE_REQUEST_ERR_MSG: &str = "Unable to discover proper {} version in offline mode";
 pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mode";
@@ -1704,6 +1705,70 @@ pub fn clear_cache(log: &Logger, path: &str) {
     }
 }
 
+/// Removes cached driver and browser entries that have not been modified within `ttl_days` days.
+///
+/// Only version directories (those that directly contain binary files) are deleted; metadata
+/// and config files at the cache root are left untouched.
+pub fn prune_old_cache_entries(log: &Logger, cache_path: &str, ttl_days: u64) {
+    let cutoff = SystemTime::now()
+        .checked_sub(Duration::from_secs(ttl_days * 24 * 3600))
+        .unwrap_or(SystemTime::UNIX_EPOCH);
+    prune_cache_entries_before(log, cache_path, cutoff);
+}
+
+fn prune_cache_entries_before(log: &Logger, cache_path: &str, cutoff: SystemTime) {
+    let cache = Path::new(cache_path);
+    if !cache.exists() {
+        return;
+    }
+
+    let mut dirs_to_remove: Vec<PathBuf> = Vec::new();
+
+    for entry in WalkDir::new(cache)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| e.path().is_dir() && e.path() != cache)
+    {
+        let path = entry.path();
+        let Ok(children) = fs::read_dir(path) else {
+            continue;
+        };
+
+        let mut has_file = false;
+        let mut all_old = true;
+
+        for child in children.filter_map(|e| e.ok()) {
+            let child_path = child.path();
+            if child_path.is_file() {
+                has_file = true;
+                if let Ok(meta) = child_path.metadata() {
+                    if let Ok(modified) = meta.modified() {
+                        if modified >= cutoff {
+                            all_old = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if has_file && all_old {
+            dirs_to_remove.push(path.to_path_buf());
+        }
+    }
+
+    for dir in dirs_to_remove {
+        log.debug(format!("Removing old cache entry: {}", dir.display()));
+        fs::remove_dir_all(&dir).unwrap_or_else(|err| {
+            log.warn(format!(
+                "The cache entry {} cannot be removed: {}",
+                dir.display(),
+                err
+            ))
+        });
+    }
+}
+
 pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Error> {
     // Ensure the ring provider is installed. Returns Err if already set, which
     // is fine — we just need it present before ClientBuilder::build() runs.
@@ -1720,6 +1785,7 @@ pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Error> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::logger::Logger;
 
     #[test]
     fn get_escaped_path_returns_canonical_path_without_shell_escaping() {
@@ -1731,6 +1797,65 @@ mod tests {
         let escaped = manager.get_escaped_path(folder.to_string_lossy().to_string());
 
         assert_eq!(escaped, manager.canonicalize_path(folder));
+    }
+
+    #[test]
+    fn prune_cache_entries_removes_old_version_dirs() {
+        let tmp = tempfile::tempdir().unwrap();
+        let cache = tmp.path();
+        let log = Logger::new();
+
+        // Create a version directory with a binary (simulates a cached driver)
+        let version_dir = cache
+            .join("chromedriver")
+            .join("linux")
+            .join("x86_64")
+            .join("120.0.6099.109");
+        fs::create_dir_all(&version_dir).unwrap();
+        fs::write(version_dir.join("chromedriver"), b"fake binary").unwrap();
+
+        // A cutoff in the future forces all existing files to be treated as old
+        let future_cutoff = SystemTime::now() + Duration::from_secs(3600);
+        prune_cache_entries_before(&log, cache.to_str().unwrap(), future_cutoff);
+
+        assert!(
+            !version_dir.exists(),
+            "Version directory older than cutoff should have been removed"
+        );
+    }
+
+    #[test]
+    fn prune_cache_entries_keeps_recent_version_dirs() {
+        let tmp = tempfile::tempdir().unwrap();
+        let cache = tmp.path();
+        let log = Logger::new();
+
+        let version_dir = cache
+            .join("chromedriver")
+            .join("linux")
+            .join("x86_64")
+            .join("130.0.6723.91");
+        fs::create_dir_all(&version_dir).unwrap();
+        fs::write(version_dir.join("chromedriver"), b"fake binary").unwrap();
+
+        // A cutoff at the Unix epoch treats no existing files as old
+        prune_cache_entries_before(&log, cache.to_str().unwrap(), SystemTime::UNIX_EPOCH);
+
+        assert!(
+            version_dir.exists(),
+            "Version directory newer than cutoff should be kept"
+        );
+    }
+
+    #[test]
+    fn prune_cache_entries_handles_missing_cache() {
+        let log = Logger::new();
+        // Should not panic when cache path does not exist
+        prune_cache_entries_before(
+            &log,
+            "/nonexistent/path/that/does/not/exist",
+            SystemTime::now(),
+        );
     }
 }
 
