@@ -234,6 +234,6 @@ internal class LocalValueConversionTests
 
         var objValue = value as ObjectLocalValue;
 
-        Assert.That(objValue.Value, Has.Exactly(5).Count);
+        Assert.That(objValue.Value, Has.Length.EqualTo(5));
     }
 }

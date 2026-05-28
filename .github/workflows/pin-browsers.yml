@@ -32,7 +32,7 @@ jobs:
           persist-credentials: false
       - name: Download patch
         id: download
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: pinned-browsers
         continue-on-error: true

@@ -92,7 +92,7 @@ internal class StorageTests : BiDiTestFixture
         var cookiesResult = await context.Storage.GetCookiesAsync();
 
         Assert.That(cookiesResult, Is.Not.Null);
-        Assert.That(cookiesResult.Cookies, Has.Count.EqualTo(1));
+        Assert.That(cookiesResult.Cookies, Has.Length.EqualTo(1));
 
         var cookie = cookiesResult.Cookies[0];
 
@@ -118,7 +118,7 @@ internal class StorageTests : BiDiTestFixture
         var cookiesResult = await bidi.Storage.GetCookiesAsync();
 
         Assert.That(cookiesResult, Is.Not.Null);
-        Assert.That(cookiesResult.Cookies, Has.Count.EqualTo(2));
+        Assert.That(cookiesResult.Cookies, Has.Length.EqualTo(2));
         Assert.That(cookiesResult.Cookies[0].Name, Is.EqualTo("key1"));
         Assert.That(cookiesResult.Cookies[1].Name, Is.EqualTo("key2"));
     }
@@ -157,7 +157,7 @@ internal class StorageTests : BiDiTestFixture
         var cookiesResult = await bidi.Storage.GetCookiesAsync();
 
         Assert.That(cookiesResult, Is.Not.Null);
-        Assert.That(cookiesResult.Cookies, Has.Count.EqualTo(1));
+        Assert.That(cookiesResult.Cookies, Has.Length.EqualTo(1));
         Assert.That(cookiesResult.Cookies[0].Name, Is.EqualTo("key2"));
     }
 

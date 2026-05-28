@@ -44,12 +44,9 @@ task :pin do
   Bazel.execute('run', ['--', 'install', '--dir', Dir.pwd, '--lockfile-only'], '@pnpm//:pnpm')
 end
 
-desc 'Update JavaScript dependencies and refresh lockfile (use "latest" to bump ranges)'
-task :update, [:latest] do |_task, arguments|
-  args = ['--', 'update', '-r']
-  args << '--latest' if arguments[:latest] == 'latest'
-  args += ['--dir', Dir.pwd]
-  Bazel.execute('run', args, '@pnpm//:pnpm')
+desc 'Update JavaScript dependencies and refresh lockfile'
+task :update do
+  Bazel.execute('run', ['--', 'update', '-r', '--dir', Dir.pwd], '@pnpm//:pnpm')
   Rake::Task['node:pin'].invoke
 end
 
@@ -111,12 +108,11 @@ task :docs_generate do
   Bazel.execute('run', [], '//javascript/selenium-webdriver:docs')
 end
 
-desc 'Install Node package locally via npm link'
+desc 'Install Node package locally via pnpm link'
 task :install do
   Bazel.execute('build', [], '//javascript/selenium-webdriver')
-  Dir.chdir('bazel-bin/javascript/selenium-webdriver/selenium-webdriver') do
-    sh 'npm', 'link'
-  end
+  pkg_dir = File.expand_path('bazel-bin/javascript/selenium-webdriver/selenium-webdriver')
+  Bazel.execute('run', ['--', '--dir', pkg_dir, 'link', '--global'], '@pnpm//:pnpm')
 end
 
 desc 'Update JavaScript changelog'

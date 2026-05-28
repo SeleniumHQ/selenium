@@ -18,7 +18,7 @@ env_logger = "0.11.10"
 regex = "1.12.3"
 tokio = { version = "1.52.3", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
 tempfile = "3.27.0"
-reqwest = { version = "0.12.23", default-features = false, features = ["rustls-tls"] }
+reqwest = { version = "0.13.3", default-features = false, features = ["rustls"] }
 zip = { version = "8", default-features = false, features = ["deflate"] }
 directories = "6.0.0"
 serde = { version = "1.0.228", features = ["derive"] }

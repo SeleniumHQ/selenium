@@ -134,6 +134,28 @@ under the License.
     assert.equal(elements[0].getAttribute('id'), 'input1');
   });
 
+  QUnit.test('finds elements by name with double-quote in value', function(assert) {
+    var el = document.createElement('input');
+    el.setAttribute('name', 'my"input');
+    el.setAttribute('id', 'quoted-name-input');
+    fixture.appendChild(el);
+    var elements = findElements({'name': 'my"input'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0].getAttribute('id'), 'quoted-name-input');
+    fixture.removeChild(el);
+  });
+
+  QUnit.test('finds elements by name with backslash in value', function(assert) {
+    var el = document.createElement('input');
+    el.setAttribute('name', 'my\\input');
+    el.setAttribute('id', 'backslash-name-input');
+    fixture.appendChild(el);
+    var elements = findElements({'name': 'my\\input'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0].getAttribute('id'), 'backslash-name-input');
+    fixture.removeChild(el);
+  });
+
   QUnit.test('finds elements by xpath', function(assert) {
     var elements = findElements({'xpath': './/p'}, fixture);
     assert.equal(elements.length, 3);
@@ -143,6 +165,11 @@ under the License.
     var elements = findElements({'xpath': './/p[@id="para2"]'}, fixture);
     assert.equal(elements.length, 1);
     assert.equal(elements[0].getAttribute('id'), 'para2');
+  });
+
+  QUnit.test('finds elements by xpath using axis notation', function(assert) {
+    var elements = findElements({'xpath': 'descendant::p'}, fixture);
+    assert.equal(elements.length, 3);
   });
 
   QUnit.test('throws for unsupported strategy', function(assert) {

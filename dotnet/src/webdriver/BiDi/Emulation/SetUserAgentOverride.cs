@@ -21,13 +21,13 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-internal sealed record SetUserAgentOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] string? UserAgent, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
+internal sealed record SetUserAgentOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] string? UserAgent, ImmutableArray<BrowsingContext.BrowsingContext>? Contexts, ImmutableArray<Browser.UserContext>? UserContexts) : Parameters;
 
 public sealed record SetUserAgentOverrideOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
+    public ImmutableArray<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
+    public ImmutableArray<Browser.UserContext>? UserContexts { get; init; }
 }
 
 public sealed record SetUserAgentOverrideResult : EmptyResult;

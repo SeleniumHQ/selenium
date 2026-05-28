@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 internal sealed class BrowsingContextInputModule(BrowsingContext context, IInputModule inputModule, EventDispatcher dispatcher) : IBrowsingContextInputModule
 {
-    public Task<PerformActionsResult> PerformActionsAsync(IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<PerformActionsResult> PerformActionsAsync(ImmutableArray<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         return inputModule.PerformActionsAsync(context, actions, options, cancellationToken);
     }
@@ -33,7 +33,7 @@ internal sealed class BrowsingContextInputModule(BrowsingContext context, IInput
         return inputModule.ReleaseActionsAsync(context, options, cancellationToken);
     }
 
-    public Task<SetFilesResult> SetFilesAsync(Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<SetFilesResult> SetFilesAsync(Script.ISharedReference element, ImmutableArray<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default)
     {
         return inputModule.SetFilesAsync(context, element, files, options, cancellationToken);
     }

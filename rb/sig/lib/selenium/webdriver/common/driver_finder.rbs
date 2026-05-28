@@ -20,6 +20,14 @@ module Selenium
 
       def paths: -> untyped
 
+      def class_path: -> String?
+
+      def env_path: -> String?
+
+      def paths_from_service: (String path) -> Hash[Symbol, String]
+
+      def paths_from_manager: -> Hash[Symbol, String]
+
       def to_args: -> Array[String]
     end
   end

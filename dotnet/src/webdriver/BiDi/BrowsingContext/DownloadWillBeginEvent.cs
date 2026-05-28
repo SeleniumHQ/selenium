@@ -24,6 +24,7 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed record DownloadWillBeginEventArgs(
     IBiDi BiDi,
+    Download Download,
     string SuggestedFilename,
     BrowsingContext Context,
     Navigation? Navigation,
@@ -32,6 +33,7 @@ public sealed record DownloadWillBeginEventArgs(
     : EventArgs(BiDi), IBaseNavigationInfo;
 
 internal sealed record DownloadWillBeginParams(
+    Download Download,
     string SuggestedFilename,
     BrowsingContext Context,
     Navigation? Navigation,

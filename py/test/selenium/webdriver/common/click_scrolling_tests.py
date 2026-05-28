@@ -23,6 +23,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_clicking_on_anchor_scrolls_page(driver, pages):
     scrollScript = """var pageY;
     if (typeof(window.pageYOffset) == 'number') {
@@ -53,6 +54,7 @@ def test_should_scroll_to_click_on_an_element_hidden_by_overflow(driver, pages):
         pytest.fail(f"Should not be out of bounds: {e.msg}")
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_click_on_an_element_hidden_by_overflow(driver, pages):
     pages.load("scroll.html")
 
@@ -62,6 +64,7 @@ def test_should_be_able_to_click_on_an_element_hidden_by_overflow(driver, pages)
     assert "line8" == driver.find_element(By.ID, "clicked").text
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 def test_should_be_able_to_click_on_an_element_hidden_by_double_overflow(driver, pages):
@@ -71,6 +74,7 @@ def test_should_be_able_to_click_on_an_element_hidden_by_double_overflow(driver,
     WebDriverWait(driver, 3).until(EC.title_is("Clicked Successfully!"))
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_click_on_an_element_hidden_by_yoverflow(driver, pages):
     pages.load("scrolling_tests/page_with_y_overflow_auto.html")
 
@@ -121,6 +125,7 @@ def test_should_be_able_to_click_element_in_aframe_that_is_out_of_view(driver, p
     assert element.is_selected()
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_click_element_that_is_out_of_view_in_aframe(driver, pages):
     pages.load("scrolling_tests/page_with_scrolling_frame.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "scrolling_frame"))
@@ -146,6 +151,7 @@ def test_should_be_able_to_click_element_that_is_out_of_view_in_aframe_that_is_o
     assert element.is_selected()
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_remote

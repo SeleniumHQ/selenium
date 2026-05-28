@@ -26,11 +26,6 @@ on:
         required: false
         type: string
         default: ''
-      caching:
-        description: Toggle caching of Bazel
-        required: false
-        type: boolean
-        default: true
       node-version:
         description: Custom Node version to install
         required: false
@@ -76,6 +71,11 @@ on:
         required: false
         type: string
         default: ''
+      cache-save:
+        description: Save the Bazel cache after the run (avoids multiple jobs clobbering it)
+        required: false
+        type: boolean
+        default: false
       gem-trusted-publishing:
         description: Exchange GitHub OIDC token for a RubyGems API token (requires trusted publisher configured on rubygems.org)
         required: false
@@ -95,19 +95,6 @@ jobs:
       GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     steps:
-      - name: Remove extra tools to free disk space
-        if: inputs.os == 'ubuntu'
-        run: |
-          echo "Removing extra tools to free disk space..."
-          echo "Space before: $(df -BG / | tail -1 | awk '{print $4}')"
-          sudo rm -rf /opt/ghc || true
-          sudo rm -rf /usr/local/.ghcup || true
-          sudo rm -rf /usr/local/share/boost || true
-          sudo rm -rf /usr/share/swift || true
-          sudo rm -rf /usr/local/julia* || true
-          sync
-          after=$(df -BG / | tail -1 | awk '{print $4}')
-          echo "Space after: ${after}"
       - name: Calculate fetch depth
         id: depth
         shell: bash
@@ -134,14 +121,23 @@ jobs:
           fetch-tags: ${{ inputs.fetch-depth != '' }}
       - name: Pull latest changes from head ref for PRs
         if: contains(github.head_ref, 'renovate/')
+        shell: bash
         run: git pull origin "$HEAD_REF"
         env:
           HEAD_REF: ${{ github.head_ref }}
       - name: Pull latest changes from ref for branch pushes
         if: contains(github.ref, 'renovate/')
+        shell: bash
         run: git pull origin "$GIT_REF"
         env:
           GIT_REF: ${{ github.ref }}
+      - name: Free disk space
+        if: inputs.os == 'ubuntu'
+        run: ./scripts/github-actions/free-disk-space.sh
+      - name: Free disk space (Windows)
+        if: inputs.os == 'windows'
+        shell: pwsh
+        run: ./scripts/github-actions/free-disk-space.ps1
       - name: Restore cache
         if: inputs.cache-name != ''
         uses: actions/cache/restore@v5
@@ -149,16 +145,6 @@ jobs:
           path: ${{ inputs.cache-name }}
           key: ${{ inputs.cache-name }}-
           restore-keys: ${{ inputs.cache-name }}-
-      - name: Remove driver directories Windows
-        if: inputs.os == 'windows'
-        run: |
-          rm "$env:ChromeWebDriver" -r -v
-          rm "$env:EdgeWebDriver" -r -v
-          rm "$env:GeckoWebDriver" -r -v
-      - name: Remove driver directories Non-Windows
-        if: inputs.os != 'windows'
-        run: |
-          sudo rm -rf "$CHROMEWEBDRIVER" "$EDGEWEBDRIVER" "$GECKOWEBDRIVER"
       - name: Set Python version
         if: inputs.python-version != ''
         run: echo '${{ inputs.python-version }}' > py/.python-version
@@ -171,10 +157,11 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
       - name: Setup Bazel with caching
-        if: inputs.caching
+        id: setup-bazel-cached
+        continue-on-error: true
         uses: bazel-contrib/setup-bazel@0.19.0
         with:
-          cache-save: ${{ github.ref_name == 'trunk' }}
+          cache-save: ${{ inputs.cache-save }}
           bazelisk-cache: true
           bazelrc: common --color=yes
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
@@ -205,7 +192,7 @@ jobs:
               "+pin_browsers_extension+mac_geckodriver": false
           repository-cache: true
       - name: Setup Bazel without caching
-        if: inputs.caching == false
+        if: steps.setup-bazel-cached.outcome == 'failure'
         uses: bazel-contrib/setup-bazel@0.19.0
         with:
           cache-save: false
@@ -215,6 +202,14 @@ jobs:
               crates: rust/Cargo.Bazel.lock
           repository-cache: true
           bazelrc: common --color=yes
+      - name: Disk status after cache restore
+        if: inputs.os != 'macos'
+        shell: bash
+        run: |
+          if [[ "${{ steps.setup-bazel-cached.outcome }}" == "failure" ]]; then
+            echo "::warning::Bazel cache setup failed — fell back to setup without cache"
+          fi
+          . ./scripts/github-actions/disk-status.sh
       - name: Setup Fluxbox and Xvfb
         if: inputs.os == 'ubuntu' && inputs.browser != ''
         run: |
@@ -240,7 +235,17 @@ jobs:
       - name: Configure RubyGems credentials via OIDC
         if: inputs.gem-trusted-publishing
         uses: rubygems/configure-rubygems-credentials@main
+      - name: Disk status before build
+        if: inputs.os != 'macos'
+        shell: bash
+        run: |
+          . ./scripts/github-actions/disk-status.sh
+          if [ "$AVAIL_GB" -lt 10 ]; then
+            echo "::error::Insufficient disk space: ${AVAIL_GB}GB available (need >=10GB)"
+            exit 1
+          fi
       - name: Run Bazel
+        id: run-bazel
         shell: bash
         env:
           MSYS_NO_PATHCONV: 1
@@ -251,15 +256,15 @@ jobs:
             ${{ inputs.run }}
           } 2>&1 | tee build/bazel-console.log
       - name: Rerun failures with debug
-        if: failure()
+        if: failure() && steps.run-bazel.outcome == 'failure'
         shell: bash
         run: ./scripts/github-actions/rerun-failures.sh '${{ inputs.run }}' '${{ inputs.rerun-with-debug }}'
       - name: Collect failed test logs
-        if: failure()
+        if: failure() && steps.run-bazel.outcome == 'failure'
         shell: bash
         run: ./scripts/github-actions/collect-test-logs.sh
       - name: Upload failed test logs
-        if: failure()
+        if: failure() && steps.run-bazel.outcome == 'failure'
         uses: actions/upload-artifact@v7
         with:
           name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ inputs.browser }}
@@ -284,13 +289,11 @@ jobs:
           path: ${{ inputs.artifact-path || 'changes.patch' }}
           retention-days: 6
           if-no-files-found: ${{ inputs.artifact-path != '' && 'error' || 'ignore' }}
-      - name: Check disk space
+      - name: Low Disk Warning
         if: always()
         shell: bash
         run: |
-          avail=$(df -k "$GITHUB_WORKSPACE" | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
-          echo "Remaining disk space: ${avail}GB"
-          if [ "$avail" -lt 5 ]; then
-            echo "::error::Low disk space: ${avail}GB remaining"
-            exit 1
+          . ./scripts/github-actions/disk-status.sh
+          if [ "$AVAIL_GB" -lt 5 ]; then
+            echo "::warning::Low disk space: ${AVAIL_GB}GB remaining"
           fi

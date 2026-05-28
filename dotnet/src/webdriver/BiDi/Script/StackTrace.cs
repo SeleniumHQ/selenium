@@ -19,4 +19,4 @@
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public sealed record StackTrace(IReadOnlyList<StackFrame> CallFrames);
+public sealed record StackTrace(ImmutableArray<StackFrame> CallFrames);

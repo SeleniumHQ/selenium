@@ -73,30 +73,36 @@ BROWSERS = {
         "args": ["--driver=chrome"] + chrome_args,
         "data": chrome_data,
         "tags": COMMON_TAGS + ["chrome"],
+        "target_compatible_with": [],
     },
     "chrome-beta": {
         "args": ["--driver=chrome"] + chrome_beta_args,
         "data": chrome_beta_data,
         "tags": COMMON_TAGS + ["chrome"],
+        "target_compatible_with": [],
     },
     "edge": {
         "args": ["--driver=edge"] + edge_args,
         "data": edge_data,
         "tags": COMMON_TAGS + ["edge"],
+        "target_compatible_with": [],
     },
     "firefox": {
         "args": ["--driver=firefox"] + firefox_args,
         "data": firefox_data,
         "tags": COMMON_TAGS + ["firefox"],
+        "target_compatible_with": [],
     },
     "ie": {
         "args": ["--driver=ie"],
         "data": [],
-        "tags": COMMON_TAGS + ["ie", "skip-rbe"],
+        "tags": COMMON_TAGS + ["ie"],
+        "target_compatible_with": ["@platforms//os:windows"],
     },
     "safari": {
         "args": ["--driver=safari"],
         "data": [],
-        "tags": COMMON_TAGS + ["safari", "skip-rbe"],
+        "tags": COMMON_TAGS + ["safari"],
+        "target_compatible_with": ["@platforms//os:macos"],
     },
 }

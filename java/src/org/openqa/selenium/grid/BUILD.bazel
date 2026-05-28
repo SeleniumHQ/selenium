@@ -200,6 +200,7 @@ java_binary(
     ],
     runtime_deps = [
         ":grid",
+        "//java/src/org/openqa/selenium/grid/sessionmap/redis",
         artifact("org.slf4j:slf4j-jdk14"),
     ],
 )

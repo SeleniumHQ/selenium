@@ -52,12 +52,12 @@ window.bot.dom.typescript.getAttribute = `;
 
 const input = fs.readFileSync(inputPath, 'utf8');
 
-// The compiled TypeScript output begins with "(function () {". Prepend the
+// The compiled TypeScript output begins with "(function (". Prepend the
 // browser-global assignment so the atom is accessible as
 // window.bot.dom.typescript.getAttribute in test pages.
-if (!input.trimStart().startsWith('(function ()')) {
+if (!input.trimStart().startsWith('(function (')) {
   throw new Error(
-    `Unexpected compiled output format. Expected it to start with "(function ()", got: ${input.slice(0, 80)}`
+    `Unexpected compiled output format. Expected it to start with "(function (", got: ${input.slice(0, 80)}`
   );
 }
 

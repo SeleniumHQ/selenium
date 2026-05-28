@@ -21,6 +21,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_implicitly_wait_for_asingle_element(driver, pages):
     pages.load("dynamic.html")
     add = driver.find_element(By.ID, "adder")
@@ -44,6 +45,7 @@ def test_should_return_after_first_attempt_to_find_one_after_disabling_implicit_
         driver.find_element(By.ID, "box0")
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_implicitly_wait_until_at_least_one_element_is_found_when_searching_for_many(driver, pages):
     pages.load("dynamic.html")
     add = driver.find_element(By.ID, "adder")

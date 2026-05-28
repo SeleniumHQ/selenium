@@ -1,68 +1,37 @@
 # Only Development dependencies (tooling, testing, docs, etc)
 # Runtime dependencies are in pyproject.toml
 # included in the Bazel lock through //py:requirements
-async-generator==1.10
-attrs==26.1.0
-backports.tarfile==1.2.0
-cachetools==7.1.1
-cffi==2.0.0
-chardet==7.4.3
-charset-normalizer==3.4.7
-colorama==0.4.6
-cryptography==48.0.0
-distlib==0.4.0
-docutils==0.21.2
-exceptiongroup==1.3.1
-filelock==3.29.0
-filetype==1.2.0
-h11==0.16.0
-id==1.6.1
-idna==3.15
-importlib_metadata==9.0.0
-inflection==0.5.1
-iniconfig==2.3.0
-jaraco.classes==3.4.0
-jaraco.context==6.1.2
-jaraco.functools==4.4.0
-jeepney==0.9.0
-Jinja2==3.1.6
-keyring==25.7.0
-markdown-it-py==4.2.0
-mdurl==0.1.2
-more-itertools==11.0.2
-mypy==2.1.0
-mypy_extensions==1.1.0
-nh3==0.3.5
-outcome==1.3.0.post0
-packaging==26.2
-platformdirs==4.9.6
-pluggy==1.6.0
-pycparser==3.0
-Pygments==2.20.0
-pyproject-api==1.10.0
-PySocks==1.7.1
-pytest==9.0.3
-pytest-instafail==0.5.0
-pytest-mock==3.15.1
-pytest-trio==0.8.0
-python-discovery==1.3.1
-pywin32-ctypes==0.2.3
-readme_renderer==44.0
-requests==2.34.1
-requests-toolbelt==1.0.0
-rfc3986==2.0.0
-rich==15.0.0
-SecretStorage==3.5.0
-sniffio==1.3.1
-sortedcontainers==2.4.0
-Sphinx==8.1.3
-sphinx-material==0.0.36
-tomli==2.4.1
-tox==4.54.0
-trio-typing==0.10.0
-twine==6.2.0
-types-certifi==2021.10.8.3
-types-PySocks==1.7.1.20260508
-virtualenv==21.3.3
-wsproto==1.3.2
-zipp==3.23.1
+# Transitive dependencies are resolved by compile_pip_requirements into requirements_lock.txt
+
+# === Direct dev tooling ===
+filetype~=1.2
+inflection~=0.5
+mypy~=2.1
+pytest~=9.0
+pytest-instafail~=0.5
+pytest-mock~=3.15
+pytest-trio~=0.8
+rich~=15.0
+Sphinx~=8.1
+sphinx-material~=0.0
+tox~=4.54
+trio-typing~=0.10
+twine~=6.2
+types-certifi~=2021.10
+types-PySocks~=1.7
+zipp~=3.23
+
+# === Platform-specific transitive deps ===
+# Listed explicitly so they appear in requirements_lock.txt regardless of
+# which platform runs compile_pip_requirements. Otherwise pip-compile on
+# macOS silently drops them and Linux/Windows CI breaks.
+
+# Linux keyring backend (twine -> keyring -> secretstorage -> cryptography):
+cffi~=2.0
+cryptography~=48.0
+jeepney~=0.9
+pycparser~=3.0
+secretstorage~=3.5
+
+# Windows keyring backend (twine -> keyring -> pywin32-ctypes):
+pywin32-ctypes~=0.2

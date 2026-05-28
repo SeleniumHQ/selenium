@@ -1,6 +1,6 @@
 load(":library.bzl", "java_library", "java_test")
 load(":package.bzl", "package_name")
-load(":selenium_test.bzl", "BROWSERS", "selenium_test")
+load(":selenium_test.bzl", "DEFAULT_BROWSERS", "selenium_test")
 
 _test_attrs = [
     "browsers",
@@ -128,7 +128,7 @@ def _create_selenium_test_target(
 
 def java_selenium_test_suite(
         name,
-        browsers = BROWSERS.keys(),
+        browsers = DEFAULT_BROWSERS,
         srcs = None,
         size = None,
         test_identifiers = ["Test.java"],

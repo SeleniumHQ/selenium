@@ -43,7 +43,7 @@ public sealed record ManualProxyConfiguration : ProxyConfiguration, ISocksProxyC
 
     public int? SocksVersion { get; init; }
 
-    public IEnumerable<string>? NoProxy { get; init; }
+    public ImmutableArray<string>? NoProxy { get; init; }
 }
 
 public sealed record PacProxyConfiguration(string ProxyAutoConfigUrl) : ProxyConfiguration;

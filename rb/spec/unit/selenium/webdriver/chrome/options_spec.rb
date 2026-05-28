@@ -269,16 +269,6 @@ module Selenium
                                           'goog:chromeOptions' => {})
           end
 
-          it 'converts profile' do
-            profile = Profile.new
-            directory = profile.directory
-
-            opts = described_class.new(profile: profile)
-            expect(opts.as_json).to eq('browserName' => 'chrome',
-                                       'goog:chromeOptions' =>
-                                         {'args' => ["--user-data-dir=#{directory}"]})
-          end
-
           it 'processes unhandled_prompt_behavior hash values' do
             opts = described_class.new(unhandled_prompt_behavior: {
                                          alert: :accept_and_notify,

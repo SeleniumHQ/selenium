@@ -36,11 +36,11 @@ public sealed record GeolocationPositionErrorOverride : GeolocationOverride;
 
 [JsonDerivedType(typeof(SetGeolocationOverrideCoordinatesParameters))]
 [JsonDerivedType(typeof(SetGeolocationOverridePositionErrorParameters))]
-internal abstract record SetGeolocationOverrideParameters(IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
+internal abstract record SetGeolocationOverrideParameters(ImmutableArray<BrowsingContext.BrowsingContext>? Contexts, ImmutableArray<Browser.UserContext>? UserContexts) : Parameters;
 
-internal sealed record SetGeolocationOverrideCoordinatesParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] GeolocationCoordinates? Coordinates, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : SetGeolocationOverrideParameters(Contexts, UserContexts);
+internal sealed record SetGeolocationOverrideCoordinatesParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] GeolocationCoordinates? Coordinates, ImmutableArray<BrowsingContext.BrowsingContext>? Contexts, ImmutableArray<Browser.UserContext>? UserContexts) : SetGeolocationOverrideParameters(Contexts, UserContexts);
 
-internal sealed record SetGeolocationOverridePositionErrorParameters(GeolocationPositionError Error, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : SetGeolocationOverrideParameters(Contexts, UserContexts);
+internal sealed record SetGeolocationOverridePositionErrorParameters(GeolocationPositionError Error, ImmutableArray<BrowsingContext.BrowsingContext>? Contexts, ImmutableArray<Browser.UserContext>? UserContexts) : SetGeolocationOverrideParameters(Contexts, UserContexts);
 
 internal sealed record GeolocationCoordinates(double Latitude, double Longitude, double? Accuracy, double? Altitude, double? AltitudeAccuracy, double? Heading, double? Speed);
 
@@ -52,9 +52,9 @@ internal sealed record GeolocationPositionError
 
 public sealed record SetGeolocationOverrideOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
+    public ImmutableArray<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
+    public ImmutableArray<Browser.UserContext>? UserContexts { get; init; }
 }
 
 public sealed record SetGeolocationOverrideResult : EmptyResult;

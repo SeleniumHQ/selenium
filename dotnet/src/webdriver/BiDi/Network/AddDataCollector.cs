@@ -22,22 +22,22 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed record AddDataCollectorParameters(IEnumerable<DataType> DataTypes, int MaxEncodedDataSize, CollectorType? CollectorType, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
+internal sealed record AddDataCollectorParameters(ImmutableArray<DataType> DataTypes, int MaxEncodedDataSize, CollectorType? CollectorType, ImmutableArray<BrowsingContext.BrowsingContext>? Contexts, ImmutableArray<Browser.UserContext>? UserContexts) : Parameters;
 
 public sealed record AddDataCollectorOptions : CommandOptions
 {
     public CollectorType? CollectorType { get; init; }
 
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
+    public ImmutableArray<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
+    public ImmutableArray<Browser.UserContext>? UserContexts { get; init; }
 }
 
 public sealed record ContextAddDataCollectorOptions : CommandOptions
 {
     public CollectorType? CollectorType { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
+    public ImmutableArray<Browser.UserContext>? UserContexts { get; init; }
 
     internal static AddDataCollectorOptions WithContext(ContextAddDataCollectorOptions? options, BrowsingContext.BrowsingContext context) => new()
     {

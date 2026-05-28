@@ -33,7 +33,13 @@ section() {
 }
 
 # Find what's changed compared to trunk (skip if --all)
-trunk_ref="$(git rev-parse --verify trunk 2>/dev/null || echo "")"
+# When on trunk, compare against origin/trunk instead.
+current_branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")"
+if [[ "$current_branch" == "trunk" ]]; then
+    trunk_ref="$(git rev-parse --verify origin/trunk 2>/dev/null || echo "")"
+else
+    trunk_ref="$(git rev-parse --verify trunk 2>/dev/null || echo "")"
+fi
 
 if [[ "$format_all" == "false" && -n "$trunk_ref" ]]; then
     base="$(git merge-base HEAD "$trunk_ref" 2>/dev/null || echo "")"

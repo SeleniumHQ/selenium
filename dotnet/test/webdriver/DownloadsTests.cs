@@ -41,7 +41,7 @@ public class DownloadsTests : DriverTestFixture
     {
         if (localDriver != null)
         {
-            localDriver.Quit();
+            localDriver.Dispose();
             localDriver = null;
         }
 

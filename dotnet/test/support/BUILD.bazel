@@ -25,5 +25,6 @@ dotnet_nunit_test_suite(
         "//dotnet/test/webdriver",
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
         nuget_package("Moq"),
+        nuget_package("NUnit.Analyzers"),
     ],
 )

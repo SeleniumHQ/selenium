@@ -96,6 +96,7 @@ def test_can_clear_actions(driver, pages):
     actions.clear_actions()
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_move_and_click(driver, pages):
     pages.load("javascriptPage.html")
     toClick = driver.find_element(By.ID, "clickField")
@@ -109,6 +110,7 @@ def test_move_and_click(driver, pages):
     assert "Clicked" == toClick.get_attribute("value")
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_drag_and_drop(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     element_available_timeout = 15
@@ -160,12 +162,14 @@ def test_double_click(driver, pages):
     assert "DoubleClicked" == toDoubleClick.get_attribute("value")
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_dragging_element_with_mouse_moves_it_to_another_list(driver, pages):
     _perform_drag_and_drop_with_mouse(driver, pages)
     dragInto = driver.find_element(By.ID, "sortable1")
     assert 6 == len(dragInto.find_elements(By.TAG_NAME, "li"))
 
 
+@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_dragging_element_with_mouse_fires_events(driver, pages):
     _perform_drag_and_drop_with_mouse(driver, pages)
     dragReporter = driver.find_element(By.ID, "dragging_reports")

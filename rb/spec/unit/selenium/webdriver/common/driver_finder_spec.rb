@@ -22,6 +22,32 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe DriverFinder do
+      it 'asks Selenium Manager for the driver by executable when options is nil' do
+        allow(SeleniumManager).to receive(:binary_paths).and_return({'driver_path' => '/path/to/driver',
+                                                                     'browser_path' => '/path/to/browser'})
+        allow(Platform).to receive(:assert_executable).and_return(true)
+
+        described_class.new(nil, Service.chrome).driver_path
+
+        expect(SeleniumManager).to have_received(:binary_paths).with('--driver',
+                                                                     Chrome::Service::EXECUTABLE)
+      end
+
+      it 'env path takes precedence over class path without calling Selenium Manager' do
+        original = ENV.fetch('SE_CHROMEDRIVER', nil)
+        ENV['SE_CHROMEDRIVER'] = '/env/path/to/chromedriver'
+        allow(Chrome::Service).to receive(:driver_path).and_return('/class/path')
+        allow(SeleniumManager).to receive(:binary_paths)
+        allow(Platform).to receive(:assert_executable).with('/env/path/to/chromedriver').and_return(true)
+
+        described_class.new(Options.chrome, Service.chrome).driver_path
+
+        expect(SeleniumManager).not_to have_received(:binary_paths)
+        expect(Platform).to have_received(:assert_executable).with('/env/path/to/chromedriver')
+      ensure
+        original.nil? ? ENV.delete('SE_CHROMEDRIVER') : ENV['SE_CHROMEDRIVER'] = original
+      end
+
       it 'class path accepts a String without calling Selenium Manager' do
         allow(Chrome::Service).to receive(:driver_path).and_return('path')
         allow(SeleniumManager).to receive(:binary_paths)
@@ -79,7 +105,7 @@ module Selenium
         expect(SeleniumManager).to have_received(:binary_paths).with('--browser',
                                                                      options.browser_name,
                                                                      '--browser-version',
-                                                                     options.browser_version,
+                                                                     'stable',
                                                                      '--browser-path',
                                                                      options.binary,
                                                                      '--proxy',

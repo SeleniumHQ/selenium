@@ -20,6 +20,13 @@ rb_library(
     srcs = glob([
         "bidi/**/*.rb",
         "bidi.rb",
+    ]),
+    deps = [":common"],
+)
+
+rb_library(
+    name = "devtools",
+    srcs = glob([
         "devtools/**/*.rb",
         "devtools.rb",
     ]),

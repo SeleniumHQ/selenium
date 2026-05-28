@@ -58,6 +58,10 @@ query --@aspect_rules_ts//ts:default_to_tsc_transpiler
 
 build --incompatible_strict_action_env
 
+# Prevent runner-provided ANDROID_HOME triggering rules_android's SDK fetch.
+# Creates a harmless empty repo instead of failing on missing API platforms.
+common --repo_env=ANDROID_HOME=
+
 # Required for prebuilt protoc to be used
 common --@protobuf//bazel/toolchains:prefer_prebuilt_protoc=true
 

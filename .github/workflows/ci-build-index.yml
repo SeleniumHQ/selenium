@@ -24,7 +24,7 @@ jobs:
     permissions: {}
     steps:
       - name: Download index
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: bazel-test-file-index
       - name: Cache index

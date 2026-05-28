@@ -71,7 +71,8 @@ class MessageInboundConverter extends SimpleChannelInboundHandler<WebSocketFrame
           }
 
           if (finalFragment) {
-            message = new BinaryMessage(buffer.toByteArray());
+            // toByteArray() returns a fresh copy we own; transfer it without re-copying.
+            message = BinaryMessage.wrap(buffer.toByteArray());
             buffer.reset();
             next = Continuation.None;
           } else {

@@ -1,0 +1,29 @@
+name: CI Cache
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-cache-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  populate:
+    name: Populate Cache
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos, windows]
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: ${{ matrix.os }}
+      os: ${{ matrix.os }}
+      cache-save: false
+      run: >
+        bazel build --nobuild --build_tests_only --keep_going
+        --repo_contents_cache=
+        //java/... //py/... //rb/... //rust/...
+        //javascript/selenium-webdriver/... //dotnet/...

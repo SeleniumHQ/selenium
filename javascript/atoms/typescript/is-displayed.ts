@@ -41,10 +41,8 @@ interface Coordinate {
   y: number;
 }
 
-(function (): (elem: Element, optIgnoreOpacity?: boolean) => boolean {
-  // Cache the tagName descriptor once to avoid repeated property lookups during
-  // DOM traversal. This guards against form children that shadow tagName on their
-  // owner form (e.g. <form><input name="tagName">).
+(function isShownElement(elem: Element, optIgnoreOpacity?: boolean): boolean {
+  // Guards against form children that shadow tagName (e.g. <form><input name="tagName">).
   var tagNameDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'tagName');
 
   function toUpperCaseTag(tagName?: string): string | undefined {
@@ -134,7 +132,10 @@ interface Coordinate {
     var elemTagName = typeof (elem as Element).tagName === 'string' ? (elem as Element).tagName : '';
     if (elemTagName.toUpperCase() === 'HTML') {
       var doc = (elem as Element).ownerDocument;
-      return createRect(0, 0, doc.documentElement.clientWidth, doc.documentElement.clientHeight);
+      // In quirks mode (no DOCTYPE), viewport dimensions come from document.body;
+      // documentElement.clientWidth/Height is unreliable and can be 0.
+      var sizeElem = doc.compatMode === 'CSS1Compat' ? doc.documentElement : (doc.body || doc.documentElement);
+      return createRect(0, 0, sizeElem.clientWidth, sizeElem.clientHeight);
     }
 
     try {
@@ -457,35 +458,33 @@ interface Coordinate {
     return !hiddenByOverflow(elem);
   }
 
-  return function isShownElement(elem: Element, optIgnoreOpacity?: boolean): boolean {
-    function displayed(node: Node): boolean {
-      if (isElement(node)) {
-        var display = getEffectiveStyle(node, 'display');
-        var contentVisibility = getEffectiveStyle(node, 'content-visibility');
-        if (display === 'none' || contentVisibility === 'hidden') {
-          return false;
-        }
-      }
-
-      var parent = getParentNodeInComposedDom(node);
-      if (typeof ShadowRoot === 'function' && parent instanceof ShadowRoot) {
-        if (parent.host.shadowRoot && parent.host.shadowRoot !== parent) {
-          return false;
-        }
-        parent = parent.host;
-      }
-
-      if (parent && (parent.nodeType === Node.DOCUMENT_NODE || parent.nodeType === Node.DOCUMENT_FRAGMENT_NODE)) {
-        return true;
-      }
-
-      if (isElement(parent, 'DETAILS') && !(<HTMLDetailsElement>parent).open && !isElement(node, 'SUMMARY')) {
+  function displayed(node: Node): boolean {
+    if (isElement(node)) {
+      var display = getEffectiveStyle(node, 'display');
+      var contentVisibility = getEffectiveStyle(node, 'content-visibility');
+      if (display === 'none' || contentVisibility === 'hidden') {
         return false;
       }
-
-      return !!parent && displayed(parent);
     }
 
-    return isShownInternal(elem, !!optIgnoreOpacity, displayed);
-  };
-})();
+    var parent = getParentNodeInComposedDom(node);
+    if (typeof ShadowRoot === 'function' && parent instanceof ShadowRoot) {
+      if (parent.host.shadowRoot && parent.host.shadowRoot !== parent) {
+        return false;
+      }
+      parent = parent.host;
+    }
+
+    if (parent && (parent.nodeType === Node.DOCUMENT_NODE || parent.nodeType === Node.DOCUMENT_FRAGMENT_NODE)) {
+      return true;
+    }
+
+    if (isElement(parent, 'DETAILS') && !(<HTMLDetailsElement>parent).open && !isElement(node, 'SUMMARY')) {
+      return false;
+    }
+
+    return !!parent && displayed(parent);
+  }
+
+  return isShownInternal(elem, !!optIgnoreOpacity, displayed);
+})

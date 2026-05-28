@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal sealed record DisownParameters(IEnumerable<Handle> Handles, Target Target) : Parameters;
+internal sealed record DisownParameters(ImmutableArray<Handle> Handles, Target Target) : Parameters;
 
 public sealed record DisownOptions : CommandOptions;
 

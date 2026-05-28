@@ -168,7 +168,7 @@ jobs:
       actions: read
     steps:
       - name: Download Python distributions
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: pypi-distributions
           path: dist/
@@ -194,14 +194,14 @@ jobs:
           persist-credentials: false
       - name: Download all release packages
         if: needs.parse-tag.outputs.language == 'all'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: release-packages-*
           merge-multiple: true
           path: "build/dist/"
       - name: Download release packages
         if: needs.parse-tag.outputs.language != 'all'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: release-packages-${{ needs.parse-tag.outputs.language }}
           path: "build/dist/"
@@ -294,7 +294,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Reset Dependencies
-      run: ./go ${{ needs.parse-tag.outputs.language }}:update${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:update' || '' }}
+      run: ./go ${{ needs.parse-tag.outputs.language }}:pin${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:pin' || '' }}
       artifact-name: version-reset-deps
 
   commit-dependencies:

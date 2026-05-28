@@ -2,17 +2,20 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
   "dependencyDashboard": true,
-  "dependencyDashboardApproval": true,
   "dependencyDashboardLabels": ["B-dependencies"],
-  "dependencyDashboardTitle": "Dependency Dashboard",
-  "dependencyDashboardHeader": "Renovate is configured to list discovered dependency updates here first. Do not approve dashboard items until the update scope has been reviewed.",
-  "automerge": false,
+  "dependencyDashboardHeader": "This dashboard exists for visibility into Renovate's state and for surfacing problems. Renovate creates a branch per eligible update and validates it with the CI - Renovate - RBE workflow. If the check passes, Renovate merges the branch directly into `trunk` with no PR. If the check fails, Renovate raises a draft PR as a fallback so a human can investigate.",
+  "automerge": true,
+  "automergeType": "branch",
+  "draftPR": true,
+  "branchConcurrentLimit": 1,
   "skipArtifactsUpdate": true,
-  "lockFileMaintenance": {
-    "enabled": false
-  },
   "labels": ["B-dependencies"],
-  "ignorePaths": ["**/requirements_lock.txt"],
+  "baseBranchPatterns": ["trunk"],
+  "ignorePaths": [
+    "**/requirements_lock.txt",
+    "renovate.json",
+    "common/src/web/simpleTest.html"
+  ],
   "constraintsFiltering": "strict",
   "constraints": {
     "node": "22",
@@ -21,8 +24,13 @@
   },
   "packageRules": [
     {
+      "description": "Override the Mend hosted runner's admin packageRule that forces dependencyDashboardApproval=true for every package, which blocks automatic branch creation.",
+      "matchPackageNames": ["*"],
+      "dependencyDashboardApproval": false
+    },
+    {
       "description": "Treat Renovate config language constraints as Selenium support policy, not update targets.",
-      "matchManagers": ["renovate-config", "renovate-config-presets"],
+      "matchManagers": ["renovate-config"],
       "matchDatasources": ["node-version", "python-version", "ruby-version"],
       "matchPackageNames": ["node", "python", "ruby"],
       "enabled": false
@@ -54,6 +62,11 @@
     {
       "description": "Do not track Docker image references in this repository.",
       "matchDatasources": ["docker"],
+      "enabled": false
+    },
+    {
+      "description": "Do not propose NuGet updates; bumping csproj references does not affect the published Selenium.WebDriver package consumers receive.",
+      "matchManagers": ["nuget"],
       "enabled": false
     },
     {
@@ -105,29 +118,26 @@
       "dependencyDashboardCategory": "Rust"
     },
     {
-      "description": "Group .NET package declarations and tools in the dashboard.",
-      "matchManagers": ["nuget"],
-      "dependencyDashboardCategory": ".NET"
-    },
-    {
-      "description": "Pin to v8 line; major bumps change shipped Selenium.WebDriver.dll assembly refs and force the new floor onto every NuGet consumer.",
-      "matchManagers": ["nuget"],
-      "matchPackageNames": [
-        "Microsoft.Bcl.AsyncInterfaces",
-        "Microsoft.Extensions.DependencyInjection",
-        "Microsoft.Extensions.DependencyInjection.Abstractions",
-        "System.Text.Json",
-        "System.Threading.Channels"
-      ],
-      "matchUpdateTypes": ["major"],
+      "description": "llvm and rules_rs upgrades blocked pending Rust build work in https://github.com/SeleniumHQ/selenium/pull/17427.",
+      "matchManagers": ["bazel-module"],
+      "matchPackageNames": ["llvm", "rules_rs"],
       "enabled": false
     },
     {
-      "description": "DevTools generator deps; major bumps risk renaming public Selenium.WebDriver.DevTools.* types on regeneration. Tracked in https://github.com/SeleniumHQ/selenium/issues/17489.",
-      "matchManagers": ["nuget"],
-      "matchPackageNames": ["Handlebars.Net", "Humanizer.Core"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
+      "description": "rules_python v2 upgrade blocked pending https://github.com/bazel-contrib/rules_python/pull/3790.",
+      "matchManagers": ["bazel-module"],
+      "matchPackageNames": ["rules_python"],
+      "allowedVersions": "<2"
+    },
+    {
+      "description": "Byte Buddy publishes -jdkN compat variants alongside regular releases; Maven sorts those variants as newer. Selenium targets Java 8+ so we want the regular release without the JDK suffix. https://github.com/SeleniumHQ/selenium/issues/17355",
+      "matchPackageNames": ["net.bytebuddy:byte-buddy"],
+      "allowedVersions": "!/-jdk\\d/"
+    },
+    {
+      "description": "Maven Central indexes non-stable date-based graphql-java artifacts (e.g. 6-digit date prefixes or 0.0.0- prereleases) that sort as 'latest'. https://github.com/graphql-java/graphql-java/discussions/3187",
+      "matchPackageNames": ["com.graphql-java:graphql-java"],
+      "allowedVersions": "!/^(\\d{6}-|0\\.0\\.0-)/"
     }
   ]
 }

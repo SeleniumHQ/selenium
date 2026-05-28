@@ -21,7 +21,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-internal sealed record SetNetworkConditionsParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] NetworkConditions? NetworkConditions, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
+internal sealed record SetNetworkConditionsParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] NetworkConditions? NetworkConditions, ImmutableArray<BrowsingContext.BrowsingContext>? Contexts, ImmutableArray<Browser.UserContext>? UserContexts) : Parameters;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(NetworkConditionsOffline), "offline")]
@@ -31,9 +31,9 @@ public sealed record NetworkConditionsOffline : NetworkConditions;
 
 public sealed record SetNetworkConditionsOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
+    public ImmutableArray<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
+    public ImmutableArray<Browser.UserContext>? UserContexts { get; init; }
 }
 
 public sealed record SetNetworkConditionsResult : EmptyResult;

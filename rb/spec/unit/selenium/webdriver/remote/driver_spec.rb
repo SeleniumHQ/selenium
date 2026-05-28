@@ -55,6 +55,16 @@ module Selenium
           expect(driver.send(:bridge).http).to eq client
         end
 
+        it 'sets a default file detector' do
+          expect_request
+
+          driver = described_class.new(options: Options.chrome)
+          detector = driver.send(:bridge).file_detector
+
+          expect(detector.call([__FILE__])).to eq(__FILE__)
+          expect(detector.call(['not a file'])).to be(false)
+        end
+
         it 'accepts Options as sole parameter' do
           opts = {args: ['-f']}
           expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', 'goog:chromeOptions': opts}}})

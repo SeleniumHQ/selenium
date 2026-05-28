@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.BiDi.Input;
 [JsonDerivedType(typeof(NoneSourceActions), "none")]
 public abstract record SourceActions;
 
-public abstract record SourceActions<TSourceAction>(string Id, IEnumerable<TSourceAction> Actions)
+public abstract record SourceActions<TSourceAction>(string Id, ImmutableArray<TSourceAction> Actions)
     : SourceActions where TSourceAction : ISourceAction;
 
 public interface ISourceAction;
@@ -40,7 +40,7 @@ public interface ISourceAction;
 [JsonDerivedType(typeof(KeyUpAction), "keyUp")]
 public interface IKeySourceAction : ISourceAction;
 
-public sealed record KeySourceActions(string Id, IEnumerable<IKeySourceAction> Actions)
+public sealed record KeySourceActions(string Id, ImmutableArray<IKeySourceAction> Actions)
     : SourceActions<IKeySourceAction>(Id, Actions)
 {
     [Obsolete("This helper method will be removed in a future version. Use KeyDownAction and KeyUpAction directly instead.")]
@@ -57,7 +57,7 @@ public sealed record KeySourceActions(string Id, IEnumerable<IKeySourceAction> A
 [JsonDerivedType(typeof(PointerMoveAction), "pointerMove")]
 public interface IPointerSourceAction : ISourceAction;
 
-public sealed record PointerSourceActions(string Id, IEnumerable<IPointerSourceAction> Actions)
+public sealed record PointerSourceActions(string Id, ImmutableArray<IPointerSourceAction> Actions)
     : SourceActions<IPointerSourceAction>(Id, Actions)
 {
     public PointerParameters? Parameters { get; init; }
@@ -68,14 +68,14 @@ public sealed record PointerSourceActions(string Id, IEnumerable<IPointerSourceA
 [JsonDerivedType(typeof(WheelScrollAction), "scroll")]
 public interface IWheelSourceAction : ISourceAction;
 
-public sealed record WheelSourceActions(string Id, IEnumerable<IWheelSourceAction> Actions)
+public sealed record WheelSourceActions(string Id, ImmutableArray<IWheelSourceAction> Actions)
     : SourceActions<IWheelSourceAction>(Id, Actions);
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(PauseAction), "pause")]
 public interface INoneSourceAction : ISourceAction;
 
-public sealed record NoneSourceActions(string Id, IEnumerable<INoneSourceAction> Actions)
+public sealed record NoneSourceActions(string Id, ImmutableArray<INoneSourceAction> Actions)
     : SourceActions<INoneSourceAction>(Id, Actions);
 
 public sealed record KeyDownAction(char Value) : IKeySourceAction;
