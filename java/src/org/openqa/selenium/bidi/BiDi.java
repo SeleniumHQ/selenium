@@ -21,11 +21,11 @@ import static java.util.Collections.emptyMap;
 
 import java.io.Closeable;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 import org.openqa.selenium.WebDriverException;
@@ -36,7 +36,7 @@ public class BiDi implements Closeable {
 
   private final Duration timeout;
   private final Connection connection;
-  private final Map<Event<?>, List<Long>> contextListenerIds = new HashMap<>();
+  private final Map<Event<?>, List<Long>> contextListenerIds = new ConcurrentHashMap<>();
 
   /**
    * @deprecated Use constructor with timeout parameter: {@link #BiDi(Connection, Duration)}
@@ -103,7 +103,9 @@ public class BiDi implements Closeable {
             "session.subscribe",
             Map.of("contexts", List.of(browsingContextId), "events", List.of(event.getMethod()))));
 
-    return connection.addListener(event, handler);
+    long id = connection.addListener(event, handler);
+    contextListenerIds.computeIfAbsent(event, k -> new CopyOnWriteArrayList<>()).add(id);
+    return id;
   }
 
   public <X> long addListener(Set<String> browsingContextIds, Event<X> event, Consumer<X> handler) {
@@ -117,7 +119,7 @@ public class BiDi implements Closeable {
             Map.of("contexts", browsingContextIds, "events", List.of(event.getMethod()))));
 
     long id = connection.addListener(event, handler);
-    contextListenerIds.computeIfAbsent(event, k -> new ArrayList<>()).add(id);
+    contextListenerIds.computeIfAbsent(event, k -> new CopyOnWriteArrayList<>()).add(id);
     return id;
   }
 
