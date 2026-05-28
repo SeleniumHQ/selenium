@@ -17,8 +17,7 @@
 
 import pytest
 
-from selenium.webdriver.common.bidi.network import Network
-from selenium.webdriver.common.bidi.network import Request
+from selenium.webdriver.common.bidi.network import Network, Request
 
 
 class FakeConnection:
