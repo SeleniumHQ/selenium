@@ -38,7 +38,15 @@ def test_gets_results(monkeypatch):
     ):
         SeleniumManager().binary_paths([])
         mock_get_binary.assert_called_once()
-        expected_run_args = ["/path/to/sm", "--language-binding", "python", "--output", "json"]
+        expected_run_args = [
+            "/path/to/sm",
+            "--language-binding",
+            "python",
+            "--language-version",
+            f"{sys.version_info.major}.{sys.version_info.minor}",
+            "--output",
+            "json",
+        ]
         mock_run.assert_called_once_with(expected_run_args)
 
 
