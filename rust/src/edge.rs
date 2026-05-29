@@ -49,6 +49,7 @@ const DRIVER_URL: &str = "https://msedgedriver.microsoft.com/";
 const LATEST_STABLE: &str = "LATEST_STABLE";
 const LATEST_RELEASE: &str = "LATEST_RELEASE";
 const BROWSER_URL: &str = "https://edgeupdates.microsoft.com/api/products/";
+const EDGE_VERSIONS_URL: &str = "https://developer.microsoft.com/microsoft-edge/webdriver/";
 const MIN_EDGE_VERSION_DOWNLOAD: i32 = 113;
 const EDGE_WINDOWS_AND_LINUX_APP_NAME: &str = "msedge";
 const EDGE_MACOS_APP_NAME: &str = "Microsoft Edge.app/Contents/MacOS/Microsoft Edge";
@@ -538,6 +539,10 @@ impl SeleniumManager for EdgeManager {
             "msedge"
         };
         Ok(Some(browser_label))
+    }
+
+    fn get_browser_versions_url(&self) -> &str {
+        EDGE_VERSIONS_URL
     }
 
     fn is_download_browser(&self) -> bool {

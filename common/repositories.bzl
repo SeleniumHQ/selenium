@@ -123,10 +123,10 @@ js_library(
 
     pkg_archive(
         name = "mac_edge",
-        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/48df10cf-20b1-4196-990d-2ed5caedc21f/MicrosoftEdge-148.0.3967.83.pkg",
-        sha256 = "3884eb1b137556d5ef6fb0347369978d074d1edd77b71fe72693e26f65a53b43",
+        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/eff0de67-2c4d-45ce-b8e2-f1ce8c69c595/MicrosoftEdge-148.0.3967.96.pkg",
+        sha256 = "d2056a5eb9972b7d7a3cb34fbfa313b43c2ddcd9c7282b1bbba7a48b55028087",
         move = {
-            "MicrosoftEdge-148.0.3967.83.pkg/Payload/Microsoft Edge.app": "Edge.app",
+            "MicrosoftEdge-148.0.3967.96.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
@@ -143,8 +143,8 @@ js_library(
 
     deb_archive(
         name = "linux_edge",
-        url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_148.0.3967.83-1_amd64.deb",
-        sha256 = "1052894113b354dd2dd6cac8154882d8d2254e2a2e14692421c44368b4b5ece0",
+        url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_148.0.3967.96-1_amd64.deb",
+        sha256 = "ff447b27cb72767e033d38c5814709bd3b1eccadb32ac2a45f0fffdea8a5af49",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])

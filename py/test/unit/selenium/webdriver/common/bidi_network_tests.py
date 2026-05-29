@@ -17,7 +17,7 @@
 
 import pytest
 
-from selenium.webdriver.common.bidi.network import Network
+from selenium.webdriver.common.bidi.network import Network, Request
 
 
 class FakeConnection:
@@ -78,3 +78,25 @@ def test_add_request_handler_rejects_unsupported_alias():
 
     with pytest.raises(ValueError, match="Unsupported request handler event 'response_started'"):
         network.add_request_handler("response_started", lambda request: None)
+
+
+def test_continue_request_skips_data_urls():
+    conn = FakeConnection()
+    params = {"request": {"url": "data:image/gif;base64,R0lGODlh", "request": "request-id-1"}}
+    request = Request(conn, params)
+
+    request.continue_request()
+
+    assert conn.commands == [], "network.continueRequest must not be sent for data: URLs"
+
+
+def test_continue_request_sends_command_for_regular_urls():
+    conn = FakeConnection()
+    params = {"request": {"url": "https://example.com/style.css", "request": "request-id-2"}}
+    request = Request(conn, params)
+
+    request.continue_request()
+
+    assert len(conn.commands) == 1
+    assert conn.commands[0]["method"] == "network.continueRequest"
+    assert conn.commands[0]["params"]["request"] == "request-id-2"
