@@ -49,8 +49,6 @@ class SeleniumManager:
             args.append("--debug")
         args.append("--language-binding")
         args.append("python")
-        args.append("--language-version")
-        args.append(f"{sys.version_info.major}.{sys.version_info.minor}")
         args.append("--output")
         args.append("json")
 
