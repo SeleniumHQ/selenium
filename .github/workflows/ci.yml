@@ -28,39 +28,8 @@ jobs:
     if: >
       github.event.repository.fork == false &&
         (startsWith(github.head_ref, 'renovate/') != true || github.event_name == 'workflow_call')
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Check Targets
-      cache-name: bazel-test-file-index
-      run: |
-        if [ "${{ github.event_name }}" == "schedule" ] || \
-        [ "${{ github.event_name }}" == "workflow_call" ] || \
-        [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-          echo "Running all targets for ${{ github.event_name }} event"
-          echo "//java/... //py/... //rb/... //dotnet/... //rust/..." > bazel-targets.txt
-        else
-          if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
-            BASE_SHA="HEAD^1"
-          elif [ "${{ github.ref }}" = "refs/heads/trunk" ]; then
-            BASE_SHA="${{ github.event.before }}"
-          else
-            ahead=$(gh api "repos/${{ github.repository }}/compare/trunk...${{ github.ref_name }}" --jq .ahead_by)
-            git fetch --no-tags --depth=$((ahead + 1)) origin "${{ github.ref_name }}"
-            BASE_SHA="HEAD~$ahead"
-          fi
-          if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
-            ./go bazel:affected_targets "${BASE_SHA}..HEAD" bazel-test-file-index
-          else
-            ./go bazel:affected_targets bazel-test-file-index
-          fi
-        fi
-      artifact-name: check-targets
-      artifact-path: bazel-targets.txt
-
-  read-targets:
-    name: Read Targets
-    needs: check
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       java: ${{ steps.read.outputs.java }}
       grid: ${{ steps.read.outputs.grid }}
@@ -69,10 +38,41 @@ jobs:
       dotnet: ${{ steps.read.outputs.dotnet }}
       rust: ${{ steps.read.outputs.rust }}
     steps:
-      - name: Download targets
-        uses: actions/download-artifact@v8
+      - name: Checkout source tree
+        uses: actions/checkout@v6
         with:
-          name: check-targets
+          fetch-depth: 2
+      - name: Restore cache
+        uses: actions/cache/restore@v5
+        with:
+          path: bazel-test-file-index
+          key: bazel-test-file-index-
+          restore-keys: bazel-test-file-index-
+      - name: Determine affected targets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.event_name }}" == "schedule" ] || \
+          [ "${{ github.event_name }}" == "workflow_call" ] || \
+          [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "Running all targets for ${{ github.event_name }} event"
+            echo "//java/... //py/... //rb/... //dotnet/... //rust/..." > bazel-targets.txt
+          else
+            if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
+              BASE_SHA="HEAD^1"
+            elif [ "${{ github.ref }}" = "refs/heads/trunk" ]; then
+              BASE_SHA="${{ github.event.before }}"
+            else
+              ahead=$(gh api "repos/${{ github.repository }}/compare/trunk...${{ github.ref_name }}" --jq .ahead_by)
+              git fetch --no-tags --depth=$((ahead + 1)) origin "${{ github.ref_name }}"
+              BASE_SHA="HEAD~$ahead"
+            fi
+            if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+              ./go bazel:affected_targets "${BASE_SHA}..HEAD" bazel-test-file-index
+            else
+              ./go bazel:affected_targets bazel-test-file-index
+            fi
+          fi
       - name: Read targets
         id: read
         env:
@@ -92,48 +92,49 @@ jobs:
           check_binding "//rb" "rb"
           check_binding "//dotnet" "dotnet"
           check_binding "//rust" "rust"
+
   dotnet:
     name: .NET
-    needs: read-targets
+    needs: check
     uses: ./.github/workflows/ci-dotnet.yml
-    if: needs.read-targets.outputs.dotnet != ''
+    if: needs.check.outputs.dotnet != ''
 
   java:
     name: Java
-    needs: read-targets
+    needs: check
     uses: ./.github/workflows/ci-java.yml
-    if: needs.read-targets.outputs.java != ''
+    if: needs.check.outputs.java != ''
 
   grid:
     name: Grid
-    needs: read-targets
+    needs: check
     uses: ./.github/workflows/ci-grid.yml
-    if: needs.read-targets.outputs.grid != ''
+    if: needs.check.outputs.grid != ''
 
   python:
     name: Python
-    needs: read-targets
+    needs: check
     uses: ./.github/workflows/ci-python.yml
-    if: needs.read-targets.outputs.py != ''
+    if: needs.check.outputs.py != ''
 
   ruby:
     name: Ruby
-    needs: read-targets
+    needs: check
     uses: ./.github/workflows/ci-ruby.yml
-    if: needs.read-targets.outputs.rb != ''
+    if: needs.check.outputs.rb != ''
 
   rust:
     name: Rust
-    needs: read-targets
+    needs: check
     uses: ./.github/workflows/ci-rust.yml
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
-    if: needs.read-targets.outputs.rust != ''
+    if: needs.check.outputs.rust != ''
 
   ci-success:
     name: CI Success
     if: always()
-    needs: [check, read-targets, dotnet, java, grid, python, ruby, rust]
+    needs: [check, dotnet, java, grid, python, ruby, rust]
     runs-on: ubuntu-latest
     steps:
       - name: Verify required jobs succeeded

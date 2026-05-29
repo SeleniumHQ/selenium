@@ -21,6 +21,7 @@ jobs:
       os: ${{ matrix.os }}
       browser: chrome
       rerun-with-debug: true
+      timeout-minutes: 90
       run: >
         bazel test --flaky_test_attempts 2
         //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
@@ -44,6 +45,7 @@ jobs:
       os: ${{ matrix.os }}
       browser: chrome
       rerun-with-debug: true
+      timeout-minutes: 90
       run: >
         bazel test --flaky_test_attempts 2
         //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
@@ -66,6 +68,7 @@ jobs:
       os: ${{ matrix.os }}
       browser: chrome
       rerun-with-debug: true
+      timeout-minutes: 90
       run: >
         bazel test --flaky_test_attempts 2
         //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote

@@ -13,14 +13,15 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build
+      timeout-minutes: 20
       run: bazel build //rb:selenium-devtools //rb:selenium-webdriver
 
   lint:
     name: Lint
-    needs: build
     uses: ./.github/workflows/bazel.yml
     with:
       name: Lint
+      timeout-minutes: 15
       run: ./go rb:lint
 
   unit-tests:
@@ -48,6 +49,7 @@ jobs:
       os: ${{ matrix.os }}
       ruby-version: ${{ matrix.ruby-version }}
       rerun-with-debug: true
+      timeout-minutes: 30
       run: >
         bazel test
         --keep_going
@@ -77,6 +79,7 @@ jobs:
       browser: ${{ matrix.browser }}
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      timeout-minutes: 90
       run: >
         bazel test
         --keep_going

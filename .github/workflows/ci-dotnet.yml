@@ -14,6 +14,7 @@ jobs:
     with:
       name: Lint
       os: windows
+      timeout-minutes: 15
       run: ./go dotnet:lint
 
   build:
@@ -22,6 +23,7 @@ jobs:
     with:
       name: Build
       os: windows
+      timeout-minutes: 20
       run: bazel build //dotnet:all
 
   integration-tests:
@@ -30,6 +32,7 @@ jobs:
     with:
       name: Browser Tests
       os: windows
+      timeout-minutes: 90
       run: |
         bazel test //dotnet/test/webdriver:ElementFindingTests-firefox //dotnet/test/webdriver:ElementFindingTests-chrome
 
@@ -39,5 +42,6 @@ jobs:
     with:
       name: Remote Tests
       os: windows
+      timeout-minutes: 60
       run: |
         bazel test //dotnet/test/remote --flaky_test_attempts=3

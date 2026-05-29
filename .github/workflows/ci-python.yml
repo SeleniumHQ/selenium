@@ -13,6 +13,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build
+      timeout-minutes: 20
       run: |
         bazel build //py:selenium-wheel //py:selenium-sdist
 
@@ -21,6 +22,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Lint (ruff)
+      timeout-minutes: 15
       run: bazel run //py:ruff-check -- --no-fix
 
   lint-mypy:
@@ -28,6 +30,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Lint (mypy)
+      timeout-minutes: 20
       run: bazel run //py:mypy
 
   lint-docs:
@@ -35,6 +38,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Lint (docs)
+      timeout-minutes: 20
       run: |
         bazel run //py:generate-api-listing
         bazel run //py:sphinx-autogen
@@ -53,6 +57,7 @@ jobs:
       name: Unit Tests (${{ matrix.python-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
+      timeout-minutes: 30
       run: bazel test --local_test_jobs 1 //py:unit
 
   remote-tests:
@@ -63,6 +68,7 @@ jobs:
       name: Integration Tests Remote
       browser: yes
       rerun-with-debug: true
+      timeout-minutes: 90
       run: |
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
 
@@ -83,5 +89,6 @@ jobs:
       browser: ${{ matrix.browser }}
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      timeout-minutes: 90
       run: |
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-${{ matrix.browser }}

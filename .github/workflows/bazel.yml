@@ -81,11 +81,17 @@ on:
         required: false
         type: boolean
         default: false
+      timeout-minutes:
+        description: Job timeout in minutes
+        required: false
+        type: number
+        default: 60
 
 jobs:
   bazel:
     name: ${{ inputs.name }}
     runs-on: ${{ contains(inputs.os, '-') && inputs.os || format('{0}-latest', inputs.os) }}
+    timeout-minutes: ${{ inputs.timeout-minutes }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
