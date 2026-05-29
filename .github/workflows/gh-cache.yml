@@ -5,6 +5,8 @@ on:
     branches: [trunk]
     paths:
       - 'MODULE.bazel'
+      - 'multitool.lock.json'
+      - 'pnpm-lock.yaml'
       - 'rust/Cargo.lock'
       - 'java/maven_install.json'
       - 'py/requirements_lock.txt'
