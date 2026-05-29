@@ -35,7 +35,8 @@ use crate::lock::Lock;
 use crate::logger::Logger;
 use crate::metadata::{
     create_browser_metadata, create_stats_metadata, get_browser_version_from_metadata,
-    get_metadata, is_stats_in_metadata, write_metadata,
+    get_metadata, is_stats_in_metadata, now_unix_timestamp, update_browser_last_used,
+    update_driver_last_used, write_metadata,
 };
 use crate::safari::{SAFARI_NAME, SAFARIDRIVER_NAME, SafariManager};
 use crate::safaritp::{SAFARITP_NAMES, SafariTPManager};
@@ -49,7 +50,7 @@ use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::mpsc::{Receiver, Sender};
-use std::time::{Duration, SystemTime};
+use std::time::Duration;
 use std::{env, fs, thread};
 use walkdir::{DirEntry, WalkDir};
 use which::which;
@@ -330,6 +331,14 @@ pub trait SeleniumManager {
                 location_note
             ));
             self.set_browser_path(path_to_string(&browser_binary_path));
+            let cache_path = self.get_cache_path()?;
+            let mut metadata = get_metadata(self.get_logger(), &cache_path);
+            update_browser_last_used(
+                &mut metadata.browsers,
+                self.get_browser_name(),
+                &browser_version,
+            );
+            write_metadata(&metadata, self.get_logger(), cache_path);
             return Ok(Some(browser_binary_path));
         }
 
@@ -915,6 +924,14 @@ pub trait SeleniumManager {
                     self.get_driver_name(),
                     self.get_driver_version()
                 ));
+                let cache_path = self.get_cache_path()?;
+                let mut metadata = get_metadata(self.get_logger(), &cache_path);
+                update_driver_last_used(
+                    &mut metadata.drivers,
+                    self.get_driver_name(),
+                    self.get_driver_version(),
+                );
+                write_metadata(&metadata, self.get_logger(), cache_path);
             }
         } else if !self.is_safari() {
             // If driver is not in the cache, download it
@@ -1705,64 +1722,63 @@ pub fn clear_cache(log: &Logger, path: &str) {
     }
 }
 
-/// Removes cached driver and browser entries that have not been modified within `ttl_days` days.
-///
-/// Only version directories (those that directly contain binary files) are deleted; metadata
-/// and config files at the cache root are left untouched.
+/// Removes cached driver and browser entries whose `last_used` timestamp in the metadata is
+/// older than `ttl_days` days, and deletes the corresponding files on disk.
 pub fn prune_old_cache_entries(log: &Logger, cache_path: &str, ttl_days: u64) {
-    let cutoff = SystemTime::now()
-        .checked_sub(Duration::from_secs(ttl_days * 24 * 3600))
-        .unwrap_or(SystemTime::UNIX_EPOCH);
-    prune_cache_entries_before(log, cache_path, cutoff);
-}
-
-fn prune_cache_entries_before(log: &Logger, cache_path: &str, cutoff: SystemTime) {
     let cache = Path::new(cache_path);
     if !cache.exists() {
         return;
     }
+    let cache_path_buf = cache.to_path_buf();
+    let mut metadata = get_metadata(log, &Some(cache_path_buf.clone()));
+    let cutoff = now_unix_timestamp().saturating_sub(ttl_days * 24 * 3600);
 
-    let mut dirs_to_remove: Vec<PathBuf> = Vec::new();
+    let old_drivers: Vec<(String, String)> = metadata
+        .drivers
+        .iter()
+        .filter(|d| d.last_used < cutoff)
+        .map(|d| (d.driver_name.clone(), d.driver_version.clone()))
+        .collect();
 
-    for entry in WalkDir::new(cache)
-        .into_iter()
-        .filter_map(|e| e.ok())
-        .filter(|e| e.path().is_dir() && e.path() != cache)
-    {
-        let path = entry.path();
-        let Ok(children) = fs::read_dir(path) else {
-            continue;
-        };
+    let old_browsers: Vec<(String, String)> = metadata
+        .browsers
+        .iter()
+        .filter(|b| b.last_used < cutoff)
+        .map(|b| (b.browser_name.clone(), b.browser_version.clone()))
+        .collect();
 
-        let mut has_file = false;
-        let mut all_old = true;
-
-        for child in children.filter_map(|e| e.ok()) {
-            let child_path = child.path();
-            if child_path.is_file() {
-                has_file = true;
-                if let Ok(meta) = child_path.metadata() {
-                    if let Ok(modified) = meta.modified() {
-                        if modified >= cutoff {
-                            all_old = false;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        if has_file && all_old {
-            dirs_to_remove.push(path.to_path_buf());
-        }
+    if old_drivers.is_empty() && old_browsers.is_empty() {
+        return;
     }
 
-    for dir in dirs_to_remove {
-        log.debug(format!("Removing old cache entry: {}", dir.display()));
-        fs::remove_dir_all(&dir).unwrap_or_else(|err| {
+    for (name, version) in old_drivers.iter().chain(old_browsers.iter()) {
+        delete_cached_asset(log, cache, name, version);
+    }
+
+    metadata.drivers.retain(|d| d.last_used >= cutoff);
+    metadata.browsers.retain(|b| b.last_used >= cutoff);
+    write_metadata(&metadata, log, Some(cache_path_buf));
+}
+
+fn delete_cached_asset(log: &Logger, cache: &Path, asset_name: &str, asset_version: &str) {
+    let asset_dir = cache.join(asset_name);
+    if !asset_dir.exists() {
+        return;
+    }
+    let to_remove: Vec<PathBuf> = WalkDir::new(&asset_dir)
+        .min_depth(1)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| e.path().is_dir() && e.file_name().to_str() == Some(asset_version))
+        .map(|e| e.path().to_path_buf())
+        .collect();
+
+    for path in to_remove {
+        log.debug(format!("Removing old cache entry: {}", path.display()));
+        fs::remove_dir_all(&path).unwrap_or_else(|err| {
             log.warn(format!(
                 "The cache entry {} cannot be removed: {}",
-                dir.display(),
+                path.display(),
                 err
             ))
         });
@@ -1786,6 +1802,7 @@ pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Error> {
 mod tests {
     use super::*;
     use crate::logger::Logger;
+    use crate::metadata::{Browser, Driver, Metadata, write_metadata};
 
     #[test]
     fn get_escaped_path_returns_canonical_path_without_shell_escaping() {
@@ -1800,12 +1817,11 @@ mod tests {
     }
 
     #[test]
-    fn prune_cache_entries_removes_old_version_dirs() {
+    fn prune_cache_entries_removes_old_driver_entries() {
         let tmp = tempfile::tempdir().unwrap();
         let cache = tmp.path();
         let log = Logger::new();
 
-        // Create a version directory with a binary (simulates a cached driver)
         let version_dir = cache
             .join("chromedriver")
             .join("linux")
@@ -1814,18 +1830,36 @@ mod tests {
         fs::create_dir_all(&version_dir).unwrap();
         fs::write(version_dir.join("chromedriver"), b"fake binary").unwrap();
 
-        // A cutoff in the future forces all existing files to be treated as old
-        let future_cutoff = SystemTime::now() + Duration::from_secs(3600);
-        prune_cache_entries_before(&log, cache.to_str().unwrap(), future_cutoff);
+        // last_used more than 30 days ago
+        let old_last_used = now_unix_timestamp().saturating_sub(31 * 24 * 3600);
+        let metadata = Metadata {
+            browsers: vec![],
+            drivers: vec![Driver {
+                major_browser_version: "120".to_string(),
+                driver_name: "chromedriver".to_string(),
+                driver_version: "120.0.6099.109".to_string(),
+                driver_ttl: now_unix_timestamp() + 3600,
+                last_used: old_last_used,
+            }],
+            stats: vec![],
+        };
+        write_metadata(&metadata, &log, Some(cache.to_path_buf()));
+
+        prune_old_cache_entries(&log, cache.to_str().unwrap(), 30);
 
         assert!(
             !version_dir.exists(),
-            "Version directory older than cutoff should have been removed"
+            "Version directory should be removed when last_used is older than ttl_days"
+        );
+        let updated = get_metadata(&log, &Some(cache.to_path_buf()));
+        assert!(
+            updated.drivers.is_empty(),
+            "Stale metadata entry should be removed"
         );
     }
 
     #[test]
-    fn prune_cache_entries_keeps_recent_version_dirs() {
+    fn prune_cache_entries_keeps_recent_driver_entries() {
         let tmp = tempfile::tempdir().unwrap();
         let cache = tmp.path();
         let log = Logger::new();
@@ -1838,24 +1872,36 @@ mod tests {
         fs::create_dir_all(&version_dir).unwrap();
         fs::write(version_dir.join("chromedriver"), b"fake binary").unwrap();
 
-        // A cutoff at the Unix epoch treats no existing files as old
-        prune_cache_entries_before(&log, cache.to_str().unwrap(), SystemTime::UNIX_EPOCH);
+        let metadata = Metadata {
+            browsers: vec![],
+            drivers: vec![Driver {
+                major_browser_version: "130".to_string(),
+                driver_name: "chromedriver".to_string(),
+                driver_version: "130.0.6723.91".to_string(),
+                driver_ttl: now_unix_timestamp() + 3600,
+                last_used: now_unix_timestamp(),
+            }],
+            stats: vec![],
+        };
+        write_metadata(&metadata, &log, Some(cache.to_path_buf()));
+
+        prune_old_cache_entries(&log, cache.to_str().unwrap(), 30);
 
         assert!(
             version_dir.exists(),
-            "Version directory newer than cutoff should be kept"
+            "Version directory should be kept when last_used is within ttl_days"
+        );
+        let updated = get_metadata(&log, &Some(cache.to_path_buf()));
+        assert!(
+            !updated.drivers.is_empty(),
+            "Recent metadata entry should be retained"
         );
     }
 
     #[test]
     fn prune_cache_entries_handles_missing_cache() {
         let log = Logger::new();
-        // Should not panic when cache path does not exist
-        prune_cache_entries_before(
-            &log,
-            "/nonexistent/path/that/does/not/exist",
-            SystemTime::now(),
-        );
+        prune_old_cache_entries(&log, "/nonexistent/path/that/does/not/exist", 30);
     }
 }
 

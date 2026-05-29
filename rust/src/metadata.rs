@@ -42,6 +42,8 @@ pub struct Browser {
     pub major_browser_version: String,
     pub browser_version: String,
     pub browser_ttl: u64,
+    #[serde(default = "now_unix_timestamp")]
+    pub last_used: u64,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -50,6 +52,8 @@ pub struct Driver {
     pub driver_name: String,
     pub driver_version: String,
     pub driver_ttl: u64,
+    #[serde(default = "now_unix_timestamp")]
+    pub last_used: u64,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -164,6 +168,7 @@ pub fn create_browser_metadata(
         major_browser_version: major_browser_version.to_string(),
         browser_version: browser_version.to_string(),
         browser_ttl: now_unix_timestamp() + browser_ttl,
+        last_used: now_unix_timestamp(),
     }
 }
 
@@ -178,6 +183,29 @@ pub fn create_driver_metadata(
         driver_name: driver_name.to_string(),
         driver_version: driver_version.to_string(),
         driver_ttl: now_unix_timestamp() + driver_ttl,
+        last_used: now_unix_timestamp(),
+    }
+}
+
+pub fn update_driver_last_used(drivers: &mut Vec<Driver>, driver_name: &str, driver_version: &str) {
+    if let Some(d) = drivers
+        .iter_mut()
+        .find(|d| d.driver_name.eq(driver_name) && d.driver_version.eq(driver_version))
+    {
+        d.last_used = now_unix_timestamp();
+    }
+}
+
+pub fn update_browser_last_used(
+    browsers: &mut Vec<Browser>,
+    browser_name: &str,
+    browser_version: &str,
+) {
+    if let Some(b) = browsers
+        .iter_mut()
+        .find(|b| b.browser_name.eq(browser_name) && b.browser_version.eq(browser_version))
+    {
+        b.last_used = now_unix_timestamp();
     }
 }
 
