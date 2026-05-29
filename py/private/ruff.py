@@ -15,10 +15,17 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""Run ruff check on Python files across the project.
+"""Run ruff check and/or format on Python files across the project.
+
+Mode is the first positional argument; remaining args are forwarded to ruff:
+    check   -- ruff check --fix --show-fixes (pass --no-fix for CI verify mode)
+    format  -- ruff format
+    both    -- check then format (default when no mode given)
 
 Usage:
     bazel run //py:ruff-check -- [ruff check args]
+    bazel run //py:ruff-format -- [ruff format args]
+    bazel run //py:ruff -- [ruff check+format args]
 """
 
 import os
@@ -32,8 +39,12 @@ EXCLUDES = ["**/node_modules/**", "**/.bundle/**", "**/bidi/**", "**/devtools/**
 
 
 def run_check(ruff, exclude_args, dirs, extra_args):
-    """Run ruff check (linting)."""
-    cmd = [ruff, "check", "--fix", "--show-fixes", "--exit-non-zero-on-fix", "--config=py/pyproject.toml"]
+    cmd = [ruff, "check", "--fix", "--show-fixes", "--config=py/pyproject.toml"]
+    return subprocess.run(cmd + exclude_args + dirs + extra_args).returncode
+
+
+def run_format(ruff, exclude_args, dirs, extra_args):
+    cmd = [ruff, "format", "--config=py/pyproject.toml"]
     return subprocess.run(cmd + exclude_args + dirs + extra_args).returncode
 
 
@@ -47,4 +58,17 @@ if __name__ == "__main__":
     for pattern in EXCLUDES:
         exclude_args.extend(["--exclude", pattern])
 
-    sys.exit(run_check(ruff, exclude_args, ALL_DIRS, sys.argv[1:]))
+    mode = "both"
+    extra_args = sys.argv[1:]
+    if extra_args and extra_args[0] in ("check", "format", "both"):
+        mode = extra_args[0]
+        extra_args = extra_args[1:]
+
+    if mode == "check":
+        sys.exit(run_check(ruff, exclude_args, ALL_DIRS, extra_args))
+    elif mode == "format":
+        sys.exit(run_format(ruff, exclude_args, ALL_DIRS, extra_args))
+    else:
+        rc_check = run_check(ruff, exclude_args, ALL_DIRS, extra_args)
+        rc_format = run_format(ruff, exclude_args, ALL_DIRS, extra_args)
+        sys.exit(max(rc_check, rc_format))
