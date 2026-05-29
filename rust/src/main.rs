@@ -170,13 +170,6 @@ struct Cli {
 }
 
 fn main() {
-    // Install ring as the process-wide TLS crypto provider. reqwest is built
-    // with `rustls-no-provider` (avoiding aws-lc-sys on hermetic toolchains)
-    // so the provider must be installed explicitly before any TLS connection.
-    rustls::crypto::ring::default_provider()
-        .install_default()
-        .expect("Failed to install ring TLS provider");
-
     let mut cli = Cli::parse();
 
     let debug = cli.debug || BooleanKey("debug", false).get_value();

@@ -1691,6 +1691,9 @@ pub fn clear_cache(log: &Logger, path: &str) {
 }
 
 pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Error> {
+    // Ensure the ring provider is installed. Returns Err if already set, which
+    // is fine — we just need it present before ClientBuilder::build() runs.
+    let _ = rustls::crypto::ring::default_provider().install_default();
     let mut client_builder = Client::builder()
         .danger_accept_invalid_certs(true)
         .timeout(Duration::from_secs(timeout));
