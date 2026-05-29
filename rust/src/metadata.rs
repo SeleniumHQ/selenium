@@ -32,6 +32,7 @@ pub struct Stats {
     pub os: String,
     pub arch: String,
     pub lang: String,
+    pub lang_version: String,
     pub selenium_version: String,
     pub stats_ttl: u64,
 }
@@ -147,6 +148,7 @@ pub fn is_stats_in_metadata(stats_metadata: &[Stats], props: &Props) -> bool {
                 && p.os.eq(&props.os)
                 && p.arch.eq(&props.arch)
                 && p.lang.eq(&props.lang)
+                && p.lang_version.eq(&props.lang_version)
                 && p.selenium_version.eq(&props.selenium_version)
         })
         .collect();
@@ -188,6 +190,7 @@ pub fn create_stats_metadata(props: &Props, stats_ttl: u64) -> Stats {
         os: props.os.to_string(),
         arch: props.arch.to_string(),
         lang: props.lang.to_string(),
+        lang_version: props.lang_version.to_string(),
         selenium_version: props.selenium_version.to_string(),
         stats_ttl: now_unix_timestamp() + stats_ttl,
     }

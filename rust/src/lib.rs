@@ -925,6 +925,7 @@ pub trait SeleniumManager {
                     .unwrap_or(ARCH_OTHER)
                     .to_ascii_lowercase(),
                 lang: self.get_language_binding().to_ascii_lowercase(),
+                lang_version: self.get_language_version().to_ascii_lowercase(),
                 selenium_version: self.get_selenium_version().to_ascii_lowercase(),
             };
             let http_client = self.get_http_client().to_owned();
@@ -1603,6 +1604,16 @@ pub trait SeleniumManager {
     fn set_language_binding(&mut self, language_binding: String) {
         if !language_binding.is_empty() {
             self.get_config_mut().language_binding = language_binding;
+        }
+    }
+
+    fn get_language_version(&self) -> &str {
+        self.get_config().language_version.as_str()
+    }
+
+    fn set_language_version(&mut self, language_version: String) {
+        if !language_version.is_empty() {
+            self.get_config_mut().language_version = language_version;
         }
     }
 
