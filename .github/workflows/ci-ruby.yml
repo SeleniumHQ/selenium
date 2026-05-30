@@ -18,9 +18,6 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v6
-      - name: Free disk space (Windows)
-        shell: pwsh
-        run: ./scripts/github-actions/free-disk-space.ps1
       - name: Disable 8dot3 short names
         run: fsutil 8dot3name set 0
       - name: Setup Bazel
@@ -59,9 +56,13 @@ jobs:
         run: |
           set -x
           mkdir -p build/debug
-          # Java crash reports written via JDK_JAVA_OPTIONS=-XX:ErrorFile
-          find /d -maxdepth 2 -name 'hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
-          find /d -maxdepth 2 -name 'hs_err_pid*.mdmp' -exec cp {} build/debug/ \; 2>/dev/null || true
+          # JVM crash reports written via JDK_JAVA_OPTIONS=-XX:ErrorFile.
+          # No maxdepth - bazel sandboxes are deep and the JVM may fall back
+          # to writing alongside the crashing process instead of the
+          # absolute ErrorFile path.
+          find /d -name 'hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
+          find /d -name 'hs_err_pid*.mdmp' -exec cp {} build/debug/ \; 2>/dev/null || true
+          find /c -name 'hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
           # Bazel test logs + any TEST_UNDECLARED_OUTPUTS the test wrote
           TESTLOGS=$(bazel info bazel-testlogs 2>/dev/null || true)
           if [ -n "$TESTLOGS" ] && [ -d "$TESTLOGS" ]; then
@@ -85,11 +86,17 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v6
-      - name: Free disk space (Windows)
-        shell: pwsh
-        run: ./scripts/github-actions/free-disk-space.ps1
       - name: Disable 8dot3 short names
         run: fsutil 8dot3name set 0
+      # Same JDK version bazel uses (rules_java 9.6.1 -> remotejdk_21 ==
+      # Temurin 21.0.9+10, the version in the crash banner). Installing
+      # it via setup-java rather than reusing the bazel-downloaded JDK
+      # rules out "weird bazel-bundled JDK" as a variable.
+      - name: Setup JDK 21.0.9
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21.0.9+10
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.19.0
         with:
@@ -98,25 +105,32 @@ jobs:
           output-base: D://b
           disk-cache: false
           repository-cache: true
-      - name: Build standalone server jar
+      - name: Build standalone server jar (./go java:package)
         shell: bash
         env:
           MSYS_NO_PATHCONV: 1
           MSYS2_ARG_CONV_EXCL: "*"
-        run: bazel build //java/src/org/openqa/selenium/grid:executable-grid
+        # Pass `--` so the task uses our (empty) args instead of falling
+        # back to --config=release. Produces build/dist/selenium-server-*.jar.
+        run: ./go "java:package[--]"
+      - name: Upload standalone jar (reusable across future debug runs)
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-standalone-jar
+          path: build/dist/selenium-server-*.jar
+          if-no-files-found: warn
+          retention-days: 7
       - name: Locate jar and java
         id: paths
         shell: bash
         run: |
           set -x
-          JAR=$(find bazel-bin/java/src/org/openqa/selenium/grid -name 'selenium_server_deploy.jar' | head -1)
+          ls -la build/dist || true
+          JAR=$(find build/dist -name 'selenium-server-*.jar' | head -1)
           echo "jar=$JAR" >> "$GITHUB_OUTPUT"
-          # Use the same JDK bazel uses, so we reproduce the crash exactly
-          JAVA=$(bazel run --run_under=echo @rules_java//toolchains:current_java_runtime 2>/dev/null | tail -1 || true)
-          # Fallback: locate java.exe under the bazel external repo
-          if [ -z "$JAVA" ] || [ ! -x "$JAVA" ]; then
-            JAVA=$(find "$(bazel info output_base)/external" -path '*remotejdk21_win*/bin/java.exe' | head -1)
-          fi
+          # Use the setup-java JDK (matches bazel's JDK version exactly)
+          JAVA="$JAVA_HOME/bin/java.exe"
           echo "java=$JAVA" >> "$GITHUB_OUTPUT"
           echo "Using java: $JAVA"
           echo "Using jar:  $JAR"
@@ -158,6 +172,8 @@ jobs:
         env:
           SE_DEBUG: "true"
           JDK_JAVA_OPTIONS: "-XX:ErrorFile=D:/ruby_hs_err_pid%p.log"
+          SERVER_JAR: ${{ github.workspace }}/${{ steps.paths.outputs.jar }}
+          SERVER_JAVA: ${{ steps.paths.outputs.java }}
         run: |
           set -x
           cd rb
@@ -177,19 +193,15 @@ jobs:
             puts "starting server via Selenium::Server..."
             server.start
           '
-        env:
-          SERVER_JAR: ${{ github.workspace }}/${{ steps.paths.outputs.jar }}
-          SERVER_JAVA: ${{ steps.paths.outputs.java }}
-          SE_DEBUG: "true"
-          JDK_JAVA_OPTIONS: "-XX:ErrorFile=D:/ruby_hs_err_pid%p.log"
       - name: Collect hs_err files
         if: always()
         shell: bash
         run: |
           set -x
           mkdir -p build/debug
-          find /d -maxdepth 2 -name '*hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
-          find /d -maxdepth 2 -name '*hs_err_pid*.mdmp' -exec cp {} build/debug/ \; 2>/dev/null || true
+          find /d -name '*hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
+          find /d -name '*hs_err_pid*.mdmp' -exec cp {} build/debug/ \; 2>/dev/null || true
+          find /c -name '*hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
           ls -la build/debug || true
       - name: Upload debug artifacts
         if: always()
@@ -207,11 +219,13 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v6
-      - name: Free disk space (Windows)
-        shell: pwsh
-        run: ./scripts/github-actions/free-disk-space.ps1
       - name: Disable 8dot3 short names
         run: fsutil 8dot3name set 0
+      - name: Setup JDK 21.0.9
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21.0.9+10
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.19.0
         with:
@@ -237,7 +251,7 @@ jobs:
           ls -la build/dist || true
           JAR=$(find build/dist -name 'selenium-server-*.jar' | head -1)
           echo "jar=$JAR" >> "$GITHUB_OUTPUT"
-          JAVA=$(find "$(bazel info output_base)/external" -path '*remotejdk21_win*/bin/java.exe' | head -1)
+          JAVA="$JAVA_HOME/bin/java.exe"
           echo "java=$JAVA" >> "$GITHUB_OUTPUT"
           echo "Using java: $JAVA"
           echo "Using jar:  $JAR"
@@ -271,14 +285,40 @@ jobs:
           done
           kill "$SERVER_PID" 2>/dev/null || true
           wait "$SERVER_PID" 2>/dev/null || true
+      # CDS-disabled retry: the crash banner says "mixed mode, sharing" -
+      # disabling Class Data Sharing is the single most common workaround
+      # for Windows-only JVM access violations in jvm.dll. If this one
+      # stays up while the previous step crashed, CDS is the culprit.
+      - name: Launch release jar with -Xshare:off
+        shell: bash
+        continue-on-error: true
+        env:
+          JDK_JAVA_OPTIONS: "-XX:ErrorFile=D:/release_noshare_hs_err_pid%p.log -Xshare:off"
+        run: |
+          set -x
+          "${{ steps.paths.outputs.java }}" \
+            -jar "${{ steps.paths.outputs.jar }}" \
+            standalone --port 4445 &
+          SERVER_PID=$!
+          echo "server pid=$SERVER_PID"
+          for i in $(seq 1 30); do
+            if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+              echo "server process exited early (iteration $i)"
+              break
+            fi
+            sleep 1
+          done
+          kill "$SERVER_PID" 2>/dev/null || true
+          wait "$SERVER_PID" 2>/dev/null || true
       - name: Collect hs_err files
         if: always()
         shell: bash
         run: |
           set -x
           mkdir -p build/debug
-          find /d -maxdepth 2 -name '*hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
-          find /d -maxdepth 2 -name '*hs_err_pid*.mdmp' -exec cp {} build/debug/ \; 2>/dev/null || true
+          find /d -name '*hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
+          find /d -name '*hs_err_pid*.mdmp' -exec cp {} build/debug/ \; 2>/dev/null || true
+          find /c -name '*hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
           ls -la build/debug || true
       - name: Upload debug artifacts
         if: always()
