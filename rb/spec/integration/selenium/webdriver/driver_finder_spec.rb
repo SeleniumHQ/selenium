@@ -53,7 +53,7 @@ module Selenium
 
       it 'downloads the browser into the Selenium cache',
          except: [{browser: %i[safari ie], reason: 'browser ships with OS'},
-                  {browser: :edge, platform: :windows, reason: 'Edge install requires admin; SM uses system path'}] do
+                  {browser: :edge, platform: :windows, reason: 'Edge MSI installer always writes to system path'}] do
         Dir.mktmpdir('se-cache') do |cache_dir|
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
                        'SE_FORCE_BROWSER_DOWNLOAD' => ENV.fetch('SE_FORCE_BROWSER_DOWNLOAD', nil)}
@@ -61,6 +61,21 @@ module Selenium
           ENV['SE_FORCE_BROWSER_DOWNLOAD'] = 'true'
           # Match by basename so 8.3 short names on Windows don't fail the path comparison.
           expect(driver_finder.browser_path).to include(File.basename(cache_dir))
+        ensure
+          originals.each { |k, v| ENV[k] = v }
+        end
+      end
+
+      it 'resolves the browser to its system install location',
+         exclusive: [{browser: %i[safari ie]},
+                     {browser: :edge, platform: :windows}] do
+        Dir.mktmpdir('se-cache') do |cache_dir|
+          originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
+                       'SE_FORCE_BROWSER_DOWNLOAD' => ENV.fetch('SE_FORCE_BROWSER_DOWNLOAD', nil)}
+          ENV['SE_CACHE_PATH'] = cache_dir
+          ENV['SE_FORCE_BROWSER_DOWNLOAD'] = 'true'
+          # Even when asked to force a download, SM returns the OS-managed install.
+          expect(driver_finder.browser_path).not_to include(File.basename(cache_dir))
         ensure
           originals.each { |k, v| ENV[k] = v }
         end
