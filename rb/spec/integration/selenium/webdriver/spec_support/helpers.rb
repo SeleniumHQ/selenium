@@ -146,7 +146,9 @@ module Selenium
         def includes_path?(path, root)
           path = WebDriver::Platform.unix_path(path)
           root = WebDriver::Platform.unix_path(root).chomp('/')
-          path.start_with?("#{root}/")
+          result = path.start_with?("#{root}/")
+          warn "DEBUG includes_path? path=#{path.inspect} root=#{root.inspect} result=#{result}"
+          result
         end
       end # Helpers
     end # SpecSupport
