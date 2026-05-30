@@ -37,16 +37,60 @@ jobs:
           MSYS_NO_PATHCONV: 1
           MSYS2_ARG_CONV_EXCL: "*"
         run: |
-          # JDK_JAVA_OPTIONS is honored by the `java` launcher (JDK 9+) and
-          # affects every JVM spawned by the test. --test_output=streamed
-          # so output is live (forces --test_strategy=exclusive, fine for
-          # a single target).
+          # -Xshare:on forces a clean failure if CDS can't load (instead
+          # of the partial-success-then-crash we saw with default sharing).
           bazel test \
             --test_output=streamed \
             --cache_test_results=no \
             --test_env=SE_DEBUG=true \
-            --test_env=JDK_JAVA_OPTIONS="-XX:ErrorFile=D:/hs_err_pid%p.log -Xshare:off" \
+            --test_env=JDK_JAVA_OPTIONS="-XX:ErrorFile=D:/hs_err_pid%p.log -Xshare:on" \
             //rb/spec/integration/selenium/webdriver:select-firefox-remote
+      - name: Inspect bazel-bundled JDK (external cache vs runfiles)
+        if: always()
+        shell: bash
+        run: |
+          set -x
+          OUTPUT_BASE=$(bazel info output_base 2>/dev/null)
+          EXT_JDK=$(find "$OUTPUT_BASE/external" -maxdepth 1 -name 'rules_java*remotejdk25_win*' -type d | head -1)
+          RUNFILES_JDK=$(find bazel-bin -path '*select-firefox-remote.cmd.runfiles/rules_java*remotejdk25_win*' -type d 2>/dev/null | head -1)
+          echo "=== external JDK: $EXT_JDK ==="
+          ls -la "$EXT_JDK/lib/server" 2>&1 || echo "missing"
+          echo "=== runfiles JDK: $RUNFILES_JDK ==="
+          ls -la "$RUNFILES_JDK/lib/server" 2>&1 || echo "missing"
+          # Stash for next step
+          echo "EXT_JDK=$EXT_JDK" >> "$GITHUB_ENV"
+      - name: Run server with bazel JDK at short path (no bazel sandbox)
+        if: always()
+        shell: bash
+        continue-on-error: true
+        env:
+          JDK_JAVA_OPTIONS: "-XX:ErrorFile=D:/bazeljdk_hs_err_pid%p.log"
+        run: |
+          set -x
+          if [ -z "$EXT_JDK" ] || [ ! -d "$EXT_JDK" ]; then
+            echo "no extracted bazel JDK found - skipping"
+            exit 0
+          fi
+          # Copy the *exact same* bazel-bundled JDK out of bazel's external
+          # cache to a short path with no bazel sandbox env. If it still
+          # crashes here, the rules_java JDK distribution itself is broken.
+          # If it works here but the bazel test crashed, the issue is the
+          # runfiles layout / sandbox.
+          cp -r "$EXT_JDK" D:/bazeljdk
+          JAR="bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar"
+          ls -la "$JAR" || { echo "jar missing"; exit 0; }
+          D:/bazeljdk/bin/java.exe -version 2>&1 || true
+          D:/bazeljdk/bin/java.exe -jar "$JAR" standalone --port 4445 &
+          SERVER_PID=$!
+          echo "server pid=$SERVER_PID"
+          sleep 15
+          if kill -0 "$SERVER_PID" 2>/dev/null; then
+            echo "server alive after 15s - killing"
+            kill "$SERVER_PID" 2>/dev/null || true
+          else
+            echo "server exited early"
+          fi
+          wait "$SERVER_PID" 2>/dev/null || true
       - name: Collect hs_err and test outputs
         if: always()
         shell: bash
@@ -57,6 +101,8 @@ jobs:
           # -XX:ErrorFile, no need to walk the drive.
           cp D:/hs_err_pid*.log build/debug/ 2>/dev/null || true
           cp D:/hs_err_pid*.mdmp build/debug/ 2>/dev/null || true
+          cp D:/bazeljdk_hs_err_pid*.log build/debug/ 2>/dev/null || true
+          cp D:/bazeljdk_hs_err_pid*.mdmp build/debug/ 2>/dev/null || true
           # Bazel test logs
           TESTLOGS=$(bazel info bazel-testlogs 2>/dev/null || true)
           if [ -n "$TESTLOGS" ] && [ -d "$TESTLOGS" ]; then
