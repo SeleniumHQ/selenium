@@ -38,6 +38,6 @@ jobs:
       os: ${{ matrix.os }}
       cache-save: true
       run: >-
-        bazel build --nobuild --build_tests_only --keep_going --repo_contents_cache=
+        bazel build --nobuild --build_tests_only --keep_going --pin_browsers=false
         //java/test/... //py:* //rb/spec/... //rust/tests/...
         //javascript/selenium-webdriver:* //dotnet/test/...
