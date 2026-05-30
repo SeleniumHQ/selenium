@@ -24,8 +24,4 @@ rb_integration_test(
         "firefox-beta",
     ],
     no_grid = True,
-    tags = [
-        "se-manager",
-        "skip-rbe",
-    ],
 )
