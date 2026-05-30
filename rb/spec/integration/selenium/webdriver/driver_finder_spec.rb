@@ -52,7 +52,8 @@ module Selenium
       end
 
       it 'downloads the browser into the Selenium cache',
-         except: {browser: %i[safari ie edge], reason: 'browser ships with OS'} do
+         except: [{browser: %i[safari ie], reason: 'browser ships with OS'},
+                  {browser: :edge, platform: :windows, reason: 'Edge install requires admin; SM uses system path'}] do
         Dir.mktmpdir('se-cache') do |cache_dir|
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
                        'SE_FORCE_BROWSER_DOWNLOAD' => ENV.fetch('SE_FORCE_BROWSER_DOWNLOAD', nil)}
