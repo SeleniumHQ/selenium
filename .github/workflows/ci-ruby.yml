@@ -65,10 +65,10 @@ jobs:
           done
           echo "=== external JDK: $EXT_JDK ==="
           if [ -n "$EXT_JDK" ]; then
-            echo "--- lib/server contents ---"
-            find "$EXT_JDK/lib/server" -maxdepth 1 -printf '%y %s %f\n' 2>/dev/null || echo "(missing)"
+            echo "--- bin/server contents (windows CDS lives here) ---"
+            find "$EXT_JDK/bin/server" -maxdepth 1 -printf '%y %s %f\n' 2>/dev/null || echo "(missing)"
             echo "--- classes.jsa sha256 ---"
-            sha256sum "$EXT_JDK/lib/server/classes.jsa" 2>/dev/null || echo "(no classes.jsa)"
+            sha256sum "$EXT_JDK/bin/server/classes.jsa" 2>/dev/null || echo "(no classes.jsa)"
           fi
 
           # Runfiles: find through bazel-bin symlink can be flaky on
@@ -90,10 +90,10 @@ jobs:
           done
           echo "=== runfiles JDK: $RUNFILES_JDK ==="
           if [ -n "$RUNFILES_JDK" ]; then
-            echo "--- lib/server contents ---"
-            find "$RUNFILES_JDK/lib/server" -maxdepth 1 -printf '%y %s %f\n' 2>/dev/null || echo "(missing)"
+            echo "--- bin/server contents (windows CDS lives here) ---"
+            find "$RUNFILES_JDK/bin/server" -maxdepth 1 -printf '%y %s %f\n' 2>/dev/null || echo "(missing)"
             echo "--- classes.jsa sha256 ---"
-            sha256sum "$RUNFILES_JDK/lib/server/classes.jsa" 2>/dev/null || echo "(no classes.jsa)"
+            sha256sum "$RUNFILES_JDK/bin/server/classes.jsa" 2>/dev/null || echo "(no classes.jsa)"
           fi
 
           echo "EXT_JDK=$EXT_JDK" >> "$GITHUB_ENV"
