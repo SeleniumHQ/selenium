@@ -66,7 +66,7 @@ _NO_GRID = ["driver_finder_spec.rb"]
     rb_integration_test(
         name = f[:-8],
         srcs = [f],
-        browsers = DEFAULT_BROWSERS + ["ie"],
+        browsers = DEFAULT_BROWSERS,
         no_grid = True,
         tags = ["os-sensitive"],
         deps = [

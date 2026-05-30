@@ -38,7 +38,7 @@ module Selenium
       end
 
       it 'downloads the driver into the Selenium cache',
-         except: {browser: %i[safari ie], reason: 'driver ships with OS'} do
+         except: {browser: :safari, reason: 'driver ships with OS'} do
         Dir.mktmpdir('se-cache') do |cache_dir|
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
                        'SE_SKIP_DRIVER_IN_PATH' => ENV.fetch('SE_SKIP_DRIVER_IN_PATH', nil)}
@@ -52,7 +52,7 @@ module Selenium
       end
 
       it 'downloads the browser into the Selenium cache',
-         except: [{browser: %i[safari ie], reason: 'browser ships with OS'},
+         except: [{browser: :safari, reason: 'browser ships with OS'},
                   {browser: :edge, platform: :windows, reason: 'Edge MSI installer always writes to system path'}] do
         Dir.mktmpdir('se-cache') do |cache_dir|
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
@@ -67,7 +67,7 @@ module Selenium
       end
 
       it 'resolves the browser to its system install location',
-         exclusive: [{browser: %i[safari ie]},
+         exclusive: [{browser: :safari},
                      {browser: :edge, platform: :windows}] do
         Dir.mktmpdir('se-cache') do |cache_dir|
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
