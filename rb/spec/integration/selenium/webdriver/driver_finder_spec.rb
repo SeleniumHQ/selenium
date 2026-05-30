@@ -17,6 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'tmpdir'
+
 require_relative 'spec_helper'
 
 module Selenium
@@ -25,7 +27,6 @@ module Selenium
       let(:browser) { GlobalTestEnv.browser }
       let(:options) { WebDriver::Options.send(browser) }
       let(:service) { WebDriver::Service.send(browser) }
-      let(:cache_dir) { ENV['SE_CACHE_PATH'] || File.join(Dir.home, '.cache', 'selenium') }
       let(:driver_finder) { described_class.new(options, service) }
 
       it 'resolves an executable driver path' do
@@ -38,20 +39,28 @@ module Selenium
 
       it 'downloads the driver into the Selenium cache',
          except: {browser: %i[safari ie], reason: 'driver ships with OS'} do
-        original = ENV.fetch('SE_SKIP_DRIVER_IN_PATH', nil)
-        ENV['SE_SKIP_DRIVER_IN_PATH'] = 'true'
-        expect(includes_path?(driver_finder.driver_path, cache_dir)).to be(true)
-      ensure
-        ENV['SE_SKIP_DRIVER_IN_PATH'] = original
+        Dir.mktmpdir('se-cache') do |cache_dir|
+          originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
+                       'SE_SKIP_DRIVER_IN_PATH' => ENV.fetch('SE_SKIP_DRIVER_IN_PATH', nil)}
+          ENV['SE_CACHE_PATH'] = cache_dir
+          ENV['SE_SKIP_DRIVER_IN_PATH'] = 'true'
+          expect(includes_path?(driver_finder.driver_path, cache_dir)).to be(true)
+        ensure
+          originals.each { |k, v| ENV[k] = v }
+        end
       end
 
       it 'downloads the browser into the Selenium cache',
          except: {browser: %i[safari ie], reason: 'browser ships with OS'} do
-        original = ENV.fetch('SE_FORCE_BROWSER_DOWNLOAD', nil)
-        ENV['SE_FORCE_BROWSER_DOWNLOAD'] = 'true'
-        expect(includes_path?(driver_finder.browser_path, cache_dir)).to be(true)
-      ensure
-        ENV['SE_FORCE_BROWSER_DOWNLOAD'] = original
+        Dir.mktmpdir('se-cache') do |cache_dir|
+          originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
+                       'SE_FORCE_BROWSER_DOWNLOAD' => ENV.fetch('SE_FORCE_BROWSER_DOWNLOAD', nil)}
+          ENV['SE_CACHE_PATH'] = cache_dir
+          ENV['SE_FORCE_BROWSER_DOWNLOAD'] = 'true'
+          expect(includes_path?(driver_finder.browser_path, cache_dir)).to be(true)
+        ensure
+          originals.each { |k, v| ENV[k] = v }
+        end
       end
     end
   end
