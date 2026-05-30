@@ -199,3 +199,92 @@ jobs:
           path: build/debug/**
           if-no-files-found: warn
           retention-days: 7
+
+  release-jar-direct:
+    name: Release jar (java:package) standalone (windows)
+    runs-on: windows-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Free disk space (Windows)
+        shell: pwsh
+        run: ./scripts/github-actions/free-disk-space.ps1
+      - name: Disable 8dot3 short names
+        run: fsutil 8dot3name set 0
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.19.0
+        with:
+          bazelisk-cache: true
+          bazelrc: common --color=yes
+          output-base: D://b
+          disk-cache: false
+          repository-cache: true
+      - name: Build standalone jar (./go java:package)
+        shell: bash
+        env:
+          MSYS_NO_PATHCONV: 1
+          MSYS2_ARG_CONV_EXCL: "*"
+        # java:package produces build/dist/selenium-server-<version>.jar.
+        # Pass `--` so the task uses our (empty) args instead of falling
+        # back to --config=release - we don't want stamping for this debug.
+        run: ./go "java:package[--]"
+      - name: Locate built jar and java
+        id: paths
+        shell: bash
+        run: |
+          set -x
+          ls -la build/dist || true
+          JAR=$(find build/dist -name 'selenium-server-*.jar' | head -1)
+          echo "jar=$JAR" >> "$GITHUB_OUTPUT"
+          JAVA=$(find "$(bazel info output_base)/external" -path '*remotejdk21_win*/bin/java.exe' | head -1)
+          echo "java=$JAVA" >> "$GITHUB_OUTPUT"
+          echo "Using java: $JAVA"
+          echo "Using jar:  $JAR"
+          "$JAVA" -version 2>&1 || true
+      - name: Upload release jar
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-release-standalone-jar
+          path: build/dist/selenium-server-*.jar
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Launch release jar with java -jar
+        shell: bash
+        continue-on-error: true
+        env:
+          JDK_JAVA_OPTIONS: "-XX:ErrorFile=D:/release_hs_err_pid%p.log"
+        run: |
+          set -x
+          "${{ steps.paths.outputs.java }}" \
+            -jar "${{ steps.paths.outputs.jar }}" \
+            standalone --port 4444 &
+          SERVER_PID=$!
+          echo "server pid=$SERVER_PID"
+          for i in $(seq 1 30); do
+            if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+              echo "server process exited early (iteration $i)"
+              break
+            fi
+            sleep 1
+          done
+          kill "$SERVER_PID" 2>/dev/null || true
+          wait "$SERVER_PID" 2>/dev/null || true
+      - name: Collect hs_err files
+        if: always()
+        shell: bash
+        run: |
+          set -x
+          mkdir -p build/debug
+          find /d -maxdepth 2 -name '*hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
+          find /d -maxdepth 2 -name '*hs_err_pid*.mdmp' -exec cp {} build/debug/ \; 2>/dev/null || true
+          ls -la build/debug || true
+      - name: Upload debug artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-release-jar-debug
+          path: build/debug/**
+          if-no-files-found: warn
+          retention-days: 7
