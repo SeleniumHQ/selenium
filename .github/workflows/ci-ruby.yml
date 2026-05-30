@@ -31,9 +31,6 @@ jobs:
           repository-cache: true
       - name: Set resolution
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
-      - name: Prepare hs_err output dir
-        shell: bash
-        run: mkdir -p "$GITHUB_WORKSPACE/hs_err"
       - name: Run single test with debug
         shell: bash
         env:
@@ -41,14 +38,14 @@ jobs:
           MSYS2_ARG_CONV_EXCL: "*"
         run: |
           # JDK_JAVA_OPTIONS is honored by the `java` launcher (JDK 9+) and
-          # affects every JVM spawned by the test, including the one launched
-          # by Selenium::Server. %p in ErrorFile is replaced with the pid.
+          # affects every JVM spawned by the test. --test_output=streamed
+          # so output is live (forces --test_strategy=exclusive, fine for
+          # a single target).
           bazel test \
-            --test_output=all \
+            --test_output=streamed \
             --cache_test_results=no \
             --test_env=SE_DEBUG=true \
             --test_env=JDK_JAVA_OPTIONS="-XX:ErrorFile=D:/hs_err_pid%p.log" \
-            --test_env=TEST_DEBUG_DIR="D:/" \
             //rb/spec/integration/selenium/webdriver:select-firefox-remote
       - name: Collect hs_err and test outputs
         if: always()
@@ -56,14 +53,11 @@ jobs:
         run: |
           set -x
           mkdir -p build/debug
-          # JVM crash reports written via JDK_JAVA_OPTIONS=-XX:ErrorFile.
-          # No maxdepth - bazel sandboxes are deep and the JVM may fall back
-          # to writing alongside the crashing process instead of the
-          # absolute ErrorFile path.
-          find /d -name 'hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
-          find /d -name 'hs_err_pid*.mdmp' -exec cp {} build/debug/ \; 2>/dev/null || true
-          find /c -name 'hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
-          # Bazel test logs + any TEST_UNDECLARED_OUTPUTS the test wrote
+          # JVM crash reports land at the absolute path we set via
+          # -XX:ErrorFile, no need to walk the drive.
+          cp D:/hs_err_pid*.log build/debug/ 2>/dev/null || true
+          cp D:/hs_err_pid*.mdmp build/debug/ 2>/dev/null || true
+          # Bazel test logs
           TESTLOGS=$(bazel info bazel-testlogs 2>/dev/null || true)
           if [ -n "$TESTLOGS" ] && [ -d "$TESTLOGS" ]; then
             find "$TESTLOGS" -name 'test.log' -exec cp --parents {} build/debug/ \; 2>/dev/null || true
@@ -105,20 +99,18 @@ jobs:
           output-base: D://b
           disk-cache: false
           repository-cache: true
-      - name: Build standalone server jar (./go java:package)
+      - name: Build standalone server jar
         shell: bash
         env:
           MSYS_NO_PATHCONV: 1
           MSYS2_ARG_CONV_EXCL: "*"
-        # Pass `--` so the task uses our (empty) args instead of falling
-        # back to --config=release. Produces build/dist/selenium-server-*.jar.
-        run: ./go "java:package[--]"
+        run: bazel build //java/src/org/openqa/selenium/grid:selenium_server_deploy.jar
       - name: Upload standalone jar (reusable across future debug runs)
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: windows-standalone-jar
-          path: build/dist/selenium-server-*.jar
+          path: bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar
           if-no-files-found: warn
           retention-days: 7
       - name: Locate jar and java
@@ -126,8 +118,8 @@ jobs:
         shell: bash
         run: |
           set -x
-          ls -la build/dist || true
-          JAR=$(find build/dist -name 'selenium-server-*.jar' | head -1)
+          JAR="bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar"
+          ls -la "$JAR"
           echo "jar=$JAR" >> "$GITHUB_OUTPUT"
           # Use the setup-java JDK (matches bazel's JDK version exactly)
           JAVA="$JAVA_HOME/bin/java.exe"
@@ -148,15 +140,13 @@ jobs:
             --log-level FINE &
           SERVER_PID=$!
           echo "server pid=$SERVER_PID"
-          # Give it up to 30s to either crash or start listening
-          for i in $(seq 1 30); do
-            if ! kill -0 "$SERVER_PID" 2>/dev/null; then
-              echo "server process exited early (iteration $i)"
-              break
-            fi
-            sleep 1
-          done
-          kill "$SERVER_PID" 2>/dev/null || true
+          sleep 15
+          if kill -0 "$SERVER_PID" 2>/dev/null; then
+            echo "server still alive after 15s - killing"
+            kill "$SERVER_PID" 2>/dev/null || true
+          else
+            echo "server process already exited"
+          fi
           wait "$SERVER_PID" 2>/dev/null || true
       - name: Set Ruby version
         run: echo '3.3.11' > rb/.ruby-version
@@ -177,6 +167,9 @@ jobs:
         run: |
           set -x
           cd rb
+          # background: true so start returns after poll_for_ready
+          # (otherwise process.wait blocks forever on a healthy server).
+          # Then sleep briefly and stop to verify the stop path too.
           bundle exec ruby -I lib -r selenium-webdriver -e '
             require "selenium/server"
             jar  = ENV.fetch("SERVER_JAR")
@@ -186,12 +179,16 @@ jobs:
               java: java,
               port: 4456,
               log: true,
-              background: false,
+              background: true,
               timeout: 60,
               args: %w[--selenium-manager true --log-level FINE]
             )
             puts "starting server via Selenium::Server..."
             server.start
+            puts "server reported ready - sleeping 5s then stopping"
+            sleep 5
+            server.stop
+            puts "stopped cleanly"
           '
       - name: Collect hs_err files
         if: always()
@@ -199,9 +196,8 @@ jobs:
         run: |
           set -x
           mkdir -p build/debug
-          find /d -name '*hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
-          find /d -name '*hs_err_pid*.mdmp' -exec cp {} build/debug/ \; 2>/dev/null || true
-          find /c -name '*hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
+          cp D:/*hs_err_pid*.log build/debug/ 2>/dev/null || true
+          cp D:/*hs_err_pid*.mdmp build/debug/ 2>/dev/null || true
           ls -la build/debug || true
       - name: Upload debug artifacts
         if: always()
@@ -212,8 +208,8 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-  release-jar-direct:
-    name: Release jar (java:package) standalone (windows)
+  xshare-off-test:
+    name: Standalone jar with -Xshare:off (windows)
     runs-on: windows-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -234,66 +230,35 @@ jobs:
           output-base: D://b
           disk-cache: false
           repository-cache: true
-      - name: Build standalone jar (./go java:package)
+      - name: Build standalone server jar
         shell: bash
         env:
           MSYS_NO_PATHCONV: 1
           MSYS2_ARG_CONV_EXCL: "*"
-        # java:package produces build/dist/selenium-server-<version>.jar.
-        # Pass `--` so the task uses our (empty) args instead of falling
-        # back to --config=release - we don't want stamping for this debug.
-        run: ./go "java:package[--]"
-      - name: Locate built jar and java
+        run: bazel build //java/src/org/openqa/selenium/grid:selenium_server_deploy.jar
+      - name: Locate jar and java
         id: paths
         shell: bash
         run: |
           set -x
-          ls -la build/dist || true
-          JAR=$(find build/dist -name 'selenium-server-*.jar' | head -1)
+          JAR="bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar"
+          ls -la "$JAR"
           echo "jar=$JAR" >> "$GITHUB_OUTPUT"
           JAVA="$JAVA_HOME/bin/java.exe"
           echo "java=$JAVA" >> "$GITHUB_OUTPUT"
           echo "Using java: $JAVA"
           echo "Using jar:  $JAR"
           "$JAVA" -version 2>&1 || true
-      - name: Upload release jar
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: windows-release-standalone-jar
-          path: build/dist/selenium-server-*.jar
-          if-no-files-found: warn
-          retention-days: 7
-      - name: Launch release jar with java -jar
+      # CDS-disabled test: the original crash banner says
+      # "mixed mode, sharing" - disabling Class Data Sharing is the most
+      # common workaround for Windows-only JVM access violations in
+      # jvm.dll. If a parallel default-CDS run reproduces the crash and
+      # this one stays up, CDS is the culprit.
+      - name: Launch standalone jar with -Xshare:off
         shell: bash
         continue-on-error: true
         env:
-          JDK_JAVA_OPTIONS: "-XX:ErrorFile=D:/release_hs_err_pid%p.log"
-        run: |
-          set -x
-          "${{ steps.paths.outputs.java }}" \
-            -jar "${{ steps.paths.outputs.jar }}" \
-            standalone --port 4444 &
-          SERVER_PID=$!
-          echo "server pid=$SERVER_PID"
-          for i in $(seq 1 30); do
-            if ! kill -0 "$SERVER_PID" 2>/dev/null; then
-              echo "server process exited early (iteration $i)"
-              break
-            fi
-            sleep 1
-          done
-          kill "$SERVER_PID" 2>/dev/null || true
-          wait "$SERVER_PID" 2>/dev/null || true
-      # CDS-disabled retry: the crash banner says "mixed mode, sharing" -
-      # disabling Class Data Sharing is the single most common workaround
-      # for Windows-only JVM access violations in jvm.dll. If this one
-      # stays up while the previous step crashed, CDS is the culprit.
-      - name: Launch release jar with -Xshare:off
-        shell: bash
-        continue-on-error: true
-        env:
-          JDK_JAVA_OPTIONS: "-XX:ErrorFile=D:/release_noshare_hs_err_pid%p.log -Xshare:off"
+          JDK_JAVA_OPTIONS: "-XX:ErrorFile=D:/noshare_hs_err_pid%p.log -Xshare:off"
         run: |
           set -x
           "${{ steps.paths.outputs.java }}" \
@@ -301,14 +266,13 @@ jobs:
             standalone --port 4445 &
           SERVER_PID=$!
           echo "server pid=$SERVER_PID"
-          for i in $(seq 1 30); do
-            if ! kill -0 "$SERVER_PID" 2>/dev/null; then
-              echo "server process exited early (iteration $i)"
-              break
-            fi
-            sleep 1
-          done
-          kill "$SERVER_PID" 2>/dev/null || true
+          sleep 15
+          if kill -0 "$SERVER_PID" 2>/dev/null; then
+            echo "server still alive after 15s - killing"
+            kill "$SERVER_PID" 2>/dev/null || true
+          else
+            echo "server process already exited"
+          fi
           wait "$SERVER_PID" 2>/dev/null || true
       - name: Collect hs_err files
         if: always()
@@ -316,15 +280,14 @@ jobs:
         run: |
           set -x
           mkdir -p build/debug
-          find /d -name '*hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
-          find /d -name '*hs_err_pid*.mdmp' -exec cp {} build/debug/ \; 2>/dev/null || true
-          find /c -name '*hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
+          cp D:/*hs_err_pid*.log build/debug/ 2>/dev/null || true
+          cp D:/*hs_err_pid*.mdmp build/debug/ 2>/dev/null || true
           ls -la build/debug || true
       - name: Upload debug artifacts
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: windows-release-jar-debug
+          name: windows-xshare-off-debug
           path: build/debug/**
           if-no-files-found: warn
           retention-days: 7
