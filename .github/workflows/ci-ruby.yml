@@ -1,5 +1,8 @@
 name: CI - Ruby
 
+# WIP: temporary debug workflow for investigating Windows server-start
+# JVM crash (EXCEPTION_ACCESS_VIOLATION in jvm.dll). Revert before merge.
+
 on:
   workflow_call:
   workflow_dispatch:
@@ -8,82 +11,191 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Build
-      run: bazel build //rb:selenium-devtools //rb:selenium-webdriver
+  bazel-single-debug:
+    name: Bazel single remote test (windows, debug)
+    runs-on: windows-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Free disk space (Windows)
+        shell: pwsh
+        run: ./scripts/github-actions/free-disk-space.ps1
+      - name: Disable 8dot3 short names
+        run: fsutil 8dot3name set 0
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.19.0
+        with:
+          bazelisk-cache: true
+          bazelrc: common --color=yes
+          # Workaround for Windows long path issues
+          output-base: D://b
+          disk-cache: false
+          repository-cache: true
+      - name: Set resolution
+        run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
+      - name: Prepare hs_err output dir
+        shell: bash
+        run: mkdir -p "$GITHUB_WORKSPACE/hs_err"
+      - name: Run single test with debug
+        shell: bash
+        env:
+          MSYS_NO_PATHCONV: 1
+          MSYS2_ARG_CONV_EXCL: "*"
+        run: |
+          # JDK_JAVA_OPTIONS is honored by the `java` launcher (JDK 9+) and
+          # affects every JVM spawned by the test, including the one launched
+          # by Selenium::Server. %p in ErrorFile is replaced with the pid.
+          bazel test \
+            --test_output=all \
+            --cache_test_results=no \
+            --test_env=SE_DEBUG=true \
+            --test_env=JDK_JAVA_OPTIONS="-XX:ErrorFile=D:/hs_err_pid%p.log" \
+            --test_env=TEST_DEBUG_DIR="D:/" \
+            //rb/spec/integration/selenium/webdriver:select-firefox-remote
+      - name: Collect hs_err and test outputs
+        if: always()
+        shell: bash
+        run: |
+          set -x
+          mkdir -p build/debug
+          # Java crash reports written via JDK_JAVA_OPTIONS=-XX:ErrorFile
+          find /d -maxdepth 2 -name 'hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
+          find /d -maxdepth 2 -name 'hs_err_pid*.mdmp' -exec cp {} build/debug/ \; 2>/dev/null || true
+          # Bazel test logs + any TEST_UNDECLARED_OUTPUTS the test wrote
+          TESTLOGS=$(bazel info bazel-testlogs 2>/dev/null || true)
+          if [ -n "$TESTLOGS" ] && [ -d "$TESTLOGS" ]; then
+            find "$TESTLOGS" -name 'test.log' -exec cp --parents {} build/debug/ \; 2>/dev/null || true
+            find "$TESTLOGS" -name 'test.outputs*.zip' -exec cp --parents {} build/debug/ \; 2>/dev/null || true
+          fi
+          ls -laR build/debug || true
+      - name: Upload debug artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-bazel-single-debug
+          path: build/debug/**
+          if-no-files-found: warn
+          retention-days: 7
 
-  lint:
-    name: Lint
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Lint
-      run: ./go rb:lint
-
-  unit-tests:
-    name: Unit Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - ruby-version: 3.3.11
-            os: ubuntu
-          - ruby-version: 3.3.11
-            os: windows
-          - ruby-version: 3.3.11
-            os: macos
-          - ruby-version: 4.0.4
-            os: ubuntu
-          - ruby-version: jruby-10.1.0.0
-            os: ubuntu
-          - ruby-version: truffleruby-34.0.1
-            os: ubuntu
-    with:
-      name: Unit Tests (${{ matrix.ruby-version }}, ${{ matrix.os }})
-      os: ${{ matrix.os }}
-      ruby-version: ${{ matrix.ruby-version }}
-      rerun-with-debug: true
-      run: >
-        bazel test
-        --keep_going
-        --build_tests_only
-        --test_size_filters small
-        //rb/spec/...
-
-  integration-tests-local:
-    name: Local Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        browser:
-          - chrome
-          - edge
-          - firefox
-        os:
-          - windows
-          - macos
-        exclude:
-          - browser: edge
-            os: macos
-    with:
-      name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
-      browser: ${{ matrix.browser }}
-      os: ${{ matrix.os }}
-      rerun-with-debug: true
-      run: >
-        bazel test
-        --keep_going
-        --build_tests_only
-        --flaky_test_attempts 2
-        --local_test_jobs 1
-        --test_size_filters large
-        --test_tag_filters ${{ matrix.browser }}
-        ${{ (github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') && '--test_env=SKIP_PENDING=true' || '' }}
-        //rb/spec/...
+  ruby-direct-server:
+    name: Ruby starts server directly (windows)
+    runs-on: windows-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Free disk space (Windows)
+        shell: pwsh
+        run: ./scripts/github-actions/free-disk-space.ps1
+      - name: Disable 8dot3 short names
+        run: fsutil 8dot3name set 0
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.19.0
+        with:
+          bazelisk-cache: true
+          bazelrc: common --color=yes
+          output-base: D://b
+          disk-cache: false
+          repository-cache: true
+      - name: Build standalone server jar
+        shell: bash
+        env:
+          MSYS_NO_PATHCONV: 1
+          MSYS2_ARG_CONV_EXCL: "*"
+        run: bazel build //java/src/org/openqa/selenium/grid:executable-grid
+      - name: Locate jar and java
+        id: paths
+        shell: bash
+        run: |
+          set -x
+          JAR=$(find bazel-bin/java/src/org/openqa/selenium/grid -name 'selenium_server_deploy.jar' | head -1)
+          echo "jar=$JAR" >> "$GITHUB_OUTPUT"
+          # Use the same JDK bazel uses, so we reproduce the crash exactly
+          JAVA=$(bazel run --run_under=echo @rules_java//toolchains:current_java_runtime 2>/dev/null | tail -1 || true)
+          # Fallback: locate java.exe under the bazel external repo
+          if [ -z "$JAVA" ] || [ ! -x "$JAVA" ]; then
+            JAVA=$(find "$(bazel info output_base)/external" -path '*remotejdk21_win*/bin/java.exe' | head -1)
+          fi
+          echo "java=$JAVA" >> "$GITHUB_OUTPUT"
+          echo "Using java: $JAVA"
+          echo "Using jar:  $JAR"
+          "$JAVA" -version 2>&1 || true
+      - name: Launch server directly with java (no Ruby, control case)
+        shell: bash
+        continue-on-error: true
+        env:
+          JDK_JAVA_OPTIONS: "-XX:ErrorFile=D:/direct_hs_err_pid%p.log"
+        run: |
+          set -x
+          "${{ steps.paths.outputs.java }}" \
+            -jar "${{ steps.paths.outputs.jar }}" \
+            standalone --port 4455 --selenium-manager true \
+            --log-level FINE &
+          SERVER_PID=$!
+          echo "server pid=$SERVER_PID"
+          # Give it up to 30s to either crash or start listening
+          for i in $(seq 1 30); do
+            if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+              echo "server process exited early (iteration $i)"
+              break
+            fi
+            sleep 1
+          done
+          kill "$SERVER_PID" 2>/dev/null || true
+          wait "$SERVER_PID" 2>/dev/null || true
+      - name: Set Ruby version
+        run: echo '3.3.11' > rb/.ruby-version
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.11
+          working-directory: rb
+          bundler-cache: true
+      - name: Launch server via Selenium::Server (Ruby)
+        shell: bash
+        continue-on-error: true
+        env:
+          SE_DEBUG: "true"
+          JDK_JAVA_OPTIONS: "-XX:ErrorFile=D:/ruby_hs_err_pid%p.log"
+        run: |
+          set -x
+          cd rb
+          bundle exec ruby -I lib -r selenium-webdriver -e '
+            require "selenium/server"
+            jar  = ENV.fetch("SERVER_JAR")
+            java = ENV.fetch("SERVER_JAVA")
+            server = Selenium::Server.new(
+              jar,
+              java: java,
+              port: 4456,
+              log: true,
+              background: false,
+              timeout: 60,
+              args: %w[--selenium-manager true --log-level FINE]
+            )
+            puts "starting server via Selenium::Server..."
+            server.start
+          '
+        env:
+          SERVER_JAR: ${{ github.workspace }}/${{ steps.paths.outputs.jar }}
+          SERVER_JAVA: ${{ steps.paths.outputs.java }}
+          SE_DEBUG: "true"
+          JDK_JAVA_OPTIONS: "-XX:ErrorFile=D:/ruby_hs_err_pid%p.log"
+      - name: Collect hs_err files
+        if: always()
+        shell: bash
+        run: |
+          set -x
+          mkdir -p build/debug
+          find /d -maxdepth 2 -name '*hs_err_pid*.log' -exec cp {} build/debug/ \; 2>/dev/null || true
+          find /d -maxdepth 2 -name '*hs_err_pid*.mdmp' -exec cp {} build/debug/ \; 2>/dev/null || true
+          ls -la build/debug || true
+      - name: Upload debug artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-ruby-direct-debug
+          path: build/debug/**
+          if-no-files-found: warn
+          retention-days: 7
