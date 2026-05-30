@@ -39,7 +39,9 @@ module Selenium
 
       it 'downloads the driver into the Selenium cache',
          except: {browser: %i[safari ie], reason: 'driver ships with OS'} do
-        Dir.mktmpdir('se-cache') do |cache_dir|
+        Dir.mktmpdir('se-cache') do |tmp|
+          # Canonicalize so 8.3 short names on Windows match SM's returned long-name paths.
+          cache_dir = File.realpath(tmp)
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
                        'SE_SKIP_DRIVER_IN_PATH' => ENV.fetch('SE_SKIP_DRIVER_IN_PATH', nil)}
           ENV['SE_CACHE_PATH'] = cache_dir
@@ -52,7 +54,9 @@ module Selenium
 
       it 'downloads the browser into the Selenium cache',
          except: {browser: %i[safari ie], reason: 'browser ships with OS'} do
-        Dir.mktmpdir('se-cache') do |cache_dir|
+        Dir.mktmpdir('se-cache') do |tmp|
+          # Canonicalize so 8.3 short names on Windows match SM's returned long-name paths.
+          cache_dir = File.realpath(tmp)
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
                        'SE_FORCE_BROWSER_DOWNLOAD' => ENV.fetch('SE_FORCE_BROWSER_DOWNLOAD', nil)}
           ENV['SE_CACHE_PATH'] = cache_dir
