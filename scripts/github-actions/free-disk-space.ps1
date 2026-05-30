@@ -36,6 +36,11 @@ Clean "chromedriver" $env:ChromeWebDriver
 Clean "edgedriver"   $env:EdgeWebDriver
 Clean "geckodriver"  $env:GeckoWebDriver
 
+# Pre-installed browsers (Selenium tests use bazel-pinned or SM-downloaded browsers)
+Clean "chrome"       "C:\Program Files\Google\Chrome"
+Clean "firefox"      "C:\Program Files\Mozilla Firefox"
+Clean "msedge"       "C:\Program Files (x86)\Microsoft\Edge"
+
 Write-Host
 Write-Host "=== Disk after cleanup ==="
 Get-PSDrive C, D | Format-Table -AutoSize | Out-String | Write-Host

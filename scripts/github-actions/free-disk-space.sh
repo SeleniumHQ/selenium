@@ -46,6 +46,11 @@ clean chromedriver "${CHROMEWEBDRIVER:-}"
 clean edgedriver   "${EDGEWEBDRIVER:-}"
 clean geckodriver  "${GECKOWEBDRIVER:-}"
 
+# Pre-installed browsers (Selenium tests use bazel-pinned or SM-downloaded browsers)
+clean chrome       /opt/google/chrome
+clean firefox      /opt/firefox
+clean msedge       /opt/microsoft/msedge
+
 # Docker images pre-pulled by the runner image
 before=$(free_mb); t0=$SECONDS
 docker image prune -af >/dev/null 2>&1 || true
