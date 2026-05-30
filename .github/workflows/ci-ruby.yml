@@ -23,14 +23,12 @@ jobs:
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.19.0
         with:
-          # All caches off to rule out cached-JDK corruption as the
-          # source of the broken CDS archive.
-          bazelisk-cache: false
+          bazelisk-cache: true
           bazelrc: common --color=yes
           # Workaround for Windows long path issues
           output-base: D://b
           disk-cache: false
-          repository-cache: false
+          repository-cache: true
       - name: Set resolution
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
       - name: Run single test with debug
@@ -53,13 +51,51 @@ jobs:
         run: |
           set -x
           OUTPUT_BASE=$(bazel info output_base 2>/dev/null)
-          EXT_JDK=$(find "$OUTPUT_BASE/external" -maxdepth 1 -name 'rules_java*remotejdk25_win*' -type d | head -1)
-          RUNFILES_JDK=$(find bazel-bin -path '*select-firefox-remote.cmd.runfiles/rules_java*remotejdk25_win*' -type d 2>/dev/null | head -1)
+
+          echo "=== all remotejdk25* dirs in external ==="
+          find "$OUTPUT_BASE/external" -maxdepth 1 -name '*remotejdk25*' -type d
+
+          # Real JDK has bin/java.exe; config_repos don't.
+          EXT_JDK=""
+          for d in "$OUTPUT_BASE/external"/*remotejdk25*; do
+            if [ -x "$d/bin/java.exe" ]; then
+              EXT_JDK="$d"
+              break
+            fi
+          done
           echo "=== external JDK: $EXT_JDK ==="
-          ls -la "$EXT_JDK/lib/server" 2>&1 || echo "missing"
+          if [ -n "$EXT_JDK" ]; then
+            echo "--- lib/server contents ---"
+            find "$EXT_JDK/lib/server" -maxdepth 1 -printf '%y %s %f\n' 2>/dev/null || echo "(missing)"
+            echo "--- classes.jsa sha256 ---"
+            sha256sum "$EXT_JDK/lib/server/classes.jsa" 2>/dev/null || echo "(no classes.jsa)"
+          fi
+
+          # Runfiles: find through bazel-bin symlink can be flaky on
+          # windows. Construct the absolute path from output_base, which
+          # the hs_err already showed us.
+          RUNFILES_BASE="$OUTPUT_BASE/execroot/_main/bazel-out/x64_windows-fastbuild/bin/rb/spec/integration/selenium/webdriver/select-firefox-remote.cmd.runfiles"
+          echo "=== runfiles base: $RUNFILES_BASE ==="
+          find "$RUNFILES_BASE" -maxdepth 1 -printf '%y %f\n' 2>/dev/null | head -20 || echo "(runfiles dir missing)"
+          # Surface the runfiles manifest if bazel used one instead of
+          # materializing the tree.
+          find "${RUNFILES_BASE}_manifest" -maxdepth 0 -printf '%s %p\n' 2>/dev/null || true
+
+          RUNFILES_JDK=""
+          for d in "$RUNFILES_BASE"/*remotejdk25*; do
+            if [ -x "$d/bin/java.exe" ]; then
+              RUNFILES_JDK="$d"
+              break
+            fi
+          done
           echo "=== runfiles JDK: $RUNFILES_JDK ==="
-          ls -la "$RUNFILES_JDK/lib/server" 2>&1 || echo "missing"
-          # Stash for next step
+          if [ -n "$RUNFILES_JDK" ]; then
+            echo "--- lib/server contents ---"
+            find "$RUNFILES_JDK/lib/server" -maxdepth 1 -printf '%y %s %f\n' 2>/dev/null || echo "(missing)"
+            echo "--- classes.jsa sha256 ---"
+            sha256sum "$RUNFILES_JDK/lib/server/classes.jsa" 2>/dev/null || echo "(no classes.jsa)"
+          fi
+
           echo "EXT_JDK=$EXT_JDK" >> "$GITHUB_ENV"
       - name: Run server with bazel JDK at short path (no bazel sandbox)
         if: always()
@@ -69,8 +105,8 @@ jobs:
           JDK_JAVA_OPTIONS: "-XX:ErrorFile=D:/bazeljdk_hs_err_pid%p.log"
         run: |
           set -x
-          if [ -z "$EXT_JDK" ] || [ ! -d "$EXT_JDK" ]; then
-            echo "no extracted bazel JDK found - skipping"
+          if [ -z "$EXT_JDK" ] || [ ! -x "$EXT_JDK/bin/java.exe" ]; then
+            echo "no usable bazel JDK found - skipping"
             exit 0
           fi
           # Copy the *exact same* bazel-bundled JDK out of bazel's external
@@ -78,9 +114,11 @@ jobs:
           # crashes here, the rules_java JDK distribution itself is broken.
           # If it works here but the bazel test crashed, the issue is the
           # runfiles layout / sandbox.
+          rm -rf D:/bazeljdk
           cp -r "$EXT_JDK" D:/bazeljdk
+          ls D:/bazeljdk/bin/java.exe || { echo "copy failed - no java.exe at D:/bazeljdk/bin/"; exit 0; }
           JAR="bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar"
-          ls -la "$JAR" || { echo "jar missing"; exit 0; }
+          test -f "$JAR" || { echo "jar missing"; exit 0; }
           D:/bazeljdk/bin/java.exe -version 2>&1 || true
           D:/bazeljdk/bin/java.exe -jar "$JAR" standalone --port 4445 &
           SERVER_PID=$!
@@ -111,7 +149,7 @@ jobs:
             find "$TESTLOGS" -name 'test.log' -exec cp --parents {} build/debug/ \; 2>/dev/null || true
             find "$TESTLOGS" -name 'test.outputs*.zip' -exec cp --parents {} build/debug/ \; 2>/dev/null || true
           fi
-          ls -laR build/debug || true
+          find build/debug -type f -printf '%s %p\n' 2>/dev/null || true
       - name: Upload debug artifacts
         if: always()
         uses: actions/upload-artifact@v7
