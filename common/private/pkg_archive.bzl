@@ -55,7 +55,8 @@ def _pkg_archive_impl(repository_ctx):
         )
 
     repository_ctx.delete(download_name)
-    repository_ctx.delete(pkg_name)
+    if repository_ctx.attr.move:
+        repository_ctx.delete(pkg_name)
 
 pkg_archive = repository_rule(
     _pkg_archive_impl,

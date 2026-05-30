@@ -39,7 +39,11 @@ cleanup() {
 }
 trap cleanup EXIT
 
-ATTACH_OUTPUT="$(hdiutil attach "$DMGFILE")"
+if ! ATTACH_OUTPUT="$(hdiutil attach "$DMGFILE" 2>&1)"; then
+    echo "hdiutil attach failed for $DMGFILE" >&2
+    echo "$ATTACH_OUTPUT" >&2
+    exit 1
+fi
 VOLUME="$(printf '%s\n' "$ATTACH_OUTPUT" | tail -1 | awk -F'\t' '{print $NF}')"
 if [ -z "$VOLUME" ] || [ ! -d "$VOLUME" ]; then
     echo "hdiutil attach did not produce a mount point for $DMGFILE" >&2
@@ -47,5 +51,5 @@ if [ -z "$VOLUME" ] || [ ! -d "$VOLUME" ]; then
     exit 1
 fi
 
-(cd "$VOLUME" && zip -r "$SCRATCH" *.app)
+(cd "$VOLUME" && zip -r "$SCRATCH" ./*.app)
 mv "$SCRATCH" "$OUTFILE_ABS"
