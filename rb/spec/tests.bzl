@@ -196,6 +196,11 @@ def rb_integration_test(
 
     for browser in browsers:
         universal_tags, local_tags = _split_filtered_tags(tags, browser)
+
+        # Family groups beta/preview variants with their stable counterpart so
+        # e.g. `--test_tag_filters=chrome` matches chrome and chrome-beta targets.
+        family = browser.split("-")[0]
+        family_tags = [browser, family] if family != browser else [browser]
         if not bidi_only:
             # Generate a test target for local browser execution.
             rb_test(
@@ -206,7 +211,7 @@ def rb_integration_test(
                 data = BROWSERS[browser]["data"] + data + ["//common/src/web"],
                 env = BROWSERS[browser]["env"],
                 main = "@bundle//bin:rspec",
-                tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + local_tags + [browser],
+                tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + local_tags + ["{}-local".format(browser)] + family_tags,
                 deps = ["//rb/spec/integration/selenium/webdriver:spec_helper"] + BROWSERS[browser]["deps"] + deps,
                 visibility = ["//rb:__subpackages__"],
                 target_compatible_with = BROWSERS[browser]["target_compatible_with"],
@@ -230,7 +235,7 @@ def rb_integration_test(
                         "WD_SPEC_DRIVER": "remote",
                     },
                     main = "@bundle//bin:rspec",
-                    tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + ["{}-remote".format(browser)],
+                    tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + ["{}-remote".format(browser)] + family_tags,
                     deps = ["//rb/spec/integration/selenium/webdriver:spec_helper"] + BROWSERS[browser]["deps"] + deps,
                     visibility = ["//rb:__subpackages__"],
                     target_compatible_with = BROWSERS[browser]["target_compatible_with"],
@@ -246,7 +251,7 @@ def rb_integration_test(
                 data = BROWSERS[browser]["data"] + data + ["//common/src/web"],
                 env = BROWSERS[browser]["env"] | {"WEBDRIVER_BIDI": "true"},
                 main = "@bundle//bin:rspec",
-                tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + ["{}-bidi".format(browser)],
+                tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + ["{}-bidi".format(browser)] + family_tags,
                 deps = {d: True for d in (
                     ["//rb/spec/integration/selenium/webdriver:spec_helper", "//rb/lib/selenium/webdriver:bidi"] +
                     BROWSERS[browser]["deps"] +
