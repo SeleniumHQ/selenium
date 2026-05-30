@@ -665,7 +665,7 @@ public class LocalNode extends Node implements Closeable {
         LOG.info(
             String.format(
                 "%s. Id: %s, Caps: %s",
-                sessionCreatedMessage, sessionId, externalSession.getCapabilities()));
+                sessionCreatedMessage, sessionId, externalSession.getCapabilities().asMap()));
 
         // Create session data for events and listeners
         SessionCreatedData createdData =
