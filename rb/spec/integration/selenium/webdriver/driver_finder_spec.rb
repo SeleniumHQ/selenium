@@ -39,14 +39,13 @@ module Selenium
 
       it 'downloads the driver into the Selenium cache',
          except: {browser: %i[safari ie], reason: 'driver ships with OS'} do
-        Dir.mktmpdir('se-cache') do |tmp|
-          # Canonicalize so 8.3 short names on Windows match SM's returned long-name paths.
-          cache_dir = File.realpath(tmp)
+        Dir.mktmpdir('se-cache') do |cache_dir|
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
                        'SE_SKIP_DRIVER_IN_PATH' => ENV.fetch('SE_SKIP_DRIVER_IN_PATH', nil)}
           ENV['SE_CACHE_PATH'] = cache_dir
           ENV['SE_SKIP_DRIVER_IN_PATH'] = 'true'
-          expect(includes_path?(driver_finder.driver_path, cache_dir)).to be(true)
+          # Match by basename so 8.3 short names on Windows don't fail the path comparison.
+          expect(driver_finder.driver_path).to include(File.basename(cache_dir))
         ensure
           originals.each { |k, v| ENV[k] = v }
         end
@@ -54,14 +53,13 @@ module Selenium
 
       it 'downloads the browser into the Selenium cache',
          except: {browser: %i[safari ie], reason: 'browser ships with OS'} do
-        Dir.mktmpdir('se-cache') do |tmp|
-          # Canonicalize so 8.3 short names on Windows match SM's returned long-name paths.
-          cache_dir = File.realpath(tmp)
+        Dir.mktmpdir('se-cache') do |cache_dir|
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
                        'SE_FORCE_BROWSER_DOWNLOAD' => ENV.fetch('SE_FORCE_BROWSER_DOWNLOAD', nil)}
           ENV['SE_CACHE_PATH'] = cache_dir
           ENV['SE_FORCE_BROWSER_DOWNLOAD'] = 'true'
-          expect(includes_path?(driver_finder.browser_path, cache_dir)).to be(true)
+          # Match by basename so 8.3 short names on Windows don't fail the path comparison.
+          expect(driver_finder.browser_path).to include(File.basename(cache_dir))
         ensure
           originals.each { |k, v| ENV[k] = v }
         end

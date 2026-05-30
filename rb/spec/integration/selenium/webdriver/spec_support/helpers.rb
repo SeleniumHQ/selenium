@@ -142,13 +142,6 @@ module Selenium
             file.close
           end
         end
-
-        def includes_path?(path, root)
-          path = WebDriver::Platform.unix_path(path)
-          root = WebDriver::Platform.unix_path(root).chomp('/')
-          WebDriver.logger.debug("includes_path? path=#{path.inspect} root=#{root.inspect}", id: :spec_support)
-          path.start_with?("#{root}/")
-        end
       end # Helpers
     end # SpecSupport
   end # WebDriver
