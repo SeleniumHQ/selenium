@@ -116,7 +116,7 @@ module Selenium
             port: random_port,
             log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
-            timeout: 60,
+            timeout: 180,
             args: args
           )
         end
@@ -125,7 +125,7 @@ module Selenium
           stereotype = {browserName: w3c_browser_name, browserVersion: browser_version}.to_json
           ['--driver-configuration',
            "display-name=#{browser} #{browser_version}",
-           'max-sessions=1',
+           'max-sessions=5',
            "stereotype=#{stereotype}"]
         end
 
