@@ -23,12 +23,14 @@ jobs:
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.19.0
         with:
-          bazelisk-cache: true
+          # All caches off to rule out cached-JDK corruption as the
+          # source of the broken CDS archive.
+          bazelisk-cache: false
           bazelrc: common --color=yes
           # Workaround for Windows long path issues
           output-base: D://b
           disk-cache: false
-          repository-cache: true
+          repository-cache: false
       - name: Set resolution
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
       - name: Run single test with debug
