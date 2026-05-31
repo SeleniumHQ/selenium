@@ -44,6 +44,9 @@ build --nobuild_runfile_links
 build --allow_unresolved_symlinks
 # Avoid a warning about directory tracking being unsound
 startup --host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1
+# Ceiling, not an allocation; small builds still use what they need.
+# Bazel's auto-sized default is too low for CI
+startup --host_jvm_args=-Xmx8g
 
 # Required for faster TS builds
 build --@aspect_rules_ts//ts:skipLibCheck=always
