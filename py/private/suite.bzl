@@ -16,16 +16,21 @@ def _strip_test_prefixes(path):
     return path
 
 def py_test_suite(name, srcs, size = None, deps = None, python_version = None, imports = None, visibility = None, **kwargs):
-    library_name = "%s-test-lib" % name
+    support_srcs = [src for src in srcs if not _is_test(src)]
 
-    py_library(
-        name = library_name,
-        testonly = True,
-        srcs = srcs,
-        deps = deps,
-        imports = imports,
-        precompile = "disabled",
-    )
+    if support_srcs:
+        library_name = "%s-test-lib" % name
+        py_library(
+            name = library_name,
+            testonly = True,
+            srcs = support_srcs,
+            deps = deps,
+            imports = imports,
+            precompile = "disabled",
+        )
+        test_deps = [library_name]
+    else:
+        test_deps = deps or []
 
     tests = []
     for src in srcs:
@@ -38,7 +43,7 @@ def py_test_suite(name, srcs, size = None, deps = None, python_version = None, i
                 name = test_name,
                 size = size,
                 srcs = [src],
-                deps = [library_name],
+                deps = test_deps,
                 python_version = python_version,
                 precompile = "disabled",
                 **kwargs
