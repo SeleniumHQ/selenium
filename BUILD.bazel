@@ -23,6 +23,20 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
+genrule(
+    name = "legal-stuff",
+    srcs = [
+        "//:LICENSE",
+        "//:NOTICE",
+    ],
+    outs = [
+        "META-INF/LICENSE",
+        "META-INF/NOTICE",
+    ],
+    cmd = "cp $(location //:LICENSE) $(location META-INF/LICENSE) && cp $(location //:NOTICE) $(location META-INF/NOTICE)",
+    visibility = ["//visibility:public"],
+)
+
 package_metadata(
     name = "package_metadata",
     attributes = [
