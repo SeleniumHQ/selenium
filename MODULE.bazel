@@ -170,12 +170,6 @@ use_repo(
     "remote_java_tools_darwin_x86_64",
     "remote_java_tools_linux",
     "remote_java_tools_windows",
-    "remotejdk17_linux",
-    "remotejdk17_linux_s390x",
-    "remotejdk17_macos",
-    "remotejdk17_macos_aarch64",
-    "remotejdk17_win",
-    "remotejdk17_win_arm64",
 )
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
