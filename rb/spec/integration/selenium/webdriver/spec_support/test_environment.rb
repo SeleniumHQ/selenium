@@ -137,7 +137,8 @@ module Selenium
           return unless ENV.key?('WD_BAZEL_JAVA_LOCATION')
 
           java_path = File.read(File.expand_path(ENV.fetch('WD_BAZEL_JAVA_LOCATION'))).chomp
-          rlocation(java_path)
+          resolved = rlocation(java_path)
+          Platform.windows? && File.exist?(resolved) ? File.realpath(resolved) : resolved
         end
 
         def rbe?

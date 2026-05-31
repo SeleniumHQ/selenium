@@ -563,13 +563,17 @@ def server(request):
         # Found in bazel-bin relative to repo root (pytest from anywhere)
         server.path = str(repo_root / "bazel-bin" / jar_path)
 
-    if Runfiles is not None:
+    java_location_env = os.environ.get("SE_BAZEL_JAVA_LOCATION")
+    if Runfiles is not None and java_location_env:
         # Find bazel's Java
         r = Runfiles.Create()
-        java_location_txt = r.Rlocation("_main/" + os.environ.get("SE_BAZEL_JAVA_LOCATION"))
+        java_location_txt = r.Rlocation("_main/" + java_location_env)
         try:
             rel_path = Path(java_location_txt).read_text().strip().removeprefix("external/")
-            server.java_path = r.Rlocation(rel_path)
+            java_path = r.Rlocation(rel_path)
+            if sys.platform == "win32" and java_path and os.path.exists(java_path):
+                java_path = os.path.realpath(java_path)
+            server.java_path = java_path
         except Exception:
             pass
 
