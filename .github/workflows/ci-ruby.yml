@@ -85,4 +85,5 @@ jobs:
         --local_test_jobs 1
         --test_size_filters large
         --test_tag_filters ${{ matrix.browser }}
+        ${{ (github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') && '--test_env=SKIP_PENDING=true' || '' }}
         //rb/spec/...
