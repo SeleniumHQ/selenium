@@ -164,7 +164,7 @@ public class JdkHttpClient implements HttpClient {
       String message =
           String.format(
               "JdkWebSocket initial request execution error (uri: %s)",
-              messages.getRawUri(request));
+              maskUrlCredentials(messages.getRawUri(request)));
       throw new ConnectionFailedException(message, e);
     }
 
@@ -255,16 +255,20 @@ public class JdkHttpClient implements HttpClient {
     } catch (ExecutionException e) {
       Throwable cause = e.getCause();
       throw new ConnectionFailedException(
-          String.format("JdkWebSocket initial request execution error (uri: %s)", uri),
+          String.format(
+              "JdkWebSocket initial request execution error (uri: %s)", maskUrlCredentials(uri)),
           (cause != null) ? cause : e);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new ConnectionFailedException(
-          String.format("JdkWebSocket initial request interrupted (uri: %s)", uri), e);
+          String.format(
+              "JdkWebSocket initial request interrupted (uri: %s)", maskUrlCredentials(uri)),
+          e);
     } catch (java.util.concurrent.TimeoutException e) {
       webSocketCompletableFuture.cancel(true);
       throw new ConnectionFailedException(
-          String.format("JdkWebSocket initial request timeout (uri: %s)", uri), e);
+          String.format("JdkWebSocket initial request timeout (uri: %s)", maskUrlCredentials(uri)),
+          e);
     }
 
     WebSocket websocket =
@@ -525,7 +529,7 @@ public class JdkHttpClient implements HttpClient {
     return String.format("%s %s", method, uri);
   }
 
-  static String maskUrlCredentials(String uri) {
+  public static String maskUrlCredentials(String uri) {
     try {
       return maskUrlCredentials(new URI(uri));
     } catch (URISyntaxException invalidUri) {
@@ -533,7 +537,7 @@ public class JdkHttpClient implements HttpClient {
     }
   }
 
-  private static String maskUrlCredentials(URI u) {
+  public static String maskUrlCredentials(URI u) {
     if (u.getUserInfo() == null) {
       return u.toString();
     }
