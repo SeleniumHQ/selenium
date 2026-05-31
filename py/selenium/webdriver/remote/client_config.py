@@ -74,6 +74,13 @@ class ClientConfig:
     """Gets and Sets the WebSocket response wait timeout (in seconds) used for communicating with the browser."""
     websocket_interval = _ClientConfigDescriptor("_websocket_interval")
     """Gets and Sets the WebSocket response wait interval (in seconds) used for communicating with the browser."""
+    websocket_max_message_size = _ClientConfigDescriptor("_websocket_max_message_size")
+    """Gets and Sets the maximum WebSocket message size in bytes for CDP connections.
+
+    Only applies to CDP-based connections (``driver.bidi_connection()``). When ``None``
+    the value falls back to the ``SE_CDP_MAX_WS_MESSAGE_SIZE`` environment variable,
+    then to the built-in default of 16 MiB (``2**24``).
+    """
 
     def __init__(
         self,
@@ -92,6 +99,7 @@ class ClientConfig:
         extra_headers: dict | None = None,
         websocket_timeout: float | None = 30.0,
         websocket_interval: float | None = 0.1,
+        websocket_max_message_size: int | None = None,
     ) -> None:
         self.remote_server_addr = remote_server_addr
         self.keep_alive = keep_alive
@@ -107,6 +115,7 @@ class ClientConfig:
         self.extra_headers = extra_headers
         self.websocket_timeout = websocket_timeout
         self.websocket_interval = websocket_interval
+        self.websocket_max_message_size = websocket_max_message_size
 
         self.ca_certs = (
             (os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where())

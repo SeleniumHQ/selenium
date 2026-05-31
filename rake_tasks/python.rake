@@ -170,10 +170,10 @@ task :format do
   Bazel.execute('run', [], '//py:ruff-format')
 end
 
-desc 'Run Python linters (ruff check, mypy, docs)'
+desc 'Run Python linters (ruff check --no-fix, mypy, docs)'
 task :lint do
-  puts '  Running ruff check...'
-  Bazel.execute('run', [], '//py:ruff-check')
+  puts '  Running ruff check (verify)...'
+  Bazel.execute('run', [], '//py:ruff-check', '--', '--no-fix')
   puts '  Running mypy...'
   Bazel.execute('run', [], '//py:mypy')
   Rake::Task['py:docs_generate'].invoke

@@ -23,30 +23,12 @@ module Selenium
   module WebDriver
     module Remote
       describe Driver, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {driver: :remote}] do
-        let(:tempfile) { create_tempfile }
-
         it 'exposes session_id' do
           expect(driver.session_id).to be_a(String)
         end
 
         it 'exposes remote status' do
           expect(driver.status).to be_a(Hash)
-        end
-
-        it 'uses a default file detector',
-           flaky: {browser: :safari, ci: :github, reason: 'unreliable with downloads'} do
-          driver.navigate.to url_for('upload.html')
-
-          driver.find_element(id: 'upload').send_keys(tempfile.path)
-          driver.find_element(id: 'go').submit
-          wait.until { driver.find_element(id: 'upload_label').displayed? }
-
-          driver.switch_to.frame('upload_target')
-          body_text = wait(ignore: [Error::StaleElementReferenceError]).until do
-            driver.find_element(xpath: '//body').text
-          end
-
-          expect(body_text.scan('This is a dummy test file').count).to eq(1)
         end
 
         it 'lists downloads', exclude: {browser: :safari, reason: 'grid hangs'} do

@@ -80,7 +80,7 @@ _BROWSERS = {
             "ActiveDriverConfig=IE",
         ],
         "data": [],
-        "tags": ["skip-rbe"],
+        "tags": [],
         "target_compatible_with": ["@platforms//os:windows"],
     },
     "safari": {
@@ -89,7 +89,7 @@ _BROWSERS = {
             "ActiveDriverConfig=Safari",
         ],
         "data": [],
-        "tags": ["skip-rbe"],
+        "tags": [],
         "target_compatible_with": ["@platforms//os:osx"],
     },
     "remote": {

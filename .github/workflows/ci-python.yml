@@ -16,12 +16,29 @@ jobs:
       run: |
         bazel build //py:selenium-wheel //py:selenium-sdist
 
-  lint:
-    name: Lint
+  lint-ruff:
+    name: Lint (ruff)
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Lint
-      run: ./go py:lint
+      name: Lint (ruff)
+      run: bazel run //py:ruff-check -- --no-fix
+
+  lint-mypy:
+    name: Lint (mypy)
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Lint (mypy)
+      run: bazel run //py:mypy
+
+  lint-docs:
+    name: Lint (docs)
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Lint (docs)
+      run: |
+        bazel run //py:generate-api-listing
+        bazel run //py:sphinx-autogen
+        bazel build //py:docs
 
   unit-tests:
     name: Unit Tests

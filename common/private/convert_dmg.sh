@@ -15,19 +15,41 @@
 #
 ################################################################################
 #
+set -euo pipefail
 
 DMGFILE=$1
 OUTFILE=$2
 
-echo $OUTFILE
+CWD="$(pwd)"
+case "$OUTFILE" in
+    /*) OUTFILE_ABS="$OUTFILE" ;;
+    *)  OUTFILE_ABS="$CWD/$OUTFILE" ;;
+esac
 
-mkdir -p tmp
-VOLUME="$(hdiutil attach "${DMGFILE}" | tail -1 | awk -F'\t' '{print $NF}')"
-CWD="`pwd`"
-echo ${VOLUME}
-cd "${VOLUME}"
-zip -r /tmp/firefox.zip *.app
-cd "${CWD}"
-hdiutil detach "${VOLUME}" >/dev/null
-#rm "${DMGFILE}"
-mv /tmp/firefox.zip "$OUTFILE"
+# Scratch path local to the repository working dir so concurrent dmg_archive
+# fetches don't race on a shared /tmp file.
+SCRATCH="$CWD/.convert_dmg.$$.zip"
+VOLUME=""
+
+cleanup() {
+    if [ -n "$VOLUME" ]; then
+        hdiutil detach "$VOLUME" >/dev/null 2>&1 || true
+    fi
+    rm -f "$SCRATCH"
+}
+trap cleanup EXIT
+
+if ! ATTACH_OUTPUT="$(hdiutil attach "$DMGFILE" 2>&1)"; then
+    echo "hdiutil attach failed for $DMGFILE" >&2
+    echo "$ATTACH_OUTPUT" >&2
+    exit 1
+fi
+VOLUME="$(printf '%s\n' "$ATTACH_OUTPUT" | tail -1 | awk -F'\t' '{print $NF}')"
+if [ -z "$VOLUME" ] || [ ! -d "$VOLUME" ]; then
+    echo "hdiutil attach did not produce a mount point for $DMGFILE" >&2
+    echo "$ATTACH_OUTPUT" >&2
+    exit 1
+fi
+
+(cd "$VOLUME" && zip -r "$SCRATCH" ./*.app)
+mv "$SCRATCH" "$OUTFILE_ABS"
