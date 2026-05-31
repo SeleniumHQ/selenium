@@ -31,7 +31,7 @@ module Selenium
         after { service_manager.stop }
 
         it 'auto uses safaridriver' do
-          service.executable_path = DriverFinder.new(Options.new, described_class.new).driver_path
+          service.executable_path = DriverFinder.new(nil, described_class.new).driver_path
 
           expect(service_manager.uri).to be_a(URI)
         end

@@ -1,3 +1,15 @@
+def _execute_or_fail(repository_ctx, args, what):
+    result = repository_ctx.execute(args)
+    if result.return_code != 0:
+        fail("{} failed (rc={})\nargs: {}\nstdout: {}\nstderr: {}".format(
+            what,
+            result.return_code,
+            [str(a) for a in args],
+            result.stdout,
+            result.stderr,
+        ))
+    return result
+
 def _pkg_archive_impl(repository_ctx):
     repository_ctx.file("BUILD.bazel", repository_ctx.attr.build_file_content)
 
@@ -12,8 +24,9 @@ def _pkg_archive_impl(repository_ctx):
         pkg_name = pkg_name[0:idx]
     pkg_name = pkg_name.replace("%20", "_")
 
+    download_name = pkg_name + ".download"
     attrs = {
-        "output": pkg_name + ".download",
+        "output": download_name,
     }
     if repository_ctx.attr.sha256:
         attrs.update({"sha256": repository_ctx.attr.sha256})
@@ -23,15 +36,27 @@ def _pkg_archive_impl(repository_ctx):
         **attrs
     )
 
-    repository_ctx.execute([
-        repository_ctx.which("pkgutil"),
-        "--expand-full",
-        pkg_name + ".download",
-        pkg_name,
-    ])
+    _execute_or_fail(
+        repository_ctx,
+        [
+            repository_ctx.which("pkgutil"),
+            "--expand-full",
+            download_name,
+            pkg_name,
+        ],
+        "pkgutil --expand-full",
+    )
 
     for (key, value) in repository_ctx.attr.move.items():
-        repository_ctx.execute(["mv", pkg_name + "/" + key, value])
+        _execute_or_fail(
+            repository_ctx,
+            ["mv", pkg_name + "/" + key, value],
+            "mv {} -> {}".format(key, value),
+        )
+
+    repository_ctx.delete(download_name)
+    if repository_ctx.attr.move:
+        repository_ctx.delete(pkg_name)
 
 pkg_archive = repository_rule(
     _pkg_archive_impl,

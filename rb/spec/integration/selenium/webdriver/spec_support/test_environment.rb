@@ -72,12 +72,11 @@ module Selenium
           @driver_instance || create_driver!(...)
         end
 
-        def reset_driver!(time: 0, **opts, &block)
+        def reset_driver!(**opts, &block)
           # do not reset if the test was marked skipped
           return if opts.delete(:example)&.metadata&.fetch(:skip, nil)
 
           quit_driver
-          sleep time
           driver_instance(**opts, &block)
         end
 
@@ -203,10 +202,12 @@ module Selenium
         def create_driver!(listener: nil, http_client: nil, **, &block)
           check_for_previous_error
           http_client ||= Remote::Http::Default.new(read_timeout: 30)
+          @safari_pairing_attempts ||= 0
 
           method = :"#{driver}_driver"
           opts = {options: build_options(**), listener: listener, http_client: http_client}
           instance = private_methods.include?(method) ? send(method, **opts) : WebDriver::Driver.for(driver, **opts)
+          @safari_pairing_attempts = 0
           @create_driver_error_count -= 1 unless @create_driver_error_count.zero?
           if block
             begin
@@ -218,6 +219,7 @@ module Selenium
             @driver_instance = instance
           end
         rescue StandardError => e
+          retry if safari_pairing_retry?(e)
           @create_driver_error = e
           @create_driver_error_count += 1
           raise e
@@ -246,6 +248,21 @@ module Selenium
         end
 
         MAX_ERRORS = 4
+
+        # Safari Driver is slow to release previous sessions especially on Grid.
+        SAFARI_PAIRING_RETRIES = 5
+        SAFARI_PAIRING_INTERVAL = 1
+
+        def safari_pairing_retry?(error)
+          msg = 'instance is already paired'
+          return false unless browser.to_s.include?('safari') && error.message.to_s.include?(msg)
+          return false if @safari_pairing_attempts >= SAFARI_PAIRING_RETRIES
+
+          @safari_pairing_attempts += 1
+          WebDriver.logger.warn("Safari pairing busy; retry #{@safari_pairing_attempts}/#{SAFARI_PAIRING_RETRIES}")
+          sleep SAFARI_PAIRING_INTERVAL
+          true
+        end
 
         class DriverInstantiationError < StandardError
         end
@@ -311,7 +328,7 @@ module Selenium
         end
 
         def chrome_options(args: [], **opts)
-          opts[:browser_version] = browser_version unless ENV.key?('CHROME_BINARY')
+          opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= rlocation(ENV['CHROME_BINARY']) if ENV.key?('CHROME_BINARY')
           args << '--headless' if ENV['HEADLESS']
@@ -322,7 +339,7 @@ module Selenium
         end
 
         def edge_options(args: [], **opts)
-          opts[:browser_version] = browser_version unless ENV.key?('EDGE_BINARY')
+          opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= rlocation(ENV['EDGE_BINARY']) if ENV.key?('EDGE_BINARY')
           args << '--headless' if ENV['HEADLESS']
@@ -333,7 +350,7 @@ module Selenium
         end
 
         def firefox_options(args: [], **opts)
-          opts[:browser_version] = browser_version unless ENV.key?('FIREFOX_BINARY')
+          opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= rlocation(ENV['FIREFOX_BINARY']) if ENV.key?('FIREFOX_BINARY')
           opts[:unhandled_prompt_behavior] ||= 'ignore'

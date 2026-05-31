@@ -23,8 +23,9 @@ rb_integration_test(
         "chrome",
         "chrome-beta",
     ],
+    no_grid = True,
     tags = [
-        "no-grid",
+        "se-manager",
         "skip-rbe",
     ],
 )

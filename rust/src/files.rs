@@ -17,10 +17,7 @@
 
 use crate::config::OS;
 use crate::config::OS::WINDOWS;
-use crate::{
-    CP_VOLUME_COMMAND, Command, HDIUTIL_ATTACH_COMMAND, HDIUTIL_DETACH_COMMAND, Logger, MACOS,
-    MSIEXEC_INSTALL_COMMAND, format_one_arg, format_three_args, run_shell_command_by_os,
-};
+use crate::{Command, Logger, MACOS, format_one_arg, run_shell_command};
 use anyhow::Error;
 use anyhow::anyhow;
 use apple_flat_package::PkgReader;
@@ -64,6 +61,7 @@ const MSI: &str = "msi";
 const XZ: &str = "xz";
 const SEVEN_ZIP_HEADER: &[u8; 6] = b"7z\xBC\xAF\x27\x1C";
 const UNCOMPRESS_MACOS_ERR_MSG: &str = "{} files are only supported in macOS";
+const HDIUTIL_COMMAND: &str = "hdiutil";
 
 #[derive(Hash, Eq, PartialEq, Debug)]
 pub struct BrowserPath {
@@ -150,7 +148,7 @@ pub fn uncompress(
     } else if extension.eq_ignore_ascii_case(PKG) {
         uncompress_pkg(compressed_file, target, log)?
     } else if extension.eq_ignore_ascii_case(DMG) {
-        uncompress_dmg(compressed_file, target, log, os, volume.unwrap_or_default())?
+        uncompress_dmg(compressed_file, target, log, volume.unwrap_or_default())?
     } else if extension.eq_ignore_ascii_case(EXE) {
         uncompress_sfx(compressed_file, target, log)?
     } else if extension.eq_ignore_ascii_case(DEB) {
@@ -244,7 +242,6 @@ pub fn uncompress_dmg(
     compressed_file: &str,
     target: &Path,
     log: &Logger,
-    os: &str,
     volume: &str,
 ) -> Result<(), Error> {
     let dmg_file_name = Path::new(compressed_file)
@@ -255,24 +252,32 @@ pub fn uncompress_dmg(
         "Mounting {} and copying content to cache",
         dmg_file_name.to_str().unwrap_or_default()
     ));
-    let mut command = Command::new_single(format_one_arg(HDIUTIL_ATTACH_COMMAND, compressed_file));
+    let mut command = Command::new(
+        HDIUTIL_COMMAND,
+        vec![String::from("attach"), compressed_file.to_string()],
+    );
     log.trace(format!("Running command: {}", command.display()));
-    run_shell_command_by_os(os, command)?;
+    run_shell_command(command)?;
 
     fs::create_dir_all(target)?;
     let target_folder = path_to_string(target);
-    command = Command::new_single(format_three_args(
-        CP_VOLUME_COMMAND,
-        volume,
-        volume,
-        &target_folder,
-    ));
+    command = Command::new(
+        "cp",
+        vec![
+            String::from("-R"),
+            format!("/Volumes/{}/{}.app", volume, volume),
+            target_folder,
+        ],
+    );
     log.trace(format!("Running command: {}", command.display()));
-    run_shell_command_by_os(os, command)?;
+    run_shell_command(command)?;
 
-    command = Command::new_single(format_one_arg(HDIUTIL_DETACH_COMMAND, volume));
+    command = Command::new(
+        HDIUTIL_COMMAND,
+        vec![String::from("detach"), format!("/Volumes/{}", volume)],
+    );
     log.trace(format!("Running command: {}", command.display()));
-    run_shell_command_by_os(os, command)?;
+    run_shell_command(command)?;
 
     Ok(())
 }
@@ -309,7 +314,7 @@ pub fn uncompress_deb(
     Ok(())
 }
 
-pub fn install_msi(msi_file: &str, log: &Logger, os: &str) -> Result<(), Error> {
+pub fn install_msi(msi_file: &str, log: &Logger, _os: &str) -> Result<(), Error> {
     let msi_file_name = Path::new(msi_file)
         .file_name()
         .unwrap_or_default()
@@ -319,9 +324,17 @@ pub fn install_msi(msi_file: &str, log: &Logger, os: &str) -> Result<(), Error> 
         msi_file_name.to_str().unwrap_or_default()
     ));
 
-    let command = Command::new_single(format_one_arg(MSIEXEC_INSTALL_COMMAND, msi_file));
+    let command = Command::new(
+        "msiexec",
+        vec![
+            String::from("/i"),
+            msi_file.to_string(),
+            String::from("/qn"),
+            String::from("ALLOWDOWNGRADE=1"),
+        ],
+    );
     log.trace(format!("Running command: {}", command.display()));
-    run_shell_command_by_os(os, command)?;
+    run_shell_command(command)?;
 
     Ok(())
 }

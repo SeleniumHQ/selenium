@@ -1152,7 +1152,10 @@ class WebDriver(BaseWebDriver):
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
         devtools = cdp.import_devtools(version)
-        async with cdp.open_cdp(ws_url) as conn:
+        max_message_size = None
+        if isinstance(self.command_executor, RemoteConnection):
+            max_message_size = self.command_executor.client_config.websocket_max_message_size
+        async with cdp.open_cdp(ws_url, max_message_size=max_message_size) as conn:
             targets = await conn.execute(devtools.target.get_targets())
             for target in targets:
                 if target.target_id == self.current_window_handle:

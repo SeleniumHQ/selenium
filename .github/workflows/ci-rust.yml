@@ -77,7 +77,7 @@ jobs:
     name: "Windows Debug"
     runs-on: windows-latest
     needs: tests
-    if: github.event_name != 'schedule'
+    if: github.event_name != 'schedule' && github.event.repository.fork == false && (github.ref == 'refs/heads/trunk' || inputs.release)
     env:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
@@ -136,7 +136,7 @@ jobs:
     name: "Linux Debug"
     runs-on: ubuntu-latest
     needs: tests
-    if: github.event_name != 'schedule'
+    if: github.event_name != 'schedule' && github.event.repository.fork == false && (github.ref == 'refs/heads/trunk' || inputs.release)
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v6
@@ -199,7 +199,7 @@ jobs:
     name: "MacOS Debug"
     runs-on: macos-latest
     needs: tests
-    if: github.event_name != 'schedule'
+    if: github.event_name != 'schedule' && github.event.repository.fork == false && (github.ref == 'refs/heads/trunk' || inputs.release)
     env:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:

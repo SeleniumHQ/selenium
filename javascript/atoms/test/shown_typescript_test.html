@@ -124,6 +124,50 @@
       assert.notOk(isShown(byId('orphanArea')));
     });
 
+    QUnit.test('map with hyphen in name is found via querySelector', function (assert) {
+      var img = document.createElement('img');
+      img.setAttribute('usemap', '#my-map');
+      img.setAttribute('width', '100');
+      img.setAttribute('height', '100');
+      document.body.appendChild(img);
+
+      var map = document.createElement('map');
+      map.setAttribute('name', 'my-map');
+      var area = document.createElement('area');
+      area.setAttribute('shape', 'rect');
+      area.setAttribute('coords', '0,0,50,50');
+      map.appendChild(area);
+      document.body.appendChild(map);
+
+      assert.ok(isShown(map), 'map linked to visible image should be shown');
+      assert.ok(isShown(area), 'area linked to visible image should be shown');
+
+      document.body.removeChild(img);
+      document.body.removeChild(map);
+    });
+
+    QUnit.test('map with double-quote in name is found via querySelector', function (assert) {
+      var img = document.createElement('img');
+      img.setAttribute('width', '100');
+      img.setAttribute('height', '100');
+      document.body.appendChild(img);
+
+      var map = document.createElement('map');
+      map.setAttribute('name', 'my"map');
+      img.setAttribute('usemap', '#my"map');
+
+      var area = document.createElement('area');
+      area.setAttribute('shape', 'rect');
+      area.setAttribute('coords', '0,0,50,50');
+      map.appendChild(area);
+      document.body.appendChild(map);
+
+      assert.ok(isShown(map), 'map with quote in name linked to visible image should be shown');
+
+      document.body.removeChild(img);
+      document.body.removeChild(map);
+    });
+
     QUnit.test('element with nested block level element shown', function (assert) {
       assert.ok(isShown(byId('containsNestedBlock')));
     });

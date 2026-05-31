@@ -18,9 +18,7 @@
 # under the License.
 
 begin
-  require 'debug/session'
-  DEBUGGER__::CONFIG[:fork_mode] = :parent
-  DEBUGGER__.open(nonstop: true)
+  require 'debug/open_nonstop' unless ENV['RUBY_DEBUG_ENABLE'] == '0'
 rescue LoadError
   # not supported on JRuby and TruffleRuby
 end
