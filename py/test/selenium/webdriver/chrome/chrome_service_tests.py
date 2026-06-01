@@ -18,12 +18,14 @@
 import os
 import subprocess
 import sys
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 
 from selenium.common.exceptions import SessionNotCreatedException
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.driver_finder import DriverFinder
 
 
 @pytest.mark.no_driver_after_test
@@ -140,6 +142,41 @@ def test_service_allows_reusing_stdout_for_logging(clean_driver, clean_options, 
             browser1.quit()
         if browser2:
             browser2.quit()
+
+
+def _is_within_cache(path: Path, cache_dir: Path) -> bool:
+    """Check if a path is within a given cache directory."""
+    try:
+        path.relative_to(cache_dir)
+        return True
+    except ValueError:
+        return False
+
+
+@pytest.mark.skipif(
+    not os.environ.get("SE_FORCE_BROWSER_DOWNLOAD"),
+    reason="Only runs when SE_FORCE_BROWSER_DOWNLOAD is set",
+)
+def test_selenium_manager_resolves_browser_and_driver(clean_options) -> None:
+    """Verify Selenium Manager resolves both driver and browser via DriverFinder.
+
+    These paths should point to executable files downloaded into the SM cache.
+    """
+    cache_dir = Path(os.environ.get("SE_CACHE_PATH", Path.home() / ".cache" / "selenium"))
+    service = Service()
+    driver_finder = DriverFinder(service, clean_options)
+
+    driver_path = Path(driver_finder.get_driver_path())
+    browser_path = Path(driver_finder.get_browser_path())
+
+    assert driver_path.is_file(), f"Driver not found: {driver_path}"
+    assert browser_path.is_file(), f"Browser not found: {browser_path}"
+
+    assert os.access(str(driver_path), os.X_OK), f"Driver not executable: {driver_path}"
+    assert os.access(str(browser_path), os.X_OK), f"Browser not executable: {browser_path}"
+
+    assert _is_within_cache(driver_path, cache_dir), f"Driver path outside cache: {driver_path}"
+    assert _is_within_cache(browser_path, cache_dir), f"Browser path outside cache: {browser_path}"
 
 
 @pytest.fixture
