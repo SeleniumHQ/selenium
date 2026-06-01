@@ -3,6 +3,12 @@
 # Print a disk-status snapshot for use as a CI checkpoint:
 # Also exports AVAIL_GB (available space in GB
 
+# Sourced by CI steps running under `bash -eo pipefail`. du/find over trees that
+# contain unreadable entries (e.g. /tmp) exit non-zero, which would otherwise
+# abort the step; these are best-effort diagnostics, so disable that here.
+# AVAIL_GB is still computed and exported below for callers that gate on it.
+set +e +o pipefail
+
 echo "=== Disk space ==="
 df -h "$GITHUB_WORKSPACE" || true
 if [[ "$RUNNER_OS" == "Windows" ]]; then df -h /c || true; fi
@@ -58,18 +64,21 @@ fi
 cache_size "Bazelisk" "$bazelisk"
 
 # Cache sizes above rarely explain a full disk: build outputs (bazel-out /
-# execroot under the output base), the checked-out source, and browser/test
-# runtime files (in TMP) live elsewhere and are what actually balloon.
+# execroot under the real output base), the checked-out source, and browser/
+# test runtime files (in TMP) live elsewhere and are what actually balloon.
+# Note: setup-bazel reports an output base of ~/.bazel, but that tree stays
+# tiny here; the real output base (bazel-out/execroot/external) is under the
+# default bazel root at ~/.cache/bazel, so measure that.
 if [[ "$RUNNER_OS" == "Windows" ]]; then
-  output_base="/d/b"
+  bazel_root="/d/b"
   tmpdir="${RUNNER_TEMP:-/c/Users/runneradmin/AppData/Local/Temp}"
 else
-  output_base="$HOME/.bazel"
+  bazel_root="$HOME/.cache/bazel"
   tmpdir="${RUNNER_TEMP:-${TMPDIR:-/tmp}}"
 fi
 
 echo "=== Other space consumers ==="
-cache_size "Bazel output base" "$output_base"
+cache_size "Bazel root (outputs)" "$bazel_root"
 cache_size "Workspace (code)" "$GITHUB_WORKSPACE"
 cache_size "Build dir" "$GITHUB_WORKSPACE/build"
 cache_size "Temp" "$tmpdir"
@@ -81,10 +90,9 @@ cache_size "Temp" "$tmpdir"
 # follow symlinks, so the bazel-out symlink in the workspace is not traversed.
 if [ "${AVAIL_GB:-99}" -lt 50 ]; then
   roots=()
-  [ -d "$output_base" ] && roots+=("$output_base")
-  [ -d "$tmpdir" ] && roots+=("$tmpdir")
-  [ "$tmpdir" != "/tmp" ] && [ -d /tmp ] && roots+=("/tmp")
-  [ -n "$GITHUB_WORKSPACE" ] && [ -d "$GITHUB_WORKSPACE" ] && roots+=("$GITHUB_WORKSPACE")
+  for r in "$bazel_root" "$tmpdir" /tmp "$GITHUB_WORKSPACE"; do
+    [ -n "$r" ] && [ -d "$r" ] && roots+=("$r")
+  done
   if [ ${#roots[@]} -gt 0 ]; then
     echo "=== Largest directories (AVAIL ${AVAIL_GB}GB) ==="
     du -h -d 3 "${roots[@]}" 2>/dev/null | sort -rh | head -25 | sed 's/^/  /'
