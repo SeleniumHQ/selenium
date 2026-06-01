@@ -294,6 +294,8 @@ py_library(
     srcs = glob(
         ["selenium/webdriver/common/**/*.py"],
         exclude = [
+            "selenium/webdriver/common/action_chains.py",
+            "selenium/webdriver/common/actions/**",
             "selenium/webdriver/common/bidi/**",
             "selenium/webdriver/common/devtools/**",
         ],
@@ -311,6 +313,21 @@ py_library(
         ":latest",
         ":remote",
         requirement("typing_extensions"),
+    ],
+)
+
+# Input actions API (action_chains + actions subpackage)
+py_library(
+    name = "common_actions",
+    srcs = glob([
+        "selenium/webdriver/common/action_chains.py",
+        "selenium/webdriver/common/actions/**/*.py",
+    ]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
     ],
 )
 
@@ -450,6 +467,7 @@ py_library(
         ":chrome",
         ":chromium",
         ":common",
+        ":common_actions",
         ":edge",
         ":exceptions",
         ":firefox",
@@ -683,6 +701,16 @@ py_library(
 
 BIDI_TESTS = glob(["test/selenium/webdriver/common/**/*bidi*_tests.py"])
 
+# Test files that import from selenium.webdriver.common.actions / action_chains.
+# These are kept separate so they can depend on :common_actions without pulling
+# that library into every other test suite.
+ACTIONS_TESTS = [
+    "test/selenium/webdriver/common/interactions_tests.py",
+    "test/selenium/webdriver/common/interactions_with_device_tests.py",
+    "test/selenium/webdriver/common/w3c_interaction_tests.py",
+    "test/selenium/webdriver/support/event_firing_webdriver_tests.py",
+]
+
 # Browser-specific test configuration
 BROWSER_TESTS = {
     "chrome": {
@@ -692,6 +720,11 @@ BROWSER_TESTS = {
             ":common",
             ":support",
         ],
+        "actions_deps": [
+            ":chrome",
+            ":common_actions",
+            ":support",
+        ],
         "bidi": True,
     },
     "edge": {
@@ -699,6 +732,11 @@ BROWSER_TESTS = {
         "deps": [
             ":edge",
             ":common",
+            ":support",
+        ],
+        "actions_deps": [
+            ":edge",
+            ":common_actions",
             ":support",
         ],
         "bidi": True,
@@ -712,6 +750,11 @@ BROWSER_TESTS = {
             ":common",
             ":support",
         ],
+        "actions_deps": [
+            ":firefox",
+            ":common_actions",
+            ":support",
+        ],
         "extra_excludes": ["test/selenium/webdriver/common/devtools_tests.py"],
         "bidi": True,
     },
@@ -722,6 +765,11 @@ BROWSER_TESTS = {
             ":common",
             ":support",
         ],
+        "actions_deps": [
+            ":ie",
+            ":common_actions",
+            ":support",
+        ],
     },
     "safari": {
         "browser_srcs": ["test/selenium/webdriver/safari/**/*.py"],
@@ -730,22 +778,27 @@ BROWSER_TESTS = {
             ":common",
             ":support",
         ],
+        "actions_deps": [
+            ":safari",
+            ":common_actions",
+            ":support",
+        ],
     },
 }
 
 DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
 
-# Generate test-<browser> targets (non-bidi)
+# Generate test-<browser>-common targets (non-bidi, non-actions)
 [
     py_test_suite(
-        name = "test-%s" % browser,
+        name = "test-%s-common" % browser,
         size = "large",
         srcs = glob(
             [
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = BIDI_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+            exclude = BIDI_TESTS + ACTIONS_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
         args = [
@@ -755,6 +808,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         env_inherit = ["DISPLAY"],
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        test_suffix = browser,
         deps = [
             ":init-tree",
             ":webserver",
@@ -763,17 +817,48 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
     for browser in DEFAULT_BROWSER_TESTS
 ]
 
-# Generate test-<browser>-bidi targets (only for browsers with bidi=True)
+# Generate test-<browser>-actions targets (non-bidi, actions tests only)
 [
     py_test_suite(
-        name = "test-%s-bidi" % browser,
+        name = "test-%s-actions" % browser,
+        size = "large",
+        srcs = ACTIONS_TESTS,
+        args = [
+            "--instafail",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"],
+        env_inherit = ["DISPLAY"],
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        test_suffix = "%s-actions" % browser,
+        deps = [
+            ":init-tree",
+            ":webserver",
+        ] + BROWSER_TESTS[browser]["actions_deps"] + TEST_DEPS,
+    )
+    for browser in DEFAULT_BROWSER_TESTS
+]
+
+# Aggregate test-<browser> = common + actions (keeps CI targets unchanged)
+[test_suite(
+    name = "test-%s" % browser,
+    tests = [
+        ":test-%s-common" % browser,
+        ":test-%s-actions" % browser,
+    ],
+) for browser in DEFAULT_BROWSER_TESTS]
+
+# Generate test-<browser>-bidi-common targets
+[
+    py_test_suite(
+        name = "test-%s-bidi-common" % browser,
         size = "large",
         srcs = glob(
             [
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+            exclude = ACTIONS_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
         args = [
@@ -784,6 +869,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         env_inherit = ["DISPLAY"],
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        test_suffix = "%s-bidi" % browser,
         deps = [
             ":init-tree",
             ":webserver",
@@ -793,10 +879,43 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
     if BROWSER_TESTS[browser].get("bidi", False)
 ]
 
-# Generate test-<browser>-remote targets (chrome and firefox only)
+# Generate test-<browser>-bidi-actions targets
 [
     py_test_suite(
-        name = "test-%s-remote" % browser,
+        name = "test-%s-bidi-actions" % browser,
+        size = "large",
+        srcs = ACTIONS_TESTS,
+        args = [
+            "--instafail",
+            "--bidi",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"],
+        env_inherit = ["DISPLAY"],
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        test_suffix = "%s-bidi-actions" % browser,
+        deps = [
+            ":init-tree",
+            ":webserver",
+        ] + BROWSER_TESTS[browser]["actions_deps"] + TEST_DEPS,
+    )
+    for browser in DEFAULT_BROWSER_TESTS
+    if BROWSER_TESTS[browser].get("bidi", False)
+]
+
+# Aggregate test-<browser>-bidi = bidi-common + bidi-actions
+[test_suite(
+    name = "test-%s-bidi" % browser,
+    tests = [
+        ":test-%s-bidi-common" % browser,
+        ":test-%s-bidi-actions" % browser,
+    ],
+) for browser in DEFAULT_BROWSER_TESTS if BROWSER_TESTS[browser].get("bidi", False)]
+
+# Generate test-<browser>-remote-common targets (chrome and firefox only)
+[
+    py_test_suite(
+        name = "test-%s-remote-common" % browser,
         size = "large",
         srcs = glob(
             [
@@ -804,7 +923,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
                 "test/selenium/webdriver/remote/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = BIDI_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+            exclude = BIDI_TESTS + ACTIONS_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
         args = [
@@ -825,6 +944,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
             "remote",
             "%s-remote" % browser,
         ],
+        test_suffix = "%s-remote" % browser,
         deps = [
             ":init-tree",
             ":webserver",
@@ -836,6 +956,54 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
     ]
 ]
 
+# Generate test-<browser>-remote-actions targets (chrome and firefox only)
+[
+    py_test_suite(
+        name = "test-%s-remote-actions" % browser,
+        size = "large",
+        srcs = ACTIONS_TESTS,
+        args = [
+            "--instafail",
+            "--remote",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"] + [
+            ":java-location",
+            "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+            "@bazel_tools//tools/jdk:current_java_runtime",
+        ],
+        env = {
+            "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
+        },
+        env_inherit = ["DISPLAY"],
+        tags = [
+            "no-sandbox",
+            "remote",
+            "%s-remote" % browser,
+        ],
+        test_suffix = "%s-remote-actions" % browser,
+        deps = [
+            ":init-tree",
+            ":webserver",
+        ] + BROWSER_TESTS[browser]["actions_deps"] + TEST_DEPS,
+    )
+    for browser in [
+        "chrome",
+        "firefox",
+    ]
+]
+
+# Aggregate test-<browser>-remote = remote-common + remote-actions
+[test_suite(
+    name = "test-%s-remote" % browser,
+    tests = [
+        ":test-%s-remote-common" % browser,
+        ":test-%s-remote-actions" % browser,
+    ],
+) for browser in [
+    "chrome",
+    "firefox",
+]]
+
 test_suite(
     name = "test-remote",
     tags = ["remote"],
@@ -846,12 +1014,15 @@ test_suite(
 )
 
 py_test_suite(
-    name = "test-webkitgtk",
+    name = "test-webkitgtk-common",
     size = "large",
-    srcs = glob([
-        "test/selenium/webdriver/common/**/*.py",
-        "test/selenium/webdriver/support/**/*.py",
-    ]),
+    srcs = glob(
+        [
+            "test/selenium/webdriver/common/**/*.py",
+            "test/selenium/webdriver/support/**/*.py",
+        ],
+        exclude = BIDI_TESTS + ACTIONS_TESTS,
+    ),
     args = [
         "--instafail",
         "--driver=webkitgtk",
@@ -863,6 +1034,7 @@ py_test_suite(
         "no-sandbox",
         "skip-rbe",
     ],
+    test_suffix = "webkitgtk",
     deps = [
         ":common",
         ":init-tree",
@@ -873,12 +1045,48 @@ py_test_suite(
 )
 
 py_test_suite(
-    name = "test-wpewebkit",
+    name = "test-webkitgtk-actions",
     size = "large",
-    srcs = glob([
-        "test/selenium/webdriver/common/**/*.py",
-        "test/selenium/webdriver/support/**/*.py",
-    ]),
+    srcs = ACTIONS_TESTS,
+    args = [
+        "--instafail",
+        "--driver=webkitgtk",
+        "--browser-binary=MiniBrowser",
+        "--browser-args=--automation",
+    ],
+    tags = [
+        "exclusive-if-local",
+        "no-sandbox",
+        "skip-rbe",
+    ],
+    test_suffix = "webkitgtk-actions",
+    deps = [
+        ":common_actions",
+        ":init-tree",
+        ":support",
+        ":webkitgtk",
+        ":webserver",
+    ] + TEST_DEPS,
+)
+
+test_suite(
+    name = "test-webkitgtk",
+    tests = [
+        ":test-webkitgtk-actions",
+        ":test-webkitgtk-common",
+    ],
+)
+
+py_test_suite(
+    name = "test-wpewebkit-common",
+    size = "large",
+    srcs = glob(
+        [
+            "test/selenium/webdriver/common/**/*.py",
+            "test/selenium/webdriver/support/**/*.py",
+        ],
+        exclude = BIDI_TESTS + ACTIONS_TESTS,
+    ),
     args = [
         "--instafail",
         "--driver=wpewebkit",
@@ -890,6 +1098,7 @@ py_test_suite(
         "no-sandbox",
         "skip-rbe",
     ],
+    test_suffix = "wpewebkit",
     deps = [
         ":common",
         ":init-tree",
@@ -897,6 +1106,39 @@ py_test_suite(
         ":webserver",
         ":wpewebkit",
     ] + TEST_DEPS,
+)
+
+py_test_suite(
+    name = "test-wpewebkit-actions",
+    size = "large",
+    srcs = ACTIONS_TESTS,
+    args = [
+        "--instafail",
+        "--driver=wpewebkit",
+        "--browser-binary=MiniBrowser",
+        "--browser-args=--automation --headless",
+    ],
+    tags = [
+        "exclusive-if-local",
+        "no-sandbox",
+        "skip-rbe",
+    ],
+    test_suffix = "wpewebkit-actions",
+    deps = [
+        ":common_actions",
+        ":init-tree",
+        ":support",
+        ":webserver",
+        ":wpewebkit",
+    ] + TEST_DEPS,
+)
+
+test_suite(
+    name = "test-wpewebkit",
+    tests = [
+        ":test-wpewebkit-actions",
+        ":test-wpewebkit-common",
+    ],
 )
 
 py_binary(

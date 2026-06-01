@@ -15,7 +15,7 @@ def _strip_test_prefixes(path):
         path = path[:-len(filename)] + filename[len("test_"):]
     return path
 
-def py_test_suite(name, srcs, size = None, deps = None, python_version = None, imports = None, visibility = None, **kwargs):
+def py_test_suite(name, srcs, size = None, deps = None, python_version = None, imports = None, visibility = None, test_suffix = None, **kwargs):
     support_srcs = [src for src in srcs if not _is_test(src)]
 
     if support_srcs:
@@ -32,10 +32,12 @@ def py_test_suite(name, srcs, size = None, deps = None, python_version = None, i
     else:
         test_deps = deps or []
 
+    suffix = test_suffix if test_suffix != None else _suite_suffix(name)
+
     tests = []
     for src in srcs:
         if _is_test(src):
-            test_name = "%s-%s" % (_strip_test_prefixes(src), _suite_suffix(name))
+            test_name = "%s-%s" % (_strip_test_prefixes(src), suffix)
 
             tests.append(test_name)
 
