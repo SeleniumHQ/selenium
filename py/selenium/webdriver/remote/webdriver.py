@@ -35,7 +35,7 @@ from base64 import b64decode, urlsafe_b64encode
 from collections.abc import Generator
 from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from typing_extensions import Self
 
@@ -180,6 +180,14 @@ def create_matches(options: list[BaseOptions]) -> dict:
     capabilities["capabilities"]["firstMatch"] = opts
 
     return capabilities
+
+
+if TYPE_CHECKING:
+    from selenium.webdriver.common.api_request_context import APIRequestContext
+    from selenium.webdriver.common.fedcm.dialog import Dialog
+    from selenium.webdriver.common.print_page_options import PrintOptions
+    from selenium.webdriver.common.timeouts import Timeouts
+    from selenium.webdriver.common.virtual_authenticator import Credential, VirtualAuthenticatorOptions
 
 
 def _required_chromium_based_browser(func):
