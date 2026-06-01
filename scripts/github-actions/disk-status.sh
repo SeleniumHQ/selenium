@@ -63,41 +63,44 @@ else
 fi
 cache_size "Bazelisk" "$bazelisk"
 
-# Cache sizes above rarely explain a full disk: build outputs (bazel-out /
-# execroot under the real output base), the checked-out source, and browser/
-# test runtime files (in TMP) live elsewhere and are what actually balloon.
-# Note: setup-bazel reports an output base of ~/.bazel, but that tree stays
-# tiny here; the real output base (bazel-out/execroot/external) is under the
-# default bazel root at ~/.cache/bazel, so measure that.
+# Cache sizes above rarely explain a full disk. The real output base
+# (bazel-out/execroot, where test logs/outputs land) is at ~/.bazel here, and
+# browser/test runtime files live in TMP; measure those for a quick per-tick
+# view. setup-bazel reports ~/.bazel as the output base, but ~/.cache/bazel
+# holds the install tree, so show both.
 if [[ "$RUNNER_OS" == "Windows" ]]; then
-  bazel_root="/d/b"
+  output_base="/d/b"
   tmpdir="${RUNNER_TEMP:-/c/Users/runneradmin/AppData/Local/Temp}"
 else
-  bazel_root="$HOME/.cache/bazel"
+  output_base="$HOME/.bazel"
   tmpdir="${RUNNER_TEMP:-${TMPDIR:-/tmp}}"
 fi
 
 echo "=== Other space consumers ==="
-cache_size "Bazel root (outputs)" "$bazel_root"
+cache_size "Output base (~/.bazel)" "$output_base"
+cache_size "Bazel install" "$HOME/.cache/bazel"
 cache_size "Workspace (code)" "$GITHUB_WORKSPACE"
 cache_size "Build dir" "$GITHUB_WORKSPACE/build"
 cache_size "Temp" "$tmpdir"
 [ "$tmpdir" = "/tmp" ] || cache_size "/tmp" "/tmp"
 
-# When space is getting tight, drill into the biggest directories and files so
-# the culprit is obvious in the log (catches the ~29GB balloon, skips healthy
-# ~100GB+ runs). du/find are depth- and size-bounded to stay fast and do not
-# follow symlinks, so the bazel-out symlink in the workspace is not traversed.
+# When space is getting tight, account for ALL of it. Per-dir du can miss two
+# things that still consume df space: directories we didn't think to scan, and
+# files a process has unlinked but kept open (df counts them, du/find cannot
+# see them). So scan the whole root fs with sudo, and list deleted-but-open
+# files. sudo/lsof are best-effort; failures are ignored (set +e above).
 if [ "${AVAIL_GB:-99}" -lt 50 ]; then
-  roots=()
-  for r in "$bazel_root" "$tmpdir" /tmp "$GITHUB_WORKSPACE"; do
-    [ -n "$r" ] && [ -d "$r" ] && roots+=("$r")
-  done
-  if [ ${#roots[@]} -gt 0 ]; then
-    echo "=== Largest directories (AVAIL ${AVAIL_GB}GB) ==="
-    du -h -d 3 "${roots[@]}" 2>/dev/null | sort -rh | head -25 | sed 's/^/  /'
-    echo "=== Largest files (>200M) ==="
-    find "${roots[@]}" -type f -size +200M 2>/dev/null \
-      | xargs -r du -h 2>/dev/null | sort -rh | head -25 | sed 's/^/  /'
+  echo "=== Largest dirs on / (sudo du -x -d3, top 30) (AVAIL ${AVAIL_GB}GB) ==="
+  sudo du -x -d3 / 2>/dev/null | sort -rh | head -30 | sed 's/^/  /'
+  echo "=== Largest files >200M on / ==="
+  sudo find / -xdev -type f -size +200M 2>/dev/null \
+    | xargs -r du -h 2>/dev/null | sort -rh | head -25 | sed 's/^/  /'
+  echo "=== Deleted-but-open files (space df counts but du cannot see) ==="
+  if command -v lsof >/dev/null 2>&1; then
+    sudo lsof -nP 2>/dev/null | awk '/\(deleted\)/' | sort -k7 -rn | head -15 | sed 's/^/  /'
+    sudo lsof -nP 2>/dev/null \
+      | awk '/\(deleted\)/{s+=$7; n++} END{printf "  total deleted-open: ~%.2f GB across %d fds\n", s/1073741824, n+0}'
+  else
+    echo "  (lsof not installed)"
   fi
 fi

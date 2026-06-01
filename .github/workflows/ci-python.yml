@@ -76,7 +76,7 @@ jobs:
         ( while true; do
             echo "##### disk monitor $(date -u +%H:%M:%S) #####"
             bash scripts/github-actions/disk-status.sh
-            sleep 20
+            sleep 30
           done ) &
         monitor=$!
         # --test_output=streamed shows per-test output live; PYTEST_ADDOPTS=-v
