@@ -111,7 +111,9 @@ suite(
         })
 
         // Navigate to a non-existent host to trigger a fetch error
-        await browsingContext.navigate({ context: contextId, url: 'http://doesnotexist.invalid/', wait: 'complete' }).catch(() => {})
+        await browsingContext
+          .navigate({ context: contextId, url: 'http://doesnotexist.invalid/', wait: 'complete' })
+          .catch(() => {})
         await driver.wait(() => errorEvent !== null, 5000)
 
         assert.ok(errorEvent, 'fetchError should have fired')
@@ -132,10 +134,7 @@ suite(
       })
 
       it('throws when removing a non-existent intercept', async function () {
-        await assert.rejects(
-          () => network.removeIntercept({ intercept: 'no-such-intercept-id' }),
-          /no such intercept/,
-        )
+        await assert.rejects(() => network.removeIntercept({ intercept: 'no-such-intercept-id' }), /no such intercept/)
       })
 
       it('can intercept and continue a request', async function () {
