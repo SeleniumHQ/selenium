@@ -234,6 +234,29 @@ jobs:
           name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ inputs.browser }}
           retention-days: 7
           path: build/failures/**
+      - name: Collect all test logs
+        if: always() && inputs.os != 'macos'
+        shell: bash
+        run: |
+          mkdir -p build/logs
+          cp build/bazel-console.log build/logs/ 2>/dev/null || true
+          TESTLOGS=$(bazel info bazel-testlogs 2>/dev/null || true)
+          if [ -n "$TESTLOGS" ] && [ -d "$TESTLOGS" ]; then
+            # Stream every test.log / test.xml (incl. the Selenium server's
+            # stdout/stderr) into one compressed archive so the full output is
+            # captured without doubling disk usage if a log has ballooned.
+            ( cd "$TESTLOGS" && find . \( -name 'test.log' -o -name 'test.xml' \) -print0 \
+              | tar --null -czf "$GITHUB_WORKSPACE/build/logs/test-logs.tar.gz" -T - ) || true
+          fi
+          ls -lh build/logs 2>/dev/null || true
+      - name: Upload all test logs
+        if: always() && inputs.os != 'macos'
+        uses: actions/upload-artifact@v7
+        with:
+          name: all-logs-${{ inputs.os }}-${{ inputs.name }}-${{ inputs.browser }}
+          path: build/logs/**
+          retention-days: 7
+          if-no-files-found: ignore
       - name: Start SSH session
         if: failure() && runner.debug == '1'
         uses: mxschmitt/action-tmate@v3
