@@ -125,7 +125,7 @@ module Selenium
           stereotype = {browserName: w3c_browser_name, browserVersion: browser_version}.to_json
           ['--driver-configuration',
            "display-name=#{browser} #{browser_version}",
-           'max-sessions=1',
+           'max-sessions=5',
            "stereotype=#{stereotype}"]
         end
 
