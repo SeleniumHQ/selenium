@@ -66,7 +66,9 @@ class BrowserCommandsTest extends JupiterTestBase {
 
   @AfterEach
   final void resetDownloadBehavior() {
-    browser.setDownloadBehavior(new SetDownloadBehaviorParameters(null));
+    if (browser != null) {
+      browser.setDownloadBehavior(new SetDownloadBehaviorParameters(null));
+    }
   }
 
   @AfterEach
