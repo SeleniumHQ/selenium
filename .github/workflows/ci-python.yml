@@ -68,7 +68,26 @@ jobs:
       browser: yes
       rerun-with-debug: true
       run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
+        set +e
+        # The job dies mid-test when /dev/root fills, so uploaded artifacts never
+        # survive. Stream a disk snapshot (the same script CI uses, run in the
+        # step shell so it sees the real paths) to the live console every 20s so
+        # we can watch what grows in real time before the crash.
+        ( while true; do
+            echo "##### disk monitor $(date -u +%H:%M:%S) #####"
+            bash scripts/github-actions/disk-status.sh
+            sleep 20
+          done ) &
+        monitor=$!
+        # --test_output=streamed shows per-test output live; PYTEST_ADDOPTS=-v
+        # names each test as it runs so disk growth ties to a specific test.
+        bazel test --local_test_jobs 1 --flaky_test_attempts 3 \
+          --test_output=streamed \
+          --test_env=PYTEST_ADDOPTS=-v \
+          //py:test-remote
+        status=$?
+        kill "$monitor" 2>/dev/null || true
+        exit $status
 
   # browser-tests:
   #   name: Browser Tests
