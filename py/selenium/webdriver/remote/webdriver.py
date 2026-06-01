@@ -17,9 +17,12 @@
 
 """The WebDriver implementation."""
 
+from __future__ import annotations
+
 import base64
 import contextlib
 import copy
+import functools
 import inspect
 import os
 import pkgutil
@@ -43,7 +46,6 @@ from selenium.common.exceptions import (
     NoSuchElementException,
     WebDriverException,
 )
-from selenium.webdriver.common.api_request_context import APIRequestContext
 from selenium.webdriver.common.bidi.browser import Browser
 from selenium.webdriver.common.bidi.browsing_context import BrowsingContext
 from selenium.webdriver.common.bidi.emulation import Emulation
@@ -55,15 +57,7 @@ from selenium.webdriver.common.bidi.session import Session
 from selenium.webdriver.common.bidi.storage import Storage
 from selenium.webdriver.common.bidi.webextension import WebExtension
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.fedcm.dialog import Dialog
 from selenium.webdriver.common.options import ArgOptions, BaseOptions
-from selenium.webdriver.common.print_page_options import PrintOptions
-from selenium.webdriver.common.timeouts import Timeouts
-from selenium.webdriver.common.virtual_authenticator import (
-    Credential,
-    VirtualAuthenticatorOptions,
-    required_virtual_authenticator,
-)
 from selenium.webdriver.remote.bidi_connection import BidiConnection
 from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.command import Command
@@ -186,6 +180,28 @@ def create_matches(options: list[BaseOptions]) -> dict:
     capabilities["capabilities"]["firstMatch"] = opts
 
     return capabilities
+
+
+def _required_chromium_based_browser(func):
+    @functools.wraps(func)
+    def wrapper(self, *args, **kwargs):
+        assert self.caps["browserName"].lower() not in ["firefox", "safari"], (
+            "This only currently works in Chromium based browsers"
+        )
+        return func(self, *args, **kwargs)
+
+    return wrapper
+
+
+def _required_virtual_authenticator(func):
+    @functools.wraps(func)
+    @_required_chromium_based_browser
+    def wrapper(self, *args, **kwargs):
+        if not self.virtual_authenticator_id:
+            raise ValueError("This function requires a virtual authenticator to be set.")
+        return func(self, *args, **kwargs)
+
+    return wrapper
 
 
 class BaseWebDriver(metaclass=ABCMeta):
@@ -820,6 +836,8 @@ class WebDriver(BaseWebDriver):
         Example:
             `driver.timeouts`
         """
+        from selenium.webdriver.common.timeouts import Timeouts
+
         timeouts = self.execute(Command.GET_TIMEOUTS)["value"]
         timeouts["implicit_wait"] = timeouts.pop("implicit") / 1000
         timeouts["page_load"] = timeouts.pop("pageLoad") / 1000
@@ -1386,6 +1404,8 @@ class WebDriver(BaseWebDriver):
             ```
         """
         if self._request is None:
+            from selenium.webdriver.common.api_request_context import APIRequestContext
+
             self._request = APIRequestContext(self)
         return self._request
 
@@ -1434,7 +1454,7 @@ class WebDriver(BaseWebDriver):
         """Returns the id of the virtual authenticator."""
         return self._authenticator_id
 
-    @required_virtual_authenticator
+    @_required_virtual_authenticator
     def remove_virtual_authenticator(self) -> None:
         """Removes a previously added virtual authenticator.
 
@@ -1447,7 +1467,7 @@ class WebDriver(BaseWebDriver):
         )
         self._authenticator_id = None
 
-    @required_virtual_authenticator
+    @_required_virtual_authenticator
     def add_credential(self, credential: Credential) -> None:
         """Injects a credential into the authenticator.
 
@@ -1464,13 +1484,15 @@ class WebDriver(BaseWebDriver):
             {**credential.to_dict(), "authenticatorId": self._authenticator_id},
         )
 
-    @required_virtual_authenticator
+    @_required_virtual_authenticator
     def get_credentials(self) -> list[Credential]:
         """Returns the list of credentials owned by the authenticator."""
+        from selenium.webdriver.common.virtual_authenticator import Credential
+
         credential_data = self.execute(Command.GET_CREDENTIALS, {"authenticatorId": self._authenticator_id})
         return [Credential.from_dict(credential) for credential in credential_data["value"]]
 
-    @required_virtual_authenticator
+    @_required_virtual_authenticator
     def remove_credential(self, credential_id: str | bytearray) -> None:
         """Removes a credential from the authenticator.
 
@@ -1487,12 +1509,12 @@ class WebDriver(BaseWebDriver):
             {"credentialId": credential_id, "authenticatorId": self._authenticator_id},
         )
 
-    @required_virtual_authenticator
+    @_required_virtual_authenticator
     def remove_all_credentials(self) -> None:
         """Removes all credentials from the authenticator."""
         self.execute(Command.REMOVE_ALL_CREDENTIALS, {"authenticatorId": self._authenticator_id})
 
-    @required_virtual_authenticator
+    @_required_virtual_authenticator
     def set_user_verified(self, verified: bool) -> None:
         """Set whether the authenticator will simulate success or failure on user verification.
 
@@ -1617,6 +1639,8 @@ class WebDriver(BaseWebDriver):
     @property
     def dialog(self) -> Dialog:
         """Returns the FedCM dialog object for interaction."""
+        from selenium.webdriver.common.fedcm.dialog import Dialog
+
         self._require_fedcm_support()
         return Dialog(self)
 
