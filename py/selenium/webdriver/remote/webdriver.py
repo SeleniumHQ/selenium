@@ -1668,6 +1668,7 @@ class WebDriver(BaseWebDriver):
             WebDriverException: If FedCM not supported.
         """
         from selenium.common.exceptions import NoAlertPresentException
+        from selenium.webdriver.common.fedcm.dialog import Dialog
         from selenium.webdriver.support.wait import WebDriverWait
 
         self._require_fedcm_support()
