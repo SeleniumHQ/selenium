@@ -436,8 +436,7 @@ Test targets:
 
 | Command                                                                          | Description                                        |
 | -------------------------------------------------------------------------------- | -------------------------------------------------- |
-| `bazel test //rb/...`                                                            | Run unit, all integration tests and lint           |
-| `bazel test //rb:lint`                                                           | Run RuboCop linter                                 |
+| `bazel test //rb/...`                                                            | Run unit and all integration tests                 |
 | `bazel test //rb/spec/...`                                                       | Run unit and integration tests for all browsers    |
 | `bazel test //rb/spec/... --test_size_filters small`                             | Run unit tests                                     |
 | `bazel test //rb/spec/unit/...`                                                  | Run unit tests                                     |

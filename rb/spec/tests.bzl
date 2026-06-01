@@ -193,7 +193,7 @@ def rb_integration_test(
         tags = [],
         bidi_only = False,
         no_grid = False):
-    # Generate a library target that is used by //rb/spec:spec to expose all tests to //rb:lint.
+    # Generate a library target that is used by //rb/spec:spec to expose all tests to //rb:rubocop.
     rb_library(
         name = name,
         srcs = srcs,

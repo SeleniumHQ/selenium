@@ -2,44 +2,34 @@ name: CI - Ruby
 
 on:
   workflow_call:
+    inputs:
+      targets:
+        required: false
+        type: string
+        default: '//rb/...'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Build
-      run: bazel build //rb:selenium-devtools //rb:selenium-webdriver
-
   lint:
     name: Lint
-    needs: build
     uses: ./.github/workflows/bazel.yml
     with:
       name: Lint
       run: ./go rb:lint
 
+  # jruby is exercised on RBE; minimum MRI is exercised by os-tests. This matrix
+  # covers truffleruby and the most recent MRI release.
   unit-tests:
     name: Unit Tests
-    needs: build
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
         include:
-          - ruby-version: 3.3.11
-            os: ubuntu
-          - ruby-version: 3.3.11
-            os: windows
-          - ruby-version: 3.3.11
-            os: macos
           - ruby-version: 4.0.4
-            os: ubuntu
-          - ruby-version: jruby-10.1.0.0
             os: ubuntu
           - ruby-version: truffleruby-34.0.1
             os: ubuntu
@@ -51,39 +41,39 @@ jobs:
       run: >
         bazel test
         --keep_going
-        --build_tests_only
         --test_size_filters small
         //rb/spec/...
 
-  integration-tests-local:
-    name: Local Tests
-    needs: build
+  os-tests:
+    name: ${{ matrix.os }}-tests
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
-        browser:
-          - chrome
-          - edge
-          - firefox
-        os:
-          - windows
-          - macos
-        exclude:
-          - browser: edge
-            os: macos
+        include:
+          - os: ubuntu
+            browser: yes
+            tag-filters: unit,skip-rbe
+          - os: windows
+            browser: yes
+            tag-filters: edge,chrome-beta-bidi,firefox-beta-bidi,unit,os-sensitive,skip-rbe
+          - os: macos
+            browser: safari
+            tag-filters: chrome-beta-bidi,firefox-beta-bidi,unit,os-sensitive,skip-rbe
     with:
-      name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
+      name: ${{ matrix.os }}-tests
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
       run: >
-        bazel test
+        ./scripts/github-actions/bazel-test-if-targets.sh
         --keep_going
-        --build_tests_only
         --flaky_test_attempts 2
         --local_test_jobs 1
-        --test_size_filters large
-        --test_tag_filters ${{ matrix.browser }}-local
+        --skip_incompatible_explicit_targets
+        --pin_browsers=false
+        --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
+        --test_env=SE_SKIP_DRIVER_IN_PATH=true
+        --test_tag_filters=${{ matrix.tag-filters }}
         ${{ (github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') && '--test_env=SKIP_PENDING=true' || '' }}
-        //rb/spec/...
+        ${{ inputs.targets || '//rb/...' }}
