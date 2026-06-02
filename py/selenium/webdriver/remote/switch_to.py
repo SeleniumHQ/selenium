@@ -16,11 +16,17 @@
 # under the License.
 
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from selenium.common.exceptions import NoSuchElementException, NoSuchFrameException, NoSuchWindowException
-from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webelement import WebElement
+
+if TYPE_CHECKING:
+    from selenium.webdriver.common.alert import Alert
 
 
 class SwitchTo:
@@ -45,6 +51,8 @@ class SwitchTo:
         Example:
             alert = driver.switch_to.alert
         """
+        from selenium.webdriver.common.alert import Alert
+
         alert = Alert(self._driver)
         _ = alert.text
         return alert

@@ -296,6 +296,7 @@ py_library(
         exclude = [
             "selenium/webdriver/common/action_chains.py",
             "selenium/webdriver/common/actions/**",
+            "selenium/webdriver/common/alert.py",
             "selenium/webdriver/common/api_request_context.py",
             "selenium/webdriver/common/bidi/**",
             "selenium/webdriver/common/devtools/**",
@@ -328,6 +329,17 @@ py_library(
         "selenium/webdriver/common/action_chains.py",
         "selenium/webdriver/common/actions/**/*.py",
     ]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
+    ],
+)
+
+py_library(
+    name = "common_alert",
+    srcs = ["selenium/webdriver/common/alert.py"],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -387,7 +399,10 @@ py_library(
 # Support utilities (wait conditions, event listeners, etc.)
 py_library(
     name = "support",
-    srcs = glob(["selenium/webdriver/support/**/*.py"]),
+    srcs = glob(
+        ["selenium/webdriver/support/**/*.py"],
+        exclude = ["selenium/webdriver/support/color.py"],
+    ),
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -395,6 +410,14 @@ py_library(
         ":exceptions",
         ":remote",
     ],
+)
+
+py_library(
+    name = "support_color",
+    srcs = ["selenium/webdriver/support/color.py"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [],
 )
 
 # Chromium base (shared by Chrome and Edge)
@@ -513,6 +536,7 @@ py_library(
         ":chromium",
         ":common",
         ":common_actions",
+        ":common_alert",
         ":common_api_request_context",
         ":common_fedcm",
         ":common_print_page_options",
@@ -525,6 +549,7 @@ py_library(
         ":remote",
         ":safari",
         ":support",
+        ":support_color",
         ":webkitgtk",
         ":wpewebkit",
     ],
@@ -762,7 +787,24 @@ VIRTUAL_AUTH_TESTS = ["test/selenium/webdriver/common/virtual_authenticator_test
 
 API_REQUEST_TESTS = ["test/selenium/webdriver/common/api_request_context_tests.py"]
 
-FEATURE_TESTS = FEDCM_TESTS + TIMEOUTS_TESTS + VIRTUAL_AUTH_TESTS + API_REQUEST_TESTS
+# alerts_tests.py and webdriverwait_tests.py both call driver.switch_to.alert,
+# requiring :common_alert at runtime, so they share a sub-suite.
+ALERT_TESTS = [
+    "test/selenium/webdriver/common/alerts_tests.py",
+    "test/selenium/webdriver/common/webdriverwait_tests.py",
+]
+
+# rendered_webelement_tests.py is the only browser test that imports Color.
+RENDERED_WEBELEMENT_TESTS = ["test/selenium/webdriver/common/rendered_webelement_tests.py"]
+
+FEATURE_TESTS = (
+    FEDCM_TESTS +
+    TIMEOUTS_TESTS +
+    VIRTUAL_AUTH_TESTS +
+    API_REQUEST_TESTS +
+    ALERT_TESTS +
+    RENDERED_WEBELEMENT_TESTS
+)
 
 # Test files that import from selenium.webdriver.common.actions / action_chains.
 # These are kept separate so they can depend on :common_actions without pulling
@@ -908,6 +950,8 @@ FEATURE_SUITE_DEFS = {
     "timeouts": (TIMEOUTS_TESTS, ":common_timeouts"),
     "virtual-auth": (VIRTUAL_AUTH_TESTS, ":common_virtual_authenticator"),
     "api-request": (API_REQUEST_TESTS, ":common_api_request_context"),
+    "alerts": (ALERT_TESTS, ":common_alert"),
+    "rendered": (RENDERED_WEBELEMENT_TESTS, ":support_color"),
 }
 
 # Generate test-<browser>-<feature> targets (non-bidi, one per feature library)
