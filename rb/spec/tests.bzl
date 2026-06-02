@@ -170,8 +170,8 @@ DEFAULT_BROWSERS = [b for b in BROWSERS.keys() if b not in ("ie", "safari-previe
 
 # Tags listed here apply only to the local target of the listed browsers.
 _BROWSER_TAG_FILTERS = {
-    "os-sensitive": ["chrome-beta", "edge", "firefox-beta", "safari"],
-    "se-manager": ["chrome-beta", "edge", "firefox-beta", "safari"],
+    "os-sensitive": ["chrome", "edge", "firefox", "safari"],
+    "se-manager": ["chrome", "edge", "firefox", "safari"],
 }
 
 # Input tags that act as control signals (e.g. "bidi" requests a bidi variant). Stripped

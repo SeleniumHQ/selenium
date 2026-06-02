@@ -78,7 +78,7 @@ module Selenium
             guards.add_condition(:foo, false)
 
             expect(guards.disposition.size).to eq(2)
-            expect(guards.disposition[0]).to eq :pending
+            expect(guards.disposition[0]).to eq(ENV.fetch('SKIP_PENDING', nil) ? :skip : :pending)
             message = /Test guarded;/
             guarded_by = /Guarded by {:?foo[:=][ >]false, :?reason[:=][ >]"No reason given"};/
             expect(guards.disposition[1]).to match(/#{message} #{guarded_by}/)

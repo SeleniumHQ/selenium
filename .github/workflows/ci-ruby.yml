@@ -4,10 +4,15 @@ on:
   workflow_call:
     inputs:
       targets:
-        required: false
+        required: true
         type: string
-        default: '//rb/...'
   workflow_dispatch:
+    inputs:
+      smoke:
+        description: Run smoke tests only
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -20,10 +25,11 @@ jobs:
       name: Lint
       run: ./go rb:lint
 
-  # jruby is exercised on RBE; minimum MRI is exercised by os-tests. This matrix
+  # jruby is run on RBE; minimum MRI is run by os-tests. This matrix
   # covers truffleruby and the most recent MRI release.
   unit-tests:
     name: Unit Tests
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.smoke)
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -44,24 +50,19 @@ jobs:
         --test_size_filters small
         //rb/spec/...
 
-  os-tests:
-    name: ${{ matrix.os }}-tests
+  smoke:
+    name: ${{ matrix.os }}-smoke
+    if: github.event_name != 'schedule' && (github.event_name != 'workflow_dispatch' || inputs.smoke)
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
         include:
           - os: ubuntu
-            browser: yes
-            tag-filters: unit,skip-rbe
           - os: windows
-            browser: yes
-            tag-filters: edge,chrome-beta-bidi,firefox-beta-bidi,unit,os-sensitive,skip-rbe
           - os: macos
-            browser: safari
-            tag-filters: chrome-beta-bidi,firefox-beta-bidi,unit,os-sensitive,skip-rbe
     with:
-      name: ${{ matrix.os }}-tests
+      name: ${{ matrix.os }}
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
@@ -74,6 +75,39 @@ jobs:
         --pin_browsers=false
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
-        --test_tag_filters=${{ matrix.tag-filters }}
-        ${{ (github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') && '--test_env=SKIP_PENDING=true' || '' }}
+        --test_env=SKIP_PENDING=true
+        --test_tag_filters=unit,os-sensitive,se-manager,skip-rbe
         ${{ inputs.targets || '//rb/...' }}
+
+  os-tests-full:
+    name: ${{ matrix.os }}-tests-full (${{ matrix.browser }})
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.smoke)
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows
+            browser: chrome-beta
+          - os: windows
+            browser: firefox-beta
+          - os: windows
+            browser: edge-local
+          - os: macos
+            browser: safari-local
+    with:
+      name: ${{ matrix.os }}-tests-full (${{ matrix.browser }})
+      needs-display: true
+      os: ${{ matrix.os }}
+      rerun-with-debug: true
+      run: >
+        bazel test
+        --keep_going
+        --flaky_test_attempts 2
+        --local_test_jobs 1
+        --pin_browsers=false
+        --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
+        --test_env=SE_SKIP_DRIVER_IN_PATH=true
+        --test_size_filters large
+        --test_tag_filters=${{ matrix.browser }}
+        //rb/...
