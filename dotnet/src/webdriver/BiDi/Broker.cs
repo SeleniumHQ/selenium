@@ -97,6 +97,14 @@ internal sealed class Broker : IAsyncDisposable
                 writer.WriteString("method"u8, descriptor.Method);
                 writer.WritePropertyName("params"u8);
                 JsonSerializer.Serialize(writer, @params, descriptor.ParamsTypeInfo);
+                if (options is not null)
+                {
+                    foreach (var kvp in options.AdditionalMessageData)
+                    {
+                        writer.WritePropertyName(kvp.Key);
+                        kvp.Value.WriteTo(writer);
+                    }
+                }
                 writer.WriteEndObject();
             }
         }

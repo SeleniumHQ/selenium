@@ -17,6 +17,9 @@
 // under the License.
 // </copyright>
 
+using System.ComponentModel;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 
 namespace OpenQA.Selenium.BiDi;
@@ -31,11 +34,40 @@ public readonly record struct Command<TParameters, TResult>(
 public record Parameters
 {
     public static Parameters Empty { get; } = new Parameters();
+
+    [JsonExtensionData]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public Dictionary<string, JsonElement>? RawAdditionalData { get; set; }
+
+    [JsonIgnore]
+    public ImmutableDictionary<string, JsonElement> AdditionalData
+    {
+        get => RawAdditionalData?.ToImmutableDictionary() ?? ImmutableDictionary<string, JsonElement>.Empty;
+        init => RawAdditionalData = value.IsEmpty ? null : new(value!);
+    }
 }
 
 public abstract record CommandOptions
 {
     public TimeSpan? Timeout { get; init; }
+
+    public ImmutableDictionary<string, JsonElement> AdditionalData { get; init; }
+        = ImmutableDictionary<string, JsonElement>.Empty;
+
+    public ImmutableDictionary<string, JsonElement> AdditionalMessageData { get; init; }
+        = ImmutableDictionary<string, JsonElement>.Empty;
 }
 
-public abstract record EmptyResult;
+public abstract record EmptyResult
+{
+    [JsonExtensionData]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public Dictionary<string, JsonElement>? RawAdditionalData { get; set; }
+
+    [JsonIgnore]
+    public ImmutableDictionary<string, JsonElement> AdditionalData
+    {
+        get => RawAdditionalData?.ToImmutableDictionary() ?? ImmutableDictionary<string, JsonElement>.Empty;
+        init => RawAdditionalData = value.IsEmpty ? null : new(value!);
+    }
+}
