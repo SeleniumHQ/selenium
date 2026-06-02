@@ -23,7 +23,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_click_on_submit_input_elements(driver, pages):
     pages.load("formPage.html")
     driver.find_element(By.ID, "submitButton").click()
@@ -35,7 +34,6 @@ def test_clicking_on_unclickable_elements_does_nothing(driver, pages):
     driver.find_element(By.XPATH, "//body").click()
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_click_image_buttons(driver, pages):
     pages.load("formPage.html")
     driver.find_element(By.ID, "imageButton").click()
@@ -100,7 +98,6 @@ def test_should_enter_data_into_form_fields(driver, pages):
     assert newFormValue == "some text"
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_select_acheck_box(driver, pages):
     pages.load("formPage.html")
     checkbox = driver.find_element(By.ID, "checky")
@@ -111,7 +108,6 @@ def test_should_be_able_to_select_acheck_box(driver, pages):
     assert checkbox.is_selected() is False
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_toggle_the_checked_state_of_acheckbox(driver, pages):
     pages.load("formPage.html")
     checkbox = driver.find_element(By.ID, "checky")
@@ -122,7 +118,6 @@ def test_should_toggle_the_checked_state_of_acheckbox(driver, pages):
     assert checkbox.is_selected() is False
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_toggling_acheckbox_should_return_its_current_state(driver, pages):
     pages.load("formPage.html")
     checkbox = driver.find_element(By.ID, "checky")
@@ -133,7 +128,6 @@ def test_toggling_acheckbox_should_return_its_current_state(driver, pages):
     assert checkbox.is_selected() is False
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_select_aradio_button(driver, pages):
     pages.load("formPage.html")
     radioButton = driver.find_element(By.ID, "peas")
@@ -142,7 +136,6 @@ def test_should_be_able_to_select_aradio_button(driver, pages):
     assert radioButton.is_selected() is True
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_select_aradio_button_by_clicking_on_it(driver, pages):
     pages.load("formPage.html")
     radioButton = driver.find_element(By.ID, "peas")
@@ -226,7 +219,6 @@ def test_should_be_able_to_clear_text_from_text_areas(driver, pages):
     assert len(value) == 0
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_radio_should_not_be_selected_after_selecting_sibling(driver, pages):
     pages.load("formPage.html")
     cheese = driver.find_element(By.ID, "cheese")
