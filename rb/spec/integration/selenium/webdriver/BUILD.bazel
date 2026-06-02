@@ -68,7 +68,7 @@ _NO_GRID = ["driver_finder_spec.rb"]
         srcs = [f],
         browsers = DEFAULT_BROWSERS,
         no_grid = True,
-        tags = ["os-sensitive"],
+        tags = ["se-manager"],
         deps = [
             "//rb/lib/selenium/webdriver:common",
         ],
