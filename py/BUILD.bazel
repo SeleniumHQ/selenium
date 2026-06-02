@@ -1010,6 +1010,7 @@ FEATURE_SUITE_DEFS = {
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-bidi" % browser,
         deps = [
+            ":common_alert",  # bidi_browsing_context_tests.py calls EC.alert_is_present()
             ":init-tree",
             ":webserver",
         ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
