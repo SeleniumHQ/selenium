@@ -17,10 +17,12 @@
 
 import http.server
 import json
+import logging
 import os
 import socketserver
 import sys
 import threading
+import time
 import types
 from dataclasses import dataclass
 from pathlib import Path
@@ -40,6 +42,8 @@ from selenium.webdriver.common.utils import free_port
 from selenium.webdriver.remote.server import Server
 from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.webserver import SimpleWebServer
+
+logger = logging.getLogger(__name__)
 
 drivers = (
     "chrome",
@@ -296,6 +300,9 @@ class SupportedBidiDrivers(ContainerProtocol):
 
 
 class Driver:
+    DRIVER_START_RETRIES = 3
+    DRIVER_START_INTERVAL = 1
+
     def __init__(self, driver_class, request):
         self.driver_class = driver_class
         self._request = request
@@ -455,9 +462,25 @@ class Driver:
         if self.is_remote:
             kwargs["command_executor"] = self._server.status_url.removesuffix("/status")
             return webdriver.Remote(**kwargs)
-        if self.driver_path is not None:
-            kwargs["service"] = self.service
-        return getattr(webdriver, self.driver_class)(**kwargs)
+        return self._start_local_driver(kwargs)
+
+    def _start_local_driver(self, kwargs):
+        for attempt in range(1, self.DRIVER_START_RETRIES + 1):
+            if self.driver_path is not None:
+                kwargs["service"] = self.service
+            try:
+                return getattr(webdriver, self.driver_class)(**kwargs)
+            except WebDriverException as e:
+                if attempt == self.DRIVER_START_RETRIES:
+                    raise
+                logger.warning(
+                    "%s failed to start (attempt %s/%s); retrying. Error: %s",
+                    self.driver_class,
+                    attempt,
+                    self.DRIVER_START_RETRIES,
+                    e,
+                )
+                time.sleep(self.DRIVER_START_INTERVAL)
 
     def stop_driver(self):
         driver_to_stop = self._driver

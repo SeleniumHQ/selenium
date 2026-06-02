@@ -24,8 +24,8 @@ module Selenium
     describe ActionBuilder, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       after { driver.action.clear_all_actions }
 
-      describe '#send_keys', except: {browser: %i[safari safari_preview]} do
-        it 'sends keys to the active element' do
+      describe '#send_keys' do
+        it 'sends keys to the active element', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('bodyTypingTest.html')
           keylogger = driver.find_element(id: 'body_result')
 
@@ -38,7 +38,7 @@ module Selenium
           expect(driver.find_element(id: 'result').text.strip).to be_empty
         end
 
-        it 'sends keys to element' do
+        it 'sends keys to element', only: {browser: %i[chrome edge firefox]} do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
@@ -72,8 +72,8 @@ module Selenium
         end
       end
 
-      describe 'multiple key presses', except: {browser: %i[safari safari_preview]} do
-        it 'sends keys with shift pressed' do
+      describe 'multiple key presses' do
+        it 'sends keys with shift pressed', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -107,7 +107,7 @@ module Selenium
         end
       end
 
-      describe '#release_actions', except: {browser: %i[safari safari_preview]} do
+      describe '#release_actions' do
         it 'releases pressed keys' do
           driver.navigate.to url_for('javascriptPage.html')
 
@@ -139,7 +139,7 @@ module Selenium
         end
       end
 
-      describe '#click', except: {browser: %i[safari safari_preview]} do
+      describe '#click' do
         it 'clicks provided element' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'clickField')
@@ -159,7 +159,7 @@ module Selenium
         # https://issues.chromium.org/issues/400087471
         before { reset_driver! if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome }
 
-        it 'presses pointer twice' do
+        it 'presses pointer twice', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
@@ -167,7 +167,7 @@ module Selenium
           expect(element.property(:value)).to eq('DoubleClicked')
         end
 
-        it 'executes with equivalent pointer methods' do
+        it 'executes with equivalent pointer methods', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
@@ -197,7 +197,7 @@ module Selenium
         end
       end
 
-      describe '#move_to', except: {browser: %i[safari safari_preview]} do
+      describe '#move_to' do
         it 'moves to element' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'clickField')
@@ -220,7 +220,7 @@ module Selenium
         end
       end
 
-      describe '#drag_and_drop', except: {browser: %i[safari safari_preview]} do
+      describe '#drag_and_drop' do
         it 'moves one element to another' do
           driver.navigate.to url_for('droppableItems.html')
 
@@ -237,7 +237,7 @@ module Selenium
         end
       end
 
-      describe '#drag_and_drop_by', except: {browser: %i[safari safari_preview]} do
+      describe '#drag_and_drop_by' do
         it 'moves one element a provided distance' do
           driver.navigate.to url_for('droppableItems.html')
 
@@ -253,7 +253,7 @@ module Selenium
         end
       end
 
-      describe '#move_to_location', except: {browser: %i[safari safari_preview]} do
+      describe '#move_to_location' do
         it 'moves pointer to specified coordinates' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'clickField')
@@ -390,7 +390,7 @@ module Selenium
         end
 
         it 'raises MoveTargetOutOfBoundsError when origin offset is out of viewport',
-           except: {browser: %i[safari safari_preview]} do
+           only: {browser: %i[chrome edge firefox]} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame.html')
           scroll_origin = WheelActions::ScrollOrigin.viewport(-10, -10)
 
