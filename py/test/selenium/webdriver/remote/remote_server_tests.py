@@ -38,6 +38,10 @@ def remove_file(path):
         pass
 
 
+@pytest.mark.skipif(
+    "REMOTE_BUILD" in os.environ,
+    reason="Downloads the Selenium Server from the network, which is unavailable on RBE",
+)
 def test_download_latest_server(standalone_server):
     server_path = standalone_server.download_if_needed()
     assert os.path.exists(server_path)
