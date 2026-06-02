@@ -30,6 +30,7 @@ from pathlib import Path
 import pytest
 import rich.console
 import rich.traceback
+import urllib3
 
 try:
     from python.runfiles import Runfiles  # only exists when using bazel
@@ -470,7 +471,7 @@ class Driver:
                 kwargs["service"] = self.service
             try:
                 return getattr(webdriver, self.driver_class)(**kwargs)
-            except WebDriverException as e:
+            except (WebDriverException, urllib3.exceptions.HTTPError, OSError) as e:
                 if attempt == self.DRIVER_START_RETRIES:
                     raise
                 logger.warning(
