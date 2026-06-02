@@ -70,4 +70,7 @@ public abstract record EmptyResult
         get => RawAdditionalData?.ToImmutableDictionary() ?? ImmutableDictionary<string, JsonElement>.Empty;
         init => RawAdditionalData = value.IsEmpty ? null : new(value!);
     }
+
+    public ImmutableDictionary<string, JsonElement> AdditionalMessageData { get; internal set; }
+        = ImmutableDictionary<string, JsonElement>.Empty;
 }

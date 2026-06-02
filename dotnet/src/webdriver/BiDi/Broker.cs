@@ -197,6 +197,7 @@ internal sealed class Broker : IAsyncDisposable
         string? message = default;
         Utf8JsonReader resultReader = default;
         Utf8JsonReader paramsReader = default;
+        ImmutableDictionary<string, JsonElement>.Builder? additionalMessageData = null;
 
         Utf8JsonReader reader = new(data);
         reader.Read(); // "{"
@@ -244,7 +245,10 @@ internal sealed class Broker : IAsyncDisposable
             }
             else
             {
+                var propName = reader.GetString()!;
                 reader.Read();
+                additionalMessageData ??= ImmutableDictionary.CreateBuilder<string, JsonElement>();
+                additionalMessageData[propName] = JsonSerializer.Deserialize<JsonElement>(ref reader);
             }
 
             reader.Skip();
@@ -262,6 +266,11 @@ internal sealed class Broker : IAsyncDisposable
                     {
                         var commandResult = JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)
                             ?? throw new BiDiException("Remote end returned null command result in the 'result' property.");
+
+                        if (additionalMessageData is not null)
+                        {
+                            ((EmptyResult)commandResult).AdditionalMessageData = additionalMessageData.ToImmutable();
+                        }
 
                         command.TaskCompletionSource.TrySetResult((EmptyResult)commandResult);
                     }
