@@ -40,6 +40,7 @@ fn config_test(#[case] browser_name: String) {
     writer.flush().unwrap();
 
     let mut cmd = get_selenium_manager();
+    cmd.env_remove("SE_CACHE_PATH");
     cmd.args([
         "--output",
         "json",

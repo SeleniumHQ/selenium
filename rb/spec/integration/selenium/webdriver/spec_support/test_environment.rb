@@ -116,7 +116,7 @@ module Selenium
         def driver_configuration
           stereotype = {browserName: w3c_browser_name}
           stereotype[:browserVersion] = browser_version unless browser_version == 'stable'
-          stereotype[options_key] = {binary: browser_path} if driver_path
+          stereotype[options_key] = {binary: browser_path} if browser_path
 
           config = ['--driver-configuration',
                     "display-name=#{browser} #{browser_version}",
