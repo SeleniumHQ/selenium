@@ -43,7 +43,7 @@ public record Parameters
     public ImmutableDictionary<string, JsonElement> AdditionalData
     {
         get => RawAdditionalData?.ToImmutableDictionary() ?? ImmutableDictionary<string, JsonElement>.Empty;
-        init => RawAdditionalData = value.IsEmpty ? null : new(value!);
+        init => RawAdditionalData = value is null || value.IsEmpty ? null : new(value!);
     }
 }
 
@@ -68,7 +68,7 @@ public abstract record EmptyResult
     public ImmutableDictionary<string, JsonElement> AdditionalData
     {
         get => RawAdditionalData?.ToImmutableDictionary() ?? ImmutableDictionary<string, JsonElement>.Empty;
-        init => RawAdditionalData = value.IsEmpty ? null : new(value!);
+        init => RawAdditionalData = value is null || value.IsEmpty ? null : new(value!);
     }
 
     public ImmutableDictionary<string, JsonElement> AdditionalMessageData { get; internal set; }
