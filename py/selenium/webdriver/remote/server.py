@@ -44,7 +44,12 @@ class Server:
             Available levels: "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST".
         env: Mapping that defines the environment variables for the server process.
         java_path: Path to the java executable to run the server.
+        args: Arguments for the standalone server command. Defaults to enabling Selenium
+            Manager and managed downloads; pass a list to override these entirely (e.g. to
+            pin drivers with "--driver-configuration").
     """
+
+    DEFAULT_ARGS = ("--selenium-manager", "true", "--enable-managed-downloads", "true")
 
     def __init__(
         self,
@@ -56,6 +61,7 @@ class Server:
         env=None,
         java_path=None,
         startup_timeout=10,
+        args=None,
     ):
         if path and version:
             raise TypeError("Not allowed to specify a version when using an existing server path")
@@ -68,6 +74,7 @@ class Server:
         self.env = env
         self.java_path = java_path
         self.startup_timeout = startup_timeout
+        self.args = list(args) if args is not None else list(self.DEFAULT_ARGS)
         self.process = None
 
     @property
@@ -190,10 +197,7 @@ class Server:
             str(self.port),
             "--log-level",
             self.log_level,
-            "--selenium-manager",
-            "true",
-            "--enable-managed-downloads",
-            "true",
+            *self.args,
         ]
         if self.host is not None:
             command.extend(["--host", self.host])
