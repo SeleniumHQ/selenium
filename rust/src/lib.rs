@@ -1778,6 +1778,22 @@ fn delete_cached_asset(log: &Logger, cache: &Path, asset_name: &str, asset_versi
                 err
             ))
         });
+        // Remove any ancestor directories that are now empty, up to (not including) the cache root
+        let mut parent = path.parent();
+        while let Some(dir) = parent {
+            if dir == cache {
+                break;
+            }
+            if fs::read_dir(dir)
+                .map(|mut d| d.next().is_none())
+                .unwrap_or(false)
+            {
+                let _ = fs::remove_dir(dir);
+            } else {
+                break;
+            }
+            parent = dir.parent();
+        }
     }
 }
 
@@ -1846,6 +1862,10 @@ mod tests {
         assert!(
             !version_dir.exists(),
             "Version directory should be removed when last_used is older than ttl_days"
+        );
+        assert!(
+            !cache.join("chromedriver").exists(),
+            "Empty parent directories should be cleaned up"
         );
         let updated = get_metadata(&log, &Some(cache.to_path_buf()));
         assert!(
