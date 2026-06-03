@@ -2,9 +2,52 @@
 
 ## Overview
 
-This document describes the design for adding native async/await support to the Selenium Python bindings. The goal is a generated async namespace (`selenium.webdriver.async_`) that mirrors the full sync WebDriver API, backed by a true async HTTP transport and native async WebSocket, without touching or breaking any existing sync code.
+This document describes the design for adding native async/await support to the Selenium
+Python bindings. The goal is a `selenium.webdriver.async_` namespace whose high-level
+driver API (`await driver.get(url)`, `await driver.find_element(...)`, etc.) calls down
+to WebDriver BiDi wherever the spec provides a command, falling back to HTTP only for
+session lifecycle and operations not yet covered by BiDi.
 
-**Driving requirement:** Python usage is becoming increasingly async (pytest-asyncio test suites, FastAPI applications, etc.). Users want to write `await driver.get(url)` without workarounds.
+This approach serves two goals simultaneously:
+1. Give users a clean async API with good DX — same surface as the sync driver
+2. Migrate the implementation toward BiDi progressively, so users get BiDi semantics
+   (event-driven, no polling) without needing to know the protocol details
+
+Existing sync code is untouched.
+
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  User code                                                   │
+│  async with Chrome() as driver:                              │
+│      await driver.get("https://example.com")                 │
+│      el = await driver.find_element(By.ID, "q")             │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────────────┐
+│  High-level async driver  (HAND-WRITTEN)                     │
+│  AsyncWebDriver / AsyncWebElement / AsyncWebDriverWait etc.  │
+│  selenium.webdriver.async_                                   │
+└──────────┬────────────────────────────┬─────────────────────┘
+           │ BiDi where possible        │ HTTP for session
+           │                            │ lifecycle + BiDi gaps
+┌──────────▼──────────────┐  ┌─────────▼─────────────────────┐
+│  Async BiDi modules      │  │  AsyncRemoteConnection (httpx) │
+│  (GENERATED)             │  │  (HAND-WRITTEN)                │
+│  create-async-bidi-src   │  │  POST /session                 │
+│  selenium.webdriver      │  │  DELETE /session/{id}          │
+│    .async_.bidi          │  │  HTTP fallback for gaps        │
+└──────────┬──────────────┘  └────────────────────────────────┘
+           │
+┌──────────▼──────────────┐
+│  AsyncWebSocketConnection│
+│  (HAND-WRITTEN)          │
+│  websockets + anyio      │
+└─────────────────────────┘
+```
 
 ---
 
@@ -12,16 +55,17 @@ This document describes the design for adding native async/await support to the 
 
 | Decision | Choice | Rationale |
 |---|---|---|
-| Namespace | `selenium.webdriver.async_` | `async` is a Python keyword; PEP 8 convention for reserved names |
-| Async framework | anyio | Supports both asyncio and trio backends with one implementation |
-| HTTP transport | httpx (`AsyncClient`) | anyio-compatible, nearly identical interface to urllib3/requests |
-| WebSocket (BiDi) | websockets library with anyio backend | Mature, widely used, native async |
-| Min Python version | 3.10 | Required for `match`, `TypeAlias`, and reliable anyio support |
-| I/O-bound properties | Become `async def` methods of same name | Python has no `async` property; `await driver.title()` |
-| BiDi callbacks | Native `async def`, dispatched via anyio task group | Thread-bridging is fragile; native async is correct |
-| Code generation | New `py/generate_async.py`, AST-based | Sync API changes propagate automatically on regeneration |
-| Dependencies | Optional extra: `pip install selenium[async]` | Does not affect users who only need sync |
-| Naming | `AsyncWebDriver`, `AsyncChrome`, etc. | Explicit; makes the distinction visible at the call site |
+| Namespace | `selenium.webdriver.async_` | `async` is a Python keyword; PEP 8 convention |
+| Async framework | anyio | Supports asyncio and trio backends with one implementation |
+| HTTP transport | httpx (`AsyncClient`) | anyio-compatible; needed for session init/quit and BiDi gaps |
+| WebSocket | websockets library with anyio backend | Mature, native async |
+| BiDi low-level layer | Generated via `create-async-bidi-src` | Same CDDL source as sync BiDi; async command methods |
+| High-level driver | Hand-written, calls BiDi low-level | Bespoke per-method BiDi mapping; cannot be mechanically generated |
+| Min Python version | 3.10 | Reliable anyio support; `match`, `TypeAlias` available |
+| I/O-bound properties | Become `async def` methods of same name | Python has no `async` property |
+| BiDi callbacks | Native `async def`, dispatched via anyio task group | Thread-bridging is fragile |
+| Dependencies | Optional extra: `pip install selenium[async]` | Does not affect sync-only users |
+| Naming | `AsyncWebDriver`, `AsyncChrome`, etc. | Explicit; visible at the call site |
 
 ---
 
@@ -64,78 +108,303 @@ def test_search():
 
 ```
 py/
-├── generate_async.py                          # NEW — AST-based generator script
 ├── ASYNC_DESIGN.md                            # this document
 └── selenium/
     └── webdriver/
         └── async_/
             ├── __init__.py                    # exports AsyncChrome, AsyncFirefox, etc.
+            ├── bidi/                          # GENERATED by create-async-bidi-src
+            │   ├── __init__.py
+            │   ├── common.py                  # async command_builder
+            │   ├── browsing_context.py        # AsyncBrowsingContext
+            │   ├── script.py                  # AsyncScript
+            │   ├── network.py                 # AsyncNetwork
+            │   ├── input.py                   # AsyncInput
+            │   ├── browser.py                 # AsyncBrowser
+            │   ├── session.py                 # AsyncSession
+            │   ├── storage.py                 # AsyncStorage
+            │   └── ... (all current bidi modules)
             ├── remote/
             │   ├── __init__.py
             │   ├── remote_connection.py       # HAND-WRITTEN: AsyncRemoteConnection (httpx)
             │   ├── websocket_connection.py    # HAND-WRITTEN: AsyncWebSocketConnection
-            │   ├── webdriver.py               # GENERATED: AsyncWebDriver
-            │   ├── webelement.py              # GENERATED: AsyncWebElement
-            │   ├── shadowroot.py              # GENERATED: AsyncShadowRoot
-            │   ├── switch_to.py               # GENERATED: AsyncSwitchTo
-            │   ├── alert.py                   # GENERATED: AsyncAlert
-            │   ├── fedcm.py                   # GENERATED: AsyncFedCM
-            │   └── mobile.py                  # GENERATED: AsyncMobile
+            │   ├── webdriver.py               # HAND-WRITTEN: AsyncWebDriver
+            │   ├── webelement.py              # HAND-WRITTEN: AsyncWebElement
+            │   ├── shadowroot.py              # HAND-WRITTEN: AsyncShadowRoot
+            │   ├── switch_to.py               # HAND-WRITTEN: AsyncSwitchTo
+            │   ├── alert.py                   # HAND-WRITTEN: AsyncAlert
+            │   └── mobile.py                  # HAND-WRITTEN: AsyncMobile
             ├── chrome/
             │   ├── __init__.py
-            │   └── webdriver.py               # GENERATED: AsyncChrome
+            │   └── webdriver.py               # HAND-WRITTEN: AsyncChrome
             ├── firefox/
             │   ├── __init__.py
-            │   └── webdriver.py               # GENERATED: AsyncFirefox
+            │   └── webdriver.py               # HAND-WRITTEN: AsyncFirefox
             ├── edge/
             │   ├── __init__.py
-            │   └── webdriver.py               # GENERATED: AsyncEdge
+            │   └── webdriver.py               # HAND-WRITTEN: AsyncEdge
             ├── safari/
             │   ├── __init__.py
-            │   └── webdriver.py               # GENERATED: AsyncSafari
+            │   └── webdriver.py               # HAND-WRITTEN: AsyncSafari
             ├── common/
             │   ├── __init__.py
-            │   └── action_chains.py           # GENERATED: AsyncActionChains
+            │   └── action_chains.py           # HAND-WRITTEN: AsyncActionChains (BiDi input)
             └── support/
                 ├── __init__.py
-                ├── wait.py                    # GENERATED: AsyncWebDriverWait
-                ├── expected_conditions.py     # GENERATED: async EC callables
-                └── select.py                  # GENERATED: AsyncSelect
+                ├── wait.py                    # HAND-WRITTEN: AsyncWebDriverWait
+                ├── expected_conditions.py     # HAND-WRITTEN: async EC callables
+                └── select.py                  # HAND-WRITTEN: AsyncSelect
 ```
 
-BiDi high-level modules (`Script`, `Network`, `BrowsingContext`, etc.) live in
-`selenium/webdriver/common/bidi/` and are already generated from CDDL. Async variants
-will be a new target added to `generate_bidi.py` in Phase 5.
+---
+
+## Layer 1 — Generated Async BiDi (`create-async-bidi-src`)
+
+### What changes from `create-bidi-src`
+
+The existing `create-bidi-src` target generates sync BiDi modules in
+`selenium/webdriver/common/bidi/`. The new `create-async-bidi-src` target runs the
+same `generate_bidi.py` generator with an `--async` flag, outputting to
+`selenium/webdriver/async_/bidi/`. The generated code differs in three ways:
+
+| Sync generated | Async generated |
+|---|---|
+| `import threading` | `import anyio` |
+| `threading.Lock()` | `anyio.Lock()` |
+| `def navigate(self, ...)` | `async def navigate(self, ...)` |
+| `result = self._conn.execute(cmd)` | `result = await self._conn.execute(cmd)` |
+| `Session(self.conn).subscribe(...)` | `await AsyncSession(self.conn).subscribe(...)` |
+| `callback: Callable` | `callback: Callable[..., Coroutine]` |
+
+The dataclasses (`NavigateParameters`, `LocateNodesResult`, `CssLocator`, etc.) are
+identical — they are protocol-agnostic data structures and require no changes.
+
+The `command_builder` generator function is also identical — it `yield`s a dict and
+returns a result, regardless of whether the executor is sync or async.
+
+### `generate_bidi.py` changes
+
+Add an `--async` flag. When set:
+- Command method bodies emit `await self._conn.execute(cmd)` instead of
+  `self._conn.execute(cmd)`
+- Method signatures gain `async def`
+- `_EventManager.__init__` uses `anyio.Lock()` instead of `threading.Lock()`
+- `_EventManager.subscribe_to_event` and `unsubscribe_from_event` become `async def`
+- `add_event_handler` becomes `async def`
+- The module-level import block swaps `threading` for `anyio`
+- Output path is `selenium/webdriver/async_/bidi/` instead of
+  `selenium/webdriver/common/bidi/`
+
+### Bazel wiring
+
+```python
+# py/BUILD.bazel
+
+generate_bidi(
+    name = "create-async-bidi-src",
+    cddl_file = "@webdriver_bidi_all_cddl//file:spec.cddl",
+    enhancements_manifest = "//py/private:bidi_enhancements_manifest.py",
+    extra_cddl_files = [
+        "@permissions_all_cddl//file:spec.cddl",
+        "@prefetch_all_cddl//file:spec.cddl",
+        "@ua_client_hints_all_cddl//file:spec.cddl",
+        "@web_bluetooth_all_cddl//file:spec.cddl",
+    ],
+    extra_srcs = [
+        "//py/private:_event_manager.py",   # async version of event manager utilities
+        "//py/private:cdp.py",
+    ],
+    generator = ":generate_bidi",
+    merge_tool = "//py/private:merge_cddl",
+    module_name = "selenium/webdriver/async_/bidi",
+    spec_version = "1.0",
+    async_mode = True,   # new attribute, passes --async to the generator
+)
+
+py_library(
+    name = "async_bidi",
+    srcs = [":create-async-bidi-src"],
+    deps = [
+        requirement("anyio"),
+    ],
+)
+```
+
+The `generate_bidi` Bazel rule gains an `async_mode` boolean attribute that, when true,
+passes `--async` to the generator script.
 
 ---
 
-## Why the Existing Code Is Well-Suited
+## Layer 2 — Hand-Written Async Driver
 
-Every public method on `WebDriver` and `WebElement` routes through one chokepoint:
+### Why hand-written (not generated from sync HTTP code)
 
-- `WebDriver.execute(command, params)` → `RemoteConnection.execute()`
-- `WebElement._execute(command, params)` → same path via `self._parent`
+The sync driver's `get()`, `find_element()`, `execute_script()` etc. all call
+`self.execute(Command.X, params)` — a single HTTP dispatch. The async equivalents call
+*different things*: `browsing_context.navigate()`, `browsing_context.locate_nodes()`,
+`script.evaluate()`. These are bespoke mappings, not mechanical transformations. There is
+no AST transformation that can produce them automatically.
 
-Making `execute()` and `_execute()` async cascades correctly through every method above
-them. The generator only needs to identify these patterns and add `async`/`await`
-in the right places. No structural refactoring of the sync code is required.
+### `AsyncWebDriver` — method to BiDi mapping
+
+The table below shows the primary mapping. Methods marked **HTTP fallback** use
+`AsyncRemoteConnection` because no BiDi command exists yet in the spec.
+
+| Public API method | BiDi command |
+|---|---|
+| `await driver.get(url)` | `browsing_context.navigate(context, url, wait=COMPLETE)` |
+| `await driver.find_element(by, value)` | `browsing_context.locate_nodes(context, locator, max=1)` |
+| `await driver.find_elements(by, value)` | `browsing_context.locate_nodes(context, locator)` |
+| `await driver.execute_script(script, *args)` | `script.evaluate(expression, target, await_promise=False)` |
+| `await driver.execute_async_script(script, *args)` | `script.evaluate(expression, target, await_promise=True)` |
+| `await driver.title()` | `script.evaluate("document.title", target)` |
+| `await driver.current_url()` | `browsing_context.get_tree(root=context)` → `url` |
+| `await driver.page_source()` | `script.evaluate("document.documentElement.outerHTML", target)` |
+| `await driver.back()` | `browsing_context.traverse_history(context, delta=-1)` |
+| `await driver.forward()` | `browsing_context.traverse_history(context, delta=1)` |
+| `await driver.refresh()` | `browsing_context.reload(context)` |
+| `await driver.close()` | `browsing_context.close(context)` |
+| `await driver.current_window_handle()` | tracked locally on the driver object |
+| `await driver.window_handles()` | `browsing_context.get_tree()` → all context IDs |
+| `await driver.switch_to.window(handle)` | updates tracked context; subscribes to BiDi events for new context |
+| `await driver.screenshot_as_base64()` | `browsing_context.capture_screenshot(context)` |
+| `await driver.print_page(opts)` | `browsing_context.print(context, ...)` |
+| `await driver.get_cookies()` | `storage.get_cookies(partition)` |
+| `await driver.add_cookie(cookie)` | `storage.set_cookie(cookie, partition)` |
+| `await driver.delete_cookie(name)` | `storage.delete_cookies(filter, partition)` |
+| `await driver.delete_all_cookies()` | `storage.delete_cookies(partition)` |
+| `await driver.new_window(type)` | `browsing_context.create(type)` |
+| `await driver.maximize_window()` | **HTTP fallback** (no BiDi equivalent yet) |
+| `await driver.set_window_rect(...)` | **HTTP fallback** |
+| `await driver.get_window_rect()` | **HTTP fallback** |
+| `await driver.set_timeouts(...)` | **HTTP fallback** |
+| `await driver.get_log(type)` | **HTTP fallback** |
+| Virtual authenticator methods | **HTTP fallback** |
+| FedCM methods | **HTTP fallback** |
+
+### `AsyncWebElement` — method to BiDi mapping
+
+`AsyncWebElement` holds a BiDi **shared reference** (`sharedId`) returned by
+`locate_nodes`. Actions use `script.call_function` (for JS-level ops) or
+`input.perform_actions` (for pointer/keyboard).
+
+| Public API method | BiDi command |
+|---|---|
+| `await element.click()` | `input.perform_actions` (pointer: move to center, down, up) |
+| `await element.send_keys(*value)` | `input.perform_actions` (key sequence) |
+| `await element.clear()` | `script.call_function` (clear value via JS) |
+| `await element.submit()` | `script.call_function` (form.submit()) |
+| `await element.text()` | `script.call_function` → `.textContent` |
+| `await element.tag_name()` | `script.call_function` → `.tagName` |
+| `await element.get_attribute(name)` | `script.call_function` → `getAttribute` atom |
+| `await element.get_property(name)` | `script.call_function` → property access |
+| `await element.get_dom_attribute(name)` | `script.call_function` → `getAttribute` |
+| `await element.is_displayed()` | `script.call_function` → `isDisplayed` atom |
+| `await element.is_enabled()` | `script.call_function` → `.disabled` check |
+| `await element.is_selected()` | `script.call_function` → `.checked` / `selected` |
+| `await element.rect()` | `script.call_function` → `getBoundingClientRect()` |
+| `await element.location()` | derived from `rect()` |
+| `await element.size()` | derived from `rect()` |
+| `await element.find_element(by, value)` | `browsing_context.locate_nodes(start_nodes=[self])` |
+| `await element.find_elements(by, value)` | `browsing_context.locate_nodes(start_nodes=[self])` |
+| `await element.screenshot_as_base64()` | `browsing_context.capture_screenshot(clip=element)` |
+| `await element.value_of_css_property(prop)` | **HTTP fallback** |
+| `await element.shadow_root()` | `script.call_function` → `shadowRoot` |
+
+### Session lifecycle (HTTP)
+
+Session creation (`POST /session`) and teardown (`DELETE /session/{id}`) remain HTTP.
+This is unavoidable: the BiDi WebSocket URL is returned *in the session response*, so
+HTTP must come first. `AsyncRemoteConnection` (httpx) handles these two operations.
+All subsequent WebDriver commands go through `AsyncWebSocketConnection`.
+
+```python
+class AsyncWebDriver:
+    async def __aenter__(self) -> Self:
+        self._task_group_ctx = anyio.create_task_group()
+        self._task_group = await self._task_group_ctx.__aenter__()
+
+        # HTTP: create session, get WebSocket URL
+        await self.command_executor.open()
+        response = await self.command_executor.execute(Command.NEW_SESSION, caps)
+        self.session_id = response["sessionId"]
+        self.caps = response["capabilities"]
+
+        # BiDi: open WebSocket, start receive loop
+        ws_url = self.caps["webSocketUrl"]
+        self._ws = AsyncWebSocketConnection(ws_url, ...)
+        await self._ws.connect(self._task_group)
+
+        # Instantiate async BiDi module objects
+        self._browsing_context = AsyncBrowsingContext(self._ws)
+        self._script = AsyncScript(self._ws)
+        self._storage = AsyncStorage(self._ws)
+        self._input = AsyncInput(self._ws)
+
+        return self
+
+    async def __aexit__(self, *exc_info):
+        await self.command_executor.execute(Command.QUIT, {})  # HTTP DELETE /session
+        await self._ws.close()
+        await self.command_executor.close()
+        await self._task_group_ctx.__aexit__(*exc_info)
+```
+
+### Example method implementations
+
+```python
+# driver.get()
+async def get(self, url: str) -> None:
+    from selenium.webdriver.async_.bidi.browsing_context import ReadinessState
+    await self._browsing_context.navigate(
+        context=self._current_context,
+        url=url,
+        wait=ReadinessState.COMPLETE,
+    )
+
+# driver.find_element()
+async def find_element(self, by: str, value: str) -> AsyncWebElement:
+    from selenium.webdriver.async_.bidi.browsing_context import CssLocator, XPathLocator
+    locator = _build_locator(by, value)   # maps By.* to BiDi locator dataclass
+    result = await self._browsing_context.locate_nodes(
+        context=self._current_context,
+        locator=locator,
+        max_node_count=1,
+    )
+    if not result.nodes:
+        raise NoSuchElementException(f"Unable to locate element: {by}={value}")
+    return AsyncWebElement(self, result.nodes[0].shared_id)
+
+# driver.execute_script()
+async def execute_script(self, script: str, *args) -> Any:
+    from selenium.webdriver.async_.bidi.script import ContextTarget
+    result = await self._script.evaluate(
+        expression=_wrap_script(script, args),
+        target=ContextTarget(context=self._current_context),
+        await_promise=False,
+    )
+    return _unwrap_bidi_result(result)
+
+# element.click()
+async def click(self) -> None:
+    center = await self._get_center_point()   # getBoundingClientRect via script
+    await self._driver._input.perform_actions(
+        actions=[_pointer_click_sequence(center)],
+        context=self._driver._current_context,
+    )
+```
 
 ---
 
-## The Two Hand-Written Pieces
+## Hand-Written Pieces
 
 ### `AsyncRemoteConnection` (httpx)
 
-Replaces urllib3. A single `httpx.AsyncClient` is created when the connection opens
-and closed when it does, rather than one per request as the sync code does.
+Used only for session creation and teardown, plus HTTP fallback for commands not yet
+in BiDi. A single `httpx.AsyncClient` lives for the session duration.
 
 ```python
 class AsyncRemoteConnection:
-    def __init__(self, remote_server_addr, client_config):
-        self._url = remote_server_addr
-        self._client_config = client_config
-        self._client: httpx.AsyncClient | None = None
-
     async def open(self):
         self._client = httpx.AsyncClient(
             verify=self._client_config.ca_certs,
@@ -143,25 +412,19 @@ class AsyncRemoteConnection:
         )
 
     async def close(self):
-        if self._client:
-            await self._client.aclose()
-            self._client = None
+        await self._client.aclose()
 
     async def execute(self, command, params):
-        method, url = self._commands[command]
-        url = self._url + url   # substitute $sessionId etc.
+        method, path = self._commands[command]
+        url = self._url + _substitute_params(path, params)
         response = await self._client.request(method, url, json=params)
-        return self._process_response(response)  # same logic as sync version
+        return self._process_response(response)
 ```
-
-Browser-specific subclasses (`AsyncChromeRemoteConnection`, etc.) override `browser_name`
-and `_commands` exactly as their sync equivalents — these are generated.
 
 ### `AsyncWebSocketConnection` (websockets + anyio)
 
-Replaces the thread-backed `WebSocketConnection`. Instead of a background daemon thread
-polling with `sleep()`, the receive loop runs as a long-lived anyio task inside the
-driver's task group. Callbacks are `async def` and dispatched as new tasks in that group.
+The receive loop runs as an anyio task in the driver's task group. Async callbacks are
+dispatched as new tasks in that group, so they run concurrently with user code.
 
 ```python
 class AsyncWebSocketConnection:
@@ -178,7 +441,7 @@ class AsyncWebSocketConnection:
         payload["id"] = current_id
         event = anyio.Event()
         self._pending[current_id] = event
-        await self._ws.send(json.dumps(payload))
+        await self._ws.send(json.dumps(payload, cls=_BiDiEncoder))
         with anyio.fail_after(self._timeout):
             await event.wait()
         return self._results.pop(current_id)
@@ -193,127 +456,41 @@ class AsyncWebSocketConnection:
             if "method" in message:
                 for cb in self.callbacks.get(message["method"], []):
                     self._task_group.start_soon(cb, message["params"])
-
-    def add_callback(self, event, async_callback):
-        self.callbacks.setdefault(event.event_class, []).append(
-            lambda params: async_callback(event.from_json(params))
-        )
 ```
-
----
-
-## The Generator (`generate_async.py`)
-
-Reads each sync source file as a Python AST, applies transformation rules, writes the
-async output. AST-based transformation is safer than regex — it respects scope, nesting,
-and decorators correctly.
-
-### Transformation Rules
-
-| Sync pattern | Async transformation |
-|---|---|
-| `def method(self, ...)` that calls `self.execute(` | `async def method(self, ...)` |
-| `self.execute(...)` | `await self.execute(...)` |
-| `def _execute(self, ...)` | `async def _execute(self, ...)` |
-| `self._execute(...)` | `await self._execute(...)` |
-| `@property` + body calls `self.execute(` | Remove `@property`, make `async def` |
-| `@property` + body is pure attribute access | Keep as `@property` (no network call) |
-| `def __enter__(self)` | `async def __aenter__(self)` |
-| `def __exit__(self, ...)` | `async def __aexit__(self, ...)` |
-| `time.sleep(x)` | `await anyio.sleep(x)` |
-| `@contextmanager` | `@asynccontextmanager` |
-| `RemoteConnection` import/reference | `AsyncRemoteConnection` |
-| `WebSocketConnection` | `AsyncWebSocketConnection` |
-| `WebElement` type refs | `AsyncWebElement` |
-| `WebDriverWait` | `AsyncWebDriverWait` |
-| Sync `Callable` callback types | `AsyncCallable` / `Callable[..., Coroutine]` |
-
-The generator maintains a **property allowlist** for properties that must stay as
-properties (pure attribute access, no network I/O): `session_id`, `name`, `mobile`,
-`capabilities`, `desired_capabilities`, `command_executor`, `file_detector`.
-Everything else with `@property` that touches `execute()` becomes an async method.
-
-The generator takes `--sync-root` and `--output-dir` flags and can be run standalone
-outside Bazel for development:
-
-```bash
-python generate_async.py \
-  --sync-root py/selenium/webdriver \
-  --output-dir py/selenium/webdriver/async_
-```
-
----
-
-## Async Driver Lifecycle (anyio Task Group)
-
-`AsyncWebDriver` owns a single anyio task group for its lifetime. BiDi WebSocket receive
-loops run inside it as concurrent tasks alongside user code. Users **must** use
-`async with` — this is documented explicitly and enforced at runtime.
-
-```python
-class AsyncWebDriver:
-    async def __aenter__(self) -> Self:
-        self._task_group_ctx = anyio.create_task_group()
-        self._task_group = await self._task_group_ctx.__aenter__()
-        await self.command_executor.open()
-        self.start_session(self.capabilities)
-        return self
-
-    async def __aexit__(self, *exc_info):
-        await self.quit()
-        await self._task_group_ctx.__aexit__(*exc_info)
-
-    async def _start_bidi(self):
-        ws_url = self.caps.get("webSocketUrl")
-        self._websocket_connection = AsyncWebSocketConnection(
-            ws_url,
-            self.command_executor.client_config.websocket_timeout,
-            self.command_executor.client_config.websocket_interval,
-        )
-        await self._websocket_connection.connect(self._task_group)
-```
-
-If a user instantiates without a context manager and calls methods, a clear
-`RuntimeError("AsyncWebDriver must be used as an async context manager")` is raised.
 
 ---
 
 ## I/O-Bound Properties That Become Methods
 
-These are the only places the async API diverges from sync. All other public methods
-keep the same call signature with `await` added.
+Because Python has no `async` property, these are the only places the async API diverges
+structurally from sync. Same name, but called as methods.
 
 ### `AsyncWebDriver`
 
-| Sync (property) | Async (method call) |
-|---|---|
-| `driver.title` | `await driver.title()` |
-| `driver.current_url` | `await driver.current_url()` |
-| `driver.page_source` | `await driver.page_source()` |
-| `driver.current_window_handle` | `await driver.current_window_handle()` |
-| `driver.window_handles` | `await driver.window_handles()` |
-| `driver.timeouts` | `await driver.timeouts()` |
-| `driver.orientation` | `await driver.orientation()` |
-| `driver.log_types` | `await driver.log_types()` |
+| Sync (property) | Async (method) | Implemented via |
+|---|---|---|
+| `driver.title` | `await driver.title()` | `script.evaluate("document.title")` |
+| `driver.current_url` | `await driver.current_url()` | `browsing_context.get_tree()` |
+| `driver.page_source` | `await driver.page_source()` | `script.evaluate("document.documentElement.outerHTML")` |
+| `driver.current_window_handle` | `await driver.current_window_handle()` | tracked locally |
+| `driver.window_handles` | `await driver.window_handles()` | `browsing_context.get_tree()` |
+| `driver.timeouts` | `await driver.timeouts()` | HTTP fallback |
 
 ### `AsyncWebElement`
 
-| Sync (property) | Async (method call) |
-|---|---|
-| `element.tag_name` | `await element.tag_name()` |
-| `element.text` | `await element.text()` |
-| `element.location` | `await element.location()` |
-| `element.size` | `await element.size()` |
-| `element.rect` | `await element.rect()` |
-| `element.accessible_name` | `await element.accessible_name()` |
-| `element.aria_role` | `await element.aria_role()` |
-| `element.screenshot_as_base64` | `await element.screenshot_as_base64()` |
-| `element.screenshot_as_png` | `await element.screenshot_as_png()` |
+| Sync (property) | Async (method) | Implemented via |
+|---|---|---|
+| `element.tag_name` | `await element.tag_name()` | `script.call_function` |
+| `element.text` | `await element.text()` | `script.call_function` |
+| `element.rect` | `await element.rect()` | `script.call_function` |
+| `element.location` | `await element.location()` | derived from `rect()` |
+| `element.size` | `await element.size()` | derived from `rect()` |
+| `element.screenshot_as_base64` | `await element.screenshot_as_base64()` | `browsing_context.capture_screenshot` |
 
 ### Properties that stay as properties (no network call)
 
-`driver.session_id`, `driver.name`, `driver.mobile`, `driver.capabilities`,
-`element.id`, `element.session_id`, `element.parent`
+`driver.session_id`, `driver.name`, `driver.capabilities`,
+`element.id`, `element.parent`
 
 ---
 
@@ -325,7 +502,7 @@ class AsyncWebDriverWait(Generic[D]):
         end_time = anyio.current_time() + self._timeout
         while True:
             try:
-                value = await method(self._driver)   # method must be async callable
+                value = await method(self._driver)
                 if value:
                     return value
             except self._ignored_exceptions:
@@ -336,126 +513,62 @@ class AsyncWebDriverWait(Generic[D]):
         raise TimeoutException(message)
 ```
 
-`expected_conditions` callables become `async def __call__(self, driver)`. User-supplied
-condition functions must be `async def`.
+`expected_conditions` callables become `async def __call__(self, driver)`.
+User-supplied condition functions must be `async def`.
 
 ---
 
 ## Bazel Wiring
 
-The generator is wired into Bazel following the same pattern as `generate_bidi.py` /
-`py/private/generate_bidi.bzl`.
+### `generate_bidi.py` change
 
-### New file: `py/private/generate_async.bzl`
+Add `--async` CLI flag. When set:
+- Output directory becomes `selenium/webdriver/async_/bidi/`
+- Command method signatures gain `async def`
+- `self._conn.execute(cmd)` → `await self._conn.execute(cmd)`
+- `threading.Lock()` → `anyio.Lock()`
+- Event subscription methods become `async def`
+- Imports swap `threading` for `anyio`
 
-```python
-def _generate_async_impl(ctx):
-    generator = ctx.executable.generator
-    output_dir = ctx.attr.output_dir
-
-    extra_outputs = []
-    for src in ctx.files.extra_srcs:
-        out = ctx.actions.declare_file(output_dir + "/" + src.basename)
-        ctx.actions.symlink(output=out, target_file=src)
-        extra_outputs.append(out)
-
-    gen_outputs = [
-        ctx.actions.declare_file(output_dir + "/" + name)
-        for name in ctx.attr.generated_files
-    ]
-
-    ctx.actions.run(
-        inputs = ctx.files.sync_srcs,
-        outputs = gen_outputs,
-        executable = generator,
-        arguments = [
-            "--sync-root", ctx.files.sync_srcs[0].dirname,
-            "--output-dir", gen_outputs[0].dirname,
-        ],
-        use_default_shell_env = True,
-    )
-
-    return [DefaultInfo(files = depset(gen_outputs + extra_outputs))]
-
-generate_async = rule(
-    implementation = _generate_async_impl,
-    attrs = {
-        "generator":        attr.label(executable=True, cfg="exec", mandatory=True),
-        "sync_srcs":        attr.label_list(allow_files=[".py"], mandatory=True),
-        "extra_srcs":       attr.label_list(allow_files=[".py"], default=[]),
-        "generated_files":  attr.string_list(mandatory=True),
-        "output_dir":       attr.string(mandatory=True),
-    },
-)
-```
-
-### Additions to `py/BUILD.bazel`
+### New Bazel targets in `py/BUILD.bazel`
 
 ```python
-load("//py/private:generate_async.bzl", "generate_async")
-
-py_binary(
-    name = "generate_async",
-    srcs = ["generate_async.py"],
-    srcs_version = "PY3",
-    # stdlib ast only; no third-party deps needed
+# Async BiDi low-level modules (generated)
+generate_bidi(
+    name = "create-async-bidi-src",
+    cddl_file = "@webdriver_bidi_all_cddl//file:spec.cddl",
+    enhancements_manifest = "//py/private:bidi_enhancements_manifest.py",
+    extra_cddl_files = [
+        "@permissions_all_cddl//file:spec.cddl",
+        "@prefetch_all_cddl//file:spec.cddl",
+        "@ua_client_hints_all_cddl//file:spec.cddl",
+        "@web_bluetooth_all_cddl//file:spec.cddl",
+    ],
+    generator = ":generate_bidi",
+    merge_tool = "//py/private:merge_cddl",
+    module_name = "selenium/webdriver/async_/bidi",
+    spec_version = "1.0",
+    async_mode = True,   # new attribute → passes --async to generate_bidi.py
 )
 
-generate_async(
-    name = "create-async-src",
-    generator = ":generate_async",
-    output_dir = "selenium/webdriver/async_",
-    sync_srcs = [
-        "selenium/webdriver/remote/webdriver.py",
-        "selenium/webdriver/remote/webelement.py",
-        "selenium/webdriver/remote/shadowroot.py",
-        "selenium/webdriver/remote/switch_to.py",
-        "selenium/webdriver/remote/alert.py",
-        "selenium/webdriver/remote/fedcm.py",
-        "selenium/webdriver/remote/mobile.py",
-        "selenium/webdriver/chrome/webdriver.py",
-        "selenium/webdriver/firefox/webdriver.py",
-        "selenium/webdriver/edge/webdriver.py",
-        "selenium/webdriver/safari/webdriver.py",
-        "selenium/webdriver/common/action_chains.py",
-        "selenium/webdriver/support/wait.py",
-        "selenium/webdriver/support/expected_conditions.py",
-        "selenium/webdriver/support/select.py",
-    ],
-    extra_srcs = [
-        # Hand-written files copied verbatim into the async_ package
-        "//py/selenium/webdriver/async_/remote:remote_connection.py",
-        "//py/selenium/webdriver/async_/remote:websocket_connection.py",
-    ],
-    generated_files = [
-        "remote/webdriver.py",
-        "remote/webelement.py",
-        "remote/shadowroot.py",
-        "remote/switch_to.py",
-        "remote/alert.py",
-        "remote/fedcm.py",
-        "remote/mobile.py",
-        "chrome/webdriver.py",
-        "firefox/webdriver.py",
-        "edge/webdriver.py",
-        "safari/webdriver.py",
-        "common/action_chains.py",
-        "support/wait.py",
-        "support/expected_conditions.py",
-        "support/select.py",
-        "__init__.py",
-    ],
-)
-
+# Async driver library (hand-written sources + generated BiDi dep)
 py_library(
     name = "async",
-    srcs = [":create-async-src"],
+    srcs = glob(["selenium/webdriver/async_/**/*.py"],
+                exclude=["selenium/webdriver/async_/bidi/**"]),
     deps = [
+        ":async_bidi",
         ":common",
         requirement("anyio"),
         requirement("httpx"),
         requirement("websockets"),
     ],
+)
+
+py_library(
+    name = "async_bidi",
+    srcs = [":create-async-bidi-src"],
+    deps = [requirement("anyio")],
 )
 ```
 
@@ -463,9 +576,8 @@ py_library(
 
 ## Test Structure
 
-Tests live in `py/test/selenium/webdriver/async_/` mirroring the sync structure.
-Every public API method has a test. Tests are copied from the sync equivalents and
-mechanically adapted (see transformation rules below).
+Tests live in `py/test/selenium/webdriver/async_/`, mirroring the sync structure.
+Every public API method has a test. Tests are adapted from the sync equivalents.
 
 ```
 py/test/selenium/webdriver/async_/
@@ -483,14 +595,13 @@ py/test/selenium/webdriver/async_/
         window_switching_tests.py
         takes_screenshots_tests.py
         timeout_tests.py
-        page_load_timeout_tests.py
         quit_tests.py
         executing_javascript_tests.py
         executing_async_javascript_tests.py
         rendered_webelement_tests.py
         form_handling_tests.py
         select_element_handling_tests.py
-        ... (one file per sync test file)
+        ... (one file per sync test file in scope)
     support/
         __init__.py
         webdriverwait_tests.py
@@ -503,28 +614,24 @@ py/test/selenium/webdriver/async_/
         firefox_tests.py
 ```
 
-### `py/test/selenium/webdriver/async_/conftest.py`
+### `conftest.py`
 
-This is a new file — not copied. The async driver lifecycle requires different fixture
-semantics. Notably there is no global driver singleton; each test gets a clean
-`async with` scope.
+No global singleton driver — each test gets a clean `async with` scope. The `pages`
+fixture exposes `async def load()` since `driver.get()` is now awaitable.
 
 ```python
 import pytest
 from selenium.webdriver.async_ import Chrome, Firefox, Edge
-from test.selenium.webdriver.common.webserver import SimpleWebServer
 
 @pytest.fixture
 def anyio_backend():
-    return "asyncio"   # override per-test or per-session for trio
+    return "asyncio"
 
 @pytest.fixture
 async def driver(request):
     driver_name = getattr(request, "param", "chrome").lower()
-    driver_classes = {"chrome": Chrome, "firefox": Firefox, "edge": Edge}
-    cls = driver_classes[driver_name]
-    options = _build_options(driver_name, request)
-    async with cls(options=options) as d:
+    cls = {"chrome": Chrome, "firefox": Firefox, "edge": Edge}[driver_name]
+    async with cls(options=_build_options(driver_name, request)) as d:
         yield d
 
 @pytest.fixture
@@ -539,18 +646,16 @@ def pages(driver, webserver):
     return Pages()
 ```
 
-### Test file transformation
+### Test adaptation rules
 
-Given sync test `test/selenium/webdriver/common/navigation_tests.py`:
-
+Given sync test:
 ```python
 def test_should_return_page_title(driver, pages):
     pages.load("simpleTest.html")
     assert driver.title == "Hello WebDriver World"
 ```
 
-Async equivalent in `test/selenium/webdriver/async_/common/navigation_tests.py`:
-
+Async equivalent:
 ```python
 import pytest
 
@@ -560,21 +665,15 @@ async def test_should_return_page_title(driver, pages):
     assert await driver.title() == "Hello WebDriver World"
 ```
 
-Mechanical transformation rules for copying sync tests:
-
+Mechanical rules:
 1. Add `@pytest.mark.anyio` before every test function
 2. `def test_` → `async def test_`
 3. `pages.load(x)` → `await pages.load(x)`
-4. `driver.title` → `await driver.title()` (and all other I/O properties; see full list above)
-5. All network-calling driver/element methods gain `await`
+4. `driver.title` → `await driver.title()` (and all I/O properties; see tables above)
+5. All driver/element network calls gain `await`
 6. `with driver:` → `async with driver:`
 
-These are mechanical enough that a companion script (`generate_async_tests.py`) could
-automate the copy with a manual review pass for fixture-specific logic.
-
 ### Bazel test targets
-
-Add to `py/BUILD.bazel`:
 
 ```python
 ASYNC_TEST_DEPS = TEST_DEPS + [
@@ -584,51 +683,35 @@ ASYNC_TEST_DEPS = TEST_DEPS + [
     requirement("websockets"),
 ]
 
-# test-<browser>-async — asyncio backend
 [
     py_test_suite(
         name = "test-%s-async" % browser,
         size = "large",
         srcs = glob(["test/selenium/webdriver/async_/**/*.py"]),
-        args = [
-            "--instafail",
-            "--anyio-backends=asyncio",
-        ] + BROWSERS[browser]["args"],
+        args = ["--instafail", "--anyio-backends=asyncio"] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-async" % browser,
-        deps = [
-            ":init-tree",
-            ":async",
-            ":webserver",
-        ] + ASYNC_TEST_DEPS,
+        deps = [":init-tree", ":async", ":webserver"] + ASYNC_TEST_DEPS,
     )
     for browser in ["chrome", "firefox", "edge"]
 ]
 
-# test-<browser>-async-trio — trio backend (optional, for anyio compatibility validation)
+# Optional trio backend validation
 [
     py_test_suite(
         name = "test-%s-async-trio" % browser,
         size = "large",
         srcs = glob(["test/selenium/webdriver/async_/**/*.py"]),
-        args = [
-            "--instafail",
-            "--anyio-backends=trio",
-        ] + BROWSERS[browser]["args"],
+        args = ["--instafail", "--anyio-backends=trio"] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-async-trio" % browser,
-        deps = [
-            ":init-tree",
-            ":async",
-            ":webserver",
-            requirement("trio"),
-        ] + ASYNC_TEST_DEPS,
+        deps = [":init-tree", ":async", ":webserver", requirement("trio")] + ASYNC_TEST_DEPS,
     )
     for browser in ["chrome", "firefox", "edge"]
 ]
@@ -640,65 +723,70 @@ ASYNC_TEST_DEPS = TEST_DEPS + [
 
 Code and tests are delivered together — each phase ends with working Bazel targets.
 
-### Phase 1 — Foundations (hand-written, no generation)
+### Phase 1 — Foundations
 
-- `py/generate_async.py` — AST transformer; validate tooling on one file before full wiring
-- `AsyncRemoteConnection` in `async_/remote/remote_connection.py`
-- `AsyncWebSocketConnection` in `async_/remote/websocket_connection.py`
-- Package scaffolding: all `__init__.py` files
-- Optional dependency declaration in `setup.cfg` / `MODULE.bazel`
-- `py/private/generate_async.bzl` and `py_binary` target in `BUILD.bazel`
-- **Tests:** none yet — no public API
+- Add `--async` flag to `generate_bidi.py`; validate output against sync version
+- `create-async-bidi-src` Bazel target producing `selenium/webdriver/async_/bidi/`
+- `AsyncWebSocketConnection` (hand-written)
+- `AsyncRemoteConnection` (hand-written, httpx)
+- Package scaffolding and optional dependency declaration
+- `async_bidi` py_library Bazel target
+- **Tests:** none yet
 
-### Phase 2 — Core driver (first generated output)
+### Phase 2 — Core driver
 
-- Generate `AsyncWebDriver` from `remote/webdriver.py`
-- Generate `AsyncWebElement` from `remote/webelement.py`
-- Generate `AsyncShadowRoot`, `AsyncSwitchTo`, `AsyncAlert`
-- Wire `async_/remote/__init__.py`
-- **Tests:** `navigation_tests`, `element_finding_tests`, `element_property_tests`, `quit_tests`
+- `AsyncWebDriver` (hand-written, BiDi-backed): `get`, `find_element`, `find_elements`,
+  `execute_script`, `execute_async_script`, `close`, `quit`, `title`, `current_url`,
+  `page_source`, `current_window_handle`, `window_handles`, `back`, `forward`, `refresh`
+- `AsyncWebElement` (hand-written): `click`, `send_keys`, `clear`, `text`, `tag_name`,
+  `get_attribute`, `is_displayed`, `is_enabled`, `is_selected`, `rect`
+- `async` py_library Bazel target
+- **Tests:** `navigation_tests`, `element_finding_tests`, `element_property_tests`,
+  `quit_tests`, `click_tests`, `typing_tests`, `visibility_tests`
 
-### Phase 3 — Browser-specific drivers
+### Phase 3 — Browser-specific drivers + cookies + windows
 
-- Generate `AsyncChrome`, `AsyncFirefox`, `AsyncEdge`, `AsyncSafari`, `AsyncRemote`
-- Wire top-level `async_/__init__.py` so `from selenium.webdriver.async_ import Chrome` works
-- **Tests:** Browser-specific smoke tests, `window_switching_tests`, `takes_screenshots_tests`
+- `AsyncChrome`, `AsyncFirefox`, `AsyncEdge` (hand-written thin subclasses)
+- Cookie management: `get_cookies`, `add_cookie`, `delete_cookie`, `delete_all_cookies`
+- Window management: `new_window`, `switch_to.window`, `window_handles`
+- `AsyncSwitchTo`, `AsyncAlert`
+- **Tests:** `window_switching_tests`, `takes_screenshots_tests`, browser-specific smoke
 
-### Phase 4 — Support utilities
+### Phase 4 — Support utilities + screenshots
 
-- Generate `AsyncWebDriverWait` from `support/wait.py`
-- Generate `AsyncExpectedConditions` from `support/expected_conditions.py`
-- Generate `AsyncSelect` from `support/select.py`
-- Generate `AsyncActionChains` from `common/action_chains.py`
-- **Tests:** `webdriverwait_tests`, `expected_conditions_tests`, `select_element_handling_tests`
+- `AsyncWebDriverWait` + `AsyncExpectedConditions`
+- `AsyncSelect`
+- `AsyncActionChains` (wraps `input.perform_actions`)
+- Screenshot methods (driver and element)
+- **Tests:** `webdriverwait_tests`, `expected_conditions_tests`,
+  `select_element_handling_tests`, `takes_screenshots_tests`
 
-### Phase 5 — BiDi async integration
+### Phase 5 — HTTP fallback for BiDi gaps
 
-- Add async target to `generate_bidi.py`: emit `async def` stubs for `Script`, `Network`,
-  `BrowsingContext`, `Input`, `Browser`, etc.
-- Wire `AsyncWebSocketConnection` into `AsyncWebDriver._start_bidi()`
-- Async callbacks dispatched via the driver's task group
-- **Tests:** `bidi_script_tests`, `bidi_network_tests` (async copies)
+- HTTP fallback path in `AsyncWebDriver` for: window rect/maximize/minimize,
+  timeouts, log retrieval, virtual authenticators, FedCM
+- Document which methods are HTTP fallback and which BiDi commands they will migrate
+  to as the spec matures
+- **Tests:** `timeout_tests`, `rendered_webelement_tests`
 
 ### Phase 6 — Hardening and documentation
 
 - Migration guide: "sync → async in 3 steps" (change import, add `async with`,
   add `await`, rename I/O properties to method calls)
-- Type stub file (`.pyi`) generation for the async namespace (correct `Awaitable` return types)
+- Type stub (`.pyi`) generation for the async namespace
 - pytest-anyio fixture examples in docs
-- Full parity sweep — every remaining sync test file in `test/selenium/webdriver/common/`
-  has an async counterpart
-- **Goal:** `wc -l test/selenium/webdriver/common/*.py` ≈ `wc -l test/selenium/webdriver/async_/common/*.py`
+- Full parity sweep — every sync test file in scope has an async counterpart
 
 ---
 
 ## Explicitly Out of Scope for V1
 
-- **`EventFiringWebDriver`** — the decorator/wrapper pattern is complex to adapt; defer to V2
-- **`RelativeLocator` async** — low priority; sync version works since it takes already-found elements
-- **Thread-safety across concurrent drivers** — each `AsyncWebDriver` instance is independent
-- **The legacy `bidi_connection()` CDP method** — already async in the sync driver; left as-is in V1
-- **Remote Grid auth flows** — `ClientConfig` is shared unchanged; no new auth mechanisms needed
+- **`EventFiringWebDriver`** — decorator pattern, defer to V2
+- **`RelativeLocator`** — `locate_nodes` with context locator can support this but adds
+  complexity; defer to V2
+- **The legacy `bidi_connection()` CDP method** — left as-is; CDP is separate from BiDi
+- **Safari** — Safari does not support WebDriver BiDi; async namespace targets
+  Chrome, Firefox, Edge. Safari can be added once it has BiDi support.
 
 ---
 
@@ -706,21 +794,9 @@ Code and tests are delivered together — each phase ends with working Bazel tar
 
 | Risk | Mitigation |
 |---|---|
-| Generator produces wrong code for edge cases (nested generators, `yield`, `contextmanager`) | Generator has an explicit allowlist of files it transforms; complex files are hand-written or skipped |
-| User forgets `async with`, gets confusing errors | Raise `RuntimeError("AsyncWebDriver must be used as an async context manager")` in gate methods |
-| httpx version compatibility | Pin `httpx>=0.27`; async API stable since 0.23 |
-| Properties becoming methods breaks `expected_conditions` assumptions | EC generator is part of Phase 4; both sides generated together, always in agreement |
-| websockets library API changes | Pin `websockets>=12`; connection interface stable since v10 |
-| Generator requires Bazel input enumeration upfront | Generated file list is static and maintained alongside the generator; a CI check can verify no drift |
-
----
-
-## Open Question Before Phase 1 Starts
-
-The Bazel `py_library` targets for the async namespace reference generated files declared
-upfront. The right pattern is a `genrule` or custom rule (as above) that runs
-`generate_async.py` and stamps all outputs, with `py_library` depending on it. The
-existing `generate_bidi.py` Bazel wiring is the model — confirm with the build owners
-which Bazel version idioms are in use before writing the final `BUILD.bazel` entries,
-as the `ctx.actions.run` + `declare_file` pattern has minor version-specific nuances
-in this repository.
+| BiDi `locate_nodes` behaviour differs subtly from HTTP `find_element` (timing, shadow DOM) | Comprehensive test suite run against the same HTML fixtures as sync tests catches divergence |
+| `input.perform_actions` for `element.click()` requires coordinate calculation | Use `getBoundingClientRect` via `script.evaluate` to find center point; document known edge cases (off-screen elements) |
+| `generate_bidi.py` `--async` flag makes the generator more complex | Keep async/sync output paths in the generator as parallel branches; test both outputs in CI via both Bazel targets |
+| HTTP fallback methods silently bypass BiDi | Mark HTTP fallback methods with a `_HTTP_FALLBACK = True` class attribute; emit a deprecation-style log at `DEBUG` level so developers know which methods are not yet BiDi |
+| Safari excluded limits V1 reach | Document clearly; Safari BiDi adoption is a browser vendor dependency, not a Selenium one |
+| anyio task group lifetime — user forgets `async with` | Raise `RuntimeError("AsyncWebDriver must be used as an async context manager")` on first BiDi call if task group not started |
