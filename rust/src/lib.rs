@@ -35,8 +35,7 @@ use crate::lock::Lock;
 use crate::logger::Logger;
 use crate::metadata::{
     create_browser_metadata, create_stats_metadata, get_browser_version_from_metadata,
-    get_metadata, is_stats_in_metadata, now_unix_timestamp, update_browser_last_used,
-    update_driver_last_used, write_metadata,
+    get_metadata, is_stats_in_metadata, now_unix_timestamp, update_cached_asset, write_metadata,
 };
 use crate::safari::{SAFARI_NAME, SAFARIDRIVER_NAME, SafariManager};
 use crate::safaritp::{SAFARITP_NAMES, SafariTPManager};
@@ -333,8 +332,8 @@ pub trait SeleniumManager {
             self.set_browser_path(path_to_string(&browser_binary_path));
             let cache_path = self.get_cache_path()?;
             let mut metadata = get_metadata(self.get_logger(), &cache_path);
-            update_browser_last_used(
-                &mut metadata.browsers,
+            update_cached_asset(
+                &mut metadata.cached_assets,
                 self.get_browser_name(),
                 &browser_version,
             );
@@ -926,8 +925,8 @@ pub trait SeleniumManager {
                 ));
                 let cache_path = self.get_cache_path()?;
                 let mut metadata = get_metadata(self.get_logger(), &cache_path);
-                update_driver_last_used(
-                    &mut metadata.drivers,
+                update_cached_asset(
+                    &mut metadata.cached_assets,
                     self.get_driver_name(),
                     self.get_driver_version(),
                 );
@@ -1722,8 +1721,13 @@ pub fn clear_cache(log: &Logger, path: &str) {
     }
 }
 
-/// Removes cached driver and browser entries whose `last_used` timestamp in the metadata is
-/// older than `ttl_days` days, and deletes the corresponding files on disk.
+/// Removes cached driver and browser binaries whose `last_used` timestamp (tracked in the
+/// `cached_assets` section of the metadata) is older than `ttl_days` days.
+///
+/// `cached_assets` is intentionally separate from the TTL-based `drivers`/`browsers` entries
+/// so that usage history survives beyond the short version-discovery TTL (default: 1 hour).
+/// This prevents binaries from escaping pruning just because their metadata entry was already
+/// flushed by a routine write for a different driver or browser.
 pub fn prune_old_cache_entries(log: &Logger, cache_path: &str, ttl_days: u64) {
     let cache = Path::new(cache_path);
     if !cache.exists() {
@@ -1733,30 +1737,22 @@ pub fn prune_old_cache_entries(log: &Logger, cache_path: &str, ttl_days: u64) {
     let mut metadata = get_metadata(log, &Some(cache_path_buf.clone()));
     let cutoff = now_unix_timestamp().saturating_sub(ttl_days * 24 * 3600);
 
-    let old_drivers: Vec<(String, String)> = metadata
-        .drivers
+    let old_assets: Vec<(String, String)> = metadata
+        .cached_assets
         .iter()
-        .filter(|d| d.last_used < cutoff)
-        .map(|d| (d.driver_name.clone(), d.driver_version.clone()))
+        .filter(|a| a.last_used < cutoff)
+        .map(|a| (a.asset_name.clone(), a.asset_version.clone()))
         .collect();
 
-    let old_browsers: Vec<(String, String)> = metadata
-        .browsers
-        .iter()
-        .filter(|b| b.last_used < cutoff)
-        .map(|b| (b.browser_name.clone(), b.browser_version.clone()))
-        .collect();
-
-    if old_drivers.is_empty() && old_browsers.is_empty() {
+    if old_assets.is_empty() {
         return;
     }
 
-    for (name, version) in old_drivers.iter().chain(old_browsers.iter()) {
+    for (name, version) in &old_assets {
         delete_cached_asset(log, cache, name, version);
     }
 
-    metadata.drivers.retain(|d| d.last_used >= cutoff);
-    metadata.browsers.retain(|b| b.last_used >= cutoff);
+    metadata.cached_assets.retain(|a| a.last_used >= cutoff);
     write_metadata(&metadata, log, Some(cache_path_buf));
 }
 
@@ -1802,7 +1798,7 @@ pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Error> {
 mod tests {
     use super::*;
     use crate::logger::Logger;
-    use crate::metadata::{Browser, Driver, Metadata, write_metadata};
+    use crate::metadata::{CachedAsset, Metadata, write_metadata};
 
     #[test]
     fn get_escaped_path_returns_canonical_path_without_shell_escaping() {
@@ -1830,18 +1826,18 @@ mod tests {
         fs::create_dir_all(&version_dir).unwrap();
         fs::write(version_dir.join("chromedriver"), b"fake binary").unwrap();
 
-        // last_used more than 30 days ago
+        // last_used more than 30 days ago; no TTL-based driver entry (simulates what happens
+        // after the TTL entry has been flushed by a subsequent write for a different driver)
         let old_last_used = now_unix_timestamp().saturating_sub(31 * 24 * 3600);
         let metadata = Metadata {
             browsers: vec![],
-            drivers: vec![Driver {
-                major_browser_version: "120".to_string(),
-                driver_name: "chromedriver".to_string(),
-                driver_version: "120.0.6099.109".to_string(),
-                driver_ttl: now_unix_timestamp() + 3600,
+            drivers: vec![],
+            stats: vec![],
+            cached_assets: vec![CachedAsset {
+                asset_name: "chromedriver".to_string(),
+                asset_version: "120.0.6099.109".to_string(),
                 last_used: old_last_used,
             }],
-            stats: vec![],
         };
         write_metadata(&metadata, &log, Some(cache.to_path_buf()));
 
@@ -1853,8 +1849,8 @@ mod tests {
         );
         let updated = get_metadata(&log, &Some(cache.to_path_buf()));
         assert!(
-            updated.drivers.is_empty(),
-            "Stale metadata entry should be removed"
+            updated.cached_assets.is_empty(),
+            "Stale cached_assets entry should be removed"
         );
     }
 
@@ -1874,14 +1870,13 @@ mod tests {
 
         let metadata = Metadata {
             browsers: vec![],
-            drivers: vec![Driver {
-                major_browser_version: "130".to_string(),
-                driver_name: "chromedriver".to_string(),
-                driver_version: "130.0.6723.91".to_string(),
-                driver_ttl: now_unix_timestamp() + 3600,
+            drivers: vec![],
+            stats: vec![],
+            cached_assets: vec![CachedAsset {
+                asset_name: "chromedriver".to_string(),
+                asset_version: "130.0.6723.91".to_string(),
                 last_used: now_unix_timestamp(),
             }],
-            stats: vec![],
         };
         write_metadata(&metadata, &log, Some(cache.to_path_buf()));
 
@@ -1893,8 +1888,8 @@ mod tests {
         );
         let updated = get_metadata(&log, &Some(cache.to_path_buf()));
         assert!(
-            !updated.drivers.is_empty(),
-            "Recent metadata entry should be retained"
+            !updated.cached_assets.is_empty(),
+            "Recent cached_assets entry should be retained"
         );
     }
 

@@ -42,8 +42,6 @@ pub struct Browser {
     pub major_browser_version: String,
     pub browser_version: String,
     pub browser_ttl: u64,
-    #[serde(default = "now_unix_timestamp")]
-    pub last_used: u64,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -52,7 +50,16 @@ pub struct Driver {
     pub driver_name: String,
     pub driver_version: String,
     pub driver_ttl: u64,
-    #[serde(default = "now_unix_timestamp")]
+}
+
+/// Records when a cached asset (driver or browser binary) was last used.
+/// This section is intentionally separate from the TTL-based `drivers`/`browsers`
+/// entries so that it survives beyond their TTL expiry. Pruning is based solely
+/// on `last_used`, not on the version-discovery TTL.
+#[derive(Serialize, Deserialize)]
+pub struct CachedAsset {
+    pub asset_name: String,
+    pub asset_version: String,
     pub last_used: u64,
 }
 
@@ -61,6 +68,8 @@ pub struct Metadata {
     pub browsers: Vec<Browser>,
     pub drivers: Vec<Driver>,
     pub stats: Vec<Stats>,
+    #[serde(default)]
+    pub cached_assets: Vec<CachedAsset>,
 }
 
 fn get_metadata_path(cache_path: PathBuf) -> PathBuf {
@@ -80,6 +89,7 @@ fn new_metadata(log: &Logger) -> Metadata {
         browsers: Vec::new(),
         drivers: Vec::new(),
         stats: Vec::new(),
+        cached_assets: Vec::new(),
     }
 }
 
@@ -168,7 +178,6 @@ pub fn create_browser_metadata(
         major_browser_version: major_browser_version.to_string(),
         browser_version: browser_version.to_string(),
         browser_ttl: now_unix_timestamp() + browser_ttl,
-        last_used: now_unix_timestamp(),
     }
 }
 
@@ -183,29 +192,23 @@ pub fn create_driver_metadata(
         driver_name: driver_name.to_string(),
         driver_version: driver_version.to_string(),
         driver_ttl: now_unix_timestamp() + driver_ttl,
-        last_used: now_unix_timestamp(),
     }
 }
 
-pub fn update_driver_last_used(drivers: &mut Vec<Driver>, driver_name: &str, driver_version: &str) {
-    if let Some(d) = drivers
+/// Records or refreshes the `last_used` timestamp for a cached asset (driver or browser binary).
+/// Creates a new entry if one does not already exist for this name+version pair.
+pub fn update_cached_asset(cached_assets: &mut Vec<CachedAsset>, name: &str, version: &str) {
+    if let Some(asset) = cached_assets
         .iter_mut()
-        .find(|d| d.driver_name.eq(driver_name) && d.driver_version.eq(driver_version))
+        .find(|a| a.asset_name.eq(name) && a.asset_version.eq(version))
     {
-        d.last_used = now_unix_timestamp();
-    }
-}
-
-pub fn update_browser_last_used(
-    browsers: &mut Vec<Browser>,
-    browser_name: &str,
-    browser_version: &str,
-) {
-    if let Some(b) = browsers
-        .iter_mut()
-        .find(|b| b.browser_name.eq(browser_name) && b.browser_version.eq(browser_version))
-    {
-        b.last_used = now_unix_timestamp();
+        asset.last_used = now_unix_timestamp();
+    } else {
+        cached_assets.push(CachedAsset {
+            asset_name: name.to_string(),
+            asset_version: version.to_string(),
+            last_used: now_unix_timestamp(),
+        });
     }
 }
 
