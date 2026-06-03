@@ -113,7 +113,9 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      it 'can make window full screen', except: {browser: %i[chrome edge], headless: true} do
+      it 'can make window full screen', except: {browser: %i[chrome edge], headless: true},
+                                        exclude: {browser: %i[safari safari_preview], ci: :github,
+                                                  reason: 'Net::ReadTimeout'} do
         window.size = old_size = Dimension.new(700, 700)
 
         window.full_screen
