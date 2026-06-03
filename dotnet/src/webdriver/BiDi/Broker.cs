@@ -99,7 +99,11 @@ internal sealed class Broker : IAsyncDisposable
                 JsonSerializer.Serialize(writer, @params, descriptor.ParamsTypeInfo);
                 if (options is not null)
                 {
-                    options.AdditionalMessageData.WriteTo(writer);
+                    foreach (var prop in options.AdditionalMessageData)
+                    {
+                        writer.WritePropertyName(prop.Name);
+                        prop.Value.WriteTo(writer);
+                    }
                 }
                 writer.WriteEndObject();
             }

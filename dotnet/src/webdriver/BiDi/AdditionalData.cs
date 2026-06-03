@@ -69,16 +69,4 @@ public readonly struct AdditionalData
 
     public JsonElement.ObjectEnumerator GetEnumerator() =>
         IsEmpty ? s_emptyObject.EnumerateObject() : _data.EnumerateObject();
-
-    internal void WriteTo(Utf8JsonWriter writer)
-    {
-        if (!IsEmpty)
-        {
-            foreach (var prop in _data.EnumerateObject())
-            {
-                writer.WritePropertyName(prop.Name);
-                prop.Value.WriteTo(writer);
-            }
-        }
-    }
 }
