@@ -134,13 +134,6 @@ jobs:
         run: git pull origin "$GIT_REF"
         env:
           GIT_REF: ${{ github.ref }}
-      - name: Free disk space
-        if: inputs.os == 'ubuntu'
-        run: ./scripts/github-actions/free-disk-space.sh
-      - name: Free disk space (Windows)
-        if: inputs.os == 'windows'
-        shell: pwsh
-        run: ./scripts/github-actions/free-disk-space.ps1
       - name: Restore cache
         if: inputs.cache-name != ''
         uses: actions/cache/restore@v5
@@ -200,14 +193,20 @@ jobs:
       - name: Configure RubyGems credentials via OIDC
         if: inputs.gem-trusted-publishing
         uses: rubygems/configure-rubygems-credentials@main
-      - name: Disk status before build
-        if: inputs.os != 'macos'
+      - name: Delete browsers and drivers
+        if: (inputs.os == 'ubuntu' || inputs.os == 'macos') && inputs.browser != ''
+        run: ./scripts/github-actions/delete-browsers-drivers.sh
+      - name: Delete browsers and drivers (Windows)
+        if: inputs.os == 'windows' && inputs.browser != ''
+        shell: pwsh
+        run: ./scripts/github-actions/delete-browsers-drivers.ps1
+      - name: Free disk space
+        if: inputs.os == 'ubuntu'
         shell: bash
         run: |
           . ./scripts/github-actions/disk-status.sh
-          if [ "$AVAIL_GB" -lt 10 ]; then
-            echo "::error::Insufficient disk space: ${AVAIL_GB}GB available (need >=10GB)"
-            exit 1
+          if [ "$AVAIL_GB" -lt 20 ]; then
+            ./scripts/github-actions/free-disk-space.sh
           fi
       - name: Run Bazel
         id: run-bazel
