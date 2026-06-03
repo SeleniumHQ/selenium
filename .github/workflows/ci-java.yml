@@ -19,7 +19,7 @@ jobs:
     with:
       name: Browser Tests (chrome, ${{ matrix.os }})
       os: ${{ matrix.os }}
-      browser: chrome
+      needs-display: true
       rerun-with-debug: true
       run: >
         bazel test --flaky_test_attempts 2
@@ -42,7 +42,7 @@ jobs:
     with:
       name: Browser Tests (chrome, ${{ matrix.os }})
       os: ${{ matrix.os }}
-      browser: chrome
+      needs-display: true
       rerun-with-debug: true
       run: >
         bazel test --flaky_test_attempts 2
@@ -64,7 +64,7 @@ jobs:
     with:
       name: Remote Tests (chrome, ${{ matrix.os }})
       os: ${{ matrix.os }}
-      browser: chrome
+      needs-display: true
       rerun-with-debug: true
       run: >
         bazel test --flaky_test_attempts 2

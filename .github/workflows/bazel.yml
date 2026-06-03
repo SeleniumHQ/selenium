@@ -21,11 +21,11 @@ on:
         required: false
         type: string
         default: ubuntu
-      browser:
-        description: One of chrome, firefox, or edge
+      needs-display:
+        description: Whether this job drives a browser and needs display/driver setup
         required: false
-        type: string
-        default: ''
+        type: boolean
+        default: false
       node-version:
         description: Custom Node version to install
         required: false
@@ -176,20 +176,20 @@ jobs:
         shell: bash
         run: . ./scripts/github-actions/disk-status.sh
       - name: Setup Fluxbox and Xvfb
-        if: inputs.os == 'ubuntu' && inputs.browser != ''
+        if: inputs.needs-display && inputs.os == 'ubuntu'
         run: |
           sudo apt-get update && sudo apt-get -y install fluxbox
           Xvfb :99 &
           fluxbox -display :99 &
           echo "DISPLAY=:99" >> "$GITHUB_ENV"
       - name: Set resolution
-        if: inputs.os == 'windows' && inputs.browser != ''
+        if: inputs.needs-display && inputs.os == 'windows'
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
       - name: Disable 8dot3 short names
         if: inputs.os == 'windows'
         run: fsutil 8dot3name set 0
       - name: Setup Safari
-        if: inputs.browser == 'safari'
+        if: inputs.needs-display && inputs.os == 'macos'
         run: sudo safaridriver --enable
       - name: Import GPG key
         if: inputs.gpg-sign
@@ -234,7 +234,7 @@ jobs:
         if: always() && steps.run-bazel.outcome == 'failure'
         uses: actions/upload-artifact@v7
         with:
-          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ inputs.browser }}
+          name: test-logs-${{ inputs.os }}-${{ inputs.name }}
           retention-days: 7
           path: build/failures/**
       - name: Start SSH session

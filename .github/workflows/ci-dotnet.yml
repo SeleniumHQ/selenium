@@ -30,6 +30,7 @@ jobs:
     with:
       name: Browser Tests
       os: windows
+      needs-display: true
       run: |
         bazel test //dotnet/test/webdriver:ElementFindingTests-firefox //dotnet/test/webdriver:ElementFindingTests-chrome
 
@@ -39,5 +40,6 @@ jobs:
     with:
       name: Remote Tests
       os: windows
+      needs-display: true
       run: |
         bazel test //dotnet/test/remote --flaky_test_attempts=3

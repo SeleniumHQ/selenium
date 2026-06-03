@@ -74,7 +74,7 @@ jobs:
             os: macos
     with:
       name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
-      browser: ${{ matrix.browser }}
+      needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
       run: >
