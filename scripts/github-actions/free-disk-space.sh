@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 #
-# Reclaim disk on Linux runners by deleting pre-installed toolchains, SDKs and
-# Docker images that Selenium's build and tests do not use.
+# Reclaim disk on Linux runners by deleting pre-installed toolchains and SDKs
+# that Selenium's build and tests do not use.
+#
+# Only the fast, high-yield deletions are kept. The goal is just to clear the
+# 20 GB gate on 72 GB runners, not to maximize freed space, so the slow,
+# low-yield removals are intentionally skipped: android (~34 s, up to ~3 min),
+# the docker image prune (~11 s), and gcloud-sdk (~8 s for <1 GB). What remains
+# frees ~16 GB in ~13 s.
 
 set -u
 
@@ -9,20 +15,12 @@ echo "Freeing disk space"
 
 # Pre-installed language toolchains
 sudo rm -rf -- \
-  /opt/ghc \
   /usr/local/.ghcup \
-  /usr/local/share/boost \
   /usr/share/swift \
   /usr/local/julia* \
-  /usr/lib/google-cloud-sdk \
   /opt/hostedtoolcache/CodeQL
 
 # App SDKs that Selenium has no binding for
 sudo rm -rf -- \
-  /usr/local/lib/android \
   /usr/share/dotnet \
-  /usr/local/graalvm \
   /usr/local/share/powershell
-
-# Docker images pre-pulled by the runner image
-docker image prune -af >/dev/null 2>&1 || true
