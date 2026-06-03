@@ -8,7 +8,7 @@ set -u
 echo "Freeing disk space"
 
 # Pre-installed language toolchains
-sudo rm -rf \
+sudo rm -rf -- \
   /opt/ghc \
   /usr/local/.ghcup \
   /usr/local/share/boost \
@@ -18,7 +18,7 @@ sudo rm -rf \
   /opt/hostedtoolcache/CodeQL
 
 # App SDKs that Selenium has no binding for
-sudo rm -rf \
+sudo rm -rf -- \
   /usr/local/lib/android \
   /usr/share/dotnet \
   /usr/local/graalvm \
