@@ -80,23 +80,19 @@ jobs:
         ${{ inputs.targets || '//rb/...' }}
 
   os-tests-full:
-    name: ${{ matrix.os }}-tests-full (${{ matrix.browser }})
+    name: ${{ matrix.os }}-full
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.smoke)
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
+        os: [windows]
+        tag_filters: [chrome-beta, firefox-beta, edge-local]
         include:
-          - os: windows
-            browser: chrome-beta
-          - os: windows
-            browser: firefox-beta
-          - os: windows
-            browser: edge-local
           - os: macos
-            browser: safari-local
+            tag_filters: safari-local
     with:
-      name: ${{ matrix.os }}-tests-full (${{ matrix.browser }})
+      name: (${{ matrix.tag_filters }})
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
@@ -109,5 +105,5 @@ jobs:
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_size_filters large
-        --test_tag_filters=${{ matrix.browser }}
+        --test_tag_filters=${{ matrix.tag_filters }}
         //rb/...
