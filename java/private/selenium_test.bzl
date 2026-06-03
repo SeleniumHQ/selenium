@@ -25,50 +25,49 @@ BROWSERS = {
         "jvm_flags": ["-Dselenium.browser=chrome"] + chrome_jvm_flags,
         "data": chrome_data,
         "tags": COMMON_TAGS + ["chrome"],
+        "target_compatible_with": [],
     },
     "chrome-beta": {
         "deps": ["//java/src/org/openqa/selenium/chrome"],
         "jvm_flags": ["-Dselenium.browser=chrome"] + chrome_beta_jvm_flags,
         "data": chrome_beta_data,
         "tags": COMMON_TAGS + ["chrome", "chrome-beta"],
+        "target_compatible_with": [],
     },
     "edge": {
         "deps": ["//java/src/org/openqa/selenium/edge"],
         "jvm_flags": ["-Dselenium.browser=edge"] + edge_jvm_flags,
         "data": edge_data,
         "tags": COMMON_TAGS + ["edge"],
+        "target_compatible_with": [],
     },
     "firefox": {
         "deps": ["//java/src/org/openqa/selenium/firefox"],
         "jvm_flags": ["-Dselenium.browser=ff"] + firefox_jvm_flags,
         "data": firefox_data,
         "tags": COMMON_TAGS + ["firefox"],
+        "target_compatible_with": [],
     },
     "firefox-beta": {
         "deps": ["//java/src/org/openqa/selenium/firefox"],
         "jvm_flags": ["-Dselenium.browser=ff"] + firefox_beta_jvm_flags,
         "data": firefox_beta_data,
         "tags": COMMON_TAGS + ["firefox", "firefox-beta"],
+        "target_compatible_with": [],
     },
     "ie": {
         "deps": ["//java/src/org/openqa/selenium/ie"],
-        "jvm_flags": ["-Dselenium.browser=ie"] +
-                     select({
-                         "@selenium//common:windows": ["-Dselenium.skiptest=false"],
-                         "@selenium//conditions:default": ["-Dselenium.skiptest=true"],
-                     }),
+        "jvm_flags": ["-Dselenium.browser=ie"],
         "data": [],
-        "tags": COMMON_TAGS + ["exclusive-if-local", "ie", "skip-rbe"],
+        "tags": COMMON_TAGS + ["exclusive-if-local", "ie"],
+        "target_compatible_with": ["@platforms//os:windows"],
     },
     "safari": {
         "deps": ["//java/src/org/openqa/selenium/safari"],
-        "jvm_flags": ["-Dselenium.browser=safari"] +
-                     select({
-                         "@selenium//common:macos": ["-Dselenium.skiptest=false"],
-                         "@selenium//conditions:default": ["-Dselenium.skiptest=true"],
-                     }),
+        "jvm_flags": ["-Dselenium.browser=safari"],
         "data": [],
-        "tags": COMMON_TAGS + ["exclusive-if-local", "safari", "skip-rbe"],
+        "tags": COMMON_TAGS + ["exclusive-if-local", "safari"],
+        "target_compatible_with": ["@platforms//os:macos"],
     },
 }
 
@@ -114,6 +113,7 @@ def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS
             tags = BROWSERS[browser]["tags"] + tags + ([] if test == name else ["no-lint"]),
             data = BROWSERS[browser]["data"] + data,
             env_inherit = inherited_env,
+            target_compatible_with = BROWSERS[browser]["target_compatible_with"],
             **stripped_args
         )
         if browser == default_browser:
@@ -136,6 +136,7 @@ def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS
                 data = BROWSERS[browser]["data"] + data + [
                     "@selenium//java/src/org/openqa/selenium/grid:selenium_server",
                 ],
+                target_compatible_with = BROWSERS[browser]["target_compatible_with"],
                 **stripped_args
             )
             all_tests.append(":%s-remote" % test)

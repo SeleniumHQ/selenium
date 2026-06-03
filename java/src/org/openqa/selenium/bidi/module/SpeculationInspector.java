@@ -69,8 +69,18 @@ public class SpeculationInspector implements AutoCloseable {
     this.bidi.removeListener(subscriptionId);
   }
 
+  public void clearListener(String browsingContextId) {
+    Require.nonNull("Browsing context id", browsingContextId);
+    clearListeners(Collections.singleton(browsingContextId));
+  }
+
+  public void clearListeners(Set<String> browsingContextIds) {
+    Require.nonNull("Browsing context id list", browsingContextIds);
+    this.bidi.clearListener(browsingContextIds, this.prefetchStatusUpdatedEvent);
+  }
+
   @Override
   public void close() {
-    this.bidi.clearListener(Speculation.prefetchStatusUpdated());
+    this.bidi.clearListener(this.prefetchStatusUpdatedEvent);
   }
 }

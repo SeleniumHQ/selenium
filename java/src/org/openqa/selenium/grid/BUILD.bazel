@@ -32,13 +32,13 @@ genrule(
 java_binary(
     name = "pinned-grid",
     data = select({
-        "//common:linux": [
+        "//common:use_pinned_linux_chrome": [
             "@linux_chrome//:chrome-linux64/chrome",
             "@linux_chromedriver//:chromedriver",
             "@linux_firefox//:firefox/firefox",
             "@linux_geckodriver//:geckodriver",
         ],
-        "//common:macos": [
+        "//common:use_pinned_macos_chrome": [
             "@mac_chrome//:Chrome.app",
             "@mac_chromedriver//:chromedriver",
             "@mac_firefox//:Firefox.app",
@@ -47,13 +47,13 @@ java_binary(
         "//conditions:default": [],
     }),
     jvm_flags = select({
-        "//common:linux": [
+        "//common:use_pinned_linux_chrome": [
             "-Dwebdriver.chrome.driver=$(location @linux_chromedriver//:chromedriver)",
             "-Dwebdriver.chrome.binary=$(location @linux_chrome//:chrome-linux64/chrome)",
             "-Dwebdriver.gecko.driver=$(location @linux_geckodriver//:geckodriver)",
             "-Dwebdriver.firefox.bin=$(location @linux_firefox//:firefox/firefox)",
         ],
-        "//common:macos": [
+        "//common:use_pinned_macos_chrome": [
             "-Dwebdriver.chrome.driver=$(location @mac_chromedriver//:chromedriver)",
             "-Dwebdriver.chrome.binary=$(location @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
             "-Dwebdriver.gecko.driver=$(location @mac_geckodriver//:geckodriver)",

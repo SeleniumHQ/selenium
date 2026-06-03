@@ -10,12 +10,13 @@ mkdir -p build/failures
 awk '$1 ~ /^\/\// && $2 ~ /(FAILED|TIMEOUT|INCOMPLETE)/ && $3 == "in" { print $1 }' build/bazel-console.log > build/failures/_run1.txt
 
 if [ "$RERUN_WITH_DEBUG" != "true" ]; then
-  exit 0
+  echo "::error::Run Bazel failed and rerun-with-debug is not enabled — propagating failure without retry."
+  exit 1
 fi
 
 if [ ! -s build/failures/_run1.txt ]; then
-  echo "No failed tests to rerun."
-  exit 0
+  echo "::error::Run Bazel failed but no test failures were parsed — likely a build error or infra failure."
+  exit 1
 fi
 
 if [[ "$RUN_CMD" == *"/ci-build.sh"* ]]; then

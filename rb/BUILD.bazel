@@ -81,6 +81,7 @@ rb_gem_build(
         "//rb/lib/selenium/webdriver:bidi",
         "//rb/lib/selenium/webdriver:chrome",
         "//rb/lib/selenium/webdriver:common",
+        "//rb/lib/selenium/webdriver:devtools",
         "//rb/lib/selenium/webdriver:edge",
         "//rb/lib/selenium/webdriver:firefox",
         "//rb/lib/selenium/webdriver:ie",

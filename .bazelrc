@@ -21,10 +21,10 @@ build --flag_alias=pin_browsers=//common:pin_browsers
 build --flag_alias=headless=//common:headless
 
 # Set the default java toolchain
-build --java_language_version=21
-build --java_runtime_version=remotejdk_21
-build --tool_java_language_version=21
-build --tool_java_runtime_version=remotejdk_21
+build --java_language_version=25
+build --java_runtime_version=remotejdk_25
+build --tool_java_language_version=25
+build --tool_java_runtime_version=remotejdk_25
 
 # We target java 11 by default
 build --javacopt="--release 11"
@@ -44,6 +44,9 @@ build --nobuild_runfile_links
 build --allow_unresolved_symlinks
 # Avoid a warning about directory tracking being unsound
 startup --host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1
+# Ceiling, not an allocation; small builds still use what they need.
+# Bazel's auto-sized default is too low for CI
+startup --host_jvm_args=-Xmx8g
 
 # Required for faster TS builds
 build --@aspect_rules_ts//ts:skipLibCheck=always
@@ -57,6 +60,10 @@ query --@aspect_rules_ts//ts:default_to_tsc_transpiler
 # Ensure builds are unpolluted by the user env
 
 build --incompatible_strict_action_env
+
+# Prevent runner-provided ANDROID_HOME triggering rules_android's SDK fetch.
+# Creates a harmless empty repo instead of failing on missing API platforms.
+common --repo_env=ANDROID_HOME=
 
 # Required for prebuilt protoc to be used
 common --@protobuf//bazel/toolchains:prefer_prebuilt_protoc=true
@@ -97,6 +104,7 @@ test --test_env=MOZ_HEADLESS
 test --test_env=SELENIUM_BROWSER
 test --test_env=PYTHON_VERSION
 test --test_env=SE_AVOID_STATS=true
+test --test_env=SE_CACHE_PATH
 
 # Remove once rules_ruby support proper $LOAD_PATH expansion.
 test --test_env=RUBYOPT="-Irb/lib -w"

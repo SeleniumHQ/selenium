@@ -1214,7 +1214,14 @@ disownDataParameters = DisownDataParameters''',
         self._request_id = req.get("request")
 
     def continue_request(self, **kwargs):
-        """Continue the intercepted request."""
+        """Continue the intercepted request.
+
+        Data URLs (``data:``) are skipped silently because browsers do not
+        create an interceptable request entry for them, so calling
+        ``network.continueRequest`` would raise "no such request".
+        """
+        if self.url.startswith("data:"):
+            return
         from selenium.webdriver.common.bidi.common import command_builder as _cb
 
         params = {"request": self._request_id}

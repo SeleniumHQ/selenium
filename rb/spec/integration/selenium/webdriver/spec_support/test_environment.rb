@@ -72,12 +72,11 @@ module Selenium
           @driver_instance || create_driver!(...)
         end
 
-        def reset_driver!(time: 0, **opts, &block)
+        def reset_driver!(**opts, &block)
           # do not reset if the test was marked skipped
           return if opts.delete(:example)&.metadata&.fetch(:skip, nil)
 
           quit_driver
-          sleep time
           driver_instance(**opts, &block)
         end
 
@@ -99,17 +98,9 @@ module Selenium
         end
 
         def remote_server
-          args = if ENV.key?('CHROMEDRIVER_BINARY')
-                   ["-Dwebdriver.chrome.driver=#{rlocation(ENV['CHROMEDRIVER_BINARY'])}"]
-                 elsif ENV.key?('MSEDGEDRIVER_BINARY')
-                   ["-Dwebdriver.edge.driver=#{rlocation(ENV['MSEDGEDRIVER_BINARY'])}"]
-                 elsif ENV.key?('GECKODRIVER_BINARY')
-                   ["-Dwebdriver.gecko.driver=#{rlocation(ENV['GECKODRIVER_BINARY'])}"]
-                 else
-                   %w[--selenium-manager true]
-                 end
+          args = driver_path ? %w[--detect-drivers false] : %w[--selenium-manager true]
           args += %w[--enable-managed-downloads true]
-          args += version_stereotype_args unless browser_version == 'stable'
+          args += driver_configuration if driver_path || browser_version != 'stable'
 
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
@@ -122,12 +113,31 @@ module Selenium
           )
         end
 
-        def version_stereotype_args
-          stereotype = {browserName: w3c_browser_name, browserVersion: browser_version}.to_json
-          ['--driver-configuration',
-           "display-name=#{browser} #{browser_version}",
-           'max-sessions=1',
-           "stereotype=#{stereotype}"]
+        def driver_configuration
+          stereotype = {browserName: w3c_browser_name}
+          stereotype[:browserVersion] = browser_version unless browser_version == 'stable'
+          stereotype[options_key] = {binary: browser_path} if browser_path
+
+          config = ['--driver-configuration',
+                    "display-name=#{browser} #{browser_version}",
+                    'max-sessions=5']
+          config << "webdriver-executable=#{driver_path}" if driver_path
+          config << "stereotype=#{stereotype.to_json}"
+          config
+        end
+
+        def driver_path
+          env = {chrome: 'CHROMEDRIVER_BINARY', edge: 'MSEDGEDRIVER_BINARY', firefox: 'GECKODRIVER_BINARY'}[browser]
+          rlocation(ENV.fetch(env)) if env && ENV.key?(env)
+        end
+
+        def browser_path
+          env = "#{browser.to_s.upcase}_BINARY"
+          rlocation(ENV.fetch(env)) if ENV.key?(env)
+        end
+
+        def options_key
+          {chrome: 'goog:chromeOptions', edge: 'ms:edgeOptions', firefox: 'moz:firefoxOptions'}[browser]
         end
 
         def w3c_browser_name
@@ -138,11 +148,12 @@ module Selenium
           return unless ENV.key?('WD_BAZEL_JAVA_LOCATION')
 
           java_path = File.read(File.expand_path(ENV.fetch('WD_BAZEL_JAVA_LOCATION'))).chomp
-          rlocation(java_path)
+          resolved = rlocation(java_path)
+          Platform.windows? && File.exist?(resolved) ? File.realpath(resolved) : resolved
         end
 
         def rbe?
-          Dir.pwd.start_with?('/mnt/engflow')
+          ENV['REMOTE_BUILD'] == '1'
         end
 
         def reset_remote_server
@@ -203,10 +214,12 @@ module Selenium
         def create_driver!(listener: nil, http_client: nil, **, &block)
           check_for_previous_error
           http_client ||= Remote::Http::Default.new(read_timeout: 30)
+          @safari_pairing_attempts ||= 0
 
           method = :"#{driver}_driver"
           opts = {options: build_options(**), listener: listener, http_client: http_client}
           instance = private_methods.include?(method) ? send(method, **opts) : WebDriver::Driver.for(driver, **opts)
+          @safari_pairing_attempts = 0
           @create_driver_error_count -= 1 unless @create_driver_error_count.zero?
           if block
             begin
@@ -218,6 +231,7 @@ module Selenium
             @driver_instance = instance
           end
         rescue StandardError => e
+          retry if safari_pairing_retry?(e)
           @create_driver_error = e
           @create_driver_error_count += 1
           raise e
@@ -246,6 +260,21 @@ module Selenium
         end
 
         MAX_ERRORS = 4
+
+        # Safari Driver is slow to release previous sessions especially on Grid.
+        SAFARI_PAIRING_RETRIES = 5
+        SAFARI_PAIRING_INTERVAL = 1
+
+        def safari_pairing_retry?(error)
+          msg = 'instance is already paired'
+          return false unless browser.to_s.include?('safari') && error.message.to_s.include?(msg)
+          return false if @safari_pairing_attempts >= SAFARI_PAIRING_RETRIES
+
+          @safari_pairing_attempts += 1
+          WebDriver.logger.warn("Safari pairing busy; retry #{@safari_pairing_attempts}/#{SAFARI_PAIRING_RETRIES}")
+          sleep SAFARI_PAIRING_INTERVAL
+          true
+        end
 
         class DriverInstantiationError < StandardError
         end
@@ -311,7 +340,7 @@ module Selenium
         end
 
         def chrome_options(args: [], **opts)
-          opts[:browser_version] = browser_version unless ENV.key?('CHROME_BINARY')
+          opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= rlocation(ENV['CHROME_BINARY']) if ENV.key?('CHROME_BINARY')
           args << '--headless' if ENV['HEADLESS']
@@ -322,7 +351,7 @@ module Selenium
         end
 
         def edge_options(args: [], **opts)
-          opts[:browser_version] = browser_version unless ENV.key?('EDGE_BINARY')
+          opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= rlocation(ENV['EDGE_BINARY']) if ENV.key?('EDGE_BINARY')
           args << '--headless' if ENV['HEADLESS']
@@ -333,7 +362,7 @@ module Selenium
         end
 
         def firefox_options(args: [], **opts)
-          opts[:browser_version] = browser_version unless ENV.key?('FIREFOX_BINARY')
+          opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= rlocation(ENV['FIREFOX_BINARY']) if ENV.key?('FIREFOX_BINARY')
           opts[:unhandled_prompt_behavior] ||= 'ignore'

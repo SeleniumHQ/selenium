@@ -23,8 +23,8 @@ py_binary(
 )
 
 py_binary(
-    name = "ruff_check",
-    srcs = ["ruff_check.py"],
+    name = "ruff",
+    srcs = ["ruff.py"],
     data = [
         "//py:pyproject.toml",
         "@multitool//tools/ruff",
@@ -34,12 +34,27 @@ py_binary(
 )
 
 py_binary(
-    name = "ruff_format",
-    srcs = ["ruff_format.py"],
+    name = "ruff_check",
+    srcs = ["ruff.py"],
+    args = ["check"],
     data = [
         "//py:pyproject.toml",
         "@multitool//tools/ruff",
     ],
+    main = "ruff.py",
+    visibility = ["//visibility:public"],
+    deps = ["@rules_python//python/runfiles"],
+)
+
+py_binary(
+    name = "ruff_format",
+    srcs = ["ruff.py"],
+    args = ["format"],
+    data = [
+        "//py:pyproject.toml",
+        "@multitool//tools/ruff",
+    ],
+    main = "ruff.py",
     visibility = ["//visibility:public"],
     deps = ["@rules_python//python/runfiles"],
 )

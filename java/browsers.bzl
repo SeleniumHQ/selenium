@@ -26,9 +26,7 @@ chrome_jvm_flags = select({
         "-Dwebdriver.chrome.binary=$(location @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
     ],
     "@selenium//common:use_local_chromedriver": [],
-    "//conditions:default": [
-        "-Dselenium.skiptest=false",
-    ],
+    "//conditions:default": [],
 }) + select({
     "@selenium//common:use_headless_browser": [
         "-Dwebdriver.headless=true",
@@ -44,9 +42,7 @@ chrome_beta_jvm_flags = select({
         "-Dwebdriver.chrome.binary=$(location @mac_beta_chrome//:Chrome.app)/Contents/MacOS/Chrome",
     ],
     "@selenium//common:use_local_chromedriver": [],
-    "//conditions:default": [
-        "-Dselenium.skiptest=false",
-    ],
+    "//conditions:default": [],
 }) + select({
     "@selenium//common:use_headless_browser": [
         "-Dwebdriver.headless=true",
@@ -72,9 +68,7 @@ edge_jvm_flags = select({
         "-Dwebdriver.edge.binary=\"$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft Edge\"",
     ],
     "@selenium//common:use_local_msedgedriver": [],
-    "//conditions:default": [
-        "-Dselenium.skiptest=false",
-    ],
+    "//conditions:default": [],
 }) + select({
     "@selenium//common:use_headless_browser": [
         "-Dwebdriver.headless=true",
@@ -100,9 +94,7 @@ firefox_jvm_flags = select({
         "-Dwebdriver.firefox.bin=$(location @mac_firefox//:Firefox.app)/Contents/MacOS/firefox",
     ],
     "@selenium//common:use_local_geckodriver": [],
-    "//conditions:default": [
-        "-Dselenium.skiptest=false",
-    ],
+    "//conditions:default": [],
 }) + select({
     "@selenium//common:use_headless_browser": [
         "-Dwebdriver.headless=true",
@@ -118,9 +110,7 @@ firefox_beta_jvm_flags = select({
         "-Dwebdriver.firefox.bin=$(location @mac_beta_firefox//:Firefox.app)/Contents/MacOS/firefox",
     ],
     "@selenium//common:use_local_geckodriver": [],
-    "//conditions:default": [
-        "-Dselenium.skiptest=false",
-    ],
+    "//conditions:default": [],
 }) + select({
     "@selenium//common:use_headless_browser": [
         "-Dwebdriver.headless=true",

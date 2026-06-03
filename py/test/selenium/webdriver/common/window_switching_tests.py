@@ -43,7 +43,6 @@ def close_windows(driver):
     driver.switch_to.window(main_windows_handle)
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_switch_focus_to_anew_window_when_it_is_opened_and_not_stop_future_operations(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
@@ -62,7 +61,6 @@ def test_should_switch_focus_to_anew_window_when_it_is_opened_and_not_stop_futur
     assert driver.current_window_handle == handle
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_can_switch_to_window_by_name(driver, pages):
     pages.load("xhtmlTest.html")
     handles = driver.window_handles
@@ -94,7 +92,6 @@ def test_should_throw_no_such_window_exception_on_an_attempt_to_get_its_handle(d
         driver.current_window_handle
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 @pytest.mark.xfail_ie
 def test_should_throw_no_such_window_exception_on_any_operation_if_awindow_is_closed(driver, pages):
     pages.load("xhtmlTest.html")

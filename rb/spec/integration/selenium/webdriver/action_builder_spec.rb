@@ -38,11 +38,13 @@ module Selenium
           expect(driver.find_element(id: 'result').text.strip).to be_empty
         end
 
-        it 'sends keys to element', only: {browser: %i[chrome edge firefox]} do
+        it 'sends keys to element' do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
           driver.execute_script('arguments[0].scrollIntoView({block: "center", inline: "nearest"});', input)
+
+          input.click
 
           driver.action.send_keys(input, 'abcd').perform
           wait.until { input.property(:value).length == 4 }
@@ -159,15 +161,16 @@ module Selenium
         # https://issues.chromium.org/issues/400087471
         before { reset_driver! if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome }
 
-        it 'presses pointer twice', except: {browser: %i[safari safari_preview]} do
+        it 'presses pointer twice' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
           driver.action.double_click(element).perform
+          wait.until { element.property(:value) == 'DoubleClicked' }
           expect(element.property(:value)).to eq('DoubleClicked')
         end
 
-        it 'executes with equivalent pointer methods', except: {browser: %i[safari safari_preview]} do
+        it 'executes with equivalent pointer methods' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
@@ -175,6 +178,7 @@ module Selenium
                 .pointer_down(:left).pointer_up(:left)
                 .pointer_down(:left).pointer_up(:left)
                 .perform
+          wait.until { element.property(:value) == 'DoubleClicked' }
           expect(element.property(:value)).to eq('DoubleClicked')
         end
       end

@@ -134,9 +134,6 @@ def test_handler_with_classic_navigation(driver, pages):
     driver.network.remove_request_handler("before_request", callback_id)
 
 
-@pytest.mark.xfail_chrome(reason="Data URLs in Network requests are not implemented in Chrome yet")
-@pytest.mark.xfail_edge(reason="Data URLs in Network requests are not implemented in Edge yet")
-@pytest.mark.xfail_firefox(reason="Data URLs in Network requests are not implemented in Firefox yet")
 def test_handler_with_data_url_request(driver, pages):
     data_requests = []
     exceptions = []

@@ -32,7 +32,7 @@ module Selenium
             .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
 
           bridge.create_session({})
-          bridge.extend(Features)
+          bridge.extend(described_class)
           bridge.add_commands(Features::REMOTE_COMMANDS)
         end
 

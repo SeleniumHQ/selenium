@@ -18,7 +18,12 @@ env_logger = "0.11.10"
 regex = "1.12.3"
 tokio = { version = "1.52.3", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
 tempfile = "3.27.0"
-reqwest = { version = "0.13.3", default-features = false, features = ["rustls"] }
+reqwest = { version = "0.13.3", default-features = false, features = ["rustls-no-provider"] }
+# Pin the ring crypto backend so aws-lc-sys (and its C build requirements) are
+# never compiled. The ring provider must be installed at process startup; see
+# main.rs. rustls-platform-verifier (pulled in by reqwest) is crypto-agnostic
+# and works with whichever provider is installed as the process default.
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12", "logging"] }
 zip = { version = "8", default-features = false, features = ["deflate"] }
 directories = "6.0.0"
 serde = { version = "1.0.228", features = ["derive"] }

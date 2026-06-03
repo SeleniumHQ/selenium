@@ -18,7 +18,6 @@
 package org.openqa.selenium.testing;
 
 import static java.util.Objects.requireNonNull;
-import static org.assertj.core.api.Assumptions.assumeThat;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,7 +27,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.Capabilities;
@@ -57,11 +55,6 @@ public abstract class JupiterTestBase {
   protected Wait<WebDriver> wait;
   protected Wait<WebDriver> shortWait;
   protected WebDriver localDriver;
-
-  @BeforeAll
-  static void shouldTestBeRunAtAll() {
-    assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
-  }
 
   @BeforeEach
   final void prepareEnvironment() {

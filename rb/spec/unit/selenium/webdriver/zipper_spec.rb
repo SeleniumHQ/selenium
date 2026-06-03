@@ -24,7 +24,8 @@ module Selenium
     describe Zipper do
       let(:base_file_name) { 'file.txt' }
       let(:file_content)   { 'content' }
-      let(:zip_file)       { File.join(Dir.tmpdir, 'test.zip') }
+      let(:tmp_dir)        { Dir.mktmpdir('webdriver-spec-zip') }
+      let(:zip_file)       { File.join(tmp_dir, 'test.zip') }
       let(:dir_to_zip)     { Dir.mktmpdir('webdriver-spec-zipper') }
 
       def create_file
@@ -34,7 +35,7 @@ module Selenium
         filename
       end
 
-      after { FileUtils.rm_rf zip_file }
+      after { FileUtils.rm_rf tmp_dir }
 
       describe '#zip' do
         it 'a file' do
@@ -59,7 +60,6 @@ module Selenium
           filename = create_file
           File.symlink(filename, File.join(dir_to_zip, 'link'))
 
-          zip_file = File.join(Dir.tmpdir, 'test.zip')
           File.open(zip_file, 'wb') do |io|
             io << Base64.decode64(described_class.zip(dir_to_zip))
           end

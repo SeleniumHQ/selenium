@@ -183,8 +183,9 @@ impl SeleniumManager for IExplorerManager {
                     Ok(driver_version)
                 } else {
                     Err(anyhow!(format!(
-                        "{} release not available",
-                        self.get_driver_name()
+                        "{} release not available. Check available versions at {}",
+                        self.get_driver_name(),
+                        DRIVER_URL
                     )))
                 }
             }

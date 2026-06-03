@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.netty.server;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -53,5 +54,29 @@ class WebSocketFrameProxyTest {
 
     // First failure should latch upstreamClosing so subsequent frames short-circuit.
     assertThat(upstreamClosing.get()).isTrue();
+  }
+
+  @Test
+  void truncateCloseReasonReturnsShortReasonUnchanged() {
+    assertThat(WebSocketFrameProxy.truncateCloseReason("upstream gone")).isEqualTo("upstream gone");
+    assertThat(WebSocketFrameProxy.truncateCloseReason("")).isEqualTo("");
+    assertThat(WebSocketFrameProxy.truncateCloseReason(null)).isEqualTo("");
+  }
+
+  @Test
+  void truncateCloseReasonStaysWithinTheWebSocketByteLimit() {
+    // RFC 6455 §5.5.1 caps close-frame reasons at 123 bytes UTF-8. Build a 200-byte reason out
+    // of a two-byte UTF-8 character ('é') so the truncation is forced to cut where a naïve
+    // byte-level approach would split a codepoint and produce a U+FFFD replacement.
+    StringBuilder tooLong = new StringBuilder();
+    for (int i = 0; i < 100; i++) {
+      tooLong.append('é');
+    }
+
+    String truncated = WebSocketFrameProxy.truncateCloseReason(tooLong.toString());
+
+    assertThat(truncated.getBytes(UTF_8)).hasSizeLessThanOrEqualTo(123);
+    assertThat(truncated).doesNotContain("�");
+    assertThat(truncated).endsWith("...");
   }
 }
