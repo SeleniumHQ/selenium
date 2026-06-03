@@ -71,11 +71,10 @@ See language-specific AGENTS.md for applicable deprecation usage
 - PRs should focus on one thing; we squash PRs to default `trunk` branch
 - Prefer copying files to deleting and recreating to maintain git history
 - Avoid running `bazel clean --expunge`
-- Formatting is a pre-push concern, not a post-edit one. If `./scripts/format.sh --pre-push` is already in the user's pre-push hook, leave it alone — the hook handles it. If not, run or suggest `./scripts/format.sh` before pushing to avoid CI formatter failures, and recommend adding the hook (once):
-  ```bash
-  #!/usr/bin/env bash
-  ./scripts/format.sh --pre-push
-  ```
+- Formatting: 
+  - `./scripts/format.sh` without arguments will run everything similar to running `./go format` but with failure information; With `--pre-commit` flag it only checks staged changes; With `--pre-push` flag it only checks committed changes with trunk.
+  - If `./scripts/format.sh` is already referenced in a pre-commit or pre-push hook, let the hooks handle formatting 
+  - If not, run or suggest `./scripts/format.sh --pre-push` before pushing to avoid CI formatter failures
 
 ## High risk changes (request verification before modifying unless explicitly instructed)
 - Everything referenced above as high risk
