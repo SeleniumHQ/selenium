@@ -738,6 +738,7 @@ generate_bidi(
     ],
     extra_srcs = [
         "//py/private:_event_manager.py",
+        "//py/private:_network_handlers.py",
         "//py/private:cdp.py",
     ],
     generator = ":generate_bidi",

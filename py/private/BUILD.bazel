@@ -2,6 +2,7 @@ load("@rules_python//python:defs.bzl", "py_binary")
 
 exports_files([
     "_event_manager.py",
+    "_network_handlers.py",
     "bidi_enhancements_manifest.py",
     "cdp.py",
 ])
