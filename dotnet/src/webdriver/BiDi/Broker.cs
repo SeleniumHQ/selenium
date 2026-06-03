@@ -99,11 +99,7 @@ internal sealed class Broker : IAsyncDisposable
                 JsonSerializer.Serialize(writer, @params, descriptor.ParamsTypeInfo);
                 if (options is not null)
                 {
-                    foreach (var kvp in options.AdditionalMessageData)
-                    {
-                        writer.WritePropertyName(kvp.Key);
-                        kvp.Value.WriteTo(writer);
-                    }
+                    options.AdditionalMessageData.WriteTo(writer);
                 }
                 writer.WriteEndObject();
             }
@@ -197,7 +193,7 @@ internal sealed class Broker : IAsyncDisposable
         string? message = default;
         Utf8JsonReader resultReader = default;
         Utf8JsonReader paramsReader = default;
-        ImmutableDictionary<string, JsonElement>.Builder? additionalMessageData = null;
+        Dictionary<string, JsonElement>? additionalMessageData = null;
 
         Utf8JsonReader reader = new(data);
         reader.Read(); // "{"
@@ -247,7 +243,7 @@ internal sealed class Broker : IAsyncDisposable
             {
                 var propName = reader.GetString()!;
                 reader.Read();
-                additionalMessageData ??= ImmutableDictionary.CreateBuilder<string, JsonElement>();
+                additionalMessageData ??= [];
                 additionalMessageData[propName] = JsonSerializer.Deserialize<JsonElement>(ref reader);
             }
 
@@ -269,7 +265,7 @@ internal sealed class Broker : IAsyncDisposable
 
                         if (additionalMessageData is not null)
                         {
-                            ((EmptyResult)commandResult).AdditionalMessageData = additionalMessageData.ToImmutable();
+                            ((EmptyResult)commandResult).AdditionalMessageData = AdditionalData.FromDictionary(additionalMessageData);
                         }
 
                         command.TaskCompletionSource.TrySetResult((EmptyResult)commandResult);

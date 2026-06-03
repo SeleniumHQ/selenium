@@ -40,10 +40,24 @@ public record Parameters
     public Dictionary<string, JsonElement>? RawAdditionalData { get; set; }
 
     [JsonIgnore]
-    public ImmutableDictionary<string, JsonElement> AdditionalData
+    public AdditionalData AdditionalData
     {
-        get => RawAdditionalData?.ToImmutableDictionary() ?? ImmutableDictionary<string, JsonElement>.Empty;
-        init => RawAdditionalData = value is null || value.IsEmpty ? null : new(value);
+        get => RawAdditionalData is null ? AdditionalData.Empty : AdditionalData.FromDictionary(RawAdditionalData);
+        init
+        {
+            if (value.IsEmpty)
+            {
+                RawAdditionalData = null;
+            }
+            else
+            {
+                RawAdditionalData = [];
+                foreach (var prop in value)
+                {
+                    RawAdditionalData[prop.Name] = prop.Value;
+                }
+            }
+        }
     }
 }
 
@@ -51,11 +65,9 @@ public abstract record CommandOptions
 {
     public TimeSpan? Timeout { get; init; }
 
-    public ImmutableDictionary<string, JsonElement> AdditionalData { get; init; }
-        = ImmutableDictionary<string, JsonElement>.Empty;
+    public AdditionalData AdditionalData { get; init; }
 
-    public ImmutableDictionary<string, JsonElement> AdditionalMessageData { get; init; }
-        = ImmutableDictionary<string, JsonElement>.Empty;
+    public AdditionalData AdditionalMessageData { get; init; }
 }
 
 public abstract record EmptyResult
@@ -65,12 +77,11 @@ public abstract record EmptyResult
     public Dictionary<string, JsonElement>? RawAdditionalData { get; set; }
 
     [JsonIgnore]
-    public ImmutableDictionary<string, JsonElement> AdditionalData
+    public AdditionalData AdditionalData
     {
-        get => RawAdditionalData?.ToImmutableDictionary() ?? ImmutableDictionary<string, JsonElement>.Empty;
-        init => RawAdditionalData = value is null || value.IsEmpty ? null : new(value);
+        get => RawAdditionalData is null ? AdditionalData.Empty : AdditionalData.FromDictionary(RawAdditionalData);
     }
 
-    public ImmutableDictionary<string, JsonElement> AdditionalMessageData { get; internal set; }
-        = ImmutableDictionary<string, JsonElement>.Empty;
+    [JsonIgnore]
+    public AdditionalData AdditionalMessageData { get; internal set; }
 }
