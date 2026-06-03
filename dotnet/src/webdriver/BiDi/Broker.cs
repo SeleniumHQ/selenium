@@ -96,6 +96,17 @@ internal sealed class Broker : IAsyncDisposable
                 writer.WriteNumber("id"u8, id);
                 writer.WriteString("method"u8, descriptor.Method);
                 writer.WritePropertyName("params"u8);
+
+                if (options is { AdditionalData: { IsEmpty: false } additionalData }
+                    && !ReferenceEquals(@params, Parameters.Empty))
+                {
+                    @params.RawAdditionalData ??= [];
+                    foreach (var prop in additionalData)
+                    {
+                        @params.RawAdditionalData[prop.Name] = prop.Value;
+                    }
+                }
+
                 JsonSerializer.Serialize(writer, @params, descriptor.ParamsTypeInfo);
                 if (options is not null)
                 {

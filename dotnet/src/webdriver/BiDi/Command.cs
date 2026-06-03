@@ -37,7 +37,7 @@ public record Parameters
 
     [JsonExtensionData]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public Dictionary<string, JsonElement>? RawAdditionalData { get; set; }
+    public Dictionary<string, JsonElement>? RawAdditionalData { get; internal set; }
 
     [JsonIgnore]
     public AdditionalData AdditionalData
