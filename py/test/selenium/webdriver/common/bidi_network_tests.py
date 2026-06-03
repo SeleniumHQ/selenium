@@ -231,10 +231,8 @@ def test_change_request_headers(driver, pages):
         driver.network.remove_request_handler(handler_id)
 
 
+@pytest.mark.xfail_firefox(reason="Firefox does not yet support rewriting the URL in network.continueRequest")
 def test_change_request_url(driver, pages):
-    if driver.caps["browserName"].lower() == "firefox":
-        pytest.skip(reason="Firefox does not yet support rewriting the URL in network.continueRequest")
-
     def rewrite_url(request: Request):
         request.set_url(pages.url("simpleTest.html"))
 
