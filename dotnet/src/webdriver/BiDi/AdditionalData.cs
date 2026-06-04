@@ -39,6 +39,12 @@ public readonly struct AdditionalData
     public AdditionalData([StringSyntax(StringSyntaxAttribute.Json)] string json)
     {
         using var doc = JsonDocument.Parse(json);
+
+        if (doc.RootElement.ValueKind != JsonValueKind.Object)
+        {
+            throw new ArgumentException("JSON must be an object.", nameof(json));
+        }
+        
         _data = doc.RootElement.Clone();
     }
 
