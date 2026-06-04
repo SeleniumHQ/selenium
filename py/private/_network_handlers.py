@@ -190,23 +190,33 @@ def glob_to_regex(pattern: str) -> re.Pattern:
     return re.compile("".join(parts) + r"\Z")
 
 
-def _glob_component(component: str) -> str:
-    """Collapse ``**`` to the single URLPattern wildcard ``*``."""
-    return component.replace("**", "*")
+def _literal_component(component: str) -> str | None:
+    """Return the component when it is literal, ``None`` when it has wildcards.
+
+    ``UrlPatternPattern`` properties match literally and browsers reject
+    wildcard characters in them ("Forbidden characters"), while omitted
+    properties match anything — so wildcard-bearing components are omitted
+    from the browser-side filter and Python-side glob matching narrows the
+    results.
+    """
+    if not component or "*" in component or "?" in component:
+        return None
+    return component
 
 
 def glob_to_url_pattern(pattern: str) -> dict | None:
     """Translate a URL glob into a BiDi ``network.UrlPatternPattern`` dict.
 
-    Returns ``{}`` when the glob matches everything (no browser-side filter
-    needed) and ``None`` when the glob cannot be expressed as a UrlPattern —
-    callers should then intercept everything and rely on Python-side matching.
+    Only the literal components of the glob are translated; components
+    containing wildcards are omitted (omitted UrlPatternPattern properties
+    match anything), so the browser-side filter may be broader than the glob
+    and callers must still apply Python-side matching.  Returns ``{}`` when
+    no browser-side filter can be derived (match everything) and ``None``
+    when the glob is not a URL-shaped pattern.
     """
     if pattern in ("*", "**"):
         return {}
-    # ``?`` is both a glob wildcard and the URL query separator; a UrlPattern
-    # translation would be ambiguous, so defer to Python-side matching.
-    if "://" not in pattern or "?" in pattern:
+    if "://" not in pattern:
         return None
     scheme, _, rest = pattern.partition("://")
     host, slash, path = rest.partition("/")
@@ -214,14 +224,16 @@ def glob_to_url_pattern(pattern: str) -> dict | None:
     if ":" in host:
         host, _, port = host.partition(":")
     result: dict[str, Any] = {"type": "pattern"}
-    if scheme not in ("*", "**", ""):
-        result["protocol"] = _glob_component(scheme)
-    if host not in ("*", "**", ""):
-        result["hostname"] = _glob_component(host)
-    if port:
+    if _literal_component(scheme):
+        result["protocol"] = scheme
+    if _literal_component(host):
+        result["hostname"] = host
+    if port and _literal_component(port):
         result["port"] = port
-    if slash:
-        result["pathname"] = _glob_component("/" + path)
+    if slash and _literal_component("/" + path):
+        result["pathname"] = "/" + path
+    if len(result) == 1:
+        return {}
     return result
 
 

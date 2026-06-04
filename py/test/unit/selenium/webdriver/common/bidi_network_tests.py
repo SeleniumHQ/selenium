@@ -366,12 +366,12 @@ def test_translatable_patterns_are_sent_to_browser():
     conn = FakeConnection()
     network = Network(conn)
 
-    network.add_request_handler(["https://*.tracking.com/**"], lambda request: None)
+    network.add_request_handler(["https://api.tracking.com/**"], lambda request: None)
 
+    # Wildcard-bearing components are omitted: UrlPatternPattern properties
+    # match literally and browsers reject wildcard characters in them.
     params = conn.commands_named("network.addIntercept")[0]["params"]
-    assert params["urlPatterns"] == [
-        {"type": "pattern", "protocol": "https", "hostname": "*.tracking.com", "pathname": "/*"}
-    ]
+    assert params["urlPatterns"] == [{"type": "pattern", "protocol": "https", "hostname": "api.tracking.com"}]
 
 
 def test_blocked_event_owned_by_another_intercept_is_left_alone():
@@ -576,9 +576,9 @@ def test_response_translatable_patterns_are_sent_to_browser():
 
     params = conn.commands_named("network.addIntercept")[0]["params"]
     assert params["phases"] == ["responseStarted"]
-    assert params["urlPatterns"] == [
-        {"type": "pattern", "protocol": "https", "hostname": "*.tracking.com", "pathname": "/*"}
-    ]
+    # The wildcard hostname and pathname are omitted from the browser-side
+    # filter; Python-side glob matching narrows the results.
+    assert params["urlPatterns"] == [{"type": "pattern", "protocol": "https"}]
 
 
 def test_blocked_response_owned_by_another_intercept_is_left_alone():
@@ -794,9 +794,7 @@ def test_auth_intercept_uses_auth_required_phase():
 
     params = conn.commands_named("network.addIntercept")[0]["params"]
     assert params["phases"] == ["authRequired"]
-    assert params["urlPatterns"] == [
-        {"type": "pattern", "protocol": "https", "hostname": "secure.example.com", "pathname": "/*"}
-    ]
+    assert params["urlPatterns"] == [{"type": "pattern", "protocol": "https", "hostname": "secure.example.com"}]
 
 
 def test_blocked_auth_event_owned_by_another_intercept_is_left_alone():
@@ -882,19 +880,27 @@ def test_glob_to_regex_matching():
 def test_glob_to_url_pattern_translation():
     assert glob_to_url_pattern("**") == {}
     assert glob_to_url_pattern("**/analytics/**") is None
+    # Wildcard-bearing components are omitted: UrlPatternPattern properties
+    # match literally and browsers reject wildcard characters in them.
     assert glob_to_url_pattern("https://api.example.com/*") == {
         "type": "pattern",
         "protocol": "https",
         "hostname": "api.example.com",
-        "pathname": "/*",
     }
     assert glob_to_url_pattern("https://example.com:8080/**") == {
         "type": "pattern",
         "protocol": "https",
         "hostname": "example.com",
         "port": "8080",
-        "pathname": "/*",
     }
+    assert glob_to_url_pattern("https://example.com/login") == {
+        "type": "pattern",
+        "protocol": "https",
+        "hostname": "example.com",
+        "pathname": "/login",
+    }
+    assert glob_to_url_pattern("https://*.example.com/**") == {"type": "pattern", "protocol": "https"}
+    assert glob_to_url_pattern("**://**/**") == {}
 
 
 def test_globs_to_url_patterns_falls_back_when_any_pattern_is_untranslatable():
