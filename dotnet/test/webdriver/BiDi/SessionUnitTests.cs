@@ -79,7 +79,7 @@ class SessionUnitTests
         Assert.That(status.Message, Is.EqualTo("running"));
 
         Assert.That(_transport.SentMessages, Has.Count.EqualTo(1));
-        Assert.That(_transport.SentMessages[0], Does.Contain("\"method\":\"session.status\""));
+        Assert.That(_transport.SentMessages[0], Does.Contain(""""method":"session.status""""));
     }
 
     [Test]
@@ -115,26 +115,58 @@ class SessionUnitTests
     }
 
     [Test]
-    public async Task CanGetStatusWithAdditionalData()
+    public async Task StatusResultExposesAdditionalData()
+    {
+        var task = _bidi.StatusAsync();
+        await _transport.WaitForSentMessagesAsync(1);
+        _transport.EnqueueSuccess(1, """{"ready":true,"message":"running","foo":"value"}""");
+
+        var status = await task;
+
+        Assert.That(status.AdditionalData["foo"].GetString(), Is.EqualTo("value"));
+    }
+
+    [Test]
+    public async Task StatusResultExposesAdditionalMessageData()
+    {
+        var task = _bidi.StatusAsync();
+        await _transport.WaitForSentMessagesAsync(1);
+        _transport.Enqueue("""{"foo":"topLevel","id":1,"type":"success","result":{"ready":true,"message":"running"}}""");
+
+        var status = await task;
+
+        Assert.That(status.AdditionalMessageData["foo"].GetString(), Is.EqualTo("topLevel"));
+    }
+
+    [Test]
+    public async Task CommandAdditionalDataIsSerializedIntoParams()
     {
         var task = _bidi.StatusAsync(new()
         {
-            AdditionalData = new JsonObject
-            {
-                ["foo"] = "bar"
-            },
+            AdditionalData = new JsonObject { ["foo"] = "bar" }
+        });
+
+        await _transport.WaitForSentMessagesAsync(1);
+
+        Assert.That(_transport.SentMessages[0], Does.Contain(""""foo":"bar""""));
+
+        _transport.EnqueueSuccess(1, """{"ready":true,"message":"running"}""");
+        await task;
+    }
+
+    [Test]
+    public async Task CommandAdditionalMessageDataIsSerializedAsTopLevelFields()
+    {
+        var task = _bidi.StatusAsync(new()
+        {
             AdditionalMessageData = """{"baz": "qux"}"""
         });
 
         await _transport.WaitForSentMessagesAsync(1);
 
-        Assert.That(_transport.SentMessages[0], Does.Contain("\"foo\":\"bar\""));
-        Assert.That(_transport.SentMessages[0], Does.Contain("\"baz\":\"qux\""));
+        Assert.That(_transport.SentMessages[0], Does.Contain(""""{"baz":"qux",""""));
 
         _transport.EnqueueSuccess(1, """{"ready":true,"message":"running"}""");
-
-        var status = await task;
-
-        Assert.That(status, Is.Not.Null);
+        await task;
     }
 }
