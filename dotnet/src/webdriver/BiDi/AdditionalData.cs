@@ -76,9 +76,17 @@ public readonly struct AdditionalData
 
     public bool IsEmpty => _data.ValueKind != JsonValueKind.Object;
 
-    public JsonElement this[string key] => _data.GetProperty(key);
+    public JsonElement this[string key] => IsEmpty ? throw new KeyNotFoundException(key) : _data.GetProperty(key);
 
-    public bool TryGetValue(string key, out JsonElement value) => _data.TryGetProperty(key, out value);
+    public bool TryGetValue(string key, out JsonElement value)
+    {
+        if (IsEmpty)
+        {
+            value = default;
+            return false;
+        }
+        return _data.TryGetProperty(key, out value);
+    }
 
     public int Count => IsEmpty ? 0 : _data.EnumerateObject().Count();
 
