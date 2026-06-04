@@ -42,8 +42,7 @@ public sealed class BiDiOptionsBuilder
     /// <returns>The current <see cref="BiDiOptionsBuilder"/> instance for chaining.</returns>
     public BiDiOptionsBuilder UseWebSocket(Action<ClientWebSocketOptions>? configure = null)
     {
-        TransportFactory = (uri, ct) => WebSocketTransport.ConnectAsync(uri, configure, ct);
-        return this;
+        return UseTransport((uri, ct) => WebSocketTransport.ConnectAsync(uri, configure, ct));
     }
 
     /// <summary>
@@ -53,7 +52,12 @@ public sealed class BiDiOptionsBuilder
     /// <returns>The current <see cref="BiDiOptionsBuilder"/> instance for chaining.</returns>
     public BiDiOptionsBuilder UseTransport(ITransport transport)
     {
-        TransportFactory = (_, _) => Task.FromResult(transport);
+        return UseTransport((_, _) => Task.FromResult(transport));
+    }
+
+    private BiDiOptionsBuilder UseTransport(Func<Uri, CancellationToken, Task<ITransport>> factory)
+    {
+        TransportFactory = factory;
         return this;
     }
 }
