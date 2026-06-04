@@ -19,7 +19,7 @@
 
 using OpenQA.Selenium.BiDi;
 
-namespace OpenQA.Selenium.Tests.BiDi.Session;
+namespace OpenQA.Selenium.Tests.BiDi;
 
 [Parallelizable(ParallelScope.All)]
 [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
