@@ -18,7 +18,7 @@
 import pytest
 
 from selenium.webdriver.common.bidi._network_handlers import glob_to_regex, glob_to_url_pattern, globs_to_url_patterns
-from selenium.webdriver.common.bidi.network import Network, Request, Response
+from selenium.webdriver.common.bidi.network import AuthenticationRequest, Network, Request, Response
 
 
 class FakeConnection:
@@ -113,6 +113,37 @@ def make_response_started_event(
             "statusText": "OK",
             "headers": [{"name": "content-type", "value": {"type": "string", "value": "text/html"}}],
             "mimeType": "text/html",
+        },
+        "timestamp": 1,
+    }
+
+
+def make_auth_required_event(
+    url="https://secure.example.com/api/data",
+    request_id="req-1",
+    intercepts=("intercept-1",),
+    blocked=True,
+    challenges=({"scheme": "basic", "realm": "secure-area"},),
+):
+    return {
+        "context": "ctx-1",
+        "isBlocked": blocked,
+        "intercepts": list(intercepts),
+        "redirectCount": 0,
+        "request": {
+            "request": request_id,
+            "url": url,
+            "method": "GET",
+            "headers": [],
+            "cookies": [],
+        },
+        "response": {
+            "url": url,
+            "status": 401,
+            "statusText": "Unauthorized",
+            "headers": [],
+            "mimeType": "text/html",
+            "authChallenges": list(challenges),
         },
         "timestamp": 1,
     }
@@ -648,6 +679,195 @@ def test_data_url_responses_are_not_continued():
     dispatch_event(conn, make_response_started_event(url="data:image/gif;base64,R0lGODlh"))
 
     assert conn.commands_named("network.continueResponse") == []
+
+
+def test_authentication_request_parses_event_properties():
+    request = AuthenticationRequest(FakeConnection(), make_auth_required_event())
+
+    assert request.url == "https://secure.example.com/api/data"
+    assert request.realm == "secure-area"
+    assert request.scheme == "basic"
+    assert request.challenges == [{"scheme": "basic", "realm": "secure-area"}]
+
+
+def test_auth_observer_continues_with_default():
+    conn = FakeConnection()
+    network = Network(conn)
+    seen = []
+
+    network.add_authentication_handler(lambda auth: seen.append((auth.url, auth.realm)))
+    dispatch_event(conn, make_auth_required_event())
+
+    assert seen == [("https://secure.example.com/api/data", "secure-area")]
+    continues = conn.commands_named("network.continueWithAuth")
+    assert len(continues) == 1
+    assert continues[0]["params"] == {"request": "req-1", "action": "default"}
+
+
+def test_provide_credentials_sends_credentials():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_authentication_handler(lambda auth: auth.provide_credentials("user", "secret"))
+    dispatch_event(conn, make_auth_required_event())
+
+    continues = conn.commands_named("network.continueWithAuth")
+    assert len(continues) == 1
+    assert continues[0]["params"] == {
+        "request": "req-1",
+        "action": "provideCredentials",
+        "credentials": {"type": "password", "username": "user", "password": "secret"},
+    }
+
+
+def test_cancel_sends_cancel_action():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_authentication_handler(lambda auth: auth.cancel())
+    dispatch_event(conn, make_auth_required_event())
+
+    continues = conn.commands_named("network.continueWithAuth")
+    assert len(continues) == 1
+    assert continues[0]["params"] == {"request": "req-1", "action": "cancel"}
+
+
+def test_cancel_takes_precedence_over_credentials():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_authentication_handler(lambda auth: auth.provide_credentials("user", "secret"))
+    network.add_authentication_handler(lambda auth: auth.cancel())
+    dispatch_event(conn, make_auth_required_event(intercepts=("intercept-1", "intercept-2")))
+
+    continues = conn.commands_named("network.continueWithAuth")
+    assert len(continues) == 1
+    assert continues[0]["params"] == {"request": "req-1", "action": "cancel"}
+
+
+def test_first_provided_credentials_win():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_authentication_handler(lambda auth: auth.provide_credentials("first", "pw1"))
+    network.add_authentication_handler(lambda auth: auth.provide_credentials("second", "pw2"))
+    dispatch_event(conn, make_auth_required_event(intercepts=("intercept-1", "intercept-2")))
+
+    continues = conn.commands_named("network.continueWithAuth")
+    assert len(continues) == 1
+    assert continues[0]["params"]["credentials"]["username"] == "first"
+
+
+def test_auth_handler_exception_still_continues_with_default():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    def broken(auth):
+        raise RuntimeError("boom")
+
+    network.add_authentication_handler(broken)
+    dispatch_event(conn, make_auth_required_event())
+
+    continues = conn.commands_named("network.continueWithAuth")
+    assert len(continues) == 1
+    assert continues[0]["params"]["action"] == "default"
+
+
+def test_auth_glob_patterns_filter_callbacks():
+    conn = FakeConnection()
+    network = Network(conn)
+    seen = []
+
+    network.add_authentication_handler(["https://secure.example.com/**"], lambda auth: seen.append("secure"))
+    network.add_authentication_handler(["https://other.example.com/**"], lambda auth: seen.append("other"))
+    dispatch_event(conn, make_auth_required_event(intercepts=("intercept-1", "intercept-2")))
+
+    assert seen == ["secure"]
+    assert len(conn.commands_named("network.continueWithAuth")) == 1
+
+
+def test_auth_intercept_uses_auth_required_phase():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_authentication_handler(["https://secure.example.com/**"], lambda auth: None)
+
+    params = conn.commands_named("network.addIntercept")[0]["params"]
+    assert params["phases"] == ["authRequired"]
+    assert params["urlPatterns"] == [
+        {"type": "pattern", "protocol": "https", "hostname": "secure.example.com", "pathname": "/*"}
+    ]
+
+
+def test_blocked_auth_event_owned_by_another_intercept_is_left_alone():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_authentication_handler(lambda auth: None)
+    dispatch_event(conn, make_auth_required_event(intercepts=("foreign-intercept",)))
+
+    assert conn.commands_named("network.continueWithAuth") == []
+
+
+def test_add_authentication_handler_requires_callable():
+    network = Network(FakeConnection())
+
+    with pytest.raises(TypeError, match="callable"):
+        network.add_authentication_handler(["**/api/**"], "not-a-callback")
+
+
+def test_remove_authentication_handler_removes_intercept_and_subscription():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    handler_id = network.add_authentication_handler(lambda auth: None)
+    network.remove_authentication_handler(handler_id)
+
+    assert conn.commands_named("network.removeIntercept") == [
+        {"method": "network.removeIntercept", "params": {"intercept": "intercept-1"}}
+    ]
+    assert conn.commands_named("session.unsubscribe") == [
+        {"method": "session.unsubscribe", "params": {"subscriptions": ["subscription-1"]}}
+    ]
+    with pytest.raises(ValueError, match=r"Authentication handler .* not found"):
+        network.remove_authentication_handler(handler_id)
+
+
+def test_clear_authentication_handlers_clears_only_authentication_handlers():
+    conn = FakeConnection()
+    network = Network(conn)
+    seen = []
+
+    network.add_request_handler(lambda request: seen.append(("request", request.url)))
+    network.add_authentication_handler(lambda auth: seen.append(("auth", auth.url)))
+    network.clear_authentication_handlers()
+
+    # Only the authentication handler's intercept (intercept-2) is removed.
+    removed = {c["params"]["intercept"] for c in conn.commands_named("network.removeIntercept")}
+    assert removed == {"intercept-2"}
+
+    dispatch_event_to(conn, make_before_request_event(), "network.beforeRequestSent")
+    assert seen == [("request", "https://example.com/api/data")]
+
+
+def test_clear_request_handlers_preserves_authentication_handlers():
+    conn = FakeConnection()
+    network = Network(conn)
+    seen = []
+
+    network.add_request_handler(lambda request: seen.append(("request", request.url)))
+    network.add_authentication_handler(lambda auth: seen.append(("auth", auth.url)))
+    network.clear_request_handlers()
+
+    # The request handler's intercept is removed; the auth handler's stays.
+    removed = {c["params"]["intercept"] for c in conn.commands_named("network.removeIntercept")}
+    assert removed == {"intercept-1"}
+
+    # The auth registry resubscribed after the event-handler sweep and still
+    # observes and reconciles challenges.
+    dispatch_event_to(conn, make_auth_required_event(intercepts=("intercept-2",)), "network.authRequired")
+    assert seen == [("auth", "https://secure.example.com/api/data")]
+    assert len(conn.commands_named("network.continueWithAuth")) == 1
 
 
 def test_glob_to_regex_matching():

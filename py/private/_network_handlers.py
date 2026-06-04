@@ -43,6 +43,15 @@ it.  Reconciliation works the same way: a mutated body requires
 a new body), other mutations are applied via ``network.continueResponse``, and
 untouched responses are continued unmodified.
 
+Handlers registered through :meth:`AuthHandlerRegistry.add_handler` receive an
+:class:`AuthenticationRequest` at the ``authRequired`` phase and may call
+:meth:`AuthenticationRequest.provide_credentials` or
+:meth:`AuthenticationRequest.cancel`.  Reconciliation issues exactly one
+``network.continueWithAuth`` command per challenge: ``cancel`` takes precedence
+over provided credentials, and if no handler responded the challenge is
+continued with action ``default`` so the browser's own behavior (usually the
+authentication prompt) applies.
+
 This mirrors the reconciliation rules in the cross-binding BiDi API design and
 means purely observational handlers never stall the page.
 """
@@ -521,6 +530,79 @@ class Response:
             self.continue_response()
 
 
+class AuthenticationRequest:
+    """Wraps a BiDi ``network.authRequired`` event and provides auth action methods.
+
+    Attributes:
+        url: The URL of the request that triggered the challenge.
+        realm: The authentication realm of the first challenge, when reported.
+        scheme: The authentication scheme (e.g. ``"basic"``) of the first
+            challenge, when reported.
+        challenges: Every challenge as a list of ``{"scheme", "realm"}`` dicts.
+    """
+
+    def __init__(self, conn, params, deferred: bool = False):
+        self._conn = conn
+        self._params = params if isinstance(params, dict) else {}
+        req = self._params.get("request", {}) or {}
+        resp = self._params.get("response", {}) or {}
+        self._request_id = req.get("request")
+        self.url = resp.get("url") or req.get("url", "")
+        self.challenges = [challenge for challenge in resp.get("authChallenges") or [] if isinstance(challenge, dict)]
+        first = self.challenges[0] if self.challenges else {}
+        self.realm = first.get("realm")
+        self.scheme = first.get("scheme")
+        # Deferred challenges record actions for later reconciliation by the
+        # registry; non-deferred challenges execute actions immediately.
+        self._deferred = deferred
+        self._handled = False
+        self._cancelled = False
+        self._credentials: dict | None = None
+
+    def provide_credentials(self, username: str, password: str) -> None:
+        """Respond to the challenge with the given credentials.
+
+        When multiple handlers act on the same challenge the first provided
+        credentials win, and a ``cancel()`` from any handler takes precedence.
+        """
+        credentials = {"type": "password", "username": username, "password": password}
+        if self._deferred:
+            if self._credentials is None:
+                self._credentials = credentials
+        else:
+            self._credentials = credentials
+            self._execute_continue("provideCredentials")
+
+    def cancel(self) -> None:
+        """Cancel the challenge, failing the request with an auth error.
+
+        Takes precedence over provided credentials when multiple handlers act
+        on the same challenge.
+        """
+        if self._deferred:
+            self._cancelled = True
+        else:
+            self._execute_continue("cancel")
+
+    def _execute_continue(self, action: str) -> None:
+        self._handled = True
+        params: dict[str, Any] = {"request": self._request_id, "action": action}
+        if action == "provideCredentials":
+            params["credentials"] = self._credentials
+        self._conn.execute(command_builder("network.continueWithAuth", params))
+
+    def _resolve(self) -> None:
+        """Reconcile recorded handler actions into a single BiDi command."""
+        if self._handled:
+            return
+        if self._cancelled:
+            self._execute_continue("cancel")
+        elif self._credentials is not None:
+            self._execute_continue("provideCredentials")
+        else:
+            self._execute_continue("default")
+
+
 class _HandlerEntry:
     """A registered handler with its patterns and intercept."""
 
@@ -647,3 +729,15 @@ class ResponseHandlerRegistry(_BaseHandlerRegistry):
 
     def _wrap(self, params):
         return Response(self._network._conn, params, deferred=True)
+
+
+class AuthHandlerRegistry(_BaseHandlerRegistry):
+    """Dispatches ``network.authRequired`` events to authentication handlers."""
+
+    _phase = "authRequired"
+    _event_name = "auth_required"
+    _id_prefix = "auth-handler"
+    _label = "authentication handler"
+
+    def _wrap(self, params):
+        return AuthenticationRequest(self._network._conn, params, deferred=True)

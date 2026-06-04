@@ -392,3 +392,65 @@ def test_request_and_response_handlers_compose(driver, pages):
     finally:
         driver.network.remove_request_handler(request_handler_id)
         driver.network.remove_response_handler(response_handler_id)
+
+
+# ---------------------------------------------------------------------------
+# High-level authentication handler API
+#
+# These tests double as usage examples: handlers receive an
+# AuthenticationRequest and may provide credentials or cancel the challenge;
+# Selenium reconciles the outcome and continues the challenge automatically.
+# ---------------------------------------------------------------------------
+
+
+def test_provide_credentials_for_matching_url(driver):
+    def handle_authentication(auth):
+        auth.provide_credentials("postman", "password")
+
+    handler_id = driver.network.add_authentication_handler(["https://postman-echo.com/**"], handle_authentication)
+    try:
+        _navigate(driver, "https://postman-echo.com/basic-auth")
+        assert "authenticated" in driver.page_source, "Authorization failed"
+    finally:
+        driver.network.remove_authentication_handler(handler_id)
+
+
+def test_cancel_authentication_challenge(driver):
+    def handle_authentication(auth):
+        auth.cancel()
+
+    handler_id = driver.network.add_authentication_handler(handle_authentication)
+    try:
+        _navigate(driver, "https://postman-echo.com/basic-auth")
+        assert "authenticated" not in driver.page_source, "Cancelled challenge still authenticated"
+    finally:
+        driver.network.remove_authentication_handler(handler_id)
+
+
+def test_authentication_handler_observes_challenge_details(driver):
+    challenges = []
+
+    def handle_authentication(auth):
+        challenges.append((auth.url, auth.realm, auth.scheme))
+        auth.provide_credentials("postman", "password")
+
+    handler_id = driver.network.add_authentication_handler(handle_authentication)
+    try:
+        _navigate(driver, "https://postman-echo.com/basic-auth")
+        assert challenges, "Authentication handler did not run"
+        assert challenges[0][0].startswith("https://postman-echo.com/basic-auth")
+    finally:
+        driver.network.remove_authentication_handler(handler_id)
+
+
+def test_remove_authentication_handler_removes_intercept(driver):
+    handler_id = driver.network.add_authentication_handler(lambda auth: None)
+    driver.network.remove_authentication_handler(handler_id)
+    assert driver.network.intercepts == [], "Intercept not removed"
+
+
+def test_clear_authentication_handlers_removes_all_intercepts(driver):
+    driver.network.add_authentication_handler(lambda auth: None)
+    driver.network.add_authentication_handler(["https://example.com/**"], lambda auth: None)
+    driver.network.clear_authentication_handlers()
+    assert driver.network.intercepts == [], "Intercepts not removed"
