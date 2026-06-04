@@ -778,6 +778,9 @@ py_library(
 
 BIDI_TESTS = glob(["test/selenium/webdriver/common/**/*bidi*_tests.py"])
 
+# Tests that have bidi and classic implementations.
+BIDI_IMPLEMENTATIONS = []
+
 # Test files that only run against browsers supporting the given feature.
 # Each group is split into its own sub-suite so that changing the underlying
 # library only triggers that group's targets, not the full ~700-target suite.
@@ -1013,19 +1016,12 @@ FEATURE_SUITE_DEFS = {
     for browser in DEFAULT_BROWSER_TESTS
 ]
 
-# Generate test-<browser>-bidi-common targets
+# Generate test-<browser>-bidi targets
 [
     py_test_suite(
-        name = "test-%s-bidi-common" % browser,
+        name = "test-%s-bidi" % browser,
         size = "large",
-        srcs = glob(
-            [
-                "test/selenium/webdriver/common/**/*.py",
-                "test/selenium/webdriver/support/**/*.py",
-            ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
-                      BROWSER_TESTS[browser].get("extra_excludes", []),
-        ),
+        srcs = BIDI_TESTS + BIDI_IMPLEMENTATIONS,
         args = [
             "--instafail",
             "--bidi",
@@ -1044,65 +1040,6 @@ FEATURE_SUITE_DEFS = {
     for browser in DEFAULT_BROWSER_TESTS
     if BROWSER_TESTS[browser].get("bidi", False)
 ]
-
-# Generate test-<browser>-bidi-actions targets
-[
-    py_test_suite(
-        name = "test-%s-bidi-actions" % browser,
-        size = "large",
-        srcs = ACTIONS_TESTS,
-        args = [
-            "--instafail",
-            "--bidi",
-        ] + BROWSERS[browser]["args"],
-        data = BROWSERS[browser]["data"],
-        env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
-        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
-        test_suffix = "%s-bidi-actions" % browser,
-        deps = [
-            ":init-tree",
-            ":webserver",
-        ] + BROWSER_TESTS[browser]["actions_deps"] + TEST_DEPS,
-    )
-    for browser in DEFAULT_BROWSER_TESTS
-    if BROWSER_TESTS[browser].get("bidi", False)
-]
-
-# Generate test-<browser>-bidi-<feature> targets
-[
-    py_test_suite(
-        name = "test-%s-bidi-%s" % (browser, feature),
-        size = "large",
-        srcs = FEATURE_SUITE_DEFS[feature][0],
-        args = [
-            "--instafail",
-            "--bidi",
-        ] + BROWSERS[browser]["args"],
-        data = BROWSERS[browser]["data"],
-        env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
-        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
-        test_suffix = "%s-bidi-%s" % (browser, feature),
-        deps = [
-            ":init-tree",
-            ":webserver",
-            FEATURE_SUITE_DEFS[feature][1],
-        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
-    )
-    for browser in DEFAULT_BROWSER_TESTS
-    for feature in FEATURE_SUITE_DEFS
-    if BROWSER_TESTS[browser].get("bidi", False)
-]
-
-# Aggregate test-<browser>-bidi = bidi-common + bidi-actions + bidi-features
-[test_suite(
-    name = "test-%s-bidi" % browser,
-    tests = [
-        ":test-%s-bidi-common" % browser,
-        ":test-%s-bidi-actions" % browser,
-    ] + [":test-%s-bidi-%s" % (browser, f) for f in FEATURE_SUITE_DEFS],
-) for browser in DEFAULT_BROWSER_TESTS if BROWSER_TESTS[browser].get("bidi", False)]
 
 # Generate test-<browser>-remote-common targets (chrome and firefox only)
 [
