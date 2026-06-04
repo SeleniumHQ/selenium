@@ -194,10 +194,10 @@ jobs:
         if: inputs.gem-trusted-publishing
         uses: rubygems/configure-rubygems-credentials@main
       - name: Delete browsers and drivers
-        if: (inputs.os == 'ubuntu' || inputs.os == 'macos') && inputs.browser != ''
+        if: (inputs.os == 'ubuntu' || inputs.os == 'macos') && inputs.needs-display
         run: ./scripts/github-actions/delete-browsers-drivers.sh
       - name: Delete browsers and drivers (Windows)
-        if: inputs.os == 'windows' && inputs.browser != ''
+        if: inputs.os == 'windows' && inputs.needs-display
         shell: pwsh
         run: ./scripts/github-actions/delete-browsers-drivers.ps1
       - name: Free disk space
