@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
 using OpenQA.Selenium.BiDi;
 
 namespace OpenQA.Selenium.Tests.BiDi;
@@ -111,5 +112,29 @@ class SessionUnitTests
         var id2 = System.Text.Json.JsonDocument.Parse(_transport.SentMessages[1]).RootElement.GetProperty("id").GetInt64();
 
         Assert.That(id2, Is.EqualTo(id1 + 1));
+    }
+
+    [Test]
+    public async Task CanGetStatusWithAdditionalData()
+    {
+        var task = _bidi.StatusAsync(new()
+        {
+            AdditionalData = new JsonObject
+            {
+                ["foo"] = "bar"
+            },
+            AdditionalMessageData = """{"baz": "qux"}"""
+        });
+
+        await _transport.WaitForSentMessagesAsync(1);
+
+        Assert.That(_transport.SentMessages[0], Does.Contain("\"foo\":\"bar\""));
+        Assert.That(_transport.SentMessages[0], Does.Contain("\"baz\":\"qux\""));
+
+        _transport.EnqueueSuccess(1, """{"ready":true,"message":"running"}""");
+
+        var status = await task;
+
+        Assert.That(status, Is.Not.Null);
     }
 }
