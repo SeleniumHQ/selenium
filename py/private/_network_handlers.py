@@ -15,14 +15,15 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""High-level request interception helpers for the WebDriver BiDi network module.
+"""High-level request/response interception helpers for the WebDriver BiDi network module.
 
 This module is copied verbatim into the generated ``selenium.webdriver.common.bidi``
 package by Bazel (see ``create-bidi-src`` in ``py/BUILD.bazel``).  The generated
-``network`` module re-exports :class:`Request` and instantiates
-:class:`RequestHandlerRegistry`, which layer a user-friendly handler API on top
-of the CDDL-generated low-level commands (``network.addIntercept``,
-``network.continueRequest``, ``network.failRequest``, ``network.provideResponse``).
+``network`` module re-exports :class:`Request` and :class:`Response` and
+instantiates the handler registries, which layer a user-friendly handler API on
+top of the CDDL-generated low-level commands (``network.addIntercept``,
+``network.continueRequest``, ``network.continueResponse``,
+``network.failRequest``, ``network.provideResponse``).
 
 Handlers registered through :meth:`RequestHandlerRegistry.add_handler` receive a
 :class:`Request` and may observe it, mutate it, fail it, or stub a response.
@@ -34,6 +35,13 @@ outcome and issues exactly one BiDi command per request:
    response is provided.
 3. Else if any handler mutated the request, it is continued with the mutations.
 4. Otherwise the request is continued unmodified.
+
+Handlers registered through :meth:`ResponseHandlerRegistry.add_handler` receive
+a :class:`Response` at the ``responseStarted`` phase and may observe or mutate
+it.  Reconciliation works the same way: a mutated body requires
+``network.provideResponse`` (the wire protocol cannot continue a response with
+a new body), other mutations are applied via ``network.continueResponse``, and
+untouched responses are continued unmodified.
 
 This mirrors the reconciliation rules in the cross-binding BiDi API design and
 means purely observational handlers never stall the page.
@@ -113,6 +121,37 @@ def list_to_cookie_headers(cookies: list | None) -> list[dict]:
             result.append(cookie.to_bidi_dict())
         elif isinstance(cookie, dict):
             result.append({"name": cookie.get("name"), "value": _encode_bytes_value(cookie.get("value"))})
+    return result
+
+
+# Optional network.SetCookieHeader fields, accepting both snake_case (Python
+# style) and camelCase (wire style) keys from user-supplied cookie dicts.
+_SET_COOKIE_FIELD_ALIASES = {
+    "domain": "domain",
+    "expiry": "expiry",
+    "http_only": "httpOnly",
+    "httpOnly": "httpOnly",
+    "max_age": "maxAge",
+    "maxAge": "maxAge",
+    "path": "path",
+    "same_site": "sameSite",
+    "sameSite": "sameSite",
+    "secure": "secure",
+}
+
+
+def list_to_set_cookie_headers(cookies: list | None) -> list[dict]:
+    """Convert plain cookie dicts to BiDi SetCookieHeader entries."""
+    result = []
+    for cookie in cookies or []:
+        if hasattr(cookie, "to_bidi_dict"):
+            result.append(cookie.to_bidi_dict())
+        elif isinstance(cookie, dict):
+            entry = {"name": cookie.get("name"), "value": _encode_bytes_value(cookie.get("value"))}
+            for key, wire_key in _SET_COOKIE_FIELD_ALIASES.items():
+                if cookie.get(key) is not None:
+                    entry[wire_key] = cookie[key]
+            result.append(entry)
     return result
 
 
@@ -353,8 +392,137 @@ class Request:
             self.continue_request()
 
 
+class Response:
+    """Wraps a BiDi ``network.responseStarted`` event and provides response action methods.
+
+    Attributes:
+        url: The response URL.
+        status: The HTTP status code.
+        reason_phrase: The HTTP status text reported by the browser.
+        headers: The response headers as a name → value dict.
+        mime_type: The response MIME type when reported by the browser.
+        cookies: Cookies to set on the response. BiDi does not expose parsed
+            response cookies at the ``responseStarted`` phase, so this is empty
+            unless mutated via :meth:`set_cookies`.
+        body: The response body. BiDi does not expose the body at the
+            ``responseStarted`` phase, so this is ``None`` unless mutated via
+            :meth:`set_body`.
+    """
+
+    def __init__(self, conn, params, deferred: bool = False):
+        self._conn = conn
+        self._params = params if isinstance(params, dict) else {}
+        req = self._params.get("request", {}) or {}
+        resp = self._params.get("response", {}) or {}
+        self._request_id = req.get("request")
+        self.url = resp.get("url") or req.get("url", "")
+        self.status = resp.get("status")
+        self.reason_phrase = resp.get("statusText")
+        self.headers = headers_to_dict(resp.get("headers"))
+        self.mime_type = resp.get("mimeType")
+        self.cookies: list = []
+        self.body = None
+        # Deferred responses record actions for later reconciliation by the
+        # registry; non-deferred responses execute actions immediately.
+        self._deferred = deferred
+        self._handled = False
+        self._mutations: dict[str, Any] = {}
+
+    def set_status(self, status: int, reason_phrase: str | None = None) -> None:
+        """Change the response status code (and optionally the reason phrase)."""
+        self.status = status
+        self._mutations["status"] = status
+        if reason_phrase is not None:
+            self.reason_phrase = reason_phrase
+            self._mutations["reason_phrase"] = reason_phrase
+
+    def set_headers(self, headers: dict[str, Any]) -> None:
+        """Replace the response headers before the response is continued."""
+        self.headers = dict(headers)
+        self._mutations["headers"] = self.headers
+
+    def set_cookies(self, cookies: list) -> None:
+        """Replace the cookies set by the response before it is continued."""
+        self.cookies = list(cookies)
+        self._mutations["cookies"] = self.cookies
+
+    def set_body(self, body: str) -> None:
+        """Replace the response body.
+
+        The wire protocol cannot continue a response with a new body, so a
+        body mutation is reconciled via ``network.provideResponse``, carrying
+        over the (possibly mutated) status and headers.
+        """
+        self.body = body
+        self._mutations["body"] = body
+
+    def continue_response(self, **kwargs) -> None:
+        """Continue the intercepted response, applying any recorded mutations.
+
+        Keyword arguments are passed through to ``network.continueResponse``
+        and override recorded mutations.  Data URLs (``data:``) are skipped
+        silently because browsers do not create an interceptable entry for
+        them.
+        """
+        self._handled = True
+        if self.url.startswith("data:"):
+            return
+        params = self._continue_params()
+        params.update(kwargs)
+        self._conn.execute(command_builder("network.continueResponse", params))
+
+    def _continue_params(self) -> dict:
+        params: dict[str, Any] = {"request": self._request_id}
+        mutations = self._mutations
+        if "status" in mutations:
+            params["statusCode"] = mutations["status"]
+        if "reason_phrase" in mutations:
+            params["reasonPhrase"] = mutations["reason_phrase"]
+        if "headers" in mutations:
+            params["headers"] = dict_to_headers(mutations["headers"])
+        if "cookies" in mutations:
+            params["cookies"] = list_to_set_cookie_headers(mutations["cookies"])
+        return params
+
+    def _execute_provide_response(self) -> None:
+        self._handled = True
+        if self.url.startswith("data:"):
+            return
+        # provideResponse replaces the whole response, so carry over the
+        # current (possibly mutated) status and headers alongside the body.
+        params: dict[str, Any] = {"request": self._request_id}
+        if self.status is not None:
+            params["statusCode"] = self.status
+        if self.reason_phrase:
+            params["reasonPhrase"] = self.reason_phrase
+        if self.headers:
+            params["headers"] = dict_to_headers(self.headers)
+        if "cookies" in self._mutations:
+            params["cookies"] = list_to_set_cookie_headers(self._mutations["cookies"])
+        if self.body is not None:
+            params["body"] = _encode_bytes_value(self.body)
+        self._conn.execute(command_builder("network.provideResponse", params))
+
+    def _resolve(self) -> None:
+        """Reconcile recorded handler actions into a single BiDi command."""
+        if self._handled:
+            return
+        if "body" in self._mutations:
+            try:
+                self._execute_provide_response()
+            except Exception:
+                # Some browsers cannot replace a body at the responseStarted
+                # phase; continue with the remaining mutations rather than
+                # leaving the response blocked and stalling the page.
+                logger.exception("provideResponse failed; continuing response without the body mutation")
+                self._handled = False
+                self.continue_response()
+        else:
+            self.continue_response()
+
+
 class _HandlerEntry:
-    """A registered request handler with its patterns and intercept."""
+    """A registered handler with its patterns and intercept."""
 
     def __init__(self, handler_id: str, patterns: list | None, callback: Callable, intercept_id: str | None):
         self.handler_id = handler_id
@@ -368,13 +536,20 @@ class _HandlerEntry:
         return any(regex.match(url) for regex in self._regexes)
 
 
-class RequestHandlerRegistry:
-    """Tracks high-level request handlers and reconciles their outcomes.
+class _BaseHandlerRegistry:
+    """Tracks high-level handlers for one intercept phase and reconciles outcomes.
 
-    One ``network.beforeRequestSent`` subscription dispatches each event to all
-    matching handlers, then reconciles the request exactly once.  Each handler
-    gets its own browser-side intercept so removal restores prior behavior.
+    One event subscription dispatches each event to all matching handlers,
+    then reconciles the request or response exactly once.  Each handler gets
+    its own browser-side intercept so removal restores prior behavior.
     """
+
+    # Subclasses configure the intercept phase, the subscription event key,
+    # the handler-ID prefix and the wrapper class handed to callbacks.
+    _phase: str
+    _event_name: str
+    _id_prefix: str
+    _label: str
 
     def __init__(self, network):
         self._network = network
@@ -382,56 +557,93 @@ class RequestHandlerRegistry:
         self._subscription_callback_id: int | None = None
         self._counter = 0
 
+    def _wrap(self, params):
+        raise NotImplementedError
+
     def add_handler(self, url_patterns, callback: Callable) -> str:
         """Register a handler; returns a handler ID for later removal."""
         if isinstance(url_patterns, str):
             url_patterns = [url_patterns]
         patterns = list(url_patterns) if url_patterns else None
         bidi_patterns = globs_to_url_patterns(patterns)
-        intercept_result = self._network._add_intercept(phases=["beforeRequestSent"], url_patterns=bidi_patterns)
+        intercept_result = self._network._add_intercept(phases=[self._phase], url_patterns=bidi_patterns)
         intercept_id = intercept_result.get("intercept") if intercept_result else None
         if self._subscription_callback_id is None:
-            self._subscription_callback_id = self._network.add_event_handler("before_request", self._on_event)
+            self._subscription_callback_id = self._network.add_event_handler(self._event_name, self._on_event)
         self._counter += 1
-        handler_id = f"request-handler-{self._counter}"
+        handler_id = f"{self._id_prefix}-{self._counter}"
         self._handlers[handler_id] = _HandlerEntry(handler_id, patterns, callback, intercept_id)
-        logger.debug("Added request handler %s (patterns=%s)", handler_id, patterns)
+        logger.debug("Added %s %s (patterns=%s)", self._label, handler_id, patterns)
         return handler_id
 
     def remove_handler(self, handler_id: str) -> None:
         """Remove a handler and its intercept by handler ID."""
         entry = self._handlers.pop(handler_id, None)
         if entry is None:
-            raise ValueError(f"Request handler '{handler_id}' not found")
+            raise ValueError(f"{self._label.capitalize()} '{handler_id}' not found")
         if entry.intercept_id:
             self._network._remove_intercept(entry.intercept_id)
         if not self._handlers and self._subscription_callback_id is not None:
-            self._network.remove_event_handler("before_request", self._subscription_callback_id)
+            self._network.remove_event_handler(self._event_name, self._subscription_callback_id)
             self._subscription_callback_id = None
-        logger.debug("Removed request handler %s", handler_id)
+        logger.debug("Removed %s %s", self._label, handler_id)
 
     def clear(self) -> None:
         """Remove all registered handlers and their intercepts."""
         for handler_id in list(self._handlers):
             self.remove_handler(handler_id)
 
+    def intercept_ids(self) -> set:
+        """Intercept IDs owned by this registry's handlers."""
+        return {entry.intercept_id for entry in self._handlers.values() if entry.intercept_id}
+
+    def resubscribe(self) -> None:
+        """Re-establish the event subscription after an external event-handler clear."""
+        if self._handlers:
+            self._subscription_callback_id = self._network.add_event_handler(self._event_name, self._on_event)
+        else:
+            self._subscription_callback_id = None
+
     def _on_event(self, params) -> None:
         if not isinstance(params, dict):
             return
-        request = Request(self._network._conn, params, deferred=True)
+        wrapped = self._wrap(params)
         for entry in list(self._handlers.values()):
-            if not entry.matches(request.url):
+            if not entry.matches(wrapped.url):
                 continue
             try:
-                entry.callback(request)
+                entry.callback(wrapped)
             except Exception:
-                logger.exception("Request handler %s raised; continuing request processing", entry.handler_id)
+                logger.exception("%s %s raised; continuing processing", self._label.capitalize(), entry.handler_id)
         if not params.get("isBlocked"):
             return
         # Only reconcile requests paused by one of our intercepts; requests
         # blocked by other subsystems (e.g. legacy handlers) are theirs to
         # continue.
-        our_intercepts = {entry.intercept_id for entry in self._handlers.values() if entry.intercept_id}
         blocking_intercepts = set(params.get("intercepts") or [])
-        if our_intercepts & blocking_intercepts:
-            request._resolve()
+        if self.intercept_ids() & blocking_intercepts:
+            wrapped._resolve()
+
+
+class RequestHandlerRegistry(_BaseHandlerRegistry):
+    """Dispatches ``network.beforeRequestSent`` events to request handlers."""
+
+    _phase = "beforeRequestSent"
+    _event_name = "before_request"
+    _id_prefix = "request-handler"
+    _label = "request handler"
+
+    def _wrap(self, params):
+        return Request(self._network._conn, params, deferred=True)
+
+
+class ResponseHandlerRegistry(_BaseHandlerRegistry):
+    """Dispatches ``network.responseStarted`` events to response handlers."""
+
+    _phase = "responseStarted"
+    _event_name = "response_started"
+    _id_prefix = "response-handler"
+    _label = "response handler"
+
+    def _wrap(self, params):
+        return Response(self._network._conn, params, deferred=True)

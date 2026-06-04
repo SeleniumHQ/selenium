@@ -1174,6 +1174,7 @@ class DomMutation:
             "self.intercepts: list[Any] = []",
             "self._handler_intercepts: dict[str, Any] = {}",
             "self._request_handlers = RequestHandlerRegistry(self)",
+            "self._response_handlers = ResponseHandlerRegistry(self)",
         ],
         # Request class wraps a beforeRequestSent event params and provides actions
         "extra_dataclasses": [
@@ -1204,15 +1205,17 @@ disownDataParameters = DisownDataParameters''',
 
     def to_bidi_dict(self) -> dict:
         return {"type": self.type, "value": self.value}''',
-            # Request and the handler registry live in the static helper module
-            # _network_handlers.py (staged via create-bidi-src extra_srcs) so
-            # the implementation is lintable and unit-testable as real code.
-            # The import also re-exports Request to keep
-            # selenium.webdriver.common.bidi.network.Request importable.
+            # Request/Response and the handler registries live in the static
+            # helper module _network_handlers.py (staged via create-bidi-src
+            # extra_srcs) so the implementation is lintable and unit-testable
+            # as real code.  The import also re-exports Request and Response to
+            # keep them importable from selenium.webdriver.common.bidi.network.
             """from selenium.webdriver.common.bidi._network_handlers import (
     LEGACY_REQUEST_HANDLER_EVENTS,
     Request,
     RequestHandlerRegistry,
+    Response,
+    ResponseHandlerRegistry,
     looks_like_url_glob,
 )""",
         ],
@@ -1224,6 +1227,10 @@ disownDataParameters = DisownDataParameters''',
         # EVENT_CONFIGS dict literal, so this duplicate key overrides the
         # CDDL-generated entry.
         # Add before_request event (maps to network.beforeRequestSent)
+        # Override response_started to use raw dict for the same reason: the
+        # generated ResponseStartedParameters dataclass only contains
+        # "response", losing "request", "isBlocked" and "intercepts" which the
+        # response handler registry needs to reconcile blocked responses.
         "extra_events": [
             {
                 "event_key": "auth_required",
@@ -1233,6 +1240,11 @@ disownDataParameters = DisownDataParameters''',
             {
                 "event_key": "before_request",
                 "bidi_event": "network.beforeRequestSent",
+                "event_class": "dict",
+            },
+            {
+                "event_key": "response_started",
+                "bidi_event": "network.responseStarted",
                 "event_class": "dict",
             },
         ],
@@ -1354,11 +1366,56 @@ disownDataParameters = DisownDataParameters''',
         if intercept_id:
             self._remove_intercept(intercept_id)''',
             '''    def clear_request_handlers(self):
-        """Clear all request handlers and remove all tracked intercepts."""
+        """Clear all request handlers and remove all tracked intercepts.
+
+        Response handlers registered via ``add_response_handler`` are
+        preserved; use ``clear_response_handlers`` to remove those.
+        """
         self._request_handlers.clear()
         self.clear_event_handlers()
+        preserved_intercepts = self._response_handlers.intercept_ids()
         for intercept_id in list(self.intercepts):
-            self._remove_intercept(intercept_id)''',
+            if intercept_id not in preserved_intercepts:
+                self._remove_intercept(intercept_id)
+        # clear_event_handlers dropped every subscription, including the
+        # response registry's; restore it so response handlers keep working.
+        self._response_handlers.resubscribe()''',
+            '''    def add_response_handler(self, url_patterns=None, callback=None):
+        """Add a handler for network responses.
+
+        Usage::
+
+            driver.network.add_response_handler(handler)
+            driver.network.add_response_handler(["**/api/**"], handler)
+
+        The handler receives a :class:`Response` at the ``responseStarted``
+        phase and may observe it or mutate it via
+        ``set_status``/``set_headers``/``set_cookies``/``set_body``.  After all
+        matching handlers run, Selenium reconciles the outcome — a mutated body
+        is delivered via ``network.provideResponse``, other mutations via
+        ``network.continueResponse`` — and continues the response
+        automatically, so observers never stall the page.  URL patterns are
+        glob strings supporting ``*``, ``**`` and ``?`` (default: match
+        everything).
+
+        Returns:
+            A string handler ID for ``remove_response_handler(handler_id)``.
+        """
+        if callable(url_patterns) and callback is None:
+            return self._response_handlers.add_handler(None, url_patterns)
+        if not callable(callback):
+            raise TypeError("add_response_handler requires a callable handler")
+        return self._response_handlers.add_handler(url_patterns, callback)''',
+            '''    def remove_response_handler(self, handler_id):
+        """Remove a response handler and its intercept by handler ID.
+
+        Args:
+            handler_id: The ID returned by ``add_response_handler``.
+        """
+        self._response_handlers.remove_handler(handler_id)''',
+            '''    def clear_response_handlers(self):
+        """Clear all response handlers and their intercepts."""
+        self._response_handlers.clear()''',
             '''    def add_auth_handler(self, username, password):
         """Add an auth handler that automatically provides credentials.
 

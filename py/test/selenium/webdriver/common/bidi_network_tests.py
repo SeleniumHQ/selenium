@@ -21,7 +21,7 @@ import pytest
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.bidi.browsing_context import ReadinessState
-from selenium.webdriver.common.bidi.network import Request
+from selenium.webdriver.common.bidi.network import Request, Response
 from selenium.webdriver.common.by import By
 
 
@@ -287,3 +287,108 @@ def test_remove_handler_by_id_stops_observation(driver, pages):
     _navigate(driver, pages.url("formPage.html"))
     assert not seen, "Removed handler still observed requests"
     assert driver.find_element(By.NAME, "login").is_displayed(), "Request not continued"
+
+
+# ---------------------------------------------------------------------------
+# High-level response handler API
+#
+# These tests double as usage examples: handlers receive a Response, may
+# observe or mutate it, and Selenium reconciles the outcome and continues the
+# response automatically.
+# ---------------------------------------------------------------------------
+
+
+def test_listen_to_responses_without_modifying(driver, pages):
+    responses = []
+
+    def log_response(response: Response):
+        responses.append((response.url, response.status, dict(response.headers)))
+
+    handler_id = driver.network.add_response_handler(log_response)
+    try:
+        url = pages.url("formPage.html")
+        _navigate(driver, url)
+        assert driver.find_element(By.NAME, "login").is_displayed(), "Response not continued"
+        document_responses = [r for r in responses if r[0] == url]
+        assert document_responses, "Document response not observed"
+        assert document_responses[0][1] == 200
+        assert isinstance(document_responses[0][2], dict)
+    finally:
+        driver.network.remove_response_handler(handler_id)
+
+
+def test_change_response_headers(driver, pages):
+    def add_header(response: Response):
+        headers = response.headers.copy()
+        headers["x-modified"] = "true"
+        response.set_headers(headers)
+
+    handler_id = driver.network.add_response_handler(["**/formPage.html"], add_header)
+    try:
+        _navigate(driver, pages.url("formPage.html"))
+        assert driver.find_element(By.NAME, "login").is_displayed(), "Mutated response not continued"
+    finally:
+        driver.network.remove_response_handler(handler_id)
+
+
+@pytest.mark.xfail_firefox(
+    reason="Firefox only supports the provideResponse body parameter for the beforeRequestSent phase"
+)
+def test_change_response_body(driver, pages):
+    def rewrite_body(response: Response):
+        response.set_body(
+            "<html><head><title>Replaced</title></head><body><p id='replaced'>replaced response</p></body></html>"
+        )
+
+    handler_id = driver.network.add_response_handler(["**/formPage.html"], rewrite_body)
+    try:
+        _navigate(driver, pages.url("formPage.html"))
+        assert driver.find_element(By.ID, "replaced").text == "replaced response"
+    finally:
+        driver.network.remove_response_handler(handler_id)
+
+
+def test_response_url_patterns_scope_handlers(driver, pages):
+    seen = []
+
+    handler_id = driver.network.add_response_handler(["**/simpleTest.html"], lambda response: seen.append(response.url))
+    try:
+        _navigate(driver, pages.url("formPage.html"))
+        assert not seen, "Handler ran for a non-matching URL"
+        assert driver.find_element(By.NAME, "login").is_displayed(), "Non-matching response not continued"
+
+        _navigate(driver, pages.url("simpleTest.html"))
+        assert seen, "Handler did not run for a matching URL"
+        assert all("simpleTest.html" in url for url in seen)
+    finally:
+        driver.network.remove_response_handler(handler_id)
+
+
+def test_remove_response_handler_by_id_stops_observation(driver, pages):
+    seen = []
+
+    handler_id = driver.network.add_response_handler(lambda response: seen.append(response.url))
+    driver.network.remove_response_handler(handler_id)
+
+    _navigate(driver, pages.url("formPage.html"))
+    assert not seen, "Removed handler still observed responses"
+    assert driver.find_element(By.NAME, "login").is_displayed(), "Response not continued"
+
+
+def test_request_and_response_handlers_compose(driver, pages):
+    events = []
+
+    request_handler_id = driver.network.add_request_handler(
+        ["**/simpleTest.html"], lambda request: events.append(("request", request.url))
+    )
+    response_handler_id = driver.network.add_response_handler(
+        ["**/simpleTest.html"], lambda response: events.append(("response", response.status))
+    )
+    try:
+        _navigate(driver, pages.url("simpleTest.html"))
+        assert driver.find_element(By.ID, "oneline").text == "A single line of text"
+        assert ("response", 200) in events, "Response handler did not run"
+        assert any(kind == "request" for kind, _ in events), "Request handler did not run"
+    finally:
+        driver.network.remove_request_handler(request_handler_id)
+        driver.network.remove_response_handler(response_handler_id)
