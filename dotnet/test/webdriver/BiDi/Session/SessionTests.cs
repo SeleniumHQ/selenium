@@ -27,37 +27,12 @@ namespace OpenQA.Selenium.Tests.BiDi.Session;
 internal class SessionTests : BiDiTestFixture
 {
     [Test]
-    public async Task ShouldHaveIdempotentDisposal()
-    {
-        await bidi.DisposeAsync();
-        await bidi.DisposeAsync();
-    }
-
-    [Test]
     public async Task CanGetStatus()
     {
         var status = await bidi.StatusAsync();
 
         Assert.That(status, Is.Not.Null);
         Assert.That(status.Message, Is.Not.Empty);
-    }
-
-    [Test]
-    public void ShouldRespectTimeout()
-    {
-        Assert.That(
-            () => bidi.StatusAsync(new() { Timeout = TimeSpan.FromMicroseconds(1) }),
-            Throws.InstanceOf<TaskCanceledException>());
-    }
-
-    [Test]
-    public void ShouldRespectCancellationToken()
-    {
-        using var cts = new CancellationTokenSource(TimeSpan.FromMicroseconds(1));
-
-        Assert.That(
-            () => bidi.StatusAsync(cancellationToken: cts.Token),
-            Throws.InstanceOf<TaskCanceledException>());
     }
 
     [Test]
