@@ -16,10 +16,13 @@
 # under the License.
 
 import http.server
+import json
+import logging
 import os
 import socketserver
 import sys
 import threading
+import time
 import types
 from dataclasses import dataclass
 from pathlib import Path
@@ -27,6 +30,7 @@ from pathlib import Path
 import pytest
 import rich.console
 import rich.traceback
+import urllib3
 
 try:
     from python.runfiles import Runfiles  # only exists when using bazel
@@ -39,6 +43,8 @@ from selenium.webdriver.common.utils import free_port
 from selenium.webdriver.remote.server import Server
 from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.webserver import SimpleWebServer
+
+logger = logging.getLogger(__name__)
 
 drivers = (
     "chrome",
@@ -208,6 +214,43 @@ def _resolve_bazel_path(path):
     return path
 
 
+# Maps the test driver name to its (browserName, vendor options key).
+_GRID_VENDOR_OPTIONS = {
+    "chrome": ("chrome", "goog:chromeOptions"),
+    "edge": ("MicrosoftEdge", "ms:edgeOptions"),
+    "firefox": ("firefox", "moz:firefoxOptions"),
+}
+
+
+def _pinned_grid_args(config):
+    """Pin the driver and browser in a driver-configuration so the Grid node skips Selenium Manager.
+
+    Returns an empty list when nothing is pinned, keeping the default Selenium Manager behavior.
+    """
+    drivers_opt = config.option.drivers or []
+    driver = next((d for d in drivers_opt if d.lower() in _GRID_VENDOR_OPTIONS), None)
+    executable = config.option.executable  # --driver-binary
+    binary = config.option.binary  # --browser-binary
+    if not (driver and executable and binary):
+        return []
+
+    driver_path = _resolve_bazel_path(executable).strip("'")
+    browser_path = _resolve_bazel_path(binary).strip("'")
+    browser_name, vendor_key = _GRID_VENDOR_OPTIONS[driver.lower()]
+    stereotype = json.dumps({"browserName": browser_name, vendor_key: {"binary": browser_path}})
+    return [
+        "--enable-managed-downloads",
+        "true",
+        "--detect-drivers",
+        "false",
+        "--driver-configuration",
+        f"display-name={driver}",
+        "max-sessions=1",
+        f"webdriver-executable={driver_path}",
+        f"stereotype={stereotype}",
+    ]
+
+
 def get_extensions_location():
     """Locate the test extensions directory.
 
@@ -258,6 +301,9 @@ class SupportedBidiDrivers(ContainerProtocol):
 
 
 class Driver:
+    DRIVER_START_RETRIES = 3
+    DRIVER_START_INTERVAL = 1
+
     def __init__(self, driver_class, request):
         self.driver_class = driver_class
         self._request = request
@@ -417,9 +463,25 @@ class Driver:
         if self.is_remote:
             kwargs["command_executor"] = self._server.status_url.removesuffix("/status")
             return webdriver.Remote(**kwargs)
-        if self.driver_path is not None:
-            kwargs["service"] = self.service
-        return getattr(webdriver, self.driver_class)(**kwargs)
+        return self._start_local_driver(kwargs)
+
+    def _start_local_driver(self, kwargs):
+        for attempt in range(1, self.DRIVER_START_RETRIES + 1):
+            if self.driver_path is not None:
+                kwargs["service"] = self.service
+            try:
+                return getattr(webdriver, self.driver_class)(**kwargs)
+            except (WebDriverException, urllib3.exceptions.HTTPError, OSError) as e:
+                if attempt == self.DRIVER_START_RETRIES:
+                    raise
+                logger.warning(
+                    "%s failed to start (attempt %s/%s); retrying. Error: %s",
+                    self.driver_class,
+                    attempt,
+                    self.DRIVER_START_RETRIES,
+                    e,
+                )
+                time.sleep(self.DRIVER_START_INTERVAL)
 
     def stop_driver(self):
         driver_to_stop = self._driver
@@ -551,7 +613,7 @@ def server(request):
         # under Wayland, so we use XWayland instead.
         remote_env["MOZ_ENABLE_WAYLAND"] = "0"
 
-    server = Server(env=remote_env, startup_timeout=60)
+    server = Server(env=remote_env, startup_timeout=60, args=_pinned_grid_args(request.config) or None)
 
     repo_root = Path(__file__).parent.parent  # py/conftest.py -> py/ -> selenium/
     jar_path = "java/src/org/openqa/selenium/grid/selenium_server_deploy.jar"

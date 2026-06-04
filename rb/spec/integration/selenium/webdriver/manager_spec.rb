@@ -25,14 +25,7 @@ module Selenium
       describe 'cookie management' do
         before { driver.navigate.to url_for('xhtmlTest.html') }
 
-        after do
-          if (GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome) ||
-             %i[safari safari_preview].include?(GlobalTestEnv.browser)
-            reset_driver!
-          else
-            driver.manage.delete_all_cookies
-          end
-        end
+        after { driver.manage.delete_all_cookies }
 
         it 'sets correct defaults' do
           driver.manage.add_cookie name: 'default',

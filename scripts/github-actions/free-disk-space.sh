@@ -1,66 +1,26 @@
 #!/usr/bin/env bash
+#
+# Reclaim disk on Linux runners by deleting pre-installed toolchains and SDKs
+# that Selenium's build and tests do not use.
+#
+# Only the fast, high-yield deletions are kept. The goal is just to clear the
+# 20 GB gate on 72 GB runners, not to maximize freed space, so the slow,
+# low-yield removals are intentionally skipped: android (~34 s, up to ~3 min),
+# the docker image prune (~11 s), and gcloud-sdk (~8 s for <1 GB). What remains
+# frees ~16 GB in ~13 s.
 
 set -u
 
-free_mb() { df -BM / | awk 'NR==2 {print $4}' | tr -d 'M'; }
-
-clean() {
-  local label="$1" path="$2"
-  local before after t0
-  if [ -z "$path" ]; then
-    printf "%s  %-13s (path not set, skipping)\n" "$(date +%T)" "$label"
-    return
-  fi
-  before=$(free_mb)
-  t0=$SECONDS
-  # shellcheck disable=SC2086  # intentional word-split for globs (julia*)
-  sudo rm -rf -- $path
-  after=$(free_mb)
-  printf "%s  %-13s %3ds  %3sG -> %3sG free  (freed %sM)\n" \
-    "$(date +%T)" "$label" "$((SECONDS - t0))" \
-    "$((before / 1024))" "$((after / 1024))" "$((after - before))"
-}
-
-echo "=== Disk before cleanup ==="
-df -h /
-echo
-echo "=== Per-step delete (time + free-space delta) ==="
+echo "Freeing disk space"
 
 # Pre-installed language toolchains
-clean ghc        /opt/ghc
-clean ghcup      /usr/local/.ghcup
-clean boost      /usr/local/share/boost
-clean swift      /usr/share/swift
-clean julia      '/usr/local/julia*'
-clean gcloud-sdk /usr/lib/google-cloud-sdk
-clean codeql     /opt/hostedtoolcache/CodeQL
+sudo rm -rf -- \
+  /usr/local/.ghcup \
+  /usr/share/swift \
+  /usr/local/julia* \
+  /opt/hostedtoolcache/CodeQL
 
 # App SDKs that Selenium has no binding for
-clean android    /usr/local/lib/android
-clean dotnet     /usr/share/dotnet
-clean graalvm    /usr/local/graalvm
-clean powershell /usr/local/share/powershell
-
-# WebDriver binaries (Selenium tests use bazel-pinned drivers)
-clean chromedriver "${CHROMEWEBDRIVER:-}"
-clean edgedriver   "${EDGEWEBDRIVER:-}"
-clean geckodriver  "${GECKOWEBDRIVER:-}"
-
-# Pre-installed browsers (Selenium tests use bazel-pinned or SM-downloaded browsers)
-clean chrome       /opt/google/chrome
-clean firefox      /opt/firefox
-clean msedge       /opt/microsoft/msedge
-
-# Docker images pre-pulled by the runner image
-before=$(free_mb); t0=$SECONDS
-docker image prune -af >/dev/null 2>&1 || true
-after=$(free_mb)
-printf "%s  %-13s %3ds  %3sG -> %3sG free  (freed %sM)\n" \
-  "$(date +%T)" "docker-images" "$((SECONDS - t0))" \
-  "$((before / 1024))" "$((after / 1024))" "$((after - before))"
-
-sync
-
-echo
-echo "=== Disk after cleanup ==="
-df -h /
+sudo rm -rf -- \
+  /usr/share/dotnet \
+  /usr/local/share/powershell

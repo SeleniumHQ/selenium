@@ -448,13 +448,14 @@ Test targets:
 | `bazel test //rb/spec/integration/... --test_tag_filters firefox-remote` | Run integration tests for remote Firefox only                               |
 | `bazel test //rb/spec/integration/... --test_tag_filters bidi`           | Run bidi-mode tests across every browser that supports BiDi                 |
 
-Ruby test targets have the same name as the spec file with `_spec.rb` removed, so you can run them individually.
-Integration test targets also have a browser-variant suffix to control which browser to pick and whether to use Grid or BiDi
-(e.g. `-chrome`, `-chrome-remote`, `-chrome-beta-bidi`).
+All unit specs run as a single target, `//rb/spec/unit:unit`.
+
+Integration test targets have the same name as the spec file with `_spec.rb` removed, plus a
+browser-variant suffix to control which browser to pick and whether to use Grid or BiDi
+(e.g. `-chrome`, `-chrome-remote`, `-chrome-beta-bidi`), so you can run them individually.
 
 | Test file                                               | Test target                                                      |
 | ------------------------------------------------------- | ---------------------------------------------------------------- |
-| `rb/spec/unit/selenium/webdriver/proxy_spec.rb`         | `//rb/spec/unit/selenium/webdriver:proxy`                        |
 | `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-chrome`         |
 | `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-chrome-remote`  |
 | `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-firefox`        |

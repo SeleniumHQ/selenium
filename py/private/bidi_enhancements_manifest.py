@@ -1173,6 +1173,7 @@ class DomMutation:
         "extra_init_code": [
             "self.intercepts: list[Any] = []",
             "self._handler_intercepts: dict[str, Any] = {}",
+            "self._request_handlers = RequestHandlerRegistry(self)",
         ],
         # Request class wraps a beforeRequestSent event params and provides actions
         "extra_dataclasses": [
@@ -1203,30 +1204,17 @@ disownDataParameters = DisownDataParameters''',
 
     def to_bidi_dict(self) -> dict:
         return {"type": self.type, "value": self.value}''',
-            '''class Request:
-    """Wraps a BiDi network request event params and provides request action methods."""
-
-    def __init__(self, conn, params):
-        self._conn = conn
-        self._params = params if isinstance(params, dict) else {}
-        req = self._params.get("request", {}) or {}
-        self.url = req.get("url", "")
-        self._request_id = req.get("request")
-
-    def continue_request(self, **kwargs):
-        """Continue the intercepted request.
-
-        Data URLs (``data:``) are skipped silently because browsers do not
-        create an interceptable request entry for them, so calling
-        ``network.continueRequest`` would raise "no such request".
-        """
-        if self.url.startswith("data:"):
-            return
-        from selenium.webdriver.common.bidi.common import command_builder as _cb
-
-        params = {"request": self._request_id}
-        params.update(kwargs)
-        self._conn.execute(_cb("network.continueRequest", params))''',
+            # Request and the handler registry live in the static helper module
+            # _network_handlers.py (staged via create-bidi-src extra_srcs) so
+            # the implementation is lintable and unit-testable as real code.
+            # The import also re-exports Request to keep
+            # selenium.webdriver.common.bidi.network.Request importable.
+            """from selenium.webdriver.common.bidi._network_handlers import (
+    LEGACY_REQUEST_HANDLER_EVENTS,
+    Request,
+    RequestHandlerRegistry,
+    looks_like_url_glob,
+)""",
         ],
         # Override auth_required to use raw dict so _auth_callback receives all
         # fields (including "request") from the BiDi event params.  The
@@ -1293,17 +1281,38 @@ disownDataParameters = DisownDataParameters''',
                 f"Unsupported request handler event '{event}'. Available events: {available_events}"
             )
         return canonical_event''',
-            '''    def add_request_handler(self, event, callback, url_patterns=None):
-        """Add a handler for network requests at the specified phase.
+            '''    def add_request_handler(self, event=None, callback=None, url_patterns=None):
+        """Add a handler for network requests.
 
-        Args:
-            event: Event name, e.g. ``"before_request"`` or ``"before_request_sent"``.
-            callback: Callable receiving a :class:`Request` instance.
-            url_patterns: optional list of URL pattern dicts to filter.
+        Two calling styles are supported.
 
-        Returns:
-            callback_id int for later removal via remove_request_handler.
+        High-level (recommended)::
+
+            driver.network.add_request_handler(handler)
+            driver.network.add_request_handler(["**/api/**"], handler)
+
+        The handler receives a :class:`Request` and may observe it, mutate it
+        via ``set_url``/``set_method``/``set_headers``/``set_cookies``/``set_body``,
+        call ``fail()``, or call ``provide_response(...)``.  After all matching
+        handlers run, Selenium reconciles the outcome (fail > provide_response >
+        continue with mutations > continue) and continues the request
+        automatically — observers never stall the page.  URL patterns are glob
+        strings supporting ``*``, ``**`` and ``?`` (default: match everything).
+        Returns a string handler ID for ``remove_request_handler(handler_id)``.
+
+        Legacy (phase-based)::
+
+            driver.network.add_request_handler("before_request", handler, url_patterns=[...])
+
+        The callback must call ``request.continue_request()`` itself and
+        url_patterns are wire-level UrlPattern dicts.  Returns an int callback
+        ID for ``remove_request_handler(event, callback_id)``.
         """
+        if callable(event) and callback is None:
+            return self._request_handlers.add_handler(url_patterns, event)
+        if callable(callback) and event not in LEGACY_REQUEST_HANDLER_EVENTS:
+            if not isinstance(event, str) or looks_like_url_glob(event):
+                return self._request_handlers.add_handler(event, callback)
         canonical_event = self._canonical_request_handler_event(event)
         phase_map = {
             "before_request": "beforeRequestSent",
@@ -1326,13 +1335,19 @@ disownDataParameters = DisownDataParameters''',
         if intercept_id:
             self._handler_intercepts[callback_id] = intercept_id
         return callback_id''',
-            '''    def remove_request_handler(self, event, callback_id):
+            '''    def remove_request_handler(self, event, callback_id=None):
         """Remove a network request handler and its associated network intercept.
 
         Args:
-            event: The event name used when adding the handler.
-            callback_id: The int returned by add_request_handler.
+            event: The handler ID string returned by the high-level
+                ``add_request_handler(callback)`` form, or the event name used
+                with the legacy phase-based form.
+            callback_id: The int returned by the legacy form. Omit when
+                removing a high-level handler by its ID.
         """
+        if callback_id is None:
+            self._request_handlers.remove_handler(event)
+            return
         canonical_event = self._canonical_request_handler_event(event)
         self.remove_event_handler(canonical_event, callback_id)
         intercept_id = self._handler_intercepts.pop(callback_id, None)
@@ -1340,6 +1355,7 @@ disownDataParameters = DisownDataParameters''',
             self._remove_intercept(intercept_id)''',
             '''    def clear_request_handlers(self):
         """Clear all request handlers and remove all tracked intercepts."""
+        self._request_handlers.clear()
         self.clear_event_handlers()
         for intercept_id in list(self.intercepts):
             self._remove_intercept(intercept_id)''',

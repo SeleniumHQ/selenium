@@ -20,16 +20,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Build
-      run: bazel build //rust:selenium-manager
-
   tests:
     name: Tests
-    needs: build
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false

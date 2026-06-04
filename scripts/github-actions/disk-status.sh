@@ -5,14 +5,12 @@
 
 echo "=== Disk space ==="
 df -h "$GITHUB_WORKSPACE" || true
+# Also show the Windows system drive (C:) for reference. The build runs on the
+# workspace drive (D: on Windows, / on Linux), so that is what we measure below.
 if [[ "$RUNNER_OS" == "Windows" ]]; then df -h /c || true; fi
 
-# On Windows the workspace is on D: but C: is the constrained drive
-if [[ "$RUNNER_OS" == "Windows" ]]; then
-  AVAIL_GB=$(df -k /c | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
-else
-  AVAIL_GB=$(df -k "$GITHUB_WORKSPACE" | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
-fi
+# Available space on the drive the build actually uses (the workspace).
+AVAIL_GB=$(df -k "$GITHUB_WORKSPACE" | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
 if ! [[ "$AVAIL_GB" =~ ^[0-9]+$ ]]; then
   echo "::error::Could not determine available disk space (got: '${AVAIL_GB}')"
   AVAIL_GB=0

@@ -61,7 +61,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Integration Tests Remote
-      browser: yes
+      needs-display: true
       rerun-with-debug: true
       run: |
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
@@ -80,7 +80,7 @@ jobs:
             os: macos
     with:
       name: Integration Tests (${{ matrix.browser }})
-      browser: ${{ matrix.browser }}
+      needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
       run: |

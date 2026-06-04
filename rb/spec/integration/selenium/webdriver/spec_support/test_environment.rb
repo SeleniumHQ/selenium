@@ -98,17 +98,9 @@ module Selenium
         end
 
         def remote_server
-          args = if ENV.key?('CHROMEDRIVER_BINARY')
-                   ["-Dwebdriver.chrome.driver=#{rlocation(ENV['CHROMEDRIVER_BINARY'])}"]
-                 elsif ENV.key?('MSEDGEDRIVER_BINARY')
-                   ["-Dwebdriver.edge.driver=#{rlocation(ENV['MSEDGEDRIVER_BINARY'])}"]
-                 elsif ENV.key?('GECKODRIVER_BINARY')
-                   ["-Dwebdriver.gecko.driver=#{rlocation(ENV['GECKODRIVER_BINARY'])}"]
-                 else
-                   %w[--selenium-manager true]
-                 end
+          args = driver_path ? %w[--detect-drivers false] : %w[--selenium-manager true]
           args += %w[--enable-managed-downloads true]
-          args += version_stereotype_args unless browser_version == 'stable'
+          args += driver_configuration if driver_path || browser_version != 'stable'
 
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
@@ -121,12 +113,31 @@ module Selenium
           )
         end
 
-        def version_stereotype_args
-          stereotype = {browserName: w3c_browser_name, browserVersion: browser_version}.to_json
-          ['--driver-configuration',
-           "display-name=#{browser} #{browser_version}",
-           'max-sessions=5',
-           "stereotype=#{stereotype}"]
+        def driver_configuration
+          stereotype = {browserName: w3c_browser_name}
+          stereotype[:browserVersion] = browser_version unless browser_version == 'stable'
+          stereotype[options_key] = {binary: browser_path} if browser_path
+
+          config = ['--driver-configuration',
+                    "display-name=#{browser} #{browser_version}",
+                    'max-sessions=5']
+          config << "webdriver-executable=#{driver_path}" if driver_path
+          config << "stereotype=#{stereotype.to_json}"
+          config
+        end
+
+        def driver_path
+          env = {chrome: 'CHROMEDRIVER_BINARY', edge: 'MSEDGEDRIVER_BINARY', firefox: 'GECKODRIVER_BINARY'}[browser]
+          rlocation(ENV.fetch(env)) if env && ENV.key?(env)
+        end
+
+        def browser_path
+          env = "#{browser.to_s.upcase}_BINARY"
+          rlocation(ENV.fetch(env)) if ENV.key?(env)
+        end
+
+        def options_key
+          {chrome: 'goog:chromeOptions', edge: 'ms:edgeOptions', firefox: 'moz:firefoxOptions'}[browser]
         end
 
         def w3c_browser_name

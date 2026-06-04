@@ -151,7 +151,6 @@ def test_should_catch_errors_when_executing_initial_script(driver, pages):
         driver.execute_async_script("throw Error('you should catch this!');")
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_execute_asynchronous_scripts(driver, pages):
     pages.load("ajaxy_page.html")
 

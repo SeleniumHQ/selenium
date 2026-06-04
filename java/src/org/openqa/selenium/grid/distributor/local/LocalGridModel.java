@@ -241,7 +241,7 @@ public class LocalGridModel extends GridModel {
           LOG.info(
               String.format(
                   "Removing Node %s (uri: %s), unhealthy threshold has been reached",
-                  node.getNodeId(), node.getExternalUri()));
+                  node.getNodeId(), node.getMaskedUri()));
           toRemove.add(node);
           break;
         }
@@ -258,14 +258,14 @@ public class LocalGridModel extends GridModel {
           LOG.info(
               String.format(
                   "Switching Node %s (uri: %s) from UP to DOWN",
-                  node.getNodeId(), node.getExternalUri()));
+                  node.getNodeId(), node.getMaskedUri()));
           replacements.put(node, rewrite(node, DOWN));
           nodePurgeTimes.put(id, Instant.now());
         } else if (node.getAvailability() == DOWN && deadTime.isBefore(now)) {
           LOG.info(
               String.format(
                   "Removing Node %s (uri: %s), DOWN for too long",
-                  node.getNodeId(), node.getExternalUri()));
+                  node.getNodeId(), node.getMaskedUri()));
           toRemove.add(node);
         }
       }
@@ -310,7 +310,7 @@ public class LocalGridModel extends GridModel {
         LOG.info(
             String.format(
                 "Switching Node %s (uri: %s) from %s to %s",
-                id, node.getExternalUri(), node.getAvailability(), availability));
+                id, node.getMaskedUri(), node.getAvailability(), availability));
 
         NodeStatus refreshed = rewrite(node, availability);
         nodes.remove(node);

@@ -266,17 +266,3 @@ def rb_integration_test(
                 visibility = ["//rb:__subpackages__"],
                 target_compatible_with = BROWSERS[browser]["target_compatible_with"],
             )
-
-def rb_unit_test(name, srcs, deps, data = [], flaky = False):
-    rb_test(
-        name = name,
-        size = "small",
-        srcs = srcs,
-        args = ["rb/spec/"],
-        flaky = flaky,
-        main = "@bundle//bin:rspec",
-        data = data,
-        tags = ["unit"],
-        deps = ["//rb/spec/unit/selenium/webdriver:spec_helper"] + deps,
-        visibility = ["//rb:__subpackages__"],
-    )

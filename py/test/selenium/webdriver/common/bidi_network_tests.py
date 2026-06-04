@@ -155,3 +155,135 @@ def test_handler_with_data_url_request(driver, pages):
     assert len(exceptions) == 0, "Exception raised when continuing request in handler callback"
 
     driver.network.remove_request_handler("before_request", callback_id)
+
+
+# ---------------------------------------------------------------------------
+# High-level request handler API
+#
+# These tests double as usage examples: handlers receive a Request, may
+# observe, mutate, fail or stub it, and Selenium reconciles the outcome and
+# continues the request automatically.
+# ---------------------------------------------------------------------------
+
+
+def _navigate(driver, url):
+    driver.browsing_context.navigate(context=driver.current_window_handle, url=url, wait=ReadinessState.COMPLETE)
+
+
+def test_listen_to_requests_without_modifying(driver, pages):
+    requests = []
+
+    def log_request(request: Request):
+        requests.append((request.method, request.url, dict(request.headers)))
+
+    handler_id = driver.network.add_request_handler(log_request)
+    try:
+        url = pages.url("formPage.html")
+        _navigate(driver, url)
+        assert driver.find_element(By.NAME, "login").is_displayed(), "Request not continued"
+        document_requests = [r for r in requests if r[1] == url]
+        assert document_requests, "Document request not observed"
+        assert document_requests[0][0] == "GET"
+        assert isinstance(document_requests[0][2], dict)
+    finally:
+        driver.network.remove_request_handler(handler_id)
+
+
+def test_fail_requests_matching_url_pattern(driver, pages):
+    def block_request(request: Request):
+        request.fail()
+
+    driver.network.add_request_handler(["**/formPage.html"], block_request)
+    try:
+        with pytest.raises(WebDriverException):
+            _navigate(driver, pages.url("formPage.html"))
+    finally:
+        driver.network.clear_request_handlers()
+
+
+def test_provide_stubbed_response(driver, pages):
+    def stub_response(request: Request):
+        request.provide_response(
+            200,
+            {"content-type": "text/html"},
+            "<html><head><title>Stubbed</title></head><body><p id='stubbed'>stubbed response</p></body></html>",
+        )
+
+    handler_id = driver.network.add_request_handler(["**/formPage.html"], stub_response)
+    try:
+        _navigate(driver, pages.url("formPage.html"))
+        assert driver.find_element(By.ID, "stubbed").text == "stubbed response"
+    finally:
+        driver.network.remove_request_handler(handler_id)
+
+
+def test_change_request_headers(driver, pages):
+    def add_auth_header(request: Request):
+        headers = request.headers.copy()
+        headers["authorization"] = "Bearer token123"
+        request.set_headers(headers)
+
+    handler_id = driver.network.add_request_handler(add_auth_header)
+    try:
+        _navigate(driver, pages.url("formPage.html"))
+        assert driver.find_element(By.NAME, "login").is_displayed(), "Mutated request not continued"
+    finally:
+        driver.network.remove_request_handler(handler_id)
+
+
+@pytest.mark.xfail_firefox(reason="Firefox does not yet support rewriting the URL in network.continueRequest")
+def test_change_request_url(driver, pages):
+    def rewrite_url(request: Request):
+        request.set_url(pages.url("simpleTest.html"))
+
+    handler_id = driver.network.add_request_handler(["**/formPage.html"], rewrite_url)
+    try:
+        _navigate(driver, pages.url("formPage.html"))
+        assert driver.find_element(By.ID, "oneline").text == "A single line of text"
+    finally:
+        driver.network.remove_request_handler(handler_id)
+
+
+def test_fail_wins_when_multiple_handlers_disagree(driver, pages):
+    def mutate(request: Request):
+        headers = request.headers.copy()
+        headers["x-mutated"] = "true"
+        request.set_headers(headers)
+
+    def block_request(request: Request):
+        request.fail()
+
+    driver.network.add_request_handler(["**/formPage.html"], mutate)
+    driver.network.add_request_handler(["**/formPage.html"], block_request)
+    try:
+        with pytest.raises(WebDriverException):
+            _navigate(driver, pages.url("formPage.html"))
+    finally:
+        driver.network.clear_request_handlers()
+
+
+def test_url_patterns_scope_handlers(driver, pages):
+    seen = []
+
+    handler_id = driver.network.add_request_handler(["**/simpleTest.html"], lambda request: seen.append(request.url))
+    try:
+        _navigate(driver, pages.url("formPage.html"))
+        assert not seen, "Handler ran for a non-matching URL"
+        assert driver.find_element(By.NAME, "login").is_displayed(), "Non-matching request not continued"
+
+        _navigate(driver, pages.url("simpleTest.html"))
+        assert seen, "Handler did not run for a matching URL"
+        assert all("simpleTest.html" in url for url in seen)
+    finally:
+        driver.network.remove_request_handler(handler_id)
+
+
+def test_remove_handler_by_id_stops_observation(driver, pages):
+    seen = []
+
+    handler_id = driver.network.add_request_handler(lambda request: seen.append(request.url))
+    driver.network.remove_request_handler(handler_id)
+
+    _navigate(driver, pages.url("formPage.html"))
+    assert not seen, "Removed handler still observed requests"
+    assert driver.find_element(By.NAME, "login").is_displayed(), "Request not continued"
