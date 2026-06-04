@@ -94,6 +94,10 @@ def test_continue_request(driver, pages):
     driver.network.remove_request_handler("before_request", callback_id)
 
 
+# Successful authentication warms the browser's HTTP auth cache for the
+# origin, suppressing authRequired challenges in later tests — restart the
+# driver afterwards so challenge-dependent tests start clean.
+@pytest.mark.needs_fresh_driver
 def test_continue_with_auth(driver):
     callback_id = driver.network.add_auth_handler("postman", "password")
     assert callback_id is not None, "Request handler not added"
@@ -403,6 +407,9 @@ def test_request_and_response_handlers_compose(driver, pages):
 # ---------------------------------------------------------------------------
 
 
+# needs_fresh_driver: successful authentication warms the browser's HTTP auth
+# cache for the origin, which would suppress the challenge in later tests.
+@pytest.mark.needs_fresh_driver
 def test_provide_credentials_for_matching_url(driver):
     def handle_authentication(auth):
         auth.provide_credentials("postman", "password")
@@ -427,6 +434,7 @@ def test_cancel_authentication_challenge(driver):
         driver.network.remove_authentication_handler(handler_id)
 
 
+@pytest.mark.needs_fresh_driver
 def test_authentication_handler_observes_challenge_details(driver):
     challenges = []
 
