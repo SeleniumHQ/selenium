@@ -620,44 +620,57 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
         ],
     },
     "script": {
+        "extra_init_code": [
+            "self._log_handlers = LogHandlerRegistry(self)",
+            "self._dom_mutation_handlers = DomMutationRegistry(self)",
+        ],
         "extra_dataclasses": [
-            '''@dataclass
-class DomMutation:
-    """Represents a DOM attribute mutation event from add_dom_mutation_handler.
-
-    Attributes:
-        element_id: The ``data-__webdriver_id`` attribute value set on the
-            mutated element by the MutationObserver. Use this to locate the
-            element from the main thread if needed.
-        attribute_name: The name of the changed attribute.
-        current_value: The attribute value after the mutation (may be ``None``
-            if the attribute was removed).
-        old_value: The attribute value before the mutation.
-    """
-
-    element_id: str | None = None
-    attribute_name: str | None = None
-    current_value: str | None = None
-    old_value: str | None = None
-''',
+            # The handler registries and payload classes live in the static
+            # helper module _script_handlers.py (staged via create-bidi-src
+            # extra_srcs) so the implementation is lintable and unit-testable
+            # as real code.  The import also re-exports the payload classes
+            # to keep selenium.webdriver.common.bidi.script.<name> importable
+            # (DomMutation in particular predates the helper module).
+            """from selenium.webdriver.common.bidi._script_handlers import (
+    ConsoleMessage,
+    DomMutation,
+    DomMutationRegistry,
+    LogHandlerRegistry,
+    PinnedScript,
+    ScriptError,
+    ScriptResult,
+    execute_pinned,
+)""",
         ],
         "extra_methods": [
-            '''    def execute(self, function_declaration: str, *args, context_id: str | None = None) -> Any:
+            '''    def execute(
+        self, function_declaration: str | PinnedScript, *args, context_id: str | None = None
+    ) -> Any:
         """Execute a function declaration in the browser context.
 
         Args:
-            function_declaration: The function as a string, e.g. ``"() => document.title"``.
+            function_declaration: The function as a string, e.g. ``"() => document.title"``,
+                or a ``PinnedScript`` returned by ``pin()``.
             *args: Optional Python values to pass as arguments to the function.
                 Each value is serialised to a BiDi ``LocalValue`` automatically.
                 Supported types: ``None``, ``bool``, ``int``, ``float``
                 (including ``NaN`` and ``Infinity``), ``str``, ``list``,
                 ``dict``, and ``datetime.datetime``.
+                When a ``PinnedScript`` is given, the single argument is the
+                code to execute with the pinned source in scope, e.g.
+                ``script.execute(pinned, "return helper();")``.
             context_id: The browsing context ID to run in. Defaults to the
                 driver\'s current window handle when a driver was provided.
 
         Returns:
-            The inner RemoteValue result dict, or raises WebDriverException on exception.
+            The inner RemoteValue result dict, or raises WebDriverException on
+            exception.  When a ``PinnedScript`` is given, returns a
+            ``ScriptResult`` instead and does not raise: failures are reported
+            through ``ScriptResult.error``.
         """
+        if isinstance(function_declaration, PinnedScript):
+            code = args[0] if args else ""
+            return execute_pinned(self, function_declaration, code, context_id=context_id)
         import math as _math
         import datetime as _datetime
         from selenium.common.exceptions import WebDriverException as _WebDriverException
@@ -752,16 +765,20 @@ class DomMutation:
             script_id: The ID of the preload script to remove.
         """
         return self.remove_preload_script(script=script_id)''',
-            '''    def pin(self, function_declaration):
+            '''    def pin(self, function_declaration) -> PinnedScript:
         """Pin (add) a preload script that runs on every page load.
 
         Args:
             function_declaration: The JS function to execute on page load.
 
         Returns:
-            script_id: The ID of the pinned script (str).
+            A ``PinnedScript`` carrying the pinned source.  It subclasses
+            ``str`` (the script ID), so it can be used anywhere a script ID
+            string is expected, and can be passed to ``execute()`` to run
+            code with the pinned source in scope.
         """
-        return self._add_preload_script(function_declaration)''',
+        script_id = self._add_preload_script(function_declaration)
+        return PinnedScript(script_id, source=function_declaration)''',
             '''    def unpin(self, script_id):
         """Unpin (remove) a previously pinned preload script.
 
@@ -897,98 +914,12 @@ class DomMutation:
             target: A dict like {"context": <id>}.
         """
         return self.disown(handles=handles, target=target)''',
-            '''    def _subscribe_log_entry(self, callback, entry_type_filter=None):
-        """Subscribe to log.entryAdded BiDi events with optional type filtering."""
-        import threading as _threading
-        from selenium.webdriver.common.bidi.session import Session as _Session
-        from selenium.webdriver.common.bidi import log as _log_mod
-
-        bidi_event = "log.entryAdded"
-
-        if not hasattr(self, "_log_subscriptions"):
-            self._log_subscriptions = {}
-            self._log_lock = _threading.Lock()
-
-        def _deserialize(params):
-            t = params.get("type") if isinstance(params, dict) else None
-            if t == "console":
-                cls = getattr(_log_mod, "ConsoleLogEntry", None)
-                if cls is not None and hasattr(cls, "from_json"):
-                    try:
-                        return cls.from_json(params)
-                    except Exception:
-                        pass
-            elif t == "javascript":
-                cls = getattr(_log_mod, "JavascriptLogEntry", None)
-                if cls is not None and hasattr(cls, "from_json"):
-                    try:
-                        return cls.from_json(params)
-                    except Exception:
-                        pass
-            return params
-
-        def _wrapped(raw):
-            entry = _deserialize(raw)
-            if entry_type_filter is None:
-                callback(entry)
-            else:
-                t = getattr(entry, "type_", None) or (
-                    entry.get("type") if isinstance(entry, dict) else None
-                )
-                if t == entry_type_filter:
-                    callback(entry)
-
-        class _BidiRef:
-            event_class = bidi_event
-
-            def from_json(self2, p):
-                return p
-
-        _wrapper = _BidiRef()
-        callback_id = self._conn.add_callback(_wrapper, _wrapped)
-        with self._log_lock:
-            if bidi_event not in self._log_subscriptions:
-                session = _Session(self._conn)
-                result = session.subscribe([bidi_event])
-                sub_id = (
-                    result.get("subscription") if isinstance(result, dict) else None
-                )
-                self._log_subscriptions[bidi_event] = {
-                    "callbacks": [],
-                    "subscription_id": sub_id,
-                }
-            self._log_subscriptions[bidi_event]["callbacks"].append(callback_id)
-        return callback_id''',
-            '''    def _unsubscribe_log_entry(self, callback_id):
-        """Unsubscribe a log entry callback by ID."""
-        from selenium.webdriver.common.bidi.session import Session as _Session
-
-        bidi_event = "log.entryAdded"
-        if not hasattr(self, "_log_subscriptions"):
-            return
-
-        class _BidiRef:
-            event_class = bidi_event
-
-            def from_json(self2, p):
-                return p
-
-        _wrapper = _BidiRef()
-        self._conn.remove_callback(_wrapper, callback_id)
-        with self._log_lock:
-            entry = self._log_subscriptions.get(bidi_event)
-            if entry and callback_id in entry["callbacks"]:
-                entry["callbacks"].remove(callback_id)
-            if entry is not None and not entry["callbacks"]:
-                session = _Session(self._conn)
-                sub_id = entry.get("subscription_id")
-                if sub_id:
-                    session.unsubscribe(subscriptions=[sub_id])
-                else:
-                    session.unsubscribe(events=[bidi_event])
-                del self._log_subscriptions[bidi_event]''',
             '''    def add_console_message_handler(self, callback: Callable) -> int:
         """Add a handler for console log messages (log.entryAdded type=console).
+
+        The callback receives the generated ``ConsoleLogEntry`` dataclass.
+        For payloads carrying source URL and line/column numbers, see
+        ``add_console_handler``.
 
         Args:
             callback: Function called with a ConsoleLogEntry on each console message.
@@ -996,12 +927,37 @@ class DomMutation:
         Returns:
             callback_id for use with remove_console_message_handler.
         """
-        return self._subscribe_log_entry(callback, entry_type_filter="console")''',
+        return self._log_handlers.add_handler(callback, category="console", legacy=True)''',
             '''    def remove_console_message_handler(self, callback_id: int) -> None:
         """Remove a console message handler by callback ID."""
-        self._unsubscribe_log_entry(callback_id)''',
+        self._log_handlers.remove_handler(callback_id)''',
+            '''    def add_console_handler(self, callback: Callable) -> int:
+        """Add a handler for console messages (log.entryAdded type=console).
+
+        Args:
+            callback: Function called with a ``ConsoleMessage`` carrying
+                level, text, source URL, line/column numbers and stack trace.
+
+        Returns:
+            callback_id for use with remove_console_handler.
+        """
+        return self._log_handlers.add_handler(callback, category="console")''',
+            '''    def remove_console_handler(self, callback_id: int) -> None:
+        """Remove a console handler by callback ID."""
+        self._log_handlers.remove_handler(callback_id)''',
+            '''    def clear_console_handlers(self) -> None:
+        """Remove all console handlers.
+
+        Clears handlers registered through both ``add_console_handler``
+        and ``add_console_message_handler``.
+        """
+        self._log_handlers.clear_handlers("console")''',
             '''    def add_javascript_error_handler(self, callback: Callable) -> int:
         """Add a handler for JavaScript error log messages (log.entryAdded type=javascript).
+
+        The callback receives the generated ``JavascriptLogEntry`` dataclass.
+        For payloads carrying source URL and line/column numbers, see
+        ``add_error_handler``.
 
         Args:
             callback: Function called with a JavascriptLogEntry on each JS error.
@@ -1009,162 +965,55 @@ class DomMutation:
         Returns:
             callback_id for use with remove_javascript_error_handler.
         """
-        return self._subscribe_log_entry(callback, entry_type_filter="javascript")''',
+        return self._log_handlers.add_handler(callback, category="error", legacy=True)''',
             '''    def remove_javascript_error_handler(self, callback_id: int) -> None:
         """Remove a JavaScript error handler by callback ID."""
-        self._unsubscribe_log_entry(callback_id)''',
-            '''    def _subscribe_mutation_handler(self, callback):
-        """Subscribe to DOM mutation events using a BiDi preload script and script.message channel.
-
-        Loads bidi-mutation-listener.js as a preload script with a channel argument,
-        then subscribes to script.message events from that channel to detect
-        DOM attribute mutations.
-        """
-        import json as _json
-        import pkgutil as _pkgutil
-        import threading as _threading
-        from selenium.webdriver.common.bidi.session import Session as _Session
-
-        bidi_event = "script.message"
-
-        if not hasattr(self, "_mutation_subscriptions"):
-            self._mutation_subscriptions = {}
-            self._mutation_lock = _threading.Lock()
-
-        # Load bidi-mutation-listener.js only once (cache it on the instance)
-        if not hasattr(self, "_bidi_mutation_listener_js"):
-            _pkg = "selenium.webdriver.common"
-            _js_bytes = _pkgutil.get_data(_pkg, "bidi-mutation-listener.js")
-            if _js_bytes is None:
-                raise ValueError("Failed to load bidi-mutation-listener.js")
-            self._bidi_mutation_listener_js = _js_bytes.decode("utf8").strip()
-
-        # Use a stable, namespaced channel to avoid collisions with user scripts.
-        if not hasattr(self, "_mutation_channel_name"):
-            import uuid as _uuid
-            self._mutation_channel_name = f"selenium.domMutation.{_uuid.uuid4().hex}"
-        _channel_name = self._mutation_channel_name
-        _channel_arg = {"type": "channel", "value": {"channel": _channel_name}}
-
-        def _on_message(message):
-            # Filter to only our channel
-            channel = message.get("channel") if isinstance(message, dict) else None
-            if channel != _channel_name:
-                return
-            data = message.get("data", {}) if isinstance(message, dict) else {}
-            value = data.get("value") if isinstance(data, dict) else None
-            if value is None:
-                return
-            try:
-                payload = _json.loads(value)
-            except (ValueError, TypeError):
-                return
-            target_id = payload.get("target")
-            if not target_id and target_id != 0:
-                return
-            from selenium.webdriver.common.bidi.script import DomMutation as _DomMutation
-            event = _DomMutation(
-                element_id=str(target_id),
-                attribute_name=payload.get("name"),
-                current_value=payload.get("value"),
-                old_value=payload.get("oldValue"),
-            )
-            callback(event)
-
-        class _BidiRef:
-            event_class = bidi_event
-
-            def from_json(self2, p):
-                return p
-
-        with self._mutation_lock:
-            # Register the preload script only once per Script instance to avoid
-            # accumulating duplicate MutationObservers across handler registrations.
-            if not hasattr(self, "_mutation_preload_script_id"):
-                self._mutation_preload_script_id = self._add_preload_script(
-                    self._bidi_mutation_listener_js, arguments=[_channel_arg]
-                )
-                # Also invoke immediately on the current page since the preload
-                # script only fires on future document creations.
-                if self._driver is not None:
-                    _context = None
-                    try:
-                        _context = self._driver.current_window_handle
-                    except Exception:
-                        pass
-                    if _context is not None:
-                        self.call_function(
-                            function_declaration=self._bidi_mutation_listener_js,
-                            target={"context": _context},
-                            await_promise=False,
-                            arguments=[_channel_arg],
-                        )
-            if bidi_event not in self._mutation_subscriptions:
-                session = _Session(self._conn)
-                result = session.subscribe([bidi_event])
-                sub_id = (
-                    result.get("subscription") if isinstance(result, dict) else None
-                )
-                self._mutation_subscriptions[bidi_event] = {
-                    "callbacks": [],
-                    "subscription_id": sub_id,
-                }
-            # Register the callback AFTER setup to avoid leaking it if setup fails.
-            _wrapper = _BidiRef()
-            callback_id = self._conn.add_callback(_wrapper, _on_message)
-            self._mutation_subscriptions[bidi_event]["callbacks"].append(callback_id)
-        return callback_id''',
-            '''    def _unsubscribe_mutation_handler(self, callback_id):
-        """Unsubscribe a DOM mutation handler by callback ID."""
-        from selenium.webdriver.common.bidi.session import Session as _Session
-
-        bidi_event = "script.message"
-        if not hasattr(self, "_mutation_subscriptions"):
-            return
-
-        class _BidiRef:
-            event_class = bidi_event
-
-            def from_json(self2, p):
-                return p
-
-        _wrapper = _BidiRef()
-        self._conn.remove_callback(_wrapper, callback_id)
-        with self._mutation_lock:
-            entry = self._mutation_subscriptions.get(bidi_event)
-            if entry and callback_id in entry["callbacks"]:
-                entry["callbacks"].remove(callback_id)
-            if entry is not None and not entry["callbacks"]:
-                session = _Session(self._conn)
-                sub_id = entry.get("subscription_id")
-                if sub_id:
-                    session.unsubscribe(subscriptions=[sub_id])
-                else:
-                    session.unsubscribe(events=[bidi_event])
-                del self._mutation_subscriptions[bidi_event]
-                if hasattr(self, "_mutation_preload_script_id"):
-                    preload_script_id = self._mutation_preload_script_id
-                    try:
-                        self._remove_preload_script(preload_script_id)
-                    finally:
-                        del self._mutation_preload_script_id''',
-            '''    def add_dom_mutation_handler(self, callback: Callable) -> int:
-        """Add a handler for DOM attribute mutation events.
-
-        Uses a BiDi preload script and channel to observe DOM attribute mutations
-        on the page. When an attribute changes, the callback is invoked with a
-        ``DomMutation`` object describing the element and attribute change.
+        self._log_handlers.remove_handler(callback_id)''',
+            '''    def add_error_handler(self, callback: Callable) -> int:
+        """Add a handler for JavaScript errors (log.entryAdded type=javascript).
 
         Args:
-            callback: Function called with a ``DomMutation`` on each attribute mutation.
+            callback: Function called with a ``ScriptError`` carrying message,
+                source URL, line/column numbers and stack trace.
+
+        Returns:
+            callback_id for use with remove_error_handler.
+        """
+        return self._log_handlers.add_handler(callback, category="error")''',
+            '''    def remove_error_handler(self, callback_id: int) -> None:
+        """Remove a JavaScript error handler by callback ID."""
+        self._log_handlers.remove_handler(callback_id)''',
+            '''    def clear_error_handlers(self) -> None:
+        """Remove all JavaScript error handlers.
+
+        Clears handlers registered through both ``add_error_handler``
+        and ``add_javascript_error_handler``.
+        """
+        self._log_handlers.clear_handlers("error")''',
+            '''    def add_dom_mutation_handler(self, callback: Callable, mutation_types=None) -> int:
+        """Add a handler for DOM mutation events.
+
+        Uses a BiDi preload script and channel to observe DOM mutations on
+        the page. The callback is invoked with a ``DomMutation`` object
+        describing each observed mutation.
+
+        Args:
+            callback: Function called with a ``DomMutation`` on each mutation.
+            mutation_types: The mutation types to observe: any of
+                ``attributes``, ``childList`` and ``characterData``, given as
+                a string or an iterable of strings. Defaults to
+                ``("attributes",)``.
 
         Returns:
             callback_id for use with remove_dom_mutation_handler.
         """
-        return self._subscribe_mutation_handler(callback)''',
+        return self._dom_mutation_handlers.add_handler(callback, mutation_types)''',
             '''    def remove_dom_mutation_handler(self, callback_id: int) -> None:
         """Remove a DOM mutation handler by callback ID."""
-        self._unsubscribe_mutation_handler(callback_id)''',
+        self._dom_mutation_handlers.remove_handler(callback_id)''',
+            '''    def clear_dom_mutation_handlers(self) -> None:
+        """Remove all DOM mutation handlers."""
+        self._dom_mutation_handlers.clear_handlers()''',
         ],
     },
     "network": {
