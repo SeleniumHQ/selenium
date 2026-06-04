@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using OpenQA.Selenium.BiDi;
 
@@ -79,7 +80,8 @@ class SessionUnitTests
         Assert.That(status.Message, Is.EqualTo("running"));
 
         Assert.That(_transport.SentMessages, Has.Count.EqualTo(1));
-        Assert.That(_transport.SentMessages[0], Does.Contain(""""method":"session.status""""));
+        using var doc = JsonDocument.Parse(_transport.SentMessages[0]);
+        Assert.That(doc.RootElement.GetProperty("method").GetString(), Is.EqualTo("session.status"));
     }
 
     [Test]
@@ -108,8 +110,10 @@ class SessionUnitTests
         _transport.EnqueueSuccess(2, """{"ready":true,"message":"second"}""");
         await task2;
 
-        var id1 = System.Text.Json.JsonDocument.Parse(_transport.SentMessages[0]).RootElement.GetProperty("id").GetInt64();
-        var id2 = System.Text.Json.JsonDocument.Parse(_transport.SentMessages[1]).RootElement.GetProperty("id").GetInt64();
+        using var doc1 = JsonDocument.Parse(_transport.SentMessages[0]);
+        using var doc2 = JsonDocument.Parse(_transport.SentMessages[1]);
+        var id1 = doc1.RootElement.GetProperty("id").GetInt64();
+        var id2 = doc2.RootElement.GetProperty("id").GetInt64();
 
         Assert.That(id2, Is.EqualTo(id1 + 1));
     }
@@ -148,7 +152,8 @@ class SessionUnitTests
 
         await _transport.WaitForSentMessagesAsync(1);
 
-        Assert.That(_transport.SentMessages[0], Does.Contain(""""foo":"bar""""));
+        using var doc = JsonDocument.Parse(_transport.SentMessages[0]);
+        Assert.That(doc.RootElement.GetProperty("params").GetProperty("foo").GetString(), Is.EqualTo("bar"));
 
         _transport.EnqueueSuccess(1, """{"ready":true,"message":"running"}""");
         await task;
@@ -164,7 +169,10 @@ class SessionUnitTests
 
         await _transport.WaitForSentMessagesAsync(1);
 
-        Assert.That(_transport.SentMessages[0], Does.Contain(""""{"baz":"qux",""""));
+        using var doc = JsonDocument.Parse(_transport.SentMessages[0]);
+        Assert.That(doc.RootElement.GetProperty("baz").GetString(), Is.EqualTo("qux"));
+        Assert.That(doc.RootElement.GetProperty("params").EnumerateObject().Any(p => p.Name == "baz"), Is.False,
+            "AdditionalMessageData fields must be top-level, not inside params");
 
         _transport.EnqueueSuccess(1, """{"ready":true,"message":"running"}""");
         await task;
