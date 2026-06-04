@@ -44,7 +44,7 @@ public readonly struct AdditionalData
         {
             throw new ArgumentException("JSON must be an object.", nameof(json));
         }
-        
+
         _data = doc.RootElement.Clone();
     }
 
