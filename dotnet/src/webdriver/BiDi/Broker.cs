@@ -97,9 +97,13 @@ internal sealed class Broker : IAsyncDisposable
                 writer.WriteString("method"u8, descriptor.Method);
                 writer.WritePropertyName("params"u8);
 
-                if (options is { AdditionalData: { IsEmpty: false } additionalData }
-                    && !ReferenceEquals(@params, Parameters.Empty))
+                if (options is { AdditionalData: { IsEmpty: false } additionalData })
                 {
+                    // Cannot mutate the shared Parameters.Empty singleton; create a fresh instance to hold the extra data.
+                    if (ReferenceEquals(@params, Parameters.Empty))
+                    {
+                        @params = (TParameters)(object)new Parameters();
+                    }
                     @params.RawAdditionalData ??= [];
                     foreach (var prop in additionalData)
                     {
