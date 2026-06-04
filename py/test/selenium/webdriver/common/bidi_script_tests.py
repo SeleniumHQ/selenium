@@ -1493,8 +1493,10 @@ class TestBidiDomMutationHandler:
 
 
 class TestBidiScriptAlignment:
-    """Tests for the cross-binding API design surface: ScriptError/ConsoleMessage
-    handlers with clear_* counterparts, and PinnedScript/ScriptResult.
+    """Tests for the cross-binding API design surface.
+
+    Covers ScriptError/ConsoleMessage handlers with clear_* counterparts,
+    and PinnedScript/ScriptResult.
     """
 
     def test_error_handler_receives_script_error(self, driver, pages):
