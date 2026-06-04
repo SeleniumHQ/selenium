@@ -80,10 +80,13 @@ class Index extends EventEmitter {
         return
       }
       // Messages without a numeric id are BiDi events, not command responses.
-      // Emit them by method name so that generated domain classes and other
-      // consumers can use bidi.on(methodName, callback) rather than attaching
-      // their own raw ws.on('message', ...) listeners (which accumulate and
-      // trigger MaxListeners warnings).
+      // Re-emit them on this EventEmitter by method name (e.g.
+      // 'browsingContext.contextCreated') so that generated domain classes can
+      // subscribe via bidi.on(methodName, callback) instead of each attaching
+      // a new raw ws.on('message', ...) listener.  The existing hand-written
+      // modules (logInspector, network, etc.) continue to use their own
+      // ws.on('message', ...) listeners unchanged — this emission is purely
+      // additive and does not affect those code paths.
       if (payload == null || typeof payload.id !== 'number') {
         if (payload != null && typeof payload.method === 'string') {
           this.emit(payload.method, payload.params)
