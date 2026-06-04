@@ -580,7 +580,7 @@ def test_remove_response_handler_removes_intercept_and_subscription():
     assert conn.commands_named("session.unsubscribe") == [
         {"method": "session.unsubscribe", "params": {"subscriptions": ["subscription-1"]}}
     ]
-    with pytest.raises(ValueError, match="Response handler .* not found"):
+    with pytest.raises(ValueError, match=r"Response handler .* not found"):
         network.remove_response_handler(handler_id)
 
 
