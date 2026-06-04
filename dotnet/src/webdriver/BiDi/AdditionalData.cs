@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -33,6 +34,12 @@ public readonly struct AdditionalData
     public AdditionalData(JsonObject json)
     {
         _data = JsonSerializer.SerializeToElement(json);
+    }
+
+    public AdditionalData([StringSyntax(StringSyntaxAttribute.Json)] string json)
+    {
+        using var doc = JsonDocument.Parse(json);
+        _data = doc.RootElement.Clone();
     }
 
     internal AdditionalData(JsonElement element)
@@ -58,6 +65,8 @@ public readonly struct AdditionalData
     }
 
     public static implicit operator AdditionalData(JsonObject json) => new(json);
+
+    public static implicit operator AdditionalData([StringSyntax(StringSyntaxAttribute.Json)] string json) => new(json);
 
     public bool IsEmpty => _data.ValueKind != JsonValueKind.Object;
 

@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi;
 using OpenQA.Selenium.BiDi.Log;
@@ -40,6 +41,21 @@ internal class SessionTests : BiDiTestFixture
 
         Assert.That(status, Is.Not.Null);
         Assert.That(status.Message, Is.Not.Empty);
+    }
+
+    [Test]
+    public async Task CanGetStatusWithAdditionalData()
+    {
+        var status = await bidi.StatusAsync(new()
+        {
+            AdditionalData = new JsonObject
+            {
+                ["foo"] = "bar"
+            },
+            AdditionalMessageData = """{"baz": "qux"}"""
+        });
+
+        Assert.That(status, Is.Not.Null);
     }
 
     [Test]
