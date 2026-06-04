@@ -257,7 +257,9 @@ function loadEnhancements(manifestPath) {
     throw new Error(`Failed to parse enhancements manifest at ${fullPath}: ${err.message}`)
   }
   if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-    throw new Error(`Enhancements manifest at ${fullPath} must be a JSON object, got ${Array.isArray(parsed) ? 'array' : typeof parsed}`)
+    throw new Error(
+      `Enhancements manifest at ${fullPath} must be a JSON object, got ${Array.isArray(parsed) ? 'array' : typeof parsed}`,
+    )
   }
   return parsed
 }
@@ -842,7 +844,9 @@ function generateClass({ className, commands, events, enhancement, emptyResultTy
   lines.push(`  private constructor(private readonly bidi: BidiConnection) {}`)
   lines.push('')
   lines.push(`  static async create(driver: unknown): Promise<${className}> {`)
-  lines.push(`    const caps = await (driver as { getCapabilities(): Promise<{ get(key: string): unknown }> }).getCapabilities()`)
+  lines.push(
+    `    const caps = await (driver as { getCapabilities(): Promise<{ get(key: string): unknown }> }).getCapabilities()`,
+  )
   lines.push(`    if (!caps.get('webSocketUrl')) {`)
   lines.push(`      throw new Error('WebDriver instance must support BiDi protocol')`)
   lines.push(`    }`)
