@@ -45,4 +45,15 @@ public sealed class BiDiOptionsBuilder
         TransportFactory = (uri, ct) => WebSocketTransport.ConnectAsync(uri, configure, ct);
         return this;
     }
+
+    /// <summary>
+    /// Configures the BiDi connection to use the specified <see cref="ITransport"/> instance.
+    /// </summary>
+    /// <param name="transport">The transport instance to use.</param>
+    /// <returns>The current <see cref="BiDiOptionsBuilder"/> instance for chaining.</returns>
+    public BiDiOptionsBuilder UseTransport(ITransport transport)
+    {
+        TransportFactory = (_, _) => Task.FromResult(transport);
+        return this;
+    }
 }
