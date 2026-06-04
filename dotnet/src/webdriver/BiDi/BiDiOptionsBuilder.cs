@@ -52,7 +52,9 @@ public sealed class BiDiOptionsBuilder
     /// <returns>The current <see cref="BiDiOptionsBuilder"/> instance for chaining.</returns>
     public BiDiOptionsBuilder UseTransport(ITransport transport)
     {
-        return UseTransport((_, _) => Task.FromResult(transport));
+        return UseTransport((_, ct) => ct.IsCancellationRequested
+            ? Task.FromCanceled<ITransport>(ct)
+            : Task.FromResult(transport));
     }
 
     private BiDiOptionsBuilder UseTransport(Func<Uri, CancellationToken, Task<ITransport>> factory)
