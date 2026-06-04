@@ -57,9 +57,17 @@ public sealed class BiDiOptionsBuilder
     {
         ArgumentNullException.ThrowIfNull(factory);
 
-        return UseTransport((_, ct) => ct.IsCancellationRequested
-            ? Task.FromCanceled<ITransport>(ct)
-            : Task.FromResult(factory()));
+        return UseTransport((_, ct) =>
+        {
+            if (ct.IsCancellationRequested)
+            {
+                return Task.FromCanceled<ITransport>(ct);
+            }
+
+            var transport = factory() ?? throw new InvalidOperationException("The transport factory must return a non-null ITransport instance.");
+
+            return Task.FromResult(transport);
+        });
     }
 
     private BiDiOptionsBuilder UseTransport(Func<Uri, CancellationToken, Task<ITransport>> factory)
