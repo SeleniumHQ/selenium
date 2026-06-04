@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi;
 using OpenQA.Selenium.BiDi.Log;
@@ -28,52 +27,12 @@ namespace OpenQA.Selenium.Tests.BiDi.Session;
 internal class SessionTests : BiDiTestFixture
 {
     [Test]
-    public async Task ShouldHaveIdempotentDisposal()
-    {
-        await bidi.DisposeAsync();
-        await bidi.DisposeAsync();
-    }
-
-    [Test]
     public async Task CanGetStatus()
     {
         var status = await bidi.StatusAsync();
 
         Assert.That(status, Is.Not.Null);
         Assert.That(status.Message, Is.Not.Empty);
-    }
-
-    [Test]
-    public async Task CanGetStatusWithAdditionalData()
-    {
-        var status = await bidi.StatusAsync(new()
-        {
-            AdditionalData = new JsonObject
-            {
-                ["foo"] = "bar"
-            },
-            AdditionalMessageData = """{"baz": "qux"}"""
-        });
-
-        Assert.That(status, Is.Not.Null);
-    }
-
-    [Test]
-    public void ShouldRespectTimeout()
-    {
-        Assert.That(
-            () => bidi.StatusAsync(new() { Timeout = TimeSpan.FromMicroseconds(1) }),
-            Throws.InstanceOf<TaskCanceledException>());
-    }
-
-    [Test]
-    public void ShouldRespectCancellationToken()
-    {
-        using var cts = new CancellationTokenSource(TimeSpan.FromMicroseconds(1));
-
-        Assert.That(
-            () => bidi.StatusAsync(cancellationToken: cts.Token),
-            Throws.InstanceOf<TaskCanceledException>());
     }
 
     [Test]

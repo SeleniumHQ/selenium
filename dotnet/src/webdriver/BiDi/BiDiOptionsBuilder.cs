@@ -46,17 +46,28 @@ public sealed class BiDiOptionsBuilder
     }
 
     /// <summary>
-    /// Configures the BiDi connection to use the specified <see cref="ITransport"/> instance.
+    /// Configures the BiDi connection to use a transport created by the specified factory.
     /// </summary>
-    /// <param name="transport">The transport instance to use.</param>
+    /// <remarks>
+    /// BiDi takes ownership of the transport instance returned by the factory and will dispose it.
+    /// </remarks>
+    /// <param name="factory">A factory function that creates the <see cref="ITransport"/> instance.</param>
     /// <returns>The current <see cref="BiDiOptionsBuilder"/> instance for chaining.</returns>
-    public BiDiOptionsBuilder UseTransport(ITransport transport)
+    public BiDiOptionsBuilder UseTransport(Func<ITransport> factory)
     {
-        ArgumentNullException.ThrowIfNull(transport);
+        ArgumentNullException.ThrowIfNull(factory);
 
-        return UseTransport((_, ct) => ct.IsCancellationRequested
-            ? Task.FromCanceled<ITransport>(ct)
-            : Task.FromResult(transport));
+        return UseTransport((_, ct) =>
+        {
+            if (ct.IsCancellationRequested)
+            {
+                return Task.FromCanceled<ITransport>(ct);
+            }
+
+            var transport = factory() ?? throw new InvalidOperationException("The transport factory must return a non-null ITransport instance.");
+
+            return Task.FromResult(transport);
+        });
     }
 
     private BiDiOptionsBuilder UseTransport(Func<Uri, CancellationToken, Task<ITransport>> factory)
