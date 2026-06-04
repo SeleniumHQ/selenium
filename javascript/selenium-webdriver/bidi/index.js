@@ -89,7 +89,20 @@ class Index extends EventEmitter {
       // additive and does not affect those code paths.
       if (payload == null || typeof payload.id !== 'number') {
         if (payload != null && typeof payload.method === 'string') {
-          this.emit(payload.method, payload.params)
+          // 'error' is a reserved EventEmitter event — emitting it without a
+          // listener throws and crashes the process. Route any peer-supplied
+          // method named 'error' through the same guarded path used for JSON
+          // parse failures rather than forwarding it directly.
+          if (payload.method === 'error') {
+            const err = new Error(`BiDi protocol error event: ${JSON.stringify(payload.params)}`)
+            if (this.listenerCount('error') > 0) {
+              this.emit('error', err)
+            } else {
+              process.emitWarning(err.message, 'BiDiProtocolWarning')
+            }
+          } else {
+            this.emit(payload.method, payload.params)
+          }
         }
         return
       }
