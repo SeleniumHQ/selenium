@@ -56,7 +56,7 @@ suite(
         assert.ok(event, 'beforeRequestSent should have fired')
         assert.strictEqual(event.request.method, 'GET')
         assert.ok(event.request.url)
-        assert.ok(event.request.headers.length >= 0)
+        assert.ok(event.request.headers.length > 0, 'request should have at least one header')
       })
 
       it('receives cookies in beforeRequestSent', async function () {
@@ -110,9 +110,12 @@ suite(
           errorEvent = params
         })
 
-        // Navigate to a non-existent host to trigger a fetch error
+        // Navigate to a non-existent host to trigger a fetch error.
+        // Use wait: 'none' so the call returns immediately — waiting for
+        // 'complete' on a non-existent host blocks for the full TCP/DNS
+        // timeout before the fetchError event can be observed.
         await browsingContext
-          .navigate({ context: contextId, url: 'http://doesnotexist.invalid/', wait: 'complete' })
+          .navigate({ context: contextId, url: 'http://doesnotexist.invalid/', wait: 'none' })
           .catch(() => {})
         await driver.wait(() => errorEvent !== null, 5000)
 

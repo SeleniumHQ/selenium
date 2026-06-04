@@ -79,10 +79,15 @@ class Index extends EventEmitter {
         }
         return
       }
-      // Messages without a numeric id are BiDi events, not command
-      // responses; they are routed via subscribe/EventEmitter elsewhere
-      // and intentionally ignored by this dispatcher.
+      // Messages without a numeric id are BiDi events, not command responses.
+      // Emit them by method name so that generated domain classes and other
+      // consumers can use bidi.on(methodName, callback) rather than attaching
+      // their own raw ws.on('message', ...) listeners (which accumulate and
+      // trigger MaxListeners warnings).
       if (payload == null || typeof payload.id !== 'number') {
+        if (payload != null && typeof payload.method === 'string') {
+          this.emit(payload.method, payload.params)
+        }
         return
       }
       const entry = this._pending.get(payload.id)

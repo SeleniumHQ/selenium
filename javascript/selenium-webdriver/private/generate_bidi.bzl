@@ -21,6 +21,36 @@ _DOMAIN_TS_FILES = [
     "webextension.ts",
 ]
 
+def _merge_cddl_impl(ctx):
+    """Merges one or more CDDL files into a single output file."""
+    out = ctx.outputs.out
+    args = ctx.actions.args()
+    args.add(out)
+    args.add_all(ctx.files.srcs)
+    ctx.actions.run(
+        inputs = ctx.files.srcs,
+        outputs = [out],
+        executable = ctx.executable.tool,
+        arguments = [args],
+        mnemonic = "MergeCddl",
+        progress_message = "Merging CDDL files into %s" % out.short_path,
+    )
+    return [DefaultInfo(files = depset([out]))]
+
+_merge_cddl = rule(
+    implementation = _merge_cddl_impl,
+    attrs = {
+        "srcs": attr.label_list(allow_files = True, mandatory = True),
+        "out": attr.output(mandatory = True),
+        "tool": attr.label(
+            executable = True,
+            cfg = "exec",
+            mandatory = True,
+        ),
+    },
+    doc = "Merges CDDL specification files into a single file using an external merge tool.",
+)
+
 def _compile_bidi_ts_impl(ctx):
     ts_files = ctx.files.srcs
     output_subdir = ctx.attr.output_subdir
@@ -41,7 +71,6 @@ def _compile_bidi_ts_impl(ctx):
     args.add("--module", "NodeNext")
     args.add("--moduleResolution", "NodeNext")
     args.add("--declaration")
-    args.add("--removeComments")
     args.add("--outDir", js_outputs[0].dirname)
     for f in ts_files:
         args.add(f.path)
@@ -108,14 +137,14 @@ def generate_bidi_library(
 
     # Step 1: merge CDDL files into one.
     # merge_cddl signature: <output> <input1> [<input2> ...]
-    # genrule: $@ = output, $(SRCS) = inputs in order.
+    # Uses ctx.actions.run so arguments are passed as an argv list rather than
+    # a shell command string, avoiding quoting/escaping issues with special chars.
     merged_name = name + "_merged_cddl"
-    native.genrule(
+    _merge_cddl(
         name = merged_name,
         srcs = [cddl_file] + extra_cddl_files,
-        outs = [name + "_merged.cddl"],
-        cmd = "$(location " + merge_tool + ") $@ $(SRCS)",
-        tools = [merge_tool],
+        out = name + "_merged.cddl",
+        tool = merge_tool,
     )
 
     # Step 2: run generate_bidi.mjs → 15 .ts files (one per BiDi domain).

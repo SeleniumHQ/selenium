@@ -183,9 +183,10 @@ suite(
 
         // Trigger a JS error to produce a javascript log entry
         await driver.findElement({ id: 'jsException' }).click()
+        await driver.wait(() => entries.length > 0, 5000)
 
-        // onJavascriptLog covers JS-level log entries
-        assert.ok(entries.length >= 0) // may or may not fire depending on driver impl
+        assert.ok(entries.length > 0, 'onJavascriptLog should have received at least one entry')
+        assert.strictEqual(entries[0].type, 'javascript')
       })
     })
   },

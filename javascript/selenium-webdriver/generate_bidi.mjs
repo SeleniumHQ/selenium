@@ -138,8 +138,13 @@ const DOMAIN_CLASSES = {
 function resolveInputPath(p) {
   if (!p) return null
   if (!process.env.BAZEL_BINDIR) return resolve(p)
-  const prefix = process.env.BAZEL_BINDIR + '/'
-  return resolve(p.startsWith(prefix) ? p.slice(prefix.length) : p)
+  // Normalize both strings to forward slashes before prefix-stripping so that
+  // mixed separators on Windows (BAZEL_BINDIR uses '\', $(location) uses '/')
+  // do not cause the startsWith check to silently fail.
+  const normalizedP = p.replaceAll('\\', '/')
+  const normalizedBindir = process.env.BAZEL_BINDIR.replaceAll('\\', '/')
+  const prefix = normalizedBindir + '/'
+  return resolve(normalizedP.startsWith(prefix) ? normalizedP.slice(prefix.length) : normalizedP)
 }
 
 // ============================================================
@@ -169,6 +174,10 @@ async function main() {
   // The --output-dir arg is passed as <pkg>/<rel_path>, which is already
   // relative to BAZEL_BINDIR (= CWD), so it needs no special handling.
   const cddlPath = resolveInputPath(args.cddl)
+  if (!existsSync(cddlPath)) {
+    console.error(`Error: CDDL file not found: ${cddlPath}`)
+    process.exit(1)
+  }
   const outputDir = resolve(args['output-dir'])
   const specVersion = args['spec-version']
 
@@ -241,7 +250,16 @@ function loadEnhancements(manifestPath) {
     console.warn(`Warning: enhancements manifest not found: ${fullPath}`)
     return {}
   }
-  return JSON.parse(readFileSync(fullPath, 'utf8'))
+  let parsed
+  try {
+    parsed = JSON.parse(readFileSync(fullPath, 'utf8'))
+  } catch (err) {
+    throw new Error(`Failed to parse enhancements manifest at ${fullPath}: ${err.message}`)
+  }
+  if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+    throw new Error(`Enhancements manifest at ${fullPath} must be a JSON object, got ${Array.isArray(parsed) ? 'array' : typeof parsed}`)
+  }
+  return parsed
 }
 
 // ============================================================
@@ -752,8 +770,6 @@ function generateDomainFile({
     parts.push(`  send(command: Record<string, unknown>): Promise<unknown>`)
     parts.push(`  subscribe(event: string | string[], contexts?: string[]): Promise<void>`)
     parts.push(`  on(event: string, listener: (params: unknown) => void): void`)
-    parts.push(`  /** Raw WebSocket — used by event listeners to attach message handlers. */`)
-    parts.push(`  readonly socket: { on(event: 'message', listener: (data: { toString(): string }) => void): void }`)
     parts.push(`}`)
     parts.push('')
   }
@@ -826,6 +842,10 @@ function generateClass({ className, commands, events, enhancement, emptyResultTy
   lines.push(`  private constructor(private readonly bidi: BidiConnection) {}`)
   lines.push('')
   lines.push(`  static async create(driver: unknown): Promise<${className}> {`)
+  lines.push(`    const caps = await (driver as { getCapabilities(): Promise<{ get(key: string): unknown }> }).getCapabilities()`)
+  lines.push(`    if (!caps.get('webSocketUrl')) {`)
+  lines.push(`      throw new Error('WebDriver instance must support BiDi protocol')`)
+  lines.push(`    }`)
   lines.push(`    const bidi = await (driver as { getBidi(): Promise<BidiConnection> }).getBidi()`)
   lines.push(`    return new ${className}(bidi)`)
   lines.push(`  }`)
@@ -901,19 +921,13 @@ function generateEventMethod(evt) {
   const lines = []
   lines.push(`  async ${onMethodName}(callback: ${cbType}): Promise<void> {`)
   lines.push(`    await this.bidi.subscribe('${methodStr}')`)
-  // Use the raw WebSocket message listener — the same pattern as the hand-coded
-  // logInspector.js / browsingContext.js classes.  bidi/index.js intentionally
-  // ignores WebSocket messages without a numeric "id" in its response dispatcher,
-  // so event payloads must be captured directly from the socket instead.
-  lines.push(`    const ws = this.bidi.socket`)
-  lines.push(`    ws.on('message', (data: { toString(): string }) => {`)
-  lines.push(`      const msg = JSON.parse(data.toString()) as {`)
-  lines.push(`        method?: string`)
-  lines.push(`        params?: unknown`)
-  lines.push(`      }`)
-  lines.push(`      if (msg.method === '${methodStr}') {`)
-  lines.push(`        callback(${paramsTypeName ? `msg.params as ${paramsTypeName}` : 'msg.params'})`)
-  lines.push(`      }`)
+  // bidi/index.js emits BiDi events by method name through its single shared
+  // message dispatcher (which already handles JSON parsing and closed-state
+  // guards). Using bidi.on() here avoids attaching a new ws.on('message', ...)
+  // listener on every subscription call, preventing listener accumulation and
+  // MaxListeners warnings.
+  lines.push(`    this.bidi.on('${methodStr}', (params: unknown) => {`)
+  lines.push(`      callback(${paramsTypeName ? `params as ${paramsTypeName}` : 'params'})`)
   lines.push(`    })`)
   lines.push(`  }`)
   return lines.join('\n')

@@ -223,6 +223,7 @@ suite(
         })
 
         await browsingContext.navigate({ context: contextId, url: Pages.emptyPage, wait: 'complete' })
+        await driver.wait(() => navEvent !== null, 5000)
 
         assert.ok(navEvent, 'navigationCommitted event should have fired')
         assert.strictEqual(navEvent.context, contextId)
