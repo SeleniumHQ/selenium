@@ -26,6 +26,9 @@ build --java_runtime_version=remotejdk_25
 build --tool_java_language_version=25
 build --tool_java_runtime_version=remotejdk_25
 
+# Silence protobuf sun.misc.Unsafe warnings from the JDK 25 Java compile workers.
+build --extra_toolchains=//common/remote-build/java:java-toolchain_definition
+
 # We target java 11 by default
 build --javacopt="--release 11"
 
