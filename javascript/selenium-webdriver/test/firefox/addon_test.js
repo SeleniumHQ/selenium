@@ -19,7 +19,7 @@
 
 const assert = require('node:assert')
 const { Browser } = require('selenium-webdriver/index')
-const { Pages, suite } = require('../../lib/test')
+const { ignore, Pages, suite } = require('../../lib/test')
 const { locate } = require('../../lib/test/resources')
 const { until, By } = require('selenium-webdriver/index')
 
@@ -61,7 +61,9 @@ suite(
           await verifyWebExtensionNotInstalled()
         })
 
-        it('installs and uninstalls by unsigned zip file', async function () {
+        // Temporarily installed unsigned extensions no longer inject content scripts
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=2045054
+        ignore(env.browsers(Browser.FIREFOX)).it('installs and uninstalls by unsigned zip file', async function () {
           await driver.get(Pages.blankPage)
           await verifyWebExtensionNotInstalled()
 
@@ -89,7 +91,9 @@ suite(
           await verifyWebExtensionNotInstalled()
         })
 
-        it('installs and uninstalls by unsigned directory', async function () {
+        // Temporarily installed unsigned extensions no longer inject content scripts
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=2045054
+        ignore(env.browsers(Browser.FIREFOX)).it('installs and uninstalls by unsigned directory', async function () {
           await driver.get(Pages.blankPage)
           await verifyWebExtensionNotInstalled()
 
@@ -103,7 +107,9 @@ suite(
           await verifyWebExtensionNotInstalled()
         })
 
-        it('installs and uninstalls by signed directory', async function () {
+        // Installs the unsigned directory temporarily, so hits the same bug
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=2045054
+        ignore(env.browsers(Browser.FIREFOX)).it('installs and uninstalls by signed directory', async function () {
           await driver.get(Pages.blankPage)
           await verifyWebExtensionNotInstalled()
 
