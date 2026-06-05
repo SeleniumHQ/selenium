@@ -462,3 +462,44 @@ def test_clear_authentication_handlers_removes_all_intercepts(driver):
     driver.network.add_authentication_handler(["https://example.com/**"], lambda auth: None)
     driver.network.clear_authentication_handlers()
     assert driver.network.intercepts == [], "Intercepts not removed"
+
+
+# ---------------------------------------------------------------------------
+# Extra headers API
+#
+# These tests double as usage examples: extra headers are merged into every
+# subsequent request until removed.
+# ---------------------------------------------------------------------------
+
+
+def test_extra_header_is_sent_with_requests(driver):
+    driver.network.add_extra_header("x-selenium-extra", "extra-header-value")
+    try:
+        _navigate(driver, "https://postman-echo.com/headers")
+        assert "x-selenium-extra" in driver.page_source, "Extra header not sent"
+        assert "extra-header-value" in driver.page_source, "Extra header value not sent"
+    finally:
+        driver.network.clear_extra_headers()
+
+
+def test_removed_extra_header_is_not_sent(driver):
+    driver.network.add_extra_header("x-selenium-extra", "extra-header-value")
+    driver.network.remove_extra_header("x-selenium-extra")
+
+    _navigate(driver, "https://postman-echo.com/headers")
+    assert "x-selenium-extra" not in driver.page_source, "Removed extra header still sent"
+    assert driver.network.intercepts == [], "Intercept not removed"
+
+
+def test_extra_headers_compose_with_request_handlers(driver, pages):
+    seen = []
+
+    driver.network.add_extra_header("x-selenium-extra", "extra-header-value")
+    handler_id = driver.network.add_request_handler(lambda request: seen.append(request.url))
+    try:
+        _navigate(driver, pages.url("formPage.html"))
+        assert driver.find_element(By.NAME, "login").is_displayed(), "Request not continued"
+        assert seen, "Request handler did not run"
+    finally:
+        driver.network.remove_request_handler(handler_id)
+        driver.network.clear_extra_headers()

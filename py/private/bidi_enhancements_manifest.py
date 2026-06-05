@@ -1220,19 +1220,28 @@ disownDataParameters = DisownDataParameters''',
             '''    def clear_request_handlers(self):
         """Clear all request handlers and remove all tracked intercepts.
 
-        Response handlers registered via ``add_response_handler`` and
+        Response handlers registered via ``add_response_handler``,
         authentication handlers registered via ``add_authentication_handler``
-        are preserved; use ``clear_response_handlers`` /
-        ``clear_authentication_handlers`` to remove those.
+        and extra headers registered via ``add_extra_header`` are preserved;
+        use ``clear_response_handlers`` / ``clear_authentication_handlers`` /
+        ``clear_extra_headers`` to remove those.
         """
         self._request_handlers.clear()
         self.clear_event_handlers()
-        preserved_intercepts = self._response_handlers.intercept_ids() | self._auth_handlers.intercept_ids()
+        # After clear() the request registry's intercept_ids() only contains
+        # the extra-headers intercept, which survives like the other
+        # registries' intercepts.
+        preserved_intercepts = (
+            self._request_handlers.intercept_ids()
+            | self._response_handlers.intercept_ids()
+            | self._auth_handlers.intercept_ids()
+        )
         for intercept_id in list(self.intercepts):
             if intercept_id not in preserved_intercepts:
                 self._remove_intercept(intercept_id)
         # clear_event_handlers dropped every subscription, including the
         # other registries'; restore them so their handlers keep working.
+        self._request_handlers.resubscribe()
         self._response_handlers.resubscribe()
         self._auth_handlers.resubscribe()''',
             '''    def add_response_handler(self, url_patterns=None, callback=None):
@@ -1311,6 +1320,36 @@ disownDataParameters = DisownDataParameters''',
             '''    def clear_authentication_handlers(self):
         """Clear all authentication handlers and their intercepts."""
         self._auth_handlers.clear()''',
+            '''    def add_extra_header(self, name, value):
+        """Add a header that is merged into every subsequent request.
+
+        Usage::
+
+            driver.network.add_extra_header("x-test", "value")
+
+        BiDi has no dedicated command for extra headers, so while any extra
+        header is set every request is paused at the ``beforeRequestSent``
+        phase and continued with the merged headers — this adds a round trip
+        per request, so remove the headers when no longer needed.  Header
+        names are case-insensitive; adding a header replaces any existing
+        request header of the same name.
+
+        Args:
+            name: The header name.
+            value: The header value.
+        """
+        self._request_handlers.set_extra_header(name, value)''',
+            '''    def remove_extra_header(self, name):
+        """Stop adding an extra header to subsequent requests.
+
+        Args:
+            name: The (case-insensitive) header name passed to
+                ``add_extra_header``.
+        """
+        self._request_handlers.remove_extra_header(name)''',
+            '''    def clear_extra_headers(self):
+        """Stop adding all extra headers to subsequent requests."""
+        self._request_handlers.clear_extra_headers()''',
             '''    def add_auth_handler(self, username, password):
         """Add an auth handler that automatically provides credentials.
 

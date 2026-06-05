@@ -52,6 +52,12 @@ over provided credentials, and if no handler responded the challenge is
 continued with action ``default`` so the browser's own behavior (usually the
 authentication prompt) applies.
 
+Extra headers registered through :meth:`RequestHandlerRegistry.set_extra_header`
+are merged into every subsequent request.  BiDi has no dedicated command for
+this, so the registry pauses each request at ``beforeRequestSent`` with a
+match-everything intercept and merges the headers while reconciling — the same
+single continue cycle that applies user handler mutations.
+
 This mirrors the reconciliation rules in the cross-binding BiDi API design and
 means purely observational handlers never stall the page.
 """
@@ -677,7 +683,7 @@ class _BaseHandlerRegistry:
             raise ValueError(f"{self._label.capitalize()} '{handler_id}' not found")
         if entry.intercept_id:
             self._network._remove_intercept(entry.intercept_id)
-        if not self._handlers and self._subscription_callback_id is not None:
+        if not self._keep_subscription() and self._subscription_callback_id is not None:
             self._network.remove_event_handler(self._event_name, self._subscription_callback_id)
             self._subscription_callback_id = None
         logger.debug("Removed %s %s", self._label, handler_id)
@@ -691,12 +697,19 @@ class _BaseHandlerRegistry:
         """Intercept IDs owned by this registry's handlers."""
         return {entry.intercept_id for entry in self._handlers.values() if entry.intercept_id}
 
+    def _keep_subscription(self) -> bool:
+        """Whether the event subscription is still needed."""
+        return bool(self._handlers)
+
     def resubscribe(self) -> None:
         """Re-establish the event subscription after an external event-handler clear."""
-        if self._handlers:
+        if self._keep_subscription():
             self._subscription_callback_id = self._network.add_event_handler(self._event_name, self._on_event)
         else:
             self._subscription_callback_id = None
+
+    def _before_resolve(self, wrapped) -> None:
+        """Hook run after the handlers and before reconciliation."""
 
     def _on_event(self, params) -> None:
         if not isinstance(params, dict):
@@ -716,19 +729,89 @@ class _BaseHandlerRegistry:
         # continue.
         blocking_intercepts = set(params.get("intercepts") or [])
         if self.intercept_ids() & blocking_intercepts:
+            self._before_resolve(wrapped)
             wrapped._resolve()
 
 
 class RequestHandlerRegistry(_BaseHandlerRegistry):
-    """Dispatches ``network.beforeRequestSent`` events to request handlers."""
+    """Dispatches ``network.beforeRequestSent`` events to request handlers.
+
+    Also owns the extra-headers store: BiDi has no dedicated set-extra-headers
+    command, so while any extra header is set every request is paused by a
+    dedicated match-everything intercept and continued with the merged
+    headers during reconciliation.  Sharing the registry's subscription and
+    reconciliation means a request paused by both the extra-headers intercept
+    and user handlers is still continued exactly once.
+    """
 
     _phase = "beforeRequestSent"
     _event_name = "before_request"
     _id_prefix = "request-handler"
     _label = "request handler"
 
+    def __init__(self, network):
+        super().__init__(network)
+        # Header names are case-insensitive per HTTP, so keys are lowercased.
+        self.extra_headers: dict[str, Any] = {}
+        self._extra_headers_intercept: str | None = None
+
     def _wrap(self, params):
         return Request(self._network._conn, params, deferred=True)
+
+    def set_extra_header(self, name: str, value: str) -> None:
+        """Record a header to merge into every subsequent request."""
+        self.extra_headers[name.lower()] = value
+        if self._extra_headers_intercept is None:
+            result = self._network._add_intercept(phases=[self._phase])
+            self._extra_headers_intercept = result.get("intercept") if result else None
+        if self._subscription_callback_id is None:
+            self._subscription_callback_id = self._network.add_event_handler(self._event_name, self._on_event)
+        logger.debug("Added extra header %s", name.lower())
+
+    def remove_extra_header(self, name: str) -> None:
+        """Stop merging a header by (case-insensitive) name."""
+        if self.extra_headers.pop(name.lower(), None) is None:
+            raise ValueError(f"Extra header '{name}' not found")
+        if not self.extra_headers:
+            self._drop_extra_headers_intercept()
+        logger.debug("Removed extra header %s", name.lower())
+
+    def clear_extra_headers(self) -> None:
+        """Stop merging all extra headers."""
+        self.extra_headers.clear()
+        self._drop_extra_headers_intercept()
+
+    def _drop_extra_headers_intercept(self) -> None:
+        if self._extra_headers_intercept:
+            self._network._remove_intercept(self._extra_headers_intercept)
+            self._extra_headers_intercept = None
+        if not self._keep_subscription() and self._subscription_callback_id is not None:
+            self._network.remove_event_handler(self._event_name, self._subscription_callback_id)
+            self._subscription_callback_id = None
+
+    def intercept_ids(self) -> set:
+        ids = super().intercept_ids()
+        if self._extra_headers_intercept:
+            ids.add(self._extra_headers_intercept)
+        return ids
+
+    def _keep_subscription(self) -> bool:
+        return bool(self._handlers or self.extra_headers)
+
+    def _before_resolve(self, request) -> None:
+        """Merge extra headers into requests about to be continued.
+
+        Failed and stubbed requests never reach the wire and manually
+        continued requests have already been sent, so only the
+        plain-continue path is merged.
+        """
+        if not self.extra_headers:
+            return
+        if request._handled or request._failed or request._stub is not None:
+            return
+        merged = {name: value for name, value in request.headers.items() if name.lower() not in self.extra_headers}
+        merged.update(self.extra_headers)
+        request.set_headers(merged)
 
 
 class ResponseHandlerRegistry(_BaseHandlerRegistry):
