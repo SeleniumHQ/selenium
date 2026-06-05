@@ -67,6 +67,7 @@ def test_install_uninstall_signed_addon_zip(driver, pages):
     assert len(driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
 
 
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=2045054")
 @pytest.mark.no_driver_after_test
 def test_install_uninstall_unsigned_addon_zip(driver, pages):
     extension = os.path.join(EXTENSIONS, "webextensions-selenium-example-unsigned.zip")
@@ -107,6 +108,7 @@ def test_install_uninstall_signed_addon_dir(driver, pages):
     assert len(driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
 
 
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=2045054")
 @pytest.mark.no_driver_after_test
 def test_install_uninstall_unsigned_addon_dir(driver, pages):
     zip = os.path.join(EXTENSIONS, "webextensions-selenium-example-unsigned.zip")

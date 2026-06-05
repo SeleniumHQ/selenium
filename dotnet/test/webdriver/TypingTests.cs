@@ -714,6 +714,8 @@ public class TypingTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
+    [IgnoreBrowser(Browser.Chrome, "Typing into rich text editors broken since 149")]
+    [IgnoreBrowser(Browser.Edge, "Typing into rich text editors broken since 149")]
     public void ShouldBeAbleToTypeIntoTinyMCE()
     {
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("tinymce.html");
