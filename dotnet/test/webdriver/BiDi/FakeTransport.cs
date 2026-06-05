@@ -124,3 +124,41 @@ internal sealed class FakeTransport : ITransport
         return ValueTask.CompletedTask;
     }
 }
+
+internal static class FakeTransportExtensions
+{
+    /// <summary>
+    /// Waits for the command to be sent, enqueues a success response, and awaits the result.
+    /// Collapses the typical 4-line wait-enqueue-await ceremony into a single expression.
+    /// </summary>
+    public static async Task<T> WithResponse<T>(this Task<T> task, FakeTransport transport, string resultJson = "{}")
+    {
+        transport.EnqueueSuccess(transport.LastSentCommandId(), resultJson);
+        return await task;
+    }
+
+    /// <inheritdoc cref="WithResponse{T}(Task{T}, FakeTransport, string)"/>
+    public static async ValueTask WithResponse(this ValueTask task, FakeTransport transport, string resultJson = "{}")
+    {
+        transport.EnqueueSuccess(transport.LastSentCommandId(), resultJson);
+        await task;
+    }
+
+    /// <summary>
+    /// Like <see cref="WithResponse{T}"/> but enqueues a raw JSON string instead of building a success envelope.
+    /// </summary>
+    public static async Task<T> WithRawResponse<T>(this Task<T> task, FakeTransport transport, string json)
+    {
+        transport.Enqueue(json);
+        return await task;
+    }
+
+    /// <summary>
+    /// Waits for the command to be sent, enqueues an error response, and awaits the (faulted) result.
+    /// </summary>
+    public static async Task<T> WithErrorResponse<T>(this Task<T> task, FakeTransport transport, string error = "unknown error", string message = "")
+    {
+        transport.EnqueueError(transport.LastSentCommandId(), error, message);
+        return await task;
+    }
+}
