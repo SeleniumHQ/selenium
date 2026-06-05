@@ -34,7 +34,7 @@ class SessionUnitTests
     public async Task SetUp()
     {
         _transport = new FakeTransport();
-        _bidi = await Selenium.BiDi.BiDi.ConnectAsync("ws://fake", opts => opts.UseTransport(() => _transport));
+        _bidi = await Selenium.BiDi.BiDi.ConnectAsync(new Uri("ws://fake"), opts => opts.UseTransport(() => _transport));
     }
 
     [TearDown]
@@ -71,11 +71,8 @@ class SessionUnitTests
     [Test]
     public async Task StatusCommandSendsCorrectMethod()
     {
-        var task = _bidi.StatusAsync();
-        await _transport.WaitForSentMessagesAsync(1);
-        _transport.EnqueueSuccess(1, """{"ready":true,"message":"running"}""");
-
-        var status = await task;
+        var status = await _bidi.StatusAsync()
+            .WithResponse(_transport, """{"ready":true,"message":"running"}""");
 
         Assert.That(status.Message, Is.EqualTo("running"));
 
@@ -87,12 +84,9 @@ class SessionUnitTests
     [Test]
     public async Task ErrorResponseThrowsBiDiException()
     {
-        var task = _bidi.StatusAsync();
-        await _transport.WaitForSentMessagesAsync(1);
-        _transport.EnqueueError(1, error: "invalid argument", message: "missing required field");
-
         Assert.That(
-            async () => await task,
+            () => _bidi.StatusAsync()
+                .WithErrorResponse(_transport, "invalid argument", "missing required field"),
             Throws.InstanceOf<BiDiException>()
                   .With.Message.Contains("invalid argument"));
     }
@@ -100,15 +94,10 @@ class SessionUnitTests
     [Test]
     public async Task CommandIdsAreSequential()
     {
-        var task1 = _bidi.StatusAsync();
-        await _transport.WaitForSentMessagesAsync(1);
-        _transport.EnqueueSuccess(1, """{"ready":true,"message":"first"}""");
-        await task1;
-
-        var task2 = _bidi.StatusAsync();
-        await _transport.WaitForSentMessagesAsync(2);
-        _transport.EnqueueSuccess(2, """{"ready":true,"message":"second"}""");
-        await task2;
+        await _bidi.StatusAsync()
+            .WithResponse(_transport, """{"ready":true,"message":"first"}""");
+        await _bidi.StatusAsync()
+            .WithResponse(_transport, """{"ready":true,"message":"second"}""");
 
         using var doc1 = JsonDocument.Parse(_transport.SentMessages[0]);
         using var doc2 = JsonDocument.Parse(_transport.SentMessages[1]);
@@ -121,11 +110,8 @@ class SessionUnitTests
     [Test]
     public async Task StatusResultExposesAdditionalData()
     {
-        var task = _bidi.StatusAsync();
-        await _transport.WaitForSentMessagesAsync(1);
-        _transport.EnqueueSuccess(1, """{"ready":true,"message":"running","foo":"value"}""");
-
-        var status = await task;
+        var status = await _bidi.StatusAsync()
+            .WithResponse(_transport, """{"ready":true,"message":"running","foo":"value"}""");
 
         Assert.That(status.AdditionalData["foo"].GetString(), Is.EqualTo("value"));
     }
@@ -133,11 +119,8 @@ class SessionUnitTests
     [Test]
     public async Task StatusResultExposesAdditionalMessageData()
     {
-        var task = _bidi.StatusAsync();
-        await _transport.WaitForSentMessagesAsync(1);
-        _transport.Enqueue("""{"foo":"topLevel","id":1,"type":"success","result":{"ready":true,"message":"running"}}""");
-
-        var status = await task;
+        var status = await _bidi.StatusAsync()
+            .WithRawResponse(_transport, """{"foo":"topLevel","id":1,"type":"success","result":{"ready":true,"message":"running"}}""");
 
         Assert.That(status.AdditionalMessageData["foo"].GetString(), Is.EqualTo("topLevel"));
     }
@@ -145,37 +128,27 @@ class SessionUnitTests
     [Test]
     public async Task CommandAdditionalDataIsSerializedIntoParams()
     {
-        var task = _bidi.StatusAsync(new()
+        await _bidi.StatusAsync(new()
         {
             AdditionalData = new JsonObject { ["foo"] = "bar" }
-        });
-
-        await _transport.WaitForSentMessagesAsync(1);
+        }).WithResponse(_transport, """{"ready":true,"message":"running"}""");
 
         using var doc = JsonDocument.Parse(_transport.SentMessages[0]);
         Assert.That(doc.RootElement.GetProperty("params").GetProperty("foo").GetString(), Is.EqualTo("bar"));
-
-        _transport.EnqueueSuccess(1, """{"ready":true,"message":"running"}""");
-        await task;
     }
 
     [Test]
     public async Task CommandAdditionalMessageDataIsSerializedAsTopLevelFields()
     {
-        var task = _bidi.StatusAsync(new()
+        await _bidi.StatusAsync(new()
         {
             AdditionalMessageData = """{"baz": "qux"}"""
-        });
-
-        await _transport.WaitForSentMessagesAsync(1);
+        }).WithResponse(_transport, """{"ready":true,"message":"running"}""");
 
         using var doc = JsonDocument.Parse(_transport.SentMessages[0]);
         Assert.That(doc.RootElement.GetProperty("baz").GetString(), Is.EqualTo("qux"));
         Assert.That(doc.RootElement.GetProperty("params").EnumerateObject().Any(p => p.Name == "baz"), Is.False,
             "AdditionalMessageData fields must be top-level, not inside params");
-
-        _transport.EnqueueSuccess(1, """{"ready":true,"message":"running"}""");
-        await task;
     }
 
     [Test]
@@ -185,5 +158,35 @@ class SessionUnitTests
             () => new AdditionalData("""42"""),
             Throws.InstanceOf<ArgumentException>()
                   .With.Message.Contains("Additional data must be a JSON object."));
+    }
+
+    [Test]
+    public async Task EventArgsExposesAdditionalData()
+    {
+        var stream = await _bidi.Script.RealmDestroyed.StreamAsync()
+            .WithResponse(_transport, """{"subscription":"sub-1"}""");
+
+        _transport.EnqueueEvent("script.realmDestroyed", """{"realm":"r-1","foo":"extra"}""");
+
+        var received = await stream.FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.That(received.AdditionalData["foo"].GetString(), Is.EqualTo("extra"));
+
+        await stream.DisposeAsync().WithResponse(_transport);
+    }
+
+    [Test]
+    public async Task EventArgsExposesAdditionalMessageData()
+    {
+        var stream = await _bidi.Script.RealmDestroyed.StreamAsync()
+            .WithResponse(_transport, """{"subscription":"sub-1"}""");
+
+        _transport.Enqueue("""{"type":"event","method":"script.realmDestroyed","params":{"realm":"r-1"},"bar":"topLevel"}""");
+
+        var received = await stream.FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.That(received.AdditionalMessageData["bar"].GetString(), Is.EqualTo("topLevel"));
+
+        await stream.DisposeAsync().WithResponse(_transport);
     }
 }

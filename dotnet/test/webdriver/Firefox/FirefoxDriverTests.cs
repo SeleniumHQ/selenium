@@ -295,6 +295,7 @@ public class FirefoxDriverTests : DriverTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=2045054")]
     public void ShouldInstallAndUninstallUnSignedZipAddon()
     {
         FirefoxDriver firefoxDriver = driver as FirefoxDriver;
@@ -353,6 +354,7 @@ public class FirefoxDriverTests : DriverTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=2045054")]
     public void ShouldInstallAndUninstallUnSignedDirAddon()
     {
         FirefoxDriver firefoxDriver = driver as FirefoxDriver;

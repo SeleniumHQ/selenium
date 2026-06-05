@@ -48,6 +48,8 @@ internal sealed class FakeTransport : ITransport
     private readonly Channel<string> _incoming = Channel.CreateUnbounded<string>(
         new UnboundedChannelOptions { SingleReader = true, SingleWriter = false });
 
+    private readonly SemaphoreSlim _sendSignal = new(0);
+
     /// <summary>All JSON strings that BiDi has sent through this transport.</summary>
     public List<string> SentMessages { get; } = [];
 
@@ -115,12 +117,64 @@ internal sealed class FakeTransport : ITransport
     public Task SendAsync(ReadOnlyMemory<byte> data, CancellationToken cancellationToken)
     {
         SentMessages.Add(Encoding.UTF8.GetString(data.Span));
+        _sendSignal.Release();
         return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Waits until the next command is sent through this transport.
+    /// </summary>
+    internal async Task WaitForNextSendAsync(CancellationToken cancellationToken = default)
+    {
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        cts.CancelAfter(TimeSpan.FromSeconds(5));
+        await _sendSignal.WaitAsync(cts.Token).ConfigureAwait(false);
     }
 
     public ValueTask DisposeAsync()
     {
         _incoming.Writer.TryComplete();
         return ValueTask.CompletedTask;
+    }
+}
+
+internal static class FakeTransportExtensions
+{
+    /// <summary>
+    /// Waits for the command to be sent, enqueues a success response, and awaits the result.
+    /// </summary>
+    public static async Task<T> WithResponse<T>(this Task<T> task, FakeTransport transport, string resultJson = "{}")
+    {
+        await transport.WaitForNextSendAsync();
+        transport.EnqueueSuccess(transport.LastSentCommandId(), resultJson);
+        return await task;
+    }
+
+    /// <inheritdoc cref="WithResponse{T}(Task{T}, FakeTransport, string)"/>
+    public static async ValueTask WithResponse(this ValueTask task, FakeTransport transport, string resultJson = "{}")
+    {
+        await transport.WaitForNextSendAsync();
+        transport.EnqueueSuccess(transport.LastSentCommandId(), resultJson);
+        await task;
+    }
+
+    /// <summary>
+    /// Like <see cref="WithResponse{T}"/> but enqueues a raw JSON string instead of a success envelope.
+    /// </summary>
+    public static async Task<T> WithRawResponse<T>(this Task<T> task, FakeTransport transport, string json)
+    {
+        await transport.WaitForNextSendAsync();
+        transport.Enqueue(json);
+        return await task;
+    }
+
+    /// <summary>
+    /// Waits for the command to be sent, enqueues an error response, and awaits the (faulted) result.
+    /// </summary>
+    public static async Task<T> WithErrorResponse<T>(this Task<T> task, FakeTransport transport, string error = "unknown error", string message = "")
+    {
+        await transport.WaitForNextSendAsync();
+        transport.EnqueueError(transport.LastSentCommandId(), error, message);
+        return await task;
     }
 }

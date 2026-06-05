@@ -17,53 +17,74 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json;
+
 namespace OpenQA.Selenium.BiDi.Script;
 
+[JsonConverter(typeof(RealmCreatedEventArgsConverter))]
 public abstract record RealmCreatedEventArgs(
-    IBiDi BiDi,
     Realm Realm,
-    string Origin) : EventArgs(BiDi);
+    string Origin) : EventArgs;
 
 public sealed record WindowRealmCreatedEventArgs(
-    IBiDi BiDi,
     Realm Realm,
     string Origin,
     BrowsingContext.BrowsingContext Context,
     Browser.UserContext? UserContext,
-    string? Sandbox) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+    string? Sandbox) : RealmCreatedEventArgs(Realm, Origin);
 
 public sealed record DedicatedWorkerRealmCreatedEventArgs(
-    IBiDi BiDi,
     Realm Realm,
     string Origin,
-    ImmutableArray<Realm> Owners) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+    ImmutableArray<Realm> Owners) : RealmCreatedEventArgs(Realm, Origin);
 
 public sealed record SharedWorkerRealmCreatedEventArgs(
-    IBiDi BiDi,
     Realm Realm,
-    string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+    string Origin) : RealmCreatedEventArgs(Realm, Origin);
 
 public sealed record ServiceWorkerRealmCreatedEventArgs(
-    IBiDi BiDi,
     Realm Realm,
-    string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+    string Origin) : RealmCreatedEventArgs(Realm, Origin);
 
 public sealed record WorkerRealmCreatedEventArgs(
-    IBiDi BiDi,
     Realm Realm,
-    string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+    string Origin) : RealmCreatedEventArgs(Realm, Origin);
 
 public sealed record PaintWorkletRealmCreatedEventArgs(
-    IBiDi BiDi,
     Realm Realm,
-    string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+    string Origin) : RealmCreatedEventArgs(Realm, Origin);
 
 public sealed record AudioWorkletRealmCreatedEventArgs(
-    IBiDi BiDi,
     Realm Realm,
-    string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+    string Origin) : RealmCreatedEventArgs(Realm, Origin);
 
 public sealed record WorkletRealmCreatedEventArgs(
-    IBiDi BiDi,
     Realm Realm,
-    string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+    string Origin) : RealmCreatedEventArgs(Realm, Origin);
+
+internal class RealmCreatedEventArgsConverter : JsonConverter<RealmCreatedEventArgs>
+{
+    public override RealmCreatedEventArgs? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var type = reader.GetDiscriminator("type");
+        return type switch
+        {
+            "window" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WindowRealmCreatedEventArgs>()),
+            "dedicated-worker" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DedicatedWorkerRealmCreatedEventArgs>()),
+            "shared-worker" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<SharedWorkerRealmCreatedEventArgs>()),
+            "service-worker" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ServiceWorkerRealmCreatedEventArgs>()),
+            "worker" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WorkerRealmCreatedEventArgs>()),
+            "paint-worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<PaintWorkletRealmCreatedEventArgs>()),
+            "audio-worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<AudioWorkletRealmCreatedEventArgs>()),
+            "worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WorkletRealmCreatedEventArgs>()),
+            _ => throw new BiDiException($"Unknown realm type '{type}'")
+        };
+    }
+
+    public override void Write(Utf8JsonWriter writer, RealmCreatedEventArgs value, JsonSerializerOptions options)
+    {
+        throw new NotImplementedException();
+    }
+}

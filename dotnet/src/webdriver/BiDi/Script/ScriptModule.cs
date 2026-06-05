@@ -163,8 +163,17 @@ internal sealed class ScriptModule : Module, IScriptModule
 [JsonSerializable(typeof(RemovePreloadScriptParameters))]
 [JsonSerializable(typeof(RemovePreloadScriptResult))]
 
-[JsonSerializable(typeof(MessageParameters))]
-[JsonSerializable(typeof(RealmDestroyedParameters))]
+[JsonSerializable(typeof(MessageEventArgs))]
+[JsonSerializable(typeof(RealmCreatedEventArgs))]
+[JsonSerializable(typeof(WindowRealmCreatedEventArgs))]
+[JsonSerializable(typeof(DedicatedWorkerRealmCreatedEventArgs))]
+[JsonSerializable(typeof(SharedWorkerRealmCreatedEventArgs))]
+[JsonSerializable(typeof(ServiceWorkerRealmCreatedEventArgs))]
+[JsonSerializable(typeof(WorkerRealmCreatedEventArgs))]
+[JsonSerializable(typeof(PaintWorkletRealmCreatedEventArgs))]
+[JsonSerializable(typeof(AudioWorkletRealmCreatedEventArgs))]
+[JsonSerializable(typeof(WorkletRealmCreatedEventArgs))]
+[JsonSerializable(typeof(RealmDestroyedEventArgs))]
 
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,

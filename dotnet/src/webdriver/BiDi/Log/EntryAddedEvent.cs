@@ -24,43 +24,40 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
+[JsonConverter(typeof(EntryAddedEventArgsConverter))]
 public abstract record EntryAddedEventArgs(
-    IBiDi BiDi,
     Level Level,
     Script.Source Source,
     string? Text,
-    DateTimeOffset Timestamp)
-    : EventArgs(BiDi)
+    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp)
+    : EventArgs
 {
     public Script.StackTrace? StackTrace { get; init; }
 }
 
 public sealed record GenericEntryAddedEventArgs(
-    IBiDi BiDi,
     string Type,
     Level Level,
     Script.Source Source,
     string? Text,
     DateTimeOffset Timestamp)
-    : EntryAddedEventArgs(BiDi, Level, Source, Text, Timestamp);
+    : EntryAddedEventArgs(Level, Source, Text, Timestamp);
 
 public sealed record ConsoleEntryAddedEventArgs(
-    IBiDi BiDi,
     Level Level,
     Script.Source Source,
     string? Text,
     DateTimeOffset Timestamp,
     string Method,
     ImmutableArray<Script.RemoteValue> Args)
-    : EntryAddedEventArgs(BiDi, Level, Source, Text, Timestamp);
+    : EntryAddedEventArgs(Level, Source, Text, Timestamp);
 
 public sealed record JavascriptEntryAddedEventArgs(
-    IBiDi BiDi,
     Level Level,
     Script.Source Source,
     string? Text,
     DateTimeOffset Timestamp)
-    : EntryAddedEventArgs(BiDi, Level, Source, Text, Timestamp);
+    : EntryAddedEventArgs(Level, Source, Text, Timestamp);
 
 [JsonConverter(typeof(CamelCaseEnumConverter<Level>))]
 public enum Level
@@ -71,60 +68,19 @@ public enum Level
     Error
 }
 
-// https://github.com/dotnet/runtime/issues/72604
-//[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-//[JsonDerivedType(typeof(GenericLogEntry))]
-//[JsonDerivedType(typeof(ConsoleLogEntry), "console")]
-//[JsonDerivedType(typeof(JavascriptLogEntry), "javascript")]
-[JsonConverter(typeof(LogEntryConverter))]
-internal abstract record LogEntry(
-    Level Level,
-    Script.Source Source,
-    string? Text,
-    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp)
+internal class EntryAddedEventArgsConverter : JsonConverter<EntryAddedEventArgs>
 {
-    public Script.StackTrace? StackTrace { get; init; }
-}
-
-internal sealed record GenericLogEntry(
-    string Type,
-    Level Level,
-    Script.Source Source,
-    string? Text,
-    DateTimeOffset Timestamp)
-    : LogEntry(Level, Source, Text, Timestamp);
-
-internal sealed record ConsoleLogEntry(
-    Level Level,
-    Script.Source Source,
-    string? Text,
-    DateTimeOffset Timestamp,
-    string Method,
-    ImmutableArray<Script.RemoteValue> Args)
-    : LogEntry(Level, Source, Text, Timestamp);
-
-internal sealed record JavascriptLogEntry(
-    Level Level,
-    Script.Source Source,
-    string? Text,
-    DateTimeOffset Timestamp)
-    : LogEntry(Level, Source, Text, Timestamp);
-
-
-// https://github.com/dotnet/runtime/issues/72604
-internal class LogEntryConverter : JsonConverter<LogEntry>
-{
-    public override LogEntry? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override EntryAddedEventArgs? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         return reader.GetDiscriminator("type") switch
         {
-            "console" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ConsoleLogEntry>()),
-            "javascript" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<JavascriptLogEntry>()),
-            _ => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<GenericLogEntry>()),
+            "console" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ConsoleEntryAddedEventArgs>()),
+            "javascript" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<JavascriptEntryAddedEventArgs>()),
+            _ => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<GenericEntryAddedEventArgs>()),
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, LogEntry value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, EntryAddedEventArgs value, JsonSerializerOptions options)
     {
         throw new NotImplementedException();
     }
