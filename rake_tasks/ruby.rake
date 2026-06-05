@@ -163,11 +163,11 @@ end
 desc 'Run Ruby linters (rubocop, steep, docs)'
 task :lint do |_task, arguments|
   flag = arguments.to_a.include?('-A') ? '-A' : '-a'
-  puts '  Running rubocop...'
-  Bazel.execute('run', ['--', flag], '//rb:rubocop')
-  puts '  Running steep type checker...'
-  Bazel.execute('run', [], '//rb:steep')
-  Rake::Task['rb:docs_generate'].invoke
+  SeleniumRake.aggregate_errors(
+    rubocop: -> { Bazel.execute('run', ['--', flag], '//rb:rubocop') },
+    steep_type_checker: -> { Bazel.execute('run', [], '//rb:steep') },
+    ruby_docs: -> { Rake::Task['rb:docs_generate'].invoke }
+  )
 end
 
 desc 'Sync gem checksums from Gemfile.lock to MODULE.bazel (use force to re-download all)'
