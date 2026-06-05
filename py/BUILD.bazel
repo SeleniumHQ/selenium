@@ -757,6 +757,7 @@ py_test_suite(
     args = [
         "--instafail",
     ],
+    consolidate = True,
     deps = [
         ":init-tree",
         ":selenium",

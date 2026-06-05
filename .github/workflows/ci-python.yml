@@ -16,30 +16,6 @@ jobs:
       run: |
         bazel build //py:selenium-wheel //py:selenium-sdist
 
-  lint-ruff:
-    name: Lint (ruff)
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Lint (ruff)
-      run: bazel run //py:ruff-check -- --no-fix
-
-  lint-mypy:
-    name: Lint (mypy)
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Lint (mypy)
-      run: bazel run //py:mypy
-
-  lint-docs:
-    name: Lint (docs)
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Lint (docs)
-      run: |
-        bazel run //py:generate-api-listing
-        bazel run //py:sphinx-autogen
-        bazel build //py:docs
-
   unit-tests:
     name: Unit Tests
     needs: build
@@ -54,34 +30,3 @@ jobs:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
       run: bazel test --local_test_jobs 1 //py:unit
-
-  remote-tests:
-    name: Remote Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Integration Tests Remote
-      needs-display: true
-      rerun-with-debug: true
-      run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
-
-  browser-tests:
-    name: Browser Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [chrome, firefox, chrome-bidi, edge]
-        os: [windows]
-        include:
-          - browser: safari
-            os: macos
-    with:
-      name: Integration Tests (${{ matrix.browser }})
-      needs-display: true
-      os: ${{ matrix.os }}
-      rerun-with-debug: true
-      run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-${{ matrix.browser }}

@@ -15,7 +15,7 @@ def _strip_test_prefixes(path):
         path = path[:-len(filename)] + filename[len("test_"):]
     return path
 
-def py_test_suite(name, srcs, size = None, deps = None, python_version = None, imports = None, visibility = None, test_suffix = None, **kwargs):
+def py_test_suite(name, srcs, size = None, deps = None, python_version = None, imports = None, visibility = None, test_suffix = None, consolidate = False, **kwargs):
     support_srcs = [src for src in srcs if not _is_test(src)]
 
     if support_srcs:
@@ -32,24 +32,43 @@ def py_test_suite(name, srcs, size = None, deps = None, python_version = None, i
     else:
         test_deps = deps or []
 
+    test_srcs = [src for src in srcs if _is_test(src)]
+
+    # Running every test file as its own py_test target pays the Python
+    # interpreter + pytest startup cost once per file. For suites with many
+    # small, fast files (e.g. unit tests) that fixed overhead dominates,
+    # especially on Windows where process startup is expensive. Folding all
+    # files into a single pytest invocation amortizes that cost to once.
+    if consolidate:
+        pytest_test(
+            name = name,
+            size = size,
+            srcs = test_srcs,
+            deps = test_deps,
+            python_version = python_version,
+            precompile = "disabled",
+            visibility = visibility,
+            **kwargs
+        )
+        return
+
     suffix = test_suffix if test_suffix != None else _suite_suffix(name)
 
     tests = []
-    for src in srcs:
-        if _is_test(src):
-            test_name = "%s-%s" % (_strip_test_prefixes(src), suffix)
+    for src in test_srcs:
+        test_name = "%s-%s" % (_strip_test_prefixes(src), suffix)
 
-            tests.append(test_name)
+        tests.append(test_name)
 
-            pytest_test(
-                name = test_name,
-                size = size,
-                srcs = [src],
-                deps = test_deps,
-                python_version = python_version,
-                precompile = "disabled",
-                **kwargs
-            )
+        pytest_test(
+            name = test_name,
+            size = size,
+            srcs = [src],
+            deps = test_deps,
+            python_version = python_version,
+            precompile = "disabled",
+            **kwargs
+        )
     native.test_suite(
         name = name,
         tests = tests,
