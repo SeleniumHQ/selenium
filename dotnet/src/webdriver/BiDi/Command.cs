@@ -74,7 +74,7 @@ public abstract record EmptyResult
 {
     [JsonExtensionData]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public Dictionary<string, JsonElement>? RawAdditionalData { get; init; }
+    public Dictionary<string, JsonElement>? RawAdditionalData { get; set; }
 
     [JsonIgnore]
     public AdditionalData AdditionalData
