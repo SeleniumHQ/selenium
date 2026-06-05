@@ -123,6 +123,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
             ?? throw new BiDiException("Remote end returned null event args in the 'params' property."));
 
         eventArgs.BiDi = _bidi;
+
         if (additionalMessageData is not null)
             eventArgs.AdditionalMessageData = AdditionalData.FromDictionary(additionalMessageData);
 
