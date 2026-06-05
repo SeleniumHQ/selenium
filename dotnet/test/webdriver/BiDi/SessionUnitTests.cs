@@ -191,6 +191,7 @@ class SessionUnitTests
     public async Task EventArgsExposesAdditionalData()
     {
         var streamTask = _bidi.Script.RealmDestroyed.StreamAsync();
+        await _transport.WaitForSentMessagesAsync(1);
         _transport.EnqueueSuccess(1, """{"subscription":"sub-1"}""");
         var stream = await streamTask;
 
@@ -210,6 +211,7 @@ class SessionUnitTests
     public async Task EventArgsExposesAdditionalMessageData()
     {
         var streamTask = _bidi.Script.RealmDestroyed.StreamAsync();
+        await _transport.WaitForSentMessagesAsync(1);
         _transport.EnqueueSuccess(1, """{"subscription":"sub-1"}""");
         var stream = await streamTask;
 
