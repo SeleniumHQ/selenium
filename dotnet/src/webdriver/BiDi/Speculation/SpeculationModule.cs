@@ -27,7 +27,7 @@ internal sealed class SpeculationModule : Module, ISpeculationModule
     private IEventSource<PrefetchStatusUpdatedEventArgs>? _prefetchStatusUpdated;
 }
 
-[JsonSerializable(typeof(PrefetchStatusUpdatedParameters))]
+[JsonSerializable(typeof(PrefetchStatusUpdatedEventArgs))]
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]

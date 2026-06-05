@@ -23,8 +23,7 @@ namespace OpenQA.Selenium.BiDi.Input;
 
 public static class InputEvent
 {
-    public static EventDescriptor<FileDialogOpenedEventArgs> FileDialogOpened { get; } = EventDescriptor<FileDialogOpenedEventArgs>.Create<FileDialogInfo>(
+    public static EventDescriptor<FileDialogOpenedEventArgs> FileDialogOpened { get; } = EventDescriptor<FileDialogOpenedEventArgs>.Create(
         "input.fileDialogOpened",
-        static (bidi, p) => new FileDialogOpenedEventArgs(bidi, p.Context, p.UserContext, p.Multiple, p.Element),
-        Default.FileDialogInfo);
+        Default.FileDialogOpenedEventArgs);
 }

@@ -184,10 +184,9 @@ class CustomModule : Module
         new("session.status", JsonContext.Parameters, JsonContext.DoSomethingResult);
 
     private static readonly EventDescriptor<SomethingHappenedEventArgs> SomethingHappenedDescriptor =
-        EventDescriptor<SomethingHappenedEventArgs>.Create<SomethingHappenedParameters>(
+        EventDescriptor<SomethingHappenedEventArgs>.Create(
             "log.entryAdded",
-            static (bidi, p) => new SomethingHappenedEventArgs(bidi, p.Text),
-            JsonContext.SomethingHappenedParameters);
+            JsonContext.SomethingHappenedEventArgs);
 
     public IEventSource<SomethingHappenedEventArgs> SomethingHappened => CreateEventSource(SomethingHappenedDescriptor);
 
@@ -202,13 +201,11 @@ class CustomModule : Module
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 [JsonSerializable(typeof(Parameters))]
 [JsonSerializable(typeof(DoSomethingResult))]
-[JsonSerializable(typeof(SomethingHappenedParameters))]
+[JsonSerializable(typeof(SomethingHappenedEventArgs))]
 partial class CustomModuleJsonSerializerContext : JsonSerializerContext;
 
 record DoSomethingResult : EmptyResult;
 
 record DoSomethingOptions : CommandOptions;
 
-record SomethingHappenedParameters(string Text);
-
-record SomethingHappenedEventArgs(IBiDi BiDi, string Text) : OpenQA.Selenium.BiDi.EventArgs(BiDi);
+record SomethingHappenedEventArgs(string Text) : Selenium.BiDi.EventArgs;

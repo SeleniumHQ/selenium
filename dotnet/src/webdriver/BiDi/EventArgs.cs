@@ -17,6 +17,25 @@
 // under the License.
 // </copyright>
 
+using System.ComponentModel;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace OpenQA.Selenium.BiDi;
 
-public abstract record EventArgs(IBiDi BiDi);
+public abstract record EventArgs
+{
+    [JsonIgnore]
+    public IBiDi BiDi { get; internal set; } = null!;
+
+    [JsonExtensionData]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public Dictionary<string, JsonElement>? RawAdditionalData { get; set; }
+
+    [JsonIgnore]
+    public AdditionalData AdditionalData
+        => RawAdditionalData is null ? AdditionalData.Empty : AdditionalData.FromDictionary(RawAdditionalData);
+
+    [JsonIgnore]
+    public AdditionalData AdditionalMessageData { get; internal set; }
+}

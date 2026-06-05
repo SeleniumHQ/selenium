@@ -18,29 +18,18 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.BrowsingContext;
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
 public record BeforeRequestSentEventArgs(
-    IBiDi BiDi,
     BrowsingContext.BrowsingContext? Context,
     bool IsBlocked,
     Navigation? Navigation,
     long RedirectCount,
     RequestData Request,
-    DateTimeOffset Timestamp,
+    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
     Initiator Initiator,
     Browser.UserContext? UserContext,
-    ImmutableArray<Intercept>? Intercepts) : EventArgs(BiDi);
-
-internal record BeforeRequestSentParameters(
-    BrowsingContext.BrowsingContext? Context,
-    bool IsBlocked,
-    Navigation? Navigation,
-    long RedirectCount,
-    RequestData Request,
-    DateTimeOffset Timestamp,
-    Initiator Initiator,
-    Browser.UserContext? UserContext,
-    ImmutableArray<Intercept>? Intercepts)
-    : BaseParameters(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, UserContext, Intercepts);
+    ImmutableArray<Intercept>? Intercepts) : EventArgs;
