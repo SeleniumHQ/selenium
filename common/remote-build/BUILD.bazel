@@ -41,7 +41,7 @@ platform(
         "@llvm//constraints/libc:gnu.2.28",
     ],
     exec_properties = {
-        "container-image": "docker://docker.io/p0deje/selenium-remote-build@sha256:7f917a409785aceff81e72358222c6d1bdc24d0b7df2d02f0f46e7392d5c8871",
+        "container-image": "docker://docker.io/selenium/selenium-remote-build@sha256:7f917a409785aceff81e72358222c6d1bdc24d0b7df2d02f0f46e7392d5c8871",
         "OSFamily": "Linux",
         "dockerNetwork": "standard",  # Allow internet access for the Rust tests
         "dockerReuse": "True",
