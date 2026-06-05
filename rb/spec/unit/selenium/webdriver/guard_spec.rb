@@ -26,10 +26,12 @@ module Selenium
       describe Guards do
         describe '#new' do
           it 'collects guards from example only for known guard types',
-             except: {}, exclude: {}, exclusive: {}, flaky: {}, ignored: {}, only: {} do |example|
+             except: {}, exclude: {}, exclusive: {}, flaky: {}, ignored: {}, only: {},
+             pending_if: {}, pending_unless: {}, skip_if: {}, skip_unless: {} do |example|
             guards = described_class.new(example)
             types = guards.instance_variable_get(:@guards).map { |g| g.instance_variable_get(:@type) }
-            expect(types).to include :except, :only, :exclusive, :exclude, :flaky
+            expect(types).to include :pending_if, :pending_unless, :skip_if, :skip_unless, :flaky,
+                                     :except, :only, :exclude, :exclusive
             expect(types).not_to include :ignored
           end
 
@@ -192,6 +194,28 @@ module Selenium
             guard = described_class.new({reason: :foo}, :only, guards)
 
             expect(guard.message).to eq('Test guarded; all due to foo')
+          end
+
+          it 'has special message for skip_if' do
+            guard = described_class.new({reason: 'because'}, :skip_if)
+
+            message = /Test skipped because it breaks test run;/
+            guarded_by = /Guarded by {:?reason[:=][ >]"because"};/
+            expect(guard.message).to match(/#{message} #{guarded_by}/)
+          end
+
+          it 'has special message for skip_unless' do
+            guard = described_class.new({reason: 'because'}, :skip_unless)
+
+            message = /Test does not apply to this configuration;/
+            guarded_by = /Guarded by {:?reason[:=][ >]"because"};/
+            expect(guard.message).to match(/#{message} #{guarded_by}/)
+          end
+
+          it 'has a generic message for pending_if' do
+            guard = described_class.new({reason: 'because'}, :pending_if)
+
+            expect(guard.message).to match(/Test guarded; Guarded by {:?reason[:=][ >]"because"};/)
           end
 
           it 'has special message for exclude' do

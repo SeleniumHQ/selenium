@@ -49,3 +49,23 @@ Use YARD for public APIs:
 # @return [Type] description
 # @raise [ErrorClass] when condition
 ```
+
+## Integration test guards
+
+Integration specs are guarded by RSpec metadata on `describe`/`context`/`it` (all enclosing
+guards combine). Use one of these five, and always include a `reason:`:
+
+- `skip_if:` — skip when config matches
+- `skip_unless:` — run only when config matches
+- `pending_if:` — expect failure when config matches
+- `pending_unless:` — expect failure unless config matches
+- `flaky:` — `skip_if` reserved for unreliable/intermittent tests
+
+Matching: Hash = AND (all pairs match), Array of Hashes = OR (any matches), Array value = OR within a
+key. The `reason:` is a String or an issue number. Conditions (`browser`, `driver`, `platform`, `ci`,
+etc.) are registered in [`spec_helper.rb`](spec/integration/selenium/webdriver/spec_helper.rb).
+
+```ruby
+skip_if: {browser: %i[chrome edge], headless: true, reason: '...'}              # headless Chrome or Edge
+pending_if: [{browser: :firefox, reason: 1234}, {platform: :macosx, reason: 5678}]  # Firefox or macOS
+```

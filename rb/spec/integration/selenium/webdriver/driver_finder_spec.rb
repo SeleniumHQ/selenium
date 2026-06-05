@@ -23,7 +23,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe DriverFinder, exclude: {driver: :remote} do
+    describe DriverFinder, skip_if: {driver: :remote} do
       let(:browser) { GlobalTestEnv.browser }
       let(:options) { WebDriver::Options.send(browser) }
       let(:service) { WebDriver::Service.send(browser) }
@@ -38,7 +38,7 @@ module Selenium
       end
 
       it 'downloads the driver into the Selenium cache',
-         except: {browser: :safari, reason: 'driver ships with OS'} do
+         pending_if: {browser: :safari, reason: 'driver ships with OS'} do
         Dir.mktmpdir('se-cache') do |cache_dir|
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
                        'SE_SKIP_DRIVER_IN_PATH' => ENV.fetch('SE_SKIP_DRIVER_IN_PATH', nil)}
@@ -52,7 +52,7 @@ module Selenium
       end
 
       it 'downloads the browser into the Selenium cache',
-         except: [{browser: :safari, reason: 'browser ships with OS'},
+         pending_if: [{browser: :safari, reason: 'browser ships with OS'},
                   {browser: :edge, platform: :windows, reason: 'Edge MSI installer always writes to system path'}] do
         Dir.mktmpdir('se-cache') do |cache_dir|
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
@@ -67,7 +67,7 @@ module Selenium
       end
 
       it 'resolves the browser to its system install location',
-         exclusive: [{browser: :safari},
+         skip_unless: [{browser: :safari},
                      {browser: :edge, platform: :windows}] do
         Dir.mktmpdir('se-cache') do |cache_dir|
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),

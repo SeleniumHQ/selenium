@@ -21,11 +21,11 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe ActionBuilder, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+    describe ActionBuilder, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       after { driver.action.clear_all_actions }
 
       describe '#send_keys' do
-        it 'sends keys to the active element', except: {browser: %i[safari safari_preview]} do
+        it 'sends keys to the active element', pending_if: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('bodyTypingTest.html')
           keylogger = driver.find_element(id: 'body_result')
 
@@ -75,7 +75,7 @@ module Selenium
       end
 
       describe 'multiple key presses' do
-        it 'sends keys with shift pressed', except: {browser: %i[safari safari_preview]} do
+        it 'sends keys with shift pressed', pending_if: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -127,8 +127,8 @@ module Selenium
           expect(keylogger.text).to match(/keyup *$/)
         end
 
-        it 'releases pressed buttons', except: [{browser: %i[safari safari_preview]},
-                                                {driver: :remote, browser: :ie}] do
+        it 'releases pressed buttons', pending_if: [{browser: %i[safari safari_preview]},
+                                                    {driver: :remote, browser: :ie}] do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'clickField')
@@ -268,8 +268,8 @@ module Selenium
         end
       end
 
-      describe 'pen stylus', except: [{browser: :firefox, reason: 'Unknown pointerType'},
-                                      {browser: :safari,  reason: 'Some issues with resolution?'}] do
+      describe 'pen stylus', pending_if: [{browser: :firefox, reason: 'Unknown pointerType'},
+                                          {browser: :safari, reason: 'Some issues with resolution?'}] do
         it 'sets pointer event properties' do
           driver.navigate.to url_for('pointerActionsPage.html')
           pointer_area = driver.find_element(id: 'pointerArea')
@@ -312,7 +312,7 @@ module Selenium
 
       describe '#scroll_to' do
         it 'scrolls to element',
-           exclusive: {browser: %i[chrome edge], reason: 'incorrect MoveTargetOutOfBoundsError'} do
+           skip_unless: {browser: %i[chrome edge], reason: 'incorrect MoveTargetOutOfBoundsError'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           iframe = driver.find_element(tag_name: 'iframe')
 
@@ -326,7 +326,7 @@ module Selenium
 
       describe '#scroll_by' do
         it 'scrolls by given amount',
-           exclusive: {browser: %i[chrome edge], reason: 'inconsistent behavior between versions'} do
+           skip_unless: {browser: %i[chrome edge], reason: 'inconsistent behavior between versions'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           footer = driver.find_element(tag_name: 'footer')
           delta_y = footer.rect.y.round
@@ -340,7 +340,7 @@ module Selenium
 
       describe '#scroll_from' do
         it 'scrolls from element by given amount',
-           exclusive: {browser: %i[chrome edge], reason: 'incorrect MoveTargetOutOfBoundsError in Firefox'} do
+           skip_unless: {browser: %i[chrome edge], reason: 'incorrect MoveTargetOutOfBoundsError in Firefox'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           iframe = driver.find_element(tag_name: 'iframe')
           scroll_origin = WheelActions::ScrollOrigin.element(iframe)
@@ -354,7 +354,7 @@ module Selenium
         end
 
         it 'scrolls from element by given amount with offset',
-           exclusive: {browser: %i[chrome edge], reason: 'incorrect MoveTargetOutOfBoundsError in Firefox'} do
+           skip_unless: {browser: %i[chrome edge], reason: 'incorrect MoveTargetOutOfBoundsError in Firefox'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           footer = driver.find_element(tag_name: 'footer')
           scroll_origin = WheelActions::ScrollOrigin.element(footer, 0, -50)
@@ -394,7 +394,7 @@ module Selenium
         end
 
         it 'raises MoveTargetOutOfBoundsError when origin offset is out of viewport',
-           only: {browser: %i[chrome edge firefox]} do
+           pending_unless: {browser: %i[chrome edge firefox]} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame.html')
           scroll_origin = WheelActions::ScrollOrigin.viewport(-10, -10)
 

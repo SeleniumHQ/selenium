@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Manager, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+    describe Manager, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       describe 'cookie management' do
         before { driver.navigate.to url_for('xhtmlTest.html') }
 
@@ -40,9 +40,9 @@ module Selenium
         end
 
         it 'sets samesite property of Lax by default',
-           except: {browser: :firefox,
-                    reason: 'https://github.com/mozilla/geckodriver/issues/1841'},
-           only: {browser: %i[chrome edge firefox]} do
+           pending_if: {browser: :firefox,
+                        reason: 'https://github.com/mozilla/geckodriver/issues/1841'},
+           pending_unless: {browser: %i[chrome edge firefox]} do
           driver.manage.add_cookie name: 'samesite',
                                    value: 'default'
 
@@ -62,8 +62,8 @@ module Selenium
         end
 
         it 'respects setting on domain from a subdomain',
-           exclusive: {driver: :none,
-                       reason: 'Can only be tested on site with subdomains'} do
+           skip_unless: {driver: :none,
+                         reason: 'Can only be tested on site with subdomains'} do
           driver.get('https://opensource.saucelabs.com')
 
           driver.manage.add_cookie name: 'domain',
@@ -79,7 +79,7 @@ module Selenium
           expect(driver.manage.cookie_named('domain')[:domain]).to eq('.saucelabs.com')
         end
 
-        it 'does not allow setting on a different domain', except: {browser: %i[safari safari_preview]} do
+        it 'does not allow setting on a different domain', pending_if: {browser: %i[safari safari_preview]} do
           expect {
             driver.manage.add_cookie name: 'domain',
                                      value: 'different',
@@ -88,8 +88,8 @@ module Selenium
         end
 
         it 'does not allow setting on a subdomain from parent domain',
-           exclusive: {driver: :none,
-                       reason: 'Can not run on our test server; needs subdomains'} do
+           skip_unless: {driver: :none,
+                         reason: 'Can not run on our test server; needs subdomains'} do
           driver.get('https://saucelabs.com')
 
           expect {
@@ -109,10 +109,10 @@ module Selenium
         end
 
         it 'does not add secure cookie when http',
-           except: {browser: :firefox,
-                    reason: 'https://github.com/mozilla/geckodriver/issues/1840'},
-           exclusive: {driver: :none,
-                       reason: 'Cannot be tested on localhost'} do
+           pending_if: {browser: :firefox,
+                        reason: 'https://github.com/mozilla/geckodriver/issues/1840'},
+           skip_unless: {driver: :none,
+                         reason: 'Cannot be tested on localhost'} do
           driver.get 'http://watir.com'
           driver.manage.add_cookie name: 'secure',
                                    value: 'http',
@@ -122,8 +122,8 @@ module Selenium
         end
 
         it 'adds secure cookie when https',
-           exclusive: {driver: :none,
-                       reason: 'Can only be tested on https site'} do
+           skip_unless: {driver: :none,
+                         reason: 'Can only be tested on https site'} do
           driver.get 'https://www.selenium.dev'
 
           driver.manage.add_cookie name: 'secure',
@@ -150,8 +150,8 @@ module Selenium
           end
 
           it 'allows adding with value None',
-             exclusive: {driver: :none,
-                         reason: 'Can only be tested on https site'} do
+             skip_unless: {driver: :none,
+                           reason: 'Can only be tested on https site'} do
             driver.get 'https://selenium.dev'
 
             driver.manage.add_cookie name: 'samesite',
@@ -163,7 +163,7 @@ module Selenium
           end
 
           it 'does not allow adding with value None when secure is false',
-             except: [{browser: %i[safari safari_preview]}] do
+             pending_if: [{browser: %i[safari safari_preview]}] do
             expect {
               driver.manage.add_cookie name: 'samesite',
                                        value: 'none-insecure',

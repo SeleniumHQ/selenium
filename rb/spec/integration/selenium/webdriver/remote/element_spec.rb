@@ -21,7 +21,7 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    describe Element, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+    describe Element, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       def uploaded_body_text
         driver.switch_to.frame('upload_target')
         wait.until do
@@ -39,10 +39,9 @@ module Selenium
       after { driver.file_detector = nil }
 
       context 'when uploading one file' do
-        it 'uses the provided file detector', exclusive: {driver: :remote},
-                                              flaky: {browser: :safari,
-                                                      ci: :github,
-                                                      reason: 'unreliable with downloads'} do
+        it 'uses the provided file detector',
+           flaky: {browser: :safari, ci: :github, reason: 'unreliable with downloads'},
+           skip_unless: {driver: :remote} do
           driver.navigate.to url_for('upload.html')
 
           driver.find_element(id: 'upload').send_keys(create_tempfile.path)
@@ -54,10 +53,9 @@ module Selenium
       end
 
       context 'when uploading multiple files' do
-        it 'uses the provided file detector', exclusive: {driver: :remote},
-                                              flaky: {browser: :safari,
-                                                      ci: :github,
-                                                      reason: 'unreliable with downloads'} do
+        it 'uses the provided file detector',
+           flaky: {browser: :safari, ci: :github, reason: 'unreliable with downloads'},
+           skip_unless: {driver: :remote} do
           driver.navigate.to url_for('upload_multiple.html')
           file1 = create_tempfile
           file2 = create_tempfile
