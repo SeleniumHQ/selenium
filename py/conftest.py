@@ -39,7 +39,10 @@ except ModuleNotFoundError:
 
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.options import ArgOptions
+from selenium.webdriver.common.service import Service
 from selenium.webdriver.common.utils import free_port
+from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.remote.server import Server
 from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.webserver import SimpleWebServer
@@ -278,8 +281,6 @@ class SupportedDrivers(ContainerProtocol):
     safari: str = "Safari"
     edge: str = "Edge"
     ie: str = "Ie"
-    webkitgtk: str = "WebKitGTK"
-    wpewebkit: str = "WPEWebKit"
 
 
 @dataclass
@@ -289,8 +290,6 @@ class SupportedOptions(ContainerProtocol):
     edge: str = "EdgeOptions"
     safari: str = "SafariOptions"
     ie: str = "IeOptions"
-    webkitgtk: str = "WebKitGTKOptions"
-    wpewebkit: str = "WPEWebKitOptions"
 
 
 @dataclass
@@ -419,8 +418,6 @@ class Driver:
             self._options.enable_downloads = True
 
         if self.browser_path or self.browser_args:
-            if self.driver_class == self.supported_drivers.webkitgtk:
-                self._options.overlay_scrollbars_enabled = False
             if self.browser_path is not None:
                 self._options.binary_location = self.browser_path.strip("'")
             if self.browser_args is not None:
@@ -448,8 +445,6 @@ class Driver:
             return False
         if self.driver_class.lower() == "ie" and self.exe_platform != "Windows":
             return False
-        if "webkit" in self.driver_class.lower() and self.exe_platform == "Windows":
-            return False
         return True
 
     @property
@@ -470,7 +465,7 @@ class Driver:
             if self.driver_path is not None:
                 kwargs["service"] = self.service
             try:
-                return getattr(webdriver, self.driver_class)(**kwargs)
+                return self._build_local_driver(kwargs)
             except (WebDriverException, urllib3.exceptions.HTTPError, OSError) as e:
                 if attempt == self.DRIVER_START_RETRIES:
                     raise
@@ -489,6 +484,9 @@ class Driver:
         if driver_to_stop is not None:
             driver_to_stop.quit()
 
+    def _build_local_driver(self, kwargs):
+        return getattr(webdriver, self.driver_class)(**kwargs)
+
 
 @pytest.fixture
 def driver(request, server):
@@ -496,7 +494,7 @@ def driver(request, server):
     driver_class = getattr(request, "param", "Chrome").lower()
 
     if selenium_driver is None:
-        selenium_driver = Driver(driver_class, request)
+        selenium_driver = make_driver(driver_class, request)
     if server:
         selenium_driver._server = server
 
@@ -700,14 +698,14 @@ def clean_driver(request):
 @pytest.fixture
 def clean_service(request):
     driver_class = request.config.option.drivers[0].lower()
-    selenium_driver = Driver(driver_class, request)
+    selenium_driver = make_driver(driver_class, request)
     return selenium_driver.service
 
 
 @pytest.fixture
 def clean_options(request):
     driver_class = request.config.option.drivers[0].lower()
-    return Driver.clean_options(driver_class, request)
+    return make_driver(driver_class, request).options
 
 
 @pytest.fixture
@@ -778,3 +776,88 @@ def proxy_server():
     for server in servers:
         server.shutdown()
         server.server_close()
+
+
+# WebKitGTK and WPE WebKit are W3C-compliant drivers maintained by the WebKit
+# project and are not run in our CI. Kept isolated here so the base Driver
+# carries no WebKit branches and they avoid the deprecated binding modules.
+WEBKIT_DRIVERS = {
+    "webkitgtk": {"options_key": "webkitgtk:browserOptions", "overlay_scrollbars": True},
+    "wpewebkit": {"options_key": "wpe:browserOptions", "overlay_scrollbars": False},
+}
+
+
+@dataclass
+class SupportedWebKitDrivers(ContainerProtocol):
+    webkitgtk: str = "WebKitGTK"
+    wpewebkit: str = "WPEWebKit"
+
+
+class _WebKitService(Service):
+    def command_line_args(self) -> list[str]:
+        return ["-p", f"{self.port}"]
+
+
+class _WebKitLocalDriver(LocalWebDriver):
+    def __init__(self, options=None, service=None):
+        self.service = service
+        self.service.start()
+        try:
+            super().__init__(command_executor=self.service.service_url, options=options)
+        except Exception:
+            self.quit()
+            raise
+
+
+def _webkit_options(name, *, binary=None, args=()):
+    config = WEBKIT_DRIVERS[name]
+    args = list(args)
+
+    options = ArgOptions()
+    options.set_capability("browserName", "MiniBrowser")
+
+    browser_options = {}
+    if binary:
+        browser_options["binary"] = binary
+    if args:
+        browser_options["args"] = args
+    if config["overlay_scrollbars"]:
+        browser_options["useOverlayScrollbars"] = not (binary or args)
+    options.set_capability(config["options_key"], browser_options)
+    return options
+
+
+class WebKitDriver(Driver):
+    @property
+    def supported_drivers(self):
+        return SupportedWebKitDrivers()
+
+    @property
+    def is_platform_valid(self):
+        return self.exe_platform != "Windows"
+
+    @Driver.options.setter
+    def options(self, cls_name):
+        self._options = _webkit_options(
+            cls_name.lower(),
+            binary=self.browser_path.strip("'") if self.browser_path else None,
+            args=self.browser_args.split() if self.browser_args else (),
+        )
+        if self.is_remote:
+            self._options.enable_downloads = True
+
+    @property
+    def service(self):
+        executable = self.driver_path
+        if executable:
+            self._service = _WebKitService(executable_path=executable)
+            return self._service
+        return None
+
+    def _build_local_driver(self, kwargs):
+        return _WebKitLocalDriver(**kwargs)
+
+
+def make_driver(driver_class, request):
+    cls = WebKitDriver if driver_class.lower() in WEBKIT_DRIVERS else Driver
+    return cls(driver_class, request)

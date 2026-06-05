@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import warnings
 from typing import Any
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -25,6 +26,12 @@ class Options(ArgOptions):
     KEY = "webkitgtk:browserOptions"
 
     def __init__(self) -> None:
+        warnings.warn(
+            "WebKitGTKOptions is deprecated and will be removed in a future release; "
+            "subclass ArgOptions in your own project if you still need it.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         super().__init__()
         self._binary_location = ""
         self._overlay_scrollbars_enabled = True

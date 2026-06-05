@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import warnings
+
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.wpewebkit.options import Options
@@ -37,6 +39,12 @@ class WebDriver(LocalWebDriver):
             options: Instance of Options.
             service: Service object for handling the browser driver if you need to pass extra details.
         """
+        warnings.warn(
+            "WPEWebKit is deprecated and will be removed in a future release; "
+            "subclass LocalWebDriver in your own project if you still need it.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.options = options if options else Options()
         self.service = service if service else Service()
         self.service.path = DriverFinder(self.service, self.options).get_driver_path()

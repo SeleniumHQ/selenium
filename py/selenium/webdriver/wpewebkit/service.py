@@ -16,6 +16,7 @@
 # under the License.
 
 import shutil
+import warnings
 from collections.abc import Mapping, Sequence
 from typing import IO, Any
 
@@ -45,6 +46,12 @@ class Service(service.Service):
         env: Mapping[str, str] | None = None,
         **kwargs,
     ):
+        warnings.warn(
+            "WPEWebKitService is deprecated and will be removed in a future release; "
+            "subclass Service in your own project if you still need it.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self._service_args = list(service_args or [])
 
         super().__init__(

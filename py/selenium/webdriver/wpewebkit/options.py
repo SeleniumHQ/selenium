@@ -16,6 +16,8 @@
 # under the License.
 
 
+import warnings
+
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
 
@@ -24,6 +26,12 @@ class Options(ArgOptions):
     KEY = "wpe:browserOptions"
 
     def __init__(self) -> None:
+        warnings.warn(
+            "WPEWebKitOptions is deprecated and will be removed in a future release; "
+            "subclass ArgOptions in your own project if you still need it.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         super().__init__()
         self._binary_location = ""
 
