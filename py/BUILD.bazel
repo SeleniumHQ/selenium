@@ -73,6 +73,7 @@ compile_pip_requirements(
     tags = [
         "skip-rbe",  # This test won't run on the RBE because of a lack of network connectivity
     ],
+    target_compatible_with = ["@platforms//os:macos"],
 )
 
 SE_VERSION = "4.45.0.202605121853"
@@ -821,6 +822,11 @@ ACTIONS_TESTS = [
     "test/selenium/webdriver/support/event_firing_webdriver_tests.py",
 ]
 
+OS_SENSITIVE_TESTS = [
+    "test/selenium/webdriver/common/takes_screenshots_tests.py",
+    "test/selenium/webdriver/common/window_tests.py",
+]
+
 DRIVER_FINDER_TESTS = ["test/selenium/webdriver/common/driver_finder_tests.py"]
 
 # Browser-specific test configuration
@@ -910,7 +916,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
         args = [
@@ -918,6 +924,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
+        extra_tags = {src: ["os-sensitive"] for src in OS_SENSITIVE_TESTS} | {src: ["se-manager"] for src in DRIVER_FINDER_TESTS},
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = browser,
@@ -929,7 +936,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
     for browser in DEFAULT_BROWSER_TESTS
 ]
 
-# Generate test-<browser>-actions targets (non-bidi, actions tests only)
+# Generate test-<browser>-actions targets (non-bidi, actions tests only).
 [
     py_test_suite(
         name = "test-%s-actions" % browser,
@@ -940,7 +947,10 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        tags = [
+            "no-sandbox",
+            "os-sensitive",
+        ] + BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-actions" % browser,
         deps = [
@@ -993,28 +1003,6 @@ FEATURE_SUITE_DEFS = {
         ":test-%s-actions" % browser,
     ] + [":test-%s-%s" % (browser, f) for f in FEATURE_SUITE_DEFS],
 ) for browser in DEFAULT_BROWSER_TESTS]
-
-[
-    py_test_suite(
-        name = "test-%s-driver-finder" % browser,
-        size = "large",
-        srcs = DRIVER_FINDER_TESTS,
-        args = [
-            "--instafail",
-        ] + BROWSERS[browser]["args"],
-        data = BROWSERS[browser]["data"],
-        env_inherit = ["DISPLAY"],
-        flaky = True,
-        tags = BROWSERS[browser]["tags"] + ["se-manager"],
-        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
-        test_suffix = browser,
-        deps = [
-            ":init-tree",
-            ":webserver",
-        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
-    )
-    for browser in DEFAULT_BROWSER_TESTS
-]
 
 # Generate test-<browser>-bidi targets
 [
@@ -1178,190 +1166,6 @@ test_suite(
         ":test-chrome-remote",
         ":test-firefox-remote",
     ],
-)
-
-py_test_suite(
-    name = "test-webkitgtk-common",
-    size = "large",
-    srcs = glob(
-        [
-            "test/selenium/webdriver/common/**/*.py",
-            "test/selenium/webdriver/support/**/*.py",
-        ],
-        exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS,
-    ),
-    args = [
-        "--instafail",
-        "--driver=webkitgtk",
-        "--browser-binary=MiniBrowser",
-        "--browser-args=--automation",
-    ],
-    tags = [
-        "exclusive-if-local",
-        "no-sandbox",
-        "skip-rbe",
-    ],
-    test_suffix = "webkitgtk",
-    deps = [
-        ":common",
-        ":init-tree",
-        ":support",
-        ":webkitgtk",
-        ":webserver",
-    ] + TEST_DEPS,
-)
-
-py_test_suite(
-    name = "test-webkitgtk-actions",
-    size = "large",
-    srcs = ACTIONS_TESTS,
-    args = [
-        "--instafail",
-        "--driver=webkitgtk",
-        "--browser-binary=MiniBrowser",
-        "--browser-args=--automation",
-    ],
-    tags = [
-        "exclusive-if-local",
-        "no-sandbox",
-        "skip-rbe",
-    ],
-    test_suffix = "webkitgtk-actions",
-    deps = [
-        ":common_actions",
-        ":init-tree",
-        ":support",
-        ":webkitgtk",
-        ":webserver",
-    ] + TEST_DEPS,
-)
-
-[
-    py_test_suite(
-        name = "test-webkitgtk-%s" % feature,
-        size = "large",
-        srcs = FEATURE_SUITE_DEFS[feature][0],
-        args = [
-            "--instafail",
-            "--driver=webkitgtk",
-            "--browser-binary=MiniBrowser",
-            "--browser-args=--automation",
-        ],
-        tags = [
-            "exclusive-if-local",
-            "no-sandbox",
-            "skip-rbe",
-        ],
-        test_suffix = "webkitgtk-%s" % feature,
-        deps = [
-            ":init-tree",
-            ":support",
-            ":webkitgtk",
-            ":webserver",
-            FEATURE_SUITE_DEFS[feature][1],
-        ] + TEST_DEPS,
-    )
-    for feature in FEATURE_SUITE_DEFS
-]
-
-test_suite(
-    name = "test-webkitgtk",
-    tests = [
-        ":test-webkitgtk-actions",
-        ":test-webkitgtk-common",
-    ] + [":test-webkitgtk-%s" % f for f in FEATURE_SUITE_DEFS],
-)
-
-py_test_suite(
-    name = "test-wpewebkit-common",
-    size = "large",
-    srcs = glob(
-        [
-            "test/selenium/webdriver/common/**/*.py",
-            "test/selenium/webdriver/support/**/*.py",
-        ],
-        exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS,
-    ),
-    args = [
-        "--instafail",
-        "--driver=wpewebkit",
-        "--browser-binary=MiniBrowser",
-        "--browser-args=--automation --headless",
-    ],
-    tags = [
-        "exclusive-if-local",
-        "no-sandbox",
-        "skip-rbe",
-    ],
-    test_suffix = "wpewebkit",
-    deps = [
-        ":common",
-        ":init-tree",
-        ":support",
-        ":webserver",
-        ":wpewebkit",
-    ] + TEST_DEPS,
-)
-
-py_test_suite(
-    name = "test-wpewebkit-actions",
-    size = "large",
-    srcs = ACTIONS_TESTS,
-    args = [
-        "--instafail",
-        "--driver=wpewebkit",
-        "--browser-binary=MiniBrowser",
-        "--browser-args=--automation --headless",
-    ],
-    tags = [
-        "exclusive-if-local",
-        "no-sandbox",
-        "skip-rbe",
-    ],
-    test_suffix = "wpewebkit-actions",
-    deps = [
-        ":common_actions",
-        ":init-tree",
-        ":support",
-        ":webserver",
-        ":wpewebkit",
-    ] + TEST_DEPS,
-)
-
-[
-    py_test_suite(
-        name = "test-wpewebkit-%s" % feature,
-        size = "large",
-        srcs = FEATURE_SUITE_DEFS[feature][0],
-        args = [
-            "--instafail",
-            "--driver=wpewebkit",
-            "--browser-binary=MiniBrowser",
-            "--browser-args=--automation --headless",
-        ],
-        tags = [
-            "exclusive-if-local",
-            "no-sandbox",
-            "skip-rbe",
-        ],
-        test_suffix = "wpewebkit-%s" % feature,
-        deps = [
-            ":init-tree",
-            ":support",
-            ":webserver",
-            ":wpewebkit",
-            FEATURE_SUITE_DEFS[feature][1],
-        ] + TEST_DEPS,
-    )
-    for feature in FEATURE_SUITE_DEFS
-]
-
-test_suite(
-    name = "test-wpewebkit",
-    tests = [
-        ":test-wpewebkit-actions",
-        ":test-wpewebkit-common",
-    ] + [":test-wpewebkit-%s" % f for f in FEATURE_SUITE_DEFS],
 )
 
 py_binary(

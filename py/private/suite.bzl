@@ -15,7 +15,8 @@ def _strip_test_prefixes(path):
         path = path[:-len(filename)] + filename[len("test_"):]
     return path
 
-def py_test_suite(name, srcs, size = None, deps = None, python_version = None, imports = None, visibility = None, test_suffix = None, **kwargs):
+def py_test_suite(name, srcs, size = None, deps = None, python_version = None, imports = None, visibility = None, test_suffix = None, extra_tags = None, **kwargs):
+    extra_tags = extra_tags or {}
     support_srcs = [src for src in srcs if not _is_test(src)]
 
     if support_srcs:
@@ -41,6 +42,9 @@ def py_test_suite(name, srcs, size = None, deps = None, python_version = None, i
 
             tests.append(test_name)
 
+            remaining_kwargs = dict(kwargs)
+            test_tags = remaining_kwargs.pop("tags", []) + extra_tags.get(src, [])
+
             pytest_test(
                 name = test_name,
                 size = size,
@@ -48,7 +52,8 @@ def py_test_suite(name, srcs, size = None, deps = None, python_version = None, i
                 deps = test_deps,
                 python_version = python_version,
                 precompile = "disabled",
-                **kwargs
+                tags = test_tags,
+                **remaining_kwargs
             )
     native.test_suite(
         name = name,

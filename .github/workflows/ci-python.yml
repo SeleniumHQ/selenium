@@ -7,6 +7,12 @@ on:
         required: true
         type: string
   workflow_dispatch:
+    inputs:
+      smoke:
+        description: Run smoke tests only
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -14,40 +20,23 @@ permissions:
 jobs:
   build:
     name: Build
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.smoke)
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build
       run: |
         bazel build //py:selenium-wheel //py:selenium-sdist
 
-  lint-ruff:
-    name: Lint (ruff)
+  lint:
+    name: Lint
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Lint (ruff)
-      run: bazel run //py:ruff-check -- --no-fix
-
-  lint-mypy:
-    name: Lint (mypy)
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Lint (mypy)
-      run: bazel run //py:mypy
-
-  lint-docs:
-    name: Lint (docs)
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Lint (docs)
-      run: |
-        bazel run //py:generate-api-listing
-        bazel run //py:sphinx-autogen
-        bazel build //py:docs
+      name: Lint
+      run: ./go py:lint
 
   unit-tests:
     name: Unit Tests
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.smoke)
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -60,22 +49,33 @@ jobs:
       python-version: ${{ matrix.python-version }}
       run: bazel test --local_test_jobs 1 //py:unit
 
-  remote-tests:
-    name: Remote Tests
+  browser-tests-smoke:
+    name: ${{ matrix.os }}-smoke
+    if: github.event_name != 'schedule' && (github.event_name != 'workflow_dispatch' || inputs.smoke)
     uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu, windows, macos]
     with:
-      name: Integration Tests Remote
+      name: ${{ matrix.os }}-smoke
       needs-display: true
+      os: ${{ matrix.os }}
       rerun-with-debug: true
       run: >
         ./scripts/github-actions/bazel-test-if-targets.sh
         --keep_going
+        --build_tests_only
         --flaky_test_attempts 3
         --local_test_jobs 1
-        $(bazel query "tests(//py:test-remote) intersect set(${{ inputs.targets || '//py/...' }})" --output=label 2>/dev/null)
+        --skip_incompatible_explicit_targets
+        --pin_browsers=false
+        --test_tag_filters=os-sensitive,skip-rbe,se-manager
+        ${{ inputs.targets || '//py/...' }}
 
-  browser-tests:
-    name: Browser Tests
+  browser-tests-full:
+    name: Browser Tests (full)
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.smoke)
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -95,27 +95,5 @@ jobs:
         --keep_going
         --flaky_test_attempts 3
         --local_test_jobs 1
-        --skip_incompatible_explicit_targets
-        $(bazel query "tests(//py:test-${{ matrix.browser }}) intersect set(${{ inputs.targets || '//py/...' }})" --output=label 2>/dev/null)
-
-  selenium-manager-tests:
-    name: Selenium Manager Tests
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu, windows, macos]
-    with:
-      name: Integration Tests Selenium Manager (${{ matrix.os }})
-      needs-display: true
-      os: ${{ matrix.os }}
-      rerun-with-debug: true
-      run: >
-        ./scripts/github-actions/bazel-test-if-targets.sh
-        --local_test_jobs 1
-        --flaky_test_attempts 3
         --pin_browsers=false
-        --build_tests_only
-        --skip_incompatible_explicit_targets
-        --test_tag_filters=se-manager
-        ${{ inputs.targets || '//py/...' }}
+        //py:test-${{ matrix.browser }}
