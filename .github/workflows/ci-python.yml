@@ -85,3 +85,19 @@ jobs:
       rerun-with-debug: true
       run: |
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-${{ matrix.browser }}
+
+  selenium-manager-tests:
+    name: Selenium Manager Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu, windows, macos]
+    with:
+      name: Integration Tests Selenium Manager (${{ matrix.os }})
+      needs-display: true
+      os: ${{ matrix.os }}
+      rerun-with-debug: true
+      run: |
+        bazel test --local_test_jobs 1 --flaky_test_attempts 3 --pin_browsers=false --build_tests_only --test_tag_filters=se-manager //py/...

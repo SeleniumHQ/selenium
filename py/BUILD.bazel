@@ -818,6 +818,8 @@ ACTIONS_TESTS = [
     "test/selenium/webdriver/support/event_firing_webdriver_tests.py",
 ]
 
+DRIVER_FINDER_TESTS = ["test/selenium/webdriver/common/driver_finder_tests.py"]
+
 # Browser-specific test configuration
 BROWSER_TESTS = {
     "chrome": {
@@ -905,7 +907,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
         args = [
@@ -989,6 +991,28 @@ FEATURE_SUITE_DEFS = {
     ] + [":test-%s-%s" % (browser, f) for f in FEATURE_SUITE_DEFS],
 ) for browser in DEFAULT_BROWSER_TESTS]
 
+[
+    py_test_suite(
+        name = "test-%s-driver-finder" % browser,
+        size = "large",
+        srcs = DRIVER_FINDER_TESTS,
+        args = [
+            "--instafail",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"],
+        env_inherit = ["DISPLAY"],
+        flaky = True,
+        tags = BROWSERS[browser]["tags"] + ["se-manager"],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        test_suffix = browser,
+        deps = [
+            ":init-tree",
+            ":webserver",
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
+    )
+    for browser in DEFAULT_BROWSER_TESTS
+]
+
 # Generate test-<browser>-bidi-common targets
 [
     py_test_suite(
@@ -999,7 +1023,7 @@ FEATURE_SUITE_DEFS = {
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = ACTIONS_TESTS + FEATURE_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+            exclude = ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
         args = [
@@ -1091,7 +1115,7 @@ FEATURE_SUITE_DEFS = {
                 "test/selenium/webdriver/remote/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
         args = [
@@ -1227,7 +1251,7 @@ py_test_suite(
             "test/selenium/webdriver/common/**/*.py",
             "test/selenium/webdriver/support/**/*.py",
         ],
-        exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS,
+        exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS,
     ),
     args = [
         "--instafail",
@@ -1319,7 +1343,7 @@ py_test_suite(
             "test/selenium/webdriver/common/**/*.py",
             "test/selenium/webdriver/support/**/*.py",
         ],
-        exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS,
+        exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS,
     ),
     args = [
         "--instafail",
