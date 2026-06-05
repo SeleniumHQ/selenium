@@ -96,7 +96,30 @@ internal sealed class Broker : IAsyncDisposable
                 writer.WriteNumber("id"u8, id);
                 writer.WriteString("method"u8, descriptor.Method);
                 writer.WritePropertyName("params"u8);
+
+                if (options is { AdditionalData: { IsEmpty: false } additionalData })
+                {
+                    // Cannot mutate the shared Parameters.Empty singleton; create a fresh instance to hold the extra data.
+                    if (ReferenceEquals(@params, Parameters.Empty))
+                    {
+                        @params = (TParameters)(object)new Parameters();
+                    }
+                    @params.RawAdditionalData ??= [];
+                    foreach (var prop in additionalData)
+                    {
+                        @params.RawAdditionalData[prop.Name] = prop.Value;
+                    }
+                }
+
                 JsonSerializer.Serialize(writer, @params, descriptor.ParamsTypeInfo);
+                if (options is not null)
+                {
+                    foreach (var prop in options.AdditionalMessageData)
+                    {
+                        writer.WritePropertyName(prop.Name);
+                        prop.Value.WriteTo(writer);
+                    }
+                }
                 writer.WriteEndObject();
             }
         }
@@ -189,6 +212,7 @@ internal sealed class Broker : IAsyncDisposable
         string? message = default;
         Utf8JsonReader resultReader = default;
         Utf8JsonReader paramsReader = default;
+        Dictionary<string, JsonElement>? additionalMessageData = null;
 
         Utf8JsonReader reader = new(data);
         reader.Read(); // "{"
@@ -236,7 +260,10 @@ internal sealed class Broker : IAsyncDisposable
             }
             else
             {
+                var propName = reader.GetString()!;
                 reader.Read();
+                additionalMessageData ??= [];
+                additionalMessageData[propName] = JsonSerializer.Deserialize<JsonElement>(ref reader);
             }
 
             reader.Skip();
@@ -254,6 +281,11 @@ internal sealed class Broker : IAsyncDisposable
                     {
                         var commandResult = JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)
                             ?? throw new BiDiException("Remote end returned null command result in the 'result' property.");
+
+                        if (additionalMessageData is not null)
+                        {
+                            ((EmptyResult)commandResult).AdditionalMessageData = AdditionalData.FromDictionary(additionalMessageData);
+                        }
 
                         command.TaskCompletionSource.TrySetResult((EmptyResult)commandResult);
                     }

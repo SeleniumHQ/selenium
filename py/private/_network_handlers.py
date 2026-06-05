@@ -43,6 +43,21 @@ it.  Reconciliation works the same way: a mutated body requires
 a new body), other mutations are applied via ``network.continueResponse``, and
 untouched responses are continued unmodified.
 
+Handlers registered through :meth:`AuthHandlerRegistry.add_handler` receive an
+:class:`AuthenticationRequest` at the ``authRequired`` phase and may call
+:meth:`AuthenticationRequest.provide_credentials` or
+:meth:`AuthenticationRequest.cancel`.  Reconciliation issues exactly one
+``network.continueWithAuth`` command per challenge: ``cancel`` takes precedence
+over provided credentials, and if no handler responded the challenge is
+continued with action ``default`` so the browser's own behavior (usually the
+authentication prompt) applies.
+
+Extra headers registered through :meth:`RequestHandlerRegistry.set_extra_header`
+are merged into every subsequent request.  BiDi has no dedicated command for
+this, so the registry pauses each request at ``beforeRequestSent`` with a
+match-everything intercept and merges the headers while reconciling — the same
+single continue cycle that applies user handler mutations.
+
 This mirrors the reconciliation rules in the cross-binding BiDi API design and
 means purely observational handlers never stall the page.
 """
@@ -181,23 +196,33 @@ def glob_to_regex(pattern: str) -> re.Pattern:
     return re.compile("".join(parts) + r"\Z")
 
 
-def _glob_component(component: str) -> str:
-    """Collapse ``**`` to the single URLPattern wildcard ``*``."""
-    return component.replace("**", "*")
+def _literal_component(component: str) -> str | None:
+    """Return the component when it is literal, ``None`` when it has wildcards.
+
+    ``UrlPatternPattern`` properties match literally and browsers reject
+    wildcard characters in them ("Forbidden characters"), while omitted
+    properties match anything — so wildcard-bearing components are omitted
+    from the browser-side filter and Python-side glob matching narrows the
+    results.
+    """
+    if not component or "*" in component or "?" in component:
+        return None
+    return component
 
 
 def glob_to_url_pattern(pattern: str) -> dict | None:
     """Translate a URL glob into a BiDi ``network.UrlPatternPattern`` dict.
 
-    Returns ``{}`` when the glob matches everything (no browser-side filter
-    needed) and ``None`` when the glob cannot be expressed as a UrlPattern —
-    callers should then intercept everything and rely on Python-side matching.
+    Only the literal components of the glob are translated; components
+    containing wildcards are omitted (omitted UrlPatternPattern properties
+    match anything), so the browser-side filter may be broader than the glob
+    and callers must still apply Python-side matching.  Returns ``{}`` when
+    no browser-side filter can be derived (match everything) and ``None``
+    when the glob is not a URL-shaped pattern.
     """
     if pattern in ("*", "**"):
         return {}
-    # ``?`` is both a glob wildcard and the URL query separator; a UrlPattern
-    # translation would be ambiguous, so defer to Python-side matching.
-    if "://" not in pattern or "?" in pattern:
+    if "://" not in pattern:
         return None
     scheme, _, rest = pattern.partition("://")
     host, slash, path = rest.partition("/")
@@ -205,14 +230,16 @@ def glob_to_url_pattern(pattern: str) -> dict | None:
     if ":" in host:
         host, _, port = host.partition(":")
     result: dict[str, Any] = {"type": "pattern"}
-    if scheme not in ("*", "**", ""):
-        result["protocol"] = _glob_component(scheme)
-    if host not in ("*", "**", ""):
-        result["hostname"] = _glob_component(host)
-    if port:
+    if _literal_component(scheme):
+        result["protocol"] = scheme
+    if _literal_component(host):
+        result["hostname"] = host
+    if port and _literal_component(port):
         result["port"] = port
-    if slash:
-        result["pathname"] = _glob_component("/" + path)
+    if slash and _literal_component("/" + path):
+        result["pathname"] = "/" + path
+    if len(result) == 1:
+        return {}
     return result
 
 
@@ -521,6 +548,79 @@ class Response:
             self.continue_response()
 
 
+class AuthenticationRequest:
+    """Wraps a BiDi ``network.authRequired`` event and provides auth action methods.
+
+    Attributes:
+        url: The URL of the request that triggered the challenge.
+        realm: The authentication realm of the first challenge, when reported.
+        scheme: The authentication scheme (e.g. ``"basic"``) of the first
+            challenge, when reported.
+        challenges: Every challenge as a list of ``{"scheme", "realm"}`` dicts.
+    """
+
+    def __init__(self, conn, params, deferred: bool = False):
+        self._conn = conn
+        self._params = params if isinstance(params, dict) else {}
+        req = self._params.get("request", {}) or {}
+        resp = self._params.get("response", {}) or {}
+        self._request_id = req.get("request")
+        self.url = resp.get("url") or req.get("url", "")
+        self.challenges = [challenge for challenge in resp.get("authChallenges") or [] if isinstance(challenge, dict)]
+        first = self.challenges[0] if self.challenges else {}
+        self.realm = first.get("realm")
+        self.scheme = first.get("scheme")
+        # Deferred challenges record actions for later reconciliation by the
+        # registry; non-deferred challenges execute actions immediately.
+        self._deferred = deferred
+        self._handled = False
+        self._cancelled = False
+        self._credentials: dict | None = None
+
+    def provide_credentials(self, username: str, password: str) -> None:
+        """Respond to the challenge with the given credentials.
+
+        When multiple handlers act on the same challenge the first provided
+        credentials win, and a ``cancel()`` from any handler takes precedence.
+        """
+        credentials = {"type": "password", "username": username, "password": password}
+        if self._deferred:
+            if self._credentials is None:
+                self._credentials = credentials
+        else:
+            self._credentials = credentials
+            self._execute_continue("provideCredentials")
+
+    def cancel(self) -> None:
+        """Cancel the challenge, failing the request with an auth error.
+
+        Takes precedence over provided credentials when multiple handlers act
+        on the same challenge.
+        """
+        if self._deferred:
+            self._cancelled = True
+        else:
+            self._execute_continue("cancel")
+
+    def _execute_continue(self, action: str) -> None:
+        self._handled = True
+        params: dict[str, Any] = {"request": self._request_id, "action": action}
+        if action == "provideCredentials":
+            params["credentials"] = self._credentials
+        self._conn.execute(command_builder("network.continueWithAuth", params))
+
+    def _resolve(self) -> None:
+        """Reconcile recorded handler actions into a single BiDi command."""
+        if self._handled:
+            return
+        if self._cancelled:
+            self._execute_continue("cancel")
+        elif self._credentials is not None:
+            self._execute_continue("provideCredentials")
+        else:
+            self._execute_continue("default")
+
+
 class _HandlerEntry:
     """A registered handler with its patterns and intercept."""
 
@@ -583,7 +683,7 @@ class _BaseHandlerRegistry:
             raise ValueError(f"{self._label.capitalize()} '{handler_id}' not found")
         if entry.intercept_id:
             self._network._remove_intercept(entry.intercept_id)
-        if not self._handlers and self._subscription_callback_id is not None:
+        if not self._keep_subscription() and self._subscription_callback_id is not None:
             self._network.remove_event_handler(self._event_name, self._subscription_callback_id)
             self._subscription_callback_id = None
         logger.debug("Removed %s %s", self._label, handler_id)
@@ -597,12 +697,19 @@ class _BaseHandlerRegistry:
         """Intercept IDs owned by this registry's handlers."""
         return {entry.intercept_id for entry in self._handlers.values() if entry.intercept_id}
 
+    def _keep_subscription(self) -> bool:
+        """Whether the event subscription is still needed."""
+        return bool(self._handlers)
+
     def resubscribe(self) -> None:
         """Re-establish the event subscription after an external event-handler clear."""
-        if self._handlers:
+        if self._keep_subscription():
             self._subscription_callback_id = self._network.add_event_handler(self._event_name, self._on_event)
         else:
             self._subscription_callback_id = None
+
+    def _before_resolve(self, wrapped) -> None:
+        """Hook run after the handlers and before reconciliation."""
 
     def _on_event(self, params) -> None:
         if not isinstance(params, dict):
@@ -622,19 +729,89 @@ class _BaseHandlerRegistry:
         # continue.
         blocking_intercepts = set(params.get("intercepts") or [])
         if self.intercept_ids() & blocking_intercepts:
+            self._before_resolve(wrapped)
             wrapped._resolve()
 
 
 class RequestHandlerRegistry(_BaseHandlerRegistry):
-    """Dispatches ``network.beforeRequestSent`` events to request handlers."""
+    """Dispatches ``network.beforeRequestSent`` events to request handlers.
+
+    Also owns the extra-headers store: BiDi has no dedicated set-extra-headers
+    command, so while any extra header is set every request is paused by a
+    dedicated match-everything intercept and continued with the merged
+    headers during reconciliation.  Sharing the registry's subscription and
+    reconciliation means a request paused by both the extra-headers intercept
+    and user handlers is still continued exactly once.
+    """
 
     _phase = "beforeRequestSent"
     _event_name = "before_request"
     _id_prefix = "request-handler"
     _label = "request handler"
 
+    def __init__(self, network):
+        super().__init__(network)
+        # Header names are case-insensitive per HTTP, so keys are lowercased.
+        self.extra_headers: dict[str, Any] = {}
+        self._extra_headers_intercept: str | None = None
+
     def _wrap(self, params):
         return Request(self._network._conn, params, deferred=True)
+
+    def set_extra_header(self, name: str, value: str) -> None:
+        """Record a header to merge into every subsequent request."""
+        self.extra_headers[name.lower()] = value
+        if self._extra_headers_intercept is None:
+            result = self._network._add_intercept(phases=[self._phase])
+            self._extra_headers_intercept = result.get("intercept") if result else None
+        if self._subscription_callback_id is None:
+            self._subscription_callback_id = self._network.add_event_handler(self._event_name, self._on_event)
+        logger.debug("Added extra header %s", name.lower())
+
+    def remove_extra_header(self, name: str) -> None:
+        """Stop merging a header by (case-insensitive) name."""
+        if self.extra_headers.pop(name.lower(), None) is None:
+            raise ValueError(f"Extra header '{name}' not found")
+        if not self.extra_headers:
+            self._drop_extra_headers_intercept()
+        logger.debug("Removed extra header %s", name.lower())
+
+    def clear_extra_headers(self) -> None:
+        """Stop merging all extra headers."""
+        self.extra_headers.clear()
+        self._drop_extra_headers_intercept()
+
+    def _drop_extra_headers_intercept(self) -> None:
+        if self._extra_headers_intercept:
+            self._network._remove_intercept(self._extra_headers_intercept)
+            self._extra_headers_intercept = None
+        if not self._keep_subscription() and self._subscription_callback_id is not None:
+            self._network.remove_event_handler(self._event_name, self._subscription_callback_id)
+            self._subscription_callback_id = None
+
+    def intercept_ids(self) -> set:
+        ids = super().intercept_ids()
+        if self._extra_headers_intercept:
+            ids.add(self._extra_headers_intercept)
+        return ids
+
+    def _keep_subscription(self) -> bool:
+        return bool(self._handlers or self.extra_headers)
+
+    def _before_resolve(self, request) -> None:
+        """Merge extra headers into requests about to be continued.
+
+        Failed and stubbed requests never reach the wire and manually
+        continued requests have already been sent, so only the
+        plain-continue path is merged.
+        """
+        if not self.extra_headers:
+            return
+        if request._handled or request._failed or request._stub is not None:
+            return
+        merged = {name: value for name, value in request.headers.items() if name.lower() not in self.extra_headers}
+        merged.update(self.extra_headers)
+        request.set_headers(merged)
 
 
 class ResponseHandlerRegistry(_BaseHandlerRegistry):
@@ -647,3 +824,15 @@ class ResponseHandlerRegistry(_BaseHandlerRegistry):
 
     def _wrap(self, params):
         return Response(self._network._conn, params, deferred=True)
+
+
+class AuthHandlerRegistry(_BaseHandlerRegistry):
+    """Dispatches ``network.authRequired`` events to authentication handlers."""
+
+    _phase = "authRequired"
+    _event_name = "auth_required"
+    _id_prefix = "auth-handler"
+    _label = "authentication handler"
+
+    def _wrap(self, params):
+        return AuthenticationRequest(self._network._conn, params, deferred=True)

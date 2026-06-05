@@ -1024,6 +1024,7 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
             "self._handler_intercepts: dict[str, Any] = {}",
             "self._request_handlers = RequestHandlerRegistry(self)",
             "self._response_handlers = ResponseHandlerRegistry(self)",
+            "self._auth_handlers = AuthHandlerRegistry(self)",
         ],
         # Request class wraps a beforeRequestSent event params and provides actions
         "extra_dataclasses": [
@@ -1061,6 +1062,8 @@ disownDataParameters = DisownDataParameters''',
             # keep them importable from selenium.webdriver.common.bidi.network.
             """from selenium.webdriver.common.bidi._network_handlers import (
     LEGACY_REQUEST_HANDLER_EVENTS,
+    AuthenticationRequest,
+    AuthHandlerRegistry,
     Request,
     RequestHandlerRegistry,
     Response,
@@ -1217,18 +1220,30 @@ disownDataParameters = DisownDataParameters''',
             '''    def clear_request_handlers(self):
         """Clear all request handlers and remove all tracked intercepts.
 
-        Response handlers registered via ``add_response_handler`` are
-        preserved; use ``clear_response_handlers`` to remove those.
+        Response handlers registered via ``add_response_handler``,
+        authentication handlers registered via ``add_authentication_handler``
+        and extra headers registered via ``add_extra_header`` are preserved;
+        use ``clear_response_handlers`` / ``clear_authentication_handlers`` /
+        ``clear_extra_headers`` to remove those.
         """
         self._request_handlers.clear()
         self.clear_event_handlers()
-        preserved_intercepts = self._response_handlers.intercept_ids()
+        # After clear() the request registry's intercept_ids() only contains
+        # the extra-headers intercept, which survives like the other
+        # registries' intercepts.
+        preserved_intercepts = (
+            self._request_handlers.intercept_ids()
+            | self._response_handlers.intercept_ids()
+            | self._auth_handlers.intercept_ids()
+        )
         for intercept_id in list(self.intercepts):
             if intercept_id not in preserved_intercepts:
                 self._remove_intercept(intercept_id)
         # clear_event_handlers dropped every subscription, including the
-        # response registry's; restore it so response handlers keep working.
-        self._response_handlers.resubscribe()''',
+        # other registries'; restore them so their handlers keep working.
+        self._request_handlers.resubscribe()
+        self._response_handlers.resubscribe()
+        self._auth_handlers.resubscribe()''',
             '''    def add_response_handler(self, url_patterns=None, callback=None):
         """Add a handler for network responses.
 
@@ -1265,8 +1280,83 @@ disownDataParameters = DisownDataParameters''',
             '''    def clear_response_handlers(self):
         """Clear all response handlers and their intercepts."""
         self._response_handlers.clear()''',
+            '''    def add_authentication_handler(self, url_patterns=None, callback=None):
+        """Add a handler for authentication challenges.
+
+        Usage::
+
+            driver.network.add_authentication_handler(handler)
+            driver.network.add_authentication_handler(
+                ["https://secure-api.example.com/**"], handler
+            )
+
+        The handler receives an :class:`AuthenticationRequest` at the
+        ``authRequired`` phase and may respond with
+        ``provide_credentials(username, password)`` or ``cancel()``.  After all
+        matching handlers run, Selenium reconciles the outcome (cancel >
+        provide_credentials > browser default) and continues the challenge
+        automatically, so observers never stall the page.  URL patterns are
+        glob strings supporting ``*``, ``**`` and ``?`` (default: match
+        everything).
+
+        Do not combine with the credentials-only ``add_auth_handler``: both
+        would answer the same challenge and the second response fails.
+
+        Returns:
+            A string handler ID for ``remove_authentication_handler(handler_id)``.
+        """
+        if callable(url_patterns) and callback is None:
+            return self._auth_handlers.add_handler(None, url_patterns)
+        if not callable(callback):
+            raise TypeError("add_authentication_handler requires a callable handler")
+        return self._auth_handlers.add_handler(url_patterns, callback)''',
+            '''    def remove_authentication_handler(self, handler_id):
+        """Remove an authentication handler and its intercept by handler ID.
+
+        Args:
+            handler_id: The ID returned by ``add_authentication_handler``.
+        """
+        self._auth_handlers.remove_handler(handler_id)''',
+            '''    def clear_authentication_handlers(self):
+        """Clear all authentication handlers and their intercepts."""
+        self._auth_handlers.clear()''',
+            '''    def add_extra_header(self, name, value):
+        """Add a header that is merged into every subsequent request.
+
+        Usage::
+
+            driver.network.add_extra_header("x-test", "value")
+
+        BiDi has no dedicated command for extra headers, so while any extra
+        header is set every request is paused at the ``beforeRequestSent``
+        phase and continued with the merged headers — this adds a round trip
+        per request, so remove the headers when no longer needed.  Header
+        names are case-insensitive; adding a header replaces any existing
+        request header of the same name.
+
+        Args:
+            name: The header name.
+            value: The header value.
+        """
+        self._request_handlers.set_extra_header(name, value)''',
+            '''    def remove_extra_header(self, name):
+        """Stop adding an extra header to subsequent requests.
+
+        Args:
+            name: The (case-insensitive) header name passed to
+                ``add_extra_header``.
+        """
+        self._request_handlers.remove_extra_header(name)''',
+            '''    def clear_extra_headers(self):
+        """Stop adding all extra headers to subsequent requests."""
+        self._request_handlers.clear_extra_headers()''',
             '''    def add_auth_handler(self, username, password):
         """Add an auth handler that automatically provides credentials.
+
+        For callback-based handling with URL scoping and the ability to cancel
+        a challenge, prefer ``add_authentication_handler``.  Do not combine the
+        two: both would answer the same challenge and the second response
+        fails.
 
         Args:
             username: The username for basic authentication.

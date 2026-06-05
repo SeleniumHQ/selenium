@@ -17,6 +17,9 @@
 // under the License.
 // </copyright>
 
+using System.ComponentModel;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 
 namespace OpenQA.Selenium.BiDi;
@@ -31,11 +34,58 @@ public readonly record struct Command<TParameters, TResult>(
 public record Parameters
 {
     public static Parameters Empty { get; } = new Parameters();
+
+    [JsonExtensionData]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public Dictionary<string, JsonElement>? RawAdditionalData { get; internal set; }
+
+    [JsonIgnore]
+    public AdditionalData AdditionalData
+    {
+        get => RawAdditionalData is null ? AdditionalData.Empty : AdditionalData.FromDictionary(RawAdditionalData);
+        init
+        {
+            if (value.IsEmpty)
+            {
+                RawAdditionalData = null;
+            }
+            else
+            {
+                RawAdditionalData = [];
+                foreach (var prop in value)
+                {
+                    RawAdditionalData[prop.Name] = prop.Value;
+                }
+            }
+        }
+    }
 }
 
 public abstract record CommandOptions
 {
     public TimeSpan? Timeout { get; init; }
+
+    public AdditionalData AdditionalData { get; init; }
+
+    public AdditionalData AdditionalMessageData { get; init; }
 }
 
-public abstract record EmptyResult;
+public abstract record EmptyResult
+{
+    [JsonExtensionData]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    // IMPORTANT NOTE: Reasons for this property being public:
+    // - The setter is not internal because the deserializer needs to be able to set this property when deserializing a command result
+    // - The property is public to make external serializers see it so that they can deserialize additional data when deserializing a command result
+    // - EditorBrowsableState.Never hides this property from IntelliSense to avoid confusion for users; it is technically a public property
+    public Dictionary<string, JsonElement>? RawAdditionalData { get; set; }
+
+    [JsonIgnore]
+    public AdditionalData AdditionalData
+    {
+        get => RawAdditionalData is null ? AdditionalData.Empty : AdditionalData.FromDictionary(RawAdditionalData);
+    }
+
+    [JsonIgnore]
+    public AdditionalData AdditionalMessageData { get; internal set; }
+}

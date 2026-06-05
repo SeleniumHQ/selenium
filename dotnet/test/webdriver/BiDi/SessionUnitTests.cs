@@ -17,6 +17,8 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using OpenQA.Selenium.BiDi;
 
 namespace OpenQA.Selenium.Tests.BiDi;
@@ -78,7 +80,8 @@ class SessionUnitTests
         Assert.That(status.Message, Is.EqualTo("running"));
 
         Assert.That(_transport.SentMessages, Has.Count.EqualTo(1));
-        Assert.That(_transport.SentMessages[0], Does.Contain("\"method\":\"session.status\""));
+        using var doc = JsonDocument.Parse(_transport.SentMessages[0]);
+        Assert.That(doc.RootElement.GetProperty("method").GetString(), Is.EqualTo("session.status"));
     }
 
     [Test]
@@ -107,9 +110,80 @@ class SessionUnitTests
         _transport.EnqueueSuccess(2, """{"ready":true,"message":"second"}""");
         await task2;
 
-        var id1 = System.Text.Json.JsonDocument.Parse(_transport.SentMessages[0]).RootElement.GetProperty("id").GetInt64();
-        var id2 = System.Text.Json.JsonDocument.Parse(_transport.SentMessages[1]).RootElement.GetProperty("id").GetInt64();
+        using var doc1 = JsonDocument.Parse(_transport.SentMessages[0]);
+        using var doc2 = JsonDocument.Parse(_transport.SentMessages[1]);
+        var id1 = doc1.RootElement.GetProperty("id").GetInt64();
+        var id2 = doc2.RootElement.GetProperty("id").GetInt64();
 
         Assert.That(id2, Is.EqualTo(id1 + 1));
+    }
+
+    [Test]
+    public async Task StatusResultExposesAdditionalData()
+    {
+        var task = _bidi.StatusAsync();
+        await _transport.WaitForSentMessagesAsync(1);
+        _transport.EnqueueSuccess(1, """{"ready":true,"message":"running","foo":"value"}""");
+
+        var status = await task;
+
+        Assert.That(status.AdditionalData["foo"].GetString(), Is.EqualTo("value"));
+    }
+
+    [Test]
+    public async Task StatusResultExposesAdditionalMessageData()
+    {
+        var task = _bidi.StatusAsync();
+        await _transport.WaitForSentMessagesAsync(1);
+        _transport.Enqueue("""{"foo":"topLevel","id":1,"type":"success","result":{"ready":true,"message":"running"}}""");
+
+        var status = await task;
+
+        Assert.That(status.AdditionalMessageData["foo"].GetString(), Is.EqualTo("topLevel"));
+    }
+
+    [Test]
+    public async Task CommandAdditionalDataIsSerializedIntoParams()
+    {
+        var task = _bidi.StatusAsync(new()
+        {
+            AdditionalData = new JsonObject { ["foo"] = "bar" }
+        });
+
+        await _transport.WaitForSentMessagesAsync(1);
+
+        using var doc = JsonDocument.Parse(_transport.SentMessages[0]);
+        Assert.That(doc.RootElement.GetProperty("params").GetProperty("foo").GetString(), Is.EqualTo("bar"));
+
+        _transport.EnqueueSuccess(1, """{"ready":true,"message":"running"}""");
+        await task;
+    }
+
+    [Test]
+    public async Task CommandAdditionalMessageDataIsSerializedAsTopLevelFields()
+    {
+        var task = _bidi.StatusAsync(new()
+        {
+            AdditionalMessageData = """{"baz": "qux"}"""
+        });
+
+        await _transport.WaitForSentMessagesAsync(1);
+
+        using var doc = JsonDocument.Parse(_transport.SentMessages[0]);
+        Assert.That(doc.RootElement.GetProperty("baz").GetString(), Is.EqualTo("qux"));
+        Assert.That(doc.RootElement.GetProperty("params").EnumerateObject().Any(p => p.Name == "baz"), Is.False,
+            "AdditionalMessageData fields must be top-level, not inside params");
+
+        _transport.EnqueueSuccess(1, """{"ready":true,"message":"running"}""");
+        await task;
+    }
+
+    [Test]
+    public void CommandAdditionalDataMustBeJsonObject()
+    {
+        Assert.That(
+            () => new AdditionalData("""42"""),
+            Throws.InstanceOf<ArgumentException>()
+                  .With.Message.Contains("Additional data must be a JSON object."));
     }
 }

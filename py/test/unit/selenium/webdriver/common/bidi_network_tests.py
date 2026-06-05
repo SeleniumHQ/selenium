@@ -18,7 +18,7 @@
 import pytest
 
 from selenium.webdriver.common.bidi._network_handlers import glob_to_regex, glob_to_url_pattern, globs_to_url_patterns
-from selenium.webdriver.common.bidi.network import Network, Request, Response
+from selenium.webdriver.common.bidi.network import AuthenticationRequest, Network, Request, Response
 
 
 class FakeConnection:
@@ -113,6 +113,37 @@ def make_response_started_event(
             "statusText": "OK",
             "headers": [{"name": "content-type", "value": {"type": "string", "value": "text/html"}}],
             "mimeType": "text/html",
+        },
+        "timestamp": 1,
+    }
+
+
+def make_auth_required_event(
+    url="https://secure.example.com/api/data",
+    request_id="req-1",
+    intercepts=("intercept-1",),
+    blocked=True,
+    challenges=({"scheme": "basic", "realm": "secure-area"},),
+):
+    return {
+        "context": "ctx-1",
+        "isBlocked": blocked,
+        "intercepts": list(intercepts),
+        "redirectCount": 0,
+        "request": {
+            "request": request_id,
+            "url": url,
+            "method": "GET",
+            "headers": [],
+            "cookies": [],
+        },
+        "response": {
+            "url": url,
+            "status": 401,
+            "statusText": "Unauthorized",
+            "headers": [],
+            "mimeType": "text/html",
+            "authChallenges": list(challenges),
         },
         "timestamp": 1,
     }
@@ -335,12 +366,12 @@ def test_translatable_patterns_are_sent_to_browser():
     conn = FakeConnection()
     network = Network(conn)
 
-    network.add_request_handler(["https://*.tracking.com/**"], lambda request: None)
+    network.add_request_handler(["https://api.tracking.com/**"], lambda request: None)
 
+    # Wildcard-bearing components are omitted: UrlPatternPattern properties
+    # match literally and browsers reject wildcard characters in them.
     params = conn.commands_named("network.addIntercept")[0]["params"]
-    assert params["urlPatterns"] == [
-        {"type": "pattern", "protocol": "https", "hostname": "*.tracking.com", "pathname": "/*"}
-    ]
+    assert params["urlPatterns"] == [{"type": "pattern", "protocol": "https", "hostname": "api.tracking.com"}]
 
 
 def test_blocked_event_owned_by_another_intercept_is_left_alone():
@@ -545,9 +576,9 @@ def test_response_translatable_patterns_are_sent_to_browser():
 
     params = conn.commands_named("network.addIntercept")[0]["params"]
     assert params["phases"] == ["responseStarted"]
-    assert params["urlPatterns"] == [
-        {"type": "pattern", "protocol": "https", "hostname": "*.tracking.com", "pathname": "/*"}
-    ]
+    # The wildcard hostname and pathname are omitted from the browser-side
+    # filter; Python-side glob matching narrows the results.
+    assert params["urlPatterns"] == [{"type": "pattern", "protocol": "https"}]
 
 
 def test_blocked_response_owned_by_another_intercept_is_left_alone():
@@ -650,6 +681,314 @@ def test_data_url_responses_are_not_continued():
     assert conn.commands_named("network.continueResponse") == []
 
 
+def test_authentication_request_parses_event_properties():
+    request = AuthenticationRequest(FakeConnection(), make_auth_required_event())
+
+    assert request.url == "https://secure.example.com/api/data"
+    assert request.realm == "secure-area"
+    assert request.scheme == "basic"
+    assert request.challenges == [{"scheme": "basic", "realm": "secure-area"}]
+
+
+def test_auth_observer_continues_with_default():
+    conn = FakeConnection()
+    network = Network(conn)
+    seen = []
+
+    network.add_authentication_handler(lambda auth: seen.append((auth.url, auth.realm)))
+    dispatch_event(conn, make_auth_required_event())
+
+    assert seen == [("https://secure.example.com/api/data", "secure-area")]
+    continues = conn.commands_named("network.continueWithAuth")
+    assert len(continues) == 1
+    assert continues[0]["params"] == {"request": "req-1", "action": "default"}
+
+
+def test_provide_credentials_sends_credentials():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_authentication_handler(lambda auth: auth.provide_credentials("user", "secret"))
+    dispatch_event(conn, make_auth_required_event())
+
+    continues = conn.commands_named("network.continueWithAuth")
+    assert len(continues) == 1
+    assert continues[0]["params"] == {
+        "request": "req-1",
+        "action": "provideCredentials",
+        "credentials": {"type": "password", "username": "user", "password": "secret"},
+    }
+
+
+def test_cancel_sends_cancel_action():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_authentication_handler(lambda auth: auth.cancel())
+    dispatch_event(conn, make_auth_required_event())
+
+    continues = conn.commands_named("network.continueWithAuth")
+    assert len(continues) == 1
+    assert continues[0]["params"] == {"request": "req-1", "action": "cancel"}
+
+
+def test_cancel_takes_precedence_over_credentials():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_authentication_handler(lambda auth: auth.provide_credentials("user", "secret"))
+    network.add_authentication_handler(lambda auth: auth.cancel())
+    dispatch_event(conn, make_auth_required_event(intercepts=("intercept-1", "intercept-2")))
+
+    continues = conn.commands_named("network.continueWithAuth")
+    assert len(continues) == 1
+    assert continues[0]["params"] == {"request": "req-1", "action": "cancel"}
+
+
+def test_first_provided_credentials_win():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_authentication_handler(lambda auth: auth.provide_credentials("first", "pw1"))
+    network.add_authentication_handler(lambda auth: auth.provide_credentials("second", "pw2"))
+    dispatch_event(conn, make_auth_required_event(intercepts=("intercept-1", "intercept-2")))
+
+    continues = conn.commands_named("network.continueWithAuth")
+    assert len(continues) == 1
+    assert continues[0]["params"]["credentials"]["username"] == "first"
+
+
+def test_auth_handler_exception_still_continues_with_default():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    def broken(auth):
+        raise RuntimeError("boom")
+
+    network.add_authentication_handler(broken)
+    dispatch_event(conn, make_auth_required_event())
+
+    continues = conn.commands_named("network.continueWithAuth")
+    assert len(continues) == 1
+    assert continues[0]["params"]["action"] == "default"
+
+
+def test_auth_glob_patterns_filter_callbacks():
+    conn = FakeConnection()
+    network = Network(conn)
+    seen = []
+
+    network.add_authentication_handler(["https://secure.example.com/**"], lambda auth: seen.append("secure"))
+    network.add_authentication_handler(["https://other.example.com/**"], lambda auth: seen.append("other"))
+    dispatch_event(conn, make_auth_required_event(intercepts=("intercept-1", "intercept-2")))
+
+    assert seen == ["secure"]
+    assert len(conn.commands_named("network.continueWithAuth")) == 1
+
+
+def test_auth_intercept_uses_auth_required_phase():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_authentication_handler(["https://secure.example.com/**"], lambda auth: None)
+
+    params = conn.commands_named("network.addIntercept")[0]["params"]
+    assert params["phases"] == ["authRequired"]
+    assert params["urlPatterns"] == [{"type": "pattern", "protocol": "https", "hostname": "secure.example.com"}]
+
+
+def test_blocked_auth_event_owned_by_another_intercept_is_left_alone():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_authentication_handler(lambda auth: None)
+    dispatch_event(conn, make_auth_required_event(intercepts=("foreign-intercept",)))
+
+    assert conn.commands_named("network.continueWithAuth") == []
+
+
+def test_add_authentication_handler_requires_callable():
+    network = Network(FakeConnection())
+
+    with pytest.raises(TypeError, match="callable"):
+        network.add_authentication_handler(["**/api/**"], "not-a-callback")
+
+
+def test_remove_authentication_handler_removes_intercept_and_subscription():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    handler_id = network.add_authentication_handler(lambda auth: None)
+    network.remove_authentication_handler(handler_id)
+
+    assert conn.commands_named("network.removeIntercept") == [
+        {"method": "network.removeIntercept", "params": {"intercept": "intercept-1"}}
+    ]
+    assert conn.commands_named("session.unsubscribe") == [
+        {"method": "session.unsubscribe", "params": {"subscriptions": ["subscription-1"]}}
+    ]
+    with pytest.raises(ValueError, match=r"Authentication handler .* not found"):
+        network.remove_authentication_handler(handler_id)
+
+
+def test_clear_authentication_handlers_clears_only_authentication_handlers():
+    conn = FakeConnection()
+    network = Network(conn)
+    seen = []
+
+    network.add_request_handler(lambda request: seen.append(("request", request.url)))
+    network.add_authentication_handler(lambda auth: seen.append(("auth", auth.url)))
+    network.clear_authentication_handlers()
+
+    # Only the authentication handler's intercept (intercept-2) is removed.
+    removed = {c["params"]["intercept"] for c in conn.commands_named("network.removeIntercept")}
+    assert removed == {"intercept-2"}
+
+    dispatch_event_to(conn, make_before_request_event(), "network.beforeRequestSent")
+    assert seen == [("request", "https://example.com/api/data")]
+
+
+def test_clear_request_handlers_preserves_authentication_handlers():
+    conn = FakeConnection()
+    network = Network(conn)
+    seen = []
+
+    network.add_request_handler(lambda request: seen.append(("request", request.url)))
+    network.add_authentication_handler(lambda auth: seen.append(("auth", auth.url)))
+    network.clear_request_handlers()
+
+    # The request handler's intercept is removed; the auth handler's stays.
+    removed = {c["params"]["intercept"] for c in conn.commands_named("network.removeIntercept")}
+    assert removed == {"intercept-1"}
+
+    # The auth registry resubscribed after the event-handler sweep and still
+    # observes and reconciles challenges.
+    dispatch_event_to(conn, make_auth_required_event(intercepts=("intercept-2",)), "network.authRequired")
+    assert seen == [("auth", "https://secure.example.com/api/data")]
+    assert len(conn.commands_named("network.continueWithAuth")) == 1
+
+
+def test_add_extra_header_injects_into_continued_requests():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_extra_header("x-test", "value")
+    dispatch_event(conn, make_before_request_event())
+
+    intercept_params = conn.commands_named("network.addIntercept")[0]["params"]
+    assert intercept_params == {"phases": ["beforeRequestSent"]}
+    continues = conn.commands_named("network.continueRequest")
+    assert len(continues) == 1
+    assert continues[0]["params"]["headers"] == [
+        {"name": "accept", "value": {"type": "string", "value": "*/*"}},
+        {"name": "x-test", "value": {"type": "string", "value": "value"}},
+    ]
+
+
+def test_extra_header_replaces_existing_header_case_insensitively():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_extra_header("Accept", "application/json")
+    dispatch_event(conn, make_before_request_event())
+
+    continues = conn.commands_named("network.continueRequest")
+    assert len(continues) == 1
+    assert continues[0]["params"]["headers"] == [
+        {"name": "accept", "value": {"type": "string", "value": "application/json"}}
+    ]
+
+
+def test_extra_headers_compose_with_request_handlers_in_one_continue():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_extra_header("x-test", "value")
+    network.add_request_handler(lambda request: request.set_method("POST"))
+    dispatch_event(conn, make_before_request_event(intercepts=("intercept-1", "intercept-2")))
+
+    continues = conn.commands_named("network.continueRequest")
+    assert len(continues) == 1
+    assert continues[0]["params"]["method"] == "POST"
+    assert {"name": "x-test", "value": {"type": "string", "value": "value"}} in continues[0]["params"]["headers"]
+
+
+def test_extra_headers_not_applied_to_failed_requests():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_extra_header("x-test", "value")
+    network.add_request_handler(lambda request: request.fail())
+    dispatch_event(conn, make_before_request_event(intercepts=("intercept-1", "intercept-2")))
+
+    assert conn.commands_named("network.continueRequest") == []
+    assert len(conn.commands_named("network.failRequest")) == 1
+
+
+def test_extra_headers_not_applied_to_stubbed_responses():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_extra_header("x-test", "value")
+    network.add_request_handler(lambda request: request.provide_response(204, {"x-stub": "true"}))
+    dispatch_event(conn, make_before_request_event(intercepts=("intercept-1", "intercept-2")))
+
+    assert conn.commands_named("network.continueRequest") == []
+    provides = conn.commands_named("network.provideResponse")
+    assert len(provides) == 1
+    assert provides[0]["params"]["headers"] == [{"name": "x-stub", "value": {"type": "string", "value": "true"}}]
+
+
+def test_remove_extra_header_stops_injection_and_removes_intercept():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_extra_header("x-test", "value")
+    network.remove_extra_header("X-Test")
+
+    assert conn.commands_named("network.removeIntercept") == [
+        {"method": "network.removeIntercept", "params": {"intercept": "intercept-1"}}
+    ]
+    assert conn.commands_named("session.unsubscribe") == [
+        {"method": "session.unsubscribe", "params": {"subscriptions": ["subscription-1"]}}
+    ]
+    with pytest.raises(ValueError, match=r"Extra header .* not found"):
+        network.remove_extra_header("x-test")
+
+
+def test_clear_extra_headers_removes_intercept():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_extra_header("x-one", "1")
+    network.add_extra_header("x-two", "2")
+    network.clear_extra_headers()
+
+    removed = {c["params"]["intercept"] for c in conn.commands_named("network.removeIntercept")}
+    assert removed == {"intercept-1"}
+    assert network.intercepts == []
+
+
+def test_clear_request_handlers_preserves_extra_headers():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_extra_header("x-test", "value")
+    network.add_request_handler(lambda request: None)
+    network.clear_request_handlers()
+
+    # The user handler's intercept is removed; the extra-headers one stays.
+    removed = {c["params"]["intercept"] for c in conn.commands_named("network.removeIntercept")}
+    assert removed == {"intercept-2"}
+
+    # The registry resubscribed after the event-handler sweep and still
+    # merges the extra headers into continued requests.
+    dispatch_event_to(conn, make_before_request_event(), "network.beforeRequestSent")
+    continues = conn.commands_named("network.continueRequest")
+    assert len(continues) == 1
+    assert {"name": "x-test", "value": {"type": "string", "value": "value"}} in continues[0]["params"]["headers"]
+
+
 def test_glob_to_regex_matching():
     assert glob_to_regex("**/analytics/**").match("https://example.com/analytics/track")
     assert not glob_to_regex("**/analytics/**").match("https://example.com/api/data")
@@ -662,19 +1001,27 @@ def test_glob_to_regex_matching():
 def test_glob_to_url_pattern_translation():
     assert glob_to_url_pattern("**") == {}
     assert glob_to_url_pattern("**/analytics/**") is None
+    # Wildcard-bearing components are omitted: UrlPatternPattern properties
+    # match literally and browsers reject wildcard characters in them.
     assert glob_to_url_pattern("https://api.example.com/*") == {
         "type": "pattern",
         "protocol": "https",
         "hostname": "api.example.com",
-        "pathname": "/*",
     }
     assert glob_to_url_pattern("https://example.com:8080/**") == {
         "type": "pattern",
         "protocol": "https",
         "hostname": "example.com",
         "port": "8080",
-        "pathname": "/*",
     }
+    assert glob_to_url_pattern("https://example.com/login") == {
+        "type": "pattern",
+        "protocol": "https",
+        "hostname": "example.com",
+        "pathname": "/login",
+    }
+    assert glob_to_url_pattern("https://*.example.com/**") == {"type": "pattern", "protocol": "https"}
+    assert glob_to_url_pattern("**://**/**") == {}
 
 
 def test_globs_to_url_patterns_falls_back_when_any_pattern_is_untranslatable():
