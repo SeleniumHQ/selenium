@@ -186,4 +186,42 @@ class SessionUnitTests
             Throws.InstanceOf<ArgumentException>()
                   .With.Message.Contains("Additional data must be a JSON object."));
     }
+
+    [Test]
+    public async Task EventArgsExposesAdditionalData()
+    {
+        var streamTask = _bidi.Script.RealmDestroyed.StreamAsync();
+        _transport.EnqueueSuccess(1, """{"subscription":"sub-1"}""");
+        var stream = await streamTask;
+
+        _transport.EnqueueEvent("script.realmDestroyed", """{"realm":"r-1","foo":"extra"}""");
+
+        var received = await stream.FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.That(received.AdditionalData["foo"].GetString(), Is.EqualTo("extra"));
+
+        var disposeTask = stream.DisposeAsync();
+        await _transport.WaitForSentMessagesAsync(2);
+        _transport.EnqueueSuccess(2, "{}");
+        await disposeTask;
+    }
+
+    [Test]
+    public async Task EventArgsExposesAdditionalMessageData()
+    {
+        var streamTask = _bidi.Script.RealmDestroyed.StreamAsync();
+        _transport.EnqueueSuccess(1, """{"subscription":"sub-1"}""");
+        var stream = await streamTask;
+
+        _transport.Enqueue("""{"type":"event","method":"script.realmDestroyed","params":{"realm":"r-1"},"bar":"topLevel"}""");
+
+        var received = await stream.FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.That(received.AdditionalMessageData["bar"].GetString(), Is.EqualTo("topLevel"));
+
+        var disposeTask = stream.DisposeAsync();
+        await _transport.WaitForSentMessagesAsync(2);
+        _transport.EnqueueSuccess(2, "{}");
+        await disposeTask;
+    }
 }
