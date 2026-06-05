@@ -42,7 +42,7 @@ public readonly struct AdditionalData
 
         if (doc.RootElement.ValueKind != JsonValueKind.Object)
         {
-            throw new ArgumentException("JSON must be an object.", nameof(json));
+            throw new ArgumentException("Additional data must be a JSON object.", nameof(json));
         }
 
         _data = doc.RootElement.Clone();

@@ -177,4 +177,13 @@ class SessionUnitTests
         _transport.EnqueueSuccess(1, """{"ready":true,"message":"running"}""");
         await task;
     }
+
+    [Test]
+    public void CommandAdditionalDataMustBeJsonObject()
+    {
+        Assert.That(
+            () => new AdditionalData("""42"""),
+            Throws.InstanceOf<ArgumentException>()
+                  .With.Message.Contains("Additional data must be a JSON object."));
+    }
 }
