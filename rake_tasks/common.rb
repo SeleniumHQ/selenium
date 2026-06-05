@@ -118,7 +118,7 @@ module SeleniumRake
     end
     return if failures.empty?
 
-    raise "#{failures.size} of #{steps.size} steps failed:\n\n#{failures.join("\n\n")}"
+    raise failures.join("\n\n")
   end
 
   def self.verify_package_published(url)
