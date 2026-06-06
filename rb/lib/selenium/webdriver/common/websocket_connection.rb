@@ -35,6 +35,11 @@ module Selenium
 
       MAX_LOG_MESSAGE_SIZE = 9999
 
+      # websocket-ruby defaults to a 20MB limit and silently drops larger
+      # frames, which can stall the listener. CDP payloads (e.g. large data:
+      # URLs) can exceed that, so raise the ceiling for our connections.
+      MAX_FRAME_SIZE = 100 * 1024 * 1024 # 100MB
+
       def initialize(url:)
         @callback_threads = ThreadGroup.new
 
@@ -46,6 +51,7 @@ module Selenium
         @session_id = nil
         @url = url
 
+        apply_frame_size_limit
         process_handshake
         @socket_thread = attach_socket_listener
       end
@@ -132,20 +138,44 @@ module Selenium
 
             incoming_frame << socket.readpartial(1024)
 
-            while (frame = incoming_frame.next)
-              break if @closing
+            process_incoming_frames
 
-              message = process_frame(frame)
-              next unless message['method']
-
-              @messages_mtx.synchronize { callbacks[message['method']].dup }.each do |callback|
-                @callback_threads.add(callback_thread(message['params'], &callback))
-              end
-            end
+            # Stop instead of spinning forever on a frame that can never be parsed.
+            break if frame_dropped?
           end
         rescue *CONNECTION_ERRORS, WebSocket::Error => e
           WebDriver.logger.debug "WebSocket listener closed: #{e.class}: #{e.message}", id: :ws
         end
+      end
+
+      def process_incoming_frames
+        while (frame = incoming_frame.next)
+          break if @closing
+
+          message = process_frame(frame)
+          next unless message['method']
+
+          @messages_mtx.synchronize { callbacks[message['method']].dup }.each do |callback|
+            @callback_threads.add(callback_thread(message['params'], &callback))
+          end
+        end
+      end
+
+      # True when the buffered frame could not be decoded (e.g. exceeds MAX_FRAME_SIZE).
+      # websocket-ruby swallows the error and keeps returning nil, so surface it here.
+      def frame_dropped?
+        return false unless incoming_frame.error?
+
+        WebDriver.logger.error(
+          "WebSocket frame dropped (#{incoming_frame.error}): payload exceeds max_frame_size " \
+          "(#{WebSocket.max_frame_size} bytes). Raise WebSocket.max_frame_size= for larger frames.",
+          id: :ws
+        )
+        true
+      end
+
+      def apply_frame_size_limit
+        WebSocket.max_frame_size = MAX_FRAME_SIZE if WebSocket.max_frame_size < MAX_FRAME_SIZE
       end
 
       def incoming_frame

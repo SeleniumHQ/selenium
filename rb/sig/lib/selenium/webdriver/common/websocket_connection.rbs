@@ -35,6 +35,8 @@ module Selenium
 
       MAX_LOG_MESSAGE_SIZE: Integer
 
+      MAX_FRAME_SIZE: Integer
+
       def initialize: (url: String) -> void
 
       def add_callback: (untyped event) { () -> void } -> Integer
@@ -58,6 +60,12 @@ module Selenium
       def process_handshake: () -> untyped
 
       def attach_socket_listener: () -> untyped
+
+      def process_incoming_frames: () -> untyped
+
+      def frame_dropped?: () -> bool
+
+      def apply_frame_size_limit: () -> void
 
       def incoming_frame: () -> untyped
 
