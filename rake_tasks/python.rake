@@ -170,11 +170,11 @@ task :format do
   Bazel.execute('run', [], '//py:ruff-format')
 end
 
-desc 'Run Python linters (ruff check, mypy, docs)'
+desc 'Run Python linters (ruff check --no-fix, mypy, docs)'
 task :lint do
-  puts '  Running ruff check...'
-  Bazel.execute('run', [], '//py:ruff-check')
-  puts '  Running mypy...'
-  Bazel.execute('run', [], '//py:mypy')
-  Rake::Task['py:docs_generate'].invoke
+  SeleniumRake.aggregate_errors(
+    ruff_check: -> { Bazel.execute('run', ['--', '--no-fix'], '//py:ruff-check') },
+    mypy: -> { Bazel.execute('run', [], '//py:mypy') },
+    python_docs: -> { Rake::Task['py:docs_generate'].invoke }
+  )
 end

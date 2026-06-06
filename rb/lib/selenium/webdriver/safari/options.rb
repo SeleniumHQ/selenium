@@ -26,7 +26,8 @@ module Selenium
         # @see https://developer.apple.com/documentation/webkit/about_webdriver_for_safari
         CAPABILITIES = {automatic_inspection: 'safari:automaticInspection',
                         automatic_profiling: 'safari:automaticProfiling'}.freeze
-        BROWSER = Selenium::WebDriver::Safari.technology_preview? ? 'Safari Technology Preview' : 'safari'
+        BROWSER = 'safari'
+        TECHNOLOGY_PREVIEW = 'Safari Technology Preview'
 
         def add_option(name, value = nil)
           key = name.is_a?(Hash) ? name.keys.first : name
@@ -35,9 +36,12 @@ module Selenium
           super
         end
 
-        def as_json(*)
-          @options[:browser_name] = Safari.technology_preview? ? 'Safari Technology Preview' : 'safari'
-          super
+        def browser_name=(value)
+          @options[:browser_name] = value
+        end
+
+        def browser_name
+          @options[:browser_name] = Safari.technology_preview? ? TECHNOLOGY_PREVIEW : BROWSER
         end
       end # Options
     end # Safari

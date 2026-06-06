@@ -90,6 +90,8 @@ public class ContentEditableTests : DriverTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Browser.Chrome, "Typing into rich text editors broken since 149")]
+    [IgnoreBrowser(Browser.Edge, "Typing into rich text editors broken since 149")]
     public void ShouldBeAbleToTypeIntoTinyMCE()
     {
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("tinymce.html");
@@ -104,6 +106,8 @@ public class ContentEditableTests : DriverTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Browser.Chrome, "Typing into rich text editors broken since 149")]
+    [IgnoreBrowser(Browser.Edge, "Typing into rich text editors broken since 149")]
     [IgnoreBrowser(Browser.Firefox, "Driver prepends text in contentEditable areas")]
     [IgnoreBrowser(Browser.IE, "Prepends text")]
     [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]

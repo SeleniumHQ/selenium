@@ -56,11 +56,10 @@ internal sealed class LogModule : Module, ILogModule
 [JsonSerializable(typeof(Script.WindowProxyRemoteValue))]
 #endregion
 
-[JsonSerializable(typeof(LogEntry))]
-// https://github.com/dotnet/runtime/issues/72604
-[JsonSerializable(typeof(GenericLogEntry))]
-[JsonSerializable(typeof(ConsoleLogEntry))]
-[JsonSerializable(typeof(JavascriptLogEntry))]
+[JsonSerializable(typeof(EntryAddedEventArgs))]
+[JsonSerializable(typeof(GenericEntryAddedEventArgs))]
+[JsonSerializable(typeof(ConsoleEntryAddedEventArgs))]
+[JsonSerializable(typeof(JavascriptEntryAddedEventArgs))]
 
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,

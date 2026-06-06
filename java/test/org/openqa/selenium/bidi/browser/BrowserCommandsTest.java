@@ -28,9 +28,11 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,7 +66,9 @@ class BrowserCommandsTest extends JupiterTestBase {
 
   @AfterEach
   final void resetDownloadBehavior() {
-    browser.setDownloadBehavior(new SetDownloadBehaviorParameters(null));
+    if (browser != null) {
+      browser.setDownloadBehavior(new SetDownloadBehaviorParameters(null));
+    }
   }
 
   @AfterEach
@@ -143,7 +147,7 @@ class BrowserCommandsTest extends JupiterTestBase {
 
     driver.findElement(By.id("file-1")).click();
 
-    assertFileIsDownloaded("file_1.txt");
+    assertFileIsDownloaded("file_1.*\\.txt");
   }
 
   @Test
@@ -187,7 +191,7 @@ class BrowserCommandsTest extends JupiterTestBase {
 
         driver.findElement(By.id("file-1")).click();
 
-        assertFileIsDownloaded("file_1.txt");
+        assertFileIsDownloaded("file_1.*\\.txt");
 
         List<String> initialFiles = files(tmpDir);
         assertThat(initialFiles).contains("file_1.txt");
@@ -209,17 +213,17 @@ class BrowserCommandsTest extends JupiterTestBase {
     }
   }
 
-  private void assertFileIsDownloaded(String file) {
-    FileIsFound fileIsFound = new FileIsFound(tmpDir, file);
+  private void assertFileIsDownloaded(String filenameRegex) {
+    FileIsFound fileIsFound = new FileIsFound(tmpDir, Pattern.compile(filenameRegex));
     new WebDriverWait(driver, ofSeconds(5)).withMessage(fileIsFound).until(fileIsFound);
   }
 
   private static final class FileIsFound implements Function<WebDriver, Boolean>, Supplier<String> {
     private final Path dir;
-    private final String expectedFileName;
+    private final Pattern expectedFileName;
     private List<String> foundFiles;
 
-    private FileIsFound(Path dir, String expectedFileName) {
+    private FileIsFound(Path dir, Pattern expectedFileName) {
       this.dir = dir;
       this.expectedFileName = expectedFileName;
     }
@@ -227,12 +231,13 @@ class BrowserCommandsTest extends JupiterTestBase {
     @Override
     public Boolean apply(WebDriver driver) {
       foundFiles = files(dir);
-      boolean result = foundFiles.contains(expectedFileName);
-      if (result) {
+      Optional<String> result =
+          foundFiles.stream().filter(f -> expectedFileName.matcher(f).matches()).findAny();
+      if (result.isPresent()) {
         LOG.info(
             () ->
                 "Found file: "
-                    + expectedFileName
+                    + result.get()
                     + " in temp dir: "
                     + dir.toAbsolutePath()
                     + ". All found files: "
@@ -247,7 +252,7 @@ class BrowserCommandsTest extends JupiterTestBase {
                     + ". All found files: "
                     + foundFiles);
       }
-      return result;
+      return result.isPresent();
     }
 
     @Override

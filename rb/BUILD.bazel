@@ -4,7 +4,6 @@ load(
     "rb_binary",
     "rb_gem_build",
     "rb_gem_push",
-    "rb_test",
 )
 load("//common:defs.bzl", "copy_file")
 
@@ -211,18 +210,6 @@ _LINT_DEPS = [
     "//rb/spec",
     "@bundle",
 ]
-
-rb_test(
-    name = "lint",
-    args = ["--autocorrect"] + _LINT_ARGS,
-    data = _LINT_DATA,
-    main = "@bundle//bin:rubocop",
-    tags = [
-        "no-sandbox",
-        "skip-rbe",
-    ],
-    deps = _LINT_DEPS,
-)
 
 rb_binary(
     name = "rubocop",

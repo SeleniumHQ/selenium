@@ -108,7 +108,7 @@ module Selenium
               'bar')
         .and_return(mock_process)
 
-      server = described_class.new('selenium_server_deploy.jar', background: true)
+      server = described_class.new('selenium_server_deploy.jar', port: port, background: true)
       allow(server).to receive_messages(socket: mock_poller, status_ok?: true)
 
       server << %w[foo bar]
@@ -200,7 +200,7 @@ module Selenium
       poller = instance_double(WebDriver::SocketPoller)
       allow(poller).to receive(:connected?).and_return(false)
 
-      server = described_class.new('selenium_server_deploy.jar', background: true)
+      server = described_class.new('selenium_server_deploy.jar', port: port, background: true)
       allow(server).to receive(:socket).and_return(poller)
 
       expect { server.start }.to raise_error(Selenium::Server::Error)

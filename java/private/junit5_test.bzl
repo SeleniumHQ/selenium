@@ -20,7 +20,7 @@ def junit5_test(
         runtime_deps = runtime_deps + [
             "@contrib_rules_jvm//java/src/com/github/bazel_contrib/contrib_rules_jvm/junit5",
         ],
-        jvm_flags = jvm_flags + ["-Djava.security.manager=allow"],
+        jvm_flags = jvm_flags,
         **kwargs
     )
 

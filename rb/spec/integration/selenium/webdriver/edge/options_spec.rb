@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Edge
-      describe Options, exclusive: {browser: :edge} do
+      describe Options, skip_unless: {browser: :edge} do
         it 'passes emulated device correctly' do
           reset_driver!(emulation: {device_name: 'Nexus 5'}) do |driver|
             ua = driver.execute_script 'return window.navigator.userAgent'
@@ -44,7 +44,7 @@ module Selenium
           end
         end
 
-        it 'enables bidi', exclusive: {bidi: true, reason: 'bazel does not have dependencies otherwise'} do
+        it 'enables bidi', skip_unless: {bidi: true, reason: 'bazel does not have dependencies otherwise'} do
           quit_driver
 
           options = Selenium::WebDriver::Options.chrome
@@ -63,7 +63,7 @@ module Selenium
         end
 
         it 'enables BiDi on initialization',
-           exclusive: {bidi: true, reason: 'bazel does not have dependencies otherwise'} do
+           skip_unless: {bidi: true, reason: 'bazel does not have dependencies otherwise'} do
           quit_driver
 
           options = Selenium::WebDriver::Options.edge(bidi: true)

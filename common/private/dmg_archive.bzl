@@ -1,3 +1,15 @@
+def _execute_or_fail(repository_ctx, args, what):
+    result = repository_ctx.execute(args)
+    if result.return_code != 0:
+        fail("{} failed (rc={})\nargs: {}\nstdout: {}\nstderr: {}".format(
+            what,
+            result.return_code,
+            [str(a) for a in args],
+            result.stdout,
+            result.stderr,
+        ))
+    return result
+
 def _dmg_archive_impl(repository_ctx):
     repository_ctx.file("BUILD.bazel", repository_ctx.attr.build_file_content)
 
@@ -21,17 +33,24 @@ def _dmg_archive_impl(repository_ctx):
     )
 
     zip_name = dmg_name.replace(".dmg", ".zip")
-    repository_ctx.execute([
-        repository_ctx.path(Label("@selenium//common/private:convert_dmg.sh")),
-        dmg_name,
-        zip_name,
-    ])
+    _execute_or_fail(
+        repository_ctx,
+        [
+            repository_ctx.path(Label("@selenium//common/private:convert_dmg.sh")),
+            dmg_name,
+            zip_name,
+        ],
+        "convert_dmg.sh",
+    )
 
     repository_ctx.extract(
         archive = zip_name,
         stripPrefix = repository_ctx.attr.strip_prefix,
         output = repository_ctx.attr.output,
     )
+
+    repository_ctx.delete(dmg_name)
+    repository_ctx.delete(zip_name)
 
 dmg_archive = repository_rule(
     _dmg_archive_impl,

@@ -21,16 +21,11 @@ on:
         required: false
         type: string
         default: ubuntu
-      browser:
-        description: One of chrome, firefox, or edge
-        required: false
-        type: string
-        default: ''
-      caching:
-        description: Toggle caching of Bazel
+      needs-display:
+        description: Whether this job drives a browser and needs display/driver setup
         required: false
         type: boolean
-        default: true
+        default: false
       node-version:
         description: Custom Node version to install
         required: false
@@ -76,6 +71,11 @@ on:
         required: false
         type: string
         default: ''
+      cache-save:
+        description: Save the Bazel cache after the run (avoids multiple jobs clobbering it)
+        required: false
+        type: boolean
+        default: false
       gem-trusted-publishing:
         description: Exchange GitHub OIDC token for a RubyGems API token (requires trusted publisher configured on rubygems.org)
         required: false
@@ -95,6 +95,9 @@ jobs:
       GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     steps:
+      - name: Configure Selenium Manager cache path
+        shell: bash
+        run: echo "SE_CACHE_PATH=$RUNNER_TEMP/selenium-cache" >> "$GITHUB_ENV"
       - name: Calculate fetch depth
         id: depth
         shell: bash
@@ -131,13 +134,6 @@ jobs:
         run: git pull origin "$GIT_REF"
         env:
           GIT_REF: ${{ github.ref }}
-      - name: Free disk space
-        if: inputs.os == 'ubuntu'
-        run: ./scripts/github-actions/free-disk-space.sh
-      - name: Free disk space (Windows)
-        if: inputs.os == 'windows'
-        shell: pwsh
-        run: ./scripts/github-actions/free-disk-space.ps1
       - name: Restore cache
         if: inputs.cache-name != ''
         uses: actions/cache/restore@v5
@@ -157,75 +153,42 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
       - name: Setup Bazel with caching
-        id: setup-bazel-cached
-        if: inputs.caching
         continue-on-error: true
         uses: bazel-contrib/setup-bazel@0.19.0
         with:
-          cache-save: ${{ github.ref_name == 'trunk' }}
+          cache-save: ${{ inputs.cache-save }}
           bazelisk-cache: true
           bazelrc: common --color=yes
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
           output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
-          cache-version: 2
           disk-cache: false
-          external-cache: |
-            manifest:
-              crates: rust/Cargo.Bazel.lock
-              "rules_ruby++ruby+ruby": false
-              "+pin_browsers_extension+linux_beta_chrome": false
-              "+pin_browsers_extension+linux_beta_chromedriver": true
-              "+pin_browsers_extension+linux_beta_firefox": false
-              "+pin_browsers_extension+linux_chrome": false
-              "+pin_browsers_extension+linux_chromedriver": true
-              "+pin_browsers_extension+linux_edge": false
-              "+pin_browsers_extension+linux_edgedriver": true
-              "+pin_browsers_extension+linux_firefox": false
-              "+pin_browsers_extension+linux_geckodriver": true
-              "+pin_browsers_extension+mac_beta_chrome": false
-              "+pin_browsers_extension+mac_beta_chromedriver": false
-              "+pin_browsers_extension+mac_beta_firefox": false
-              "+pin_browsers_extension+mac_chrome": false
-              "+pin_browsers_extension+mac_chromedriver": false
-              "+pin_browsers_extension+mac_edge": false
-              "+pin_browsers_extension+mac_edgedriver": false
-              "+pin_browsers_extension+mac_firefox": false
-              "+pin_browsers_extension+mac_geckodriver": false
+          external-cache: false
           repository-cache: true
-      - name: Setup Bazel without caching
-        if: inputs.caching == false || steps.setup-bazel-cached.outcome == 'failure'
-        uses: bazel-contrib/setup-bazel@0.19.0
-        with:
-          cache-save: false
-          bazelisk-cache: true
-          external-cache: |
-            manifest:
-              crates: rust/Cargo.Bazel.lock
-          repository-cache: true
-          bazelrc: common --color=yes
       - name: Disk status after cache restore
         if: inputs.os != 'macos'
         shell: bash
-        run: |
-          if [[ "${{ steps.setup-bazel-cached.outcome }}" == "failure" ]]; then
-            echo "::warning::Bazel cache setup failed — fell back to setup without cache"
-          fi
-          . ./scripts/github-actions/disk-status.sh
+        run: . ./scripts/github-actions/disk-status.sh
       - name: Setup Fluxbox and Xvfb
-        if: inputs.os == 'ubuntu' && inputs.browser != ''
+        if: inputs.needs-display && inputs.os == 'ubuntu'
         run: |
-          sudo apt-get update && sudo apt-get -y install fluxbox
+          sudo apt-get update && sudo apt-get -y install fluxbox x11-utils
           Xvfb :99 &
+          # X server must start before fluxbox
+          for _ in $(seq 1 30); do
+            xdpyinfo -display :99 >/dev/null 2>&1 && break
+            sleep 0.5
+          done
+          xdpyinfo -display :99 >/dev/null 2>&1 || { echo "::error::X server :99 failed to start"; exit 1; }
           fluxbox -display :99 &
           echo "DISPLAY=:99" >> "$GITHUB_ENV"
       - name: Set resolution
-        if: inputs.os == 'windows' && inputs.browser != ''
+        if: inputs.needs-display && inputs.os == 'windows'
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
       - name: Disable 8dot3 short names
         if: inputs.os == 'windows'
         run: fsutil 8dot3name set 0
       - name: Setup Safari
-        if: inputs.browser == 'safari'
+        if: inputs.needs-display && inputs.os == 'macos'
         run: sudo safaridriver --enable
       - name: Import GPG key
         if: inputs.gpg-sign
@@ -236,17 +199,24 @@ jobs:
       - name: Configure RubyGems credentials via OIDC
         if: inputs.gem-trusted-publishing
         uses: rubygems/configure-rubygems-credentials@main
-      - name: Disk status before build
-        if: inputs.os != 'macos'
+      - name: Delete browsers and drivers
+        if: inputs.os == 'ubuntu' || inputs.os == 'macos'
+        run: ./scripts/github-actions/delete-browsers-drivers.sh
+      - name: Delete drivers (Windows)
+        if: inputs.os == 'windows'
+        shell: pwsh
+        run: ./scripts/github-actions/delete-browsers-drivers.ps1
+      - name: Free disk space
+        if: inputs.os == 'ubuntu'
         shell: bash
         run: |
           . ./scripts/github-actions/disk-status.sh
-          if [ "$AVAIL_GB" -lt 10 ]; then
-            echo "::error::Insufficient disk space: ${AVAIL_GB}GB available (need >=10GB)"
-            exit 1
+          if [ "$AVAIL_GB" -lt 20 ]; then
+            ./scripts/github-actions/free-disk-space.sh
           fi
       - name: Run Bazel
         id: run-bazel
+        continue-on-error: true
         shell: bash
         env:
           MSYS_NO_PATHCONV: 1
@@ -257,18 +227,19 @@ jobs:
             ${{ inputs.run }}
           } 2>&1 | tee build/bazel-console.log
       - name: Rerun failures with debug
-        if: failure() && steps.run-bazel.outcome == 'failure'
+        id: rerun-failures
+        if: steps.run-bazel.outcome == 'failure'
         shell: bash
         run: ./scripts/github-actions/rerun-failures.sh '${{ inputs.run }}' '${{ inputs.rerun-with-debug }}'
       - name: Collect failed test logs
-        if: failure() && steps.run-bazel.outcome == 'failure'
+        if: always() && steps.run-bazel.outcome == 'failure'
         shell: bash
         run: ./scripts/github-actions/collect-test-logs.sh
       - name: Upload failed test logs
-        if: failure() && steps.run-bazel.outcome == 'failure'
+        if: always() && steps.run-bazel.outcome == 'failure'
         uses: actions/upload-artifact@v7
         with:
-          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ inputs.browser }}
+          name: test-logs-${{ inputs.os }}-${{ inputs.name }}
           retention-days: 7
           path: build/failures/**
       - name: Start SSH session

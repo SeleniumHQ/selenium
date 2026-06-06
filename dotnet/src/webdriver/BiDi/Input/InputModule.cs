@@ -65,7 +65,7 @@ internal sealed class InputModule : Module, IInputModule
 [JsonSerializable(typeof(SetFilesParameters))]
 [JsonSerializable(typeof(SetFilesResult))]
 
-[JsonSerializable(typeof(FileDialogInfo))]
+[JsonSerializable(typeof(FileDialogOpenedEventArgs))]
 
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,

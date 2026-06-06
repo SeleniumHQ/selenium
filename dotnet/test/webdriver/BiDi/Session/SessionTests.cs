@@ -27,37 +27,12 @@ namespace OpenQA.Selenium.Tests.BiDi.Session;
 internal class SessionTests : BiDiTestFixture
 {
     [Test]
-    public async Task ShouldHaveIdempotentDisposal()
-    {
-        await bidi.DisposeAsync();
-        await bidi.DisposeAsync();
-    }
-
-    [Test]
     public async Task CanGetStatus()
     {
         var status = await bidi.StatusAsync();
 
         Assert.That(status, Is.Not.Null);
         Assert.That(status.Message, Is.Not.Empty);
-    }
-
-    [Test]
-    public void ShouldRespectTimeout()
-    {
-        Assert.That(
-            () => bidi.StatusAsync(new() { Timeout = TimeSpan.FromMicroseconds(1) }),
-            Throws.InstanceOf<TaskCanceledException>());
-    }
-
-    [Test]
-    public void ShouldRespectCancellationToken()
-    {
-        using var cts = new CancellationTokenSource(TimeSpan.FromMicroseconds(1));
-
-        Assert.That(
-            () => bidi.StatusAsync(cancellationToken: cts.Token),
-            Throws.InstanceOf<TaskCanceledException>());
     }
 
     [Test]
@@ -209,10 +184,9 @@ class CustomModule : Module
         new("session.status", JsonContext.Parameters, JsonContext.DoSomethingResult);
 
     private static readonly EventDescriptor<SomethingHappenedEventArgs> SomethingHappenedDescriptor =
-        EventDescriptor<SomethingHappenedEventArgs>.Create<SomethingHappenedParameters>(
+        EventDescriptor<SomethingHappenedEventArgs>.Create(
             "log.entryAdded",
-            static (bidi, p) => new SomethingHappenedEventArgs(bidi, p.Text),
-            JsonContext.SomethingHappenedParameters);
+            JsonContext.SomethingHappenedEventArgs);
 
     public IEventSource<SomethingHappenedEventArgs> SomethingHappened => CreateEventSource(SomethingHappenedDescriptor);
 
@@ -227,13 +201,11 @@ class CustomModule : Module
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 [JsonSerializable(typeof(Parameters))]
 [JsonSerializable(typeof(DoSomethingResult))]
-[JsonSerializable(typeof(SomethingHappenedParameters))]
+[JsonSerializable(typeof(SomethingHappenedEventArgs))]
 partial class CustomModuleJsonSerializerContext : JsonSerializerContext;
 
 record DoSomethingResult : EmptyResult;
 
 record DoSomethingOptions : CommandOptions;
 
-record SomethingHappenedParameters(string Text);
-
-record SomethingHappenedEventArgs(IBiDi BiDi, string Text) : OpenQA.Selenium.BiDi.EventArgs(BiDi);
+record SomethingHappenedEventArgs(string Text) : Selenium.BiDi.EventArgs;

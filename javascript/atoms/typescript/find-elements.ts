@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-(function (): (target: Record<string, unknown>, root?: Document | Element) => Element[] {
+(function findElements(target: Record<string, unknown>, root?: Document | Element): Element[] {
   type LocatorTarget = Record<string, unknown>
   type Root = Document | Element
   type Rect = { left: number; top: number; width: number; height: number }
@@ -85,7 +85,7 @@
   }
 
   function nameMany(target: string, root: Root): Element[] {
-    return Array.from(root.querySelectorAll('*')).filter(el => el.getAttribute('name') === target)
+    return Array.from(root.querySelectorAll('[name="' + target.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"]'))
   }
 
   function tagNameMany(target: string, root: Root): Element[] {
@@ -108,26 +108,30 @@
       return []
     }
     try {
-      const reversedNs: Record<string, string> = {}
-      const allNodes = doc.getElementsByTagName('*')
-      for (let i = 0; i < allNodes.length; i++) {
-        const n = allNodes[i]
-        const ns = n.namespaceURI
-        if (ns && !reversedNs[ns]) {
-          let prefix = n.lookupPrefix(ns)
-          if (!prefix) {
-            const m = ns.match('.*/(\\w+)/?$')
-            prefix = m ? m[1] : 'xhtml'
+      // Namespace prefixes require a colon in the XPath expression. Skip the
+      // expensive full-DOM scan when the expression contains no colon at all.
+      let resolver: ((prefix: string | null) => string | null) | null = null
+      if (target.indexOf(':') !== -1) {
+        const reversedNs: Record<string, string> = {}
+        const allNodes = doc.getElementsByTagName('*')
+        for (let i = 0; i < allNodes.length; i++) {
+          const n = allNodes[i]
+          const ns = n.namespaceURI
+          if (ns && !reversedNs[ns]) {
+            let prefix = n.lookupPrefix(ns)
+            if (!prefix) {
+              const m = ns.match('.*/(\\w+)/?$')
+              prefix = m ? m[1] : 'xhtml'
+            }
+            reversedNs[ns] = prefix!
           }
-          reversedNs[ns] = prefix!
         }
+        const namespaces: Record<string, string> = {}
+        for (const key in reversedNs) {
+          namespaces[reversedNs[key]] = key
+        }
+        resolver = (prefix: string | null): string | null => namespaces[prefix || ''] || null
       }
-      const namespaces: Record<string, string> = {}
-      for (const key in reversedNs) {
-        namespaces[reversedNs[key]] = key
-      }
-      let resolver: XPathNSResolver | ((prefix: string | null) => string | null) =
-        (prefix: string | null): string | null => namespaces[prefix || ''] || null
 
       let result: XPathResult | null = null
       try {
@@ -284,43 +288,39 @@
     return sortByProximity(lastAnchor, matched)
   }
 
-  function findElements(target: LocatorTarget, root?: Root): Element[] {
-    const actualRoot: Root = root || document
-    const keys = Object.keys(target).filter(k => Object.prototype.hasOwnProperty.call(target, k))
-    if (!keys.length) {
-      throw botError(INVALID_ARGUMENT, 'Unsupported locator strategy: (empty)')
-    }
-    const key = keys[0]
-    const value = target[key]
-
-    switch (key) {
-      case 'className':
-      case 'class name':
-        return classNameMany(value as string, actualRoot)
-      case 'css':
-      case 'css selector':
-        return cssMany(value as string, actualRoot)
-      case 'id':
-        return idMany(value as string, actualRoot)
-      case 'linkText':
-      case 'link text':
-        return linkTextMany(value as string, actualRoot, false)
-      case 'partialLinkText':
-      case 'partial link text':
-        return linkTextMany(value as string, actualRoot, true)
-      case 'name':
-        return nameMany(value as string, actualRoot)
-      case 'tagName':
-      case 'tag name':
-        return tagNameMany(value as string, actualRoot)
-      case 'xpath':
-        return xpathMany(value as string, actualRoot)
-      case 'relative':
-        return relativeMany(value as Record<string, unknown>, actualRoot)
-      default:
-        throw botError(INVALID_ARGUMENT, 'Unsupported locator strategy: ' + key)
-    }
+  const actualRoot: Root = root || document
+  const keys = Object.keys(target).filter(k => Object.prototype.hasOwnProperty.call(target, k))
+  if (!keys.length) {
+    throw botError(INVALID_ARGUMENT, 'Unsupported locator strategy: (empty)')
   }
+  const key = keys[0]
+  const value = target[key]
 
-  return findElements
-})()
+  switch (key) {
+    case 'className':
+    case 'class name':
+      return classNameMany(value as string, actualRoot)
+    case 'css':
+    case 'css selector':
+      return cssMany(value as string, actualRoot)
+    case 'id':
+      return idMany(value as string, actualRoot)
+    case 'linkText':
+    case 'link text':
+      return linkTextMany(value as string, actualRoot, false)
+    case 'partialLinkText':
+    case 'partial link text':
+      return linkTextMany(value as string, actualRoot, true)
+    case 'name':
+      return nameMany(value as string, actualRoot)
+    case 'tagName':
+    case 'tag name':
+      return tagNameMany(value as string, actualRoot)
+    case 'xpath':
+      return xpathMany(value as string, actualRoot)
+    case 'relative':
+      return relativeMany(value as Record<string, unknown>, actualRoot)
+    default:
+      throw botError(INVALID_ARGUMENT, 'Unsupported locator strategy: ' + key)
+  }
+})

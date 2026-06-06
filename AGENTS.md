@@ -66,27 +66,15 @@ See language-specific AGENTS.md for applicable logging usage
 This project does not follow semantic versioning (semver); before removing public functionality, mark it as deprecated with a message pointing to the alternative.
 See language-specific AGENTS.md for applicable deprecation usage
 
-## Formatting
-After making code changes, always run (or instruct the user to run):
-```
-./go format
-```
-This invokes the Rake `:format` task, which:
-- Runs `buildifier` on all Bazel (`BUILD`, `*.bzl`, `WORKSPACE`) files — always, for every change
-- Runs `update_copyright` to add/refresh Apache license headers — always, for every change
-- Runs formatters for all bindings by default (pass `-<lang>` flags to skip specific ones, e.g. `-java`)
-
-`./go format` auto-fixes files in place. After running it, check `git diff` to see if any files were
-modified — if so, those changes must be committed. CI runs `./go format` then fails if `git diff` is
-non-empty, so un-formatted code will fail CI.
-For stricter lint checks beyond formatting, use `./go lint`.
-
 ## General Guidelines
 - Comments should explain *why*, not *what* - prefer well-named methods over comments
 - PRs should focus on one thing; we squash PRs to default `trunk` branch
 - Prefer copying files to deleting and recreating to maintain git history
 - Avoid running `bazel clean --expunge`
-- Run or suggest running `./go format` before pushing to prevent CI failures
+- Formatting: 
+  - `./scripts/format.sh` without arguments will run everything similar to running `./go format` but with failure information; With `--pre-commit` flag it only checks staged changes; With `--pre-push` flag it only checks committed changes with trunk.
+  - If `./scripts/format.sh` is already referenced in a pre-commit or pre-push hook, let the hooks handle formatting 
+  - If not, run or suggest `./scripts/format.sh --pre-push` before pushing to avoid CI formatter failures
 
 ## High risk changes (request verification before modifying unless explicitly instructed)
 - Everything referenced above as high risk

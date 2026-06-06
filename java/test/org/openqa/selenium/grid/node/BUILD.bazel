@@ -25,6 +25,8 @@ java_test_suite(
         "//java/test/org/openqa/selenium/grid/testing",
         "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
         artifact("com.google.guava:guava"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-transport"),
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),

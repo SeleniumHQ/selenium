@@ -107,6 +107,20 @@ module SeleniumRake
     File.write(changelog, "#{header}\n#{entries}\n\n#{content}")
   end
 
+  def self.aggregate_errors(**steps)
+    failures = steps.filter_map do |name, closure|
+      label = name.to_s.tr('_', ' ')
+      puts "Running #{label}..." unless name == :all
+      closure.call
+      nil
+    rescue StandardError => e
+      "#{label}: #{e.message}"
+    end
+    return if failures.empty?
+
+    raise failures.join("\n\n")
+  end
+
   def self.verify_package_published(url)
     puts "Verifying #{url}..."
     uri = URI(url)

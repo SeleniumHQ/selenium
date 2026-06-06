@@ -42,7 +42,37 @@ public sealed class BiDiOptionsBuilder
     /// <returns>The current <see cref="BiDiOptionsBuilder"/> instance for chaining.</returns>
     public BiDiOptionsBuilder UseWebSocket(Action<ClientWebSocketOptions>? configure = null)
     {
-        TransportFactory = (uri, ct) => WebSocketTransport.ConnectAsync(uri, configure, ct);
+        return UseTransport((uri, ct) => WebSocketTransport.ConnectAsync(uri, configure, ct));
+    }
+
+    /// <summary>
+    /// Configures the BiDi connection to use a transport created by the specified factory.
+    /// </summary>
+    /// <remarks>
+    /// BiDi takes ownership of the transport instance returned by the factory and will dispose it.
+    /// </remarks>
+    /// <param name="factory">A factory function that creates the <see cref="ITransport"/> instance.</param>
+    /// <returns>The current <see cref="BiDiOptionsBuilder"/> instance for chaining.</returns>
+    public BiDiOptionsBuilder UseTransport(Func<ITransport> factory)
+    {
+        ArgumentNullException.ThrowIfNull(factory);
+
+        return UseTransport((_, ct) =>
+        {
+            if (ct.IsCancellationRequested)
+            {
+                return Task.FromCanceled<ITransport>(ct);
+            }
+
+            var transport = factory() ?? throw new InvalidOperationException("The transport factory must return a non-null ITransport instance.");
+
+            return Task.FromResult(transport);
+        });
+    }
+
+    private BiDiOptionsBuilder UseTransport(Func<Uri, CancellationToken, Task<ITransport>> factory)
+    {
+        TransportFactory = factory;
         return this;
     }
 }
