@@ -61,6 +61,8 @@ module Selenium
 
       def attach_socket_listener: () -> untyped
 
+      def close_socket: () -> untyped
+
       def process_incoming_frames: () -> untyped
 
       def frame_dropped?: () -> bool

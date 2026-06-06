@@ -18,6 +18,7 @@
 # under the License.
 
 require File.expand_path('../spec_helper', __dir__)
+require 'stringio'
 
 module Selenium
   module WebDriver
@@ -29,6 +30,7 @@ module Selenium
       around do |example|
         original = WebSocket.max_frame_size
         example.call
+      ensure
         WebSocket.max_frame_size = original
       end
 
@@ -53,14 +55,19 @@ module Selenium
 
       describe '#frame_dropped?' do
         let(:incoming_frame) { WebSocket::Frame::Incoming::Client.new(version: 13) }
+        let(:socket) { StringIO.new }
 
-        before { connection.instance_variable_set(:@incoming_frame, incoming_frame) }
+        before do
+          connection.instance_variable_set(:@incoming_frame, incoming_frame)
+          connection.instance_variable_set(:@closing_mtx, Mutex.new)
+          connection.instance_variable_set(:@socket, socket)
+        end
 
         it 'is false when there is no decoding error' do
           expect(connection.send(:frame_dropped?)).to be(false)
         end
 
-        it 'is true when a frame exceeds the maximum size' do
+        it 'is true and closes the connection when a frame exceeds the maximum size' do
           WebSocket.max_frame_size = 1
           raw = WebSocket::Frame::Outgoing::Server.new(version: 13, data: 'a' * 1024, type: 'text').to_s
           incoming_frame << raw
@@ -68,6 +75,8 @@ module Selenium
 
           expect(connection.send(:frame_dropped?)).to be(true)
           expect(incoming_frame.error?).to be(true)
+          expect(connection.instance_variable_get(:@closing)).to be(true)
+          expect(socket).to be_closed
         end
       end
     end

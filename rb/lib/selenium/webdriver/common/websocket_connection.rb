@@ -63,12 +63,7 @@ module Selenium
           @closing = true
         end
 
-        begin
-          socket.close
-        rescue *CONNECTION_ERRORS => e
-          WebDriver.logger.debug "WebSocket listener closed: #{e.class}: #{e.message}", id: :ws
-          # already closed
-        end
+        close_socket
 
         # Let threads unwind instead of calling exit
         @socket_thread&.join(0.5)
@@ -139,13 +134,18 @@ module Selenium
             incoming_frame << socket.readpartial(1024)
 
             process_incoming_frames
-
-            # Stop instead of spinning forever on a frame that can never be parsed.
             break if frame_dropped?
           end
         rescue *CONNECTION_ERRORS, WebSocket::Error => e
           WebDriver.logger.debug "WebSocket listener closed: #{e.class}: #{e.message}", id: :ws
         end
+      end
+
+      def close_socket
+        @closing_mtx.synchronize { @closing = true }
+        socket.close
+      rescue *CONNECTION_ERRORS => e
+        WebDriver.logger.debug "WebSocket socket closed: #{e.class}: #{e.message}", id: :ws
       end
 
       def process_incoming_frames
@@ -162,15 +162,14 @@ module Selenium
       end
 
       # True when the buffered frame could not be decoded (e.g. exceeds MAX_FRAME_SIZE).
-      # websocket-ruby swallows the error and keeps returning nil, so surface it here.
+      # websocket-ruby swallows the error and keeps returning nil, so surface it and close
+      # the connection here instead of leaving a dead listener on an open socket.
       def frame_dropped?
         return false unless incoming_frame.error?
 
-        WebDriver.logger.error(
-          "WebSocket frame dropped (#{incoming_frame.error}): payload exceeds max_frame_size " \
-          "(#{WebSocket.max_frame_size} bytes). Raise WebSocket.max_frame_size= for larger frames.",
-          id: :ws
-        )
+        WebDriver.logger.error("WebSocket frame dropped (#{incoming_frame.error}): exceeds max_frame_size " \
+                               "(#{WebSocket.max_frame_size} bytes). Raise WebSocket.max_frame_size=", id: :ws)
+        close_socket
         true
       end
 
