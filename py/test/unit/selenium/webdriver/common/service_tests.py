@@ -36,7 +36,10 @@ def test_start_terminates_process_when_never_connectable(monkeypatch):
 
     service = _UnreachableService(executable_path=sys.executable, port=utils.free_port())
 
-    with pytest.raises(WebDriverException):
-        service.start()
+    try:
+        with pytest.raises(WebDriverException):
+            service.start()
 
-    assert service.process.poll() is not None
+        assert service.process.poll() is not None
+    finally:
+        service.stop()

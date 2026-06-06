@@ -118,8 +118,11 @@ class Service(ABC):
                 count += 1
                 if count == 70:
                     raise WebDriverException(f"Can not connect to the Service {self._path}")
-        except Exception:
-            self.stop()
+        except BaseException:
+            try:
+                self.stop()
+            except Exception:
+                logger.error("Error stopping service after a failed start.", exc_info=True)
             raise
 
     def assert_process_still_running(self) -> None:
