@@ -144,8 +144,8 @@ class Service(ABC):
     def send_remote_shutdown_command(self) -> None:
         """Dispatch an HTTP request to the shutdown endpoint to stop the service."""
         try:
-            request.urlopen(f"{self.service_url}/shutdown")
-        except URLError:
+            request.urlopen(f"{self.service_url}/shutdown", timeout=10)
+        except (URLError, TimeoutError):
             return
 
         for _ in range(30):
