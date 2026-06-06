@@ -202,7 +202,7 @@ jobs:
       - name: Delete browsers and drivers
         if: inputs.os == 'ubuntu' || inputs.os == 'macos'
         run: ./scripts/github-actions/delete-browsers-drivers.sh
-      - name: Delete browsers and drivers (Windows)
+      - name: Delete drivers (Windows)
         if: inputs.os == 'windows'
         shell: pwsh
         run: ./scripts/github-actions/delete-browsers-drivers.ps1

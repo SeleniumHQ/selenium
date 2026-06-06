@@ -1,17 +1,20 @@
 #!/usr/bin/env pwsh
 #
-# Delete pre-installed browsers and WebDriver binaries so browser tests resolve
-# the bazel-pinned / Selenium-Manager-downloaded versions instead of the system copies.
+# Delete pre-installed WebDriver binaries so browser tests exercise the driver
+# that Selenium Manager downloads instead of the system copy.
+#
+# Unlike Linux/macOS, we intentionally keep the pre-installed browsers on Windows:
+# removing them from Program Files is slow and unreliable (partial deletes leave a
+# corrupt install that Selenium Manager still detects, so it skips downloading a
+# clean copy and then fails to launch it). Selenium Manager is still exercised here
+# by having it resolve and download a driver for the pre-installed browser.
 
-Write-Host "Removing pre-installed drivers and browsers"
+Write-Host "Removing pre-installed drivers"
 
 $paths = @(
   $env:ChromeWebDriver,
   $env:EdgeWebDriver,
-  $env:GeckoWebDriver,
-  "C:\Program Files\Google\Chrome",
-  "C:\Program Files\Mozilla Firefox",
-  "C:\Program Files (x86)\Microsoft\Edge"
+  $env:GeckoWebDriver
 ) | Where-Object { $_ }
 
 Remove-Item -Path $paths -Recurse -Force -ErrorAction SilentlyContinue
