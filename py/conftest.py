@@ -805,7 +805,10 @@ class _WebKitLocalDriver(LocalWebDriver):
             self.service.start()
             super().__init__(command_executor=self.service.service_url, options=options)
         except Exception:
-            self.quit()
+            # Only tear down if a process was actually started; otherwise
+            # Service.stop() raises AttributeError and masks the real failure.
+            if getattr(self.service, "process", None) is not None:
+                self.quit()
             raise
 
 
