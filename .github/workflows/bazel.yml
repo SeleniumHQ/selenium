@@ -178,6 +178,7 @@ jobs:
             xdpyinfo -display :99 >/dev/null 2>&1 && break
             sleep 0.5
           done
+          xdpyinfo -display :99 >/dev/null 2>&1 || { echo "::error::X server :99 failed to start"; exit 1; }
           fluxbox -display :99 &
           echo "DISPLAY=:99" >> "$GITHUB_ENV"
       - name: Set resolution
