@@ -48,7 +48,7 @@ def driver_finder(browser_name, request):
         options.binary_location = _resolve_bazel_path(request.config.option.binary).strip("'")
 
     executable = request.config.option.executable
-    service = module.service.Service(executable_path=_resolve_bazel_path(executable) if executable else None)
+    service = module.service.Service(executable_path=_resolve_bazel_path(executable).strip("'") if executable else None)
 
     return DriverFinder(service, options)
 
