@@ -801,8 +801,8 @@ class _WebKitService(Service):
 class _WebKitLocalDriver(LocalWebDriver):
     def __init__(self, options=None, service=None):
         self.service = service
-        self.service.start()
         try:
+            self.service.start()
             super().__init__(command_executor=self.service.service_url, options=options)
         except Exception:
             self.quit()
