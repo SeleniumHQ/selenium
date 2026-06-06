@@ -503,3 +503,21 @@ def test_extra_headers_compose_with_request_handlers(driver, pages):
     finally:
         driver.network.remove_request_handler(handler_id)
         driver.network.clear_extra_headers()
+
+
+def test_expect_request_captures_request(driver, pages):
+    with driver.network.expect_request("**/formPage.html") as request_info:
+        _navigate(driver, pages.url("formPage.html"))
+
+    request = request_info.value
+    assert "formPage.html" in request.url
+    assert request.method == "GET"
+
+
+def test_expect_response_captures_response(driver, pages):
+    with driver.network.expect_response("**/formPage.html") as response_info:
+        _navigate(driver, pages.url("formPage.html"))
+
+    response = response_info.value
+    assert "formPage.html" in response.url
+    assert response.status == 200

@@ -264,6 +264,21 @@ def globs_to_url_patterns(patterns: list | None) -> list[dict] | None:
     return translated or None
 
 
+def to_url_predicate(url_or_predicate) -> Callable | None:
+    """Normalize an ``expect_*`` filter into a predicate over wrapped events.
+
+    A string is treated as a URL glob (``*``, ``**``, ``?``) matched against
+    the event's ``url`` attribute; a callable is returned unchanged; ``None``
+    matches everything.
+    """
+    if url_or_predicate is None:
+        return None
+    if callable(url_or_predicate):
+        return url_or_predicate
+    regex = glob_to_regex(str(url_or_predicate))
+    return lambda event: bool(regex.match(event.url or ""))
+
+
 class Request:
     """Wraps a BiDi network request event and provides request action methods.
 
