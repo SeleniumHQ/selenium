@@ -263,7 +263,7 @@ internal sealed class Broker : IAsyncDisposable
                 var propName = reader.GetString()!;
                 reader.Read();
                 additionalMessageData ??= [];
-                additionalMessageData[propName] = JsonSerializer.Deserialize<JsonElement>(ref reader);
+                additionalMessageData[propName] = JsonElement.ParseValue(ref reader);
             }
 
             reader.Skip();

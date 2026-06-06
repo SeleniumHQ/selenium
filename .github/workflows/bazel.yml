@@ -171,8 +171,14 @@ jobs:
       - name: Setup Fluxbox and Xvfb
         if: inputs.needs-display && inputs.os == 'ubuntu'
         run: |
-          sudo apt-get update && sudo apt-get -y install fluxbox
+          sudo apt-get update && sudo apt-get -y install fluxbox x11-utils
           Xvfb :99 &
+          # X server must start before fluxbox
+          for _ in $(seq 1 30); do
+            xdpyinfo -display :99 >/dev/null 2>&1 && break
+            sleep 0.5
+          done
+          xdpyinfo -display :99 >/dev/null 2>&1 || { echo "::error::X server :99 failed to start"; exit 1; }
           fluxbox -display :99 &
           echo "DISPLAY=:99" >> "$GITHUB_ENV"
       - name: Set resolution
