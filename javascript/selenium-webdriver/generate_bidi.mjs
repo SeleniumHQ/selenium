@@ -574,8 +574,8 @@ function extractCommands(ast) {
     if (!parsed) continue
 
     const { domain, methodStr, operationName: methodName, paramsCddl } = parsed
-    const paramsTypeName = paramsCddl !== null ? normalizeDottedName(paramsCddl) : null
-    const hasParams = paramsTypeName !== null && !emptyParamTypes.has(paramsTypeName)
+    // emptyParamTypes holds raw CDDL group names, so compare the raw name (not the normalized one).
+    const hasParams = paramsCddl !== null && !emptyParamTypes.has(paramsCddl)
 
     commands.push({
       domain,
