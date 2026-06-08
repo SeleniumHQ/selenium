@@ -854,7 +854,7 @@ class CddlModule:
         if self.events:
             code += "    EVENT_CONFIGS: dict[str, EventConfig] = {}\n"  # Will be populated after types are defined
 
-        if self.name == "script":
+        if self.name in ("script", "permissions"):
             code += "    def __init__(self, conn, driver=None) -> None:\n"
             code += "        self._conn = conn\n"
             code += "        self._driver = driver\n"

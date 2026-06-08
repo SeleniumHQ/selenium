@@ -1325,7 +1325,7 @@ class WebDriver(BaseWebDriver):
             self._start_bidi()
 
         if self._permissions is None:
-            self._permissions = Permissions(self._websocket_connection)
+            self._permissions = Permissions(self._websocket_connection, self)
 
         return self._permissions
 
