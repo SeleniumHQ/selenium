@@ -157,7 +157,7 @@ def generate_bidi_library(
     # Step 2: parse the merged CDDL once into the reusable AST artifact.
     # Exposed to the other bindings so they can consume it directly.
     ast_target = name + "_ast"
-    ast_out = "bidi-ast.json"
+    ast_out = name + "_ast.json"
     js_run_binary(
         name = ast_target,
         srcs = [":" + merged_name],
@@ -175,7 +175,7 @@ def generate_bidi_library(
     # Step 3: extract the binding-neutral command/event model from the AST.
     # Exposed to the other bindings so they can consume it directly.
     json_target = name + "_json"
-    model_out = "bidi-model.json"
+    model_out = name + "_model.json"
     js_run_binary(
         name = json_target,
         srcs = [":" + ast_target],
