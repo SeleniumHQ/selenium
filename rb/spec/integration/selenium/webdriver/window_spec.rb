@@ -26,6 +26,12 @@ module Selenium
 
       let(:window) { driver.manage.window }
 
+      # Establish a known position and size with headroom so size/position/rect
+      # assertions don't depend on the browser's default window relative to the
+      # display. Without this, growing the window leaves no room on the screen
+      # and the window manager clamps the result (notably Safari on macOS).
+      before { window.rect = Rectangle.new(50, 50, 600, 500) }
+
       it 'gets the size of the current window' do
         size = window.size
 
