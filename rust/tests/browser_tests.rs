@@ -173,6 +173,47 @@ fn create_fake_browser(version: &str) -> std::path::PathBuf {
     tmp
 }
 
+#[cfg(unix)]
+fn create_silent_browser() -> std::path::PathBuf {
+    let tmp = std::env::temp_dir().join("fake-chrome-silent");
+    std::fs::write(&tmp, "#!/bin/sh\n# prints nothing\n")
+        .expect("Unable to write silent browser script");
+    std::fs::set_permissions(&tmp, std::fs::Permissions::from_mode(0o755))
+        .expect("Unable to set executable bit");
+    tmp
+}
+
+#[cfg(unix)]
+fn browser_version_ignore_no_detectable_browser_test() {
+    let silent_browser = create_silent_browser();
+    let mut cmd = get_selenium_manager();
+    let stdout = cmd
+        .args([
+            "--browser",
+            "chrome",
+            "--browser-path",
+            silent_browser.to_str().unwrap(),
+            "--browser-version",
+            "ignore",
+            "--debug",
+        ])
+        .assert()
+        .get_output()
+        .stdout
+        .clone();
+    let stdout_str = std::str::from_utf8(&stdout).unwrap();
+    assert!(
+        !stdout_str.contains("not available for download"),
+        "Should not show misleading download-version error; got: {}",
+        stdout_str
+    );
+    assert!(
+        stdout_str.contains("Could not detect") || stdout_str.contains("No local"),
+        "Should explain that no detectable local browser was found; got: {}",
+        stdout_str
+    );
+}
+
 #[test]
 #[cfg(unix)]
 fn browser_path_version_mismatch_test() {

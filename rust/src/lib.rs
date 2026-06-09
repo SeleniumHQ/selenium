@@ -615,6 +615,25 @@ pub trait SeleniumManager {
                         self.get_browser_name(),
                         self.get_browser_version_label()
                     ));
+                    if self.is_browser_version_ignore() {
+                        let detail = if !original_browser_path.is_empty() {
+                            format!(
+                                "Could not detect {} version at {}; \
+                                 --browser-version {} requires a detectable local browser",
+                                self.get_browser_name(),
+                                original_browser_path,
+                                BROWSER_VERSION_IGNORE
+                            )
+                        } else {
+                            format!(
+                                "No local {} found; --browser-version {} requires a local browser \
+                                 (use --browser-path to specify its location)",
+                                self.get_browser_name(),
+                                BROWSER_VERSION_IGNORE
+                            )
+                        };
+                        return Err(anyhow!(detail));
+                    }
                     download_browser = true;
                 }
             }
