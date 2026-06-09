@@ -183,6 +183,7 @@ fn create_silent_browser() -> std::path::PathBuf {
     tmp
 }
 
+#[test]
 #[cfg(unix)]
 fn browser_version_ignore_no_detectable_browser_test() {
     let silent_browser = create_silent_browser();
