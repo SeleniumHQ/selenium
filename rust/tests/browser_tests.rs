@@ -20,9 +20,9 @@ use crate::common::{assert_output, get_selenium_manager, get_stdout};
 use exitcode::DATAERR;
 use rstest::rstest;
 use std::env::consts::OS;
-use std::path::Path;
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
+use std::path::Path;
 
 mod common;
 
@@ -189,23 +189,22 @@ fn browser_path_version_mismatch_test() {
             "--debug",
         ])
         .assert()
-        .failure()
-        .code(DATAERR)
         .get_output()
         .stdout
         .clone();
     let stdout_str = std::str::from_utf8(&stdout).unwrap();
+    // The mismatch is always reported, either as ERROR (no cached driver) or WARN (fallback used)
     assert!(
         stdout_str.contains("131.0.6778.264"),
-        "Error should mention detected version"
+        "Should mention detected version"
     );
     assert!(
         stdout_str.contains("999.0.0.0"),
-        "Error should mention requested version"
+        "Should mention requested version"
     );
     assert!(
         stdout_str.contains("ignore"),
-        "Error should mention the ignore escape hatch"
+        "Should mention the ignore escape hatch"
     );
 }
 
