@@ -30,6 +30,10 @@ module Selenium
       # control = grow +10 from whatever size the window already has (overflows screen)
       # fix     = establish a known modest size with headroom first, then grow +10
       describe '#rect experiment' do
+        # Force the failure condition: maximize so the window already fills the
+        # usable screen area, making CONTROL's +10 overflow (the real-suite state).
+        before { window.maximize }
+
         5.times do |i|
           it "CONTROL grows from current size (run #{i + 1})" do
             rect = window.rect
