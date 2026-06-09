@@ -20,6 +20,7 @@
 It serves the testing html pages that are needed by the webdriver unit tests.
 """
 
+import base64
 import contextlib
 import logging
 import os
@@ -44,6 +45,11 @@ DEFAULT_HOST = "localhost"
 DEFAULT_HOST_IP = "127.0.0.1"
 DEFAULT_PORT = 8000
 HTML_ROOT = os.path.join(WEBDRIVER, "../../../../common/src/web")
+
+# Credentials accepted by the /basic-auth endpoint. Tests that exercise
+# authentication handlers must provide these to be considered authenticated.
+AUTH_USERNAME = "postman"
+AUTH_PASSWORD = "password"
 
 if not os.path.isdir(HTML_ROOT):
     raise Exception(
@@ -80,6 +86,18 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
         else:
             return content, "text/html"
 
+    def _is_authenticated(self):
+        """Return True when the request carries the expected Basic credentials."""
+        auth_header = self.headers.get("Authorization", "")
+        if not auth_header.startswith("Basic "):
+            return False
+        try:
+            decoded = base64.b64decode(auth_header.removeprefix("Basic ")).decode("utf-8")
+        except (ValueError, UnicodeDecodeError):
+            return False
+        username, _, password = decoded.partition(":")
+        return username == AUTH_USERNAME and password == AUTH_PASSWORD
+
     def _send_response(self, content_type="text/html"):
         """Send a response."""
         self.send_response(200)
@@ -114,6 +132,20 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
                 self.send_header("Set-Cookie", f"{name}={value}; Path=/")
                 self.end_headers()
                 self.wfile.write(b"cookie set")
+                return
+
+            if path == "basic-auth":
+                if self._is_authenticated():
+                    self._send_response("application/json")
+                    self.wfile.write(b'{"authenticated": true}')
+                else:
+                    self.send_response(401)
+                    self.send_header("WWW-Authenticate", 'Basic realm="Fake Realm"')
+                    self.send_header("Content-type", "text/plain")
+                    self.end_headers()
+                    # Body must not contain the substring "authenticated" — tests
+                    # assert its absence when an auth challenge is cancelled.
+                    self.wfile.write(b"Access denied")
                 return
 
             file_path = os.path.join(HTML_ROOT, path)
