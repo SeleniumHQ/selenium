@@ -35,7 +35,7 @@ class _WebSocketErrorRecorder(logging.Handler):
 
 @pytest.mark.xfail_safari
 def test_quit_closes_bidi_websocket_without_error(clean_driver, clean_options, webserver):
-    """quit() must tear down the BiDi websocket cleanly"""
+    """quit() must tear down the BiDi websocket cleanly."""
     clean_options.web_socket_url = True
 
     recorder = _WebSocketErrorRecorder()
