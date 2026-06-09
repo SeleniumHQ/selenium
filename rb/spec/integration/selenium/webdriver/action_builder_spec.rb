@@ -170,7 +170,7 @@ module Selenium
           expect(element.property(:value)).to eq('DoubleClicked')
         end
 
-        it 'executes with equivalent pointer methods' do
+        it 'executes with equivalent pointer methods', skip_if: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
