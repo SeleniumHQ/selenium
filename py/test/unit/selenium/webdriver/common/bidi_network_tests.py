@@ -374,6 +374,19 @@ def test_translatable_patterns_are_sent_to_browser():
     assert params["urlPatterns"] == [{"type": "pattern", "protocol": "https", "hostname": "api.tracking.com"}]
 
 
+def test_url_patterns_keyword_scopes_callback_handler():
+    conn = FakeConnection()
+    network = Network(conn)
+
+    network.add_request_handler(
+        callback=lambda request: None,
+        url_patterns=["https://api.tracking.com/**"],
+    )
+
+    params = conn.commands_named("network.addIntercept")[0]["params"]
+    assert params["urlPatterns"] == [{"type": "pattern", "protocol": "https", "hostname": "api.tracking.com"}]
+
+
 def test_blocked_event_owned_by_another_intercept_is_left_alone():
     conn = FakeConnection()
     network = Network(conn)
