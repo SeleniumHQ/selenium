@@ -25,7 +25,8 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    LATEST_RELEASE, Logger, OFFLINE_REQUEST_ERR_MSG, SeleniumManager, WINDOWS, create_http_client,
+    BETA, CANARY, DEV, ESR, LATEST_RELEASE, Logger, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, STABLE,
+    SeleniumManager, WINDOWS, create_http_client,
 };
 use anyhow::Error;
 use reqwest::Client;
@@ -36,6 +37,46 @@ use std::sync::mpsc::{Receiver, Sender};
 
 pub const ELECTRON_NAME: &str = "electron";
 const DRIVER_URL: &str = "https://github.com/electron/electron/releases/";
+
+/// Returns the user's `--browser-version` as the resolved Electron driver
+/// version when - and only when - it is a *specific* version that we can use
+/// verbatim as a release tag (e.g. `36.2.1`, `v36.2.1`, `36.0.0-beta.1`).
+///
+/// Returns `None` for empty input, channel names (`stable`, `beta`, `dev`,
+/// `nightly`, `canary`, `esr`), and major-only inputs like `36` - those must
+/// keep using the `/releases/latest` redirect path because Electron has no
+/// `v36` tag and emitting one would build a 404 download URL.
+///
+/// A leading `v` or `V` is stripped (so `v36.2.1` doesn't double up against
+/// the `v` prefix added by `get_driver_url()`); we deliberately do *not* call
+/// `parse_version()` here because that strips prerelease suffixes such as
+/// `-beta.1`, which Electron release tags legitimately carry.
+fn normalize_pinned_version(browser_version: &str) -> Option<String> {
+    let trimmed = browser_version.trim();
+    if trimmed.is_empty() {
+        return None;
+    }
+    if trimmed.eq_ignore_ascii_case(STABLE)
+        || trimmed.eq_ignore_ascii_case(BETA)
+        || trimmed.eq_ignore_ascii_case(DEV)
+        || trimmed.eq_ignore_ascii_case(NIGHTLY)
+        || trimmed.eq_ignore_ascii_case(CANARY)
+        || trimmed.eq_ignore_ascii_case(ESR)
+    {
+        return None;
+    }
+    let stripped = trimmed
+        .strip_prefix('v')
+        .or_else(|| trimmed.strip_prefix('V'))
+        .unwrap_or(trimmed);
+    // Require a specific version (contains a dot); major-only inputs like
+    // `36` are not valid Electron release tags and must use the latest
+    // fallback.
+    if !stripped.contains('.') {
+        return None;
+    }
+    Some(stripped.to_string())
+}
 
 pub struct ElectronManager {
     pub browser_name: &'static str,
@@ -101,6 +142,27 @@ impl SeleniumManager for ElectronManager {
     }
 
     fn request_driver_version(&mut self) -> Result<String, Error> {
+        // Electron releases are tagged by Electron version, and the
+        // chromedriver asset shipped in each release matches that tag.
+        // When the user pins a *specific* browser version (e.g.
+        // `--browser-version 36.2.1`), that version is the driver version
+        // we want; resolving via `/releases/latest` would discard the
+        // user's request and return the latest tag instead.
+        //
+        // This short-circuit must run *before* the metadata cache lookup:
+        // the cache is keyed only on `major_browser_version`, so a cached
+        // entry for major `36` would otherwise override an explicit
+        // `36.2.1` pin and silently return a different patch version.
+        //
+        // Major-only inputs like `36` keep using the latest-redirect
+        // fallback path, because Electron has no `v36` tag - using it
+        // verbatim would build a 404 download URL.
+        let browser_version = self.get_browser_version().to_string();
+        let normalized_pin = normalize_pinned_version(&browser_version);
+        if let Some(pinned) = normalized_pin {
+            return Ok(pinned);
+        }
+
         let major_browser_version_binding = self.get_major_browser_version();
         let major_browser_version = major_browser_version_binding.as_str();
         let cache_path = self.get_cache_path()?;
@@ -119,27 +181,14 @@ impl SeleniumManager for ElectronManager {
                 Ok(driver_version)
             }
             _ => {
-                // Electron releases are tagged by Electron version, and the
-                // chromedriver asset shipped in each release matches that tag.
-                // When the user pins a concrete browser version (e.g.
-                // `--browser-version 36.2.1`), that version is the driver
-                // version we want; resolving via `/releases/latest` would
-                // discard the user's request and return the latest tag instead.
-                let browser_version = self.get_browser_version().to_string();
-                let driver_version = if !browser_version.is_empty()
-                    && !self.is_browser_version_stable()
-                    && !self.is_browser_version_unstable()
-                {
-                    browser_version
-                } else {
-                    self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
-                    let latest_url = format!(
-                        "{}{}",
-                        self.get_driver_mirror_url_or_default(DRIVER_URL),
-                        LATEST_RELEASE
-                    );
-                    read_redirect_from_link(self.get_http_client(), latest_url, self.get_logger())?
-                };
+                self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
+                let latest_url = format!(
+                    "{}{}",
+                    self.get_driver_mirror_url_or_default(DRIVER_URL),
+                    LATEST_RELEASE
+                );
+                let driver_version =
+                    read_redirect_from_link(self.get_http_client(), latest_url, self.get_logger())?;
                 let driver_ttl = self.get_ttl();
                 if driver_ttl > 0 && !major_browser_version.is_empty() && !driver_version.is_empty()
                 {
@@ -284,5 +333,68 @@ impl SeleniumManager for ElectronManager {
 
     fn get_snap_path(&self) -> Option<PathBuf> {
         None
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::normalize_pinned_version;
+
+    #[test]
+    fn specific_version_is_returned_verbatim() {
+        assert_eq!(
+            normalize_pinned_version("36.2.1"),
+            Some("36.2.1".to_string())
+        );
+    }
+
+    #[test]
+    fn leading_v_is_stripped() {
+        assert_eq!(
+            normalize_pinned_version("v36.2.1"),
+            Some("36.2.1".to_string())
+        );
+        assert_eq!(
+            normalize_pinned_version("V36.2.1"),
+            Some("36.2.1".to_string())
+        );
+    }
+
+    #[test]
+    fn prerelease_suffix_is_preserved() {
+        assert_eq!(
+            normalize_pinned_version("36.0.0-beta.1"),
+            Some("36.0.0-beta.1".to_string())
+        );
+        assert_eq!(
+            normalize_pinned_version("v36.0.0-beta.1"),
+            Some("36.0.0-beta.1".to_string())
+        );
+    }
+
+    #[test]
+    fn major_only_falls_back() {
+        // `36` has no Electron tag; must fall back to /releases/latest.
+        assert_eq!(normalize_pinned_version("36"), None);
+        assert_eq!(normalize_pinned_version("v36"), None);
+    }
+
+    #[test]
+    fn channel_names_fall_back() {
+        for channel in ["stable", "beta", "dev", "nightly", "canary", "esr"] {
+            assert_eq!(normalize_pinned_version(channel), None, "{}", channel);
+            assert_eq!(
+                normalize_pinned_version(&channel.to_uppercase()),
+                None,
+                "{}",
+                channel
+            );
+        }
+    }
+
+    #[test]
+    fn empty_or_whitespace_falls_back() {
+        assert_eq!(normalize_pinned_version(""), None);
+        assert_eq!(normalize_pinned_version("   "), None);
     }
 }
