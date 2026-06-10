@@ -211,21 +211,6 @@ class DriverFinderTest {
     createsArgumentsForSeleniumManagerWithProxySettings(ProxyType.DIRECT);
   }
 
-  @Test
-  void createsArgumentsForSeleniumManagerWithSystemProxySettings() throws IOException {
-    createsArgumentsForSeleniumManagerWithProxySettings(ProxyType.SYSTEM);
-  }
-
-  @Test
-  void createsArgumentsForSeleniumManagerWithAutodetectProxySettings() throws IOException {
-    createsArgumentsForSeleniumManagerWithProxySettings(ProxyType.AUTODETECT);
-  }
-
-  @Test
-  void createsArgumentsForSeleniumManagerWithDirectProxySettings() throws IOException {
-    createsArgumentsForSeleniumManagerWithProxySettings(ProxyType.DIRECT);
-  }
-
   void createsArgumentsForSeleniumManagerWithProxySettings(ProxyType proxyType) throws IOException {
     when(service.getExecutable()).thenReturn(null);
     when(service.getDriverProperty()).thenReturn("property.selenium.manager.empty");
