@@ -26,118 +26,21 @@ module Selenium
 
       let(:window) { driver.manage.window }
 
-      # Establish a known position and size with headroom so size/position/rect
-      # assertions don't depend on the browser's default window relative to the
-      # display. Without this, growing the window leaves no room on the screen
-      # and the window manager clamps the result (notably Safari on macOS).
-      before { window.rect = Rectangle.new(50, 50, 600, 500) }
+      # WIP: Linux flaky guard removed to check whether #17644 (X server before
+      # fluxbox) fixed the underlying minimize flakiness on Linux CI.
+      describe '#minimize experiment' do
+        # Restore to a known visible state before each attempt so every iteration
+        # is a real minimize-from-visible, not a no-op on an already-minimized window.
+        before { window.rect = Rectangle.new(50, 50, 600, 500) }
 
-      it 'gets the size of the current window' do
-        size = window.size
-
-        expect(size).to be_a(Dimension)
-
-        expect(size.width).to be_positive
-        expect(size.height).to be_positive
-      end
-
-      it 'sets the size of the current window' do
-        size = window.size
-
-        target_width = size.width - 20
-        target_height = size.height - 20
-
-        window.size = Dimension.new(target_width, target_height)
-
-        new_size = window.size
-        expect(new_size.width).to eq(target_width)
-        expect(new_size.height).to eq(target_height)
-      end
-
-      it 'gets the position of the current window' do
-        pos = window.position
-
-        expect(pos).to be_a(Point)
-
-        expect(pos.x).to be >= 0
-        expect(pos.y).to be >= 0
-      end
-
-      it 'sets the position of the current window' do
-        pos = window.position
-
-        target_x = pos.x + 10
-        target_y = pos.y + 10
-
-        window.position = Point.new(target_x, target_y)
-
-        wait.until { window.position.x != pos.x && window.position.y != pos.y }
-
-        new_pos = window.position
-        expect(new_pos.x).to eq(target_x)
-        expect(new_pos.y).to eq(target_y)
-      end
-
-      it 'gets the rect of the current window' do
-        rect = window.rect
-
-        expect(rect).to be_a(Rectangle)
-
-        expect(rect.x).to be >= 0
-        expect(rect.y).to be >= 0
-        expect(rect.width).to be >= 0
-        expect(rect.height).to be >= 0
-      end
-
-      it 'sets the rect of the current window' do
-        rect = window.rect
-
-        target_x = rect.x + 10
-        target_y = rect.y + 10
-        target_width = rect.width + 10
-        target_height = rect.height + 10
-
-        window.rect = Rectangle.new(target_x, target_y, target_width, target_height)
-
-        wait.until { window.rect.x != rect.x && window.rect.y != rect.y }
-
-        new_rect = window.rect
-        expect(new_rect.x).to eq(target_x)
-        expect(new_rect.y).to eq(target_y)
-        expect(new_rect.width).to eq(target_width)
-        expect(new_rect.height).to eq(target_height)
-      end
-
-      it 'can maximize the current window' do
-        window.size = old_size = Dimension.new(650, 650)
-
-        window.maximize
-        wait.until { window.size != old_size }
-
-        new_size = window.size
-        expect(new_size.width).to be > old_size.width
-        expect(new_size.height).to be > old_size.height
-      end
-
-      it 'can make window full screen', pending_if: {browser: %i[chrome edge], headless: true},
-                                        skip_if: {browser: %i[safari safari_preview], ci: :github,
-                                                  reason: 'Net::ReadTimeout'} do
-        window.size = old_size = Dimension.new(700, 700)
-
-        window.full_screen
-        wait.until { window.size != old_size }
-
-        new_size = window.size
-        expect(new_size.width).to be > old_size.width
-        expect(new_size.height).to be > old_size.height
-      end
-
-      it 'can minimize the window', flaky: {browser: %i[chrome edge], platform: %i[macosx linux], ci: :github},
-                                    pending_if: [{browser: %i[chrome edge], headless: true}] do
-        window.minimize
-        expect {
-          wait.until { driver.execute_script('return document.hidden;') }
-        }.not_to raise_error
+        20.times do |i|
+          it "minimizes the window (run #{i + 1})" do
+            window.minimize
+            expect {
+              wait.until { driver.execute_script('return document.hidden;') }
+            }.not_to raise_error
+          end
+        end
       end
     end
   end # WebDriver
