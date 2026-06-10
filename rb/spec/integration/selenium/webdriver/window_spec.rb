@@ -26,6 +26,8 @@ module Selenium
 
       let(:window) { driver.manage.window }
 
+      before { window.rect = Rectangle.new(50, 50, 600, 500) }
+
       it 'gets the size of the current window' do
         size = window.size
 
