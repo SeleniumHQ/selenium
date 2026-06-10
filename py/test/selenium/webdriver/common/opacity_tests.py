@@ -20,7 +20,6 @@ import pytest
 from selenium.webdriver.common.by import By
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 @pytest.mark.xfail_ie
 def test_should_be_able_to_click_on_elements_with_opacity_zero(driver, pages):
     pages.load("click_jacker.html")

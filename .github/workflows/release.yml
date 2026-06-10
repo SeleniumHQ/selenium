@@ -66,20 +66,23 @@ jobs:
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  create-language-tag:
-    name: Create Language Tag
+  create-tag:
+    name: Create Tag
     needs: [parse-tag, get-approval]
-    if: needs.parse-tag.outputs.language != 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Create language-specific tag
+      - name: Create release tag
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
           TAG: ${{ needs.parse-tag.outputs.tag }}
           SHA: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
         run: |
+          if gh api "/repos/${{ github.repository }}/git/ref/tags/${TAG}" >/dev/null 2>&1; then
+            echo "Tag ${TAG} already exists — skipping creation."
+            exit 0
+          fi
           gh api -X POST /repos/${{ github.repository }}/git/refs \
             -f ref="refs/tags/${TAG}" \
             -f sha="${SHA}"
@@ -138,7 +141,16 @@ jobs:
       name: Publish ${{ matrix.language }}
       gpg-sign: ${{ matrix.language == 'java' }}
       gem-trusted-publishing: ${{ matrix.language == 'ruby' }}
-      run: ${{ (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language) && format('./go {0}:release', matrix.language) || 'echo skipping' }}
+      run: |
+        if [ "${{ matrix.language == 'java' && (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == 'java') && github.run_attempt > 1 }}" = "true" ]; then
+          echo "::error::Java release is not yet rerun-safe — check/drop the staging repo at https://central.sonatype.com/publishing/deployments and publish manually"
+          exit 1
+        fi
+        if [ "${{ needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language }}" = "true" ]; then
+          ./go ${{ matrix.language }}:release
+        else
+          echo skipping
+        fi
       artifact-name: ${{ (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language) && format('release-packages-{0}', matrix.language) || '' }}
       artifact-path: ${{ (matrix.language == 'java' || matrix.language == 'dotnet') && 'build/dist/*.*' || '' }}
     secrets: inherit
@@ -174,6 +186,8 @@ jobs:
           path: dist/
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
 
   github-release-publish:
     name: GitHub Release Publish
@@ -227,13 +241,13 @@ jobs:
 
   docs:
     name: Update ${{ matrix.language }} Documentation
-    needs: [parse-tag, publish, publish-python, github-release-publish, create-language-tag]
+    needs: [parse-tag, publish, publish-python, github-release-publish, create-tag]
     if: >-
       always() && !cancelled() &&
       needs.publish.result == 'success' &&
       (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped') &&
       needs.github-release-publish.result != 'failure' &&
-      needs.create-language-tag.result != 'failure'
+      needs.create-tag.result != 'failure'
     permissions:
       contents: write
     strategy:
@@ -331,7 +345,7 @@ jobs:
   on-release-failure:
     name: On Release Failure
     runs-on: ubuntu-latest
-    needs: [publish, publish-python, docs, create-language-tag, github-release-draft, github-release-publish, update-version, reset-dependencies, commit-dependencies, nightly, mirror, verify]
+    needs: [publish, publish-python, docs, create-tag, github-release-draft, github-release-publish, update-version, reset-dependencies, commit-dependencies, nightly, mirror, verify]
     if: failure()
     steps:
       - uses: actions/checkout@v6
@@ -346,7 +360,7 @@ jobs:
           SLACK_MESSAGE: |
             • Selenium Published: ${{ needs.publish.result }}
             • Python Published: ${{ needs.publish-python.result }}
-            • Language Tag Created: ${{ needs.create-language-tag.result }}
+            • Tag Created: ${{ needs.create-tag.result }}
             • GitHub Release Draft: ${{ needs.github-release-draft.result }}
             • Docs Updated: ${{ needs.docs.result }}
             • GitHub Release Published: ${{ needs.github-release-publish.result }}

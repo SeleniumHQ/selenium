@@ -94,7 +94,6 @@ def test_should_emit_on_change_events_when_changing_the_state_of_acheckbox(drive
     assert driver.find_element(By.ID, "result").text == "checkbox thing"
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_emit_click_event_when_clicking_on_atext_input_element(driver, pages):
     pages.load("javascriptPage.html")
     clicker = driver.find_element(By.ID, "clickField")

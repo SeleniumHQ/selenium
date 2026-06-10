@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      describe Driver, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :firefox}] do
+      describe Driver, skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :firefox}] do
         let(:extensions) { '../../../../../../common/extensions/' }
 
         describe '#print_options' do
@@ -44,8 +44,8 @@ module Selenium
                                      page: {width: 30})).to include(magic_number)
           end
 
-          it 'prints full page', except: [{platform: :macosx,
-                                           reason: 'showing half resolution of what expected'}] do
+          it 'prints full page', pending_if: [{platform: :macosx,
+                                               reason: 'showing half resolution of what expected'}] do
             viewport_width = driver.execute_script('return window.innerWidth;')
             viewport_height = driver.execute_script('return window.innerHeight;')
 
@@ -91,7 +91,9 @@ module Selenium
             expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
           end
 
-          it 'install and uninstall unsigned zip file' do
+          it 'install and uninstall unsigned zip file',
+             except: {browser: :firefox,
+                      reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=2045054'} do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example-unsigned.zip", __dir__)
             id = driver.install_addon(ext, true)
 
@@ -106,9 +108,9 @@ module Selenium
             expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
           end
 
-          it 'install and uninstall signed directory', except: {browser: :firefox,
-                                                                platform: :windows,
-                                                                reason: 'signature must be different for windows,
+          it 'install and uninstall signed directory', pending_if: {browser: :firefox,
+                                                                    platform: :windows,
+                                                                    reason: 'signature must be different for windows,
                                                                 skipping everywhere until Firefox 127 is released'} do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example-signed/", __dir__)
             id = driver.install_addon(ext)
@@ -124,7 +126,9 @@ module Selenium
             expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
           end
 
-          it 'install and uninstall unsigned directory' do
+          it 'install and uninstall unsigned directory',
+             except: {browser: :firefox,
+                      reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=2045054'} do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example/", __dir__)
             id = driver.install_addon(ext, true)
 

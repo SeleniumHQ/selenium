@@ -332,6 +332,9 @@ public class ProxyWebsocketsIntoGrid
     @Override
     public void onClose(int code, String reason) {
       upstreamClosing.set(true);
+      // The WebSocket spec caps close-frame reasons at 123 bytes UTF-8; truncate so an upstream
+      // sending a longer one cannot break the close frame's encoding.
+      String safeReason = WebSocketFrameProxy.truncateCloseReason(reason);
       Channel ch = clientChannel;
       if (ch == null) {
         synchronized (lock) {
@@ -344,12 +347,12 @@ public class ProxyWebsocketsIntoGrid
             discardPendingLocked();
             closed = true;
             closeCode = code;
-            closeReason = reason;
+            closeReason = safeReason;
           }
         }
       }
       if (ch != null && ch.isActive()) {
-        ch.writeAndFlush(new CloseWebSocketFrame(code, reason));
+        ch.writeAndFlush(new CloseWebSocketFrame(code, safeReason));
       }
       closeClient();
     }

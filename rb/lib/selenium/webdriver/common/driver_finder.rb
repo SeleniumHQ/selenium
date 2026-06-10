@@ -49,7 +49,7 @@ module Selenium
 
       def paths
         @paths ||= begin
-          path = @service.executable_path || resolve_class_path
+          path = @service.executable_path || env_path || class_path
           path ? paths_from_service(path) : paths_from_manager
         rescue StandardError => e
           WebDriver.logger.error("Exception occurred: #{e.message}")
@@ -58,7 +58,11 @@ module Selenium
         end
       end
 
-      def resolve_class_path
+      def env_path
+        ENV.fetch(@service.class::DRIVER_PATH_ENV_KEY, nil)
+      end
+
+      def class_path
         path = @service.class.driver_path
         path.is_a?(Proc) ? path.call : path
       end

@@ -17,31 +17,20 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.BrowsingContext;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
 public sealed record ResponseCompletedEventArgs(
-    IBiDi BiDi,
     BrowsingContext.BrowsingContext? Context,
     bool IsBlocked,
     Navigation? Navigation,
     long RedirectCount,
     RequestData Request,
-    DateTimeOffset Timestamp,
+    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
     ResponseData Response,
     Browser.UserContext? UserContext,
     ImmutableArray<Intercept>? Intercepts)
-    : EventArgs(BiDi);
-
-internal sealed record ResponseCompletedParameters(
-    BrowsingContext.BrowsingContext? Context,
-    bool IsBlocked,
-    Navigation? Navigation,
-    long RedirectCount,
-    RequestData Request,
-    DateTimeOffset Timestamp,
-    Browser.UserContext? UserContext,
-    ImmutableArray<Intercept>? Intercepts,
-    ResponseData Response)
-    : BaseParameters(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, UserContext, Intercepts);
+    : EventArgs;

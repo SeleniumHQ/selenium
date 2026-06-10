@@ -23,8 +23,8 @@ module Selenium
   module WebDriver
     module Safari
       describe Service,
-               {exclude: {driver: :remote},
-                exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :safari}]} do
+               {skip_if: {driver: :remote},
+                skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :safari}]} do
         let(:service) { described_class.new }
         let(:service_manager) { service.launch }
 

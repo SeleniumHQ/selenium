@@ -436,23 +436,25 @@ Test targets:
 
 | Command                                                                          | Description                                        |
 | -------------------------------------------------------------------------------- | -------------------------------------------------- |
-| `bazel test //rb/...`                                                            | Run unit, all integration tests and lint           |
-| `bazel test //rb:lint`                                                           | Run RuboCop linter                                 |
+| `bazel test //rb/...`                                                            | Run unit and all integration tests                 |
 | `bazel test //rb/spec/...`                                                       | Run unit and integration tests for all browsers    |
 | `bazel test //rb/spec/... --test_size_filters small`                             | Run unit tests                                     |
 | `bazel test //rb/spec/unit/...`                                                  | Run unit tests                                     |
 | `bazel test //rb/spec/... --test_size_filters large`                             | Run integration tests for all browsers             |
 | `bazel test //rb/spec/integration/...`                                           | Run integration tests for all browsers             |
-| `bazel test //rb/spec/integration/... --test_tag_filters firefox`                | Run integration tests for local Firefox only       |
-| `bazel test //rb/spec/integration/... --test_tag_filters firefox-remote`         | Run integration tests for remote Firefox only      |
-| `bazel test //rb/spec/integration/... --test_tag_filters firefox,firefox-remote` | Run integration tests for local and remote Firefox |
+| `bazel test //rb/spec/integration/... --test_tag_filters firefox`        | Run integration tests for every Firefox variant (local, remote, beta, bidi) |
+| `bazel test //rb/spec/integration/... --test_tag_filters firefox-local`  | Run integration tests for local Firefox only                                |
+| `bazel test //rb/spec/integration/... --test_tag_filters firefox-remote` | Run integration tests for remote Firefox only                               |
+| `bazel test //rb/spec/integration/... --test_tag_filters bidi`           | Run bidi-mode tests across every browser that supports BiDi                 |
 
-Ruby test targets have the same name as the spec file with `_spec.rb` removed, so you can run them individually.
-Integration tests targets also have a browser and remote suffix to control which browser to pick and whether to use Grid.
+All unit specs run as a single target, `//rb/spec/unit:unit`.
+
+Integration test targets have the same name as the spec file with `_spec.rb` removed, plus a
+browser-variant suffix to control which browser to pick and whether to use Grid or BiDi
+(e.g. `-chrome`, `-chrome-remote`, `-chrome-beta-bidi`), so you can run them individually.
 
 | Test file                                               | Test target                                                      |
 | ------------------------------------------------------- | ---------------------------------------------------------------- |
-| `rb/spec/unit/selenium/webdriver/proxy_spec.rb`         | `//rb/spec/unit/selenium/webdriver:proxy`                        |
 | `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-chrome`         |
 | `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-chrome-remote`  |
 | `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-firefox`        |

@@ -16,10 +16,10 @@
 // under the License.
 
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
-use crate::shell::run_shell_command_by_os;
+use crate::shell::run_shell_command;
 use crate::{
-    ARCH_ARM7L, Command, ENV_PROCESSOR_ARCHITECTURE, REQUEST_TIMEOUT_SEC, UNAME_COMMAND,
-    default_cache_folder, format_one_arg, path_to_string,
+    ARCH_ARM7L, Command, ENV_PROCESSOR_ARCHITECTURE, REQUEST_TIMEOUT_SEC, default_cache_folder,
+    path_to_string,
 };
 use crate::{ARCH_ARM64, ARCH_X64, ARCH_X86, TTL_SEC};
 use anyhow::Error;
@@ -46,6 +46,7 @@ pub const VERSION_PREFIX: &str = "-version";
 pub const PATH_PREFIX: &str = "-path";
 pub const MIRROR_PREFIX: &str = "-mirror-url";
 pub const CACHE_PATH_KEY: &str = "cache-path";
+const UNAME_COMMAND: &str = "uname";
 
 pub struct ManagerConfig {
     pub cache_path: String,
@@ -91,16 +92,16 @@ impl ManagerConfig {
                 ARCH_X64.to_string()
             }
         } else {
-            let uname_a_command = Command::new_single(format_one_arg(UNAME_COMMAND, "a"));
-            if run_shell_command_by_os(self_os, uname_a_command)
+            let uname_a_command = Command::new(UNAME_COMMAND, vec![String::from("-a")]);
+            if run_shell_command(uname_a_command)
                 .unwrap_or_default()
                 .to_ascii_lowercase()
                 .contains(ARCH_ARM64)
             {
                 ARCH_ARM64.to_string()
             } else {
-                let uname_m_command = Command::new_single(format_one_arg(UNAME_COMMAND, "m"));
-                run_shell_command_by_os(self_os, uname_m_command).unwrap_or_default()
+                let uname_m_command = Command::new(UNAME_COMMAND, vec![String::from("-m")]);
+                run_shell_command(uname_m_command).unwrap_or_default()
             }
         };
 

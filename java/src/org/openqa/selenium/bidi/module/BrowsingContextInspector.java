@@ -20,6 +20,7 @@ package org.openqa.selenium.bidi.module;
 import java.io.StringReader;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -238,6 +239,27 @@ public class BrowsingContextInspector implements AutoCloseable {
     } else {
       this.bidi.addListener(browsingContextIds, navigationEvent, consumer);
     }
+  }
+
+  public void clearListener(String browsingContextId) {
+    Require.nonNull("Browsing context id", browsingContextId);
+    clearListeners(Collections.singleton(browsingContextId));
+  }
+
+  public void clearListeners(Set<String> browsingContextIds) {
+    Require.nonNull("Browsing context id list", browsingContextIds);
+
+    List.of(
+            browsingContextCreated,
+            browsingContextDestroyed,
+            userPromptOpened,
+            userPromptClosed,
+            historyUpdated,
+            downloadWillBeginEvent,
+            downloadEndEvent)
+        .forEach(event -> this.bidi.clearListener(browsingContextIds, event));
+
+    navigationEventSet.forEach(event -> this.bidi.clearListener(browsingContextIds, event));
   }
 
   @Override

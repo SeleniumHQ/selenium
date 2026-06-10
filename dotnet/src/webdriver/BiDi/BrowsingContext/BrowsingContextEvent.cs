@@ -23,78 +23,59 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public static class BrowsingContextEvent
 {
-    public static EventDescriptor<NavigationStartedEventArgs> NavigationStarted { get; } = EventDescriptor<NavigationStartedEventArgs>.Create<NavigationInfo>(
+    public static EventDescriptor<NavigationStartedEventArgs> NavigationStarted { get; } = EventDescriptor<NavigationStartedEventArgs>.Create(
         "browsingContext.navigationStarted",
-        static (bidi, p) => new NavigationStartedEventArgs(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext),
-        Default.NavigationInfo);
+        Default.NavigationStartedEventArgs);
 
-    public static EventDescriptor<FragmentNavigatedEventArgs> FragmentNavigated { get; } = EventDescriptor<FragmentNavigatedEventArgs>.Create<NavigationInfo>(
+    public static EventDescriptor<FragmentNavigatedEventArgs> FragmentNavigated { get; } = EventDescriptor<FragmentNavigatedEventArgs>.Create(
         "browsingContext.fragmentNavigated",
-        static (bidi, p) => new FragmentNavigatedEventArgs(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext),
-        Default.NavigationInfo);
+        Default.FragmentNavigatedEventArgs);
 
-    public static EventDescriptor<HistoryUpdatedEventArgs> HistoryUpdated { get; } = EventDescriptor<HistoryUpdatedEventArgs>.Create<HistoryUpdatedParameters>(
+    public static EventDescriptor<HistoryUpdatedEventArgs> HistoryUpdated { get; } = EventDescriptor<HistoryUpdatedEventArgs>.Create(
         "browsingContext.historyUpdated",
-        static (bidi, p) => new HistoryUpdatedEventArgs(bidi, p.Context, p.Timestamp, p.Url, p.UserContext),
-        Default.HistoryUpdatedParameters);
+        Default.HistoryUpdatedEventArgs);
 
-    public static EventDescriptor<DomContentLoadedEventArgs> DomContentLoaded { get; } = EventDescriptor<DomContentLoadedEventArgs>.Create<NavigationInfo>(
+    public static EventDescriptor<DomContentLoadedEventArgs> DomContentLoaded { get; } = EventDescriptor<DomContentLoadedEventArgs>.Create(
         "browsingContext.domContentLoaded",
-        static (bidi, p) => new DomContentLoadedEventArgs(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext),
-        Default.NavigationInfo);
+        Default.DomContentLoadedEventArgs);
 
-    public static EventDescriptor<LoadEventArgs> Load { get; } = EventDescriptor<LoadEventArgs>.Create<NavigationInfo>(
+    public static EventDescriptor<LoadEventArgs> Load { get; } = EventDescriptor<LoadEventArgs>.Create(
         "browsingContext.load",
-        static (bidi, p) => new LoadEventArgs(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext),
-        Default.NavigationInfo);
+        Default.LoadEventArgs);
 
-    public static EventDescriptor<DownloadWillBeginEventArgs> DownloadWillBegin { get; } = EventDescriptor<DownloadWillBeginEventArgs>.Create<DownloadWillBeginParams>(
+    public static EventDescriptor<DownloadWillBeginEventArgs> DownloadWillBegin { get; } = EventDescriptor<DownloadWillBeginEventArgs>.Create(
         "browsingContext.downloadWillBegin",
-        static (bidi, p) => new DownloadWillBeginEventArgs(bidi, p.Download, p.SuggestedFilename, p.Context, p.Navigation, p.Timestamp, p.Url),
-        Default.DownloadWillBeginParams);
+        Default.DownloadWillBeginEventArgs);
 
-    public static EventDescriptor<DownloadEndEventArgs> DownloadEnd { get; } = EventDescriptor<DownloadEndEventArgs>.Create<DownloadEndParams>(
+    public static EventDescriptor<DownloadEndEventArgs> DownloadEnd { get; } = EventDescriptor<DownloadEndEventArgs>.Create(
         "browsingContext.downloadEnd",
-        static (bidi, p) => p switch
-        {
-            DownloadCanceledParams c => new DownloadCanceledEventArgs(bidi, c.Download, c.Context, c.Navigation, c.Timestamp, c.Url),
-            DownloadCompleteParams c => new DownloadCompleteEventArgs(bidi, c.Download, c.Filepath, c.Context, c.Navigation, c.Timestamp, c.Url),
-            _ => throw new BiDiException($"Unknown {nameof(DownloadEndParams)} type: {p.GetType()}")
-        },
-        Default.DownloadEndParams);
+        Default.DownloadEndEventArgs);
 
-    public static EventDescriptor<NavigationAbortedEventArgs> NavigationAborted { get; } = EventDescriptor<NavigationAbortedEventArgs>.Create<NavigationInfo>(
+    public static EventDescriptor<NavigationAbortedEventArgs> NavigationAborted { get; } = EventDescriptor<NavigationAbortedEventArgs>.Create(
         "browsingContext.navigationAborted",
-        static (bidi, p) => new NavigationAbortedEventArgs(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext),
-        Default.NavigationInfo);
+        Default.NavigationAbortedEventArgs);
 
-    public static EventDescriptor<NavigationFailedEventArgs> NavigationFailed { get; } = EventDescriptor<NavigationFailedEventArgs>.Create<NavigationInfo>(
+    public static EventDescriptor<NavigationFailedEventArgs> NavigationFailed { get; } = EventDescriptor<NavigationFailedEventArgs>.Create(
         "browsingContext.navigationFailed",
-        static (bidi, p) => new NavigationFailedEventArgs(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext),
-        Default.NavigationInfo);
+        Default.NavigationFailedEventArgs);
 
-    public static EventDescriptor<NavigationCommittedEventArgs> NavigationCommitted { get; } = EventDescriptor<NavigationCommittedEventArgs>.Create<NavigationInfo>(
+    public static EventDescriptor<NavigationCommittedEventArgs> NavigationCommitted { get; } = EventDescriptor<NavigationCommittedEventArgs>.Create(
         "browsingContext.navigationCommitted",
-        static (bidi, p) => new NavigationCommittedEventArgs(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext),
-        Default.NavigationInfo);
+        Default.NavigationCommittedEventArgs);
 
-    public static EventDescriptor<ContextCreatedEventArgs> ContextCreated { get; } = EventDescriptor<ContextCreatedEventArgs>.Create<Info>(
+    public static EventDescriptor<ContextCreatedEventArgs> ContextCreated { get; } = EventDescriptor<ContextCreatedEventArgs>.Create(
         "browsingContext.contextCreated",
-        static (bidi, p) => new ContextCreatedEventArgs(bidi, p.Children, p.ClientWindow, p.Context, p.OriginalOpener, p.Url, p.UserContext, p.Parent),
-        Default.Info);
+        Default.ContextCreatedEventArgs);
 
-    public static EventDescriptor<ContextDestroyedEventArgs> ContextDestroyed { get; } = EventDescriptor<ContextDestroyedEventArgs>.Create<Info>(
+    public static EventDescriptor<ContextDestroyedEventArgs> ContextDestroyed { get; } = EventDescriptor<ContextDestroyedEventArgs>.Create(
         "browsingContext.contextDestroyed",
-        static (bidi, p) => new ContextDestroyedEventArgs(bidi, p.Children, p.ClientWindow, p.Context, p.OriginalOpener, p.Url, p.UserContext, p.Parent),
-        Default.Info);
+        Default.ContextDestroyedEventArgs);
 
-    public static EventDescriptor<UserPromptOpenedEventArgs> UserPromptOpened { get; } = EventDescriptor<UserPromptOpenedEventArgs>.Create<UserPromptOpenedParameters>(
+    public static EventDescriptor<UserPromptOpenedEventArgs> UserPromptOpened { get; } = EventDescriptor<UserPromptOpenedEventArgs>.Create(
         "browsingContext.userPromptOpened",
-        static (bidi, p) => new UserPromptOpenedEventArgs(bidi, p.Context, p.Handler, p.Message, p.Type, p.UserContext, p.DefaultValue),
-        Default.UserPromptOpenedParameters);
+        Default.UserPromptOpenedEventArgs);
 
-    public static EventDescriptor<UserPromptClosedEventArgs> UserPromptClosed { get; } = EventDescriptor<UserPromptClosedEventArgs>.Create<UserPromptClosedParameters>(
+    public static EventDescriptor<UserPromptClosedEventArgs> UserPromptClosed { get; } = EventDescriptor<UserPromptClosedEventArgs>.Create(
         "browsingContext.userPromptClosed",
-        static (bidi, p) => new UserPromptClosedEventArgs(bidi, p.Context, p.Accepted, p.Type, p.UserContext, p.UserText),
-        Default.UserPromptClosedParameters);
+        Default.UserPromptClosedEventArgs);
 }

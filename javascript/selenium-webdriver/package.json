@@ -30,6 +30,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "cddl": "^0.20.1",
+    "cddl2ts": "^0.9.1",
     "clean-jsdoc-theme": "^4.3.2",
     "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",

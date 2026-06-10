@@ -1,18 +1,13 @@
 #!/usr/bin/env bash
 #
-# Prune stale CodeQL Actions caches, keeping only the most recently created
-# entry per cache "group". CodeQL's default setup creates a new
-# overlay-base-database cache per commit and never reaps the old ones, which
-# pushes the repo over the 10 GiB per-repo cache budget.
+# Delete ALL CodeQL Actions caches.
 #
-# Grouping:
-#   codeql-overlay-base-database-* -> strip trailing "-<sha>-<runid>-1"
-#   codeql-dependencies-*          -> exact key (GH allows duplicate keys)
+# CodeQL's default setup creates a new cache per commit and never reaps old
+# ones. We reclaim the entire CodeQL slice of the 10 GiB per-repo budget.
+# CodeQL continues to work without a cache — it just re-fetches on each run.
 #
 # Requires GH_TOKEN with `actions: write`. Default is dry-run; pass --delete
-# to actually remove caches. Safe to run concurrently from multiple jobs: a
-# delete that races with another job just returns "not found", which is
-# treated as success.
+# to actually remove caches.
 
 set -euo pipefail
 
@@ -27,44 +22,13 @@ mapfile -t rows < <(
     --jq '.[] | [.id, .key, .createdAt] | @tsv'
 )
 
-declare -A newest_id newest_time
-
-for row in "${rows[@]}"; do
-  IFS=$'\t' read -r id key created <<<"$row"
-
-  if [[ "$key" == codeql-overlay-base-database-* ]]; then
-    group=$(printf '%s' "$key" | sed -E 's/-[0-9a-f]{40}-[0-9]+-1$//')
-  else
-    group="$key"
-  fi
-
-  # ISO8601 sorts lexicographically; keep the newest per group.
-  if [[ -z "${newest_time[$group]:-}" || "$created" > "${newest_time[$group]}" ]]; then
-    newest_time[$group]="$created"
-    newest_id[$group]="$id"
-  fi
-done
-
-echo "Groups found: ${#newest_id[@]}"
-for g in "${!newest_id[@]}"; do
-  echo "  keep id=${newest_id[$g]} @ ${newest_time[$g]}  ($g)"
-done
-echo
+echo "CodeQL caches found: ${#rows[@]}"
 
 deleted=0
 for row in "${rows[@]}"; do
   IFS=$'\t' read -r id key created <<<"$row"
 
-  if [[ "$key" == codeql-overlay-base-database-* ]]; then
-    group=$(printf '%s' "$key" | sed -E 's/-[0-9a-f]{40}-[0-9]+-1$//')
-  else
-    group="$key"
-  fi
-
-  [[ "$id" == "${newest_id[$group]}" ]] && continue
-
   if (( DELETE )); then
-    # Tolerate races: another concurrent job may have already deleted it.
     if out=$(gh cache delete "$id" 2>&1); then
       echo "deleted id=$id key=$key"
     elif printf '%s' "$out" | grep -qi 'not found\|HTTP 404'; then
@@ -74,7 +38,7 @@ for row in "${rows[@]}"; do
       continue
     fi
   else
-    echo "would delete id=$id key=$key"
+    echo "would delete id=$id key=$key ($created)"
   fi
   deleted=$((deleted + 1))
 done

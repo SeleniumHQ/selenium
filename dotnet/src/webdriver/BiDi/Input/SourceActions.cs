@@ -41,14 +41,7 @@ public interface ISourceAction;
 public interface IKeySourceAction : ISourceAction;
 
 public sealed record KeySourceActions(string Id, ImmutableArray<IKeySourceAction> Actions)
-    : SourceActions<IKeySourceAction>(Id, Actions)
-{
-    [Obsolete("This helper method will be removed in a future version. Use KeyDownAction and KeyUpAction directly instead.")]
-    public KeySourceActions Type(string text) => this with
-    {
-        Actions = [.. Actions, .. text.SelectMany<char, IKeySourceAction>(c => [new KeyDownAction(c), new KeyUpAction(c)])]
-    };
-}
+    : SourceActions<IKeySourceAction>(Id, Actions);
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(PauseAction), "pause")]

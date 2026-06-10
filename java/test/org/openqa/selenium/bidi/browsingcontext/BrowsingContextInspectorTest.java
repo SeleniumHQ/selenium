@@ -24,11 +24,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -315,6 +319,71 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
           .isEqualTo("http://invalid-domain-that-does-not-exist.test/");
       assertThat(navigationInfo.getTimestamp())
           .isBetween(currentTimeMillis() - 1000, currentTimeMillis());
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canClearListenersForBrowsingContext()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<NavigationInfo> future = new CompletableFuture<>();
+      inspector.onDomContentLoaded(future::complete);
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      context.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);
+
+      NavigationInfo navigationInfo = future.get(5, TimeUnit.SECONDS);
+      assertThat(navigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
+
+      // Clear listeners for this browsing context
+      inspector.clearListener(context.getId());
+
+      // Re-subscribe and verify events still work after re-subscribing
+      CompletableFuture<NavigationInfo> newFuture = new CompletableFuture<>();
+      inspector.onDomContentLoaded(newFuture::complete);
+
+      context.navigate(appServer.whereIs("/simpleTest.html"), ReadinessState.COMPLETE);
+
+      NavigationInfo newNavigationInfo = newFuture.get(5, TimeUnit.SECONDS);
+      assertThat(newNavigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
+      assertThat(newNavigationInfo.getUrl()).contains("/simpleTest.html");
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canClearListenersForMultipleBrowsingContexts()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    Set<String> browsingContextIds = new HashSet<>();
+    browsingContextIds.add(driver.getWindowHandle());
+
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      List<NavigationInfo> receivedEvents = new ArrayList<>();
+      CountDownLatch latch = new CountDownLatch(1);
+      inspector.onNavigationStarted(
+          info -> {
+            receivedEvents.add(info);
+            latch.countDown();
+          });
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      context.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);
+
+      latch.await(5, TimeUnit.SECONDS);
+      assertThat(receivedEvents).hasSizeGreaterThanOrEqualTo(1);
+
+      // Clear listeners for the set of browsing context ids
+      inspector.clearListeners(browsingContextIds);
+
+      // Re-subscribe with a new listener after clearing
+      CompletableFuture<NavigationInfo> newFuture = new CompletableFuture<>();
+      inspector.onNavigationStarted(newFuture::complete);
+
+      context.navigate(appServer.whereIs("/simpleTest.html"), ReadinessState.COMPLETE);
+
+      NavigationInfo newNavigationInfo = newFuture.get(5, TimeUnit.SECONDS);
+      assertThat(newNavigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
     }
   }
 

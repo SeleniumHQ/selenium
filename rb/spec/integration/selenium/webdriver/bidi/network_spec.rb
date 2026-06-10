@@ -22,8 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     class BiDi
-      describe Network, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
-                        only: {browser: %i[chrome edge firefox]} do
+      describe Network, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
         after { |example| reset_driver!(example: example) }
 
         it 'adds an intercept' do
@@ -127,8 +126,8 @@ module Selenium
           expect(driver.find_element(name: 'login')).to be_displayed
         end
 
-        it 'provides response', except: {browser: :firefox,
-                                         reason: 'https://github.com/w3c/webdriver-bidi/issues/747'} do
+        it 'provides response', pending_if: {browser: :firefox,
+                                             reason: 'https://github.com/w3c/webdriver-bidi/issues/747'} do
           network = described_class.new(driver.bidi)
           network.add_intercept(phases: [described_class::PHASES[:response_started]])
           network.on(:response_started) do |event|

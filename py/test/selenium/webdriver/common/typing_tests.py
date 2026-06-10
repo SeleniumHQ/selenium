@@ -98,7 +98,6 @@ def test_list_of_arrow_keys_should_not_be_printable(driver, pages):
     assert keyReporter.get_attribute("value") == ""
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_use_arrow_keys(driver, pages):
     pages.load("javascriptPage.html")
     keyReporter = driver.find_element(by=By.ID, value="keyReporter")
@@ -213,7 +212,6 @@ def test_numeric_shift_keys(driver, pages):
     assert "up: 16" in result.text.strip()
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_lower_case_alpha_keys(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
@@ -237,7 +235,6 @@ def test_uppercase_alpha_keys(driver, pages):
 
 @pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
 @pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_all_printable_keys(driver, pages):
     pages.load("javascriptPage.html")
     result = driver.find_element(by=By.ID, value="result")
@@ -272,7 +269,6 @@ def test_arrow_keys_and_page_up_and_down(driver, pages):
 #  assert element.get_attribute("value") == "0000abc1111"
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_delete_and_backspace_keys(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
@@ -288,7 +284,6 @@ def test_delete_and_backspace_keys(driver, pages):
 
 @pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
 @pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_special_space_keys(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
@@ -339,7 +334,6 @@ def test_shift_selection_deletes(driver, pages):
     assert element.get_attribute("value") == "abcd e"
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_type_into_input_elements_that_have_no_type_attribute(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element(by=By.ID, value="no-type")

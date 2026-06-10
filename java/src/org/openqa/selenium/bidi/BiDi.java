@@ -24,6 +24,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 import org.openqa.selenium.WebDriverException;
@@ -34,6 +36,7 @@ public class BiDi implements Closeable {
 
   private final Duration timeout;
   private final Connection connection;
+  private final Map<Event<?>, List<Long>> contextListenerIds = new ConcurrentHashMap<>();
 
   /**
    * @deprecated Use constructor with timeout parameter: {@link #BiDi(Connection, Duration)}
@@ -100,11 +103,13 @@ public class BiDi implements Closeable {
             "session.subscribe",
             Map.of("contexts", List.of(browsingContextId), "events", List.of(event.getMethod()))));
 
-    return connection.addListener(event, handler);
+    long id = connection.addListener(event, handler);
+    contextListenerIds.computeIfAbsent(event, k -> new CopyOnWriteArrayList<>()).add(id);
+    return id;
   }
 
   public <X> long addListener(Set<String> browsingContextIds, Event<X> event, Consumer<X> handler) {
-    Require.nonNull("List of browsing context ids", browsingContextIds);
+    Require.nonEmpty("List of browsing context ids", browsingContextIds);
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Handler to call", handler);
 
@@ -113,7 +118,9 @@ public class BiDi implements Closeable {
             "session.subscribe",
             Map.of("contexts", browsingContextIds, "events", List.of(event.getMethod()))));
 
-    return connection.addListener(event, handler);
+    long id = connection.addListener(event, handler);
+    contextListenerIds.computeIfAbsent(event, k -> new CopyOnWriteArrayList<>()).add(id);
+    return id;
   }
 
   public <X> void clearListener(Event<X> event) {
@@ -122,6 +129,32 @@ public class BiDi implements Closeable {
     // The browser throws an error if we try to unsubscribe an event that was not subscribed in the
     // first place
     if (connection.isEventSubscribed(event)) {
+      send(new Command<>("session.unsubscribe", Map.of("events", List.of(event.getMethod()))));
+      connection.clearListener(event);
+    }
+  }
+
+  public <X> void clearListener(Set<String> browsingContextIds, Event<X> event) {
+    Require.nonEmpty("List of browsing context ids", browsingContextIds);
+    Require.nonNull("Event to listen for", event);
+
+    // The browser throws an error if we try to unsubscribe an event that was not subscribed in the
+    // first place
+    if (!connection.isEventSubscribed(event)) {
+      return;
+    }
+
+    List<Long> ids = contextListenerIds.remove(event);
+    if (ids != null && !ids.isEmpty()) {
+      // Subscription was context-specific: unsubscribe only for those contexts.
+      send(
+          new Command<>(
+              "session.unsubscribe",
+              Map.of("contexts", browsingContextIds, "events", List.of(event.getMethod()))));
+      ids.forEach(connection::removeListener);
+    } else {
+      // Subscription was global: context-specific unsubscription is invalid per the BiDi protocol,
+      // so fall back to a global unsubscription.
       send(new Command<>("session.unsubscribe", Map.of("events", List.of(event.getMethod()))));
       connection.clearListener(event);
     }

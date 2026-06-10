@@ -127,14 +127,16 @@ end
 
 desc 'Run .NET linter (dotnet format analyzers, docs)'
 task :lint do
-  puts '  Running dotnet format analyzers...'
-  Bazel.execute('run', ['--', 'analyzers', '--verify-no-changes'], '//dotnet:format')
-  Rake::Task['dotnet:docs_generate'].invoke
+  steps = {
+    dotnet_format_analyzers: -> { Bazel.execute('run', ['--', 'analyzers', '--verify-no-changes'], '//dotnet:format') },
+    dotnet_docs: -> { Rake::Task['dotnet:docs_generate'].invoke }
+  }
 
-  # TODO: Identify specific diagnostics that we want to enforce but can't be auto-corrected (e.g., 'IDE0060'):
   enforced_diagnostics = []
-  next if enforced_diagnostics.empty?
+  if enforced_diagnostics&.any?
+    arguments = %w[-- style --severity info --verify-no-changes --diagnostics] + enforced_diagnostics
+    steps[:dotnet_format_style] = -> { Bazel.execute('run', arguments, '//dotnet:format') }
+  end
 
-  arguments = %w[-- style --severity info --verify-no-changes --diagnostics] + enforced_diagnostics
-  Bazel.execute('run', arguments, '//dotnet:format')
+  SeleniumRake.aggregate_errors(**steps)
 end

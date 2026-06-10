@@ -34,6 +34,14 @@ def setup_gem_credentials
   File.chmod(0o600, credentials)
 end
 
+def publish_gem(target)
+  Bazel.execute('run', ['--config=release'], target)
+rescue RuntimeError => e
+  raise unless e.message.match?(/Repushing of gem versions/i)
+
+  puts "Gem version already published — skipping #{target}."
+end
+
 desc 'Generate Ruby gems'
 task :build do |_task, arguments|
   args = arguments.to_a
@@ -81,20 +89,14 @@ task :release do |_task, arguments|
     Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
 
     puts 'Releasing nightly WebDriver gem...'
-    begin
-      Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release-nightly')
-    rescue RuntimeError => e
-      raise unless e.message.match?(/Repushing of gem versions is not allowed/i)
-
-      puts 'Nightly gem version already published to GitHub Packages — skipping.'
-    end
+    publish_gem('//rb:selenium-webdriver-release-nightly')
   else
     setup_gem_credentials
     patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?
 
     puts 'Releasing Ruby gems...'
-    Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release')
-    Bazel.execute('run', ['--config=release'], '//rb:selenium-devtools-release') unless patch_release
+    publish_gem('//rb:selenium-webdriver-release')
+    publish_gem('//rb:selenium-devtools-release') unless patch_release
   end
 end
 
@@ -161,11 +163,11 @@ end
 desc 'Run Ruby linters (rubocop, steep, docs)'
 task :lint do |_task, arguments|
   flag = arguments.to_a.include?('-A') ? '-A' : '-a'
-  puts '  Running rubocop...'
-  Bazel.execute('run', ['--', flag], '//rb:rubocop')
-  puts '  Running steep type checker...'
-  Bazel.execute('run', [], '//rb:steep')
-  Rake::Task['rb:docs_generate'].invoke
+  SeleniumRake.aggregate_errors(
+    rubocop: -> { Bazel.execute('run', ['--', flag], '//rb:rubocop') },
+    steep_type_checker: -> { Bazel.execute('run', [], '//rb:steep') },
+    ruby_docs: -> { Rake::Task['rb:docs_generate'].invoke }
+  )
 end
 
 desc 'Sync gem checksums from Gemfile.lock to MODULE.bazel (use force to re-download all)'

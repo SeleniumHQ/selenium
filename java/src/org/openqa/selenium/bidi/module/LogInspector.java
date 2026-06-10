@@ -152,8 +152,18 @@ public class LogInspector implements AutoCloseable {
     }
   }
 
+  public void clearListener(String browsingContextId) {
+    Require.nonNull("Browsing context id", browsingContextId);
+    clearListeners(Collections.singleton(browsingContextId));
+  }
+
+  public void clearListeners(Set<String> browsingContextIds) {
+    Require.nonNull("Browsing context id list", browsingContextIds);
+    this.bidi.clearListener(browsingContextIds, this.logEntryAddedEvent);
+  }
+
   @Override
   public void close() {
-    this.bidi.clearListener(Log.entryAdded());
+    this.bidi.clearListener(this.logEntryAddedEvent);
   }
 }

@@ -33,6 +33,21 @@ module Selenium
                                                                      Chrome::Service::EXECUTABLE)
       end
 
+      it 'env path takes precedence over class path without calling Selenium Manager' do
+        original = ENV.fetch('SE_CHROMEDRIVER', nil)
+        ENV['SE_CHROMEDRIVER'] = '/env/path/to/chromedriver'
+        allow(Chrome::Service).to receive(:driver_path).and_return('/class/path')
+        allow(SeleniumManager).to receive(:binary_paths)
+        allow(Platform).to receive(:assert_executable).with('/env/path/to/chromedriver').and_return(true)
+
+        described_class.new(Options.chrome, Service.chrome).driver_path
+
+        expect(SeleniumManager).not_to have_received(:binary_paths)
+        expect(Platform).to have_received(:assert_executable).with('/env/path/to/chromedriver')
+      ensure
+        original.nil? ? ENV.delete('SE_CHROMEDRIVER') : ENV['SE_CHROMEDRIVER'] = original
+      end
+
       it 'class path accepts a String without calling Selenium Manager' do
         allow(Chrome::Service).to receive(:driver_path).and_return('path')
         allow(SeleniumManager).to receive(:binary_paths)

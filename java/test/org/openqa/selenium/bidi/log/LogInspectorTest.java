@@ -20,7 +20,9 @@ package org.openqa.selenium.bidi.log;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -427,6 +429,74 @@ class LogInspectorTest extends JupiterTestBase {
       latch.await();
 
       assertThat(latch.getCount()).isZero();
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canClearListenersForBrowsingContext()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    String browsingContextId = driver.getWindowHandle();
+    try (LogInspector logInspector = new LogInspector(driver)) {
+      CompletableFuture<ConsoleLogEntry> future = new CompletableFuture<>();
+      logInspector.onConsoleEntry(future::complete);
+
+      page = appServer.whereIs("/bidi/logEntryAdded.html");
+      driver.get(page);
+      driver.findElement(By.id("consoleLog")).click();
+
+      ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
+      assertThat(logEntry.getText()).isEqualTo("Hello, world!");
+
+      // Clear listeners for this browsing context
+      logInspector.clearListener(browsingContextId);
+
+      // Re-subscribe and verify events still work after re-subscribing
+      CompletableFuture<ConsoleLogEntry> newFuture = new CompletableFuture<>();
+      logInspector.onConsoleEntry(newFuture::complete);
+
+      driver.findElement(By.id("consoleLog")).click();
+
+      ConsoleLogEntry newLogEntry = newFuture.get(5, TimeUnit.SECONDS);
+      assertThat(newLogEntry.getText()).isEqualTo("Hello, world!");
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canClearListenersForMultipleBrowsingContexts()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    Set<String> browsingContextIds = new HashSet<>();
+    browsingContextIds.add(driver.getWindowHandle());
+
+    try (LogInspector logInspector = new LogInspector(driver)) {
+      List<ConsoleLogEntry> receivedEntries = new ArrayList<>();
+      CountDownLatch latch = new CountDownLatch(1);
+      logInspector.onConsoleEntry(
+          entry -> {
+            receivedEntries.add(entry);
+            latch.countDown();
+          });
+
+      page = appServer.whereIs("/bidi/logEntryAdded.html");
+      driver.get(page);
+      driver.findElement(By.id("consoleLog")).click();
+
+      latch.await(5, TimeUnit.SECONDS);
+      assertThat(receivedEntries).hasSize(1);
+      assertThat(receivedEntries.get(0).getText()).isEqualTo("Hello, world!");
+
+      // Clear listeners for the set of browsing context ids
+      logInspector.clearListeners(browsingContextIds);
+
+      // Re-subscribe with a new listener after clearing
+      CompletableFuture<ConsoleLogEntry> newFuture = new CompletableFuture<>();
+      logInspector.onConsoleEntry(newFuture::complete);
+
+      driver.findElement(By.id("consoleLog")).click();
+
+      ConsoleLogEntry newLogEntry = newFuture.get(5, TimeUnit.SECONDS);
+      assertThat(newLogEntry.getText()).isEqualTo("Hello, world!");
     }
   }
 
