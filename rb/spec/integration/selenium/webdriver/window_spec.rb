@@ -22,8 +22,6 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Window, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
-      after(:all) { reset_driver! }
-
       let(:window) { driver.manage.window }
 
       before { window.rect = Rectangle.new(50, 50, 600, 500) }
