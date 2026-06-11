@@ -235,11 +235,28 @@ def test_continue_request_explicit_args_override_recorded_mutations():
     params = {"request": {"url": "https://example.com/api", "request": "request-id-4"}}
     request = Request(conn, params)
 
+    # A recorded mutation on a different field must survive when only one
+    # field is overridden via the keyword argument.
+    request.set_url("https://example.com/recorded")
     request.set_method("GET")
     request.continue_request(method="DELETE")
 
     sent = conn.commands_named("network.continueRequest")[0]["params"]
     assert sent["method"] == "DELETE"
+    assert sent["url"] == "https://example.com/recorded"
+
+
+def test_continue_request_keeps_falsy_body_override():
+    conn = FakeConnection()
+    params = {"request": {"url": "https://example.com/api", "request": "request-id-6"}}
+    request = Request(conn, params)
+
+    # An empty-string body is a valid value, not "unset": it must not be
+    # dropped by the None filter.
+    request.continue_request(body="")
+
+    sent = conn.commands_named("network.continueRequest")[0]["params"]
+    assert sent["body"] == {"type": "string", "value": ""}
 
 
 def test_continue_response_translates_explicit_args_to_wire_format():
