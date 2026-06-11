@@ -209,6 +209,56 @@ def test_continue_request_sends_command_for_regular_urls():
     assert conn.commands[0]["params"]["request"] == "request-id-2"
 
 
+def test_continue_request_translates_explicit_args_to_wire_format():
+    conn = FakeConnection()
+    params = {"request": {"url": "https://example.com/api", "request": "request-id-3"}}
+    request = Request(conn, params)
+
+    request.continue_request(
+        url="https://example.com/redirected",
+        method="POST",
+        headers={"x-test": "1"},
+        cookies=[{"name": "sid", "value": "abc"}],
+        body="payload",
+    )
+
+    sent = conn.commands_named("network.continueRequest")[0]["params"]
+    assert sent["url"] == "https://example.com/redirected"
+    assert sent["method"] == "POST"
+    assert sent["headers"] == [{"name": "x-test", "value": {"type": "string", "value": "1"}}]
+    assert sent["cookies"] == [{"name": "sid", "value": {"type": "string", "value": "abc"}}]
+    assert sent["body"] == {"type": "string", "value": "payload"}
+
+
+def test_continue_request_explicit_args_override_recorded_mutations():
+    conn = FakeConnection()
+    params = {"request": {"url": "https://example.com/api", "request": "request-id-4"}}
+    request = Request(conn, params)
+
+    request.set_method("GET")
+    request.continue_request(method="DELETE")
+
+    sent = conn.commands_named("network.continueRequest")[0]["params"]
+    assert sent["method"] == "DELETE"
+
+
+def test_continue_response_translates_explicit_args_to_wire_format():
+    conn = FakeConnection()
+    params = {"request": {"request": "request-id-5"}, "response": {"url": "https://example.com/api"}}
+    response = Response(conn, params)
+
+    response.continue_response(
+        status=503,
+        reason_phrase="Service Unavailable",
+        headers={"x-test": "1"},
+    )
+
+    sent = conn.commands_named("network.continueResponse")[0]["params"]
+    assert sent["statusCode"] == 503
+    assert sent["reasonPhrase"] == "Service Unavailable"
+    assert sent["headers"] == [{"name": "x-test", "value": {"type": "string", "value": "1"}}]
+
+
 def test_request_parses_event_properties():
     request = Request(FakeConnection(), make_before_request_event())
 
