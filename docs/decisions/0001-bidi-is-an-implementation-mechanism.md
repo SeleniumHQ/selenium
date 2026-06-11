@@ -24,13 +24,20 @@ A binding conforms when:
 1. The supported API never references BiDi — no types, methods, properties, or entry points. 
 2. BiDi implementation code (including everything generated from CDDL) is visibly internal — marked per language convention as not intended for public consumption.
 
+This includes removing/renaming: 
+* `HasBiDi` interface
+* `bidi_connection`, `bidi`, `getBidi`, `AsBiDiAsync` methods
+* `enable_bidi` methods in options
+
 ## Considered options
 
 1. Expose the whole protocol as a public API (Rejected)
    * not user-friendly syntax
 2. A supported-but-separate public protocol namespace (Rejected)
    * multiple implementations are confusing
-3. Internal implementation mechanism only (Accepted)
+3. Allow methods and classes to reference BiDi
+   * users shouldn't need to know the underlying implementation mechanism, things should just work without additional ceremony
+4. Internal implementation mechanism only (Accepted)
 
 ## Consequences
 
