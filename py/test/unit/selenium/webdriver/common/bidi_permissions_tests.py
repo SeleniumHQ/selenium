@@ -46,6 +46,7 @@ class FakeConnection:
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def make_permissions(conn=None):
     """Return a Permissions instance backed by *conn* (creates a new one if omitted)."""
     if conn is None:
@@ -241,7 +242,7 @@ class TestOverrideContextManager:
 
 
 # ---------------------------------------------------------------------------
-# set_permission (existing behaviour, unchanged)
+# set_permission
 # ---------------------------------------------------------------------------
 
 
@@ -249,30 +250,38 @@ class TestSetPermission:
     def test_invalid_state_raises(self):
         perms, conn = make_permissions()
         with pytest.raises(ValueError, match="Invalid permission state"):
-            perms.set_permission("geolocation", "invalid", "https://example.com")
+            perms.set_permission("geolocation", "invalid", origin="https://example.com")
 
     def test_accepts_permission_descriptor(self):
         perms, conn = make_permissions()
-        perms.set_permission(PermissionDescriptor("geolocation"), PermissionState.GRANTED, "https://example.com")
+        perms.set_permission(PermissionDescriptor("geolocation"), PermissionState.GRANTED, origin="https://example.com")
         params = conn.last_set_permission()
         assert params["descriptor"] == {"name": "geolocation"}
         assert params["state"] == "granted"
 
-    def test_embedded_origin_is_keyword_only(self):
+    def test_origin_is_keyword_only(self):
         perms, conn = make_permissions()
         with pytest.raises(TypeError):
-            perms.set_permission("geolocation", "granted", "https://example.com", None, "https://example.com")
+            perms.set_permission("geolocation", "granted", "https://example.com")
 
-    def test_embedded_origin_accepted_as_keyword(self):
+    def test_user_context_is_keyword_only(self):
+        perms, conn = make_permissions()
+        with pytest.raises(TypeError):
+            perms.set_permission("geolocation", "granted", "https://example.com", "ctx-1")
+
+    def test_scoping_args_accepted_as_keywords(self):
         perms, conn = make_permissions()
         perms.set_permission(
             "geolocation",
             "granted",
-            "https://example.com",
-            embedded_origin="https://example.com",
+            origin="https://example.com",
+            user_context="ctx-1",
+            embedded_origin="https://embedded.example.com",
         )
         params = conn.last_set_permission()
-        assert params["embeddedOrigin"] == "https://example.com"
+        assert params["origin"] == "https://example.com"
+        assert params["userContext"] == "ctx-1"
+        assert params["embeddedOrigin"] == "https://embedded.example.com"
 
 
 # ---------------------------------------------------------------------------

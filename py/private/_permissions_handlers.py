@@ -119,7 +119,7 @@ class PermissionsManager:
         user_context: str | None,
     ) -> None:
         """Send the BiDi command and update the tracking dict."""
-        self._permissions.set_permission(descriptor, state, origin, user_context)
+        self._permissions.set_permission(descriptor, state, origin=origin, user_context=user_context)
         name = _descriptor_name(descriptor)
         if state == "prompt":
             self._active_overrides.pop((name, origin, user_context), None)
@@ -198,8 +198,8 @@ class PermissionsManager:
                 (ignored when resetting all).
         """
         if descriptor is None:
-            for (name, o, uc) in list(self._active_overrides):
-                self._permissions.set_permission(name, "prompt", o, uc)
+            for name, o, uc in list(self._active_overrides):
+                self._permissions.set_permission(name, "prompt", origin=o, user_context=uc)
                 logger.debug(
                     "Permission %r reset (origin=%r, user_context=%r)",
                     name,
