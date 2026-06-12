@@ -2,6 +2,13 @@
 
 load("@aspect_rules_js//js:defs.bzl", "js_run_binary")
 
+# Language bindings that may consume the shared bidi-ast.json / bidi-model.json artifacts.
+_ARTIFACT_VISIBILITY = [
+    "//java:__subpackages__",
+    "//py:__subpackages__",
+    "//rb:__subpackages__",
+]
+
 # Output TypeScript file names produced by generate_bidi.mjs, one per domain.
 _DOMAIN_TS_FILES = [
     "bluetooth.ts",
@@ -147,15 +154,50 @@ def generate_bidi_library(
         tool = merge_tool,
     )
 
-    # Step 2: run generate_bidi.mjs → 15 .ts files (one per BiDi domain).
-    # js_run_binary automatically sets BAZEL_BINDIR in the action environment.
-    # The generator reads BAZEL_BINDIR and prepends it to --output-dir so the
-    # files land in the correct bazel-out location.
+    # Step 2: parse the merged CDDL once into the reusable AST artifact.
+    # Exposed to the other bindings so they can consume it directly.
+    ast_target = name + "_ast"
+    ast_out = name + "_ast.json"
+    js_run_binary(
+        name = ast_target,
+        srcs = [":" + merged_name],
+        outs = [ast_out],
+        args = [
+            "--cddl",
+            "$(location :" + merged_name + ")",
+            "--dump-ast",
+            pkg + "/" + ast_out,
+        ],
+        tool = generator,
+        visibility = _ARTIFACT_VISIBILITY,
+    )
+
+    # Step 3: extract the binding-neutral command/event model from the AST.
+    # Exposed to the other bindings so they can consume it directly.
+    json_target = name + "_json"
+    model_out = name + "_model.json"
+    js_run_binary(
+        name = json_target,
+        srcs = [":" + ast_target],
+        outs = [model_out],
+        args = [
+            "--ast",
+            "$(location :" + ast_target + ")",
+            "--dump-model",
+            pkg + "/" + model_out,
+        ],
+        tool = generator,
+        visibility = _ARTIFACT_VISIBILITY,
+    )
+
+    # Step 4: generate one .ts module per BiDi domain from the AST + model.
     ts_outs = [ts_src_path + "/" + f for f in _DOMAIN_TS_FILES]
-    gen_srcs = [":" + merged_name]
+    gen_srcs = [":" + ast_target, ":" + json_target]
     gen_args = [
-        "--cddl",
-        "$(location :" + merged_name + ")",
+        "--ast",
+        "$(location :" + ast_target + ")",
+        "--model",
+        "$(location :" + json_target + ")",
         "--output-dir",
         pkg + "/" + ts_src_path,
         "--spec-version",
@@ -174,8 +216,7 @@ def generate_bidi_library(
         tool = generator,
     )
 
-    # Step 3: compile .ts → .js + .d.ts via tsc.
-    # Uses a custom rule so ctx.bin_dir.path is available for the --outDir arg.
+    # Step 5: compile .ts → .js + .d.ts via tsc (custom rule for ctx.bin_dir.path).
     _compile_bidi_ts(
         name = name,
         srcs = [":" + ts_target],
