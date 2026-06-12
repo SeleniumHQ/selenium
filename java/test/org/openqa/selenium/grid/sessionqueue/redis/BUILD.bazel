@@ -1,0 +1,33 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_test_suite")
+load("//java:version.bzl", "TOOLS_JAVA_VERSION")
+
+java_test_suite(
+    name = "MediumTests",
+    size = "medium",
+    srcs = glob(["*Test.java"]),
+    javacopts = [
+        "--release",
+        TOOLS_JAVA_VERSION,
+    ],
+    tags = ["skip-rbe"],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/data",
+        "//java/src/org/openqa/selenium/grid/security",
+        "//java/src/org/openqa/selenium/grid/sessionqueue",
+        "//java/src/org/openqa/selenium/grid/sessionqueue/redis",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/redis",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("com.google.guava:guava"),
+        artifact("org.testcontainers:testcontainers"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.jspecify:jspecify"),
+    ] + JUNIT5_DEPS,
+)
