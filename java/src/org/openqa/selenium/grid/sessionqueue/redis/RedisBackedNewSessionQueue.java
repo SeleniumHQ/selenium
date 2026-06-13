@@ -36,6 +36,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -96,6 +98,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
     description = "Stateless Redis-backed new session queue")
 public class RedisBackedNewSessionQueue extends NewSessionQueue implements Closeable {
 
+  private static final Logger LOG = Logger.getLogger(RedisBackedNewSessionQueue.class.getName());
   private static final String NAME = "Redis New Session Queue";
   private static final Json JSON = new Json();
 
@@ -238,21 +241,32 @@ public class RedisBackedNewSessionQueue extends NewSessionQueue implements Close
       // Register the latch before the request becomes claimable so a completion can never be
       // missed.
       waiters.put(reqId, latch);
-      redis.setWithTtl(endTimeKey(reqId), String.valueOf(endTime.toEpochMilli()), keyTtlMillis);
-      redis.setWithTtl(requestKey(reqId), JSON.toJson(request), keyTtlMillis);
-      redis.rpush(QUEUE_KEY, reqId.toString());
 
-      if (isTimedOut(Instant.now(), endTime)) {
-        failDueToTimeout(reqId);
+      Either<SessionNotCreatedException, CreateSessionResponse> result;
+      try {
+        redis.setWithTtl(endTimeKey(reqId), String.valueOf(endTime.toEpochMilli()), keyTtlMillis);
+        redis.setWithTtl(requestKey(reqId), JSON.toJson(request), keyTtlMillis);
+        redis.rpush(QUEUE_KEY, reqId.toString());
+
+        if (isTimedOut(Instant.now(), endTime)) {
+          failDueToTimeout(reqId);
+        }
+
+        result = awaitResult(reqId, latch, endTime);
+      } catch (RuntimeException e) {
+        // A failure while enqueuing or awaiting (e.g. a Redis connection reset) must not leak
+        // tracking state; report it to the caller as a failed session creation.
+        result =
+            Either.left(
+                new SessionNotCreatedException("Unable to enqueue the new session request", e));
+      } finally {
+        // Guarantee in-memory tracking is removed on every terminal path, including partial
+        // failures while enqueuing. Redis cleanup is best-effort and self-guarded so it can never
+        // mask the result returned to the caller.
+        waiters.remove(reqId);
+        contexts.remove(reqId);
+        safelyClearRedisState(reqId);
       }
-
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-          awaitResult(reqId, latch, endTime);
-
-      waiters.remove(reqId);
-      contexts.remove(reqId);
-      redis.lrem(QUEUE_KEY, reqId.toString());
-      clearAll(reqId);
 
       HttpResponse res = new HttpResponse();
       if (result.isRight()) {
@@ -601,5 +615,23 @@ public class RedisBackedNewSessionQueue extends NewSessionQueue implements Close
         completedKey(reqId),
         resultStatusKey(reqId),
         resultPayloadKey(reqId));
+  }
+
+  /**
+   * Best-effort removal of the queue entry and all Redis keys for a request. Any failure here (for
+   * example a closed Redis connection during shutdown) is swallowed so it cannot mask the result
+   * being returned to the caller; orphaned keys are bounded by their TTL.
+   */
+  private void safelyClearRedisState(RequestId reqId) {
+    try {
+      redis.lrem(QUEUE_KEY, reqId.toString());
+      clearAll(reqId);
+    } catch (RuntimeException e) {
+      LOG.log(
+          Level.FINE,
+          e,
+          () ->
+              "Failed to clean up Redis state for request " + reqId + "; keys will expire by TTL");
+    }
   }
 }
