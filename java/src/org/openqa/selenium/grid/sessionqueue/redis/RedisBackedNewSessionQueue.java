@@ -294,7 +294,15 @@ public class RedisBackedNewSessionQueue extends NewSessionQueue implements Close
               : Either.left(new SessionNotCreatedException("New session request timed out"));
         }
 
-        latch.await(Math.min(remaining, POLL_INTERVAL_MS), MILLISECONDS);
+        // A countdown means a same-replica complete() fired, so read the freshly written result
+        // immediately. Otherwise we loop and poll Redis for a result a different replica may have
+        // written.
+        if (latch.await(Math.min(remaining, POLL_INTERVAL_MS), MILLISECONDS)) {
+          Either<SessionNotCreatedException, CreateSessionResponse> signalled = readResult(reqId);
+          if (signalled != null) {
+            return signalled;
+          }
+        }
       }
     } catch (InterruptedException e) {
       // the client will never see the session, ensure the session is disposed
