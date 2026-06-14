@@ -185,6 +185,32 @@ class RedisBackedNewSessionQueueTest {
   }
 
   @Test
+  void duplicateCompleteAfterConsumerReturnsIsRejected() throws Exception {
+    SessionRequest request = createRequest();
+
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    try {
+      Future<HttpResponse> response = executor.submit(() -> queue.addToQueue(request));
+
+      waitUntilQueued(queue, request);
+      boolean first =
+          queue.complete(request.getRequestId(), Either.right(createSessionResponse(request)));
+      assertThat(first).isTrue();
+
+      // addToQueue has returned (and run its cleanup) by the time the future resolves.
+      assertThat(response.get(5, TimeUnit.SECONDS).getStatus()).isEqualTo(HTTP_OK);
+
+      // The winner-takes-all completion marker must survive cleanup so a late or duplicate
+      // completion from another replica loses and is told to tear its session down.
+      boolean second =
+          queue.complete(request.getRequestId(), Either.right(createSessionResponse(request)));
+      assertThat(second).isFalse();
+    } finally {
+      executor.shutdownNow();
+    }
+  }
+
+  @Test
   void secondReplicaCompletesRequestEnqueuedByFirstReplica() throws Exception {
     RedisBackedNewSessionQueue secondReplica = newQueue(Duration.ofSeconds(5));
     SessionRequest request = createRequest();

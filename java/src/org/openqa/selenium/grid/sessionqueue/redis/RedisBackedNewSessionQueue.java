@@ -21,7 +21,6 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 
-import com.google.common.annotations.VisibleForTesting;
 import java.io.Closeable;
 import java.net.URI;
 import java.time.Duration;
@@ -605,27 +604,18 @@ public class RedisBackedNewSessionQueue extends NewSessionQueue implements Close
     redis.del(endTimeKey(reqId), requestKey(reqId), canceledKey(reqId));
   }
 
-  /** Removes every key for a request, including the completion marker and result. */
-  @VisibleForTesting
-  void clearAll(RequestId reqId) {
-    redis.del(
-        endTimeKey(reqId),
-        requestKey(reqId),
-        canceledKey(reqId),
-        completedKey(reqId),
-        resultStatusKey(reqId),
-        resultPayloadKey(reqId));
-  }
-
   /**
-   * Best-effort removal of the queue entry and all Redis keys for a request. Any failure here (for
-   * example a closed Redis connection during shutdown) is swallowed so it cannot mask the result
-   * being returned to the caller; orphaned keys are bounded by their TTL.
+   * Best-effort removal of the queue entry and the request's tracking keys. The completion marker
+   * ({@code completedKey}) and stored result keys are deliberately left to expire by their TTL:
+   * they are the SET-NX winner-takes-all guard that keeps {@link #complete} idempotent across late
+   * or duplicate completions from other replicas, so deleting them here would re-open the request
+   * for a second completion. Any failure is swallowed so it cannot mask the result being returned
+   * to the caller; orphaned keys are bounded by their TTL.
    */
   private void safelyClearRedisState(RequestId reqId) {
     try {
       redis.lrem(QUEUE_KEY, reqId.toString());
-      clearAll(reqId);
+      clearTracking(reqId);
     } catch (RuntimeException e) {
       LOG.log(
           Level.FINE,
