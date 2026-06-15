@@ -1,3 +1,11 @@
+0.4.45
+======
+* update reqwest to 0.13 (#17488)
+* Change command execution to argv (#17576)
+* Improve SM error messages when browser/driver version not found (#17584)
+* Switch reqwest TLS backend from aws-lc-rs to ring (#17589)
+* [SM] Automatically prune cache entries older than 30 days (#17585)
+
 0.4.44
 ======
 * Initial Creation of the Selenium CLI Tool (#17327)
