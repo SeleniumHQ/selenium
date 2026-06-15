@@ -1,0 +1,148 @@
+# 0008. Browsing contexts are exposed as handle objects
+
+- Status: Proposed
+- Date: 2026-06-11
+- Discussion: https://github.com/SeleniumHQ/selenium/pull/17681
+
+## Context
+
+Working with more than one tab/window over BiDi is awkward today because there is no
+object that represents a single browsing context. The binding exposes a flat module —
+every operation is called on one shared instance and takes the context id explicitly:
+
+```python
+ctx = driver.browsing_context.create(type=WindowTypes.TAB)        # returns a bare string id
+driver.browsing_context.navigate(context=ctx, url="https://...")
+driver.browsing_context.capture_screenshot(context=ctx)
+driver.browsing_context.close(ctx)
+```
+
+This has two costs that compound for parallel work:
+
+1. **The user threads the context id through every call by hand.** There is no handle to
+   curry, so multi-tab code is verbose and error-prone, and event handlers cannot naturally
+   mean "this tab".
+2. **There is no clean unit to hand to a worker.** Driving N tabs concurrently means N
+   workers each repeating the `context=` bookkeeping against one shared module object — no
+   per-tab identity, no encapsulation.
+
+Parallelisation is the motivating question. Selenium's BiDi transport is synchronous (one
+WebSocket per driver); concurrency, when wanted, comes from threads. But threads have
+nothing tab-shaped to own. Making one context per worker safe and ergonomic requires (a) a
+per-context object and (b) a transport that is correct under concurrent use — the latter is
+a per-binding internal (see Consequences) and not decided here.
+
+Playwright is the reference: it exposes Browser → BrowserContext → Page, and **every
+operation lives on the object** (`page.goto()`, `page.screenshot()`), never
+`goto(context_id, url)`. That object identity is exactly what makes
+`asyncio.gather(page_a.goto(...), page_b.goto(...))` — or a thread per page — trivially
+safe, because there is no shared mutable state to coordinate.
+
+## Decision
+
+Bindings expose a **per-browsing-context handle object** bound to a single context id.
+Operations that target a context are available as methods on the handle, in addition to the
+existing flat module API.
+
+Normative requirements:
+
+- `create(...)`, the entries of `get_tree(...)`, and
+  `expect_page()`/`expect_popup()` (see
+  [0001](0001-bidi-events-awaited-with-expect-context-managers.md)) return handle objects,
+  not bare id strings. A handle exposes the context id for protocol-level use.
+- The handle carries the per-context operations: `navigate`, `reload`, `activate`, `close`,
+  `capture_screenshot`, `print`, `set_viewport`, `traverse_history`, `locate_nodes`,
+  `handle_user_prompt`, and per-context event registration / `expect_*` waiters scoped to
+  **this** context.
+- The existing flat module API
+  (`driver.browsing_context.navigate(context=id, ...)`, etc.) **remains** and is the
+  compatibility surface; the handle delegates to it. This is additive.
+- **Concurrency contract** (enabled by, but separate from, this decision): a single driver
+  may be driven from multiple threads, one context per thread. Bindings state this contract
+  explicitly and ensure their transport upholds it (per-binding internal work — lock the
+  message/callback state, signal command completion without busy-waiting, bound event
+  dispatch).
+- The cross-binding **name** of the handle is part of this decision (candidates: a
+  `Page`-like object, `Tab`, `BrowsingContextHandle`). One name, adapted to each language's
+  casing.
+
+Code sketch — Python (reference target):
+
+```python
+tab = driver.browsing_context.create(type=WindowTypes.TAB)   # -> handle, not a bare id
+tab.navigate("https://example.com")
+tab.capture_screenshot()
+tab.add_event_handler("load", on_load)        # scoped to THIS context
+with tab.expect_navigation(url="**/dashboard"):
+    tab.click_somehow()
+tab.close()
+
+# parallelism becomes clean — one object per worker, ids hidden:
+from concurrent.futures import ThreadPoolExecutor
+tabs = [driver.browsing_context.create(type=WindowTypes.TAB) for _ in range(4)]
+with ThreadPoolExecutor() as ex:
+    ex.map(lambda t: t.navigate(url), tabs)   # safe under the concurrency contract
+```
+
+Code sketch — other bindings (idiomatic shape, same semantics):
+
+```javascript
+const tab = await driver.browsingContext().create({ type: 'tab' });  // -> handle
+await tab.navigate('https://example.com');
+await Promise.all(tabs.map(t => t.navigate(url)));
+```
+
+## Considered options
+
+- **Per-context handle object, flat API retained (chosen)** — gives multi-tab code an
+  object per context, hides ids, makes one-context-per-worker parallelism clean, and is
+  purely additive. Matches the model users know from Playwright.
+- **Keep only the flat `context=`-passing API** — no new surface, but leaves the
+  id-threading verbosity and gives parallel workers no encapsulated unit. Rejected: it is
+  the problem being solved.
+- **Adopt a full async/`Page` object model (asyncio-native, like Playwright)** — the most
+  capable model, but a major architectural change to a synchronous binding. Rejected
+  here as out of scope; it deserves its own RFC. A synchronous handle plus the concurrency
+  contract covers the bulk of real parallel use.
+- **Introduce a universal GUID object registry (Playwright-style routing)** — unnecessary:
+  BiDi already keys everything by `context`/`navigation`/`realm` ids. Rejected in favour of
+  routing events by the existing context id into the relevant handle.
+
+## Consequences
+
+- Multi-tab and parallel code becomes object-oriented and id-free; an instance per worker
+  removes the shared-state coordination that the flat API forces.
+- A new handle type per binding, and `create`/`get_tree`/`expect_page` return types change
+  from bare ids to handles — bindings introduce this additively (the handle still surfaces
+  the id; the flat API is unchanged) and document the new return shape.
+- **Prerequisite, not part of this record:** the transport must be safe and efficient under
+  concurrent use (no busy-wait, locked shared state, bounded event dispatch). That is a
+  per-binding internal change with its own tests; this decision only states the contract it
+  must satisfy.
+- **Follow-up decision this makes necessary:** whether to expose the **user context**
+  (BiDi's isolation unit, `browser.createUserContext`) as an object that groups its tabs
+  (≈ Playwright's `BrowserContext`). Recorded separately when taken.
+- Per-context event handlers require the subscription layer to track scope per context
+  (today some bindings key subscriptions by event name only, so context scoping is honoured
+  only for the first subscriber) — bindings fix this as part of adopting handle-scoped
+  events.
+
+## Binding status
+
+| Binding    | Status  | Notes / tracking link                                                |
+|------------|---------|----------------------------------------------------------------------|
+| Java       | pending |                                                                      |
+| Python     | pending | flat module API only (`browsing_context.<op>(context=id)`); no handle object yet |
+| Ruby       | pending |                                                                      |
+| .NET       | pending |                                                                      |
+| JavaScript | pending |                                                                      |
+
+## Appendix
+
+Relevant BiDi surface: `browsingContext.create` (`type: "tab" | "window"`, optional
+`userContext`), `browsingContext.getTree`, and the per-context commands
+(`navigate`, `reload`, `activate`, `close`, `captureScreenshot`, `print`, `setViewport`,
+`traverseHistory`, `locateNodes`, `handleUserPrompt`). Isolation unit:
+`browser.createUserContext`. Every browsing-context event already carries a `context` id,
+which is what lets events route to the right handle. No new wire protocol is required — this
+decision is about the binding-side object model and the concurrency contract around it.
