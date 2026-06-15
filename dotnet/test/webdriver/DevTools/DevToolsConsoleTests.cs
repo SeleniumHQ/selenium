@@ -18,7 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.Tests.Infrastructure.Environment;
-using CurrentCdpVersion = OpenQA.Selenium.DevTools.V148;
+using CurrentCdpVersion = OpenQA.Selenium.DevTools.V149;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 
