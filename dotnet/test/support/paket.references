@@ -1,0 +1,6 @@
+group nuget
+Microsoft.Bcl.AsyncInterfaces
+Moq
+NUnit
+NUnit.Analyzers
+NUnit3TestAdapter

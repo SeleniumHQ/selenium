@@ -8,13 +8,6 @@
         "paket"
       ],
       "rollForward": false
-    },
-    "aver": {
-      "version": "1.0.2",
-      "commands": [
-        "aver"
-      ],
-      "rollForward": false
     }
   }
 }

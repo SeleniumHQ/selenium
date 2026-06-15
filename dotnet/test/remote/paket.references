@@ -1,0 +1,4 @@
+group nuget
+NUnit
+NUnit.Analyzers
+NUnit3TestAdapter

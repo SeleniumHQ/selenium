@@ -1,0 +1,574 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<!-- Prevent dotnet template engine to parse this file -->
+	<!--/-:cnd:noEmit-->
+	<PropertyGroup>
+		<!-- make MSBuild track this file for incremental builds. -->
+		<!-- ref https://blogs.msdn.microsoft.com/msbuild/2005/09/26/how-to-ensure-changes-to-a-custom-target-file-prompt-a-rebuild/ -->
+		<MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+
+		<DetectedMSBuildVersion>$(MSBuildVersion)</DetectedMSBuildVersion>
+		<DetectedMSBuildVersion Condition="'$(MSBuildVersion)' == ''">15.0.0</DetectedMSBuildVersion>
+		<MSBuildSupportsHashing>false</MSBuildSupportsHashing>
+		<MSBuildSupportsHashing Condition=" '$(DetectedMSBuildVersion)' &gt; '15.8.0' ">true</MSBuildSupportsHashing>
+		<!-- Mark that this target file has been loaded.  -->
+		<IsPaketRestoreTargetsFileLoaded>true</IsPaketRestoreTargetsFileLoaded>
+		<PaketToolsPath>$(MSBuildThisFileDirectory)</PaketToolsPath>
+		<PaketRootPath>$(MSBuildThisFileDirectory)..\</PaketRootPath>
+		<PaketRestoreCacheFile>$(PaketRootPath)paket-files\paket.restore.cached</PaketRestoreCacheFile>
+		<PaketLockFilePath>$(PaketRootPath)paket.lock</PaketLockFilePath>
+		<PaketBootstrapperStyle>classic</PaketBootstrapperStyle>
+		<PaketBootstrapperStyle Condition="Exists('$(PaketToolsPath)paket.bootstrapper.proj')">proj</PaketBootstrapperStyle>
+		<PaketExeImage>assembly</PaketExeImage>
+		<PaketExeImage Condition=" '$(PaketBootstrapperStyle)' == 'proj' ">native</PaketExeImage>
+		<MonoPath Condition="'$(MonoPath)' == '' AND Exists('/Library/Frameworks/Mono.framework/Commands/mono')">/Library/Frameworks/Mono.framework/Commands/mono</MonoPath>
+		<MonoPath Condition="'$(MonoPath)' == ''">mono</MonoPath>
+
+		<!-- PaketBootStrapper  -->
+		<PaketBootStrapperExePath Condition=" '$(PaketBootStrapperExePath)' == '' AND Exists('$(PaketRootPath)paket.bootstrapper.exe')">$(PaketRootPath)paket.bootstrapper.exe</PaketBootStrapperExePath>
+		<PaketBootStrapperExePath Condition=" '$(PaketBootStrapperExePath)' == '' ">$(PaketToolsPath)paket.bootstrapper.exe</PaketBootStrapperExePath>
+		<PaketBootStrapperExeDir Condition=" Exists('$(PaketBootStrapperExePath)') " >$([System.IO.Path]::GetDirectoryName("$(PaketBootStrapperExePath)"))\</PaketBootStrapperExeDir>
+
+		<PaketBootStrapperCommand Condition=" '$(OS)' == 'Windows_NT' ">"$(PaketBootStrapperExePath)"</PaketBootStrapperCommand>
+		<PaketBootStrapperCommand Condition=" '$(OS)' != 'Windows_NT' ">$(MonoPath) --runtime=v4.0.30319 "$(PaketBootStrapperExePath)"</PaketBootStrapperCommand>
+
+		<!-- Disable automagic references for F# DotNet SDK -->
+		<!-- This will not do anything for other project types -->
+		<!-- see https://github.com/fsharp/fslang-design/blob/master/tooling/FST-1002-fsharp-in-dotnet-sdk.md -->
+		<DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+		<DisableImplicitSystemValueTupleReference>true</DisableImplicitSystemValueTupleReference>
+
+		<!-- Disable Paket restore under NCrunch build -->
+		<PaketRestoreDisabled Condition="'$(NCrunch)' == '1'">True</PaketRestoreDisabled>
+
+		<!-- Disable test for CLI tool completely - overrideable via properties in projects or via environment variables -->
+		<PaketDisableCliTest Condition=" '$(PaketDisableCliTest)' == '' ">False</PaketDisableCliTest>
+
+		<PaketIntermediateOutputPath Condition=" '$(PaketIntermediateOutputPath)' == '' ">$(BaseIntermediateOutputPath.TrimEnd('\').TrimEnd('\/'))</PaketIntermediateOutputPath>
+	</PropertyGroup>
+
+	<!-- Resolve how paket should be called -->
+	<!-- Current priority is: local (1: repo root, 2: .paket folder) => 3: as CLI tool => as bootstrapper (4: proj Bootstrapper style, 5: BootstrapperExeDir) => 6: global path variable -->
+	<Target Name="SetPaketCommand" >
+		<!-- Test if paket is available in the standard locations. If so, that takes priority. Case 1/2 - non-windows specific -->
+		<PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+			<!-- no windows, try native paket as default, root => tool -->
+			<PaketExePath Condition=" '$(PaketExePath)' == '' AND Exists('$(PaketRootPath)paket') ">$(PaketRootPath)paket</PaketExePath>
+			<PaketExePath Condition=" '$(PaketExePath)' == '' AND Exists('$(PaketToolsPath)paket') ">$(PaketToolsPath)paket</PaketExePath>
+		</PropertyGroup>
+
+		<!-- Test if paket is available in the standard locations. If so, that takes priority. Case 2/2 - same across platforms -->
+		<PropertyGroup>
+			<!-- root => tool -->
+			<PaketExePath Condition=" '$(PaketExePath)' == '' AND Exists('$(PaketRootPath)paket.exe') ">$(PaketRootPath)paket.exe</PaketExePath>
+			<PaketExePath Condition=" '$(PaketExePath)' == '' AND Exists('$(PaketToolsPath)paket.exe') ">$(PaketToolsPath)paket.exe</PaketExePath>
+		</PropertyGroup>
+
+		<!-- If paket hasn't be found in standard locations, test for CLI tool usage. -->
+		<!-- First test: Is CLI configured to be used in "dotnet-tools.json"? - can result in a false negative; only a positive outcome is reliable. -->
+		<PropertyGroup Condition=" '$(PaketExePath)' == '' ">
+			<_DotnetToolsJson Condition="Exists('$(PaketRootPath)/.config/dotnet-tools.json')">$([System.IO.File]::ReadAllText("$(PaketRootPath)/.config/dotnet-tools.json"))</_DotnetToolsJson>
+			<_ConfigContainsPaket Condition=" '$(_DotnetToolsJson)' != ''">$(_DotnetToolsJson.Contains('"paket"'))</_ConfigContainsPaket>
+			<_ConfigContainsPaket Condition=" '$(_ConfigContainsPaket)' == ''">false</_ConfigContainsPaket>
+		</PropertyGroup>
+
+		<!-- Second test: Call 'dotnet paket' and see if it returns without an error. Mute all the output. Only run if previous test failed and the test has not been disabled. -->
+		<!-- WARNING: This method can lead to processes hanging forever, and should be used as little as possible. See https://github.com/fsprojects/Paket/issues/3705 for details. -->
+		<Exec Condition=" '$(PaketExePath)' == '' AND !$(PaketDisableCliTest) AND !$(_ConfigContainsPaket)" Command="dotnet paket --version" IgnoreExitCode="true" StandardOutputImportance="low" StandardErrorImportance="low" >
+			<Output TaskParameter="ExitCode" PropertyName="LocalPaketToolExitCode" />
+		</Exec>
+
+		<!-- If paket is installed as CLI use that. Again, only if paket haven't already been found in standard locations. -->
+		<PropertyGroup Condition=" '$(PaketExePath)' == '' AND ($(_ConfigContainsPaket) OR '$(LocalPaketToolExitCode)' == '0') ">
+			<_PaketCommand>dotnet paket</_PaketCommand>
+		</PropertyGroup>
+
+		<!-- If neither local files nor CLI tool can be found, final attempt is searching for boostrapper config before falling back to global path variable. -->
+		<PropertyGroup Condition=" '$(PaketExePath)' == '' AND '$(_PaketCommand)' == '' ">
+			<!-- Test for bootstrapper setup -->
+			<PaketExePath Condition=" '$(PaketExePath)' == '' AND '$(PaketBootstrapperStyle)' == 'proj' ">$(PaketToolsPath)paket</PaketExePath>
+			<PaketExePath Condition=" '$(PaketExePath)' == '' AND Exists('$(PaketBootStrapperExeDir)') ">$(PaketBootStrapperExeDir)paket</PaketExePath>
+
+			<!-- If all else fails, use global path approach. -->
+			<PaketExePath Condition=" '$(PaketExePath)' == ''">paket</PaketExePath>
+		</PropertyGroup>
+
+		<!-- If not using CLI, setup correct execution command. -->
+		<PropertyGroup Condition=" '$(_PaketCommand)' == '' ">
+			<_PaketExeExtension>$([System.IO.Path]::GetExtension("$(PaketExePath)"))</_PaketExeExtension>
+			<_PaketCommand Condition=" '$(_PaketCommand)' == '' AND '$(_PaketExeExtension)' == '.dll' ">dotnet "$(PaketExePath)"</_PaketCommand>
+			<_PaketCommand Condition=" '$(_PaketCommand)' == '' AND '$(OS)' != 'Windows_NT' AND '$(_PaketExeExtension)' == '.exe' ">$(MonoPath) --runtime=v4.0.30319 "$(PaketExePath)"</_PaketCommand>
+			<_PaketCommand Condition=" '$(_PaketCommand)' == '' ">"$(PaketExePath)"</_PaketCommand>
+		</PropertyGroup>
+
+		<!-- The way to get a property to be available outside the target is to use this task. -->
+		<CreateProperty Value="$(_PaketCommand)">
+			<Output TaskParameter="Value" PropertyName="PaketCommand"/>
+		</CreateProperty>
+
+	</Target>
+
+	<Target Name="PaketBootstrapping" Condition="Exists('$(PaketToolsPath)paket.bootstrapper.proj')">
+		<MSBuild Projects="$(PaketToolsPath)paket.bootstrapper.proj" Targets="Restore" />
+	</Target>
+
+	<!-- Official workaround for https://docs.microsoft.com/en-us/visualstudio/msbuild/getfilehash-task?view=vs-2019 -->
+	<UsingTask TaskName="Microsoft.Build.Tasks.GetFileHash" AssemblyName="Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" Condition=" '$(MSBuildSupportsHashing)' == 'true' And '$(DetectedMSBuildVersion)' &lt; '16.0.360' " />
+	<UsingTask TaskName="Microsoft.Build.Tasks.VerifyFileHash" AssemblyName="Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" Condition=" '$(MSBuildSupportsHashing)' == 'true' And '$(DetectedMSBuildVersion)' &lt; '16.0.360' " />
+	<Target Name="PaketRestore" Condition="'$(PaketRestoreDisabled)' != 'True'" BeforeTargets="_GenerateDotnetCliToolReferenceSpecs;_GenerateProjectRestoreGraphPerFramework;_GenerateRestoreGraphWalkPerFramework;CollectPackageReferences" DependsOnTargets="SetPaketCommand;PaketBootstrapping">
+
+		<!-- Step 1 Check if lockfile is properly restored (if the hash of the lockfile and the cache-file match) -->
+		<PropertyGroup>
+			<PaketRestoreRequired>true</PaketRestoreRequired>
+			<NoWarn>$(NoWarn);NU1603;NU1604;NU1605;NU1608</NoWarn>
+			<CacheFilesExist>false</CacheFilesExist>
+			<CacheFilesExist Condition=" Exists('$(PaketRestoreCacheFile)') And Exists('$(PaketLockFilePath)') ">true</CacheFilesExist>
+		</PropertyGroup>
+
+		<!-- Read the hash of the lockfile -->
+		<GetFileHash Condition=" '$(MSBuildSupportsHashing)' == 'true' And '$(CacheFilesExist)' == 'true' " Files="$(PaketLockFilePath)" Algorithm="SHA256" HashEncoding="hex" >
+			<Output TaskParameter="Hash" PropertyName="PaketRestoreLockFileHash" />
+		</GetFileHash>
+		<!-- Read the hash of the cache, which is json, but a very simple key value object -->
+		<PropertyGroup Condition=" '$(MSBuildSupportsHashing)' == 'true' And '$(CacheFilesExist)' == 'true' ">
+			<PaketRestoreCachedContents>$([System.IO.File]::ReadAllText('$(PaketRestoreCacheFile)'))</PaketRestoreCachedContents>
+		</PropertyGroup>
+		<ItemGroup Condition=" '$(MSBuildSupportsHashing)' == 'true' And '$(CacheFilesExist)' == 'true' ">
+			<!-- Parse our simple 'paket.restore.cached' json ...-->
+			<PaketRestoreCachedSplitObject Include="$([System.Text.RegularExpressions.Regex]::Split(`$(PaketRestoreCachedContents)`, `{|}|,`))"></PaketRestoreCachedSplitObject>
+			<!-- Keep Key, Value ItemGroup-->
+			<PaketRestoreCachedKeyValue Include="@(PaketRestoreCachedSplitObject)"
+				Condition=" $([System.Text.RegularExpressions.Regex]::Split(`%(Identity)`, `&quot;: &quot;`).Length) &gt; 1 ">
+				<Key>$([System.Text.RegularExpressions.Regex]::Split(`%(Identity)`, `": "`)[0].Replace(`"`, ``).Replace(` `, ``))</Key>
+				<Value>$([System.Text.RegularExpressions.Regex]::Split(`%(Identity)`, `": "`)[1].Replace(`"`, ``).Replace(` `, ``))</Value>
+			</PaketRestoreCachedKeyValue>
+		</ItemGroup>
+		<PropertyGroup Condition=" '$(MSBuildSupportsHashing)' == 'true' And '$(CacheFilesExist)' == 'true' ">
+			<!-- Retrieve the hashes we are interested in -->
+			<PackagesDownloadedHash Condition=" '%(PaketRestoreCachedKeyValue.Key)' == 'packagesDownloadedHash' ">%(PaketRestoreCachedKeyValue.Value)</PackagesDownloadedHash>
+			<ProjectsRestoredHash Condition=" '%(PaketRestoreCachedKeyValue.Key)' == 'projectsRestoredHash' ">%(PaketRestoreCachedKeyValue.Value)</ProjectsRestoredHash>
+		</PropertyGroup>
+
+		<PropertyGroup Condition=" '$(MSBuildSupportsHashing)' == 'true' And '$(CacheFilesExist)' == 'true' ">
+			<!-- If the restore file doesn't exist we need to restore, otherwise only if hashes don't match -->
+			<PaketRestoreRequired>true</PaketRestoreRequired>
+			<PaketRestoreRequired Condition=" '$(PaketRestoreLockFileHash)' == '$(ProjectsRestoredHash)' ">false</PaketRestoreRequired>
+			<PaketRestoreRequired Condition=" '$(PaketRestoreLockFileHash)' == '' ">true</PaketRestoreRequired>
+		</PropertyGroup>
+
+		<!--
+		This value should match the version in the props generated by paket
+		If they differ, this means we need to do a restore in order to ensure correct dependencies
+	-->
+		<PropertyGroup Condition="'$(PaketPropsVersion)' != '6.0.0' ">
+			<PaketRestoreRequired>true</PaketRestoreRequired>
+		</PropertyGroup>
+
+		<!-- Do a global restore if required -->
+		<Warning Text="This version of MSBuild (we assume '$(DetectedMSBuildVersion)' or older) doesn't support GetFileHash, so paket fast restore is disabled." Condition=" '$(MSBuildSupportsHashing)' != 'true' " />
+		<Error Text="Stop build because of PAKET_ERROR_ON_MSBUILD_EXEC and we always call the bootstrapper" Condition=" '$(PAKET_ERROR_ON_MSBUILD_EXEC)' == 'true' AND '$(PaketBootstrapperStyle)' == 'classic' AND Exists('$(PaketBootStrapperExePath)') AND !(Exists('$(PaketExePath)'))" />
+		<Exec Command='$(PaketBootStrapperCommand)' Condition=" '$(PaketBootstrapperStyle)' == 'classic' AND Exists('$(PaketBootStrapperExePath)') AND !(Exists('$(PaketExePath)'))" ContinueOnError="false" />
+		<Error Text="Stop build because of PAKET_ERROR_ON_MSBUILD_EXEC and we need a full restore (hashes don't match)" Condition=" '$(PAKET_ERROR_ON_MSBUILD_EXEC)' == 'true' AND '$(PaketRestoreRequired)' == 'true' AND '$(PaketDisableGlobalRestore)' != 'true'" />
+		<Exec Command='$(PaketCommand) restore' Condition=" '$(PaketRestoreRequired)' == 'true' AND '$(PaketDisableGlobalRestore)' != 'true' " ContinueOnError="false" />
+
+		<!-- Step 2 Detect project specific changes -->
+		<ItemGroup>
+			<MyTargetFrameworks Condition="'$(TargetFramework)' != '' " Include="$(TargetFramework)"></MyTargetFrameworks>
+			<!-- Don't include all frameworks when msbuild explicitly asks for a single one -->
+			<MyTargetFrameworks Condition="'$(TargetFrameworks)' != '' AND '$(TargetFramework)' == '' " Include="$(TargetFrameworks)"></MyTargetFrameworks>
+			<PaketResolvedFilePaths Include="@(MyTargetFrameworks -> '$(PaketIntermediateOutputPath)\$(MSBuildProjectFile).%(Identity).paket.resolved')"></PaketResolvedFilePaths>
+		</ItemGroup>
+
+		<PropertyGroup>
+			<PaketReferencesCachedFilePath>$(PaketIntermediateOutputPath)\$(MSBuildProjectFile).paket.references.cached</PaketReferencesCachedFilePath>
+			<!-- MyProject.fsproj.paket.references has the highest precedence -->
+			<PaketOriginalReferencesFilePath>$(MSBuildProjectFullPath).paket.references</PaketOriginalReferencesFilePath>
+			<!-- MyProject.paket.references -->
+			<PaketOriginalReferencesFilePath Condition=" !Exists('$(PaketOriginalReferencesFilePath)')">$(MSBuildProjectDirectory)\$(MSBuildProjectName).paket.references</PaketOriginalReferencesFilePath>
+			<!-- paket.references -->
+			<PaketOriginalReferencesFilePath Condition=" !Exists('$(PaketOriginalReferencesFilePath)')">$(MSBuildProjectDirectory)\paket.references</PaketOriginalReferencesFilePath>
+
+			<DoAllResolvedFilesExist>false</DoAllResolvedFilesExist>
+			<DoAllResolvedFilesExist Condition="Exists(%(PaketResolvedFilePaths.Identity))">true</DoAllResolvedFilesExist>
+			<PaketRestoreRequired>true</PaketRestoreRequired>
+			<PaketRestoreRequiredReason>references-file-or-cache-not-found</PaketRestoreRequiredReason>
+		</PropertyGroup>
+
+		<!-- Step 2 a Detect changes in references file -->
+		<PropertyGroup Condition="Exists('$(PaketOriginalReferencesFilePath)') AND Exists('$(PaketReferencesCachedFilePath)') ">
+			<PaketRestoreCachedHash>$([System.IO.File]::ReadAllText('$(PaketReferencesCachedFilePath)'))</PaketRestoreCachedHash>
+			<PaketRestoreReferencesFileHash>$([System.IO.File]::ReadAllText('$(PaketOriginalReferencesFilePath)'))</PaketRestoreReferencesFileHash>
+			<PaketRestoreRequiredReason>references-file</PaketRestoreRequiredReason>
+			<PaketRestoreRequired Condition=" '$(PaketRestoreReferencesFileHash)' == '$(PaketRestoreCachedHash)' ">false</PaketRestoreRequired>
+		</PropertyGroup>
+
+		<PropertyGroup Condition="!Exists('$(PaketOriginalReferencesFilePath)') AND !Exists('$(PaketReferencesCachedFilePath)') ">
+			<!-- If both don't exist there is nothing to do. -->
+			<PaketRestoreRequired>false</PaketRestoreRequired>
+		</PropertyGroup>
+
+		<!-- Step 2 b detect relevant changes in project file (new targetframework) -->
+		<PropertyGroup Condition=" '$(DoAllResolvedFilesExist)' != 'true' ">
+			<PaketRestoreRequired>true</PaketRestoreRequired>
+			<PaketRestoreRequiredReason>target-framework '$(TargetFramework)' or '$(TargetFrameworks)' files @(PaketResolvedFilePaths)</PaketRestoreRequiredReason>
+		</PropertyGroup>
+
+		<!-- Step 3 Restore project specific stuff if required -->
+		<Message Condition=" '$(PaketRestoreRequired)' == 'true' " Importance="low" Text="Detected a change ('$(PaketRestoreRequiredReason)') in the project file '$(MSBuildProjectFullPath)', calling paket restore" />
+		<Error Text="Stop build because of PAKET_ERROR_ON_MSBUILD_EXEC and we detected a change ('$(PaketRestoreRequiredReason)') in the project file '$(MSBuildProjectFullPath)'" Condition=" '$(PAKET_ERROR_ON_MSBUILD_EXEC)' == 'true' AND '$(PaketRestoreRequired)' == 'true' " />
+		<Exec Command='$(PaketCommand) restore --project "$(MSBuildProjectFullPath)" --output-path "$(PaketIntermediateOutputPath)" --target-framework "$(TargetFrameworks)"' Condition=" '$(PaketRestoreRequired)' == 'true' AND '$(TargetFramework)' == '' " ContinueOnError="false" />
+		<Exec Command='$(PaketCommand) restore --project "$(MSBuildProjectFullPath)" --output-path "$(PaketIntermediateOutputPath)" --target-framework "$(TargetFramework)"' Condition=" '$(PaketRestoreRequired)' == 'true' AND '$(TargetFramework)' != '' " ContinueOnError="false" />
+
+		<!-- This shouldn't actually happen, but just to be sure. -->
+		<PropertyGroup>
+			<DoAllResolvedFilesExist>false</DoAllResolvedFilesExist>
+			<DoAllResolvedFilesExist Condition="Exists(%(PaketResolvedFilePaths.Identity))">true</DoAllResolvedFilesExist>
+		</PropertyGroup>
+		<Error Condition=" '$(DoAllResolvedFilesExist)' != 'true' AND '$(ResolveNuGetPackages)' != 'False' " Text="One Paket file '@(PaketResolvedFilePaths)' is missing while restoring $(MSBuildProjectFile). Please delete 'paket-files/paket.restore.cached' and call 'paket restore'." />
+
+		<!-- Step 4 forward all msbuild properties (PackageReference, DotNetCliToolReference) to msbuild -->
+		<ReadLinesFromFile Condition="($(DesignTimeBuild) != true OR '$(PaketPropsLoaded)' != 'true') AND '@(PaketResolvedFilePaths)' != ''" File="%(PaketResolvedFilePaths.Identity)" >
+			<Output TaskParameter="Lines" ItemName="PaketReferencesFileLines"/>
+		</ReadLinesFromFile>
+
+		<ItemGroup Condition="($(DesignTimeBuild) != true OR '$(PaketPropsLoaded)' != 'true') AND '@(PaketReferencesFileLines)' != '' " >
+			<PaketReferencesFileLinesInfo Include="@(PaketReferencesFileLines)" >
+				<Splits>$([System.String]::Copy('%(PaketReferencesFileLines.Identity)').Split(',').Length)</Splits>
+				<PackageName>$([System.String]::Copy('%(PaketReferencesFileLines.Identity)').Split(',')[0])</PackageName>
+				<PackageVersion>$([System.String]::Copy('%(PaketReferencesFileLines.Identity)').Split(',')[1])</PackageVersion>
+				<Reference>$([System.String]::Copy('%(PaketReferencesFileLines.Identity)').Split(',')[2])</Reference>
+				<AllPrivateAssets>$([System.String]::Copy('%(PaketReferencesFileLines.Identity)').Split(',')[4])</AllPrivateAssets>
+				<CopyLocal Condition="%(PaketReferencesFileLinesInfo.Splits) &gt;= 6">$([System.String]::Copy('%(PaketReferencesFileLines.Identity)').Split(',')[5])</CopyLocal>
+				<OmitContent Condition="%(PaketReferencesFileLinesInfo.Splits) &gt;= 7">$([System.String]::Copy('%(PaketReferencesFileLines.Identity)').Split(',')[6])</OmitContent>
+				<ImportTargets Condition="%(PaketReferencesFileLinesInfo.Splits) &gt;= 8">$([System.String]::Copy('%(PaketReferencesFileLines.Identity)').Split(',')[7])</ImportTargets>
+				<Aliases Condition="%(PaketReferencesFileLinesInfo.Splits) &gt;= 9">$([System.String]::Copy('%(PaketReferencesFileLines.Identity)').Split(',')[8])</Aliases>
+				<ReferenceCondition Condition="%(PaketReferencesFileLinesInfo.Splits) &gt;= 10">$([System.String]::Copy('%(PaketReferencesFileLines.Identity)').Split(',')[9])</ReferenceCondition>
+			</PaketReferencesFileLinesInfo>
+			<PackageReference Condition=" ('$(ManagePackageVersionsCentrally)' != 'true' Or '%(PaketReferencesFileLinesInfo.Reference)' == 'Direct') AND ('%(PaketReferencesFileLinesInfo.ReferenceCondition)' == 'true' Or $(%(PaketReferencesFileLinesInfo.ReferenceCondition)) == 'true')" Include="%(PaketReferencesFileLinesInfo.PackageName)">
+				<Version Condition=" '$(ManagePackageVersionsCentrally)' != 'true' ">%(PaketReferencesFileLinesInfo.PackageVersion)</Version>
+				<PrivateAssets Condition=" ('%(PaketReferencesFileLinesInfo.AllPrivateAssets)' == 'true') Or ('$(PackAsTool)' == 'true') ">All</PrivateAssets>
+				<ExcludeAssets Condition=" %(PaketReferencesFileLinesInfo.CopyLocal) == 'false' or %(PaketReferencesFileLinesInfo.AllPrivateAssets) == 'exclude'">runtime</ExcludeAssets>
+				<ExcludeAssets Condition=" %(PaketReferencesFileLinesInfo.OmitContent) == 'true'">$(ExcludeAssets);contentFiles</ExcludeAssets>
+				<ExcludeAssets Condition=" %(PaketReferencesFileLinesInfo.ImportTargets) == 'false'">$(ExcludeAssets);build;buildMultitargeting;buildTransitive</ExcludeAssets>
+				<Aliases Condition=" %(PaketReferencesFileLinesInfo.Aliases) != ''">%(PaketReferencesFileLinesInfo.Aliases)</Aliases>
+				<Publish Condition=" '$(PackAsTool)' == 'true' ">true</Publish>
+				<AllowExplicitVersion>true</AllowExplicitVersion>
+			</PackageReference>
+			<PackageVersion Condition="('$(ManagePackageVersionsCentrally)' != 'true' Or '%(PaketReferencesFileLinesInfo.Reference)' == 'Direct') AND ('%(PaketReferencesFileLinesInfo.ReferenceCondition)' == 'true' Or $(%(PaketReferencesFileLinesInfo.ReferenceCondition)) == 'true')" Include="%(PaketReferencesFileLinesInfo.PackageName)">
+				<Version>%(PaketReferencesFileLinesInfo.PackageVersion)</Version>
+			</PackageVersion>
+		</ItemGroup>
+
+		<PropertyGroup>
+			<PaketCliToolFilePath>$(PaketIntermediateOutputPath)/$(MSBuildProjectFile).paket.clitools</PaketCliToolFilePath>
+		</PropertyGroup>
+
+		<ReadLinesFromFile File="$(PaketCliToolFilePath)" >
+			<Output TaskParameter="Lines" ItemName="PaketCliToolFileLines"/>
+		</ReadLinesFromFile>
+
+		<ItemGroup Condition=" '@(PaketCliToolFileLines)' != '' " >
+			<PaketCliToolFileLinesInfo Include="@(PaketCliToolFileLines)" >
+				<PackageName>$([System.String]::Copy('%(PaketCliToolFileLines.Identity)').Split(',')[0])</PackageName>
+				<PackageVersion>$([System.String]::Copy('%(PaketCliToolFileLines.Identity)').Split(',')[1])</PackageVersion>
+			</PaketCliToolFileLinesInfo>
+			<DotNetCliToolReference Include="%(PaketCliToolFileLinesInfo.PackageName)">
+				<Version>%(PaketCliToolFileLinesInfo.PackageVersion)</Version>
+			</DotNetCliToolReference>
+		</ItemGroup>
+
+		<!-- Disabled for now until we know what to do with runtime deps - https://github.com/fsprojects/Paket/issues/2964
+    <PropertyGroup>
+      <RestoreConfigFile>$(PaketIntermediateOutputPath)/$(MSBuildProjectFile).NuGet.Config</RestoreConfigFile>
+    </PropertyGroup> -->
+
+	</Target>
+
+	<Target Name="PaketDisableDirectPack" AfterTargets="_IntermediatePack" BeforeTargets="GenerateNuspec" Condition="('$(IsPackable)' == '' Or '$(IsPackable)' == 'true') And Exists('$(PaketIntermediateOutputPath)/$(MSBuildProjectFile).references')" >
+		<PropertyGroup>
+			<ContinuePackingAfterGeneratingNuspec>false</ContinuePackingAfterGeneratingNuspec>
+		</PropertyGroup>
+	</Target>
+
+	<Target Name="PaketOverrideNuspec" DependsOnTargets="SetPaketCommand" AfterTargets="GenerateNuspec" Condition="('$(IsPackable)' == '' Or '$(IsPackable)' == 'true') And Exists('$(PaketIntermediateOutputPath)/$(MSBuildProjectFile).references')" >
+		<ItemGroup>
+			<_NuspecFilesNewLocation Include="$(PaketIntermediateOutputPath)\$(Configuration)\*.nuspec"/>
+			<MSBuildMajorVersion Include="$(DetectedMSBuildVersion.Replace(`-`, `.`).Split(`.`)[0])" />
+			<MSBuildMinorVersion Include="$(DetectedMSBuildVersion.Replace(`-`, `.`).Split(`.`)[1])" />
+		</ItemGroup>
+
+		<PropertyGroup>
+			<PaketProjectFile>$(MSBuildProjectDirectory)/$(MSBuildProjectFile)</PaketProjectFile>
+			<ContinuePackingAfterGeneratingNuspec>true</ContinuePackingAfterGeneratingNuspec>
+			<UseMSBuild16_10_Pack>false</UseMSBuild16_10_Pack>
+			<UseMSBuild16_10_Pack Condition=" '@(MSBuildMajorVersion)' >= '16' AND '@(MSBuildMinorVersion)' > '10' ">true</UseMSBuild16_10_Pack>
+			<UseMSBuild16_0_Pack>false</UseMSBuild16_0_Pack>
+			<UseMSBuild16_0_Pack Condition=" '@(MSBuildMajorVersion)' >= '16' AND (! $(UseMSBuild16_10_Pack)) ">true</UseMSBuild16_0_Pack>
+			<UseMSBuild15_9_Pack>false</UseMSBuild15_9_Pack>
+			<UseMSBuild15_9_Pack Condition=" '@(MSBuildMajorVersion)' == '15' AND '@(MSBuildMinorVersion)' > '8' ">true</UseMSBuild15_9_Pack>
+			<UseMSBuild15_8_Pack>false</UseMSBuild15_8_Pack>
+			<UseMSBuild15_8_Pack Condition=" '$(NuGetToolVersion)' != '4.0.0' AND (! $(UseMSBuild15_9_Pack)) AND (! $(UseMSBuild16_0_Pack)) AND (! $(UseMSBuild16_10_Pack)) ">true</UseMSBuild15_8_Pack>
+			<UseNuGet4_Pack>false</UseNuGet4_Pack>
+			<UseNuGet4_Pack Condition=" (! $(UseMSBuild15_8_Pack)) AND (! $(UseMSBuild15_9_Pack)) AND (! $(UseMSBuild16_0_Pack)) AND (! $(UseMSBuild16_10_Pack)) ">true</UseNuGet4_Pack>
+			<AdjustedNuspecOutputPath>$(PaketIntermediateOutputPath)\$(Configuration)</AdjustedNuspecOutputPath>
+			<AdjustedNuspecOutputPath Condition="@(_NuspecFilesNewLocation) == ''">$(PaketIntermediateOutputPath)</AdjustedNuspecOutputPath>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<_NuspecFiles Include="$(AdjustedNuspecOutputPath)\*.$(PackageVersion.Split(`+`)[0]).nuspec"/>
+		</ItemGroup>
+
+		<Error Text="Error Because of PAKET_ERROR_ON_MSBUILD_EXEC (not calling fix-nuspecs)" Condition=" '$(PAKET_ERROR_ON_MSBUILD_EXEC)' == 'true' " />
+		<Exec Condition="@(_NuspecFiles) != ''" Command='$(PaketCommand) show-conditions -s' ConsoleToMSBuild="true" StandardOutputImportance="low">
+			<Output TaskParameter="ConsoleOutput" ItemName="_ConditionProperties"/>
+		</Exec>
+		<ItemGroup>
+			<_DefinedConditionProperties Include="@(_ConditionProperties)" Condition="$(%(Identity)) == 'true'"/>
+		</ItemGroup>
+		<PropertyGroup>
+			<_ConditionsParameter></_ConditionsParameter>
+			<_ConditionsParameter Condition="@(_DefinedConditionProperties) != ''">--conditions @(_DefinedConditionProperties)</_ConditionsParameter>
+		</PropertyGroup>
+		<Exec Condition="@(_NuspecFiles) != ''" Command='$(PaketCommand) fix-nuspecs files "@(_NuspecFiles)" project-file "$(PaketProjectFile)" $(_ConditionsParameter)' />
+		<Error Condition="@(_NuspecFiles) == ''" Text='Could not find nuspec files in "$(AdjustedNuspecOutputPath)" (Version: "$(PackageVersion)"), therefore we cannot call "paket fix-nuspecs" and have to error out!' />
+
+		<ConvertToAbsolutePath Condition="@(_NuspecFiles) != ''" Paths="@(_NuspecFiles)">
+			<Output TaskParameter="AbsolutePaths" PropertyName="NuspecFileAbsolutePath" />
+		</ConvertToAbsolutePath>
+
+    <!-- Call Pack -->
+    <PackTask Condition="$(UseMSBuild16_10_Pack)"
+              PackItem="$(PackProjectInputFile)"
+              PackageFiles="@(_PackageFiles)"
+              PackageFilesToExclude="@(_PackageFilesToExclude)"
+              PackageVersion="$(PackageVersion)"
+              PackageId="$(PackageId)"
+              Title="$(Title)"
+              Authors="$(Authors)"
+              Description="$(Description)"
+              Copyright="$(Copyright)"
+              RequireLicenseAcceptance="$(PackageRequireLicenseAcceptance)"
+              LicenseUrl="$(PackageLicenseUrl)"
+              ProjectUrl="$(PackageProjectUrl)"
+              IconUrl="$(PackageIconUrl)"
+              ReleaseNotes="$(PackageReleaseNotes)"
+              Tags="$(PackageTags)"
+              DevelopmentDependency="$(DevelopmentDependency)"
+              BuildOutputInPackage="@(_BuildOutputInPackage)"
+              TargetPathsToSymbols="@(_TargetPathsToSymbols)"
+              SymbolPackageFormat="$(SymbolPackageFormat)"
+              TargetFrameworks="@(_TargetFrameworks)"
+              AssemblyName="$(AssemblyName)"
+              PackageOutputPath="$(PackageOutputAbsolutePath)"
+              IncludeSymbols="$(IncludeSymbols)"
+              IncludeSource="$(IncludeSource)"
+              PackageTypes="$(PackageType)"
+              IsTool="$(IsTool)"
+              RepositoryUrl="$(RepositoryUrl)"
+              RepositoryType="$(RepositoryType)"
+              SourceFiles="@(_SourceFiles->Distinct())"
+              NoPackageAnalysis="$(NoPackageAnalysis)"
+              MinClientVersion="$(MinClientVersion)"
+              Serviceable="$(Serviceable)"
+              FrameworkAssemblyReferences="@(_FrameworkAssemblyReferences)"
+              ContinuePackingAfterGeneratingNuspec="$(ContinuePackingAfterGeneratingNuspec)"
+              NuspecOutputPath="$(AdjustedNuspecOutputPath)"
+              IncludeBuildOutput="$(IncludeBuildOutput)"
+              BuildOutputFolders="$(BuildOutputTargetFolder)"
+              ContentTargetFolders="$(ContentTargetFolders)"
+              RestoreOutputPath="$(RestoreOutputAbsolutePath)"
+              NuspecFile="$(NuspecFileAbsolutePath)"
+              NuspecBasePath="$(NuspecBasePath)"
+              NuspecProperties="$(NuspecProperties)"
+              PackageLicenseFile="$(PackageLicenseFile)"
+              PackageLicenseExpression="$(PackageLicenseExpression)"
+              PackageLicenseExpressionVersion="$(PackageLicenseExpressionVersion)"
+              Readme="$(PackageReadmeFile)"
+              NoDefaultExcludes="$(NoDefaultExcludes)"/>
+
+		<PackTask Condition="$(UseMSBuild16_0_Pack)"
+				  PackItem="$(PackProjectInputFile)"
+				  PackageFiles="@(_PackageFiles)"
+				  PackageFilesToExclude="@(_PackageFilesToExclude)"
+				  PackageVersion="$(PackageVersion)"
+				  PackageId="$(PackageId)"
+				  Title="$(Title)"
+				  Authors="$(Authors)"
+				  Description="$(Description)"
+				  Copyright="$(Copyright)"
+				  RequireLicenseAcceptance="$(PackageRequireLicenseAcceptance)"
+				  LicenseUrl="$(PackageLicenseUrl)"
+				  ProjectUrl="$(PackageProjectUrl)"
+				  IconUrl="$(PackageIconUrl)"
+				  ReleaseNotes="$(PackageReleaseNotes)"
+				  Tags="$(PackageTags)"
+				  DevelopmentDependency="$(DevelopmentDependency)"
+				  BuildOutputInPackage="@(_BuildOutputInPackage)"
+				  TargetPathsToSymbols="@(_TargetPathsToSymbols)"
+				  SymbolPackageFormat="$(SymbolPackageFormat)"
+				  TargetFrameworks="@(_TargetFrameworks)"
+				  AssemblyName="$(AssemblyName)"
+				  PackageOutputPath="$(PackageOutputAbsolutePath)"
+				  IncludeSymbols="$(IncludeSymbols)"
+				  IncludeSource="$(IncludeSource)"
+				  PackageTypes="$(PackageType)"
+				  IsTool="$(IsTool)"
+				  RepositoryUrl="$(RepositoryUrl)"
+				  RepositoryType="$(RepositoryType)"
+				  RepositoryBranch="$(RepositoryBranch)"
+				  RepositoryCommit="$(RepositoryCommit)"
+				  SourceFiles="@(_SourceFiles->Distinct())"
+				  NoPackageAnalysis="$(NoPackageAnalysis)"
+				  MinClientVersion="$(MinClientVersion)"
+				  Serviceable="$(Serviceable)"
+				  FrameworkAssemblyReferences="@(_FrameworkAssemblyReferences)"
+				  ContinuePackingAfterGeneratingNuspec="$(ContinuePackingAfterGeneratingNuspec)"
+				  NuspecOutputPath="$(AdjustedNuspecOutputPath)"
+				  IncludeBuildOutput="$(IncludeBuildOutput)"
+				  BuildOutputFolders="$(BuildOutputTargetFolder)"
+				  ContentTargetFolders="$(ContentTargetFolders)"
+				  RestoreOutputPath="$(RestoreOutputAbsolutePath)"
+				  NuspecFile="$(NuspecFileAbsolutePath)"
+				  NuspecBasePath="$(NuspecBasePath)"
+				  NuspecProperties="$(NuspecProperties)"
+				  PackageLicenseFile="$(PackageLicenseFile)"
+				  PackageLicenseExpression="$(PackageLicenseExpression)"
+				  PackageLicenseExpressionVersion="$(PackageLicenseExpressionVersion)"
+				  NoDefaultExcludes="$(NoDefaultExcludes)" />
+
+		<PackTask Condition="$(UseMSBuild15_9_Pack)"
+				  PackItem="$(PackProjectInputFile)"
+				  PackageFiles="@(_PackageFiles)"
+				  PackageFilesToExclude="@(_PackageFilesToExclude)"
+				  PackageVersion="$(PackageVersion)"
+				  PackageId="$(PackageId)"
+				  Title="$(Title)"
+				  Authors="$(Authors)"
+				  Description="$(Description)"
+				  Copyright="$(Copyright)"
+				  RequireLicenseAcceptance="$(PackageRequireLicenseAcceptance)"
+				  LicenseUrl="$(PackageLicenseUrl)"
+				  ProjectUrl="$(PackageProjectUrl)"
+				  IconUrl="$(PackageIconUrl)"
+				  ReleaseNotes="$(PackageReleaseNotes)"
+				  Tags="$(PackageTags)"
+				  DevelopmentDependency="$(DevelopmentDependency)"
+				  BuildOutputInPackage="@(_BuildOutputInPackage)"
+				  TargetPathsToSymbols="@(_TargetPathsToSymbols)"
+				  SymbolPackageFormat="$(SymbolPackageFormat)"
+				  TargetFrameworks="@(_TargetFrameworks)"
+				  AssemblyName="$(AssemblyName)"
+				  PackageOutputPath="$(PackageOutputAbsolutePath)"
+				  IncludeSymbols="$(IncludeSymbols)"
+				  IncludeSource="$(IncludeSource)"
+				  PackageTypes="$(PackageType)"
+				  IsTool="$(IsTool)"
+				  RepositoryUrl="$(RepositoryUrl)"
+				  RepositoryType="$(RepositoryType)"
+				  RepositoryBranch="$(RepositoryBranch)"
+				  RepositoryCommit="$(RepositoryCommit)"
+				  SourceFiles="@(_SourceFiles->Distinct())"
+				  NoPackageAnalysis="$(NoPackageAnalysis)"
+				  MinClientVersion="$(MinClientVersion)"
+				  Serviceable="$(Serviceable)"
+				  FrameworkAssemblyReferences="@(_FrameworkAssemblyReferences)"
+				  ContinuePackingAfterGeneratingNuspec="$(ContinuePackingAfterGeneratingNuspec)"
+				  NuspecOutputPath="$(AdjustedNuspecOutputPath)"
+				  IncludeBuildOutput="$(IncludeBuildOutput)"
+				  BuildOutputFolder="$(BuildOutputTargetFolder)"
+				  ContentTargetFolders="$(ContentTargetFolders)"
+				  RestoreOutputPath="$(RestoreOutputAbsolutePath)"
+				  NuspecFile="$(NuspecFileAbsolutePath)"
+				  NuspecBasePath="$(NuspecBasePath)"
+				  NuspecProperties="$(NuspecProperties)"/>
+
+		<PackTask Condition="$(UseMSBuild15_8_Pack)"
+				  PackItem="$(PackProjectInputFile)"
+				  PackageFiles="@(_PackageFiles)"
+				  PackageFilesToExclude="@(_PackageFilesToExclude)"
+				  PackageVersion="$(PackageVersion)"
+				  PackageId="$(PackageId)"
+				  Title="$(Title)"
+				  Authors="$(Authors)"
+				  Description="$(Description)"
+				  Copyright="$(Copyright)"
+				  RequireLicenseAcceptance="$(PackageRequireLicenseAcceptance)"
+				  LicenseUrl="$(PackageLicenseUrl)"
+				  ProjectUrl="$(PackageProjectUrl)"
+				  IconUrl="$(PackageIconUrl)"
+				  ReleaseNotes="$(PackageReleaseNotes)"
+				  Tags="$(PackageTags)"
+				  DevelopmentDependency="$(DevelopmentDependency)"
+				  BuildOutputInPackage="@(_BuildOutputInPackage)"
+				  TargetPathsToSymbols="@(_TargetPathsToSymbols)"
+				  TargetFrameworks="@(_TargetFrameworks)"
+				  AssemblyName="$(AssemblyName)"
+				  PackageOutputPath="$(PackageOutputAbsolutePath)"
+				  IncludeSymbols="$(IncludeSymbols)"
+				  IncludeSource="$(IncludeSource)"
+				  PackageTypes="$(PackageType)"
+				  IsTool="$(IsTool)"
+				  RepositoryUrl="$(RepositoryUrl)"
+				  RepositoryType="$(RepositoryType)"
+				  RepositoryBranch="$(RepositoryBranch)"
+				  RepositoryCommit="$(RepositoryCommit)"
+				  SourceFiles="@(_SourceFiles->Distinct())"
+				  NoPackageAnalysis="$(NoPackageAnalysis)"
+				  MinClientVersion="$(MinClientVersion)"
+				  Serviceable="$(Serviceable)"
+				  FrameworkAssemblyReferences="@(_FrameworkAssemblyReferences)"
+				  ContinuePackingAfterGeneratingNuspec="$(ContinuePackingAfterGeneratingNuspec)"
+				  NuspecOutputPath="$(AdjustedNuspecOutputPath)"
+				  IncludeBuildOutput="$(IncludeBuildOutput)"
+				  BuildOutputFolder="$(BuildOutputTargetFolder)"
+				  ContentTargetFolders="$(ContentTargetFolders)"
+				  RestoreOutputPath="$(RestoreOutputAbsolutePath)"
+				  NuspecFile="$(NuspecFileAbsolutePath)"
+				  NuspecBasePath="$(NuspecBasePath)"
+				  NuspecProperties="$(NuspecProperties)"/>
+
+		<PackTask Condition="$(UseNuGet4_Pack)"
+				  PackItem="$(PackProjectInputFile)"
+				  PackageFiles="@(_PackageFiles)"
+				  PackageFilesToExclude="@(_PackageFilesToExclude)"
+				  PackageVersion="$(PackageVersion)"
+				  PackageId="$(PackageId)"
+				  Title="$(Title)"
+				  Authors="$(Authors)"
+				  Description="$(Description)"
+				  Copyright="$(Copyright)"
+				  RequireLicenseAcceptance="$(PackageRequireLicenseAcceptance)"
+				  LicenseUrl="$(PackageLicenseUrl)"
+				  ProjectUrl="$(PackageProjectUrl)"
+				  IconUrl="$(PackageIconUrl)"
+				  ReleaseNotes="$(PackageReleaseNotes)"
+				  Tags="$(PackageTags)"
+				  TargetPathsToAssemblies="@(_TargetPathsToAssemblies->'%(FinalOutputPath)')"
+				  TargetPathsToSymbols="@(_TargetPathsToSymbols)"
+				  TargetFrameworks="@(_TargetFrameworks)"
+				  AssemblyName="$(AssemblyName)"
+				  PackageOutputPath="$(PackageOutputAbsolutePath)"
+				  IncludeSymbols="$(IncludeSymbols)"
+				  IncludeSource="$(IncludeSource)"
+				  PackageTypes="$(PackageType)"
+				  IsTool="$(IsTool)"
+				  RepositoryUrl="$(RepositoryUrl)"
+				  RepositoryType="$(RepositoryType)"
+				  RepositoryBranch="$(RepositoryBranch)"
+				  RepositoryCommit="$(RepositoryCommit)"
+				  SourceFiles="@(_SourceFiles->Distinct())"
+				  NoPackageAnalysis="$(NoPackageAnalysis)"
+				  MinClientVersion="$(MinClientVersion)"
+				  Serviceable="$(Serviceable)"
+				  AssemblyReferences="@(_References)"
+				  ContinuePackingAfterGeneratingNuspec="$(ContinuePackingAfterGeneratingNuspec)"
+				  NuspecOutputPath="$(AdjustedNuspecOutputPath)"
+				  IncludeBuildOutput="$(IncludeBuildOutput)"
+				  BuildOutputFolder="$(BuildOutputTargetFolder)"
+				  ContentTargetFolders="$(ContentTargetFolders)"
+				  RestoreOutputPath="$(RestoreOutputAbsolutePath)"
+				  NuspecFile="$(NuspecFileAbsolutePath)"
+				  NuspecBasePath="$(NuspecBasePath)"
+				  NuspecProperties="$(NuspecProperties)"/>
+	</Target>
+	<!--/+:cnd:noEmit-->
+</Project>

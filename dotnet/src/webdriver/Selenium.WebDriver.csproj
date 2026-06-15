@@ -53,13 +53,6 @@
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>-->
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
-    <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.6" />
-    <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
-  </ItemGroup>
-
   <Target Name="GenerateBazelArtifacts" BeforeTargets="CoreCompile">
     <Exec Command="bazel build //dotnet/src/webdriver:manager-linux //dotnet/src/webdriver:manager-windows //dotnet/src/webdriver:manager-macos //dotnet/src/webdriver:resource-utilities //dotnet/src/webdriver/DevTools/..." WorkingDirectory="../../.." />
 
@@ -93,5 +86,7 @@
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\Generated</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
+
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 
 </Project>
