@@ -45,6 +45,10 @@ Normative requirements:
 - Failed/aborted navigations (`navigationFailed`/`navigationAborted`) surface as the
   binding's error within the wait, not as a silent timeout.
 - These complement, and do not replace, existing `WebDriverWait`/expected-conditions.
+- Each helper is inherently per-context. Where a binding exposes a browsing-context handle
+  object (see [0008](0008-browsing-contexts-exposed-as-handle-objects.md)), these live on
+  the handle (`tab.expect_navigation(...)`, `tab.wait_for_url(...)`) so the wait is scoped
+  to that context without passing an id.
 
 Code sketch — Python (reference implementation):
 
