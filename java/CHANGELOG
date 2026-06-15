@@ -1,3 +1,24 @@
+v4.45.0
+======
+* Support CDP versions: v147, v148, v149
+* remove deprecated logging classes (#17453)
+* [grid] Close pre-handshake race in WebSocket proxy (#17435)
+* Move Java bindings to use Typescript atoms for isShown, getAtt… (#17530)
+* [grid] Bundle Redis-backed SessionMap by default (#17441)
+* skip browser-restricted ports when picking a free port (#17561)
+* [grid] Apply TCP backpressure across the WebSocket tunnel handler (#17543)
+* [grid] Add BinaryMessage.wrap for transferring an owned byte array (#17544)
+* [grid] Apply the WebSocket frame fast path on the Node (#17545)
+* [grid] Skip the TCP tunnel read-idle close when reads are paused (#17578)
+* [build] reduce downloaded artifacts (#17598)
+* publish selenium-devtools-latest artifact (#17562)
+* support driving Electron apps with ElectronOptions and ElectronDriver (#17559)
+* [BiDi] add clearListners via browsingContextIds for inspectors (#17376)
+* [build] use pinned browser and driver for starting grid in python and ruby tests (#17610)
+* Add logs to Grid to debug downloading files (#17599)
+* correct deprecation annotations for JSON Wire error code APIs (#17639)
+* [grid] Add support Redis-backed for SessionQueue (#17678)
+
 v4.44.0
 ======
 * Support CDP versions: v146, v147, v148
