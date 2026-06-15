@@ -24,19 +24,41 @@ module Selenium
       module Http
         # @api private
         class Default < Common
-          attr_writer :proxy
-
-          attr_accessor :open_timeout, :read_timeout
-
           # Initializes object.
           # Warning: Setting {#open_timeout} to non-nil values will cause a separate thread to spawn.
           # Debuggers that freeze the process will not be able to evaluate any operations if that happens.
+          # @param [ClientConfig] client_config - Configuration used to build the HTTP client.
           # @param [Numeric] open_timeout - Open timeout to apply to HTTP client.
           # @param [Numeric] read_timeout - Read timeout (seconds) to apply to HTTP client.
-          def initialize(open_timeout: nil, read_timeout: nil)
-            @open_timeout = open_timeout
-            @read_timeout = read_timeout
-            super()
+          def initialize(client_config: nil, open_timeout: nil, read_timeout: nil)
+            if client_config && (open_timeout || read_timeout)
+              raise Error::WebDriverError, 'Cannot use both :client_config and :open_timeout/:read_timeout'
+            end
+
+            client_config ||= ClientConfig.new
+            client_config.open_timeout = open_timeout if open_timeout
+            client_config.read_timeout = read_timeout if read_timeout
+            super(client_config: client_config)
+          end
+
+          def open_timeout
+            client_config.open_timeout
+          end
+
+          def read_timeout
+            client_config.read_timeout
+          end
+
+          def open_timeout=(value)
+            client_config.open_timeout = value
+          end
+
+          def read_timeout=(value)
+            client_config.read_timeout = value
+          end
+
+          def proxy=(value)
+            client_config.proxy = value
           end
 
           def close
@@ -94,14 +116,18 @@ module Selenium
             end
 
             if response.is_a? Net::HTTPRedirection
-              WebDriver.logger.debug("Redirect to #{response['Location']}; times: #{redirects}")
-              raise Error::WebDriverError, 'too many redirects' if redirects >= MAX_REDIRECTS
-
-              request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil, redirects + 1)
+              follow_redirect(response, redirects)
             else
               WebDriver.logger.debug("   <<<  #{response.instance_variable_get(:@header).inspect}", id: :header)
               create_response response.code, response.body, response.content_type
             end
+          end
+
+          def follow_redirect(response, redirects)
+            WebDriver.logger.debug("Redirect to #{response['Location']}; times: #{redirects}")
+            raise Error::WebDriverError, 'too many redirects' if redirects >= client_config.max_redirects
+
+            request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil, redirects + 1)
           end
 
           def new_request_for(verb, url, headers, payload)
@@ -120,30 +146,23 @@ module Selenium
 
           def new_http_client
             if use_proxy?
-              url = @proxy.http
+              url = proxy.http
               unless proxy.respond_to?(:http) && url
                 raise Error::WebDriverError,
-                      "expected HTTP proxy, got #{@proxy.inspect}"
+                      "expected HTTP proxy, got #{proxy.inspect}"
               end
 
-              proxy = URI.parse(url)
+              proxy_uri = URI.parse(url)
 
-              Net::HTTP.new(server_url.host, server_url.port, proxy.host, proxy.port, proxy.user, proxy.password)
+              Net::HTTP.new(server_url.host, server_url.port,
+                            proxy_uri.host, proxy_uri.port, proxy_uri.user, proxy_uri.password)
             else
               Net::HTTP.new server_url.host, server_url.port
             end
           end
 
           def proxy
-            @proxy ||= begin
-              proxy = ENV.fetch('http_proxy', nil) || ENV.fetch('HTTP_PROXY', nil)
-              no_proxy = ENV.fetch('no_proxy', nil) || ENV.fetch('NO_PROXY', nil)
-
-              if proxy
-                proxy = "http://#{proxy}" unless proxy.start_with?('http://')
-                Proxy.new(http: proxy, no_proxy: no_proxy)
-              end
-            end
+            client_config.proxy
           end
 
           def use_proxy?

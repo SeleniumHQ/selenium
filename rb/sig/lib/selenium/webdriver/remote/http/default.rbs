@@ -4,21 +4,19 @@ module Selenium
       module Http
         # @api private
         class Default < Common
-          @open_timeout: untyped
-
-          @read_timeout: untyped
-
           @http: untyped
 
-          @proxy: untyped
+          def initialize: (?client_config: ClientConfig?, ?open_timeout: Numeric?, ?read_timeout: Numeric?) -> void
 
-          attr_writer proxy: untyped
+          def open_timeout: () -> Numeric?
 
-          attr_accessor open_timeout: untyped
+          def read_timeout: () -> Numeric?
 
-          attr_accessor read_timeout: untyped
+          def open_timeout=: (Numeric? value) -> void
 
-          def initialize: (?open_timeout: untyped?, ?read_timeout: untyped?) -> void
+          def read_timeout=: (Numeric? value) -> void
+
+          def proxy=: (Proxy? value) -> void
 
           def close: () -> untyped
 
@@ -32,6 +30,8 @@ module Selenium
 
           def request: (untyped verb, untyped url, untyped headers, untyped payload, ?::Integer redirects) -> untyped
 
+          def follow_redirect: (untyped response, ::Integer redirects) -> untyped
+
           def new_request_for: (untyped verb, untyped url, untyped headers, untyped payload) -> untyped
 
           def response_for: (untyped request) -> untyped
@@ -40,7 +40,7 @@ module Selenium
 
           def proxy: () -> untyped
 
-          def use_proxy?: () -> untyped
+          def use_proxy?: () -> bool
         end
       end
     end

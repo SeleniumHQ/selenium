@@ -6,7 +6,7 @@ module Selenium
 
         include LocalDriver
 
-        def initialize: (?options: untyped?, ?service: untyped?, ?url: untyped?, **untyped opts) -> void
+        def initialize: (?options: untyped?, ?service: untyped?, ?url: untyped?, ?http_client: untyped?, ?client_config: ClientConfig?, **untyped opts) -> void
 
         def browser: () -> Symbol
       end

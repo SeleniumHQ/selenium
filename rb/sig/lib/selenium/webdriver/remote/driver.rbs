@@ -8,7 +8,7 @@ module Selenium
 
         include DriverExtensions::HasFileDownloads
 
-        def initialize: (?capabilities: untyped?, ?options: untyped?, ?service: untyped?, ?url: untyped?, **untyped opts) -> void
+        def initialize: (?capabilities: untyped?, ?options: untyped?, ?service: untyped?, ?url: untyped?, ?http_client: untyped?, ?client_config: ClientConfig?, **untyped opts) -> void
 
         private
 

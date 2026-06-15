@@ -30,7 +30,7 @@ module Selenium
 
         attr_reader capabilities: untyped
 
-        def initialize: (url: String | URI, ?http_client: untyped?) -> void
+        def initialize: (http_client: untyped) -> void
 
         def bidi: -> BiDi
 

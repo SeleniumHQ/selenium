@@ -13,13 +13,21 @@ module Selenium
 
           @common_headers: Hash[String, untyped]
 
-          attr_accessor self.extra_headers: Hash[String, untyped]
-
-          attr_writer self.user_agent: String
+          @client_config: ClientConfig
 
           def self.user_agent: -> String
 
-          attr_writer server_url: String
+          def self.user_agent=: (String? value) -> void
+
+          def self.extra_headers: -> Hash[String, untyped]?
+
+          def self.extra_headers=: (Hash[String, untyped]? value) -> void
+
+          attr_reader client_config: ClientConfig
+
+          def initialize: (?client_config: ClientConfig?) -> void
+
+          def server_url=: ((String | URI)? url) -> void
 
           def quit_errors: () -> Array[untyped]
 
@@ -31,7 +39,7 @@ module Selenium
 
           def common_headers: -> Hash[String, untyped]
 
-          def server_url: () -> String
+          def server_url: () -> URI
 
           def request: (*untyped) -> untyped
 

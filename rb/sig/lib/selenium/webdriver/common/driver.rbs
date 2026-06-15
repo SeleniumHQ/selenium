@@ -69,7 +69,7 @@ module Selenium
 
       attr_reader bridge: untyped
 
-      def create_bridge: (caps: untyped, url: untyped, ?http_client: untyped) -> untyped
+      def create_bridge: (caps: Remote::Capabilities, http_client: Remote::Http::Common) -> Remote::Bridge
 
       def service_url: (untyped service) -> untyped
 

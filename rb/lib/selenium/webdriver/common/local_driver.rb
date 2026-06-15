@@ -20,18 +20,27 @@
 module Selenium
   module WebDriver
     module LocalDriver
-      def initialize_local_driver(options, service, url)
-        raise ArgumentError, "Can't initialize #{self.class} with :url" if url
+      def initialize_local_driver(options, service, url, http_client, client_config)
+        assert_local_arguments(url, http_client, client_config)
 
         service ||= Service.send(browser)
         caps = process_options(options, service)
-        url = service_url(service)
+        http_client ||= Remote::Http::Default.new(client_config: client_config)
+        http_client.server_url = service_url(service)
 
         begin
-          yield(caps, url) if block_given?
+          yield(caps, http_client) if block_given?
         rescue Selenium::WebDriver::Error::WebDriverError
           @service_manager&.stop
           raise
+        end
+      end
+
+      def assert_local_arguments(url, http_client, client_config)
+        if url || client_config&.server_url
+          raise ArgumentError, "Can't set the server URL for #{self.class}; the service provides it"
+        elsif http_client && client_config
+          raise Error::WebDriverError, 'Cannot use both :http_client and :client_config'
         end
       end
 

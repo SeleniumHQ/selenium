@@ -55,6 +55,31 @@ module Selenium
           expect(driver.send(:bridge).http).to eq client
         end
 
+        it 'builds an HTTP client from the provided client_config' do
+          server = 'https://example.com:4646/wd/hub'
+          expect_request(endpoint: "#{server}/session")
+          config = ClientConfig.new(server_url: server, read_timeout: 25)
+
+          driver = described_class.new(options: Options.chrome, client_config: config)
+          expect(driver.send(:bridge).http.read_timeout).to eq(25)
+        end
+
+        it 'records the resolved server URL on the client_config' do
+          server = 'https://example.com:4646/wd/hub'
+          expect_request(endpoint: "#{server}/session")
+          config = ClientConfig.new(read_timeout: 25)
+
+          described_class.new(options: Options.chrome, url: server, client_config: config)
+          expect(config.server_url).to eq(URI.parse("#{server}/"))
+        end
+
+        it 'errors when both http_client and client_config are provided' do
+          config = ClientConfig.new(server_url: 'http://localhost')
+          expect {
+            described_class.new(options: Options.chrome, http_client: Remote::Http::Default.new, client_config: config)
+          }.to raise_error(Error::WebDriverError, /cannot use both/i)
+        end
+
         it 'sets a default file detector' do
           expect_request
 
