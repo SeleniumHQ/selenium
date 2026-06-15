@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    selenium-devtools (0.148.0)
+    selenium-devtools (0.149.0)
       selenium-webdriver (~> 4.2)
-    selenium-webdriver (4.45.0.nightly)
+    selenium-webdriver (4.45.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -33,6 +33,7 @@ GEM
     erb (6.0.4)
     erb (6.0.4-java)
     ffi (1.17.4)
+    ffi (1.17.4-java)
     fileutils (1.8.0)
     git (1.19.1)
       addressable (~> 2.8)
@@ -46,8 +47,8 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     jar-dependencies (0.5.7)
-    json (2.19.5)
-    json (2.19.5-java)
+    json (2.19.9)
+    json (2.19.9-java)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     listen (3.10.0)
@@ -55,7 +56,7 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     logger (1.7.0)
-    parallel (1.28.0)
+    parallel (2.1.0)
     parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
@@ -63,10 +64,10 @@ GEM
       prettyprint
     prettyprint (0.2.0)
     prism (1.9.0)
-    psych (5.3.1)
+    psych (5.4.0)
       date
       stringio
-    psych (5.3.1-java)
+    psych (5.4.0-java)
       date
       jar-dependencies (>= 0.1.7)
     public_suffix (7.0.5)
@@ -82,7 +83,7 @@ GEM
       logger
       prism (>= 1.6.0)
       tsort
-    rchardet (1.10.0)
+    rchardet (1.10.2)
     rdoc (7.2.0)
       erb
       psych (>= 4.0.0)
@@ -104,7 +105,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.7)
-    rubocop (1.86.2)
+    rubocop (1.87.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -125,11 +126,12 @@ GEM
     rubocop-rake (0.7.1)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1)
-    rubocop-rspec (3.9.0)
+    rubocop-rspec (3.10.2)
       lint_roller (~> 1.1)
-      rubocop (~> 1.81)
+      regexp_parser (>= 2.0)
+      rubocop (~> 1.86, >= 1.86.2)
     ruby-progressbar (1.13.0)
-    rubyzip (3.3.0)
+    rubyzip (3.4.0)
     securerandom (0.4.1)
     steep (2.0.0)
       concurrent-ruby (>= 1.1.10)
@@ -163,7 +165,7 @@ GEM
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.9.2)
     websocket (1.2.11)
-    yard (0.9.43)
+    yard (0.9.44)
 
 PLATFORMS
   arm64-darwin-23
@@ -197,4 +199,4 @@ DEPENDENCIES
   yard (~> 0.9.11, >= 0.9.36)
 
 BUNDLED WITH
-   2.4.19
+   2.5.22
