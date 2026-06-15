@@ -308,10 +308,10 @@ class TestFirefoxWebExtensionEdgeCases:
         assert len(driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
 
 
+@pytest.mark.xfail_firefox
 class TestChromiumWebExtensionEdgeCases:
     """Chrome/Edge WebExtension edge case tests."""
 
-    @pytest.mark.xfail_firefox
     @pytest.fixture
     def pages_chromium(self, webserver, chromium_driver):
         class Pages:
@@ -320,7 +320,6 @@ class TestChromiumWebExtensionEdgeCases:
 
         return Pages()
 
-    @pytest.mark.xfail_firefox
     @pytest.fixture
     def chromium_driver(self, chromium_options, request):
         """Create a Chrome/Edge driver with webextension support enabled."""
@@ -360,7 +359,6 @@ class TestChromiumWebExtensionEdgeCases:
         if os.path.exists(temp_dir):
             shutil.rmtree(temp_dir)
 
-    @pytest.mark.xfail_firefox
     def test_uninstall_extension_by_id_string(self, chromium_driver, pages_chromium):
         """Test uninstalling extension using extension ID as string."""
         path = os.path.join(EXTENSIONS, EXTENSION_PATH)
@@ -374,7 +372,6 @@ class TestChromiumWebExtensionEdgeCases:
         chromium_driver.browsing_context.reload(chromium_driver.current_window_handle)
         assert len(chromium_driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
 
-    @pytest.mark.xfail_firefox
     def test_uninstall_extension_by_result_dict(self, chromium_driver, pages_chromium):
         """Test uninstalling extension using result dictionary from install."""
         path = os.path.join(EXTENSIONS, EXTENSION_PATH)
@@ -387,7 +384,6 @@ class TestChromiumWebExtensionEdgeCases:
         chromium_driver.browsing_context.reload(chromium_driver.current_window_handle)
         assert len(chromium_driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
 
-    @pytest.mark.xfail_firefox
     def test_install_returns_extension_id(self, chromium_driver, pages_chromium):
         """Test that install returns proper extension ID in result."""
         path = os.path.join(EXTENSIONS, EXTENSION_PATH)
@@ -401,7 +397,6 @@ class TestChromiumWebExtensionEdgeCases:
         # Cleanup
         chromium_driver.webextension.uninstall(ext_info)
 
-    @pytest.mark.xfail_firefox
     def test_extension_content_script_injection(self, chromium_driver, pages_chromium):
         """Test that extension content scripts are properly injected."""
         path = os.path.join(EXTENSIONS, EXTENSION_PATH)
@@ -421,7 +416,6 @@ class TestChromiumWebExtensionEdgeCases:
         # Cleanup
         chromium_driver.webextension.uninstall(ext_info)
 
-    @pytest.mark.xfail_firefox
     def test_uninstall_removes_content_scripts(self, chromium_driver, pages_chromium):
         """Test that uninstalling extension removes content scripts."""
         path = os.path.join(EXTENSIONS, EXTENSION_PATH)
@@ -440,7 +434,6 @@ class TestChromiumWebExtensionEdgeCases:
         chromium_driver.browsing_context.reload(chromium_driver.current_window_handle)
         assert len(chromium_driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
 
-    @pytest.mark.xfail_firefox
     def test_multiple_installations_and_uninstalls(self, chromium_driver, pages_chromium):
         """Test installing and uninstalling extension multiple times."""
         path = os.path.join(EXTENSIONS, EXTENSION_PATH)
