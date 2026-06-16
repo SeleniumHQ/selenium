@@ -189,6 +189,22 @@ task :release do |_task, arguments|
   args = arguments.to_a
   nightly = args.delete('nightly')
 
+  unless nightly
+    already_published = begin
+      Rake::Task['java:verify'].invoke
+      true
+    rescue StandardError
+      false
+    ensure
+      Rake::Task['java:verify'].reenable
+    end
+
+    if already_published
+      puts 'Java packages already published — skipping release.'
+      next
+    end
+  end
+
   Rake::Task['java:check_credentials'].invoke(*(nightly ? ['nightly'] : []))
 
   ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
