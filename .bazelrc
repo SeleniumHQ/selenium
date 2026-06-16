@@ -10,6 +10,12 @@ try-import %workspace%/.bazelrc.windows.local
 
 common --lockfile_mode=off
 
+# Skip Bazel's auto-detection of the host C/C++ toolchain. We register the
+# hermetic LLVM toolchain explicitly in MODULE.bazel for all platforms and
+# don't want rules_cc's auto-detected `local_config_cc` to compete with it.
+common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+common --repo_env=BAZEL_NO_APPLE_CPP_TOOLCHAIN=1
+
 # Bazel 8 compatibility flags. We should find ways to avoid needing these
 common --legacy_external_runfiles
 
@@ -89,6 +95,9 @@ build:windows --host_per_file_copt=external/protobuf\\+.*@/w
 # For build stamping
 common --enable_platform_specific_config
 common:linux --host_platform=//:local_linux_gnu
+# The LLVM toolchain doesn't ship libgcc_s; this stub satisfies Rust's
+# glibc stdlib link dependency when LLVM is the host C++ toolchain.
+common:linux --@llvm//config:experimental_stub_libgcc_s=True
 common:windows --host_platform=//:local_windows_gnullvm
 
 # rules_rs 0.0.90 bundles a newer rules_rust whose cargo build-script runner
