@@ -17,6 +17,9 @@
 // under the License.
 // </copyright>
 
+#if NET462
+using System.Diagnostics;
+#endif
 using System.Reflection;
 using System.Runtime.InteropServices;
 
