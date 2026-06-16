@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.grid.sessionqueue.httpd;
 
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -42,6 +43,7 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 
@@ -88,25 +90,49 @@ public class NewSessionQueueServer extends TemplateGridServerCommand {
 
     NewSessionQueue sessionQueue = queueOptions.getSessionQueue(LOCAL_NEW_SESSION_QUEUE);
 
+    // Liveness/readiness must reflect the real state of the queue so that a load balancer (or
+    // Kubernetes Service) stops routing traffic to an instance whose backend is unavailable or
+    // that is draining during a restart/shutdown.
+    HttpHandler readinessCheck =
+        req -> {
+          boolean ready = sessionQueue.isReady();
+          return new HttpResponse()
+              .setStatus(ready ? HTTP_OK : HTTP_UNAVAILABLE)
+              .addHeader("Content-Type", JSON_UTF_8)
+              .setContent(
+                  asJson(
+                      Map.of(
+                          "ready",
+                          ready,
+                          "message",
+                          ready
+                              ? "New Session Queue is ready."
+                              : "New Session Queue is not ready.")));
+        };
+
     return new Handlers(
         Route.combine(
             sessionQueue,
             get("/status")
                 .to(
                     () ->
-                        req ->
-                            new HttpResponse()
-                                .addHeader("Content-Type", JSON_UTF_8)
-                                .setContent(
-                                    asJson(
-                                        Map.of(
-                                            "value",
-                                            Map.of(
-                                                "ready",
-                                                true,
-                                                "message",
-                                                "New Session Queue is ready."))))),
-            get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT))),
+                        req -> {
+                          boolean ready = sessionQueue.isReady();
+                          return new HttpResponse()
+                              .addHeader("Content-Type", JSON_UTF_8)
+                              .setContent(
+                                  asJson(
+                                      Map.of(
+                                          "value",
+                                          Map.of(
+                                              "ready",
+                                              ready,
+                                              "message",
+                                              ready
+                                                  ? "New Session Queue is ready."
+                                                  : "New Session Queue is not ready."))));
+                        }),
+            get("/readyz").to(() -> readinessCheck)),
         null) {
       @Override
       public void close() {

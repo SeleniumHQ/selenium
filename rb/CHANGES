@@ -1,3 +1,15 @@
+4.45.0 (2026-06-15)
+=========================
+* Support CDP versions: v147, v148, v149
+* deprecate curb http client support (#17443)
+* move Ruby bindings to use typescript get attribute atom (#17524)
+* Move atoms to use the typescript versions (#17532)
+* deprecate Chromium Profile classes (#17557)
+* update bazel test tags (#17558)
+* separate concerns between Service, DriverFinder, and Options (#17564)
+* fix using environment variables to set drivers (#17571)
+* create more obvious test guard keywords as aliases (#17636)
+
 4.44.0 (2026-05-12)
 =========================
 * Support CDP versions: v146, v147, v148

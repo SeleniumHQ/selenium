@@ -41,10 +41,10 @@ generate_bidi_library(
     spec_version = "1.0",
 )
 
-VERSION = "4.45.0-nightly202605121853"
+VERSION = "4.45.0"
 
 BROWSER_VERSIONS = [
-    "v146",
+    "v149",
     "v147",
     "v148",
 ]
