@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::DriverFinder
   
-    &mdash; Documentation by YARD 0.9.43
+    &mdash; Documentation by YARD 0.9.44
   
 </title>
 
@@ -262,7 +262,36 @@
   </div>
 </div>
 <div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
   
+    <li>
+      
+        <span class='name'>options</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></tt>, <tt>nil</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>when nil driver parsed from Service::EXECUTABLE</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Service.html" title="Selenium::WebDriver::Service (class)">Service</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
 
 </div><table class="source_code">
   <tr>
@@ -270,13 +299,13 @@
       <pre class="lines">
 
 
-29
-30
 31
-32</pre>
+32
+33
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_finder.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_finder.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='id identifier rubyid_service'>service</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span>
@@ -349,12 +378,12 @@
       <pre class="lines">
 
 
-34
-35
-36</pre>
+36
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_finder.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_finder.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser_path'>browser_path</span>
   <span class='id identifier rubyid_paths'>paths</span><span class='lbracket'>[</span><span class='symbol'>:browser_path</span><span class='rbracket'>]</span>
@@ -401,12 +430,12 @@
       <pre class="lines">
 
 
-42
-43
-44</pre>
+44
+45
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_finder.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_finder.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser_path?'>browser_path?</span>
   <span class='op'>!</span><span class='id identifier rubyid_browser_path'>browser_path</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_browser_path'>browser_path</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
@@ -431,12 +460,12 @@
       <pre class="lines">
 
 
-38
-39
-40</pre>
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_finder.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_finder.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_driver_path'>driver_path</span>
   <span class='id identifier rubyid_paths'>paths</span><span class='lbracket'>[</span><span class='symbol'>:driver_path</span><span class='rbracket'>]</span>
@@ -451,9 +480,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri May 15 13:34:13 2026 by
+  Generated on Tue Jun 16 14:07:43 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.43 (ruby-3.2.9).
+  0.9.44 (ruby-3.3.11).
 </div>
 
     </div>

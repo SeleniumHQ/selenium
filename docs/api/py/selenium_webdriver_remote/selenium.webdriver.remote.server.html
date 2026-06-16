@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.remote.server &#8212; Selenium 4.44.0 documentation</title>
+    <title>selenium.webdriver.remote.server &#8212; Selenium 4.45.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=d7059ebf"></script>
+    <script src="../_static/documentation_options.js?v=a6d0d4e6"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.44.0 documentation"
+        <a href="../index.html" title="Selenium 4.45.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.44.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.45.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.remote.server </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.44.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.45.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.44.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.45.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.44.0 documentation">Selenium 4.44.0 documentation</a>
+       title="Selenium 4.45.0 documentation">Selenium 4.45.0 documentation</a>
   </label>
   
 
@@ -183,6 +183,8 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#selenium.webdriver.remote.server.Server" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Server</span></code></a><nav class="md-nav">
               <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.remote.server.Server.DEFAULT_ARGS" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Server.DEFAULT_ARGS</span></code></a>
+        </li>
         <li class="md-nav__item"><a href="#selenium.webdriver.remote.server.Server.startup_timeout" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Server.startup_timeout</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#selenium.webdriver.remote.server.Server.status_url" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Server.status_url</span></code></a>
@@ -235,7 +237,7 @@
 </table>
 <dl class="py class">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.server.Server">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.remote.server.</span></span><span class="sig-name descname"><span class="pre">Server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4444</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'INFO'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">java_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startup_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/server.html#Server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.server.Server" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.remote.server.</span></span><span class="sig-name descname"><span class="pre">Server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4444</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'INFO'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">java_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startup_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/server.html#Server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.server.Server" title="Link to this definition">¶</a></dt>
 <dd><p>Manage a Selenium Grid (Remote) Server in standalone mode.</p>
 <p>This class contains functionality for downloading the server and starting/stopping it.</p>
 <dl>
@@ -252,9 +254,18 @@ log_level: Logging level to control logging output (“INFO” if not specified)
 <div><p>Available levels: “SEVERE”, “WARNING”, “INFO”, “CONFIG”, “FINE”, “FINER”, “FINEST”.</p>
 </div></blockquote>
 <p>env: Mapping that defines the environment variables for the server process.
-java_path: Path to the java executable to run the server.</p>
+java_path: Path to the java executable to run the server.
+args: Arguments for the standalone server command. Defaults to enabling Selenium</p>
+<blockquote>
+<div><p>Manager and managed downloads; pass a list to override these entirely (e.g. to
+pin drivers with “–driver-configuration”).</p>
+</div></blockquote>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.server.Server.DEFAULT_ARGS">
+<span class="sig-name descname"><span class="pre">DEFAULT_ARGS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('--selenium-manager',</span> <span class="pre">'true',</span> <span class="pre">'--enable-managed-downloads',</span> <span class="pre">'true')</span></em><a class="headerlink" href="#selenium.webdriver.remote.server.Server.DEFAULT_ARGS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.server.Server.startup_timeout">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">startup_timeout</span></span><a class="headerlink" href="#selenium.webdriver.remote.server.Server.startup_timeout" title="Link to this definition">¶</a></dt>

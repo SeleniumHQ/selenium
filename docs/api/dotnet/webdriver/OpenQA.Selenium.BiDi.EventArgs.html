@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docfix/apiSpec/new?filename=OpenQA_Selenium_BiDi_EventArgs.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.EventArgs%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_EventArgs.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.EventArgs%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_EventArgs" data-uid="OpenQA.Selenium.BiDi.EventArgs" class="text-break">
-Class EventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/EventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+Class EventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/EventArgs.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -178,27 +178,32 @@ Class EventArgs  <a class="header-action link-secondary" title="View source" hre
 
 
 
-  <h2 class="section" id="constructors">Constructors
+  <h2 class="section" id="properties">Properties
 </h2>
 
 
-  <a id="OpenQA_Selenium_BiDi_EventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.EventArgs.#ctor*"></a>
+  <a id="OpenQA_Selenium_BiDi_EventArgs_AdditionalData_" data-uid="OpenQA.Selenium.BiDi.EventArgs.AdditionalData*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_EventArgs__ctor_OpenQA_Selenium_BiDi_IBiDi_" data-uid="OpenQA.Selenium.BiDi.EventArgs.#ctor(OpenQA.Selenium.BiDi.IBiDi)">
-  EventArgs(IBiDi)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/EventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_EventArgs_AdditionalData" data-uid="OpenQA.Selenium.BiDi.EventArgs.AdditionalData">
+  AdditionalData
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/EventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected EventArgs(IBiDi BiDi)</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonIgnore]
+public AdditionalData AdditionalData { get; }</code></pre>
   </div>
 
-  <h4 class="section">Parameters</h4>
+
+
+
+
+  <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><code>BiDi</code> <a class="xref" href="OpenQA.Selenium.BiDi.IBiDi.html">IBiDi</a></dt>
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.AdditionalData.html">AdditionalData</a></dt>
     <dd></dd>
   </dl>
 
@@ -209,26 +214,51 @@ Class EventArgs  <a class="header-action link-secondary" title="View source" hre
 
 
 
+  <a id="OpenQA_Selenium_BiDi_EventArgs_AdditionalMessageData_" data-uid="OpenQA.Selenium.BiDi.EventArgs.AdditionalMessageData*"></a>
 
-
-
-
-  <h2 class="section" id="properties">Properties
-</h2>
-
-
-  <a id="OpenQA_Selenium_BiDi_EventArgs_BiDi_" data-uid="OpenQA.Selenium.BiDi.EventArgs.BiDi*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_EventArgs_BiDi" data-uid="OpenQA.Selenium.BiDi.EventArgs.BiDi">
-  BiDi
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/EventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_EventArgs_AdditionalMessageData" data-uid="OpenQA.Selenium.BiDi.EventArgs.AdditionalMessageData">
+  AdditionalMessageData
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/EventArgs.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IBiDi BiDi { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonIgnore]
+public AdditionalData AdditionalMessageData { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.AdditionalData.html">AdditionalData</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_EventArgs_BiDi_" data-uid="OpenQA.Selenium.BiDi.EventArgs.BiDi*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_EventArgs_BiDi" data-uid="OpenQA.Selenium.BiDi.EventArgs.BiDi">
+  BiDi
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/EventArgs.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonIgnore]
+public IBiDi BiDi { get; }</code></pre>
   </div>
 
 
@@ -252,7 +282,7 @@ Class EventArgs  <a class="header-action link-secondary" title="View source" hre
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/EventArgs.cs/#L22" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/EventArgs.cs/#L26" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Support::Guards::Guard
   
-    &mdash; Documentation by YARD 0.9.43
+    &mdash; Documentation by YARD 0.9.44
   
 </title>
 
@@ -287,7 +287,7 @@
   <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>Bug is present on all configurations specified.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Test is expected to fail on the configurations specified (marked pending).</p></div></span>
   
 </li>
 
@@ -309,7 +309,7 @@
   <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>Bug is present on all configurations specified, but test can not be run because it breaks other tests, or it is flaky and unreliable.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Test is skipped on the configurations specified because it breaks the run or is unreliable.</p></div></span>
   
 </li>
 
@@ -331,7 +331,7 @@
   <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>Test only applies to configurations specified.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Test is skipped on every configuration except those specified (it only applies there).</p></div></span>
   
 </li>
 
@@ -399,7 +399,7 @@
   <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>Bug is present on all configurations not specified.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Test is expected to fail on every configuration except those specified (marked pending).</p></div></span>
   
 </li>
 
@@ -720,7 +720,7 @@
   <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>Bug is present on all configurations specified</p>
+<p>Test is expected to fail on the configurations specified (marked pending).</p>
 
   </div>
 </div>
@@ -754,7 +754,7 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_except?'>except?</span>
-  <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:except</span>
+  <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:pending_if</span> <span class='op'>||</span> <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:except</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -776,8 +776,7 @@
   <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>Bug is present on all configurations specified, but test can not be run because it breaks other tests,
-or it is flaky and unreliable</p>
+<p>Test is skipped on the configurations specified because it breaks the run or is unreliable.</p>
 
   </div>
 </div>
@@ -803,15 +802,15 @@ or it is flaky and unreliable</p>
       <pre class="lines">
 
 
+76
 77
-78
-79</pre>
+78</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 77</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 76</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_exclude?'>exclude?</span>
-  <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:exclude</span> <span class='op'>||</span> <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:flaky</span>
+  <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:skip_if</span> <span class='op'>||</span> <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:exclude</span> <span class='op'>||</span> <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:flaky</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -833,7 +832,7 @@ or it is flaky and unreliable</p>
   <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>Test only applies to configurations specified</p>
+<p>Test is skipped on every configuration except those specified (it only applies there).</p>
 
   </div>
 </div>
@@ -859,15 +858,15 @@ or it is flaky and unreliable</p>
       <pre class="lines">
 
 
+81
 82
-83
-84</pre>
+83</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 82</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 81</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_exclusive?'>exclusive?</span>
-  <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:exclusive</span>
+  <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:skip_unless</span> <span class='op'>||</span> <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:exclusive</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -938,11 +937,11 @@ or it is flaky and unreliable</p>
             <span class='kw'>end</span>
 
   <span class='kw'>case</span> <span class='id identifier rubyid_type'>type</span>
-  <span class='kw'>when</span> <span class='symbol'>:exclude</span>
+  <span class='kw'>when</span> <span class='symbol'>:skip_if</span><span class='comma'>,</span> <span class='symbol'>:exclude</span>
     <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Test skipped because it breaks test run; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_details'>details</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>when</span> <span class='symbol'>:flaky</span>
     <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Test skipped because it is unreliable in this configuration; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_details'>details</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>when</span> <span class='symbol'>:exclusive</span>
+  <span class='kw'>when</span> <span class='symbol'>:skip_unless</span><span class='comma'>,</span> <span class='symbol'>:exclusive</span>
     <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Test does not apply to this configuration; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_details'>details</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>else</span>
     <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Test guarded; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_details'>details</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -968,7 +967,7 @@ or it is flaky and unreliable</p>
   <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>Bug is present on all configurations not specified</p>
+<p>Test is expected to fail on every configuration except those specified (marked pending).</p>
 
   </div>
 </div>
@@ -1002,7 +1001,7 @@ or it is flaky and unreliable</p>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 71</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_only?'>only?</span>
-  <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:only</span>
+  <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:pending_unless</span> <span class='op'>||</span> <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:only</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1014,9 +1013,9 @@ or it is flaky and unreliable</p>
 </div>
 
       <div id="footer">
-  Generated on Fri May 15 13:34:13 2026 by
+  Generated on Tue Jun 16 14:07:43 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.43 (ruby-3.2.9).
+  0.9.44 (ruby-3.3.11).
 </div>
 
     </div>

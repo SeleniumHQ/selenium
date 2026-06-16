@@ -78,7 +78,6 @@ org.openqa.selenium.internal
 org.openqa.selenium.io
 org.openqa.selenium.json
 org.openqa.selenium.logging
-org.openqa.selenium.logging.profiler
 org.openqa.selenium.manager
 org.openqa.selenium.net
 org.openqa.selenium.netty.server

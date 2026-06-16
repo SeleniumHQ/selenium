@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docfix/apiSpec/new?filename=OpenQA_Selenium_BiDi_Script_NodeProperties.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Script.NodeProperties%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_Script_NodeProperties.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Script.NodeProperties%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Script_NodeProperties" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties" class="text-break">
-Class NodeProperties  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
+Class NodeProperties  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -157,16 +157,16 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
 
   <a id="OpenQA_Selenium_BiDi_Script_NodeProperties__ctor_" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties__ctor_System_Int64_System_Int64_System_Collections_Generic_IReadOnlyDictionary_System_String_System_String__System_Collections_Generic_IReadOnlyList_OpenQA_Selenium_BiDi_Script_NodeRemoteValue__System_String_System_Nullable_OpenQA_Selenium_BiDi_Script_Mode__System_String_System_String_OpenQA_Selenium_BiDi_Script_NodeRemoteValue_" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.#ctor(System.Int64,System.Int64,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String},System.Collections.Generic.IReadOnlyList{OpenQA.Selenium.BiDi.Script.NodeRemoteValue},System.String,System.Nullable{OpenQA.Selenium.BiDi.Script.Mode},System.String,System.String,OpenQA.Selenium.BiDi.Script.NodeRemoteValue)">
-  NodeProperties(long, long, IReadOnlyDictionary&lt;string, string&gt;?, IReadOnlyList&lt;NodeRemoteValue&gt;?, string?, Mode?, string?, string?, NodeRemoteValue?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties__ctor_System_Int64_System_Int64_System_Collections_Immutable_ImmutableDictionary_System_String_System_String__System_Nullable_System_Collections_Immutable_ImmutableArray_OpenQA_Selenium_BiDi_Script_NodeRemoteValue___System_String_System_Nullable_OpenQA_Selenium_BiDi_Script_Mode__System_String_System_String_OpenQA_Selenium_BiDi_Script_NodeRemoteValue_" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.#ctor(System.Int64,System.Int64,System.Collections.Immutable.ImmutableDictionary{System.String,System.String},System.Nullable{System.Collections.Immutable.ImmutableArray{OpenQA.Selenium.BiDi.Script.NodeRemoteValue}},System.String,System.Nullable{OpenQA.Selenium.BiDi.Script.Mode},System.String,System.String,OpenQA.Selenium.BiDi.Script.NodeRemoteValue)">
+  NodeProperties(long, long, ImmutableDictionary&lt;string, string&gt;?, ImmutableArray&lt;NodeRemoteValue&gt;?, string?, Mode?, string?, string?, NodeRemoteValue?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public NodeProperties(long NodeType, long ChildNodeCount, IReadOnlyDictionary&lt;string, string&gt;? Attributes, IReadOnlyList&lt;NodeRemoteValue&gt;? Children, string? LocalName, Mode? Mode, string? NamespaceUri, string? NodeValue, NodeRemoteValue? ShadowRoot)</code></pre>
+    <pre><code class="lang-csharp hljs">public NodeProperties(long NodeType, long ChildNodeCount, ImmutableDictionary&lt;string, string&gt;? Attributes, ImmutableArray&lt;NodeRemoteValue&gt;? Children, string? LocalName, Mode? Mode, string? NamespaceUri, string? NodeValue, NodeRemoteValue? ShadowRoot)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -175,9 +175,9 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
     <dd></dd>
     <dt><code>ChildNodeCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd></dd>
-    <dt><code>Attributes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dt><code>Attributes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.immutable.immutabledictionary-2">ImmutableDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
     <dd></dd>
-    <dt><code>Children</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.NodeRemoteValue.html">NodeRemoteValue</a>&gt;</dt>
+    <dt><code>Children</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.immutable.immutablearray-1">ImmutableArray</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.NodeRemoteValue.html">NodeRemoteValue</a>&gt;?</dt>
     <dd></dd>
     <dt><code>LocalName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
@@ -210,14 +210,14 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_Attributes" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.Attributes">
   Attributes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IReadOnlyDictionary&lt;string, string&gt;? Attributes { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ImmutableDictionary&lt;string, string&gt;? Attributes { get; init; }</code></pre>
   </div>
 
 
@@ -226,7 +226,7 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.immutable.immutabledictionary-2">ImmutableDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -241,7 +241,7 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_ChildNodeCount" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.ChildNodeCount">
   ChildNodeCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -272,14 +272,14 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_Children" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.Children">
   Children
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;NodeRemoteValue&gt;? Children { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ImmutableArray&lt;NodeRemoteValue&gt;? Children { get; init; }</code></pre>
   </div>
 
 
@@ -288,7 +288,7 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.NodeRemoteValue.html">NodeRemoteValue</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.immutable.immutablearray-1">ImmutableArray</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.NodeRemoteValue.html">NodeRemoteValue</a>&gt;?</dt>
     <dd></dd>
   </dl>
 
@@ -303,7 +303,7 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_LocalName" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.LocalName">
   LocalName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -334,7 +334,7 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_Mode" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.Mode">
   Mode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -365,7 +365,7 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_NamespaceUri" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.NamespaceUri">
   NamespaceUri
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -396,7 +396,7 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_NodeType" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.NodeType">
   NodeType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -427,7 +427,7 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_NodeValue" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.NodeValue">
   NodeValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -458,7 +458,7 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_ShadowRoot" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.ShadowRoot">
   ShadowRoot
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -489,7 +489,7 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L22" class="edit-link">Edit this page</a>
         </div>
 
 

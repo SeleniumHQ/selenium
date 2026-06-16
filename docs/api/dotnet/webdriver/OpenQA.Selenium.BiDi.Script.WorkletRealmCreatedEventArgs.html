@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docfix/apiSpec/new?filename=OpenQA_Selenium_BiDi_Script_WorkletRealmCreatedEventArgs.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Script.WorkletRealmCreatedEventArgs%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_Script_WorkletRealmCreatedEventArgs.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Script.WorkletRealmCreatedEventArgs%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Script_WorkletRealmCreatedEventArgs" data-uid="OpenQA.Selenium.BiDi.Script.WorkletRealmCreatedEventArgs" class="text-break">
-Class WorkletRealmCreatedEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Script/RealmInfoEvent.cs/#L66"><i class="bi bi-code-slash"></i></a>
+Class WorkletRealmCreatedEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/RealmInfoEvent.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -140,6 +140,12 @@ Class WorkletRealmCreatedEventArgs  <a class="header-action link-secondary" titl
       <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_BiDi">EventArgs.BiDi</a>
     </div>
     <div>
+      <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_AdditionalData">EventArgs.AdditionalData</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_AdditionalMessageData">EventArgs.AdditionalMessageData</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
     <div>
@@ -170,22 +176,20 @@ Class WorkletRealmCreatedEventArgs  <a class="header-action link-secondary" titl
 
   <a id="OpenQA_Selenium_BiDi_Script_WorkletRealmCreatedEventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.Script.WorkletRealmCreatedEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Script_WorkletRealmCreatedEventArgs__ctor_OpenQA_Selenium_BiDi_IBiDi_OpenQA_Selenium_BiDi_Script_Realm_System_String_" data-uid="OpenQA.Selenium.BiDi.Script.WorkletRealmCreatedEventArgs.#ctor(OpenQA.Selenium.BiDi.IBiDi,OpenQA.Selenium.BiDi.Script.Realm,System.String)">
-  WorkletRealmCreatedEventArgs(IBiDi, Realm, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Script/RealmInfoEvent.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Script_WorkletRealmCreatedEventArgs__ctor_OpenQA_Selenium_BiDi_Script_Realm_System_String_" data-uid="OpenQA.Selenium.BiDi.Script.WorkletRealmCreatedEventArgs.#ctor(OpenQA.Selenium.BiDi.Script.Realm,System.String)">
+  WorkletRealmCreatedEventArgs(Realm, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/RealmInfoEvent.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public WorkletRealmCreatedEventArgs(IBiDi BiDi, Realm Realm, string Origin)</code></pre>
+    <pre><code class="lang-csharp hljs">public WorkletRealmCreatedEventArgs(Realm Realm, string Origin)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>BiDi</code> <a class="xref" href="OpenQA.Selenium.BiDi.IBiDi.html">IBiDi</a></dt>
-    <dd></dd>
     <dt><code>Realm</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.Realm.html">Realm</a></dt>
     <dd></dd>
     <dt><code>Origin</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
@@ -207,7 +211,7 @@ Class WorkletRealmCreatedEventArgs  <a class="header-action link-secondary" titl
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/Script/RealmInfoEvent.cs/#L66" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/RealmInfoEvent.cs/#L63" class="edit-link">Edit this page</a>
         </div>
 
 

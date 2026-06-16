@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Chromium::Options
   
-    &mdash; Documentation by YARD 0.9.43
+    &mdash; Documentation by YARD 0.9.44
   
 </title>
 
@@ -446,7 +446,9 @@
       
       
         &mdash;
-        <div class='inline'><p>An instance of a Chrome::Profile Class</p></div>
+        <div class='inline'><p>(Deprecated) An instance of a Chrome::Profile class.
+Use <span class='object_link'><a href="#add_argument-instance_method" title="Selenium::WebDriver::Chromium::Options#add_argument (method)">#add_argument</a></span> with <code>--user-data-dir=...</code>, <span class='object_link'><a href="#add_preference-instance_method" title="Selenium::WebDriver::Chromium::Options#add_preference (method)">#add_preference</a></span>, and
+<span class='object_link'><a href="#add_extension-instance_method" title="Selenium::WebDriver::Chromium::Options#add_extension (method)">#add_extension</a></span> instead.</p></div>
       
     </li>
   
@@ -477,8 +479,6 @@
       <pre class="lines">
 
 
-70
-71
 72
 73
 74
@@ -495,10 +495,12 @@
 85
 86
 87
-88</pre>
+88
+89
+90</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/options.rb', line 70</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/options.rb', line 72</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>profile:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='rparen'>)</span>
   <span class='kw'>super</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span>
@@ -712,12 +714,12 @@
       <pre class="lines">
 
 
-143
-144
-145</pre>
+145
+146
+147</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/options.rb', line 143</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/options.rb', line 145</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_argument'>add_argument</span><span class='lparen'>(</span><span class='id identifier rubyid_arg'>arg</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:args</span><span class='rbracket'>]</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_arg'>arg</span>
@@ -829,12 +831,12 @@
       <pre class="lines">
 
 
-181
-182
-183</pre>
+183
+184
+185</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/options.rb', line 181</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/options.rb', line 183</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_emulation'>add_emulation</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:emulation</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span>
@@ -895,12 +897,12 @@
       <pre class="lines">
 
 
-129
-130
-131</pre>
+131
+132
+133</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/options.rb', line 129</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/options.rb', line 131</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_encoded_extension'>add_encoded_extension</span><span class='lparen'>(</span><span class='id identifier rubyid_encoded'>encoded</span><span class='rparen'>)</span>
   <span class='ivar'>@encoded_extensions</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_encoded'>encoded</span>
@@ -961,12 +963,12 @@
       <pre class="lines">
 
 
-100
-101
-102</pre>
+102
+103
+104</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/options.rb', line 100</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/options.rb', line 102</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_extension'>add_extension</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_validate_extension'>validate_extension</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
@@ -1043,12 +1045,12 @@
       <pre class="lines">
 
 
-158
-159
-160</pre>
+160
+161
+162</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/options.rb', line 158</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/options.rb', line 160</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_preference'>add_preference</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:prefs</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
@@ -1158,15 +1160,15 @@ instead of launching the app with a clear data directory.</p></div>
       <pre class="lines">
 
 
-197
-198
 199
 200
 201
-202</pre>
+202
+203
+204</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/options.rb', line 197</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/options.rb', line 199</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_enable_android'>enable_android</span><span class='lparen'>(</span><span class='label'>package:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>com.android.chrome</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>serial_number:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>use_running_app:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>activity:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:android_package</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_package'>package</span>
@@ -1184,9 +1186,9 @@ instead of launching the app with a clear data directory.</p></div>
 </div>
 
       <div id="footer">
-  Generated on Fri May 15 13:34:12 2026 by
+  Generated on Tue Jun 16 14:07:43 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.43 (ruby-3.2.9).
+  0.9.44 (ruby-3.3.11).
 </div>
 
     </div>

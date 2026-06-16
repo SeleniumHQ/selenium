@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docfix/apiSpec/new?filename=OpenQA_Selenium_BiDi_BiDiOptionsBuilder.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BiDiOptionsBuilder%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_BiDiOptionsBuilder.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BiDiOptionsBuilder%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BiDiOptionsBuilder" data-uid="OpenQA.Selenium.BiDi.BiDiOptionsBuilder" class="text-break">
-Class BiDiOptionsBuilder  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BiDiOptionsBuilder.cs/#L28"><i class="bi bi-code-slash"></i></a>
+Class BiDiOptionsBuilder  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDiOptionsBuilder.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -151,11 +151,53 @@ such as the underlying transport mechanism.</p>
 </h2>
 
 
+  <a id="OpenQA_Selenium_BiDi_BiDiOptionsBuilder_UseTransport_" data-uid="OpenQA.Selenium.BiDi.BiDiOptionsBuilder.UseTransport*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BiDiOptionsBuilder_UseTransport_System_Func_OpenQA_Selenium_BiDi_ITransport__" data-uid="OpenQA.Selenium.BiDi.BiDiOptionsBuilder.UseTransport(System.Func{OpenQA.Selenium.BiDi.ITransport})">
+  UseTransport(Func&lt;ITransport&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDiOptionsBuilder.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Configures the BiDi connection to use a transport created by the specified factory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BiDiOptionsBuilder UseTransport(Func&lt;ITransport&gt; factory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>factory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.ITransport.html">ITransport</a>&gt;</dt>
+    <dd><p>A factory function that creates the <a class="xref" href="OpenQA.Selenium.BiDi.ITransport.html">ITransport</a> instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.BiDiOptionsBuilder.html">BiDiOptionsBuilder</a></dt>
+    <dd><p>The current <a class="xref" href="OpenQA.Selenium.BiDi.BiDiOptionsBuilder.html">BiDiOptionsBuilder</a> instance for chaining.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_BiDi_BiDiOptionsBuilder_UseTransport_System_Func_OpenQA_Selenium_BiDi_ITransport___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>BiDi takes ownership of the transport instance returned by the factory and will dispose it.</p>
+</div>
+
+
+
+
   <a id="OpenQA_Selenium_BiDi_BiDiOptionsBuilder_UseWebSocket_" data-uid="OpenQA.Selenium.BiDi.BiDiOptionsBuilder.UseWebSocket*"></a>
 
   <h3 id="OpenQA_Selenium_BiDi_BiDiOptionsBuilder_UseWebSocket_System_Action_System_Net_WebSockets_ClientWebSocketOptions__" data-uid="OpenQA.Selenium.BiDi.BiDiOptionsBuilder.UseWebSocket(System.Action{System.Net.WebSockets.ClientWebSocketOptions})">
   UseWebSocket(Action&lt;ClientWebSocketOptions&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BiDiOptionsBuilder.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDiOptionsBuilder.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Configures the BiDi connection to use a WebSocket transport.</p>
@@ -199,7 +241,7 @@ when you need to customize the underlying <a class="xref" href="https://learn.mi
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/docfix/dotnet/src/webdriver/BiDi/BiDiOptionsBuilder.cs/#L28" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDiOptionsBuilder.cs/#L28" class="edit-link">Edit this page</a>
         </div>
 
 

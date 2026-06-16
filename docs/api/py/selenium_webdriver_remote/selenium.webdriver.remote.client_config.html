@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.remote.client_config &#8212; Selenium 4.44.0 documentation</title>
+    <title>selenium.webdriver.remote.client_config &#8212; Selenium 4.45.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=d7059ebf"></script>
+    <script src="../_static/documentation_options.js?v=a6d0d4e6"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.44.0 documentation"
+        <a href="../index.html" title="Selenium 4.45.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.44.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.45.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.remote.client_config </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.44.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.45.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.44.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.45.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.44.0 documentation">Selenium 4.44.0 documentation</a>
+       title="Selenium 4.45.0 documentation">Selenium 4.45.0 documentation</a>
   </label>
   
 
@@ -220,6 +220,8 @@
         <li class="md-nav__item"><a href="#selenium.webdriver.remote.client_config.ClientConfig.websocket_timeout" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ClientConfig.websocket_timeout</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#selenium.webdriver.remote.client_config.ClientConfig.websocket_interval" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ClientConfig.websocket_interval</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.remote.client_config.ClientConfig.websocket_max_message_size" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ClientConfig.websocket_max_message_size</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#selenium.webdriver.remote.client_config.ClientConfig.ca_certs" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ClientConfig.ca_certs</span></code></a>
         </li>
@@ -279,7 +281,7 @@
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.client_config.ClientConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.remote.client_config.</span></span><span class="sig-name descname"><span class="pre">ClientConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remote_server_addr:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_alive:</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy:</span> <span class="pre">~selenium.webdriver.common.proxy.Proxy</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;selenium.webdriver.common.proxy.Proxy</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_certificates:</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_args_for_pool_manager:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ca_certs:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth_type:</span> <span class="pre">~selenium.webdriver.remote.client_config.AuthType</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">AuthType.BASIC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_agent:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_headers:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">websocket_timeout:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">30.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">websocket_interval:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/client_config.html#ClientConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.client_config.ClientConfig" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.remote.client_config.</span></span><span class="sig-name descname"><span class="pre">ClientConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remote_server_addr:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_alive:</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy:</span> <span class="pre">~selenium.webdriver.common.proxy.Proxy</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;selenium.webdriver.common.proxy.Proxy</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_certificates:</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_args_for_pool_manager:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ca_certs:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth_type:</span> <span class="pre">~selenium.webdriver.remote.client_config.AuthType</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">AuthType.BASIC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_agent:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_headers:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">websocket_timeout:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">30.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">websocket_interval:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">websocket_max_message_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/client_config.html#ClientConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.client_config.ClientConfig" title="Link to this definition">¶</a></dt>
 <dd><dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.client_config.ClientConfig.remote_server_addr">
 <span class="sig-name descname"><span class="pre">remote_server_addr</span></span><a class="headerlink" href="#selenium.webdriver.remote.client_config.ClientConfig.remote_server_addr" title="Link to this definition">¶</a></dt>
@@ -349,6 +351,14 @@
 <dt class="sig sig-object py" id="selenium.webdriver.remote.client_config.ClientConfig.websocket_interval">
 <span class="sig-name descname"><span class="pre">websocket_interval</span></span><a class="headerlink" href="#selenium.webdriver.remote.client_config.ClientConfig.websocket_interval" title="Link to this definition">¶</a></dt>
 <dd><p>Gets and Sets the WebSocket response wait interval (in seconds) used for communicating with the browser.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.client_config.ClientConfig.websocket_max_message_size">
+<span class="sig-name descname"><span class="pre">websocket_max_message_size</span></span><a class="headerlink" href="#selenium.webdriver.remote.client_config.ClientConfig.websocket_max_message_size" title="Link to this definition">¶</a></dt>
+<dd><p>Gets and Sets the maximum WebSocket message size in bytes for CDP connections.</p>
+<p>Only applies to CDP-based connections (<code class="docutils literal notranslate"><span class="pre">driver.bidi_connection()</span></code>). When <code class="docutils literal notranslate"><span class="pre">None</span></code>
+the value falls back to the <code class="docutils literal notranslate"><span class="pre">SE_CDP_MAX_WS_MESSAGE_SIZE</span></code> environment variable,
+then to the built-in default of 16 MiB (<code class="docutils literal notranslate"><span class="pre">2**24</span></code>).</p>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.client_config.ClientConfig.ca_certs">

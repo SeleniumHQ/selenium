@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.common.exceptions &#8212; Selenium 4.44.0 documentation</title>
+    <title>selenium.common.exceptions &#8212; Selenium 4.45.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/material.css?v=79c92029" />
-    <script src="../../../_static/documentation_options.js?v=d7059ebf"></script>
+    <script src="../../../_static/documentation_options.js?v=a6d0d4e6"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../index.html" title="Selenium 4.44.0 documentation"
+        <a href="../../../index.html" title="Selenium 4.45.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.44.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.45.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.common.exceptions </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Selenium 4.44.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Selenium 4.45.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../index.html" title="Selenium 4.44.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../index.html" title="Selenium 4.45.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../index.html"
-       title="Selenium 4.44.0 documentation">Selenium 4.44.0 documentation</a>
+       title="Selenium 4.45.0 documentation">Selenium 4.45.0 documentation</a>
   </label>
   
 
@@ -218,7 +218,7 @@
 
 
 <div class="viewcode-block" id="WebDriverException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.WebDriverException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.WebDriverException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">WebDriverException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Base webdriver exception."""</span>
 
@@ -245,21 +245,21 @@
 
 
 <div class="viewcode-block" id="InvalidSwitchToTargetException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.InvalidSwitchToTargetException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSwitchToTargetException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidSwitchToTargetException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when frame or window target to be switched doesn't exist."""</span></div>
 
 
 
 <div class="viewcode-block" id="NoSuchFrameException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.NoSuchFrameException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchFrameException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoSuchFrameException</span><span class="p">(</span><span class="n">InvalidSwitchToTargetException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when frame target to be switched doesn't exist."""</span></div>
 
 
 
 <div class="viewcode-block" id="NoSuchWindowException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.NoSuchWindowException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchWindowException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoSuchWindowException</span><span class="p">(</span><span class="n">InvalidSwitchToTargetException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when window target to be switched doesn't exist.</span>
 
@@ -272,7 +272,7 @@
 
 
 <div class="viewcode-block" id="NoSuchElementException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.NoSuchElementException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchElementException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoSuchElementException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when element could not be found.</span>
 
@@ -296,7 +296,7 @@
 
 
 <div class="viewcode-block" id="NoSuchAttributeException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.NoSuchAttributeException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchAttributeException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoSuchAttributeException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when the attribute of element could not be found.</span>
 
@@ -309,14 +309,14 @@
 
 
 <div class="viewcode-block" id="NoSuchShadowRootException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.NoSuchShadowRootException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchShadowRootException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoSuchShadowRootException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when trying to access the shadow root of an element when it does not have a shadow root attached."""</span></div>
 
 
 
 <div class="viewcode-block" id="StaleElementReferenceException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.StaleElementReferenceException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.StaleElementReferenceException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">StaleElementReferenceException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when a reference to an element is now "stale".</span>
 
@@ -346,7 +346,7 @@
 
 
 <div class="viewcode-block" id="InvalidElementStateException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.InvalidElementStateException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidElementStateException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidElementStateException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when a command could not be completed because the element is in an invalid state.</span>
 
@@ -356,7 +356,7 @@
 
 
 <div class="viewcode-block" id="UnexpectedAlertPresentException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.UnexpectedAlertPresentException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.UnexpectedAlertPresentException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UnexpectedAlertPresentException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when an unexpected alert has appeared.</span>
 
@@ -380,7 +380,7 @@
 
 
 <div class="viewcode-block" id="NoAlertPresentException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.NoAlertPresentException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoAlertPresentException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoAlertPresentException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when switching to no presented alert.</span>
 
@@ -391,7 +391,7 @@
 
 
 <div class="viewcode-block" id="ElementNotVisibleException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.ElementNotVisibleException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotVisibleException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ElementNotVisibleException</span><span class="p">(</span><span class="n">InvalidElementStateException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when an element is present on the DOM, but it is not visible, and so is not able to be interacted with.</span>
 
@@ -411,7 +411,7 @@
 
 
 <div class="viewcode-block" id="ElementNotInteractableException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.ElementNotInteractableException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotInteractableException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ElementNotInteractableException</span><span class="p">(</span><span class="n">InvalidElementStateException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when element interactions will hit another element due to paint order."""</span>
 
@@ -428,7 +428,7 @@
 
 
 <div class="viewcode-block" id="ElementNotSelectableException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.ElementNotSelectableException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotSelectableException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ElementNotSelectableException</span><span class="p">(</span><span class="n">InvalidElementStateException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when trying to select an unselectable element.</span>
 
@@ -438,42 +438,42 @@
 
 
 <div class="viewcode-block" id="InvalidCookieDomainException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.InvalidCookieDomainException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidCookieDomainException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidCookieDomainException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when attempting to add a cookie under a different domain."""</span></div>
 
 
 
 <div class="viewcode-block" id="UnableToSetCookieException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.UnableToSetCookieException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.UnableToSetCookieException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UnableToSetCookieException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when a driver fails to set a cookie."""</span></div>
 
 
 
 <div class="viewcode-block" id="TimeoutException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.TimeoutException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.TimeoutException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TimeoutException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when a command does not complete in enough time."""</span></div>
 
 
 
 <div class="viewcode-block" id="MoveTargetOutOfBoundsException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.MoveTargetOutOfBoundsException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.MoveTargetOutOfBoundsException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MoveTargetOutOfBoundsException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when the target provided to the `ActionsChains` move() method is invalid, i.e. out of document."""</span></div>
 
 
 
 <div class="viewcode-block" id="UnexpectedTagNameException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.UnexpectedTagNameException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.UnexpectedTagNameException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UnexpectedTagNameException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when a support class did not get an expected web element."""</span></div>
 
 
 
 <div class="viewcode-block" id="InvalidSelectorException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.InvalidSelectorException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSelectorException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidSelectorException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when the selector used to find an element does not return a WebElement.</span>
 
@@ -493,7 +493,7 @@
 
 
 <div class="viewcode-block" id="ImeNotAvailableException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.ImeNotAvailableException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ImeNotAvailableException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImeNotAvailableException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when IME support is not available.</span>
 
@@ -504,42 +504,42 @@
 
 
 <div class="viewcode-block" id="ImeActivationFailedException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.ImeActivationFailedException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ImeActivationFailedException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImeActivationFailedException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when activating an IME engine has failed."""</span></div>
 
 
 
 <div class="viewcode-block" id="InvalidArgumentException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.InvalidArgumentException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidArgumentException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidArgumentException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The arguments passed to a command are either invalid or malformed."""</span></div>
 
 
 
 <div class="viewcode-block" id="JavascriptException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.JavascriptException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.JavascriptException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">JavascriptException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""An error occurred while executing JavaScript supplied by the user."""</span></div>
 
 
 
 <div class="viewcode-block" id="NoSuchCookieException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.NoSuchCookieException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchCookieException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoSuchCookieException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when no cookie matching the given path name was found."""</span></div>
 
 
 
 <div class="viewcode-block" id="ScreenshotException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.ScreenshotException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ScreenshotException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ScreenshotException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""A screen capture was made impossible."""</span></div>
 
 
 
 <div class="viewcode-block" id="ElementClickInterceptedException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.ElementClickInterceptedException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ElementClickInterceptedException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ElementClickInterceptedException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when element click fails because another element obscures it."""</span>
 
@@ -556,21 +556,21 @@
 
 
 <div class="viewcode-block" id="InsecureCertificateException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.InsecureCertificateException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InsecureCertificateException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InsecureCertificateException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when the user agent hits a certificate warning (expired or invalid TLS certificate)."""</span></div>
 
 
 
 <div class="viewcode-block" id="InvalidCoordinatesException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.InvalidCoordinatesException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidCoordinatesException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidCoordinatesException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The coordinates provided to an interaction's operation are invalid."""</span></div>
 
 
 
 <div class="viewcode-block" id="InvalidSessionIdException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.InvalidSessionIdException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSessionIdException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidSessionIdException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Thrown when the given session id is not in the list of active sessions."""</span>
 
@@ -587,7 +587,7 @@
 
 
 <div class="viewcode-block" id="SessionNotCreatedException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.SessionNotCreatedException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.SessionNotCreatedException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SessionNotCreatedException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""A new session could not be created."""</span>
 
@@ -604,14 +604,14 @@
 
 
 <div class="viewcode-block" id="UnknownMethodException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.UnknownMethodException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.UnknownMethodException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UnknownMethodException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The requested command matched a known URL but did not match any methods for that URL."""</span></div>
 
 
 
 <div class="viewcode-block" id="NoSuchDriverException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.NoSuchDriverException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchDriverException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoSuchDriverException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Raised when driver is not specified and cannot be located."""</span>
 
@@ -628,7 +628,7 @@
 
 
 <div class="viewcode-block" id="DetachedShadowRootException">
-<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.webdriver.remote.errorhandler.DetachedShadowRootException">[docs]</a>
+<a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.DetachedShadowRootException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DetachedShadowRootException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Raised when referenced shadow root is no longer attached to the DOM."""</span></div>
 
