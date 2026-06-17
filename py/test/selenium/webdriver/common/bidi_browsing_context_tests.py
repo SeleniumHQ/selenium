@@ -618,9 +618,10 @@ def test_add_event_handler_context_created(driver):
     # Create a new context to trigger the event
     context_id = driver.browsing_context.create(type=WindowTypes.TAB)
 
-    # Verify the event was received (might be > 1 since default context is also included)
-    assert len(events_received) >= 1
-    assert events_received[0].context == context_id or events_received[1].context == context_id
+    # context_created is a global event delivered asynchronously, and other contexts may also be
+    # reported, so wait for the event for the context we created rather than indexing positionally.
+    WebDriverWait(driver, 5).until(lambda d: any(e.context == context_id for e in events_received))
+    assert any(e.context == context_id for e in events_received)
 
     driver.browsing_context.close(context_id)
     driver.browsing_context.remove_event_handler("context_created", callback_id)
@@ -640,8 +641,8 @@ def test_add_event_handler_context_destroyed(driver):
     context_id = driver.browsing_context.create(type=WindowTypes.TAB)
     driver.browsing_context.close(context_id)
 
-    assert len(events_received) == 1
-    assert events_received[0].context == context_id
+    WebDriverWait(driver, 5).until(lambda d: any(e.context == context_id for e in events_received))
+    assert any(e.context == context_id for e in events_received)
 
     driver.browsing_context.remove_event_handler("context_destroyed", callback_id)
 
@@ -661,6 +662,7 @@ def test_add_event_handler_navigation_committed(driver, pages):
     url = pages.url("simpleTest.html")
     driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
+    WebDriverWait(driver, 5).until(lambda d: len(events_received) >= 1)
     assert len(events_received) >= 1
     assert any(url in event.url for event in events_received)
 
@@ -682,6 +684,7 @@ def test_add_event_handler_dom_content_loaded(driver, pages):
     url = pages.url("simpleTest.html")
     driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
+    WebDriverWait(driver, 5).until(lambda d: len(events_received) >= 1)
     assert len(events_received) == 1
     assert any("simpleTest" in event.url for event in events_received)
 
@@ -702,6 +705,7 @@ def test_add_event_handler_load(driver, pages):
     url = pages.url("simpleTest.html")
     driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
+    WebDriverWait(driver, 5).until(lambda d: len(events_received) >= 1)
     assert len(events_received) == 1
     assert any("simpleTest" in event.url for event in events_received)
 
@@ -722,6 +726,7 @@ def test_add_event_handler_navigation_started(driver, pages):
     url = pages.url("simpleTest.html")
     driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
+    WebDriverWait(driver, 5).until(lambda d: len(events_received) >= 1)
     assert len(events_received) == 1
     assert any("simpleTest" in event.url for event in events_received)
 
@@ -747,6 +752,7 @@ def test_add_event_handler_fragment_navigated(driver, pages):
     fragment_url = url + "#link"
     driver.browsing_context.navigate(context=context_id, url=fragment_url, wait=ReadinessState.COMPLETE)
 
+    WebDriverWait(driver, 5).until(lambda d: len(events_received) >= 1)
     assert len(events_received) == 1
     assert any("link" in event.url for event in events_received)
 
@@ -772,6 +778,7 @@ def test_add_event_handler_navigation_failed(driver):
         # Expect an exception due to navigation failure
         pass
 
+    WebDriverWait(driver, 5).until(lambda d: len(events_received) >= 1)
     assert len(events_received) == 1
     assert events_received[0].url == "http://invalid-domain-that-does-not-exist.test/"
     assert events_received[0].context == context_id
@@ -822,6 +829,7 @@ def test_add_event_handler_user_prompt_closed(driver, pages):
         context=driver.current_window_handle, accept=True, user_text="test input"
     )
 
+    WebDriverWait(driver, 5).until(lambda d: len(events_received) >= 1)
     assert len(events_received) == 1
     assert events_received[0].accepted is True
     assert events_received[0].user_text == "test input"
@@ -940,6 +948,7 @@ def test_add_event_handler_with_specific_contexts(driver):
     # Create another context (should trigger event)
     new_context_id = driver.browsing_context.create(type=WindowTypes.TAB)
 
+    WebDriverWait(driver, 5).until(lambda d: len(events_received) >= 1)
     assert len(events_received) >= 1
 
     driver.browsing_context.close(context_id)
@@ -959,16 +968,18 @@ def test_remove_event_handler(driver):
     # Create a context to trigger the event
     context_id_1 = driver.browsing_context.create(type=WindowTypes.TAB)
 
-    initial_events = len(events_received)
+    # Wait until the first context's event is observed (delivered asynchronously)
+    WebDriverWait(driver, 5).until(lambda d: any(e.context == context_id_1 for e in events_received))
 
     # Remove the event handler
     driver.browsing_context.remove_event_handler("context_created", callback_id)
 
-    # Create another context (should not trigger event after removal)
+    # Create another context. remove_event_handler unsubscribes synchronously, so with the handler
+    # gone this context must never be observed. Asserting on this specific context avoids relying on
+    # event counts, which are unreliable because context_created may report more than one context.
     context_id_2 = driver.browsing_context.create(type=WindowTypes.TAB)
 
-    # Verify no new events were received after removal
-    assert len(events_received) == initial_events
+    assert not any(e.context == context_id_2 for e in events_received)
 
     driver.browsing_context.close(context_id_1)
     driver.browsing_context.close(context_id_2)
@@ -992,10 +1003,13 @@ def test_multiple_event_handlers_same_event(driver):
     # Create a context to trigger both handlers
     context_id = driver.browsing_context.create(type=WindowTypes.TAB)
 
-    # Verify both handlers received the event
-    assert len(events_received_1) >= 1
-    assert len(events_received_2) >= 1
-    # Check any of the events has the required context ID
+    # Verify both handlers received the created context's event (delivered asynchronously)
+    WebDriverWait(driver, 5).until(
+        lambda d: (
+            any(e.context == context_id for e in events_received_1)
+            and any(e.context == context_id for e in events_received_2)
+        )
+    )
     assert any(event.context == context_id for event in events_received_1)
     assert any(event.context == context_id for event in events_received_2)
 
@@ -1023,12 +1037,9 @@ def test_remove_specific_event_handler_multiple_handlers(driver):
     context_id_1 = driver.browsing_context.create(type=WindowTypes.TAB)
 
     # Verify both handlers received the event
+    WebDriverWait(driver, 5).until(lambda d: len(events_received_1) >= 1 and len(events_received_2) >= 1)
     assert len(events_received_1) >= 1
     assert len(events_received_2) >= 1
-
-    # store the initial event counts
-    initial_count_1 = len(events_received_1)
-    initial_count_2 = len(events_received_2)
 
     # Remove only the first handler
     driver.browsing_context.remove_event_handler("context_created", callback_id_1)
@@ -1036,9 +1047,12 @@ def test_remove_specific_event_handler_multiple_handlers(driver):
     # Create another context
     context_id_2 = driver.browsing_context.create(type=WindowTypes.TAB)
 
-    # Verify only the second handler received the new event
-    assert len(events_received_1) == initial_count_1  # No new events
-    assert len(events_received_2) == initial_count_2 + 1  # 1 new event
+    # Only the second (still-registered) handler should observe the new context. Waiting for it to
+    # see that context's event also guarantees the dispatcher has caught up before we assert the
+    # removed handler saw nothing for it.
+    WebDriverWait(driver, 5).until(lambda d: any(e.context == context_id_2 for e in events_received_2))
+    assert not any(e.context == context_id_2 for e in events_received_1)  # removed handler: no new event
+    assert any(e.context == context_id_2 for e in events_received_2)  # remaining handler: new event
 
     driver.browsing_context.close(context_id_1)
     driver.browsing_context.close(context_id_2)
@@ -1145,6 +1159,9 @@ def test_event_callback_data_consistency(driver):
     for ctx in test_contexts:
         driver.browsing_context.close(ctx)
 
+    # 3 contexts created x 5 registered handlers; events are delivered asynchronously, so wait
+    # for all of them before asserting on the collected data.
+    WebDriverWait(driver, 10).until(lambda d: len(helper.events_received) >= 15)
     with helper.data_lock:
         assert not helper.consistency_errors, "Consistency errors: " + str(helper.consistency_errors)
         assert len(helper.events_received) > 0, "No events received"
@@ -1179,15 +1196,17 @@ def test_no_event_after_handler_removal(driver):
     context = driver.browsing_context.create(type=WindowTypes.TAB)
     driver.browsing_context.close(context)
 
-    events_before = len(helper.events_received)
+    # Wait until the created context's event has been delivered to the handlers (async delivery)
+    WebDriverWait(driver, 10).until(lambda d: any(e.context == context for e in helper.events_received))
 
     for i, callback_id in enumerate(helper.callback_ids):
         helper.remove_handler(callback_id, f"rem-{i}")
 
+    # With every handler removed (and unsubscribed), a newly created context must not be observed.
+    # Asserting on this specific context avoids relying on event counts, which are unreliable
+    # because context_created may report more than one context per creation.
     post_context = driver.browsing_context.create(type=WindowTypes.TAB)
     driver.browsing_context.close(post_context)
 
     with helper.data_lock:
-        new_events = len(helper.events_received) - events_before
-
-    assert new_events == 0, f"Expected 0 new events after removal, got {new_events}"
+        assert not any(e.context == post_context for e in helper.events_received), "Handlers fired after removal"
