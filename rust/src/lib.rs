@@ -82,7 +82,6 @@ pub const DEV: &str = "dev";
 pub const CANARY: &str = "canary";
 pub const NIGHTLY: &str = "nightly";
 pub const ESR: &str = "esr";
-pub const BROWSER_VERSION_IGNORE: &str = "ignore";
 pub const REG_VERSION_ARG: &str = "version";
 pub const REG_PV_ARG: &str = "pv";
 pub const DASH_VERSION: &str = "-v";
@@ -525,29 +524,17 @@ pub trait SeleniumManager {
                             discovered_version
                         ));
                     }
-                    if self.is_browser_version_ignore() {
-                        if !original_browser_path.is_empty() {
-                            self.get_logger().warn(format!(
-                                "Browser version check bypassed for {} at {}; using detected version {}",
-                                self.get_browser_name(),
-                                original_browser_path,
-                                discovered_version
-                            ));
-                        }
-                        self.set_browser_version(discovered_version);
-                    } else if self.is_browser_version_specific()
+                    if self.is_browser_version_specific()
                         && !self.get_browser_version().eq(&discovered_version)
                     {
                         if !original_browser_path.is_empty() {
                             return Err(anyhow!(format!(
                                 "The browser at {} has version {} but {} {} was requested; \
-                                 remove --browser-path to allow a browser download, or set \
-                                 --browser-version {} to use the detected browser version",
+                                 remove --browser-path to allow a browser download",
                                 original_browser_path,
                                 discovered_version,
                                 self.get_browser_name(),
                                 self.get_browser_version(),
-                                BROWSER_VERSION_IGNORE
                             )));
                         }
                         download_browser = true;
@@ -615,25 +602,6 @@ pub trait SeleniumManager {
                         self.get_browser_name(),
                         self.get_browser_version_label()
                     ));
-                    if self.is_browser_version_ignore() {
-                        let detail = if !original_browser_path.is_empty() {
-                            format!(
-                                "Could not detect {} version at {}; \
-                                 --browser-version {} requires a detectable local browser",
-                                self.get_browser_name(),
-                                original_browser_path,
-                                BROWSER_VERSION_IGNORE
-                            )
-                        } else {
-                            format!(
-                                "No local {} found; --browser-version {} requires a local browser \
-                                 (use --browser-path to specify its location)",
-                                self.get_browser_name(),
-                                BROWSER_VERSION_IGNORE
-                            )
-                        };
-                        return Err(anyhow!(detail));
-                    }
                     download_browser = true;
                 }
             }
@@ -858,11 +826,6 @@ pub trait SeleniumManager {
 
     fn is_browser_version_specific(&self) -> bool {
         self.is_version_specific(self.get_browser_version())
-    }
-
-    fn is_browser_version_ignore(&self) -> bool {
-        self.get_browser_version()
-            .eq_ignore_ascii_case(BROWSER_VERSION_IGNORE)
     }
 
     fn is_driver_version_specific(&self) -> bool {
