@@ -95,13 +95,13 @@ pub fn create_path_if_not_exists(path: &Path) -> Result<(), Error> {
 pub fn check_path_traversal(entry_path: &Path) -> Result<(), Error> {
     if entry_path.as_os_str().is_empty()
         || entry_path.components().any(|c| {
-        matches!(
-            c,
-            std::path::Component::ParentDir
-                | std::path::Component::RootDir
-                | std::path::Component::Prefix(_)
-        )
-    })
+            matches!(
+                c,
+                std::path::Component::ParentDir
+                    | std::path::Component::RootDir
+                    | std::path::Component::Prefix(_)
+            )
+        })
     {
         return Err(anyhow!("Unsafe entry (path traversal): {:?}", entry_path));
     }
@@ -785,11 +785,11 @@ pub fn get_win_file_version(file_path: &str) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use super::{PBZX_MAGIC, decode_pbzx};
+    use std::io::Cursor;
     use std::io::Write;
     use xz2::write::XzEncoder;
-    use super::*;
-    use std::io::Cursor;
 
     fn xz_compress(data: &[u8]) -> Vec<u8> {
         let mut encoder = XzEncoder::new(Vec::new(), 6);
@@ -842,6 +842,7 @@ mod tests {
     #[test]
     fn decode_pbzx_rejects_non_pbzx_input() {
         assert!(decode_pbzx(b"\x1f\x8b\x08not a pbzx stream").is_err());
+    }
 
     fn build_tar(entries: &[(&str, &[u8])]) -> Vec<u8> {
         let mut buffer = Vec::new();
@@ -924,5 +925,4 @@ mod tests {
         assert!(err.to_string().contains("Unsafe entry (path traversal)"));
         assert!(!escape_path.exists());
     }
-
 }
