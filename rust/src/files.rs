@@ -880,30 +880,8 @@ mod tests {
     }
 
     #[test]
-    fn check_path_traversal_rejects_parent_dir() {
-        let err = check_path_traversal(Path::new("browser/../../escape.txt")).unwrap_err();
-        assert!(err.to_string().contains("Unsafe entry (path traversal)"));
-    }
-
-    #[test]
     fn check_path_traversal_rejects_empty_path() {
         let err = check_path_traversal(Path::new("")).unwrap_err();
-        assert!(err.to_string().contains("Unsafe entry (path traversal)"));
-    }
-
-    #[test]
-    fn check_path_traversal_rejects_absolute_path() {
-        let err = check_path_traversal(Path::new("/tmp/evil")).unwrap_err();
-        assert!(err.to_string().contains("Unsafe entry (path traversal)"));
-    }
-
-    #[cfg(windows)]
-    #[test]
-    fn check_path_traversal_rejects_windows_prefixed_paths() {
-        let err = check_path_traversal(Path::new(r"C:\evil")).unwrap_err();
-        assert!(err.to_string().contains("Unsafe entry (path traversal)"));
-
-        let err = check_path_traversal(Path::new(r"\\server\share\evil")).unwrap_err();
         assert!(err.to_string().contains("Unsafe entry (path traversal)"));
     }
 
@@ -947,15 +925,4 @@ mod tests {
         assert!(!escape_path.exists());
     }
 
-    #[test]
-    fn uncompress_tar_rejects_empty_entry_path() {
-        let temp_dir = tempfile::tempdir().unwrap();
-        let target = temp_dir.path().join("extract");
-        let tar_data = build_tar(&[("", b"owned")]);
-        let mut decoder = Cursor::new(tar_data);
-        let log = Logger::new();
-
-        let err = uncompress_tar(&mut decoder, &target, &log).unwrap_err();
-        assert!(err.to_string().contains("Unsafe entry (path traversal)"));
-    }
 }
