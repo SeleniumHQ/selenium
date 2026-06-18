@@ -31,5 +31,4 @@ jobs:
       name: All RBE tests
       cache-save: ${{ github.ref_name == 'trunk' }}
       rerun-with-debug: true
-      ruby-version: jruby-10.1.0.0
       run: ./scripts/github-actions/ci-build.sh ${{ github.event.inputs.disable_test_cache }}
