@@ -637,6 +637,11 @@ class WebDriver(BaseWebDriver):
     def quit(self) -> None:
         """Quits the driver and closes every associated window."""
         try:
+            # Close the BiDi/CDP websocket before deleting the session so the
+            # close is initiated from our side.
+            if self._websocket_connection is not None:
+                self._websocket_connection.close()
+                self._websocket_connection = None
             self.execute(Command.QUIT)
         finally:
             if self._request is not None:

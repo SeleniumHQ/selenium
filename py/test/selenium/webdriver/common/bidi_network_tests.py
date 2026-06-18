@@ -98,11 +98,11 @@ def test_continue_request(driver, pages):
 # origin, suppressing authRequired challenges in later tests — restart the
 # driver afterwards so challenge-dependent tests start clean.
 @pytest.mark.needs_fresh_driver
-def test_continue_with_auth(driver):
+def test_continue_with_auth(driver, pages):
     callback_id = driver.network.add_auth_handler("postman", "password")
     assert callback_id is not None, "Request handler not added"
     driver.browsing_context.navigate(
-        context=driver.current_window_handle, url="https://postman-echo.com/basic-auth", wait=ReadinessState.COMPLETE
+        context=driver.current_window_handle, url=pages.url("basic-auth"), wait=ReadinessState.COMPLETE
     )
     assert "authenticated" in driver.page_source, "Authorization failed"
 
@@ -410,32 +410,32 @@ def test_request_and_response_handlers_compose(driver, pages):
 # needs_fresh_driver: successful authentication warms the browser's HTTP auth
 # cache for the origin, which would suppress the challenge in later tests.
 @pytest.mark.needs_fresh_driver
-def test_provide_credentials_for_matching_url(driver):
+def test_provide_credentials_for_matching_url(driver, pages):
     def handle_authentication(auth):
         auth.provide_credentials("postman", "password")
 
-    handler_id = driver.network.add_authentication_handler(["https://postman-echo.com/**"], handle_authentication)
+    handler_id = driver.network.add_authentication_handler(["**/basic-auth"], handle_authentication)
     try:
-        _navigate(driver, "https://postman-echo.com/basic-auth")
+        _navigate(driver, pages.url("basic-auth"))
         assert "authenticated" in driver.page_source, "Authorization failed"
     finally:
         driver.network.remove_authentication_handler(handler_id)
 
 
-def test_cancel_authentication_challenge(driver):
+def test_cancel_authentication_challenge(driver, pages):
     def handle_authentication(auth):
         auth.cancel()
 
     handler_id = driver.network.add_authentication_handler(handle_authentication)
     try:
-        _navigate(driver, "https://postman-echo.com/basic-auth")
+        _navigate(driver, pages.url("basic-auth"))
         assert "authenticated" not in driver.page_source, "Cancelled challenge still authenticated"
     finally:
         driver.network.remove_authentication_handler(handler_id)
 
 
 @pytest.mark.needs_fresh_driver
-def test_authentication_handler_observes_challenge_details(driver):
+def test_authentication_handler_observes_challenge_details(driver, pages):
     challenges = []
 
     def handle_authentication(auth):
@@ -444,9 +444,9 @@ def test_authentication_handler_observes_challenge_details(driver):
 
     handler_id = driver.network.add_authentication_handler(handle_authentication)
     try:
-        _navigate(driver, "https://postman-echo.com/basic-auth")
+        _navigate(driver, pages.url("basic-auth"))
         assert challenges, "Authentication handler did not run"
-        assert challenges[0][0].startswith("https://postman-echo.com/basic-auth")
+        assert challenges[0][0].endswith("/basic-auth")
     finally:
         driver.network.remove_authentication_handler(handler_id)
 
@@ -472,21 +472,21 @@ def test_clear_authentication_handlers_removes_all_intercepts(driver):
 # ---------------------------------------------------------------------------
 
 
-def test_extra_header_is_sent_with_requests(driver):
+def test_extra_header_is_sent_with_requests(driver, pages):
     driver.network.add_extra_header("x-selenium-extra", "extra-header-value")
     try:
-        _navigate(driver, "https://postman-echo.com/headers")
+        _navigate(driver, pages.url("echo_headers"))
         assert "x-selenium-extra" in driver.page_source, "Extra header not sent"
         assert "extra-header-value" in driver.page_source, "Extra header value not sent"
     finally:
         driver.network.clear_extra_headers()
 
 
-def test_removed_extra_header_is_not_sent(driver):
+def test_removed_extra_header_is_not_sent(driver, pages):
     driver.network.add_extra_header("x-selenium-extra", "extra-header-value")
     driver.network.remove_extra_header("x-selenium-extra")
 
-    _navigate(driver, "https://postman-echo.com/headers")
+    _navigate(driver, pages.url("echo_headers"))
     assert "x-selenium-extra" not in driver.page_source, "Removed extra header still sent"
     assert driver.network.intercepts == [], "Intercept not removed"
 
