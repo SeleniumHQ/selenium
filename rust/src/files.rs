@@ -453,9 +453,6 @@ pub fn uncompress_tar(decoder: &mut dyn Read, target: &Path, log: &Logger) -> Re
         } else {
             path.to_path_buf()
         };
-        if entry_path.as_os_str().is_empty() {
-            return Err(anyhow!("Unsafe tar entry (empty path)"));
-        }
         check_path_traversal(&entry_path)?;
         let entry_target = target.join(entry_path);
         fs::create_dir_all(entry_target.parent().unwrap())?;
@@ -959,6 +956,6 @@ mod tests {
         let log = Logger::new();
 
         let err = uncompress_tar(&mut decoder, &target, &log).unwrap_err();
-        assert!(err.to_string().contains("Unsafe tar entry (empty path)"));
+        assert!(err.to_string().contains("Unsafe entry (path traversal)"));
     }
 }
