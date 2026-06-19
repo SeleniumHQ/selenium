@@ -1,4 +1,4 @@
-# 0004. Network responses expose their original body and request timing
+# 17674. Network responses expose their original body and request timing
 
 - Status: Proposed
 - Date: 2026-06-11
