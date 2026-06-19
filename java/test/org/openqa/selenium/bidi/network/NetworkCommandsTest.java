@@ -27,6 +27,7 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -356,6 +357,200 @@ class NetworkCommandsTest extends JupiterTestBase {
                       CacheBehavior.DEFAULT, Collections.singletonList("invalid-context")))
           .isInstanceOf(BiDiException.class)
           .hasMessageContaining("no such frame");
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canAddDataCollector() {
+    try (Network network = new Network(driver)) {
+      AddDataCollectorParameters parameters =
+          new AddDataCollectorParameters(List.of(DataType.RESPONSE), 1024);
+
+      String collector = network.addDataCollector(parameters);
+      assertThat(collector).isNotNull();
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canAddDataCollectorWithCollectorType() {
+    try (Network network = new Network(driver)) {
+      AddDataCollectorParameters parameters =
+          new AddDataCollectorParameters(List.of(DataType.RESPONSE), 2048).collectorType("blob");
+
+      String collector = network.addDataCollector(parameters);
+      assertThat(collector).isNotNull();
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canAddDataCollectorWithContexts() {
+    try (Network network = new Network(driver)) {
+      String contextId = driver.getWindowHandle();
+      AddDataCollectorParameters parameters =
+          new AddDataCollectorParameters(List.of(DataType.RESPONSE), 1024)
+              .contexts(List.of(contextId));
+
+      String collector = network.addDataCollector(parameters);
+      assertThat(collector).isNotNull();
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canGetDataWithoutCollector() throws InterruptedException {
+    try (Network network = new Network(driver)) {
+      CountDownLatch latch = new CountDownLatch(1);
+
+      network.onResponseCompleted(
+          responseDetails -> {
+            String requestId = responseDetails.getRequest().getRequestId();
+            GetDataParameters parameters = new GetDataParameters(DataType.RESPONSE, requestId);
+
+            // browsers don't store body bytes for responses without a collector
+            assertThatThrownBy(() -> network.getData(parameters))
+                .isInstanceOf(BiDiException.class)
+                .hasMessageContaining("no such network data");
+
+            latch.countDown();
+          });
+
+      BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+      browsingContext.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), COMPLETE);
+
+      boolean countdown = latch.await(5, TimeUnit.SECONDS);
+      assertThat(countdown).isTrue();
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canGetDataWithCollector() throws InterruptedException {
+    try (Network network = new Network(driver)) {
+      AddDataCollectorParameters collectorParams =
+          new AddDataCollectorParameters(List.of(DataType.RESPONSE), 1024);
+      String collector = network.addDataCollector(collectorParams);
+
+      CountDownLatch latch = new CountDownLatch(1);
+
+      network.onResponseCompleted(
+          responseDetails -> {
+            String requestId = responseDetails.getRequest().getRequestId();
+            GetDataParameters parameters =
+                new GetDataParameters(DataType.RESPONSE, requestId).collector(collector);
+
+            BytesValue result = network.getData(parameters);
+            assertThat(result).isNotNull();
+            assertThat(result.getValue()).isNotNull();
+
+            latch.countDown();
+          });
+
+      BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+      browsingContext.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), COMPLETE);
+
+      boolean countdown = latch.await(5, TimeUnit.SECONDS);
+      assertThat(countdown).isTrue();
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canGetDataWithDisown() throws InterruptedException {
+    try (Network network = new Network(driver)) {
+      AddDataCollectorParameters collectorParams =
+          new AddDataCollectorParameters(List.of(DataType.RESPONSE), 2048);
+      String collector = network.addDataCollector(collectorParams);
+
+      CountDownLatch latch = new CountDownLatch(1);
+
+      network.onResponseCompleted(
+          responseDetails -> {
+            String requestId = responseDetails.getRequest().getRequestId();
+            GetDataParameters disownParams =
+                new GetDataParameters(DataType.RESPONSE, requestId)
+                    .collector(collector)
+                    .disown(true);
+
+            // First fetch should succeed
+            BytesValue result = network.getData(disownParams);
+            assertThat(result).isNotNull();
+            assertThat(result.getValue()).isNotNull();
+
+            // Second fetch with same collector should fail, because disowned
+            GetDataParameters secondParams =
+                new GetDataParameters(DataType.RESPONSE, requestId).collector(collector);
+
+            assertThatThrownBy(() -> network.getData(secondParams))
+                .isInstanceOf(BiDiException.class)
+                .hasMessageContaining("no such network data");
+
+            latch.countDown();
+          });
+
+      BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+      browsingContext.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), COMPLETE);
+
+      boolean countdown = latch.await(5, TimeUnit.SECONDS);
+      assertThat(countdown).isTrue();
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canRemoveDataCollector() {
+    try (Network network = new Network(driver)) {
+      AddDataCollectorParameters parameters =
+          new AddDataCollectorParameters(List.of(DataType.RESPONSE), 1024);
+
+      String collector = network.addDataCollector(parameters);
+      assertThat(collector).isNotNull();
+
+      // Remove the collector, should not throw any exception
+      network.removeDataCollector(collector);
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(EDGE)
+  void canGetRequestDataWithCollector() throws InterruptedException {
+    try (Network network = new Network(driver)) {
+      AddDataCollectorParameters collectorParams =
+          new AddDataCollectorParameters(List.of(DataType.REQUEST), 2048);
+      String collector = network.addDataCollector(collectorParams);
+
+      CountDownLatch latch = new CountDownLatch(1);
+
+      network.onBeforeRequestSent(
+          beforeRequestSent -> {
+            // Only try to get data for POST requests which have body data
+            if ("POST".equalsIgnoreCase(beforeRequestSent.getRequest().getMethod())) {
+              String requestId = beforeRequestSent.getRequest().getRequestId();
+              GetDataParameters parameters =
+                  new GetDataParameters(DataType.REQUEST, requestId).collector(collector);
+
+              BytesValue result = network.getData(parameters);
+              assertThat(result).isNotNull();
+              assertThat(result.getValue()).isNotNull();
+
+              latch.countDown();
+            }
+          });
+
+      BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+      browsingContext.navigate(appServer.whereIs("postForm.html"), COMPLETE);
+
+      // trigger POST request
+      driver.findElement(By.cssSelector("input[type='submit']")).click();
+
+      boolean countdown = latch.await(5, TimeUnit.SECONDS);
+      assertThat(countdown).isTrue();
+
+      network.removeDataCollector(collector);
     }
   }
 }
