@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import org.openqa.selenium.Beta;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.openqa.selenium.Beta;
 
 @Beta
 public class Locator {

@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.bidi.script;
 
-import org.openqa.selenium.Beta;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.openqa.selenium.Beta;
 
 @Beta
 public class ObjectLocalValue extends LocalValue {

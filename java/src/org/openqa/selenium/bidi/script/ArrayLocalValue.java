@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.bidi.script;
 
-import org.openqa.selenium.Beta;
 import java.util.List;
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
 /**
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-scriptarraylocalvalue">BiDi

@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.bidi.storage;
 
-import org.openqa.selenium.Beta;
 import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
 @Beta
 public class StorageKeyPartitionDescriptor extends PartitionDescriptor {
