@@ -3,7 +3,7 @@ PATH
   specs:
     selenium-devtools (0.149.0)
       selenium-webdriver (~> 4.2)
-    selenium-webdriver (4.45.0)
+    selenium-webdriver (4.46.0.nightly)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -105,7 +105,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.7)
-    rubocop (1.87.0)
+    rubocop (1.88.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)

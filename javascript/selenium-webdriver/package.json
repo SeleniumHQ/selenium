@@ -1,6 +1,6 @@
 {
   "name": "selenium-webdriver",
-  "version": "4.45.0",
+  "version": "4.46.0-nightly202606161656",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "license": "Apache-2.0",
   "keywords": [
@@ -45,7 +45,7 @@
     "jsdoc": "^4.0.5",
     "mocha": "^11.7.6",
     "mocha-junit-reporter": "^2.2.1",
-    "multer": "^2.1.1",
+    "multer": "^2.2.0",
     "prettier": "^3.8.4",
     "serve-index": "^1.9.2",
     "sinon": "^22.0.0",

@@ -10,7 +10,7 @@ bazel_dep(name = "bazel_features", version = "1.47.1")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
 bazel_dep(name = "buildifier_prebuilt", version = "8.5.1.2")
 bazel_dep(name = "contrib_rules_jvm", version = "0.33.0")
-bazel_dep(name = "llvm", version = "0.7.9")
+bazel_dep(name = "llvm", version = "0.8.3")
 bazel_dep(name = "package_metadata", version = "0.0.10")
 bazel_dep(name = "platforms", version = "1.1.0")
 
@@ -39,7 +39,7 @@ bazel_dep(name = "rules_pkg", version = "1.2.0")
 bazel_dep(name = "rules_python", version = "1.9.0")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.26.0")
-bazel_dep(name = "rules_rs", version = "0.0.61")
+bazel_dep(name = "rules_rs", version = "0.0.90")
 
 single_version_override(
     module_name = "rules_jvm_external",
@@ -235,7 +235,7 @@ maven.install(
         "org.junit.platform:junit-platform-commons",
         "org.junit.platform:junit-platform-engine",
         "org.mockito:mockito-core:5.23.0",
-        "org.redisson:redisson:4.5.0",
+        "org.redisson:redisson:4.6.0",
         "org.slf4j:slf4j-api:2.0.18",
         "org.slf4j:slf4j-jdk14:2.0.18",
         "org.tomlj:tomlj:1.1.1",
@@ -345,7 +345,7 @@ ruby.bundle_fetch(
         "rspec-expectations-3.13.5": "33a4d3a1d95060aea4c94e9f237030a8f9eae5615e9bd85718fe3a09e4b58836",
         "rspec-mocks-3.13.8": "086ad3d3d17533f4237643de0b5c42f04b66348c28bf6b9c2d3f4a3b01af1d47",
         "rspec-support-3.13.7": "0640e5570872aafefd79867901deeeeb40b0c9875a36b983d85f54fb7381c47c",
-        "rubocop-1.87.0": "b9d9ddf55116a513f8ef2c7ae660662d8b49301f118d3f0df61865b33a5c188d",
+        "rubocop-1.88.0": "e420ddf1662d0ef34bc8a2910ac4b396a7ddda0b51a708264405241734b08e0b",
         "rubocop-ast-1.49.1": "4412f3ee70f6fe4546cc489548e0f6fcf76cafcfa80fa03af67098ffed755035",
         "rubocop-performance-1.26.1": "cd19b936ff196df85829d264b522fd4f98b6c89ad271fa52744a8c11b8f71834",
         "rubocop-rake-0.7.1": "3797f2b6810c3e9df7376c26d5f44f3475eda59eb1adc38e6f62ecf027cbae4d",
@@ -398,6 +398,14 @@ llvm_toolchains.exec(
 llvm_toolchains.exec(
     arch = "aarch64",
     os = "windows",
+)
+llvm_toolchains.exec(
+    arch = "aarch64",
+    os = "macos",
+)
+llvm_toolchains.exec(
+    arch = "x86_64",
+    os = "macos",
 )
 use_repo(llvm_toolchains, "llvm_toolchains")
 

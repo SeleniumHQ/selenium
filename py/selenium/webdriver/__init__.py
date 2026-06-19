@@ -30,7 +30,7 @@ if os.environ.get("SE_DEBUG"):
         "Selenium is forcing verbose logging which may override user-specified settings."
     )
 
-__version__ = "4.45.0"
+__version__ = "4.46.0.202606161656"
 
 # Lazy import mapping: name -> (module_path, attribute_name)
 _LAZY_IMPORTS = {

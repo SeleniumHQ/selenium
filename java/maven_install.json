@@ -75,7 +75,7 @@
     "org.junit.platform:junit-platform-reporting": 1896713402,
     "org.junit:junit-bom": 934041506,
     "org.mockito:mockito-core": 1330163800,
-    "org.redisson:redisson": 733234311,
+    "org.redisson:redisson": -1063717048,
     "org.seleniumhq.selenium:selenium-api": 1359790425,
     "org.seleniumhq.selenium:selenium-remote-driver": -1144232444,
     "org.seleniumhq.selenium:selenium-support": 204710084,
@@ -413,8 +413,8 @@
     "org.ow2.asm:asm:jar:sources": 1372783843,
     "org.reactivestreams:reactive-streams": -164947187,
     "org.reactivestreams:reactive-streams:jar:sources": -122882922,
-    "org.redisson:redisson": -1689444786,
-    "org.redisson:redisson:jar:sources": 653942264,
+    "org.redisson:redisson": -2032175276,
+    "org.redisson:redisson:jar:sources": -2053204802,
     "org.rnorth.duct-tape:duct-tape": -1059401544,
     "org.rnorth.duct-tape:duct-tape:jar:sources": -1798015648,
     "org.seleniumhq.selenium:selenium-api": -213282586,
@@ -1597,10 +1597,10 @@
     },
     "org.redisson:redisson": {
       "shasums": {
-        "jar": "007e52bd3638307508c5163e53834989da2f24815f2ed67ec5918a7665fc73a5",
-        "sources": "8203c304101ff8cc21176d6697dd96be8c6b8f64512d283fc754de166924156f"
+        "jar": "8d5a1f8b75782e2ca4316c1d475606e7c29235550fd9f3aab512cf0ae8ab962c",
+        "sources": "80aa7b3d2daf7155309fe8b5089f0c2d98c3183b3ec2a26a8ae7cf319d5cc7a0"
       },
-      "version": "4.5.0"
+      "version": "4.6.0"
     },
     "org.rnorth.duct-tape:duct-tape": {
       "shasums": {
@@ -4720,6 +4720,8 @@
       "org.redisson.api.search.query",
       "org.redisson.api.search.query.hybrid",
       "org.redisson.api.stream",
+      "org.redisson.api.tdigest",
+      "org.redisson.api.topk",
       "org.redisson.api.vector",
       "org.redisson.cache",
       "org.redisson.client",
