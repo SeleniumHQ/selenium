@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.bidi.log;
 
+import org.openqa.selenium.Beta;
 import java.util.Optional;
 
 /**
  * @see <a href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">BiDi spec</a>
  */
+@Beta
 public class LogEntry {
 
   private final Optional<GenericLogEntry> genericLogEntry;

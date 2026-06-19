@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.bidi.webextension;
 
+import org.openqa.selenium.Beta;
 import java.util.Map;
 
+@Beta
 public class ExtensionPath implements ExtensionData {
   private final String path;
 

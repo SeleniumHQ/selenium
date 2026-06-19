@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi.network;
 
+import org.openqa.selenium.Beta;
 import static java.util.Collections.unmodifiableMap;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Beta
 public class AddInterceptParameters {
 
   private final List<String> phases = new ArrayList<>();

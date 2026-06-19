@@ -17,9 +17,11 @@
 
 package org.openqa.selenium.bidi.emulation;
 
+import org.openqa.selenium.Beta;
 import java.util.List;
 import org.jspecify.annotations.Nullable;
 
+@Beta
 public class SetScriptingEnabledParameters extends AbstractOverrideParameters {
   public static SetScriptingEnabledParameters scriptingEnabled() {
     return new SetScriptingEnabledParameters(null);

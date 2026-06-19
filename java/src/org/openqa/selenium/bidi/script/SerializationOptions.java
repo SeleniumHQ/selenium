@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.bidi.script;
 
+import org.openqa.selenium.Beta;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
+@Beta
 public class SerializationOptions {
   public enum IncludeShadowTree {
     NONE,

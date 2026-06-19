@@ -17,9 +17,11 @@
 package org.openqa.selenium.bidi.script;
 
 import java.util.Optional;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
+@Beta
 public class Source {
   private final String realm;
   private final Optional<String> browsingContext;

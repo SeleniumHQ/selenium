@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi.browser;
 
+import org.openqa.selenium.Beta;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import org.jspecify.annotations.Nullable;
 
+@Beta
 public class SetDownloadBehaviorParameters {
   private final Map<String, @Nullable Object> map = new HashMap<>();
 

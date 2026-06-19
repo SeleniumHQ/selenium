@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.bidi.storage;
 
+import org.openqa.selenium.Beta;
 import java.util.Map;
 
+@Beta
 public class BrowsingContextPartitionDescriptor extends PartitionDescriptor {
   private final String context;
 

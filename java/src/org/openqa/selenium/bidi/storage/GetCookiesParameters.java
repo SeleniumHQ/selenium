@@ -16,6 +16,7 @@
 // under the License.
 package org.openqa.selenium.bidi.storage;
 
+import org.openqa.selenium.Beta;
 import java.util.Map;
 import java.util.Optional;
 
@@ -23,6 +24,7 @@ import java.util.Optional;
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-storagegetcookiesparameters">BiDi
  *     spec</a>
  */
+@Beta
 public class GetCookiesParameters {
   private Optional<CookieFilter> cookieFilter = Optional.empty();
   private Optional<PartitionDescriptor> partitionDescriptor = Optional.empty();

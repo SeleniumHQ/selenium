@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.bidi.webextension;
 
+import org.openqa.selenium.Beta;
 import java.util.Map;
 
+@Beta
 public class ExtensionBase64Encoded implements ExtensionData {
   private final String value;
 

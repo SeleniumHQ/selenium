@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.bidi.script;
 
+import org.openqa.selenium.Beta;
 import java.util.Map;
 
+@Beta
 public class DateLocalValue extends LocalValue {
 
   private final String value;

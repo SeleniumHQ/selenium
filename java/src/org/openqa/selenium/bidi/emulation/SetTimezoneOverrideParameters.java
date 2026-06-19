@@ -17,9 +17,11 @@
 
 package org.openqa.selenium.bidi.emulation;
 
+import org.openqa.selenium.Beta;
 import java.util.List;
 import org.jspecify.annotations.Nullable;
 
+@Beta
 public class SetTimezoneOverrideParameters extends AbstractOverrideParameters {
 
   public SetTimezoneOverrideParameters(@Nullable String timezone) {

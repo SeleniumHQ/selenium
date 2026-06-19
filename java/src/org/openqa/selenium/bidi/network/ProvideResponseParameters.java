@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.bidi.network;
 
+import org.openqa.selenium.Beta;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Beta
 public class ProvideResponseParameters {
   private final Map<String, Object> map = new HashMap<>();
 

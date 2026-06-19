@@ -20,9 +20,11 @@ package org.openqa.selenium.bidi;
 import java.lang.reflect.Type;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
+@Beta
 public class ConverterFunctions {
 
   private ConverterFunctions() {

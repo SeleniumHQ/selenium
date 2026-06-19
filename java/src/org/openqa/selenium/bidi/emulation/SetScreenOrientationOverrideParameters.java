@@ -17,9 +17,11 @@
 
 package org.openqa.selenium.bidi.emulation;
 
+import org.openqa.selenium.Beta;
 import java.util.List;
 import org.jspecify.annotations.Nullable;
 
+@Beta
 public class SetScreenOrientationOverrideParameters extends AbstractOverrideParameters {
 
   public SetScreenOrientationOverrideParameters(@Nullable ScreenOrientation screenOrientation) {

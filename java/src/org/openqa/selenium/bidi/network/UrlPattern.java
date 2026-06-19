@@ -17,9 +17,11 @@
 
 package org.openqa.selenium.bidi.network;
 
+import org.openqa.selenium.Beta;
 import java.util.HashMap;
 import java.util.Map;
 
+@Beta
 public class UrlPattern {
   private final Map<String, String> map = new HashMap<>();
 

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi.script;
 
+import org.openqa.selenium.Beta;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import java.util.Map;
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-scriptarraylocalvalue">BiDi
  *     spec</a>
  */
+@Beta
 public class ArrayLocalValue extends LocalValue {
 
   private final List<LocalValue> value;

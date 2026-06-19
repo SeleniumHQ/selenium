@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
+import org.openqa.selenium.Beta;
 import org.jspecify.annotations.Nullable;
 
+@Beta
 public enum UserPromptType {
   ALERT("alert"),
   CONFIRM("confirm"),

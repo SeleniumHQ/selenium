@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.bidi;
 
+import org.openqa.selenium.Beta;
 import java.util.Optional;
 
+@Beta
 public interface HasBiDi {
   default BiDi getBiDi() {
     return maybeGetBiDi()

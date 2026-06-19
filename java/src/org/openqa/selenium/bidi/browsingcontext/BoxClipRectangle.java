@@ -16,9 +16,11 @@
 // under the License.
 package org.openqa.selenium.bidi.browsingcontext;
 
+import org.openqa.selenium.Beta;
 import java.util.HashMap;
 import java.util.Map;
 
+@Beta
 public class BoxClipRectangle extends ClipRectangle {
   private final Map<String, Object> map = new HashMap<>();
 
