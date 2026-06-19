@@ -59,7 +59,7 @@ Normative requirements:
 
 - `create(...)`, the entries of `get_tree(...)`, and
   `expect_page()`/`expect_popup()` (see
-  [0001](0001-bidi-events-awaited-with-expect-context-managers.md)) return handle objects,
+  [17671](17671-bidi-events-awaited-with-expect-context-managers.md)) return handle objects,
   not bare id strings. A handle exposes the context id for protocol-level use.
 - The handle carries the per-context operations: `navigate`, `reload`, `activate`, `close`,
   `capture_screenshot`, `print`, `set_viewport`, `traverse_history`, `locate_nodes`,
@@ -174,8 +174,8 @@ uc.remove()
 
 - Multi-tab and parallel code becomes object-oriented and id-free; an instance per worker
   removes the shared-state coordination that the flat API forces.
-- A new handle type per binding, and `create`/`get_tree`/`expect_page` return types change
-  from bare ids to handles — bindings introduce this additively (the handle still surfaces
+- A new handle type per binding, and `create`/`get_tree`/`expect_page`/`expect_popup` return
+  types change from bare ids to handles — bindings introduce this additively (the handle still surfaces
   the id; the flat API is unchanged) and document the new return shape. The same applies to
   `create_user_context`/`get_user_contexts`, which now return user-context handles. Making the
   handle a string-compatible id wrapper (equality/hash/serialization unchanged) keeps these
@@ -221,8 +221,10 @@ uc.remove()
 Relevant BiDi surface: `browsingContext.create` (`type: "tab" | "window"`, optional
 `userContext`), `browsingContext.getTree`, and the per-context commands
 (`navigate`, `reload`, `activate`, `close`, `captureScreenshot`, `print`, `setViewport`,
-`traverseHistory`, `locateNodes`, `handleUserPrompt`). Every browsing-context event already
-carries a `context` id, which is what lets events route to the right handle.
+`traverseHistory`, `locateNodes`, `handleUserPrompt`), and the `browsingContext.contextCreated`
+event that backs `expect_page`/`expect_popup` (see
+[17671](17671-bidi-events-awaited-with-expect-context-managers.md)). Every browsing-context
+event already carries a `context` id, which is what lets events route to the right handle.
 
 Isolation unit (verified against the spec): `browser.createUserContext`
 (params `acceptInsecureCerts`, `proxy`, `unhandledPromptBehavior`), `browser.getUserContexts`,
