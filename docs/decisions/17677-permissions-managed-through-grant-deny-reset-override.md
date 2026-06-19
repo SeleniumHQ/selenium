@@ -1,4 +1,4 @@
-# 0007. Browser permissions are managed through grant / deny / reset / override helpers
+# 17677. Browser permissions are managed through grant / deny / reset / override helpers
 
 - Status: Proposed
 - Date: 2026-06-11
@@ -43,6 +43,11 @@ Bindings expose, on the permissions module, convenience methods over
 - The low-level **`set_permission(descriptor, state, origin, user_context=None,
   embedded_origin=None)`** remains the full-fidelity escape hatch (the only path to
   `embeddedOrigin`).
+
+The `user_context` argument scopes the override to one isolation unit; it accepts a
+user-context handle from `create_user_context()` or a context made with `isolated=True` (see
+[17681](17681-browsing-contexts-exposed-as-handle-objects.md)). When omitted, the override
+applies to the default user context.
 
 Normative requirements:
 
