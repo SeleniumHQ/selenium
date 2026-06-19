@@ -1,4 +1,4 @@
-# 0006. Navigation is awaited with `expect_navigation` / `wait_for_url` / `wait_for_load_state`
+# 17676. Navigation is awaited with `expect_navigation` / `wait_for_url` / `wait_for_load_state`
 
 - Status: Proposed
 - Date: 2026-06-11
@@ -15,7 +15,7 @@ ad-hoc `WebDriverWait` conditions and staleness checks.
 BiDi emits the full navigation lifecycle as events: `browsingContext.navigationStarted`,
 `navigationCommitted`, `domContentLoaded`, `load`, `fragmentNavigated`,
 `navigationFailed`, `navigationAborted`, and `historyUpdated`. With the `expect_*`
-primitive from [0001](0001-bidi-events-awaited-with-expect-context-managers.md) these can
+primitive from [17671](17671-bidi-events-awaited-with-expect-context-managers.md) these can
 be turned into the race-free navigation waits users expect.
 
 Playwright provides exactly this: `page.expect_navigation()` (arm-before-action context
@@ -41,12 +41,12 @@ Normative requirements:
   earliest), **`domcontentloaded`**, **`load`** (default). Bindings MAY add
   `networkidle`-style levels but it is not required and not the default.
 - `expect_navigation` arms the subscription before the action (no race), per
-  [0001](0001-bidi-events-awaited-with-expect-context-managers.md).
+  [17671](17671-bidi-events-awaited-with-expect-context-managers.md).
 - Failed/aborted navigations (`navigationFailed`/`navigationAborted`) surface as the
   binding's error within the wait, not as a silent timeout.
 - These complement, and do not replace, existing `WebDriverWait`/expected-conditions.
 - Each helper is inherently per-context. Where a binding exposes a browsing-context handle
-  object (see [0008](0008-browsing-contexts-exposed-as-handle-objects.md)), these live on
+  object (see [17681](17681-browsing-contexts-exposed-as-handle-objects.md)), these live on
   the handle (`tab.expect_navigation(...)`, `tab.wait_for_url(...)`) so the wait is scoped
   to that context without passing an id.
 
@@ -89,7 +89,7 @@ driver.browsingContext().waitForUrl("**/checkout/**");
 
 - The most common flaky-test pattern (click-then-navigate) gets a race-free, consistent
   solution across bindings.
-- Requires [0001](0001-bidi-events-awaited-with-expect-context-managers.md) to land first
+- Requires [17671](17671-bidi-events-awaited-with-expect-context-managers.md) to land first
   (shared `expect_*`/subscription primitive).
 - A shared `wait_until` vocabulary (`commit`/`domcontentloaded`/`load`) is fixed across
   bindings; this is a small cross-binding naming commitment tracked in the status table.
