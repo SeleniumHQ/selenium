@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi.network;
 
+import org.openqa.selenium.Beta;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

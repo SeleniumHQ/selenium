@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi.browser;
 
+import org.openqa.selenium.Beta;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;

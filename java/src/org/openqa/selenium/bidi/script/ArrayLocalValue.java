@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi.script;
 
+import org.openqa.selenium.Beta;
 import java.util.List;
 import java.util.Map;
 import org.openqa.selenium.Beta;

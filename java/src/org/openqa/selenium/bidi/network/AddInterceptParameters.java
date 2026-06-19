@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi.network;
 
+import org.openqa.selenium.Beta;
 import static java.util.Collections.unmodifiableMap;
 
 import java.util.ArrayList;
