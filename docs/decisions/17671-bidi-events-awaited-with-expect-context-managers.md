@@ -1,4 +1,4 @@
-# 0001. BiDi events are awaited with `expect_*` context managers
+# 17671. BiDi events are awaited with `expect_*` context managers
 
 - Status: Proposed
 - Date: 2026-06-11
@@ -53,11 +53,11 @@ Normative requirements for all bindings:
 
 Concrete shorthands each binding SHOULD provide (built on the generic primitive):
 `expect_request`, `expect_response`, `expect_console_message`, `expect_navigation`
-(see [0006](0006-navigation-awaited-with-expect-helpers.md)), `expect_user_prompt`
-(see [0002](0002-user-prompts-handled-through-typed-handler-api.md)), `expect_download`,
+(see [17676](17676-navigation-awaited-with-expect-helpers.md)), `expect_user_prompt`
+(see [17672](17672-user-prompts-handled-through-typed-handler-api.md)), `expect_download`,
 and — for tabs/windows the page opens itself — `expect_page` / `expect_popup` over
 `browsingContext.contextCreated`, returning the new context as a handle object
-(see [0008](0008-browsing-contexts-exposed-as-handle-objects.md)).
+(see [17681](17681-browsing-contexts-exposed-as-handle-objects.md)).
 
 Code sketch — Python (reference implementation):
 
@@ -118,11 +118,11 @@ const response = await driver.network().expectResponse('**/api/**', async () => 
   subscribe/unsubscribe I/O must not be held under a dispatch lock).
 - The other `expect_*`-based decisions (navigation, downloads, user prompts, and the
   `expect_page`/`expect_popup` handles in
-  [0008](0008-browsing-contexts-exposed-as-handle-objects.md)) build on this primitive, so
+  [17681](17681-browsing-contexts-exposed-as-handle-objects.md)) build on this primitive, so
   this record should land first.
 - The thread-safety fixes this surfaces (lock-guarded callback maps, non-busy-wait command
   completion, bounded event dispatch) are also the prerequisite for the multi-thread
-  concurrency contract in [0008](0008-browsing-contexts-exposed-as-handle-objects.md).
+  concurrency contract in [17681](17681-browsing-contexts-exposed-as-handle-objects.md).
 - No deprecations. Existing callback APIs are unaffected.
 
 ## Binding status
