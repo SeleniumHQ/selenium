@@ -1,8 +1,8 @@
-# 0001. Java WebDriver BiDi bindings are generated from the CDDL spec and expose stateful module classes with subscription-based event cancellation
+# Java WebDriver BiDi CDDL generator proposal
 
 - Status: Proposed
 - Date: 2026-06-19
-- Discussion: <!-- link to this record's PR once opened -->
+- Discussion: https://github.com/SeleniumHQ/selenium/pull/17692
 
 ## Context
 
