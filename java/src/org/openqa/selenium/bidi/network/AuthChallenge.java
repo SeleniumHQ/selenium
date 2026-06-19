@@ -17,9 +17,11 @@
 
 package org.openqa.selenium.bidi.network;
 
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
+@Beta
 public class AuthChallenge {
 
   private final String scheme;

@@ -19,6 +19,7 @@ package org.openqa.selenium.bidi.log;
 
 import java.util.List;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.bidi.script.RemoteValue;
 import org.openqa.selenium.bidi.script.Source;
 import org.openqa.selenium.internal.Require;
@@ -28,6 +29,7 @@ import org.openqa.selenium.json.TypeToken;
 /**
  * @see <a href="https://w3c.github.io/webdriver-bidi/#cddl-type-logconsolelogentry">BiDi spec</a>
  */
+@Beta
 public class ConsoleLogEntry extends GenericLogEntry {
 
   private final String method;

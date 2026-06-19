@@ -58,7 +58,7 @@ NUGET
       Microsoft.Testing.Platform.MSBuild (>= 2.1) - restriction: || (== net462) (== net8.0) (&& (== netstandard2.0) (>= net462)) (&& (== netstandard2.0) (>= net8.0))
     Runfiles (0.14)
     System.Buffers (4.5.1) - restriction: || (== net462) (&& (== net8.0) (>= net462)) (&& (== net8.0) (< net6.0)) (== netstandard2.0)
-    System.Collections.Immutable (8.0) - restriction: || (&& (== net462) (>= netstandard2.0)) (== net8.0) (== netstandard2.0)
+    System.Collections.Immutable (8.0)
       System.Memory (>= 4.5.5) - restriction: || (== net462) (&& (== net8.0) (>= net462)) (&& (== net8.0) (< net6.0)) (== netstandard2.0)
       System.Runtime.CompilerServices.Unsafe (>= 6.0) - restriction: || (== net462) (&& (== net8.0) (>= net462)) (&& (== net8.0) (< net6.0)) (&& (== net8.0) (< net7.0)) (== netstandard2.0)
     System.Diagnostics.DiagnosticSource (6.0) - restriction: || (&& (== net462) (>= netstandard2.0)) (== net8.0) (== netstandard2.0)

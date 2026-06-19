@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi.network;
 
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
@@ -24,6 +25,7 @@ import org.openqa.selenium.json.JsonInput;
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-networkfetchtiminginfo">BiDi
  *     spec</a>
  */
+@Beta
 public class FetchTimingInfo {
 
   private final double timeOrigin;

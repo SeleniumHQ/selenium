@@ -28,9 +28,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public class BiDi implements Closeable {
   private static final Logger LOG = Logger.getLogger(BiDi.class.getName());
 

@@ -90,6 +90,13 @@ build:windows --host_per_file_copt=external/protobuf\\+.*@/w
 common --enable_platform_specific_config
 common:linux --host_platform=//:local_linux_gnu
 common:windows --host_platform=//:local_windows_gnullvm
+
+# rules_rs 0.0.90 bundles a newer rules_rust whose cargo build-script runner
+# rejects libtool as the archiver (AR). macOS toolchains use libtool by default,
+# so build Rust against the hermetic @llvm toolchain (registered for macOS exec
+# in MODULE.bazel) with the rules_cc archiver switched from libtool to llvm-ar.
+common:macos --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+common:macos --@rules_cc//cc/toolchains/args/archiver_flags:use_libtool_on_macos=False
 build:linux --workspace_status_command=scripts/build-info.sh
 build:macos --workspace_status_command=scripts/build-info.sh
 build:windows --workspace_status_command="powershell.exe scripts/build-info.ps1"

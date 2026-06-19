@@ -151,7 +151,7 @@ jobs:
     with:
       name: Run dependency updates
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
-      run: ./go ${{ needs.parse-tag.outputs.language }}:update
+      run: ./go ${{ needs.parse-tag.outputs.language }}:update${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:update' || '' }}
       artifact-name: patch-dep-updates
 
   calculate-changelog-depth:

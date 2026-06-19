@@ -518,6 +518,7 @@ experimental domain Animation
 # Audits domain allows investigation of page violations and possible improvements.
 experimental domain Audits
   depends on Network
+  depends on Runtime
 
   # Information about a cookie that is affected by an inspector issue.
   type AffectedCookie extends object
@@ -615,6 +616,16 @@ experimental domain Audits
       optional AffectedRequest request
       # The recommended solution to the issue.
       optional CookieIssueInsight insight
+
+  type PerformanceIssueType extends string
+    enum
+      DocumentCookie
+
+  # Details for a performance issue.
+  type PerformanceIssueDetails extends object
+    properties
+      PerformanceIssueType performanceIssueType
+      optional SourceCodeLocation sourceCodeLocation
 
   type MixedContentResolutionStatus extends string
     enum
@@ -757,16 +768,6 @@ experimental domain Audits
       SourceCodeLocation sourceCodeLocation
       boolean isWarning
       SharedArrayBufferIssueType type
-
-  type LowTextContrastIssueDetails extends object
-    properties
-      DOM.BackendNodeId violatingNodeId
-      string violatingNodeSelector
-      number contrastRatio
-      number thresholdAA
-      number thresholdAAA
-      string fontSize
-      string fontWeight
 
   # Details for a CORS related issue, e.g. a warning or error related to
   # CORS RFC1918 enforcement.
@@ -938,6 +939,11 @@ experimental domain Audits
       AutofillAndManualTextPolicyControlledFeaturesInfo
       AutofillPolicyControlledFeatureInfo
       ManualTextPolicyControlledFeatureInfo
+      FormModelContextParameterMissingTitleAndDescription
+      FormModelContextMissingToolName
+      FormModelContextMissingToolDescription
+      FormModelContextRequiredParameterMissingName
+      FormModelContextParameterMissingName
 
   # Depending on the concrete errorType, different properties are set.
   type GenericIssueDetails extends object
@@ -1011,10 +1017,6 @@ experimental domain Audits
       ConfigNoResponse
       ConfigInvalidResponse
       ConfigInvalidContentType
-      ClientMetadataHttpNotFound
-      ClientMetadataNoResponse
-      ClientMetadataInvalidResponse
-      ClientMetadataInvalidContentType
       IdpNotPotentiallyTrustworthy
       DisabledInSettings
       DisabledInFlags
@@ -1036,11 +1038,9 @@ experimental domain Audits
       Canceled
       RpPageNotVisible
       SilentMediationFailure
-      ThirdPartyCookiesBlocked
       NotSignedInWithIdp
       MissingTransientUserActivation
       ReplacedByActiveMode
-      InvalidFieldsSpecified
       RelyingPartyOriginIsOpaque
       TypeNotMatching
       UiDismissedNoEmbargo
@@ -1203,6 +1203,17 @@ experimental domain Audits
       # Used for messages about activation disabled reason
       optional string disableReason
 
+  # The issue warns about blocked calls to privacy sensitive APIs via the
+  # Selective Permissions Intervention.
+  type SelectivePermissionsInterventionIssueDetails extends object
+    properties
+      # Which API was intervened on.
+      string apiName
+      # Why the ad script using the API is considered an ad.
+      Network.AdAncestry adAncestry
+      # The stack trace at the time of the intervention.
+      optional Runtime.StackTrace stackTrace
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
@@ -1214,7 +1225,6 @@ experimental domain Audits
       HeavyAdIssue
       ContentSecurityPolicyIssue
       SharedArrayBufferIssue
-      LowTextContrastIssue
       CorsIssue
       AttributionReportingIssue
       QuirksModeIssue
@@ -1237,6 +1247,8 @@ experimental domain Audits
       ConnectionAllowlistIssue
       UserReidentificationIssue
       PermissionElementIssue
+      PerformanceIssue
+      SelectivePermissionsInterventionIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -1249,7 +1261,6 @@ experimental domain Audits
       optional HeavyAdIssueDetails heavyAdIssueDetails
       optional ContentSecurityPolicyIssueDetails contentSecurityPolicyIssueDetails
       optional SharedArrayBufferIssueDetails sharedArrayBufferIssueDetails
-      optional LowTextContrastIssueDetails lowTextContrastIssueDetails
       optional CorsIssueDetails corsIssueDetails
       optional AttributionReportingIssueDetails attributionReportingIssueDetails
       optional QuirksModeIssueDetails quirksModeIssueDetails
@@ -1271,6 +1282,8 @@ experimental domain Audits
       optional ConnectionAllowlistIssueDetails connectionAllowlistIssueDetails
       optional UserReidentificationIssueDetails userReidentificationIssueDetails
       optional PermissionElementIssueDetails permissionElementIssueDetails
+      optional PerformanceIssueDetails performanceIssueDetails
+      optional SelectivePermissionsInterventionIssueDetails selectivePermissionsInterventionIssueDetails
 
   # A unique id for a DevTools inspector issue. Allows other entities (e.g.
   # exceptions, CDP message, console messages, etc.) to reference an issue.
@@ -1314,13 +1327,6 @@ experimental domain Audits
   # Enables issues domain, sends the issues collected so far to the client by means of the
   # `issueAdded` event.
   command enable
-
-  # Runs the contrast check for the target page. Found issues are reported
-  # using Audits.issueAdded event.
-  command checkContrast
-    parameters
-      # Whether to report WCAG AAA level issues. Default is false.
-      optional boolean reportAAA
 
   # Runs the form issues check for the target page. Found issues are reported
   # using Audits.issueAdded event.
@@ -2289,6 +2295,9 @@ experimental domain CSS
       # @starting-style CSS at-rule array.
       # The array enumerates @starting-style at-rules starting with the innermost one, going outwards.
       experimental optional array of CSSStartingStyle startingStyles
+      # @navigation CSS at-rule array.
+      # The array enumerates @navigation at-rules starting with the innermost one, going outwards.
+      experimental optional array of CSSNavigation navigations
 
   # Enum indicating the type of a CSS rule, used to represent the order of a style rule's ancestors.
   # This list only contains rule types that are collected during the ancestor rule collection.
@@ -2301,6 +2310,7 @@ experimental domain CSS
       ScopeRule
       StyleRule
       StartingStyleRule
+      NavigationRule
 
   # CSS coverage information.
   type RuleUsage extends object
@@ -2462,6 +2472,19 @@ experimental domain CSS
       string text
       # Whether the supports condition is satisfied.
       boolean active
+      # The associated rule header range in the enclosing stylesheet (if
+      # available).
+      optional SourceRange range
+      # Identifier of the stylesheet containing this object (if exists).
+      optional DOM.StyleSheetId styleSheetId
+
+  # CSS Navigation at-rule descriptor.
+  experimental type CSSNavigation extends object
+    properties
+      # Navigation rule text.
+      string text
+      # Whether the navigation condition is satisfied.
+      optional boolean active
       # The associated rule header range in the enclosing stylesheet (if
       # available).
       optional SourceRange range
@@ -2660,6 +2683,8 @@ experimental domain CSS
       optional CSSContainerQuery containerQueries
       # @supports CSS at-rule condition. Only one type of condition should be set.
       optional CSSSupports supports
+      # @navigation condition. Only one type of condition should be set.
+      optional CSSNavigation navigation
       # Block body.
       array of CSSFunctionNode children
       # The condition text.
@@ -2687,6 +2712,8 @@ experimental domain CSS
       array of CSSFunctionParameter parameters
       # Function body.
       array of CSSFunctionNode children
+      # The BackendNodeId of the DOM node that constitutes the origin tree scope of this rule.
+      experimental optional DOM.BackendNodeId originTreeScopeNodeId
 
   # CSS keyframe rule representation.
   type CSSKeyframeRule extends object
@@ -3028,6 +3055,16 @@ experimental domain CSS
       # The resulting CSS Supports rule after modification.
       CSSSupports supports
 
+  # Modifies the expression of a navigation at-rule.
+  experimental command setNavigationText
+    parameters
+      DOM.StyleSheetId styleSheetId
+      SourceRange range
+      string text
+    returns
+      # The resulting CSS Navigation rule after modification.
+      CSSNavigation navigation
+
   # Modifies the expression of a scope at-rule.
   experimental command setScopeText
     parameters
@@ -3314,6 +3351,27 @@ experimental domain Cast
     parameters
       string issueMessage
 
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# This domain exposes the current state of the CrashReportContext API.
+experimental domain CrashReportContext
+  depends on Page
+
+  # Key-value pair in CrashReportContext.
+  type CrashReportContextEntry extends object
+    properties
+      string key
+      string value
+      # The ID of the frame where the key-value pair was set.
+      Page.FrameId frameId
+
+  # Returns all entries in the CrashReportContext across all frames in the page.
+  command getEntries
+    returns
+      array of CrashReportContextEntry entries
+
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -3329,6 +3387,7 @@ experimental domain Cast
 # corresponding document elements as their child nodes.
 domain DOM
   depends on Runtime
+  depends on Network
 
   # Unique DOM node identifier.
   type NodeId extends integer
@@ -3357,8 +3416,9 @@ domain DOM
       checkmark
       before
       after
+      expand-icon
       picker-icon
-      interest-hint
+      interest-button
       marker
       backdrop
       column
@@ -3499,6 +3559,7 @@ domain DOM
       experimental optional boolean isScrollable
       experimental optional boolean affectedByStartingStyles
       experimental optional array of StyleSheetId adoptedStyleSheets
+      experimental optional Network.AdProvenance adProvenance
 
   # A structure to hold the top-level node of a detached tree and an array of its retained descendants.
   type DetachedElementInfo extends object
@@ -4227,6 +4288,14 @@ domain DOM
       DOM.NodeId nodeId
       # If the node is scrollable.
       boolean isScrollable
+
+  # Fired when a node's ad related state changes.
+  experimental event adRelatedStateUpdated
+    parameters
+      # The id of the node.
+      DOM.NodeId nodeId
+      # The provenance of the ad related node, if it is ad related.
+      optional Network.AdProvenance adProvenance
 
   # Fired when a node's starting styles changes.
   experimental event affectedByStartingStylesFlagUpdated
@@ -5155,6 +5224,21 @@ domain Emulation
       # to continuous.
       # Deprecated, use Emulation.setDevicePostureOverride.
       experimental deprecated optional DevicePosture devicePosture
+      # Scrollbar type. Default: `default`.
+      experimental optional enum scrollbarType
+        # Emulates scrollbars that float over the content, typically appearing
+        # only when scrolling.
+        overlay
+        # Restores the platform's default scrollbar behavior, which might be
+        # classic (occupying space within the layout) or overlay, depending
+        # on the platform. Note: if `mobile` is `true`, the default scrollbar type is `overlay`.
+        default
+      # If set to true, enables screen orientation lock emulation, which
+      # intercepts screen.orientation.lock() calls from the page and reports
+      # orientation changes via screenOrientationLockChanged events. This is
+      # useful for emulating mobile device orientation lock behavior in
+      # responsive design mode.
+      experimental optional boolean screenOrientationLockEmulation
 
   # Start reporting the given posture value to the Device Posture API.
   # This override can also be set in setDeviceMetricsOverride().
@@ -5379,10 +5463,21 @@ domain Emulation
   # Notification sent after the virtual time budget for the current VirtualTimePolicy has run out.
   experimental event virtualTimeBudgetExpired
 
+  # Fired when a page calls screen.orientation.lock() or screen.orientation.unlock()
+  # while device emulation is enabled. This allows the DevTools frontend to update the
+  # emulated device orientation accordingly.
+  experimental event screenOrientationLockChanged
+    parameters
+      # Whether the screen orientation is currently locked.
+      boolean locked
+      # The orientation lock type requested by the page. Only set when locked is true.
+      optional ScreenOrientation orientation
+
   # Enum of image types that can be disabled.
   experimental type DisabledImageType extends string
     enum
       avif
+      jxl
       webp
 
   experimental command setDisabledImageTypes
@@ -5429,7 +5524,8 @@ domain Emulation
       # of size 100lvh.
       integer difference
 
-  # Returns device's screen configuration.
+  # Returns device's screen configuration. In headful mode, the physical screens configuration is returned,
+  # whereas in headless mode, a virtual headless screen configuration is provided instead.
   experimental command getScreenInfos
     returns
       array of ScreenInfo screenInfos
@@ -5460,8 +5556,44 @@ domain Emulation
     returns
       ScreenInfo screenInfo
 
+  # Updates specified screen parameters. Only supported in headless mode.
+  experimental command updateScreen
+    parameters
+      # Target screen identifier.
+      ScreenId screenId
+      # Offset of the left edge of the screen in pixels.
+      optional integer left
+      # Offset of the top edge of the screen in pixels.
+      optional integer top
+      # The width of the screen in pixels.
+      optional integer width
+      # The height of the screen in pixels.
+      optional integer height
+      # Specifies the screen's work area.
+      optional WorkAreaInsets workAreaInsets
+      # Specifies the screen's device pixel ratio.
+      optional number devicePixelRatio
+      # Specifies the screen's rotation angle. Available values are 0, 90, 180 and 270.
+      optional integer rotation
+      # Specifies the screen's color depth in bits.
+      optional integer colorDepth
+      # Specifies the descriptive label for the screen.
+      optional string label
+      # Indicates whether the screen is internal to the device or external, attached to the device. Default is false.
+      optional boolean isInternal
+    returns
+      ScreenInfo screenInfo
+
   # Remove screen from the device. Only supported in headless mode.
   experimental command removeScreen
+    parameters
+      ScreenId screenId
+
+  # Set primary screen. Only supported in headless mode.
+  # Note that this changes the coordinate system origin to the top-left
+  # of the new primary screen, updating the bounds and work areas
+  # of all existing screens accordingly.
+  experimental command setPrimaryScreen
     parameters
       ScreenId screenId
 
@@ -5507,8 +5639,6 @@ experimental domain Extensions
       managed
 
   # Runs an extension default action.
-  # Available if the client is connected using the --remote-debugging-pipe
-  # flag and the --enable-unsafe-extension-debugging flag is set.
   command triggerAction
     parameters
       # Extension id.
@@ -5518,9 +5648,7 @@ experimental domain Extensions
 
   # Installs an unpacked extension from the filesystem similar to
   # --load-extension CLI flags. Returns extension ID once the extension
-  # has been installed. Available if the client is connected using the
-  # --remote-debugging-pipe flag and the --enable-unsafe-extension-debugging
-  # flag is set.
+  # has been installed.
   command loadUnpacked
     parameters
       # Absolute file path.
@@ -5530,9 +5658,27 @@ experimental domain Extensions
     returns
       # Extension id.
       string id
+
+  # Detailed information about an extension.
+  type ExtensionInfo extends object
+    properties
+      # Extension id.
+      string id
+      # Extension name.
+      string name
+      # Extension version.
+      string version
+      # The path from which the extension was loaded.
+      string path
+      # Extension enabled status.
+      boolean enabled
+
+  # Gets a list of all unpacked extensions.
+  command getExtensions
+    returns
+      array of ExtensionInfo extensions
+
   # Uninstalls an unpacked extension (others not supported) from the profile.
-  # Available if the client is connected using the --remote-debugging-pipe flag
-  # and the --enable-unsafe-extension-debugging.
   command uninstall
     parameters
       # Extension id.
@@ -7333,7 +7479,7 @@ domain Network
       High
       VeryHigh
 
-  # The render blocking behavior of a resource request.
+  # The render-blocking behavior of a resource request.
   experimental type RenderBlockingBehavior extends string
     enum
       Blocking
@@ -8224,6 +8370,8 @@ domain Network
       optional integer packetQueueLength
       # WebRTC packetReordering feature.
       optional boolean packetReordering
+      # True to emulate internet disconnection.
+      optional boolean offline
 
   # Activates emulation of network conditions. This command is deprecated in favor of the emulateNetworkConditionsByRule
   # and overrideNetworkState commands, which can be used together to the same effect.
@@ -8251,8 +8399,11 @@ domain Network
   # explicitly modify `navigator` behavior.
   experimental command emulateNetworkConditionsByRule
     parameters
-      # True to emulate internet disconnection.
-      boolean offline
+      # True to emulate internet disconnection. Deprecated, use the offline property in matchedNetworkConditions
+      # or emulateOfflineServiceWorker instead.
+      deprecated optional boolean offline
+      # True to emulate offline service worker.
+      optional boolean emulateOfflineServiceWorker
       # Configure conditions for matching requests. If multiple entries match a request, the first entry wins.  Global
       # conditions can be configured by leaving the urlPattern for the conditions empty. These global conditions are
       # also applied for throttling of p2p connections.
@@ -8280,6 +8431,8 @@ domain Network
   command enable
     parameters
       # Buffer size in bytes to use when preserving network payloads (XHRs, etc).
+      # This is the maximum number of bytes that will be collected by this
+      # DevTools session.
       experimental optional integer maxTotalBufferSize
       # Per-resource buffer size in bytes to use when preserving network payloads (XHRs, etc).
       experimental optional integer maxResourceBufferSize
@@ -8642,7 +8795,7 @@ domain Network
       optional Page.FrameId frameId
       # Whether the request is initiated by a user gesture. Defaults to false.
       optional boolean hasUserGesture
-      # The render blocking behavior of the request.
+      # The render-blocking behavior of the request.
       experimental optional RenderBlockingBehavior renderBlockingBehavior
 
   # Fired when resource loading priority is changed
@@ -8964,6 +9117,45 @@ domain Network
       IPAddressSpace initiatorIPAddressSpace
       LocalNetworkAccessRequestPolicy localNetworkAccessRequestPolicy
 
+  # Identifies the script on the stack that caused a resource or element to be
+  # labeled as an ad. For resources, this indicates the context that triggered
+  # the fetch. For elements, this indicates the context that caused the element
+  # to be appended to the DOM.
+  experimental type AdScriptIdentifier extends object
+    properties
+      # The script's V8 identifier.
+      Runtime.ScriptId scriptId
+      # V8's debugging ID for the v8::Context.
+      Runtime.UniqueDebuggerId debuggerId
+      # The script's url (or generated name based on id if inline script).
+      string name
+
+  # Encapsulates the script ancestry and the root script filter list rule that
+  # caused the resource or element to be labeled as an ad.
+  experimental type AdAncestry extends object
+    properties
+      # A chain of `AdScriptIdentifier`s representing the ancestry of an ad
+      # script that led to the creation of a resource or element. The chain is
+      # ordered from the script itself (lowest level) up to its root ancestor
+      # that was flagged by a filter list.
+      array of AdScriptIdentifier ancestryChain
+      # The filter list rule that caused the root (last) script in
+      # `ancestryChain` to be tagged as an ad.
+      optional string rootScriptFilterlistRule
+
+  # Represents the provenance of an ad resource or element. Only one of
+  # `filterlistRule` or `adScriptAncestry` can be set. If `filterlistRule`
+  # is provided, the resource URL directly matches a filter list rule. If
+  # `adScriptAncestry` is provided, an ad script initiated the resource fetch or
+  # appended the element to the DOM. If neither is provided, the entity is
+  # known to be an ad, but provenance tracking information is unavailable.
+  experimental type AdProvenance extends object
+    properties
+      # The filterlist rule that matched, if any.
+      optional string filterlistRule
+      # The script ancestry that created the ad, if any.
+      optional AdAncestry adScriptAncestry
+
   # Fired when additional information about a requestWillBeSent event is available from the
   # network stack. Not every requestWillBeSent event will have an additional
   # requestWillBeSentExtraInfo fired for it, and there is no guarantee whether requestWillBeSent
@@ -9283,6 +9475,7 @@ domain Network
       Success
       KeyError
       SigningError
+      TransientSigningError
       ServerRequestedTermination
       InvalidSessionId
       InvalidChallenge
@@ -9349,6 +9542,20 @@ domain Network
       FailedToUnwrapKey
       SessionDeletedDuringRefresh
 
+  # Details about a failed device bound session network request.
+  experimental type DeviceBoundSessionFailedRequest extends object
+    properties
+      # The failed request URL.
+      string requestUrl
+      # The net error of the response if it was not OK.
+      optional string netError
+      # The response code if the net error was OK and the response code was not
+      # 200.
+      optional integer responseError
+      # The body of the response if the net error was OK, the response code was
+      # not 200, and the response body was not empty.
+      optional string responseErrorBody
+
   # Session event details specific to creation.
   experimental type CreationEventDetails extends object
     properties
@@ -9357,6 +9564,9 @@ domain Network
       # The session if there was a newly created session. This is populated for
       # all successful creation events.
       optional DeviceBoundSession newSession
+      # Details about a failed device bound session network request if there was
+      # one.
+      optional DeviceBoundSessionFailedRequest failedRequest
 
   # Session event details specific to refresh.
   experimental type RefreshEventDetails extends object
@@ -9370,6 +9580,8 @@ domain Network
         RefreshQuotaExceeded
         FatalError
         SigningQuotaExceeded
+        RefreshedAsWaiter
+        TransientSigningError
       # If there was a fetch attempt, the result of that.
       optional DeviceBoundSessionFetchResult fetchResult
       # The session display if there was a newly created session. This is populated
@@ -9377,6 +9589,9 @@ domain Network
       optional DeviceBoundSession newSession
       # See comments on `net::device_bound_sessions::RefreshEventResult::was_fully_proactive_refresh`.
       boolean wasFullyProactiveRefresh
+      # Details about a failed device bound session network request if there was
+      # one.
+      optional DeviceBoundSessionFailedRequest failedRequest
 
   # Session event details specific to termination.
   experimental type TerminationEventDetails extends object
@@ -9391,6 +9606,7 @@ domain Network
         ServerRequested
         InvalidSessionParams
         RefreshFatalError
+        DevTools
 
   # Session event details specific to challenges.
   experimental type ChallengeEventDetails extends object
@@ -9434,6 +9650,11 @@ domain Network
     parameters
       # Whether to enable or disable events.
       boolean enable
+
+  # Deletes a device bound session.
+  experimental command deleteDeviceBoundSession
+    parameters
+      DeviceBoundSessionKey key
 
   # Fetches the schemeful site for a specific origin.
   experimental command fetchSchemefulSite
@@ -9483,12 +9704,6 @@ domain Network
     parameters
       # Whether 3pc restriction is enabled.
       boolean enableThirdPartyCookieRestriction
-
-      # Whether 3pc grace period exception should be enabled; false by default.
-      boolean disableThirdPartyCookieMetadata
-
-      # Whether 3pc heuristics exceptions should be enabled; false by default.
-      boolean disableThirdPartyCookieHeuristics
 
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
@@ -10195,31 +10410,6 @@ domain Page
       AdFrameType adFrameType
       optional array of AdFrameExplanation explanations
 
-  # Identifies the script which caused a script or frame to be labelled as an
-  # ad.
-  experimental type AdScriptId extends object
-    properties
-      # Script Id of the script which caused a script or frame to be labelled as
-      # an ad.
-      Runtime.ScriptId scriptId
-      # Id of scriptId's debugger.
-      Runtime.UniqueDebuggerId debuggerId
-
-  # Encapsulates the script ancestry and the root script filterlist rule that
-  # caused the frame to be labelled as an ad. Only created when `ancestryChain`
-  # is not empty.
-  experimental type AdScriptAncestry extends object
-    properties
-      # A chain of `AdScriptId`s representing the ancestry of an ad script that
-      # led to the creation of a frame. The chain is ordered from the script
-      # itself (lower level) up to its root ancestor that was flagged by
-      # filterlist.
-      array of AdScriptId ancestryChain
-      # The filterlist rule that caused the root (last) script in
-      # `ancestryChain` to be ad-tagged. Only populated if the rule is
-      # available.
-      optional string rootScriptFilterlistRule
-
   # Indicates whether the frame is a secure context and why it is the case.
   experimental type SecureContextType extends string
     enum
@@ -10307,7 +10497,6 @@ domain Page
       encrypted-media
       execution-while-out-of-viewport
       execution-while-not-rendered
-      fenced-unpartitioned-storage-read
       focus-without-user-activation
       fullscreen
       frobulate
@@ -10353,6 +10542,7 @@ domain Page
       sub-apps
       summarizer
       sync-xhr
+      tools
       translator
       unload
       usb
@@ -11002,7 +11192,7 @@ domain Page
       # chain is ordered from the most immediate script (in the frame creation
       # stack) to more distant ancestors (that created the immediately preceding
       # script). Only sent if frame is labelled as an ad and ids are available.
-      optional AdScriptAncestry adScriptAncestry
+      optional Network.AdAncestry adScriptAncestry
 
   # Returns present frame tree structure.
   command getFrameTree
@@ -11696,6 +11886,7 @@ domain Page
       BackForwardCacheDisabledForPrerender
       UserAgentOverrideDiffers
       ForegroundCacheLimit
+      ForwardCacheDisabled
       BrowsingInstanceNotSwapped
       BackForwardCacheDisabledForDelegate
       UnloadHandlerExistsInMainFrame
@@ -11802,6 +11993,7 @@ domain Page
       EmbedderExtensionMessaging
       EmbedderExtensionMessagingForOpenPort
       EmbedderExtensionSentMessageToCachedFrame
+      EmbedderExtensionFrame
       RequestedByWebViewClient
       PostMessageByWebViewClient
       CacheControlNoStoreDeviceBoundSessionTerminated
@@ -12149,6 +12341,7 @@ experimental domain Preload
       Network.LoaderId loaderId
       SpeculationAction action
       string url
+      optional boolean formSubmission
       optional SpeculationTargetHint targetHint
 
   # Lists sources for a preloading attempt, specifically the ids of rule sets
@@ -12261,6 +12454,8 @@ experimental domain Preload
       PrerenderFailedDuringPrefetch
       BrowsingDataRemoved
       PrerenderHostReused
+      FormSubmitWhenPrerendering
+      CrossDocumentRestart
 
   # Fired when a preload enabled state is updated.
   event preloadEnabledStateUpdated
@@ -13698,284 +13893,6 @@ experimental domain Storage
     parameters
       string bucketId
 
-  # https://wicg.github.io/attribution-reporting-api/
-  experimental command setAttributionReportingLocalTestingMode
-    parameters
-      # If enabled, noise is suppressed and reports are sent immediately.
-      boolean enabled
-
-  # Enables/disables issuing of Attribution Reporting events.
-  experimental command setAttributionReportingTracking
-    parameters
-      boolean enable
-
-  # Sends all pending Attribution Reports immediately, regardless of their
-  # scheduled report time.
-  experimental command sendPendingAttributionReports
-    returns
-      # The number of reports that were sent.
-      integer numSent
-
-  experimental type AttributionReportingSourceType extends string
-    enum
-      navigation
-      event
-
-  experimental type UnsignedInt64AsBase10 extends string
-  experimental type UnsignedInt128AsBase16 extends string
-  experimental type SignedInt64AsBase10 extends string
-
-  experimental type AttributionReportingFilterDataEntry extends object
-    properties
-      string key
-      array of string values
-
-  experimental type AttributionReportingFilterConfig extends object
-    properties
-      array of AttributionReportingFilterDataEntry filterValues
-      # duration in seconds
-      optional integer lookbackWindow
-
-  experimental type AttributionReportingFilterPair extends object
-    properties
-      array of AttributionReportingFilterConfig filters
-      array of AttributionReportingFilterConfig notFilters
-
-  experimental type AttributionReportingAggregationKeysEntry extends object
-    properties
-      string key
-      UnsignedInt128AsBase16 value
-
-  experimental type AttributionReportingEventReportWindows extends object
-    properties
-      # duration in seconds
-      integer start
-      # duration in seconds
-      array of integer ends
-
-  experimental type AttributionReportingTriggerDataMatching extends string
-    enum
-      exact
-      modulus
-
-  experimental type AttributionReportingAggregatableDebugReportingData extends object
-    properties
-      UnsignedInt128AsBase16 keyPiece
-      # number instead of integer because not all uint32 can be represented by
-      # int
-      number value
-      array of string types
-
-  experimental type AttributionReportingAggregatableDebugReportingConfig extends object
-    properties
-      # number instead of integer because not all uint32 can be represented by
-      # int, only present for source registrations
-      optional number budget
-      UnsignedInt128AsBase16 keyPiece
-      array of AttributionReportingAggregatableDebugReportingData debugData
-      optional string aggregationCoordinatorOrigin
-
-  experimental type AttributionScopesData extends object
-    properties
-      array of string values
-      # number instead of integer because not all uint32 can be represented by
-      # int
-      number limit
-      number maxEventStates
-
-  experimental type AttributionReportingNamedBudgetDef extends object
-    properties
-      string name
-      integer budget
-
-  experimental type AttributionReportingSourceRegistration extends object
-    properties
-      Network.TimeSinceEpoch time
-      # duration in seconds
-      integer expiry
-      # number instead of integer because not all uint32 can be represented by
-      # int
-      array of number triggerData
-      AttributionReportingEventReportWindows eventReportWindows
-      # duration in seconds
-      integer aggregatableReportWindow
-      AttributionReportingSourceType type
-      string sourceOrigin
-      string reportingOrigin
-      array of string destinationSites
-      UnsignedInt64AsBase10 eventId
-      SignedInt64AsBase10 priority
-      array of AttributionReportingFilterDataEntry filterData
-      array of AttributionReportingAggregationKeysEntry aggregationKeys
-      optional UnsignedInt64AsBase10 debugKey
-      AttributionReportingTriggerDataMatching triggerDataMatching
-      SignedInt64AsBase10 destinationLimitPriority
-      AttributionReportingAggregatableDebugReportingConfig aggregatableDebugReportingConfig
-      optional AttributionScopesData scopesData
-      integer maxEventLevelReports
-      array of AttributionReportingNamedBudgetDef namedBudgets
-      boolean debugReporting
-      number eventLevelEpsilon
-
-  experimental type AttributionReportingSourceRegistrationResult extends string
-    enum
-      success
-      internalError
-      insufficientSourceCapacity
-      insufficientUniqueDestinationCapacity
-      excessiveReportingOrigins
-      prohibitedByBrowserPolicy
-      successNoised
-      destinationReportingLimitReached
-      destinationGlobalLimitReached
-      destinationBothLimitsReached
-      reportingOriginsPerSiteLimitReached
-      exceedsMaxChannelCapacity
-      exceedsMaxScopesChannelCapacity
-      exceedsMaxTriggerStateCardinality
-      exceedsMaxEventStatesLimit
-      destinationPerDayReportingLimitReached
-
-  experimental event attributionReportingSourceRegistered
-    parameters
-      AttributionReportingSourceRegistration registration
-      AttributionReportingSourceRegistrationResult result
-
-  experimental type AttributionReportingSourceRegistrationTimeConfig extends string
-    enum
-      include
-      exclude
-
-  experimental type AttributionReportingAggregatableValueDictEntry extends object
-    properties
-      string key
-      # number instead of integer because not all uint32 can be represented by
-      # int
-      number value
-      UnsignedInt64AsBase10 filteringId
-
-
-  experimental type AttributionReportingAggregatableValueEntry extends object
-    properties
-      array of AttributionReportingAggregatableValueDictEntry values
-      AttributionReportingFilterPair filters
-
-  experimental type AttributionReportingEventTriggerData extends object
-    properties
-      UnsignedInt64AsBase10 data
-      SignedInt64AsBase10 priority
-      optional UnsignedInt64AsBase10 dedupKey
-      AttributionReportingFilterPair filters
-
-  experimental type AttributionReportingAggregatableTriggerData extends object
-    properties
-      UnsignedInt128AsBase16 keyPiece
-      array of string sourceKeys
-      AttributionReportingFilterPair filters
-
-  experimental type AttributionReportingAggregatableDedupKey extends object
-    properties
-      optional UnsignedInt64AsBase10 dedupKey
-      AttributionReportingFilterPair filters
-
-  experimental type AttributionReportingNamedBudgetCandidate extends object
-    properties
-      optional string name
-      AttributionReportingFilterPair filters
-
-  experimental type AttributionReportingTriggerRegistration extends object
-    properties
-      AttributionReportingFilterPair filters
-      optional UnsignedInt64AsBase10 debugKey
-      array of AttributionReportingAggregatableDedupKey aggregatableDedupKeys
-      array of AttributionReportingEventTriggerData eventTriggerData
-      array of AttributionReportingAggregatableTriggerData aggregatableTriggerData
-      array of AttributionReportingAggregatableValueEntry aggregatableValues
-      integer aggregatableFilteringIdMaxBytes
-      boolean debugReporting
-      optional string aggregationCoordinatorOrigin
-      AttributionReportingSourceRegistrationTimeConfig sourceRegistrationTimeConfig
-      optional string triggerContextId
-      AttributionReportingAggregatableDebugReportingConfig aggregatableDebugReportingConfig
-      array of string scopes
-      array of AttributionReportingNamedBudgetCandidate namedBudgets
-
-  experimental type AttributionReportingEventLevelResult extends string
-    enum
-      success
-      successDroppedLowerPriority
-      internalError
-      noCapacityForAttributionDestination
-      noMatchingSources
-      deduplicated
-      excessiveAttributions
-      priorityTooLow
-      neverAttributedSource
-      excessiveReportingOrigins
-      noMatchingSourceFilterData
-      prohibitedByBrowserPolicy
-      noMatchingConfigurations
-      excessiveReports
-      falselyAttributedSource
-      reportWindowPassed
-      notRegistered
-      reportWindowNotStarted
-      noMatchingTriggerData
-
-  experimental type AttributionReportingAggregatableResult extends string
-    enum
-      success
-      internalError
-      noCapacityForAttributionDestination
-      noMatchingSources
-      excessiveAttributions
-      excessiveReportingOrigins
-      noHistograms
-      insufficientBudget
-      insufficientNamedBudget
-      noMatchingSourceFilterData
-      notRegistered
-      prohibitedByBrowserPolicy
-      deduplicated
-      reportWindowPassed
-      excessiveReports
-
-  experimental event attributionReportingTriggerRegistered
-    parameters
-      AttributionReportingTriggerRegistration registration
-      AttributionReportingEventLevelResult eventLevel
-      AttributionReportingAggregatableResult aggregatable
-
-  experimental type AttributionReportingReportResult extends string
-    enum
-      # A network request was attempted for the report.
-      sent
-      # No request was attempted because of browser policy.
-      prohibited
-      # No request was attempted because of an error in report assembly,
-      # e.g. the aggregation service was unavailable.
-      failedToAssemble
-      # No request was attempted because the report's expiry passed.
-      expired
-
-  experimental event attributionReportingReportSent
-    parameters
-      string url
-      object body
-      AttributionReportingReportResult result
-      # If result is `sent`, populated with net/HTTP status.
-      optional integer netError
-      optional string netErrorName
-      optional integer httpStatusCode
-
-  experimental event attributionReportingVerboseDebugReportSent
-    parameters
-      string url
-      optional array of object body
-      optional integer netError
-      optional string netErrorName
-      optional integer httpStatusCode
-
   # A single Related Website Set object.
   experimental type RelatedWebsiteSet extends object
     properties
@@ -13991,21 +13908,6 @@ experimental domain Storage
   experimental command getRelatedWebsiteSets
     returns
       array of RelatedWebsiteSet sets
-
-  # Returns the list of URLs from a page and its embedded resources that match
-  # existing grace period URL pattern rules.
-  # https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period
-  experimental command getAffectedUrlsForThirdPartyCookieMetadata
-    parameters
-      # The URL of the page currently being visited.
-      string firstPartyUrl
-      # The list of embedded resource URLs from the page.
-      array of string thirdPartyUrls
-
-    returns
-      # Array of matching URLs. If there is a primary pattern match for the first-
-      # party URL, only the first-party URL is returned in the array.
-      array of string matchedUrls
 
   command setProtectedAudienceKAnonymity
     parameters
@@ -14167,13 +14069,16 @@ domain Target
       string url
       # Whether the target has an attached client.
       boolean attached
+      # Id of the parent target, if any. For example, "iframe" target may have a "page" parent.
+      optional TargetID parentId
       # Opener target Id
       optional TargetID openerId
       # Whether the target has access to the originating window.
       experimental boolean canAccessOpener
       # Frame id of originating window (is only set if target has an opener).
       experimental optional Page.FrameId openerFrameId
-      # Id of the parent frame, only present for the "iframe" targets.
+      # Id of the parent frame, present for "iframe" and "worker" targets. For nested workers,
+      # this is the "ancestor" frame that created the first worker in the nested chain.
       experimental optional Page.FrameId parentFrameId
       experimental optional Browser.BrowserContextID browserContextId
       # Provides additional details for specific target types. For example, for
@@ -14917,6 +14822,7 @@ experimental domain WebAuthn
     enum
       ctap2_0
       ctap2_1
+      ctap2_2
 
   type AuthenticatorTransport extends string
     enum
@@ -14954,6 +14860,14 @@ experimental domain WebAuthn
       # https://w3c.github.io/webauthn/#prf-extension
       # Defaults to false.
       optional boolean hasPrf
+      # If set to true, the authenticator will support the hmac-secret extension.
+      # https://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-hmac-secret-extension
+      # Defaults to false.
+      optional boolean hasHmacSecret
+      # If set to true, the authenticator will support the hmac-secret-mc extension.
+      # https://fidoalliance.org/specs/fido-v2.2-rd-20241003/fido-client-to-authenticator-protocol-v2.2-rd-20241003.html#sctn-hmac-secret-make-cred-extension
+      # Defaults to false.
+      optional boolean hasHmacSecretMc
       # If set to true, tests of user presence will succeed immediately.
       # Otherwise, they will not be resolved. Defaults to true.
       optional boolean automaticPresenceSimulation
@@ -15125,4 +15039,126 @@ experimental domain WebAuthn
     parameters
       AuthenticatorId authenticatorId
       Credential credential
+
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+#
+# Contributing to Chrome DevTools Protocol: https://goo.gle/devtools-contribution-guide-cdp
+
+experimental domain WebMCP
+  depends on Runtime
+  depends on Page
+  depends on DOM
+
+  # Tool annotations
+  type Annotation extends object
+
+    properties
+      # A hint indicating that the tool does not modify any state.
+      optional boolean readOnly
+      # A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd party data.
+      optional boolean untrustedContent
+      # If the declarative tool was declared with the autosubmit attribute.
+      optional boolean autosubmit
+
+  # Represents the status of a tool invocation.
+  type InvocationStatus extends string
+    enum
+      Completed
+      Canceled
+      Error
+
+  # Definition of a tool that can be invoked.
+  type Tool extends object
+    properties
+      # Tool name.
+      string name
+      # Tool description.
+      string description
+      # Schema for the tool's input parameters.
+      optional object inputSchema
+      # Optional annotations for the tool.
+      optional Annotation annotations
+      # Frame identifier associated with the tool registration.
+      Page.FrameId frameId
+      # Optional node ID for declarative tools.
+      optional DOM.BackendNodeId backendNodeId
+      # The stack trace at the time of the registration.
+      optional Runtime.StackTrace stackTrace
+
+
+  # Enables the WebMCP domain, allowing events to be sent. Enabling the domain will trigger a toolsAdded event for
+  # all currently registered tools.
+  command enable
+
+  # Disables the WebMCP domain.
+  command disable
+
+   # Invokes a registered tool.
+  command invokeTool
+    parameters
+      # Frame in which to invoke the tool.
+      Page.FrameId frameId
+      # Name of the tool to invoke.
+      string toolName
+      # Input parameters for the tool, matching the tool's inputSchema.
+      object input
+    returns
+      # Unique identifier for this invocation. Response is sent before tool events.
+      string invocationId
+
+  # Cancels a pending tool invocation.
+  command cancelInvocation
+    parameters
+      # Invocation identifier to cancel.
+      string invocationId
+
+  # Event fired when new tools are added.
+  event toolsAdded
+    parameters
+      # Array of tools that were added.
+      array of Tool tools
+
+  # Definition of a tool that was removed.
+  type RemovedTool extends object
+    properties
+      # Tool name.
+      string name
+      # Frame identifier associated with the tool registration.
+      Page.FrameId frameId
+
+  # Event fired when tools are removed.
+  event toolsRemoved
+    parameters
+      # Array of tools that were removed.
+      array of RemovedTool tools
+
+  # Event fired when a tool invocation starts.
+  event toolInvoked
+    parameters
+      # Name of the tool to invoke.
+      string toolName
+      # Frame id
+      Page.FrameId frameId
+      # Invocation identifier.
+      string invocationId
+      # The input parameters used for the invocation.
+      string input
+
+  # Event fired when a tool invocation completes or fails.
+  event toolResponded
+    parameters
+      # Invocation identifier.
+      string invocationId
+      # Status of the invocation.
+      InvocationStatus status
+      # Output or error delivered as delivered to the agent. Missing if `status` is anything other than Completed.
+      # Note: The output is untrusted and poses a prompt injection risk. Clients should treat this as potentially malicious user input.
+      optional any output
+      # Error text for protocol users.
+      optional string errorText
+      # The exception object, if the javascript tool threw an error>
+      optional Runtime.RemoteObject exception
+
 

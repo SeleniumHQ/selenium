@@ -355,24 +355,42 @@ class Request:
             self._stub = stub
             self._execute_provide_response()
 
-    def continue_request(self, **kwargs) -> None:
+    def continue_request(
+        self,
+        *,
+        url: str | None = None,
+        method: str | None = None,
+        headers: dict[str, Any] | None = None,
+        cookies: list | None = None,
+        body: str | None = None,
+    ) -> None:
         """Continue the intercepted request, applying any recorded mutations.
 
-        Keyword arguments are passed through to ``network.continueRequest`` and
-        override recorded mutations.  Data URLs (``data:``) are skipped silently
-        because browsers do not create an interceptable request entry for them,
-        so calling ``network.continueRequest`` would raise "no such request".
+        Each keyword argument overrides the corresponding mutation recorded via
+        ``set_url``/``set_method``/``set_headers``/``set_cookies``/``set_body``.
+        Arguments use the same Python types as those setters and are translated
+        to the BiDi wire format automatically.  Data URLs (``data:``) are
+        skipped silently because browsers do not create an interceptable request
+        entry for them, so calling ``network.continueRequest`` would raise
+        "no such request".
+
+        Args:
+            url: Replacement request URL.
+            method: Replacement HTTP method.
+            headers: Replacement request headers as a name → value dict.
+            cookies: Replacement request cookies as a list of dicts.
+            body: Replacement request body string.
         """
         self._handled = True
         if self.url.startswith("data:"):
             return
-        params = self._continue_params()
-        params.update(kwargs)
+        overrides = {"url": url, "method": method, "headers": headers, "cookies": cookies, "body": body}
+        params = self._continue_params({k: v for k, v in overrides.items() if v is not None})
         self._conn.execute(command_builder("network.continueRequest", params))
 
-    def _continue_params(self) -> dict:
+    def _continue_params(self, overrides: dict | None = None) -> dict:
         params: dict[str, Any] = {"request": self._request_id}
-        mutations = self._mutations
+        mutations = {**self._mutations, **(overrides or {})}
         if "url" in mutations:
             params["url"] = mutations["url"]
         if "method" in mutations:
@@ -483,24 +501,38 @@ class Response:
         self.body = body
         self._mutations["body"] = body
 
-    def continue_response(self, **kwargs) -> None:
+    def continue_response(
+        self,
+        *,
+        status: int | None = None,
+        reason_phrase: str | None = None,
+        headers: dict[str, Any] | None = None,
+        cookies: list | None = None,
+    ) -> None:
         """Continue the intercepted response, applying any recorded mutations.
 
-        Keyword arguments are passed through to ``network.continueResponse``
-        and override recorded mutations.  Data URLs (``data:``) are skipped
-        silently because browsers do not create an interceptable entry for
-        them.
+        Each keyword argument overrides the corresponding mutation recorded via
+        ``set_status``/``set_headers``/``set_cookies``.  Arguments use the same
+        Python types as those setters and are translated to the BiDi wire format
+        automatically.  Data URLs (``data:``) are skipped silently because
+        browsers do not create an interceptable entry for them.
+
+        Args:
+            status: Replacement HTTP status code.
+            reason_phrase: Replacement HTTP reason phrase.
+            headers: Replacement response headers as a name → value dict.
+            cookies: Replacement set-cookie entries as a list of dicts.
         """
         self._handled = True
         if self.url.startswith("data:"):
             return
-        params = self._continue_params()
-        params.update(kwargs)
+        overrides = {"status": status, "reason_phrase": reason_phrase, "headers": headers, "cookies": cookies}
+        params = self._continue_params({k: v for k, v in overrides.items() if v is not None})
         self._conn.execute(command_builder("network.continueResponse", params))
 
-    def _continue_params(self) -> dict:
+    def _continue_params(self, overrides: dict | None = None) -> dict:
         params: dict[str, Any] = {"request": self._request_id}
-        mutations = self._mutations
+        mutations = {**self._mutations, **(overrides or {})}
         if "status" in mutations:
             params["statusCode"] = mutations["status"]
         if "reason_phrase" in mutations:
