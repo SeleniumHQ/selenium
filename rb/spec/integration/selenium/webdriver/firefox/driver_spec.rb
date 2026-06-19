@@ -91,11 +91,7 @@ module Selenium
             expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
           end
 
-          it 'install and uninstall unsigned zip file',
-             except: {browser: :firefox,
-                      version: 'stable',
-                      reason: 'wontfix in Firefox 151, fixed in 152: ' \
-                              'https://bugzilla.mozilla.org/show_bug.cgi?id=2045054'} do
+          it 'install and uninstall unsigned zip file' do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example-unsigned.zip", __dir__)
             id = driver.install_addon(ext, true)
 
@@ -128,11 +124,7 @@ module Selenium
             expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
           end
 
-          it 'install and uninstall unsigned directory',
-             except: {browser: :firefox,
-                      version: 'stable',
-                      reason: 'wontfix in Firefox 151, fixed in 152: ' \
-                              'https://bugzilla.mozilla.org/show_bug.cgi?id=2045054'} do
+          it 'install and uninstall unsigned directory' do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example/", __dir__)
             id = driver.install_addon(ext, true)
 
