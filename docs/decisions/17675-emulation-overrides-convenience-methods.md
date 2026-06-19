@@ -1,4 +1,4 @@
-# 0005. Emulation overrides are exposed through named convenience methods
+# 17675. Emulation overrides are exposed through named convenience methods
 
 - Status: Proposed
 - Date: 2026-06-11
@@ -42,7 +42,8 @@ Normative requirements:
 - Methods accept friendly positional/named arguments (e.g. `latitude`, `longitude`),
   not raw wire descriptors, and validate enum-like values.
 - Scope arguments (`contexts` / `user_contexts`) are accepted as optional parameters so
-  overrides can be global or scoped, matching the protocol.
+  overrides can be global or scoped, matching the protocol (a `user_context` is the isolation
+  unit — see [17681](17681-browsing-contexts-exposed-as-handle-objects.md)).
 - Overrides apply dynamically and a "clear/reset" path is documented for those the spec
   supports (passing the null/empty override).
 - Method **names and argument names are consistent across bindings** (allowing for each
