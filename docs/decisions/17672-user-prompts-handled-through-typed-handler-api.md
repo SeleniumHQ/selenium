@@ -1,4 +1,4 @@
-# 0002. Browser user prompts are handled through a typed handler API
+# 17672. Browser user prompts are handled through a typed handler API
 
 - Status: Proposed
 - Date: 2026-06-11
@@ -47,7 +47,7 @@ Normative requirements:
 - The static capability route (`unhandledPromptBehavior`) remains available for users who
   want a fixed session-wide policy without a callback.
 - `expect_user_prompt` (the observational waiter from
-  [0001](0001-bidi-events-awaited-with-expect-context-managers.md)) remains for the
+  [17671](17671-bidi-events-awaited-with-expect-context-managers.md)) remains for the
   "assert a prompt appeared" case; it is complementary, not a replacement for handling.
 
 Code sketch — Python (reference implementation):
@@ -102,8 +102,11 @@ driver.browsingContext().onUserPrompt(prompt -> {
   notes for those bindings.
 - `beforeunload` handling (often a `dismiss` to allow navigation) is covered by the same
   object.
-- Builds on [0001](0001-bidi-events-awaited-with-expect-context-managers.md) for the
+- Builds on [17671](17671-bidi-events-awaited-with-expect-context-managers.md) for the
   `expect_user_prompt` waiter and the underlying subscription.
+- The same `unhandledPromptBehavior` / `UserPromptHandler` capability also applies **per user
+  context** at creation time (not only as a session-wide default); see
+  [17681](17681-browsing-contexts-exposed-as-handle-objects.md).
 
 ## Binding status
 
