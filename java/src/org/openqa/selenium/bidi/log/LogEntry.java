@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.bidi.log;
 
-import org.openqa.selenium.Beta;
 import java.util.Optional;
 import org.openqa.selenium.Beta;
 

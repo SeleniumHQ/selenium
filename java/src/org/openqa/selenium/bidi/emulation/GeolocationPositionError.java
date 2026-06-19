@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.bidi.emulation;
 
-import org.openqa.selenium.Beta;
 import java.util.Map;
 import org.openqa.selenium.Beta;
 

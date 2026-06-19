@@ -16,7 +16,6 @@
 // under the License.
 package org.openqa.selenium.bidi.script;
 
-import org.openqa.selenium.Beta;
 import java.util.Optional;
 import org.openqa.selenium.Beta;
 

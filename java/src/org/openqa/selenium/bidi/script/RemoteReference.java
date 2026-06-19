@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.bidi.script;
 
-import org.openqa.selenium.Beta;
 import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.bidi.script.RemoteReference.Type.HANDLE;
 import static org.openqa.selenium.bidi.script.RemoteReference.Type.SHARED_ID;
