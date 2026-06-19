@@ -1,4 +1,4 @@
-# 0003. Storage exposes a typed cookie API and `storage_state` save/restore
+# 17673. Storage exposes a typed cookie API and `storage_state` save/restore
 
 - Status: Proposed
 - Date: 2026-06-11
@@ -33,7 +33,8 @@ Bindings expose two cohesive storage conveniences:
    `path`, `secure`, `http_only`, `same_site`, and an expiry expressed in the binding's
    natural way (`expiry`/`max_age`). `get_cookies` returns these typed objects, not raw
    wire dicts. The low-level command remains available for advanced cases (explicit
-   partitioning, raw byte values).
+   partitioning — e.g. targeting a specific user context, see
+   [17681](17681-browsing-contexts-exposed-as-handle-objects.md) — and raw byte values).
 
 2. A **`storage_state` save/restore** pair. `save_state` captures cookies (via
    `storage.getCookies`) **and** per-origin `localStorage` (via `script.evaluate`) into a
