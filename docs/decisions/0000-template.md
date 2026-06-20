@@ -1,10 +1,9 @@
 # NNNN. Title stating the decision as a fact
 
-<!-- Good: "Clicks scroll elements into view before interacting"
-     Bad:  "Click behavior" -->
+<!-- NNNN is this proposal's PR number. Good title: "Clicks scroll elements into view before
+     interacting"; bad: "Click behavior" -->
 
 - Status: Proposed <!-- Proposed | Accepted | Rejected | Superseded by [NNNN](NNNN-title.md) -->
-- Date: YYYY-MM-DD <!-- date the status last changed -->
 - Discussion: <!-- link to this record's PR; add prior issues/threads under Context -->
 
 ## Context
@@ -36,18 +35,10 @@ language here if the API shape is part of what's being decided.
 What gets easier, what gets harder, what users will notice. Deprecations triggered by this
 decision and their timelines. Follow-up decisions this one makes necessary.
 
-## Binding status
-
-<!-- Update this table as bindings converge on the decision; table updates don't need
-     TLC review. "n/a" with a note if the decision doesn't apply to a binding. -->
-
-| Binding    | Status  | Notes / tracking link |
-|------------|---------|-----------------------|
-| Java       | pending |                       |
-| Python     | pending |                       |
-| Ruby       | pending |                       |
-| .NET       | pending |                       |
-| JavaScript | pending |                       |
+<!-- Per-binding convergence is NOT tracked here. When this record is accepted, open an ADR
+     tracking issue (the "ADR Implementation Tracking" issue template) with one checkbox per
+     binding, and link it from this record's PR. Keeping it out of the committed record avoids
+     churn on an otherwise immutable file. -->
 
 ## Appendix (optional)
 
