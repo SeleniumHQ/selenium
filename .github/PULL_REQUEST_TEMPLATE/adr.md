@@ -1,7 +1,15 @@
-<!-- Proposing an ADR — see docs/decisions/README.md.
-     The decision, rationale, considered options, and consequences live in the record file this
-     PR adds; don't restate them here — this body is only for review logistics.
-     Rename the record file to NNNN-short-title.md using this PR's number before merge. -->
+<!-- Proposing an ADR (see docs/decisions/README.md). Don't restate the decision here; keep this
+     body to proposal notes and review logistics. Rename the record file to NNNN-short-title.md
+     using this PR's number before merge. -->
+
+📄 The decision, its rationale, considered options, and consequences are in the record file
+this PR adds; read it there. The sections below are proposal notes and review logistics.
+
+### 📝 Proposal notes
+
+<!-- Notes about the proposal, not the decision: why these choices are grouped into one record,
+     what is deliberately deferred or out of scope, anything you expect to be contentious, and
+     any follow-on proposals. -->
 
 ### 🔗 Related
 
