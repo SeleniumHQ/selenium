@@ -1,7 +1,7 @@
-# NNNNN. BiDi's low-level definitions are generated from a shared spec model and imported, not injected
+# 17701. BiDi's low-level definitions are generated from a shared spec model and imported, not injected
 
 - Status: Proposed
-- Discussion: _PR pending_
+- Discussion: https://github.com/SeleniumHQ/selenium/pull/17701
 
 ## Context
 
