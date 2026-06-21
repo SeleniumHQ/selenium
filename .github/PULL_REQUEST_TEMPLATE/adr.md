@@ -13,11 +13,3 @@ body is only for review logistics — don't restate the decision here.
 ### 🗣 For reviewers
 
 What needs discussion or sign-off before this can be accepted? Link any prior issues or threads.
-
-### 🤖 AI assistance
-<!-- Check one. See CONTRIBUTING.md for policy details. -->
-- [ ] No substantial AI assistance used
-- [ ] AI assisted (complete below)
-    - Tool(s):
-    - What was generated:
-    - [ ] I reviewed all AI output and can explain the change
