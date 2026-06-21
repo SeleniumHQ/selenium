@@ -13,6 +13,19 @@ expectations, existing behavior that differs between bindings, implementation co
 Link prior discussions (issues, TLC notes) here as background — but summarize them, since
 this section must make sense without following any links.
 
+<!-- Optional: when bindings currently differ, a table makes the divergence concrete. This is
+     the as-is state as of this decision (durable rationale) — NOT convergence tracking, which
+     lives in the post-acceptance tracking issue. Delete it if the decision is greenfield or the
+     bindings already behave the same. -->
+
+| Binding    | Current behavior |
+|------------|------------------|
+| Java       |                  |
+| Python     |                  |
+| Ruby       |                  |
+| .NET       |                  |
+| JavaScript |                  |
+
 ## Decision
 
 The decision, stated in language-neutral terms. This is the normative part: what every
