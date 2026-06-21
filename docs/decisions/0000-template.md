@@ -16,19 +16,21 @@ this section must make sense without following any links.
 ## Decision
 
 The decision, stated in language-neutral terms. This is the normative part: what every
-binding MUST do, and what is explicitly left to per-language idiom. Use code sketches per
-language here if the API shape is part of what's being decided.
+binding MUST do, and what is explicitly left to per-language idiom. Record *what* and *why*,
+not *how* — implementation lives in the adopting PRs. Use code sketches only to pin down the
+API shape being decided, not to specify implementation.
 
 ## Considered options
 
 - **Option A** — what it is; why it was rejected or accepted
 - **Option B** — what it is; why it was rejected or accepted
 
-<!-- Options must be mutually exclusive answers to the question stated in Context; if two
-     options could both be adopted, they are separate decisions and the document should be
-     split. Revise this section during review as alternatives are contested or added — the
-     merged record, not the PR thread, is the authoritative account of why each rejected
-     option was not chosen. -->
+<!-- List the alternatives to the decision above and why each was rejected. These are mutually
+     exclusive answers to the same question, not a menu of separable features — a record may
+     bundle related sub-choices (give each its own options); independent adoptability alone is
+     not grounds to split it (see the README's scoping guidance). Revise this section during
+     review as alternatives are contested or added — the merged record, not the PR thread, is
+     the authoritative account of why each rejected option was not chosen. -->
 
 ## Consequences
 
