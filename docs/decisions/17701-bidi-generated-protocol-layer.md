@@ -1,4 +1,4 @@
-# 17701. BiDi's low-level definitions are generated from a shared spec model and imported, not injected
+# 17701. BiDi's low-level definitions are generated from a shared spec model without orchestration
 
 - Status: Proposed
 - Discussion: https://github.com/SeleniumHQ/selenium/pull/17701
