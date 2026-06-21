@@ -43,6 +43,11 @@ force a reader to open several records to understand any one of them, they belon
    fill it in with `Status: Proposed`, and open a PR. Once GitHub assigns the PR number, rename the
    file to `NNNN-short-title.md` using that number, before merge. Keep it to about a page — if the
    debate already happened in an issue, the record can be short and link to it.
+
+   Open the PR with the ADR pull-request template by appending `?expand=1&template=adr.md` to the
+   compare URL — GitHub has no picker for PR templates, so this query parameter is the only way to
+   select it (e.g. `https://github.com/SeleniumHQ/selenium/compare/trunk...your-branch?expand=1&template=adr.md`).
+   Keep the PR body to review logistics; the decision and rationale belong in the record, not the PR.
 2. **Discuss.** The PR thread is the discussion record. Decisions that need synchronous
    discussion are raised at a TLC meeting; the outcome goes back into the PR. Disagreement
    about the considered options is resolved by revising the document during review, so the
