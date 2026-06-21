@@ -42,7 +42,7 @@ When in doubt, ask whether the question is likely to be raised again. If it is, 
    `Rejected`; proposals withdrawn or abandoned before TLC consideration are closed and the
    number lapses.
 4. **Implement.** When a record is accepted, open an ADR tracking issue (use the
-   [ADR Implementation Tracking](../../.github/ISSUE_TEMPLATE/adr-tracking.yml) issue template) — one
+   [ADR Implementation Tracking](https://github.com/SeleniumHQ/selenium/issues/new?template=adr-tracking.yml) issue template) — one
    checkbox per binding, linking each implementing PR as it lands — and link the issue from the
    record's PR. Tracking lives in the issue, not the committed record, so the immutable file doesn't
    churn as bindings converge; updating the issue needs no TLC review.
