@@ -1,8 +1,7 @@
 <!-- Proposing an ADR — see docs/decisions/README.md.
+     The decision, rationale, considered options, and consequences live in the record file this
+     PR adds; don't restate them here — this body is only for review logistics.
      Rename the record file to NNNN-short-title.md using this PR's number before merge. -->
-
-The decision, rationale, considered options, and consequences are in the record file this PR
-adds — don't restate them here. This body is only for review logistics.
 
 ### 🔗 Related
 
