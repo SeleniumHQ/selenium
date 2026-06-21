@@ -66,7 +66,7 @@ module Selenium
 
           describe 'with a client_config' do
             it 'configures the client from the config' do
-              proxy = instance_double(Proxy)
+              proxy = Proxy.new(http: 'http://proxy.example:8080')
               config = ClientConfig.new(
                 open_timeout: 15,
                 read_timeout: 25,

@@ -39,6 +39,15 @@ module Selenium
       attr_writer :extra_headers, :user_agent
       attr_reader :server_url
 
+      #
+      # @param [Numeric] open_timeout Seconds to wait for the connection to open.
+      # @param [Numeric] read_timeout Seconds to wait for a response.
+      # @param [Integer] max_redirects Maximum number of redirects to follow.
+      # @param [Proxy, Hash] proxy Proxy to use for the connection.
+      # @param [Hash] extra_headers Additional headers to send with each request.
+      # @param [String] user_agent Value to send as the User-Agent header.
+      # @param [String, URI] server_url URL of the server to connect to.
+      #
       def initialize(open_timeout: 60,
                      read_timeout: 120,
                      max_redirects: 20,
