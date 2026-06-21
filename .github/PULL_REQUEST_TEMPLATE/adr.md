@@ -1,15 +1,20 @@
-<!-- Template for proposing a design decision record (ADR).
-     See docs/decisions/README.md. The decision itself goes in the record file, not here. -->
+<!-- Proposing an ADR — see docs/decisions/README.md.
+     Rename the record file to NNNN-short-title.md using this PR's number before merge. -->
 
-### 📋 Proposed record
+The decision, rationale, considered options, and consequences are in the record file this PR
+adds — don't restate them here. This body is only for review logistics.
 
-Proposes ADR: **_short title_**
+### 🔗 Related
 
-- Record: `docs/decisions/NNNN-short-title.md` <!-- rename to this PR's number before merge -->
+<!-- Link any ADRs this depends on, builds on, competes with, or supersedes; reference
+     implementations or code PRs; and prior discussions or design docs. Omit if none. -->
 
-The decision, rationale, considered options, and consequences live in the record file. This PR
-body is only for review logistics — don't restate the decision here.
+### 🗣 TLC discussion
 
-### 🗣 For reviewers
+<!-- Which TLC meeting(s) this was discussed at, and the outcome. Per the process, the TLC
+     discussion result is recorded here, not in the committed record. -->
 
-What needs discussion or sign-off before this can be accepted? Link any prior issues or threads.
+### 📌 Tracking
+
+<!-- Filled in on acceptance: open the ADR tracking issue and link it here. -->
+Tracking issue: _(linked on acceptance)_
