@@ -203,3 +203,34 @@ fn browser_path_version_mismatch_test() {
         "Should mention requested version"
     );
 }
+
+#[test]
+#[cfg(unix)]
+fn browser_path_major_version_mismatch_test() {
+    let fake_browser = create_fake_browser("131.0.6778.264");
+    let mut cmd = get_selenium_manager();
+    let stdout = cmd
+        .args([
+            "--browser",
+            "chrome",
+            "--browser-path",
+            fake_browser.to_str().unwrap(),
+            "--browser-version",
+            "999",
+            "--debug",
+        ])
+        .assert()
+        .get_output()
+        .stdout
+        .clone();
+    let stdout_str = std::str::from_utf8(&stdout).unwrap();
+    // Major-only version mismatch must also be reported
+    assert!(
+        stdout_str.contains("131.0.6778.264"),
+        "Should mention detected version"
+    );
+    assert!(
+        stdout_str.contains("999"),
+        "Should mention requested version"
+    );
+}

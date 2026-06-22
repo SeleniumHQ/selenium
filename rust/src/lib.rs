@@ -581,6 +581,16 @@ pub trait SeleniumManager {
                                 discovered_major_browser_version,
                                 major_browser_version,
                             ));
+                            if !original_browser_path.is_empty() {
+                                return Err(anyhow!(format!(
+                                    "The browser at {} has version {} but {} {} was requested; \
+                                     remove --browser-path to allow a browser download",
+                                    original_browser_path,
+                                    discovered_version,
+                                    self.get_browser_name(),
+                                    self.get_browser_version(),
+                                )));
+                            }
                             download_browser = true;
                         } else {
                             self.set_browser_version(discovered_version);
