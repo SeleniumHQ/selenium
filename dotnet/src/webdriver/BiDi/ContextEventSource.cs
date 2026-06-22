@@ -48,7 +48,7 @@ internal sealed class ContextEventSource<TEventArgs> : IEventSource<TEventArgs> 
         return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => new ValueTask(handler(e)), [_context], _filter, cancellationToken);
     }
 
-    public async Task<IEventStream<TEventArgs>> StreamAsync(CancellationToken cancellationToken = default)
+    public async Task<IAsyncEnumerable<TEventArgs>> StreamAsync(CancellationToken cancellationToken = default)
     {
         return await _dispatcher.SubscribeReaderAsync(_descriptor, [_context], _filter, cancellationToken).ConfigureAwait(false);
     }

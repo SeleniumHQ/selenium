@@ -168,11 +168,9 @@ class SessionUnitTests
 
         _transport.EnqueueEvent("script.realmDestroyed", """{"realm":"r-1","foo":"extra"}""");
 
-        var received = await stream.FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+        var received = await stream.FirstAsync().AsTask().WithResponse(_transport).WaitAsync(TimeSpan.FromSeconds(5));
 
         Assert.That(received.AdditionalData["foo"].GetString(), Is.EqualTo("extra"));
-
-        await stream.DisposeAsync().WithResponse(_transport);
     }
 
     [Test]
@@ -183,10 +181,8 @@ class SessionUnitTests
 
         _transport.Enqueue("""{"type":"event","method":"script.realmDestroyed","params":{"realm":"r-1"},"bar":"topLevel"}""");
 
-        var received = await stream.FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+        var received = await stream.FirstAsync().AsTask().WithResponse(_transport).WaitAsync(TimeSpan.FromSeconds(5));
 
         Assert.That(received.AdditionalMessageData["bar"].GetString(), Is.EqualTo("topLevel"));
-
-        await stream.DisposeAsync().WithResponse(_transport);
     }
 }

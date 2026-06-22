@@ -292,7 +292,7 @@ internal class NetworkTests : BiDiTestFixture
     {
         var collector = await bidi.Network.AddDataCollectorAsync([DataType.Response], 200000000);
 
-        await using var stream = await bidi.Network.ResponseCompleted.StreamAsync();
+        var stream = await bidi.Network.ResponseCompleted.StreamAsync();
 
         await context.NavigateAsync(UrlBuilder.WhereIs("simpleTest.html"), new() { Wait = ReadinessState.Complete });
 

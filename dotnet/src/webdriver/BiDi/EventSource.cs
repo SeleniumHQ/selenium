@@ -44,7 +44,7 @@ internal sealed class EventSource<TEventArgs> : IEventSource<TEventArgs> where T
         return _dispatcher.SubscribeAsync(_descriptor, e => new ValueTask(handler(e)), filter: null, cancellationToken: cancellationToken);
     }
 
-    public async Task<IEventStream<TEventArgs>> StreamAsync(CancellationToken cancellationToken = default)
+    public async Task<IAsyncEnumerable<TEventArgs>> StreamAsync(CancellationToken cancellationToken = default)
     {
         return await _dispatcher.SubscribeReaderAsync(_descriptor, filter: null, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
