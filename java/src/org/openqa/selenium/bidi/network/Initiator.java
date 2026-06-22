@@ -18,10 +18,12 @@
 package org.openqa.selenium.bidi.network;
 
 import java.util.Optional;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.bidi.log.StackTrace;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
+@Beta
 public class Initiator {
 
   public enum Type {

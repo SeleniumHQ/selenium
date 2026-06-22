@@ -22,9 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Remote
-      describe Driver, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {driver: :remote}] do
-        let(:tempfile) { create_tempfile }
-
+      describe Driver, skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {driver: :remote}] do
         it 'exposes session_id' do
           expect(driver.session_id).to be_a(String)
         end
@@ -33,22 +31,7 @@ module Selenium
           expect(driver.status).to be_a(Hash)
         end
 
-        it 'uses a default file detector',
-           flaky: {browser: :safari, ci: :github, reason: 'unreliable with downloads'} do
-          driver.navigate.to url_for('upload.html')
-
-          driver.find_element(id: 'upload').send_keys(tempfile.path)
-          driver.find_element(id: 'go').submit
-          wait.until { driver.find_element(id: 'upload_label').displayed? }
-
-          driver.switch_to.frame('upload_target')
-          wait.until { driver.find_element(xpath: '//body') }
-
-          body = driver.find_element(xpath: '//body')
-          expect(body.text.scan('This is a dummy test file').count).to eq(1)
-        end
-
-        it 'lists downloads', exclude: {browser: :safari, reason: 'grid hangs'} do
+        it 'lists downloads', skip_if: {browser: :safari, reason: 'grid hangs'} do
           reset_driver!(enable_downloads: true) do |driver|
             browser_downloads(driver)
 
@@ -58,7 +41,7 @@ module Selenium
           end
         end
 
-        it 'downloads a file', exclude: {browser: :safari, reason: 'grid hangs'} do
+        it 'downloads a file', skip_if: {browser: :safari, reason: 'grid hangs'} do
           target_directory = File.join(Dir.tmpdir.to_s, SecureRandom.uuid)
           at_exit { FileUtils.rm_f(target_directory) }
 
@@ -73,7 +56,7 @@ module Selenium
           end
         end
 
-        it 'deletes downloadable files', exclude: {browser: :safari, reason: 'grid hangs'} do
+        it 'deletes downloadable files', skip_if: {browser: :safari, reason: 'grid hangs'} do
           reset_driver!(enable_downloads: true) do |driver|
             browser_downloads(driver)
 
@@ -83,7 +66,7 @@ module Selenium
           end
         end
 
-        it 'errors when not set', exclude: {browser: :safari, reason: 'grid hangs'} do
+        it 'errors when not set', skip_if: {browser: :safari, reason: 'grid hangs'} do
           reset_driver!(enable_downloads: false) do |driver|
             expect {
               driver.downloadable_files

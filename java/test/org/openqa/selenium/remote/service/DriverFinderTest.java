@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -39,6 +40,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.chrome.ElectronOptions;
 import org.openqa.selenium.manager.SeleniumManager;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
@@ -191,6 +193,29 @@ class DriverFinderTest {
     verifyNoMoreInteractions(service);
     verify(seleniumManager, times(1)).getBinaryPaths(arguments);
     verifyNoMoreInteractions(seleniumManager);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void electronOptionsPassesElectronBrowserNameToSeleniumManager() throws IOException {
+    when(service.getExecutable()).thenReturn(null);
+    when(service.getDriverProperty()).thenReturn("property.selenium.manager.empty");
+    when(service.getDriverEnvironmentVariable())
+        .thenReturn("ENVIRONMENT_VARIABLE_IGNORES_SELENIUM_MANAGER");
+
+    ElectronOptions options = new ElectronOptions(browserFile.toFile());
+
+    Result result = new Result(0, "", driverFile.toString(), browserFile.toString());
+    doReturn(result).when(seleniumManager).getBinaryPaths(any());
+
+    new DriverFinder(service, options, seleniumManager).getDriverPath();
+
+    org.mockito.ArgumentCaptor<List<String>> captor =
+        org.mockito.ArgumentCaptor.forClass(List.class);
+    verify(seleniumManager).getBinaryPaths(captor.capture());
+    assertThat(captor.getValue()).containsSequence("--browser", "electron");
+    assertThat(options.getBrowserName()).isEqualTo("chrome");
+    assertThat(options.getCapability("se:browserName")).isEqualTo("electron");
   }
 
   private Path createExecutableFile(String prefix) {

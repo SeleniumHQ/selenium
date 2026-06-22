@@ -23,9 +23,11 @@ import static java.util.Collections.unmodifiableMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
+@Beta
 public class StackTrace {
 
   private final List<StackFrame> callFrames;

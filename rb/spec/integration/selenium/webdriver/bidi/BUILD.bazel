@@ -4,12 +4,9 @@ load("//rb/spec:tests.bzl", "rb_integration_test")
     rb_integration_test(
         name = file[:-8],
         srcs = [file],
-        tags = [
-            "bidi",
-            "exclusive-if-local",
-        ],
+        bidi_only = True,
+        tags = ["exclusive-if-local"],
         deps = [
-            "//rb/lib/selenium/devtools",
             "//rb/lib/selenium/webdriver:bidi",
         ],
     )

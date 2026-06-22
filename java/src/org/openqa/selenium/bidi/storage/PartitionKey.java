@@ -18,8 +18,10 @@
 package org.openqa.selenium.bidi.storage;
 
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.json.JsonInput;
 
+@Beta
 public class PartitionKey {
   @Nullable private final String userContext;
   @Nullable private final String sourceOrigin;

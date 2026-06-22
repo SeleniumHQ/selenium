@@ -123,7 +123,6 @@ def test_should_indicate_when_aselect_is_disabled(driver, pages):
     assert not disabled.is_enabled()
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_return_the_value_of_checked_for_acheckbox_even_if_it_lacks_that_attribute(driver, pages):
     pages.load("formPage.html")
     checkbox = driver.find_element(By.XPATH, "//input[@id='checky']")
@@ -132,7 +131,6 @@ def test_should_return_the_value_of_checked_for_acheckbox_even_if_it_lacks_that_
     assert "true" == checkbox.get_attribute("checked")
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_return_the_value_of_selected_for_radio_buttons_even_if_they_lack_that_attribute(driver, pages):
     pages.load("formPage.html")
     neverSelected = driver.find_element(By.ID, "cheese")

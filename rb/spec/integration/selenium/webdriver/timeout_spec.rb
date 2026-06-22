@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Timeouts, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+    describe Timeouts, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       before do
         driver.manage.timeouts.implicit_wait = 6
         driver.manage.timeouts.page_load = 2
@@ -86,7 +86,7 @@ module Selenium
           expect { driver.navigate.to url_for('sleep?time=3') }.to raise_error(WebDriver::Error::TimeoutError)
         end
 
-        it 'times out if page takes too long to load after click', except: {browser: %i[safari safari_preview]} do
+        it 'times out if page takes too long to load after click', pending_if: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('page_with_link_to_slow_loading_page.html')
 
           expect {

@@ -19,10 +19,11 @@
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record ContextDestroyedEventArgs(IBiDi BiDi, ImmutableArray<Info>? Children,
+public sealed record ContextDestroyedEventArgs(
+    ImmutableArray<Info>? Children,
     Browser.ClientWindow ClientWindow,
     BrowsingContext Context,
     BrowsingContext? OriginalOpener,
     string Url,
     Browser.UserContext UserContext,
-    BrowsingContext? Parent) : EventArgs(BiDi);
+    BrowsingContext? Parent) : EventArgs;

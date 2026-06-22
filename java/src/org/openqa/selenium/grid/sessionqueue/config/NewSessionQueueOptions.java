@@ -160,4 +160,17 @@ public class NewSessionQueueOptions {
     return config.getClass(
         SESSION_QUEUE_SECTION, "implementation", NewSessionQueue.class, implementation);
   }
+
+  public Optional<URI> getBackendUri() {
+    return config
+        .get(SESSION_QUEUE_SECTION, "backend-url")
+        .map(
+            str -> {
+              try {
+                return new URI(str);
+              } catch (URISyntaxException e) {
+                throw new ConfigException("SessionQueue backend-url is not a valid URI: " + str);
+              }
+            });
+  }
 }

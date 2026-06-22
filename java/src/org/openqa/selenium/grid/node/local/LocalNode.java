@@ -610,6 +610,11 @@ public class LocalNode extends Node implements Closeable {
                 TemporaryFilesystem.getDefaultTmpFS()
                     .createTempDir("uuid", uuidForSessionDownloads.toString()));
 
+        LOG.info(
+            () ->
+                String.format(
+                    "Using file system: %s", downloadsTfs.getBaseDir().getAbsolutePath()));
+
         Capabilities enhanced = setDownloadsDirectory(downloadsTfs, desiredCapabilities);
         enhanced = desiredCapabilities.merge(enhanced);
         sessionRequest =
@@ -617,6 +622,10 @@ public class LocalNode extends Node implements Closeable {
                 sessionRequest.getDownstreamDialects(), enhanced, sessionRequest.getMetadata());
       } else {
         downloadsTfs = null;
+        LOG.info(
+            () ->
+                String.format(
+                    "Not using file system: desiredCapabilities=%s", desiredCapabilities));
       }
 
       Either<WebDriverException, ActiveSession> possibleSession = slotToUse.apply(sessionRequest);
@@ -656,7 +665,7 @@ public class LocalNode extends Node implements Closeable {
         LOG.info(
             String.format(
                 "%s. Id: %s, Caps: %s",
-                sessionCreatedMessage, sessionId, externalSession.getCapabilities()));
+                sessionCreatedMessage, sessionId, externalSession.getCapabilities().asMap()));
 
         // Create session data for events and listeners
         SessionCreatedData createdData =
@@ -716,6 +725,8 @@ public class LocalNode extends Node implements Closeable {
 
   private Capabilities setDownloadsDirectory(TemporaryFilesystem downloadsTfs, Capabilities caps) {
     File tempDir = downloadsTfs.createTempDir("download", "");
+    LOG.info(() -> String.format("Using downloads folder: %s", tempDir.getAbsolutePath()));
+
     if (Browser.CHROME.is(caps) || Browser.EDGE.is(caps)) {
       Map<String, Serializable> map =
           Map.of(
@@ -725,14 +736,22 @@ public class LocalNode extends Node implements Closeable {
               tempDir.getAbsolutePath(),
               "savefile.default_directory",
               tempDir.getAbsolutePath());
+      LOG.log(Level.FINE, () -> String.format("Adding to capabilities: %s", map));
       String optionsKey = Browser.CHROME.is(caps) ? "goog:chromeOptions" : "ms:edgeOptions";
       return appendPrefs(caps, optionsKey, map);
-    }
-    if (Browser.FIREFOX.is(caps)) {
+    } else if (Browser.FIREFOX.is(caps)) {
       Map<String, Serializable> map =
           Map.of(
               "browser.download.folderList", 2, "browser.download.dir", tempDir.getAbsolutePath());
+      LOG.log(Level.FINE, () -> String.format("Adding to capabilities: %s", map));
       return appendPrefs(caps, "moz:firefoxOptions", map);
+    } else {
+      LOG.info(
+          () ->
+              String.format(
+                  "Browser is not one of (%s, %s, %s): %s -> not adding downloads directory to"
+                      + " capabilities",
+                  Browser.CHROME, Browser.EDGE, Browser.FIREFOX, caps.getBrowserName()));
     }
     return caps;
   }
@@ -902,6 +921,10 @@ public class LocalNode extends Node implements Closeable {
     File downloadsDirectory =
         Optional.ofNullable(tempFS.getBaseDir().listFiles()).orElse(new File[] {})[0];
 
+    LOG.log(
+        Level.FINE,
+        () -> String.format("Downloads directory: %s", downloadsDirectory.getAbsolutePath()));
+
     try {
       if (req.getMethod().equals(HttpMethod.GET) && req.getUri().endsWith("/se/files")) {
         return listDownloadedFiles(downloadsDirectory);
@@ -948,6 +971,15 @@ public class LocalNode extends Node implements Closeable {
             "names", fileNames,
             "files", fileInfos);
     Map<String, Map<String, Object>> result = Map.of("value", data);
+
+    LOG.log(
+        Level.FINE,
+        () ->
+            String.format(
+                "Downloaded files in dir %s: %s",
+                downloadsDirectory.getAbsolutePath(), Arrays.toString(files)));
+    LOG.log(Level.FINE, () -> String.format("Returning: %s", data));
+
     return new HttpResponse().setContent(asJson(result));
   }
 
@@ -1055,7 +1087,15 @@ public class LocalNode extends Node implements Closeable {
 
   private HttpResponse deleteDownloadedFile(File downloadsDirectory) {
     File[] files = Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {});
+    LOG.log(
+        Level.FINE,
+        () ->
+            String.format(
+                "Deleting downloaded files in dir %s: %s",
+                downloadsDirectory.getAbsolutePath(), Arrays.toString(files)));
+
     for (File file : files) {
+      LOG.log(Level.FINE, () -> String.format("Deleted: %s", file.getAbsolutePath()));
       FileHandler.delete(file);
     }
     Map<String, @Nullable Object> toReturn = new HashMap<>();

@@ -30,6 +30,23 @@ end
 desc 'Release Python wheel and sdist to pypi'
 task :release do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
+
+  unless nightly
+    already_published = begin
+      Rake::Task['py:verify'].invoke
+      true
+    rescue StandardError
+      false
+    ensure
+      Rake::Task['py:verify'].reenable
+    end
+
+    if already_published
+      puts 'Python package already published — skipping release.'
+      next
+    end
+  end
+
   Rake::Task['py:check_credentials'].invoke(*arguments.to_a)
 
   if nightly
@@ -170,11 +187,11 @@ task :format do
   Bazel.execute('run', [], '//py:ruff-format')
 end
 
-desc 'Run Python linters (ruff check, mypy, docs)'
+desc 'Run Python linters (ruff check --no-fix, mypy, docs)'
 task :lint do
-  puts '  Running ruff check...'
-  Bazel.execute('run', [], '//py:ruff-check')
-  puts '  Running mypy...'
-  Bazel.execute('run', [], '//py:mypy')
-  Rake::Task['py:docs_generate'].invoke
+  SeleniumRake.aggregate_errors(
+    ruff_check: -> { Bazel.execute('run', ['--', '--no-fix'], '//py:ruff-check') },
+    mypy: -> { Bazel.execute('run', [], '//py:mypy') },
+    python_docs: -> { Rake::Task['py:docs_generate'].invoke }
+  )
 end

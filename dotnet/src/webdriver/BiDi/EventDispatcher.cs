@@ -112,17 +112,20 @@ internal sealed class EventDispatcher : IAsyncDisposable
         return (EventStream<TEventArgs>)subscription;
     }
 
-    public bool TryDeserializeAndDispatch(string method, ref Utf8JsonReader paramsReader)
+    public bool TryDeserializeAndDispatch(string method, ref Utf8JsonReader paramsReader, Dictionary<string, JsonElement>? additionalMessageData = null)
     {
         if (!_events.TryGetValue(method, out var slot))
         {
             return false;
         }
 
-        var eventParams = JsonSerializer.Deserialize(ref paramsReader, slot.JsonTypeInfo)
-            ?? throw new BiDiException("Remote end returned null event args in the 'params' property.");
+        var eventArgs = (EventArgs)(JsonSerializer.Deserialize(ref paramsReader, slot.JsonTypeInfo)
+            ?? throw new BiDiException("Remote end returned null event args in the 'params' property."));
 
-        var eventArgs = slot.ArgsFactory(eventParams);
+        eventArgs.BiDi = _bidi;
+
+        if (additionalMessageData is not null)
+            eventArgs.AdditionalMessageData = AdditionalData.FromDictionary(additionalMessageData);
 
         foreach (var subscription in slot.GetSnapshot())
         {
@@ -205,14 +208,12 @@ internal sealed class EventDispatcher : IAsyncDisposable
     {
         return _events.GetOrAdd(descriptor.Name, _ =>
         {
-            if (descriptor.JsonTypeInfo is null || descriptor.ArgsFactory is null)
+            if (descriptor.JsonTypeInfo is null)
             {
                 throw new InvalidOperationException($"Event '{descriptor.Name}' does not have registration metadata.");
             }
 
-            var bidi = _bidi;
-            var argsFactory = descriptor.ArgsFactory;
-            return new EventSlot(descriptor.JsonTypeInfo, ep => argsFactory(bidi, ep));
+            return new EventSlot(descriptor.JsonTypeInfo);
         });
     }
 
@@ -234,15 +235,13 @@ internal sealed class EventDispatcher : IAsyncDisposable
     private sealed class EventSlot
     {
         public JsonTypeInfo JsonTypeInfo { get; }
-        public Func<object, EventArgs> ArgsFactory { get; }
 
         private readonly object _lock = new();
         private volatile ISubscriptionSink[] _subscriptions = [];
 
-        public EventSlot(JsonTypeInfo jsonTypeInfo, Func<object, EventArgs> argsFactory)
+        public EventSlot(JsonTypeInfo jsonTypeInfo)
         {
             JsonTypeInfo = jsonTypeInfo;
-            ArgsFactory = argsFactory;
         }
 
         public ISubscriptionSink[] GetSnapshot() => _subscriptions;

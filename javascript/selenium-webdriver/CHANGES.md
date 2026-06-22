@@ -1,3 +1,16 @@
+## 4.45.0
+
+- Support CDP versions: v147, v148, v149
+- update vulnerable dependency with a range (#17466)
+- update dev dependencies (#17479)
+- update eslint to v10 with fixes (#17482)
+- Use the typescript atom for get attribute (#17526)
+- Move JS bindings to use typescript atoms for isDisplayed and Find-Element (#17547)
+- trim agent formatting guidance (#17617)
+- [build] Automated Browser Version Update (#17609)
+- Add Javascript/Typescript CDDL code generator for WebDriver BiDi (#17574)
+- Expose BiDi CDDL ast and model as shared artifacts (#17657)
+
 ## 4.44.0
 
 - Support CDP versions: v146, v147, v148

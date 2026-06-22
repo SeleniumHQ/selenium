@@ -1,0 +1,48 @@
+load("@rules_ruby//ruby:defs.bzl", "rb_library", "rb_test")
+
+rb_library(
+    name = "spec_helper",
+    testonly = True,
+    srcs = ["selenium/webdriver/spec_helper.rb"],
+    visibility = ["//rb/spec:__subpackages__"],
+    deps = [
+        "//rb/lib:selenium-webdriver",
+        "//rb/lib/selenium:webdriver",
+        "//rb/lib/selenium/webdriver:atoms",
+        "//rb/spec:rspec_matchers",
+        "@bundle",
+    ],
+)
+
+rb_test(
+    name = "unit",
+    size = "small",
+    srcs = glob(["**/*_spec.rb"]),
+    args = ["rb/spec/unit/"],
+    data = [
+        "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
+        "//third_party/firebug:firebug-1.5.0-fx.xpi",
+        "//third_party/firebug:mooltipass-1.1.87.xpi",
+    ],
+    main = "@bundle//bin:rspec",
+    tags = ["unit"],
+    visibility = ["//rb:__subpackages__"],
+    deps = [
+        ":spec_helper",
+        "//rb/lib:selenium-webdriver",
+        "//rb/lib/selenium:devtools",
+        "//rb/lib/selenium:server",
+        "//rb/lib/selenium:webdriver",
+        "//rb/lib/selenium/devtools:cdp-generate",
+        "//rb/lib/selenium/webdriver:atoms",
+        "//rb/lib/selenium/webdriver:bidi",
+        "//rb/lib/selenium/webdriver:chrome",
+        "//rb/lib/selenium/webdriver:common",
+        "//rb/lib/selenium/webdriver:devtools",
+        "//rb/lib/selenium/webdriver:edge",
+        "//rb/lib/selenium/webdriver:firefox",
+        "//rb/lib/selenium/webdriver:ie",
+        "//rb/lib/selenium/webdriver:remote",
+        "//rb/lib/selenium/webdriver:safari",
+    ],
+)

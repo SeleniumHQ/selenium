@@ -194,11 +194,15 @@ impl ChromeManager {
             .filter(|r| r.version.starts_with(version_for_filtering.as_str()))
             .collect();
         if filtered_versions.is_empty() {
-            return Err(anyhow!(format_three_args(
-                UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
-                self.get_driver_name(),
-                version_for_filtering.as_str(),
-                &MIN_CHROMEDRIVER_VERSION_CFT.to_string(),
+            return Err(anyhow!(format!(
+                "{}. Check available versions at {}",
+                format_three_args(
+                    UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
+                    self.get_driver_name(),
+                    version_for_filtering.as_str(),
+                    &MIN_CHROMEDRIVER_VERSION_CFT.to_string(),
+                ),
+                CFT_URL
             )));
         }
 
@@ -580,6 +584,10 @@ impl SeleniumManager for ChromeManager {
         _browser_version: &str,
     ) -> Result<Option<&str>, Error> {
         Ok(None)
+    }
+
+    fn get_browser_versions_url(&self) -> &str {
+        CFT_URL
     }
 
     fn is_download_browser(&self) -> bool {

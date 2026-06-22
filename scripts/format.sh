@@ -119,12 +119,13 @@ fi
 
 if changed_matches '^py/'; then
     section "Python"
-    if [[ "$run_lint" == "true" ]]; then
-        echo "    ruff check" >&2
-        bazel run //py:ruff-check
-    fi
+    RUFF="$(bazel run --run_under=echo @multitool//tools/ruff)"
+    RUFF_COMMON=(--config=py/pyproject.toml --exclude '**/node_modules/**' --exclude '**/.bundle/**' --exclude '**/bidi/**' --exclude '**/devtools/**' py scripts common dotnet java javascript rb)
+    echo "    ruff check" >&2
+    # Apply auto-fixable lint issues; don't fail on unfixable violations (caught by py:lint)
+    "$RUFF" check --fix --show-fixes "${RUFF_COMMON[@]}" || true
     echo "    ruff format" >&2
-    bazel run //py:ruff-format
+    "$RUFF" format "${RUFF_COMMON[@]}"
 fi
 
 if changed_matches '^dotnet/'; then

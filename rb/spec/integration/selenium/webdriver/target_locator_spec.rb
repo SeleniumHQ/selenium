@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe TargetLocator, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+    describe TargetLocator, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       before { @original_window = driver.window_handle }
 
       after do
@@ -168,8 +168,8 @@ module Selenium
         end
       end
 
-      context 'with more than two windows', except: [{browser: %i[safari safari_preview]},
-                                                     {driver: :remote, browser: :ie}] do
+      context 'with more than two windows', pending_if: [{browser: %i[safari safari_preview]},
+                                                         {driver: :remote, browser: :ie}] do
         it 'closes current window via block' do
           driver.navigate.to url_for('xhtmlTest.html')
           wait_for_element(link: 'Create a new anonymous window')

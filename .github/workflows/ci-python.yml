@@ -16,12 +16,29 @@ jobs:
       run: |
         bazel build //py:selenium-wheel //py:selenium-sdist
 
-  lint:
-    name: Lint
+  lint-ruff:
+    name: Lint (ruff)
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Lint
-      run: ./go py:lint
+      name: Lint (ruff)
+      run: bazel run //py:ruff-check -- --no-fix
+
+  lint-mypy:
+    name: Lint (mypy)
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Lint (mypy)
+      run: bazel run //py:mypy
+
+  lint-docs:
+    name: Lint (docs)
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Lint (docs)
+      run: |
+        bazel run //py:generate-api-listing
+        bazel run //py:sphinx-autogen
+        bazel build //py:docs
 
   unit-tests:
     name: Unit Tests
@@ -44,7 +61,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Integration Tests Remote
-      browser: yes
+      needs-display: true
       rerun-with-debug: true
       run: |
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
@@ -63,8 +80,24 @@ jobs:
             os: macos
     with:
       name: Integration Tests (${{ matrix.browser }})
-      browser: ${{ matrix.browser }}
+      needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
       run: |
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-${{ matrix.browser }}
+
+  selenium-manager-tests:
+    name: Selenium Manager Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu, windows, macos]
+    with:
+      name: Integration Tests Selenium Manager (${{ matrix.os }})
+      needs-display: true
+      os: ${{ matrix.os }}
+      rerun-with-debug: true
+      run: |
+        bazel test --local_test_jobs 1 --flaky_test_attempts 3 --pin_browsers=false --build_tests_only --test_tag_filters=se-manager //py/...

@@ -2,6 +2,8 @@ name: CI
 
 on:
   pull_request:
+    paths-ignore:
+      - 'docs/decisions/**'
   push:
     branches:
       - trunk
@@ -20,7 +22,7 @@ permissions:
 jobs:
   build-index:
     name: Build Index
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/trunk'
     uses: ./.github/workflows/ci-build-index.yml
 
   check:
@@ -65,7 +67,7 @@ jobs:
       java: ${{ steps.read.outputs.java }}
       grid: ${{ steps.read.outputs.grid }}
       py: ${{ steps.read.outputs.py }}
-      rb: ${{ steps.read.outputs.rb }}
+      rb_targets: ${{ steps.read.outputs.rb_targets }}
       dotnet: ${{ steps.read.outputs.dotnet }}
       rust: ${{ steps.read.outputs.rust }}
     steps:
@@ -86,12 +88,20 @@ jobs:
               echo "$tag=true" >> "$GITHUB_OUTPUT"
             fi
           }
+          process_binding() {
+            local pattern=$1 tag=$2
+            local lang_targets
+            lang_targets=$(echo "$targets" | tr ' ' '\n' | awk -v p="^${pattern}[:/]" '$0 ~ p' | tr '\n' ' ' | sed 's/ *$//')
+            if [ -n "$lang_targets" ]; then
+              echo "${tag}_targets=$lang_targets" >> "$GITHUB_OUTPUT"
+            fi
+          }
           check_binding "//java" "java"
           check_binding "openqa/selenium/grid" "grid"
           check_binding "//py" "py"
-          check_binding "//rb" "rb"
           check_binding "//dotnet" "dotnet"
           check_binding "//rust" "rust"
+          process_binding "//rb" "rb"
   dotnet:
     name: .NET
     needs: read-targets
@@ -120,7 +130,9 @@ jobs:
     name: Ruby
     needs: read-targets
     uses: ./.github/workflows/ci-ruby.yml
-    if: needs.read-targets.outputs.rb != ''
+    if: needs.read-targets.outputs.rb_targets != ''
+    with:
+      targets: ${{ needs.read-targets.outputs.rb_targets }}
 
   rust:
     name: Rust

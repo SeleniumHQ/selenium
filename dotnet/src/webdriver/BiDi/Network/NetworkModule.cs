@@ -206,11 +206,11 @@ internal sealed partial class NetworkModule : Module, INetworkModule
 [JsonSerializable(typeof(SetExtraHeadersParameters))]
 [JsonSerializable(typeof(SetExtraHeadersResult))]
 
-[JsonSerializable(typeof(BeforeRequestSentParameters))]
-[JsonSerializable(typeof(ResponseStartedParameters))]
-[JsonSerializable(typeof(ResponseCompletedParameters))]
-[JsonSerializable(typeof(FetchErrorParameters))]
-[JsonSerializable(typeof(AuthRequiredParameters))]
+[JsonSerializable(typeof(BeforeRequestSentEventArgs))]
+[JsonSerializable(typeof(ResponseStartedEventArgs))]
+[JsonSerializable(typeof(ResponseCompletedEventArgs))]
+[JsonSerializable(typeof(FetchErrorEventArgs))]
+[JsonSerializable(typeof(AuthRequiredEventArgs))]
 
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,

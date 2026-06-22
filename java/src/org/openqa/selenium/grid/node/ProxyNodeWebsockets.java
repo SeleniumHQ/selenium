@@ -20,8 +20,19 @@ package org.openqa.selenium.grid.node;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
+import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -31,18 +42,19 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.netty.server.PostUpgradeHook;
+import org.openqa.selenium.netty.server.WebSocketFrameProxy;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.BinaryMessage;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.CloseMessage;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.Message;
-import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.UrlTemplate;
 import org.openqa.selenium.remote.http.WebSocket;
 
@@ -256,73 +268,13 @@ public class ProxyNodeWebsockets
     AtomicBoolean upstreamClosing = new AtomicBoolean(false);
 
     HttpClient client = clientFactory.createClient(ClientConfig.defaultConfig().baseUri(uri));
+    DirectForwardingListener listener =
+        new DirectForwardingListener(
+            node, sessionConsumer, sessionId, connectionReleased, client, upstreamClosing);
     try {
-      WebSocket upstream =
-          client.openSocket(
-              new HttpRequest(GET, uri.toString()),
-              new ForwardingListener(
-                  node,
-                  downstream,
-                  sessionConsumer,
-                  sessionId,
-                  connectionReleased,
-                  client,
-                  upstreamClosing));
-
-      return (msg) -> {
-        // Fast path: once the browser has signalled close, there is no point sending further
-        // data frames — the JDK WebSocket output is already closing and the send would either
-        // be dropped or throw "Output closed".  For the CloseMessage echo we skip the actual
-        // network write (the JDK stack handles the protocol-level echo internally when it fires
-        // onClose) and go straight to resource cleanup.
-        if (upstreamClosing.get()) {
-          if (msg instanceof CloseMessage) {
-            if (connectionReleased.compareAndSet(false, true)) {
-              node.releaseConnection(sessionId);
-              try {
-                client.close();
-              } catch (Exception e) {
-                LOG.log(Level.FINE, "Failed to close client after upstream close for " + uri, e);
-              }
-            }
-          } else {
-            LOG.log(Level.FINE, "Dropping in-flight data frame for closing session " + sessionId);
-          }
-          return;
-        }
-
-        // Slow path: upstream is (was) open — attempt the send and catch the narrow race where
-        // the browser closes between the upstreamClosing check above and the actual write.
-        try {
-          upstream.send(msg);
-        } catch (Exception e) {
-          LOG.log(
-              Level.FINE,
-              "Could not forward message to browser WebSocket for session "
-                  + sessionId
-                  + " (connection likely closed concurrently)",
-              e);
-          if (connectionReleased.compareAndSet(false, true)) {
-            node.releaseConnection(sessionId);
-            try {
-              client.close();
-            } catch (Exception ce) {
-              LOG.log(Level.FINE, "Failed to close client after send error for " + uri, ce);
-            }
-          }
-          return;
-        }
-        if (msg instanceof CloseMessage) {
-          if (connectionReleased.compareAndSet(false, true)) {
-            node.releaseConnection(sessionId);
-          }
-          try {
-            client.close();
-          } catch (Exception e) {
-            LOG.log(Level.WARNING, "Failed to shutdown the client of " + uri, e);
-          }
-        }
-      };
+      WebSocket upstream = client.openSocket(new HttpRequest(GET, uri.toString()), listener);
+      return new FrameProxyConsumer(
+          upstream, client, listener, node, sessionId, connectionReleased, upstreamClosing);
     } catch (Exception e) {
       LOG.log(Level.WARNING, "Connecting to upstream websocket failed", e);
       client.close();
@@ -330,25 +282,147 @@ public class ProxyNodeWebsockets
     }
   }
 
-  private static class ForwardingListener implements WebSocket.Listener {
+  // ---------------------------------------------------------------------------
+  // Consumer returned to WebSocketUpgradeHandler — also implements PostUpgradeHook
+  // ---------------------------------------------------------------------------
+
+  private static class FrameProxyConsumer implements Consumer<Message>, PostUpgradeHook {
+
+    private final WebSocket upstream;
+    private final HttpClient client;
+    private final DirectForwardingListener listener;
     private final Node node;
-    private final Consumer<Message> downstream;
+    private final SessionId sessionId;
+    private final AtomicBoolean connectionReleased;
+    private final AtomicBoolean upstreamClosing;
+
+    FrameProxyConsumer(
+        WebSocket upstream,
+        HttpClient client,
+        DirectForwardingListener listener,
+        Node node,
+        SessionId sessionId,
+        AtomicBoolean connectionReleased,
+        AtomicBoolean upstreamClosing) {
+      this.upstream = upstream;
+      this.client = client;
+      this.listener = listener;
+      this.node = node;
+      this.sessionId = sessionId;
+      this.connectionReleased = connectionReleased;
+      this.upstreamClosing = upstreamClosing;
+    }
+
+    /**
+     * Called on the Netty IO thread once the client-side handshake has completed. Hand the channel
+     * to the listener (draining any pre-handshake buffer in arrival order), install {@link
+     * WebSocketFrameProxy} so subsequent inbound frames forward to the upstream {@link WebSocket}
+     * without going through the {@code Message} layer, and strip the now-redundant Message-layer
+     * handlers.
+     */
+    @Override
+    public void onUpgradeComplete(ChannelHandlerContext ctx) {
+      Channel ch = ctx.channel();
+      listener.onUpgrade(ch);
+
+      WebSocketFrameProxy proxy = new WebSocketFrameProxy(upstream, upstreamClosing);
+      ChannelPipeline pipeline = ctx.pipeline();
+      pipeline.addBefore("netty-to-se-messages", "frame-proxy", proxy);
+      removeIfPresent(pipeline, "netty-to-se-messages");
+      removeIfPresent(pipeline, "se-to-netty-messages");
+      removeIfPresent(pipeline, "se-websocket-handler");
+    }
+
+    private static void removeIfPresent(ChannelPipeline pipeline, String name) {
+      if (pipeline.get(name) != null) {
+        pipeline.remove(name);
+      }
+    }
+
+    /**
+     * After pipeline rewiring this consumer is only invoked for {@link CloseMessage} (fired by
+     * {@code WebSocketUpgradeHandler} on the close handshake or channel-inactive event). Data
+     * frames are handled directly by {@link WebSocketFrameProxy}.
+     */
+    @Override
+    public void accept(Message msg) {
+      if (upstreamClosing.get()) {
+        if (msg instanceof CloseMessage) {
+          releaseSlotAndCloseClient();
+        }
+        return;
+      }
+      try {
+        upstream.send(msg);
+      } catch (Exception e) {
+        LOG.log(
+            Level.FINE,
+            "Could not forward message to browser WebSocket for session "
+                + sessionId
+                + " (connection likely closed concurrently)",
+            e);
+        releaseSlotAndCloseClient();
+        return;
+      }
+      if (msg instanceof CloseMessage) {
+        releaseSlotAndCloseClient();
+      }
+    }
+
+    private void releaseSlotAndCloseClient() {
+      if (connectionReleased.compareAndSet(false, true)) {
+        node.releaseConnection(sessionId);
+      }
+      try {
+        client.close();
+      } catch (Exception e) {
+        LOG.log(Level.FINE, "Failed to close client", e);
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Listener for browser → client messages (fast path via direct frame writes)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Writes browser-side messages directly to the client {@link Channel} as Netty WebSocket frames,
+   * bypassing the {@code MessageOutboundConverter}. Frames received before {@link
+   * #onUpgrade(Channel)} fires are buffered in arrival order and drained on handover, so a frame
+   * can never land in a pipeline that has already had its Message-layer handlers removed.
+   */
+  static class DirectForwardingListener implements WebSocket.Listener {
+
+    // Bound on the pre-handshake buffer. If the upstream produces more frames than this before
+    // the client-side handshake completes, the buffer is dropped and a 1009 close is recorded
+    // so the channel sees a clean close once the upgrade lands.
+    private static final int MAX_PENDING_FRAMES = 128;
+
+    private final Object lock = new Object();
+    private final Deque<WebSocketFrame> pending = new ArrayDeque<>();
+    private volatile Channel clientChannel;
+    // Pre-handshake terminal state. When closed is true at onUpgrade time, the listener writes
+    // the recorded close frame to the channel and tears it down instead of publishing it for
+    // normal forwarding. Guarded by lock.
+    private boolean closed;
+    private int closeCode;
+    private @Nullable String closeReason;
+
+    private final Node node;
     private final Consumer<SessionId> sessionConsumer;
     private final SessionId sessionId;
     private final AtomicBoolean connectionReleased;
     private final HttpClient client;
     private final AtomicBoolean upstreamClosing;
 
-    public ForwardingListener(
+    DirectForwardingListener(
         Node node,
-        Consumer<Message> downstream,
         Consumer<SessionId> sessionConsumer,
         SessionId sessionId,
         AtomicBoolean connectionReleased,
         HttpClient client,
         AtomicBoolean upstreamClosing) {
-      this.node = node;
-      this.downstream = Objects.requireNonNull(downstream);
+      this.node = Objects.requireNonNull(node);
       this.sessionConsumer = Objects.requireNonNull(sessionConsumer);
       this.sessionId = Objects.requireNonNull(sessionId);
       this.connectionReleased = Objects.requireNonNull(connectionReleased);
@@ -356,46 +430,160 @@ public class ProxyNodeWebsockets
       this.upstreamClosing = Objects.requireNonNull(upstreamClosing);
     }
 
-    @Override
-    public void onBinary(byte[] data) {
-      downstream.accept(new BinaryMessage(data));
-      sessionConsumer.accept(sessionId);
-    }
-
-    @Override
-    public void onClose(int code, String reason) {
-      // Signal the send lambda before forwarding the close downstream so that any data frames
-      // still queued in the Netty pipeline are discarded rather than attempted on a closing stream.
-      upstreamClosing.set(true);
-      downstream.accept(new CloseMessage(code, reason));
-      if (connectionReleased.compareAndSet(false, true)) {
-        node.releaseConnection(sessionId);
-        // Close the HttpClient eagerly so the connection slot is freed even if the client-side
-        // Close echo never arrives (e.g. the client dropped the TCP connection).
-        try {
-          client.close();
-        } catch (Exception e) {
-          LOG.log(Level.FINE, "Failed to close client on upstream WebSocket close", e);
+    /**
+     * Hand the client channel over after the WebSocket upgrade has completed. If the upstream
+     * already closed or errored, write the recorded close frame to the channel and tear it down;
+     * otherwise drain any frames received in the meantime and publish the channel for the fast
+     * path.
+     */
+    void onUpgrade(Channel ch) {
+      boolean terminal;
+      int code;
+      String reason;
+      synchronized (lock) {
+        WebSocketFrame frame;
+        while ((frame = pending.pollFirst()) != null) {
+          ch.writeAndFlush(frame);
         }
+        terminal = closed;
+        code = closeCode;
+        reason = closeReason == null ? "" : closeReason;
+        if (!terminal) {
+          clientChannel = ch;
+        }
+      }
+      if (terminal && ch.isActive()) {
+        ch.writeAndFlush(new CloseWebSocketFrame(code, reason))
+            .addListener(ChannelFutureListener.CLOSE);
       }
     }
 
     @Override
     public void onText(CharSequence data) {
-      downstream.accept(new TextMessage(data));
+      Channel ch = clientChannel;
+      if (ch != null) {
+        WebSocketFrameProxy.writeTextFrame(ch, data);
+      } else {
+        enqueueOrWrite(new TextWebSocketFrame(data.toString()));
+      }
       sessionConsumer.accept(sessionId);
+    }
+
+    @Override
+    public void onBinary(byte[] data) {
+      Channel ch = clientChannel;
+      if (ch != null) {
+        WebSocketFrameProxy.writeBinaryFrame(ch, data);
+      } else {
+        enqueueOrWrite(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(data)));
+      }
+      sessionConsumer.accept(sessionId);
+    }
+
+    private void enqueueOrWrite(WebSocketFrame frame) {
+      boolean overflow = false;
+      Channel ch;
+      synchronized (lock) {
+        ch = clientChannel;
+        if (ch == null) {
+          if (closed) {
+            frame.release();
+            return;
+          }
+          if (pending.size() >= MAX_PENDING_FRAMES) {
+            // Stall protection: drop the buffer and record a 1009 close so the next onUpgrade
+            // closes the client cleanly instead of letting memory grow without bound.
+            frame.release();
+            discardPendingLocked();
+            closed = true;
+            closeCode = 1009;
+            closeReason = "websocket buffer overflow";
+            overflow = true;
+          } else {
+            pending.addLast(frame);
+            return;
+          }
+        }
+      }
+      if (overflow) {
+        upstreamClosing.set(true);
+        LOG.log(
+            Level.WARNING,
+            "Dropping pre-handshake WebSocket buffer for session {0}: exceeded {1} pending"
+                + " frames",
+            new Object[] {sessionId, MAX_PENDING_FRAMES});
+        releaseSlot();
+        return;
+      }
+      ch.writeAndFlush(frame);
+    }
+
+    @Override
+    public void onClose(int code, String reason) {
+      // Signal closing before forwarding the close so any data frames already queued for this
+      // listener are discarded rather than attempted on a closing stream.
+      upstreamClosing.set(true);
+      // The WebSocket spec caps close-frame reasons at 123 bytes UTF-8; truncate so an upstream
+      // sending a longer one cannot break the close frame's encoding.
+      String safeReason = WebSocketFrameProxy.truncateCloseReason(reason);
+      Channel ch = clientChannel;
+      if (ch == null) {
+        synchronized (lock) {
+          ch = clientChannel;
+          if (ch == null) {
+            // Pre-handshake close: drop the buffer so ref-counted frames are released even if
+            // the client-side handshake never lands, and record the code/reason so a late
+            // onUpgrade can still surface a clean close to the client.
+            discardPendingLocked();
+            closed = true;
+            closeCode = code;
+            closeReason = safeReason;
+          }
+        }
+      }
+      if (ch != null && ch.isActive()) {
+        ch.writeAndFlush(new CloseWebSocketFrame(code, safeReason));
+      }
+      releaseSlot();
     }
 
     @Override
     public void onError(Throwable cause) {
       upstreamClosing.set(true);
       LOG.log(Level.WARNING, "Error proxying websocket command", cause);
+      Channel ch = clientChannel;
+      if (ch == null) {
+        synchronized (lock) {
+          ch = clientChannel;
+          if (ch == null) {
+            discardPendingLocked();
+            closed = true;
+            closeCode = 1011;
+            closeReason = "upstream error";
+          }
+        }
+      }
+      if (ch != null && ch.isActive()) {
+        ch.writeAndFlush(new CloseWebSocketFrame(1011, "upstream error"))
+            .addListener(ChannelFutureListener.CLOSE);
+      }
+      releaseSlot();
+    }
+
+    private void discardPendingLocked() {
+      WebSocketFrame frame;
+      while ((frame = pending.pollFirst()) != null) {
+        frame.release();
+      }
+    }
+
+    private void releaseSlot() {
       if (connectionReleased.compareAndSet(false, true)) {
         node.releaseConnection(sessionId);
         try {
           client.close();
         } catch (Exception e) {
-          LOG.log(Level.FINE, "Failed to close client after WebSocket error", e);
+          LOG.log(Level.FINE, "Failed to close client", e);
         }
       }
     }

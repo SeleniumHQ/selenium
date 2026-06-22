@@ -21,8 +21,7 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    describe Script, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
-                     only: {browser: %i[chrome edge firefox]} do
+    describe Script, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
       after { |example| reset_driver!(example: example) }
 
       # Helper to match the expected pattern of `script.StackFrame` objects.

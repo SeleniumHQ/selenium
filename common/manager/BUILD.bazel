@@ -25,10 +25,9 @@ alias(
     }),
 )
 
+# The Rust selenium-manager cannot be built from source on Windows (pending the
+# @llvm toolchain migration)
 alias(
     name = "selenium-manager-windows",
-    actual = select({
-        "//common:use_pinned_browser": "@download_sm_windows//file",
-        "//conditions:default": "//rust:selenium-manager-windows",
-    }),
+    actual = "@download_sm_windows//file",
 )

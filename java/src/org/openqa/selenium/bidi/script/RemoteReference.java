@@ -24,7 +24,9 @@ import static org.openqa.selenium.bidi.script.RemoteReference.Type.SHARED_ID;
 import java.util.Map;
 import java.util.TreeMap;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class RemoteReference extends LocalValue {
   public enum Type {
     HANDLE("handle"),

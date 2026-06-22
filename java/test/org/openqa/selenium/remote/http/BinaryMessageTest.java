@@ -35,4 +35,15 @@ class BinaryMessageTest {
 
     assertThat(message.data()).containsExactly(1, 2, 3, 4);
   }
+
+  @Test
+  void wrapTransfersOwnershipWithoutCopying() {
+    byte[] payload = {9, 8, 7};
+
+    BinaryMessage wrapped = BinaryMessage.wrap(payload);
+
+    // wrap() shares storage with the caller; the constructor still defends with a copy.
+    assertThat(wrapped.data()).isSameAs(payload);
+    assertThat(new BinaryMessage(payload).data()).isNotSameAs(payload);
+  }
 }

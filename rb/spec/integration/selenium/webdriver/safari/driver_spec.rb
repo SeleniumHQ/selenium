@@ -22,8 +22,8 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Safari
-      describe Driver, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'},
-                                   {browser: %i[safari safari_preview]}] do
+      describe Driver, skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'},
+                                     {browser: %i[safari safari_preview]}] do
         it 'gets and sets permissions' do
           driver.permissions = {'getUserMedia' => false}
           expect(driver.permissions).to eq('getUserMedia' => false)
@@ -37,13 +37,13 @@ module Selenium
             Safari.use_technology_preview = nil
           end
 
-          it 'sets before options', exclusive: {browser: :safari_preview} do
+          it 'sets before options', skip_unless: {browser: :safari_preview} do
             Safari.technology_preview!
             local_driver = WebDriver.for :safari
             expect(local_driver.capabilities.browser_name).to eq 'Safari Technology Preview'
           end
 
-          it 'sets after options', exclusive: {browser: :safari_preview} do
+          it 'sets after options', skip_unless: {browser: :safari_preview} do
             options = Options.safari
             Safari.technology_preview!
             local_driver = WebDriver.for :safari, options: options

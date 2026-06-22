@@ -21,7 +21,7 @@
     'readonly': 'readOnly',
   };
 
-  const BOOLEAN_PROPERTIES: string[] = [
+  const BOOLEAN_PROPERTIES: Set<string> = new Set([
     'allowfullscreen',
     'allowpaymentrequest',
     'allowusermedia',
@@ -68,7 +68,7 @@
     'truespeed',
     'typemustmatch',
     'willvalidate',
-  ];
+  ]);
 
   function getAttribute(element: Element, attributeName: string): string | null {
     return element.getAttribute(attributeName.toLowerCase());
@@ -160,14 +160,14 @@
 
   const propName = PROPERTY_ALIASES[name] || attribute;
 
-  if (BOOLEAN_PROPERTIES.indexOf(name) !== -1) {
-    const hasAttr = getAttribute(element, attribute) !== null;
+  if (BOOLEAN_PROPERTIES.has(name)) {
+    const hasAttr = element.getAttribute(name) !== null;
     const propValue = getProperty(element, propName);
     return hasAttr || !!propValue ? 'true' : null;
   }
 
   if (name === 'value' && isElement(element, 'LI')) {
-    const attrValue = getAttribute(element, attribute);
+    const attrValue = element.getAttribute(name);
     return attrValue != null ? attrValue : null;
   }
 
@@ -179,7 +179,7 @@
   }
 
   if (property == null || isObject(property)) {
-    const attrValue = getAttribute(element, attribute);
+    const attrValue = element.getAttribute(name);
     return attrValue != null ? attrValue : null;
   }
 

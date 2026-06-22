@@ -7,9 +7,10 @@ require 'net/http'
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v146:v146.publish
+  //java/src/org/openqa/selenium/devtools/v149:v149.publish
   //java/src/org/openqa/selenium/devtools/v147:v147.publish
   //java/src/org/openqa/selenium/devtools/v148:v148.publish
+  //java/src/org/openqa/selenium/devtools/latest:latest.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
   //java/src/org/openqa/selenium/grid/node/kubernetes:kubernetes.publish
@@ -187,6 +188,22 @@ desc 'Deploy all jars to Maven'
 task :release do |_task, arguments|
   args = arguments.to_a
   nightly = args.delete('nightly')
+
+  unless nightly
+    already_published = begin
+      Rake::Task['java:verify'].invoke
+      true
+    rescue StandardError
+      false
+    ensure
+      Rake::Task['java:verify'].reenable
+    end
+
+    if already_published
+      puts 'Java packages already published — skipping release.'
+      next
+    end
+  end
 
   Rake::Task['java:check_credentials'].invoke(*(nightly ? ['nightly'] : []))
 

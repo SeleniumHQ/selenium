@@ -154,7 +154,10 @@ public class SeleniumManager {
       code = process.exitValue();
       output = process.getOutput(StandardCharsets.UTF_8);
     } catch (Exception e) {
-      throw new WebDriverException("Failed to run command: " + arguments, e);
+      throw new WebDriverException(
+          String.format(
+              "Failed to run command \"%s\" with arguments %s", binary.toAbsolutePath(), arguments),
+          e);
     }
     SeleniumManagerOutput jsonOutput = null;
     JsonException failedToParse = null;
@@ -177,11 +180,16 @@ public class SeleniumManager {
     }
     if (code != 0) {
       throw new WebDriverException(
-          "Command failed with code: " + code + ", executed: " + arguments + "\n" + dump,
+          String.format(
+              "Command failed with code: %d, executed \"%s\" with arguments %s%n%s",
+              code, binary.toAbsolutePath(), arguments, dump),
           failedToParse);
     } else if (failedToParse != null || jsonOutput == null) {
       throw new WebDriverException(
-          "Failed to parse json output, executed: " + arguments + "\n" + dump, failedToParse);
+          String.format(
+              "Failed to parse json output, executed \"%s\" with arguments %s%n%s",
+              binary.toAbsolutePath(), arguments, dump),
+          failedToParse);
     }
     return jsonOutput.getResult();
   }

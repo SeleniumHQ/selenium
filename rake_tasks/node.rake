@@ -69,6 +69,22 @@ task :release do |_task, arguments|
   nightly = args.delete('nightly')
   dry_run = args.delete('dry-run')
 
+  unless nightly || dry_run
+    already_published = begin
+      Rake::Task['node:verify'].invoke
+      true
+    rescue StandardError
+      false
+    ensure
+      Rake::Task['node:verify'].reenable
+    end
+
+    if already_published
+      puts 'Node package already published — skipping release.'
+      next
+    end
+  end
+
   Rake::Task['node:check_credentials'].invoke(*(nightly ? ['nightly'] : [])) unless dry_run
 
   if nightly
@@ -81,7 +97,15 @@ task :release do |_task, arguments|
   target = '//javascript/selenium-webdriver:selenium-webdriver.publish'
   bazel_args = ['--config=release']
   bazel_args += ['--', '--dry-run=true'] if dry_run
-  Bazel.execute('run', bazel_args, target)
+
+  begin
+    Bazel.execute('run', bazel_args, target)
+  rescue RuntimeError => e
+    raise if dry_run
+    raise unless e.message.match?(/cannot publish over the previously published/i)
+
+    puts 'npm package version already published — skipping.'
+  end
 end
 
 desc 'Verify Node package is published on npm'

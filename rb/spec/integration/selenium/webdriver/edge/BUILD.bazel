@@ -17,8 +17,5 @@ rb_integration_test(
     name = "service",
     srcs = ["service_spec.rb"],
     browsers = ["edge"],
-    tags = [
-        "no-grid",
-        "skip-rbe",
-    ],
+    no_grid = True,
 )
