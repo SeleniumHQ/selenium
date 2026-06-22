@@ -103,6 +103,12 @@ await tab.navigate('https://example.com');
 await Promise.all(tabs.map(t => t.navigate(url)));
 ```
 
+```java
+// Java — same semantics, idiomatic shape
+BrowsingContext tab = driver.browsingContext().create(WindowType.TAB);  // -> handle
+tab.navigate("https://example.com", ReadinessState.COMPLETE);
+```
+
 ### User contexts (the isolation unit)
 
 Because a context's user context is fixed at creation (see Context), the isolation unit is the
@@ -142,6 +148,42 @@ uc = driver.browser.create_user_context(proxy=...)   # inherits session opts unl
 a  = uc.create_browsing_context()
 b  = uc.create_browsing_context()                     # same isolated partition
 uc.remove()
+```
+
+### Events are scoped by subscription, not by the user context
+
+A user context isolates storage, cookies, permissions, and proxy — it does **not** isolate event
+delivery. Which events a subscriber receives is decided by the subscription's scope, evaluated at
+the moment the event fires (BiDi `session.subscribe`):
+
+- **global** (no scope) — events from every context in every user context;
+- **`contexts=[…]`** — only those browsing contexts and their descendant frames;
+- **`userContexts=[…]`** — every context in those user contexts, **including ones created later**
+  (membership is checked when the event fires, not snapshotted at subscribe time).
+
+This applies uniformly to `log.*` and `network.*` as to `browsingContext.*`. Consequently an
+`isolated=True` tab does **not** by itself yield isolated logs/network: a global `network`/`log`
+subscription still sees its traffic, and vice versa. To confine log/network events to an isolated
+partition the subscription must be scoped — per tab via the handle (`contexts=[tab]`), or per
+partition via the user context (`userContexts=[uc]`, which also covers future tabs). Bindings
+therefore expose log/network registration on **both** the per-context handle and the user-context
+object, while the bare `network`/`log` module stays global.
+
+```java
+// GLOBAL (default): every context, every user context
+new Network(driver).onBeforeRequestSent(r ->
+    log("[global]    " + r.getRequest().getUrl()));
+
+// PER-TAB: contexts = [tab.getId()] — this context and its frames only
+BrowsingContext tab = driver.browsingContext().create(WindowType.TAB, /* isolated= */ true);
+tab.network().onResponseCompleted(r ->
+    log("[tab]       " + r.getResponseData().getUrl()));
+
+// PER-USER-CONTEXT: userContexts = [profile.getId()] — whole partition, incl. tabs opened later
+UserContext profile = driver.browser().createUserContext();
+profile.network().onBeforeRequestSent(r ->
+    log("[partition] " + r.getRequest().getUrl()));
+profile.createBrowsingContext(WindowType.TAB);   // created after subscribe — still delivered
 ```
 
 ## Considered options
@@ -235,6 +277,13 @@ partition. A user context is a collection of top-level contexts with its own
 storage/cookie/permission/proxy partition, fixed at creation and inherited by child contexts;
 there is **no** command to move a context to a different user context. This is the protocol
 fact that makes the user context the *factory* for its browsing contexts.
+
+Event scoping (verified against the spec, §3.6): a subscription carries a set of *event names*,
+*top-level traversable ids*, and *user context ids*; `session.subscribe` with neither `contexts`
+nor `userContexts` is a global subscription. At event time the remote end returns true if the
+subscription is global, or if the firing navigable's associated user context is in the
+subscription's user context ids — so a `userContexts` subscription covers contexts created later
+in that partition. This is why user contexts isolate storage but not event delivery.
 
 No new wire protocol is required — this decision is about the binding-side object model
 (handles, the `isolated=` shortcut, the user-context factory, session-option inheritance) and
