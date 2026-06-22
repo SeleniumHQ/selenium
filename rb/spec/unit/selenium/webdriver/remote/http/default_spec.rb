@@ -123,6 +123,20 @@ module Selenium
                 expect(http).not_to be_proxy
               end
             end
+
+            it "trims whitespace around entries in #{no_proxy_var}" do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'localhost, example.com') do
+                http = client.send :http
+                expect(http).not_to be_proxy
+              end
+            end
+
+            it "trims leading whitespace on a single entry in #{no_proxy_var}" do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => ' example.com') do
+                http = client.send :http
+                expect(http).not_to be_proxy
+              end
+            end
           end
 
           it 'raises a sane error if a proxy is refusing connections' do
