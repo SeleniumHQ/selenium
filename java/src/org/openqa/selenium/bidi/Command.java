@@ -24,9 +24,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
+@Beta
 public class Command<X> {
 
   private final String method;

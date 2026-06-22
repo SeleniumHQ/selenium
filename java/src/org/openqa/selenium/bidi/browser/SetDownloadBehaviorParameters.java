@@ -23,7 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class SetDownloadBehaviorParameters {
   private final Map<String, @Nullable Object> map = new HashMap<>();
 

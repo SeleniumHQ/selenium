@@ -22,9 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.bidi.script.RemoteReference;
 import org.openqa.selenium.bidi.script.SerializationOptions;
 
+@Beta
 public class LocateNodeParameters {
 
   private final Locator locator;

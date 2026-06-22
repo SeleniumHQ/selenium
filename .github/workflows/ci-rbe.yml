@@ -2,6 +2,8 @@ name: CI - RBE
 
 on:
   pull_request:
+    paths-ignore:
+      - 'docs/decisions/**'
   push:
     branches:
       - trunk

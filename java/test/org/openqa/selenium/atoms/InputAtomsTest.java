@@ -23,7 +23,7 @@ import java.io.IOException;
 import org.htmlunit.corejs.javascript.Context;
 import org.htmlunit.corejs.javascript.ContextAction;
 import org.htmlunit.corejs.javascript.ContextFactory;
-import org.htmlunit.corejs.javascript.ScriptableObject;
+import org.htmlunit.corejs.javascript.TopLevel;
 import org.junit.jupiter.api.Test;
 
 /** Sanity tests against the //javascript/webdriver/atoms:inputs target. */
@@ -37,7 +37,7 @@ class InputAtomsTest {
     ContextFactory.getGlobal()
         .call(
             new ContextAction<>() {
-              private ScriptableObject global;
+              private TopLevel global;
 
               @Override
               public Object run(Context context) {

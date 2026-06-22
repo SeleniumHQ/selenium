@@ -18,12 +18,14 @@
 package org.openqa.selenium.bidi.network;
 
 import java.util.Map;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 /**
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#type-network-Header">BiDi spec</a>
  */
+@Beta
 public class Header {
   private final String name;
   private final BytesValue value;

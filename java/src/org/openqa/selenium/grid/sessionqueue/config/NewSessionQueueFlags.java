@@ -86,6 +86,18 @@ public class NewSessionQueueFlags implements HasRoles {
   @ConfigValue(section = SESSION_QUEUE_SECTION, name = "sessionqueue-batch-size", example = "20")
   private int batchSize = DEFAULT_BATCH_SIZE;
 
+  @Parameter(
+      names = {"--sessionqueue-backend-url"},
+      description =
+          "Backend datastore URL for the SessionQueue implementation."
+              + " Used by Redis-backed and other external implementations loaded via --ext."
+              + " Example: redis://localhost:6379")
+  @ConfigValue(
+      section = SESSION_QUEUE_SECTION,
+      name = "backend-url",
+      example = "\"redis://localhost:6379\"")
+  private String backendUrl;
+
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(SESSION_QUEUE_ROLE);

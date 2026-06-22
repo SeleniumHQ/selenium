@@ -157,11 +157,11 @@ module Selenium
         end
       end
 
-      describe '#double_click' do
+      describe '#double_click', skip_if: {browser: %i[safari safari_preview]} do
         # https://issues.chromium.org/issues/400087471
         before { reset_driver! if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome }
 
-        it 'presses pointer twice', skip_if: {browser: %i[safari safari_preview]} do
+        it 'presses pointer twice' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 

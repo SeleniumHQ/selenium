@@ -2,6 +2,8 @@ name: CI
 
 on:
   pull_request:
+    paths-ignore:
+      - 'docs/decisions/**'
   push:
     branches:
       - trunk

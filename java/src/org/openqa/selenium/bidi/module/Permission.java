@@ -20,6 +20,7 @@ package org.openqa.selenium.bidi.module;
 import java.util.HashMap;
 import java.util.Map;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
@@ -27,6 +28,7 @@ import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.permissions.PermissionState;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public class Permission {
 
   private final BiDi bidi;

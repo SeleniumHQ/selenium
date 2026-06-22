@@ -19,10 +19,12 @@ package org.openqa.selenium.bidi.script;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
+@Beta
 public class NodeProperties {
   public enum Mode {
     OPEN("open"),

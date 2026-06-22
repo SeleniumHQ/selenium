@@ -20,10 +20,12 @@ package org.openqa.selenium.bidi.script;
 import java.util.Map;
 import java.util.TreeMap;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 
 /**
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#type-script-ChannelValue">BiDi spec</a>
  */
+@Beta
 public class ChannelValue extends LocalValue {
 
   private final String channelId;

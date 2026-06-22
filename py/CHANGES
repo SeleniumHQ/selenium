@@ -1,3 +1,12 @@
+Selenium 4.45.0
+* Support CDP versions: v147, v148, v149
+* Allow MAX_WS_MESSAGE_SIZE to be configurable (#17581)
+* Extract feature-specific modules from //py:common  (#17606)
+* [build] use pinned browser and driver for starting grid in python and ruby tests (#17610)
+* Extract alert and color into dedicated libraries  (#17611)
+* [bidi]: close BiDi websocket on `quit()` (#17663)
+* terminate driver service process when start() fails to connect (#17651)
+
 Selenium 4.44.0
 * Support CDP versions: v146, v147, v148
 * CDDL 2 Python generator (#16914)

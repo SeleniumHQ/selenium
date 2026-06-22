@@ -16,9 +16,11 @@
 // under the License.
 package org.openqa.selenium.bidi.script;
 
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
+@Beta
 public class WindowProxyProperties {
 
   private final String browsingContext;

@@ -12,7 +12,10 @@ py_binary(
     name = "merge_cddl",
     srcs = ["merge_cddl.py"],
     legacy_create_init = False,
-    visibility = ["//py:__pkg__"],
+    visibility = [
+        "//javascript/selenium-webdriver:__pkg__",
+        "//py:__pkg__",
+    ],
 )
 
 py_binary(
