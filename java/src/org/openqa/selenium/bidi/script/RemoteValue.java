@@ -26,11 +26,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
+@Beta
 public class RemoteValue {
 
   public enum Type {

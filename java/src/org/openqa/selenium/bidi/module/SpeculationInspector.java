@@ -22,6 +22,7 @@ import static java.util.Collections.emptySet;
 import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Event;
@@ -30,6 +31,7 @@ import org.openqa.selenium.bidi.speculation.PrefetchStatusUpdatedParameters;
 import org.openqa.selenium.bidi.speculation.Speculation;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public class SpeculationInspector implements AutoCloseable {
   private final Event<PrefetchStatusUpdatedParameters> prefetchStatusUpdatedEvent;
   private final Set<String> browsingContextIds;

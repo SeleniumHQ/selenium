@@ -18,11 +18,13 @@ package org.openqa.selenium.bidi.storage;
 
 import java.util.Map;
 import java.util.Optional;
+import org.openqa.selenium.Beta;
 
 /**
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-storagesetcookieparameters">BiDi
  *     spec</a>
  */
+@Beta
 public class SetCookieParameters {
   private final PartialCookie cookie;
   private final Optional<PartitionDescriptor> partitionDescriptor;

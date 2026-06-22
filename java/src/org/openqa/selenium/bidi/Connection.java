@@ -45,6 +45,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
@@ -55,6 +56,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.WebSocket;
 
+@Beta
 public class Connection implements Closeable {
 
   private static final Logger LOG = Logger.getLogger(Connection.class.getName());

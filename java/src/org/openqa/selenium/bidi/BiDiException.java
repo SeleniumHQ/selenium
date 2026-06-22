@@ -18,8 +18,10 @@
 package org.openqa.selenium.bidi;
 
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 
+@Beta
 public class BiDiException extends WebDriverException {
 
   public BiDiException(Throwable cause) {

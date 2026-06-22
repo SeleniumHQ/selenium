@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
@@ -29,6 +30,7 @@ import org.openqa.selenium.bidi.browser.ClientWindowInfo;
 import org.openqa.selenium.bidi.browser.SetDownloadBehaviorParameters;
 import org.openqa.selenium.json.JsonInput;
 
+@Beta
 public class Browser {
   private final BiDi bidi;
 

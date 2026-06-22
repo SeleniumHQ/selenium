@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
@@ -39,6 +40,7 @@ import org.openqa.selenium.bidi.network.ProvideResponseParameters;
 import org.openqa.selenium.bidi.network.ResponseDetails;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public class Network implements AutoCloseable {
 
   private final Set<String> browsingContextIds;

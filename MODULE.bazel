@@ -39,7 +39,7 @@ bazel_dep(name = "rules_pkg", version = "1.2.0")
 bazel_dep(name = "rules_python", version = "1.9.0")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.26.0")
-bazel_dep(name = "rules_rs", version = "0.0.90")
+bazel_dep(name = "rules_rs", version = "0.0.92")
 
 single_version_override(
     module_name = "rules_jvm_external",

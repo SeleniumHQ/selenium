@@ -19,6 +19,7 @@ package org.openqa.selenium.bidi.network;
 
 import java.io.StringReader;
 import java.util.Map;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
@@ -26,6 +27,7 @@ import org.openqa.selenium.json.JsonInput;
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#event-network-beforeSendRequest">BiDi
  *     spec</a>
  */
+@Beta
 public class BeforeRequestSent extends BaseParameters {
   private static final Json JSON = new Json();
 
