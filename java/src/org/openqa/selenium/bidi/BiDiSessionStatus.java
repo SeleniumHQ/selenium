@@ -17,12 +17,14 @@
 
 package org.openqa.selenium.bidi;
 
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 /**
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#command-session-status">BiDi spec</a>
  */
+@Beta
 public class BiDiSessionStatus {
 
   private final boolean ready;

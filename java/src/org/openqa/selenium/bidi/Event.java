@@ -19,8 +19,10 @@ package org.openqa.selenium.bidi;
 
 import java.util.Map;
 import java.util.function.Function;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public class Event<X> {
 
   private final String method;

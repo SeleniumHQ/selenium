@@ -108,15 +108,22 @@ class Service(ABC):
         self._start_process(self._path)
 
         count = 0
-        while True:
-            self.assert_process_still_running()
-            if self.is_connectable():
-                break
-            # sleep increasing: 0.01, 0.06, 0.11, 0.16, 0.21, 0.26, 0.31, 0.36, 0.41, 0.46, 0.5
-            sleep(min(0.01 + 0.05 * count, 0.5))
-            count += 1
-            if count == 70:
-                raise WebDriverException(f"Can not connect to the Service {self._path}")
+        try:
+            while True:
+                self.assert_process_still_running()
+                if self.is_connectable():
+                    break
+                # sleep increasing: 0.01, 0.06, 0.11, 0.16, 0.21, 0.26, 0.31, 0.36, 0.41, 0.46, 0.5
+                sleep(min(0.01 + 0.05 * count, 0.5))
+                count += 1
+                if count == 70:
+                    raise WebDriverException(f"Can not connect to the Service {self._path}")
+        except BaseException:
+            try:
+                self.stop()
+            except Exception:
+                logger.error("Error stopping service after a failed start.", exc_info=True)
+            raise
 
     def assert_process_still_running(self) -> None:
         """Check if the underlying process is still running."""
@@ -137,8 +144,8 @@ class Service(ABC):
     def send_remote_shutdown_command(self) -> None:
         """Dispatch an HTTP request to the shutdown endpoint to stop the service."""
         try:
-            request.urlopen(f"{self.service_url}/shutdown")
-        except URLError:
+            request.urlopen(f"{self.service_url}/shutdown", timeout=10)
+        except (URLError, TimeoutError):
             return
 
         for _ in range(30):

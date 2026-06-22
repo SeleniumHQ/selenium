@@ -17,12 +17,14 @@
 
 package org.openqa.selenium.bidi.log;
 
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 /**
  * @see <a href="https://w3c.github.io/webdriver-bidi/#type-script-StackFrame">BiDi spec</a>
  */
+@Beta
 public class StackFrame {
 
   private final String url;

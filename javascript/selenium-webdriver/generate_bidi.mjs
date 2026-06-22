@@ -16,23 +16,13 @@
 // under the License.
 
 /**
- * Generate TypeScript WebDriver BiDi bindings from a merged CDDL specification.
+ * Generate the shared WebDriver BiDi artifacts and TypeScript bindings from a
+ * merged CDDL spec, as a three-stage pipeline — one stage per invocation:
  *
- * Two-pass generation:
- *   Pass 1 — cddl2ts produces TypeScript interfaces from the CDDL AST.
- *             Post-processing deduplicates repeated declarations and
- *             replaces `any` with `unknown`.
- *   Pass 2 — The raw AST is walked to identify commands (groups with a
- *             `method` literal and `params` but no `type: "event"`) and
- *             events (same but with `type: "event"`). One implementation
- *             class per BiDi domain is emitted.
- *
- * Usage:
- *   node generate_bidi.mjs \
- *     --cddl merged.cddl \
- *     --output-dir bidi/generated/ \
- *     [--enhancements private/bidi_enhancements_manifest.json] \
- *     [--spec-version 1.0]
+ *   1. parse     --cddl <f>  --dump-ast <f>                 CDDL → AST
+ *   2. model     --ast  <f>  --dump-model <f>               AST → command/event model
+ *   3. generate  --ast  <f>  --model <f>  --output-dir <d>  AST + model → one TS module per domain
+ *                  [--enhancements <f>] [--spec-version <v>]
  */
 
 import { parse } from 'cddl'
@@ -155,58 +145,76 @@ async function main() {
   const { values: args } = parseArgs({
     options: {
       cddl: { type: 'string' },
+      ast: { type: 'string' },
+      model: { type: 'string' },
+      'dump-ast': { type: 'string' },
+      'dump-model': { type: 'string' },
       enhancements: { type: 'string' },
       'output-dir': { type: 'string' },
       'spec-version': { type: 'string', default: '1.0' },
     },
   })
 
-  if (!args.cddl || !args['output-dir']) {
-    console.error('Usage: node generate_bidi.mjs --cddl <file> --output-dir <dir>')
+  // One pipeline stage per invocation; the flags select the stage.
+  if (args['dump-ast'] && args.cddl) {
+    writeJson(args['dump-ast'], parseCddl(args.cddl), 'ast')
+  } else if (args['dump-model'] && args.ast) {
+    writeJson(args['dump-model'], buildModel(readJson(args.ast, 'AST')), 'model', true)
+  } else if (args['output-dir'] && args.ast && args.model) {
+    generateTypeScript(readJson(args.ast, 'AST'), readJson(args.model, 'model'), args)
+  } else {
+    console.error(
+      'Usage (one stage per invocation):\n' +
+        '  generate_bidi.mjs --cddl <file> --dump-ast <file>\n' +
+        '  generate_bidi.mjs --ast <file> --dump-model <file>\n' +
+        '  generate_bidi.mjs --ast <file> --model <file> --output-dir <dir> [--enhancements <file>] [--spec-version <v>]',
+    )
     process.exit(1)
   }
+}
 
-  // When running inside a Bazel js_run_binary action, the js_binary wrapper
-  // chdir()s to BAZEL_BINDIR (bazel-out/<config>/bin) before executing the
-  // script. $(location …) args are relative to the execroot and therefore
-  // already include the BAZEL_BINDIR prefix. Strip that prefix so the path is
-  // relative to the CWD (= BAZEL_BINDIR), then resolve normally.
-  // The --output-dir arg is passed as <pkg>/<rel_path>, which is already
-  // relative to BAZEL_BINDIR (= CWD), so it needs no special handling.
-  const cddlPath = resolveInputPath(args.cddl)
+function parseCddl(cddlArg) {
+  const cddlPath = resolveInputPath(cddlArg)
   if (!existsSync(cddlPath)) {
     console.error(`Error: CDDL file not found: ${cddlPath}`)
     process.exit(1)
   }
-  const outputDir = resolve(args['output-dir'])
-  const specVersion = args['spec-version']
-
-  const enhancements = loadEnhancements(args.enhancements)
-
   console.log(`Parsing CDDL: ${cddlPath}`)
   const ast = parse(cddlPath)
   console.log(`  ${ast.length} top-level definitions`)
+  return ast
+}
 
-  // Pass 1: types
+function readJson(fileArg, label) {
+  const path = resolveInputPath(fileArg)
+  if (!existsSync(path)) {
+    console.error(`Error: ${label} file not found: ${path}`)
+    process.exit(1)
+  }
+  return JSON.parse(readFileSync(path, 'utf8'))
+}
+
+function writeJson(fileArg, data, label, pretty = false) {
+  const out = resolve(fileArg)
+  writeFileSync(out, pretty ? JSON.stringify(data, null, 2) + '\n' : JSON.stringify(data), 'utf8')
+  console.log(`  → ${out} (${label})`)
+}
+
+/** Emit one TS module per domain: types from the AST (cddl2ts), methods from the model. */
+function generateTypeScript(ast, model, args) {
+  const outputDir = resolve(args['output-dir'])
+  const specVersion = args['spec-version']
+  const enhancements = loadEnhancements(args.enhancements)
+
   console.log('Pass 1: generating types via cddl2ts…')
   const rawTypes = transform(ast)
   const cleanTypes = postProcessTypes(rawTypes)
   const typesByDomain = splitTypesByDomain(cleanTypes)
-
-  // Build a set of all exported type/interface names across all domains.
-  // Used by generateCommandMethod to detect when a result type doesn't exist
-  // in the generated output and should be treated as void.
-  const allGeneratedTypeNames = buildAllTypeNames(typesByDomain)
-
-  // Build a map from type name to its domain for cross-domain import generation.
   const typeNameToDomain = buildTypeNameToDomainMap(typesByDomain)
 
-  // Pass 2: implementations
-  console.log('Pass 2: extracting commands and events from AST…')
-  const emptyParamTypes = buildEmptyParamTypes(ast)
-  const emptyResultTypes = buildEmptyResultTypes(cleanTypes)
-  const allCommands = extractCommands(ast, emptyParamTypes)
-  const allEvents = extractEvents(ast)
+  console.log('Pass 2: building commands and events from model…')
+  const allCommands = modelToCommands(model)
+  const allEvents = modelToEvents(model)
   console.log(`  ${allCommands.length} commands, ${allEvents.length} events`)
 
   mkdirSync(outputDir, { recursive: true })
@@ -226,8 +234,6 @@ async function main() {
       events,
       enhancement,
       specVersion,
-      emptyResultTypes,
-      allGeneratedTypeNames,
       typeNameToDomain,
     })
 
@@ -415,18 +421,6 @@ function buildEmptyParamTypes(ast) {
 }
 
 /**
- * Returns the set of result type names that are aliases for EmptyResult.
- */
-function buildEmptyResultTypes(cleanTypes) {
-  const empty = new Set()
-  for (const line of cleanTypes.split('\n')) {
-    const m = line.match(/^export type (\w+Result) = EmptyResult;/)
-    if (m) empty.add(m[1])
-  }
-  return empty
-}
-
-/**
  * Convert a dotted CDDL name to PascalCase TypeScript name.
  * "browsingContext.Info" → "BrowsingContextInfo"
  */
@@ -512,10 +506,8 @@ function buildDefMap(ast) {
   return map
 }
 
-/**
- * Extract command/event details from a leaf definition name.
- */
-function parseLeafDef(defName, def, emptyParamTypes) {
+/** Extract {domain, methodStr, operationName, paramsCddl} from a command/event leaf def. */
+function parseLeafDef(def) {
   const flatProps = (def.Properties ?? []).flatMap((p) => (Array.isArray(p) ? p : [p]))
 
   const methodProp = flatProps.find((p) => p.Name === 'method')
@@ -534,12 +526,12 @@ function parseLeafDef(defName, def, emptyParamTypes) {
   const domain = METHOD_DOMAIN_MAP[domainRaw] ?? 'common'
 
   const paramsTypeEntries = Array.isArray(paramsProp.Type) ? paramsProp.Type : [paramsProp.Type]
-  let paramsTypeName = null
+  let paramsCddl = null
   if (paramsTypeEntries[0]?.Type === 'group' && paramsTypeEntries[0]?.Value) {
-    paramsTypeName = normalizeDottedName(paramsTypeEntries[0].Value)
+    paramsCddl = paramsTypeEntries[0].Value
   }
 
-  return { domain, methodStr, operationName, paramsTypeName }
+  return { domain, methodStr, operationName, paramsCddl }
 }
 
 /**
@@ -567,12 +559,10 @@ function collectAllMembers(defMap, rootSuffix) {
   return members
 }
 
-/**
- * Extract all BiDi command definitions by traversing CommandData and
- * extension-spec XxxCommand unions.
- */
-function extractCommands(ast, emptyParamTypes) {
+/** Extract all BiDi commands by traversing CommandData and extension XxxCommand unions. */
+function extractCommands(ast) {
   const defMap = buildDefMap(ast)
+  const emptyParamTypes = buildEmptyParamTypes(ast)
   const commandNames = collectAllMembers(defMap, 'Command')
   const commands = []
 
@@ -580,31 +570,27 @@ function extractCommands(ast, emptyParamTypes) {
     const def = defMap.get(name)
     if (!def) continue
 
-    const parsed = parseLeafDef(name, def, emptyParamTypes)
+    const parsed = parseLeafDef(def)
     if (!parsed) continue
 
-    const { domain, methodStr, operationName: methodName, paramsTypeName } = parsed
-    const normalizedName = normalizeDottedName(name)
-    const hasParams = paramsTypeName !== null && !emptyParamTypes.has(paramsTypeName)
+    const { domain, methodStr, operationName: methodName, paramsCddl } = parsed
+    // emptyParamTypes holds raw CDDL group names, so compare the raw name (not the normalized one).
+    const hasParams = paramsCddl !== null && !emptyParamTypes.has(paramsCddl)
 
     commands.push({
       domain,
-      name: normalizedName,
+      cddlName: name,
       methodStr,
       methodName,
-      paramsTypeName,
+      paramsCddl,
       hasParams,
-      resultTypeName: normalizedName + 'Result',
     })
   }
 
   return commands
 }
 
-/**
- * Extract all BiDi event definitions by traversing EventData and
- * extension-spec XxxEvent unions.
- */
+/** Extract all BiDi events by traversing EventData and extension XxxEvent unions. */
 function extractEvents(ast) {
   const defMap = buildDefMap(ast)
   const eventNames = collectAllMembers(defMap, 'Event')
@@ -614,22 +600,107 @@ function extractEvents(ast) {
     const def = defMap.get(name)
     if (!def) continue
 
-    const parsed = parseLeafDef(name, def, new Set())
+    const parsed = parseLeafDef(def)
     if (!parsed) continue
 
-    const { domain, methodStr, operationName: eventName, paramsTypeName } = parsed
-    const onMethodName = 'on' + eventName.charAt(0).toUpperCase() + eventName.slice(1)
+    const { domain, methodStr, operationName: eventName, paramsCddl } = parsed
 
     events.push({
       domain,
-      name: normalizeDottedName(name),
       methodStr,
       eventName,
-      paramsTypeName,
-      onMethodName,
+      paramsCddl,
     })
   }
 
+  return events
+}
+
+// ============================================================
+// Binding-neutral model
+// ============================================================
+
+/**
+ * Build the binding-neutral model from the AST. Type refs are CDDL names.
+ * Shape per domain key:
+ *   { commands: [{ method, name, params, result }],
+ *     events:   [{ method, name, params }] }
+ * `params`/`result` are null when there are no params / no return value.
+ */
+function buildModel(ast) {
+  const model = {}
+  const resultTypes = buildResultTypeNames(ast)
+  const ensure = (domain) => (model[domain] ??= { commands: [], events: [] })
+
+  for (const c of extractCommands(ast)) {
+    const result = c.cddlName + 'Result'
+    ensure(c.domain).commands.push({
+      method: c.methodStr,
+      name: c.methodName,
+      params: c.hasParams ? c.paramsCddl : null,
+      result: resultTypes.has(result) ? result : null,
+    })
+  }
+
+  for (const e of extractEvents(ast)) {
+    ensure(e.domain).events.push({
+      method: e.methodStr,
+      name: e.eventName,
+      params: e.paramsCddl || null,
+    })
+  }
+
+  return model
+}
+
+/** Result type names the spec defines with a value; an absent or `EmptyResult`-aliased result is void. */
+function buildResultTypeNames(ast) {
+  const emptyAlias = new Set()
+  for (const d of ast) {
+    const pt = d.PropertyType
+    if (d.Name && d.Type === 'variable' && Array.isArray(pt) && pt.length === 1 && pt[0]?.Value === 'EmptyResult') {
+      emptyAlias.add(d.Name)
+    }
+  }
+  const names = new Set()
+  for (const d of ast) {
+    if (d.Name && d.Name.endsWith('Result') && !emptyAlias.has(d.Name)) names.add(d.Name)
+  }
+  return names
+}
+
+/** Map model commands to the generator's command-entry shape. */
+function modelToCommands(model) {
+  const commands = []
+  for (const [domain, entry] of Object.entries(model)) {
+    for (const c of entry.commands) {
+      commands.push({
+        domain,
+        methodStr: c.method,
+        methodName: c.name,
+        paramsTypeName: c.params !== null ? normalizeDottedName(c.params) : null,
+        hasParams: c.params !== null,
+        resultTypeName: c.result !== null ? normalizeDottedName(c.result) : null,
+      })
+    }
+  }
+  return commands
+}
+
+/** Map model events to the generator's event-entry shape. */
+function modelToEvents(model) {
+  const events = []
+  for (const [domain, entry] of Object.entries(model)) {
+    for (const e of entry.events) {
+      events.push({
+        domain,
+        methodStr: e.method,
+        eventName: e.name,
+        paramsTypeName: e.params !== null ? normalizeDottedName(e.params) : null,
+        onMethodName: 'on' + e.name.charAt(0).toUpperCase() + e.name.slice(1),
+      })
+    }
+  }
   return events
 }
 
@@ -658,21 +729,6 @@ const LICENSE_HEADER = `\
 // ============================================================
 // Type-map helpers for cross-domain import generation
 // ============================================================
-
-/**
- * Returns a Set of all exported type/interface names across every domain.
- * Used to detect when a result type doesn't exist in the generated output.
- */
-function buildAllTypeNames(typesByDomain) {
-  const names = new Set()
-  for (const typeBlock of Object.values(typesByDomain)) {
-    for (const line of typeBlock.split('\n')) {
-      const m = line.match(/^export (?:type|interface) (\w+)/)
-      if (m) names.add(m[1])
-    }
-  }
-  return names
-}
 
 /**
  * Returns a Map from exported type name → domain key.
@@ -733,8 +789,6 @@ function generateDomainFile({
   events,
   enhancement,
   specVersion,
-  emptyResultTypes,
-  allGeneratedTypeNames,
   typeNameToDomain,
 }) {
   const parts = [LICENSE_HEADER, '']
@@ -799,8 +853,6 @@ function generateDomainFile({
         commands: filteredCommands,
         events: filteredEvents,
         enhancement,
-        emptyResultTypes,
-        allGeneratedTypeNames,
       }),
     )
   }
@@ -837,7 +889,7 @@ function filterExcludedTypes(typeBlock, excludeTypes) {
   return output.join('\n').trimEnd()
 }
 
-function generateClass({ className, commands, events, enhancement, emptyResultTypes, allGeneratedTypeNames }) {
+function generateClass({ className, commands, events, enhancement }) {
   const lines = []
 
   lines.push(`export class ${className} {`)
@@ -857,7 +909,7 @@ function generateClass({ className, commands, events, enhancement, emptyResultTy
   for (const cmd of commands) {
     const override = enhancement.extraMethods?.[cmd.methodName]
     lines.push('')
-    lines.push(override ?? generateCommandMethod(cmd, emptyResultTypes, allGeneratedTypeNames))
+    lines.push(override ?? generateCommandMethod(cmd))
   }
 
   for (const evt of events) {
@@ -881,12 +933,9 @@ function generateClass({ className, commands, events, enhancement, emptyResultTy
   return lines.join('\n')
 }
 
-function generateCommandMethod(cmd, emptyResultTypes, allGeneratedTypeNames) {
+function generateCommandMethod(cmd) {
   const { methodName, methodStr, paramsTypeName, hasParams, resultTypeName } = cmd
-  // Treat as void when the result type is an EmptyResult alias OR when the
-  // result type doesn't appear anywhere in the generated output (e.g. the CDDL
-  // spec lists no explicit result type for this command).
-  const isVoid = emptyResultTypes.has(resultTypeName) || !allGeneratedTypeNames.has(resultTypeName)
+  const isVoid = resultTypeName === null
   const returnType = isVoid ? 'void' : resultTypeName
 
   // Use a double-cast (T as unknown as Record<string,unknown>) so TypeScript

@@ -20,7 +20,7 @@ use crate::config::OS::WINDOWS;
 use crate::{Command, Logger, MACOS, format_one_arg, run_shell_command};
 use anyhow::Error;
 use anyhow::anyhow;
-use apple_flat_package::PkgReader;
+use apple_flat_package::{ComponentPackageReader, PkgReader};
 use bzip2::read::BzDecoder;
 use directories::BaseDirs;
 use flate2::read::GzDecoder;
@@ -206,11 +206,74 @@ pub fn move_folder_content(source: &str, target: &Path, log: &Logger) -> Result<
     Ok(())
 }
 
+const PBZX_MAGIC: [u8; 4] = *b"pbzx";
+const XZ_MAGIC: [u8; 6] = [0xfd, 0x37, 0x7a, 0x58, 0x5a, 0x00];
+
+/// Decode a `pbzx` stream into the raw cpio archive it wraps.
+///
+/// `pbzx` is Apple's block-based container used for newer `.pkg` Payloads. It
+/// consists of a `pbzx` magic, an 8-byte flags field, then a sequence of chunks
+/// each prefixed by its big-endian decompressed and compressed sizes. A chunk is
+/// xz-compressed unless its bytes are stored verbatim.
+fn decode_pbzx(data: &[u8]) -> Result<Vec<u8>, Error> {
+    let mut cursor = Cursor::new(data);
+    let mut magic = [0u8; 4];
+    cursor.read_exact(&mut magic)?;
+    if magic != PBZX_MAGIC {
+        return Err(anyhow!("Payload is not a pbzx stream"));
+    }
+    // The 8-byte flags field is not needed to walk the chunks.
+    cursor.read_exact(&mut [0u8; 8])?;
+
+    let mut output = Vec::new();
+    let mut sizes = [0u8; 8];
+    loop {
+        match cursor.read_exact(&mut sizes) {
+            Ok(()) => {}
+            Err(err) if err.kind() == io::ErrorKind::UnexpectedEof => break,
+            Err(err) => return Err(err.into()),
+        }
+        // Decompressed size is recorded but not required to read the chunk.
+        cursor.read_exact(&mut sizes)?;
+        let compressed_size = u64::from_be_bytes(sizes) as usize;
+        let mut chunk = vec![0u8; compressed_size];
+        cursor.read_exact(&mut chunk)?;
+
+        if chunk.len() >= XZ_MAGIC.len() && chunk[..XZ_MAGIC.len()] == XZ_MAGIC {
+            XzDecoder::new(&chunk[..]).read_to_end(&mut output)?;
+        } else {
+            output.extend_from_slice(&chunk);
+        }
+    }
+    Ok(output)
+}
+
 pub fn uncompress_pkg(compressed_file: &str, target: &Path, log: &Logger) -> Result<(), Error> {
     let target_path = Path::new(target);
-    let mut reader = PkgReader::new(File::open(compressed_file)?)?;
-    let packages = reader.component_packages()?;
-    let package = packages.first().ok_or(anyhow!("Unable to extract PKG"))?;
+    let mut xar = PkgReader::new(File::open(compressed_file)?)?.into_inner();
+
+    let payload_path = xar
+        .files()?
+        .into_iter()
+        .map(|(name, _)| name)
+        .find(|name| name == "Payload" || name.ends_with("/Payload"))
+        .ok_or(anyhow!("Unable to extract PKG: no Payload found"))?;
+    let payload = xar
+        .get_file_data_from_path(&payload_path)?
+        .ok_or(anyhow!("Unable to extract PKG: empty Payload"))?;
+
+    // Newer macOS packages (e.g. Firefox beta) wrap the cpio Payload in the pbzx
+    // format, which apple-flat-package cannot decode. Unwrap pbzx to the raw cpio
+    // stream; gzip and uncompressed payloads are handled by payload_reader as-is.
+    let payload = if payload.len() >= PBZX_MAGIC.len() && payload[..PBZX_MAGIC.len()] == PBZX_MAGIC
+    {
+        log.trace("Decoding pbzx-compressed Payload".to_string());
+        decode_pbzx(&payload)?
+    } else {
+        payload
+    };
+
+    let package = ComponentPackageReader::from_file_data(None, None, Some(payload), None)?;
     if let Some(mut cpio_reader) = package.payload_reader()? {
         while let Some(next) = cpio_reader.next() {
             let entry = next?;
@@ -694,5 +757,65 @@ pub fn get_win_file_version(file_path: &str) -> Option<String> {
         let product_version = String::from_utf16_lossy(product_version_slice);
 
         Some(product_version.trim_end_matches('\0').to_string())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{PBZX_MAGIC, decode_pbzx};
+    use std::io::Write;
+    use xz2::write::XzEncoder;
+
+    fn xz_compress(data: &[u8]) -> Vec<u8> {
+        let mut encoder = XzEncoder::new(Vec::new(), 6);
+        encoder.write_all(data).unwrap();
+        encoder.finish().unwrap()
+    }
+
+    fn build_pbzx(chunks: &[&[u8]]) -> Vec<u8> {
+        let mut out = Vec::new();
+        out.extend_from_slice(&PBZX_MAGIC);
+        out.extend_from_slice(&0x0100_0000u64.to_be_bytes()); // flags
+        for chunk in chunks {
+            // Decompressed size is informational for our decoder; the chunk
+            // length and content (xz magic or not) drive decoding.
+            out.extend_from_slice(&(chunk.len() as u64).to_be_bytes());
+            out.extend_from_slice(&(chunk.len() as u64).to_be_bytes());
+            out.extend_from_slice(chunk);
+        }
+        out
+    }
+
+    #[test]
+    fn decode_pbzx_reads_stored_chunk() {
+        let payload = b"raw cpio bytes that are not xz compressed";
+        let pbzx = build_pbzx(&[payload]);
+
+        assert_eq!(decode_pbzx(&pbzx).unwrap(), payload);
+    }
+
+    #[test]
+    fn decode_pbzx_decompresses_xz_chunk() {
+        let original = b"070707cpio-like payload contents repeated repeated repeated";
+        let compressed = xz_compress(original);
+        let pbzx = build_pbzx(&[&compressed]);
+
+        assert_eq!(decode_pbzx(&pbzx).unwrap(), original);
+    }
+
+    #[test]
+    fn decode_pbzx_concatenates_multiple_chunks() {
+        let first = b"first-chunk-stored".to_vec();
+        let second = xz_compress(b"second-chunk-xz-compressed");
+        let pbzx = build_pbzx(&[&first, &second]);
+
+        let mut expected = first.clone();
+        expected.extend_from_slice(b"second-chunk-xz-compressed");
+        assert_eq!(decode_pbzx(&pbzx).unwrap(), expected);
+    }
+
+    #[test]
+    fn decode_pbzx_rejects_non_pbzx_input() {
+        assert!(decode_pbzx(b"\x1f\x8b\x08not a pbzx stream").is_err());
     }
 }
