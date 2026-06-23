@@ -1,7 +1,6 @@
-# Network handler behavior
+# 17685. Network handlers dispose of events without waiting for other handlers
 
 - Status: Proposed
-- Date: 2026-06-15
 - Discussion: [#17685](https://github.com/SeleniumHQ/selenium/pull/17685)
 
 ## Context
@@ -11,13 +10,24 @@ can disagree: the company framework always adds a test header, the local suite s
 to a domain, and one test aborts a single call. Selenium must resolve that and provide a single
 response to the browser in a consistent and obvious way.
 
-The TLC discussed these ideas in a design document (by @p0deje). That document included
-prescribed implementation details that this ADR is avoiding, to focus on the user-facing
-behaviors we want rather than what needs to be implemented to achieve them.
+The bindings diverge today: each grew its handler API independently, so dispatch order,
+multi-handler resolution, error handling, and what an event exposes are all inconsistent.
+
+| Binding    | Current behavior |
+|------------|------------------|
+| Java       | Only the first matching handler runs; disposition is always continue; a throwing handler propagates and leaves the request blocked; return-value driven; no response handler or managed body collection. |
+| Python     | An explicit `continue` in a handler fires immediately and wins; otherwise staged outcomes reconcile by `fail` > `provide_response` > `continue`; response handlers have no `fail`; dispatch is FIFO; a throwing handler's staged mutations are still sent; only the mutated event is visible; body is not collected behind the handler. |
+| Ruby       | Handlers run in parallel threads, so multi-handler disposition races; exceptions are logged; dispatch is FIFO with no default-continue; only the mutated event is visible; body collection is user-managed. |
+| .NET       | No request or response handler API. |
+| JavaScript | No request or response handler API. |
 
 ## Decision
 
-This applies to request and response handlers, but not authentication handlers, since
+Selenium consults network handlers one at a time and lets each dispose of the event as it runs:
+the first handler to specify a disposition (fail, respond, or submit) resolves the event and
+stops the chain, while a handler that only stages mutations passes the event to the next one.
+Selenium does not gather every handler's outcome and reconcile it at the end. The behaviors
+below apply to request and response handlers, but not authentication handlers, since
 authentication should not use a callable.
 
 Note that there are multiple ways to implement these behaviors; the code examples are one
@@ -116,37 +126,20 @@ network.add_request_handler { |r| raise if r.request.headers.include?("X-Test") 
 network.add_request_handler { |r| r.add_header("X-Test", true) }
 ```
 
-7. **A handler can set a complete status.** Allow the user to specify how the handler is disposed
-   of by acting on the object provided to the callable. Marking complete stores the value of the
-   event in the calling class and calls `submit` on the event and unregisters the handler.
-  * Playwright supports `page.unroute` within the route lambda, but getting the event's value at
-    that stage requires a lot more boilerplate.
-  * The user doesn't need to create external atomic/thread-safe data structures to obtain the
-    "final" value of the event.
-  * Selenium doesn't need to include additional methods for waiting or expectations as part of
-    the API.
-
-```ruby
-handle = network.add_request_handler { |r| r.complete if condition }
-do_the_thing_that_completes
-completed_request = network.get_completed_request(handle)
-```
-
-8. **Data collection is the handler's responsibility.** Reading an event's body requires a data
-   collector; the handler registers it, retrieves the data, and tears it down as necessary.
-   The body is available on the event, and is included in the captured value of a completed event
-   (behavior 7).
-  * The user never calls `addDataCollector` / `getData` or manages a collector's lifecycle, size
-    cap, or browser-support quirks.
+7. **Body data is collected only when the handler opts in at registration.** A body is not
+   available by default; the handler declares that it needs the body when it is registered — not
+   from inside the callback, since the collector must be in place before the event — and Selenium
+   then owns the collector's lifecycle, size cap, and browser-support quirks. The body is readable
+   on the event inside that handler.
+  * The user never calls `addDataCollector` / `getData` or tears a collector down.
   * There is no way to collect or read body data outside a handler; collection happens only
     through `add_x_handler`.
   * Playwright exposes bodies through its response object without a user-managed collector;
     Selenium does the same, owning the collector behind the handler.
-  * Whether collection is always-on or opt-in can be a separate decision
 
 ```ruby
-# The response body is available on the event; the collector is managed for you
-network.add_response_handler { |r| log(r.body) }
+# Declare body collection at registration; the body is then available on the event
+network.add_response_handler(collect_body: true) { |r| log(r.body) }
 ```
 
 ## Considered options
@@ -176,55 +169,16 @@ network.add_response_handler { |r| log(r.body) }
     - We could only expose the modified event, or only the original, instead of both.
     - We could provide a separate observation API like Playwright, but even when mutating it could
       make sense to evaluate a conditional from the original event rather than the mutated one.
-- **Complete status (7).**
-    - We could require external thread-safe data structures for capture.
-    - We could require all handler management to go through the Network class and be managed
-      directly by the user, but this would require us to add significant additional methods and
-      boilerplate.
-- **Data collection (8).**
+- **Data collection (7).**
+    - We could collect every body always, but bodies are large and most handlers never read them,
+      so collection is opt-in at registration instead.
     - We could require the user to manage the data collector directly through the low-level
       commands, but collection has no meaning outside a handler and would push lifecycle,
       size-cap, and browser-support bookkeeping onto the user.
 
 ## Consequences
 
-- Together, these let a test override shared handlers locally and resolve a request its own way,
-  keep a broken handler contained, and keep the original event readable.
-
-## Binding status
-
-| Binding    | Status  | Notes |
-|------------|---------|-------|
-| Java       | pending | tbd   |
-| Python     | pending | tbd   |
-| Ruby       | pending | tbd   |
-| .NET       | pending | tbd   |
-| JavaScript | pending | tbd   |
-
-## Appendix
-
-### Possible Implementation
-
-The behaviors in this ADR explicitly do not specify an implementation. For illustrative
-purposes, this code — with state stored in the request wrapper object and evaluated after
-execution inside the loop — will satisfy the above behaviors:
-
-```ruby
-def process_request(request)
-  @handlers.reverse_each do |h|
-    h.call(request)
-    if request.complete?
-      h.request = request
-      remove_handler(h)
-    end
-    if request.failed?
-      return fail_request(request)
-    elsif request.response?
-      return provide_response(request)
-    elsif request.submit? || request.complete?
-      return continue_request(request)
-    end
-  end
-  continue_request(request)
-end
-```
+- Client code can override shared handlers locally and resolve a request its own way, a broken
+  handler stays contained, and the original event remains readable.
+- This changes handler behavior that several bindings already ship, so it is not backwards
+  compatible.
