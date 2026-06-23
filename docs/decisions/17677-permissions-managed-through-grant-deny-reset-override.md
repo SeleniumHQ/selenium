@@ -25,6 +25,10 @@ For comparison, Playwright offers `grant_permissions([...], origin=...)` and a b
 `clear_permissions()` — no `deny` (denied is the browser default), no per-permission
 reset, and no scoped temporary override. The proposal below is intentionally a superset.
 
+In the layering of [17709](17709-bidi-api-layering.md) this is a **Layer 2** decision: an
+explicit BiDi module. Permissions have no Classic equivalent, so there is no Layer 1 surface to
+sit beside or route through — it is purely additive BiDi surface for users who reach for it.
+
 ## Decision
 
 Bindings expose, on the permissions module, convenience methods over
