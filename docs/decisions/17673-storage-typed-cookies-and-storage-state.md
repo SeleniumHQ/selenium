@@ -24,6 +24,12 @@ Two forces are in tension. Cookies are fully covered by the BiDi protocol. But
 requires running script (`script.evaluate`) in each origin. A storage-state feature must
 be honest about that split rather than implying protocol support it does not have.
 
+In the layering of [17709](17709-bidi-api-layering.md) this is a **Layer 2** decision: an
+explicit BiDi module offered *beside* the Classic cookie API (`driver.manage().addCookie()`,
+which stays the Layer 1 surface and may itself become BiDi-backed), not a replacement for it.
+It earns first-class surface because it does things the Classic API cannot express —
+`storage_state` save/restore and partition-scoped cookies (a specific user context).
+
 ## Decision
 
 Bindings expose two cohesive storage conveniences:
