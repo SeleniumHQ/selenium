@@ -35,7 +35,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
-import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.HasAuthentication;
@@ -54,7 +53,6 @@ import org.openqa.selenium.devtools.CdpVersionFinder;
 import org.openqa.selenium.devtools.Connection;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
-import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.logging.EventType;
@@ -162,22 +160,7 @@ public class ChromiumDriver extends RemoteWebDriver
     }
 
     CdpInfo cdpInfo =
-        new CdpVersionFinder()
-            .match(originalCapabilities.getBrowserVersion())
-            .orElseGet(
-                () -> {
-                  LOG.warning(
-                      String.format(
-                          "Unable to find version of CDP to use for %s. You may need to include a"
-                              + " dependency on a specific version of the CDP using something"
-                              + " similar to `org.seleniumhq.selenium:selenium-devtools-v86:%s`"
-                              + " where the version (\"v86\") matches the version of the"
-                              + " chromium-based browser you're using and the version number of the"
-                              + " artifact is the same as Selenium's.",
-                          originalCapabilities.getBrowserVersion(),
-                          new BuildInfo().getReleaseLabel()));
-                  return new NoOpCdpInfo();
-                });
+        new CdpVersionFinder().findMatchingVersion(originalCapabilities.getBrowserVersion());
 
     devTools = connection.map(conn -> new DevTools(cdpInfo::getDomains, conn));
 
