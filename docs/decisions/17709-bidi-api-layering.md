@@ -1,8 +1,8 @@
-# 0010. BiDi is exposed in three layers: a Classic-compatible surface, explicit BiDi modules, and raw protocol
+# 17709. BiDi is exposed in three layers: a Classic-compatible surface, explicit BiDi modules, and raw protocol
 
 - Status: Proposed
 - Date: 2026-06-23
-- Discussion: <!-- PR link; file renames to the PR number on open -->
+- Discussion: https://github.com/SeleniumHQ/selenium/pull/17709
 
 ## Context
 
