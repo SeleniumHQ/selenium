@@ -528,6 +528,7 @@ pub trait SeleniumManager {
                         && !self.get_browser_version().eq(&discovered_version)
                     {
                         if !original_browser_path.is_empty() {
+                            self.set_fallback_driver_from_cache(false);
                             return Err(anyhow!(format!(
                                 "The browser at {} has version {} but {} {} was requested; \
                                  remove --browser-path to allow a browser download",
@@ -582,6 +583,7 @@ pub trait SeleniumManager {
                                 major_browser_version,
                             ));
                             if !original_browser_path.is_empty() {
+                                self.set_fallback_driver_from_cache(false);
                                 return Err(anyhow!(format!(
                                     "The browser at {} has version {} but {} {} was requested; \
                                      remove --browser-path to allow a browser download",
