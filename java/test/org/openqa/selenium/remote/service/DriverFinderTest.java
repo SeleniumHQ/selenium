@@ -250,8 +250,7 @@ class DriverFinderTest {
     verify(seleniumManager, times(1)).getBinaryPaths(arguments);
     verifyNoMoreInteractions(seleniumManager);
   }
-    
-    
+
   @SuppressWarnings("unchecked")
   void electronOptionsPassesElectronBrowserNameToSeleniumManager() throws IOException {
     when(service.getExecutable()).thenReturn(null);
