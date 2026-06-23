@@ -35,6 +35,8 @@ module Selenium
 
       MAX_LOG_MESSAGE_SIZE: Integer
 
+      MAX_FRAME_SIZE: Integer
+
       def initialize: (url: String) -> void
 
       def add_callback: (untyped event) { () -> void } -> Integer
