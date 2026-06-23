@@ -41,15 +41,16 @@ suite(function (env) {
 
 ```shell
 bazel test //javascript/selenium-webdriver:small-tests  # Unit tests (no browser)
-bazel test //javascript/selenium-webdriver:all  # All tests
+bazel test //javascript/selenium-webdriver/...  # All tests
 
-# Specific browser tests
-bazel test //javascript/selenium-webdriver:element-finding-test-chrome
-bazel test //javascript/selenium-webdriver:element-finding-test-firefox
+# Per-file browser targets are named test-<file>-<browser>; discover exact names with:
+# bazel query //javascript/selenium-webdriver:all | grep element-finding
+bazel test //javascript/selenium-webdriver:test-element-finding-test.js-chrome
+bazel test //javascript/selenium-webdriver:test-element-finding-test.js-firefox
 
 # Additional Arguments
-bazel test //javascript/selenium-webdriver:... --flaky_test_attempts=3
-bazel test //javascript/selenium-webdriver:... --test_output=all
+bazel test //javascript/selenium-webdriver/... --flaky_test_attempts=3
+bazel test //javascript/selenium-webdriver/... --test_output=all
 ```
 
 ## Skipping Tests

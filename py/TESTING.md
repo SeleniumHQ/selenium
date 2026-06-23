@@ -10,6 +10,9 @@ This guide helps contributors write tests in the Selenium Python codebase.
 * Assertions use standard pytest `assert` statements.
 
 ```python
+import pytest
+from selenium.webdriver.common.by import By
+
 def test_element_is_displayed(driver, pages):
     pages.load("javascriptPage.html")
 
@@ -31,13 +34,14 @@ bazel test //py/...  # All tests
 bazel test //py:unit  # Unit tests (no browser)
 bazel test //py:test-chrome  # Chrome browser tests
 bazel test //py:test-firefox  # Firefox browser tests
-bazel test //py:common-chrome  # Common tests with Chrome
+bazel test //py:test-chrome-common  # Common (cross-browser) tests with Chrome
 
-# A single test file with Chrome:
-bazel test //py:common-chrome-test/selenium/webdriver/common/alerts_tests.py
+# A single test file with Chrome (target = test/<path>/<file>-<browser>[-variant]).
+# Discover exact names with: bazel query //py:all | grep window_tests
+bazel test //py:test/selenium/webdriver/common/window_tests-chrome
 
 # With BiDi protocol
-bazel test //py:common-chrome-bidi
+bazel test //py:test-chrome-bidi
 
 # Test filters
 bazel test //py/... --test_tag_filters=chrome
@@ -49,7 +53,7 @@ bazel test //py/... --test_output=streamed  # Live output for debugging
 bazel test //py:test-chrome --headless
 
 # Run a specific test in a test file
-bazel test //py:common-chrome-bidi-test/selenium/webdriver/common/bidi_browsing_context_tests.py \
+bazel test //py:test/selenium/webdriver/common/bidi_browsing_context_tests-chrome-bidi \
   --test_arg=-k \
   --test_arg=test_get_tree_with_child \
 
