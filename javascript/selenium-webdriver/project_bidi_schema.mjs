@@ -23,8 +23,11 @@
  *
  *   type node:  { kind: 'record', fields: [field] }
  *             | { kind: 'enum',   values: [string] }
- *             | { kind: 'union',  variants: [ref] }
+ *             | { kind: 'union',  variants: [ref], selector }
  *             | { kind: 'alias',  type }
+ *   selector:   { by, variants: [{ value, ref }], default? }   // discriminated
+ *             | { ordered: [{ ref, requires: [key] }] }        // structural, spec order
+ *             | { correlated: true }                           // resolved by request id, not the payload
  *   field:      { name, wire, required, type }
  *   type ref:   { primitive } | { const } | { ref } | { enum } | { list } | { map, extensible? } | { union }
  *
@@ -147,8 +150,14 @@ function projectType(def) {
   if (def.Type === 'variable') {
     const pt = def.PropertyType ?? []
     if (pt.length && pt.every(isLiteral)) return { kind: 'enum', values: pt.map((e) => e.Value) }
-    if (pt.length > 1 && pt.every(isRef)) return { kind: 'union', variants: pt.map((e) => e.Value) }
-    return { kind: 'alias', type: projectRef(def.PropertyType) }
+    // A union of refs is a union even when some arms are inline groups wrapping a
+    // ref (e.g. script.LocalValue's date/regexp arms): projectRef resolves those to
+    // refs, so promote the all-ref result to a first-class union (it gets a selector)
+    // rather than leaving it an alias-to-union the bindings would have to re-detect.
+    const projected = projectRef(def.PropertyType)
+    if (projected.union?.every((m) => m.ref) && !projected.nullable)
+      return { kind: 'union', variants: projected.union.map((m) => m.ref) }
+    return { kind: 'alias', type: projected }
   }
   if (def.Type === 'group') {
     const refs = unionMemberRefs(def)
@@ -189,6 +198,127 @@ function projectRecord(def) {
 
 const typeRef = (name) => (name ? { ref: name } : null)
 
+// Resolve a union member to its leaf record names, following nested unions and
+// single-ref aliases. Every BiDi union bottoms out in records, so this is total.
+function unionLeaves(ref, types, seen = new Set()) {
+  if (seen.has(ref)) return []
+  seen.add(ref)
+  const t = types[ref]
+  if (!t) return []
+  if (t.kind === 'record') return [ref]
+  if (t.kind === 'union') return t.variants.flatMap((v) => unionLeaves(v, types, seen))
+  if (t.kind === 'alias' && t.type?.ref) return unionLeaves(t.type.ref, types, seen)
+  return []
+}
+
+// The constant value a record pins on wire key `k`, as `{ value }` (a string or
+// `null`), or `{ open: true }` when the field exists but is not constant (a base
+// type acting as the catch-all, e.g. log.GenericLogEntry.type), or null when the
+// key is absent.
+function discriminatorValue(rec, k) {
+  const f = rec.fields.find((x) => x.name === k)
+  if (!f) return null
+  if (f.type.const !== undefined) return { value: f.type.const }
+  if (f.type.primitive === 'null') return { value: null }
+  return { open: true }
+}
+
+// What an immediate union member contributes to a discriminator on `key`:
+//   { tagged: [{ value, ref }] } — it (or, for a sub-union, each of its leaves)
+//      pins a constant value on `key`; a clean tagged sub-union is flattened up.
+//   { default: ref } — it carries no `key` (e.g. RemoteReference inside LocalValue)
+//      or an open base type on `key` (e.g. log.GenericLogEntry): the catch-all.
+//   null — it neither tags cleanly nor defaults cleanly, so `key` is not a usable
+//      discriminator for this union.
+function tagContribution(ref, key, types) {
+  const t = types[ref]
+  if (!t) return null
+  if (t.kind === 'alias' && t.type?.ref) return tagContribution(t.type.ref, key, types)
+  if (t.kind === 'record') {
+    const d = discriminatorValue(t, key)
+    if (!d || d.open) return { default: ref }
+    return { tagged: [{ value: d.value, ref }] }
+  }
+  if (t.kind === 'union') {
+    const leaves = unionLeaves(ref, types)
+    const ds = leaves.map((l) => discriminatorValue(types[l], key))
+    if (ds.every((d) => d?.value !== undefined))
+      return { tagged: leaves.map((l, i) => ({ value: ds[i].value, ref: l })) }
+    if (ds.every((d) => d === null)) return { default: ref } // a whole sub-union with no `key` at all
+    return null
+  }
+  return null
+}
+
+/**
+ * Derive how a wire payload selects one variant of a union, so every binding runs
+ * the same dispatch instead of re-deriving it (and silently depending on emit
+ * order). Two shapes:
+ *   { by, variants: [{ value, ref }], default? } — a discriminated union: look up
+ *     payload[by] among `variants` (value is a string or null), else `default`.
+ *     `default` may itself be a union (e.g. LocalValue's untyped RemoteReference
+ *     arm), whose own selector finishes the dispatch.
+ *   { ordered: [{ ref, requires }] } — a structural union with no shared
+ *     discriminator: the first variant whose `requires` keys are all present wins.
+ *     Order is the CDDL choice order (the spec's priority), made explicit here.
+ */
+function unionSelector(name, types) {
+  const variants = types[name].variants
+  const constKeys = new Set()
+  for (const leaf of variants.flatMap((v) => unionLeaves(v, types)))
+    for (const f of types[leaf].fields)
+      if (discriminatorValue(types[leaf], f.name)?.value !== undefined) constKeys.add(f.name)
+
+  for (const key of constKeys) {
+    const contributions = variants.map((v) => tagContribution(v, key, types))
+    if (contributions.some((c) => c === null)) continue // some member can't be placed on this key
+    const tagged = contributions.flatMap((c) => c.tagged ?? [])
+    const defaults = contributions.filter((c) => c.default).map((c) => c.default)
+    if (defaults.length > 1 || tagged.length === 0) continue // ambiguous catch-all, or nothing to tag
+    const values = tagged.map((e) => JSON.stringify(e.value))
+    if (new Set(values).size !== values.length) continue // values collide — not a clean tag
+    const selector = { by: key, variants: tagged }
+    if (defaults.length === 1) selector.default = defaults[0]
+    return selector
+  }
+
+  // No shared discriminator: dispatch by required-field presence, in spec order.
+  return {
+    ordered: variants.map((ref) => {
+      const t = types[ref]
+      const requires = t?.kind === 'record' ? t.fields.filter((f) => f.required).map((f) => f.name) : []
+      return { ref, requires }
+    }),
+  }
+}
+
+// The command-result hierarchy is dispatched by request id, not by inspecting the
+// payload (a response is matched to the command that produced it), so those unions
+// must not carry a payload selector. They can't be found from the model alone —
+// void commands record `result: null`, erasing whole result unions (e.g. every
+// emulation result) — so identify them structurally: starting from the union(s) a
+// `result` field points at (the response envelope's grouping), walk the variant
+// tree, marking each union that has no payload discriminator. The discriminator
+// guard stops the walk at a result that IS payload-dispatched (e.g.
+// script.EvaluateResult on `type`, or a RemoteValue reached through a result),
+// leaving its selector intact. Requires provisional selectors to already be set.
+function correlatedUnions(types) {
+  const roots = new Set()
+  for (const t of Object.values(types))
+    if (t.kind === 'record')
+      for (const f of t.fields)
+        if (f.name === 'result' && f.type.ref && types[f.type.ref]?.kind === 'union') roots.add(f.type.ref)
+  const correlated = new Set()
+  const mark = (name) => {
+    const t = types[name]
+    if (!t || t.kind !== 'union' || correlated.has(name) || t.selector?.by) return
+    correlated.add(name)
+    t.variants.forEach(mark)
+  }
+  roots.forEach(mark)
+  return correlated
+}
+
 /**
  * Build the flat, binding-neutral schema from the raw AST and command/event model.
  * @param {object[]} ast The parsed CDDL AST (array of definition nodes).
@@ -211,6 +341,11 @@ export function projectSchema(ast, model) {
     }
     types[def.Name] = node
   }
+  for (const [name, node] of Object.entries(types))
+    if (node.kind === 'union') node.selector = unionSelector(name, types)
+  // Override the result-grouping unions: they are dispatched by request id, so a
+  // payload selector for them is meaningless (and would be empty/ambiguous).
+  for (const name of correlatedUnions(types)) types[name].selector = { correlated: true }
 
   const commands = []
   const events = []
@@ -291,9 +426,70 @@ export function checkSchema(schema) {
       if (node.map) report(`${name}.*`, node.map)
     } else if (node.kind === 'union') {
       for (const v of node.variants) if (!has(v)) errors.push(`${name}: unresolved variant ${v}`)
+      errors.push(...checkSelector(name, node.selector, has))
     } else if (node.kind === 'alias') {
       report(name, node.type)
     }
+  }
+
+  // A `correlated` union is resolved by request id, which only holds at the command
+  // response position. If one is reachable anywhere else — a non-`result` field, a
+  // map/list/nested element, an alias, or a variant of a non-correlated union — it
+  // would actually need payload dispatch, and marking it correlated silently drops
+  // its selector. Fail closed so a future misclassification cannot ship.
+  const correlated = new Set(
+    Object.entries(schema.types)
+      .filter(([, t]) => t.kind === 'union' && t.selector?.correlated)
+      .map(([n]) => n),
+  )
+  const leak = (where, r) =>
+    errors.push(`${where}: correlated union ${r} is reachable as a value (needs a payload selector)`)
+  for (const [name, node] of Object.entries(schema.types)) {
+    if (node.kind === 'record') {
+      for (const f of node.fields)
+        for (const r of refsIn(f.type))
+          if (correlated.has(r) && !(f.name === 'result' && f.type.ref === r)) leak(`${name}.${f.name}`, r)
+      if (node.map) for (const r of refsIn(node.map)) if (correlated.has(r)) leak(`${name}.*`, r)
+    } else if (node.kind === 'union' && !node.selector?.correlated) {
+      for (const v of node.variants) if (correlated.has(v)) leak(name, v)
+    } else if (node.kind === 'alias') {
+      for (const r of refsIn(node.type)) if (correlated.has(r)) leak(name, r)
+    }
+  }
+  return errors
+}
+
+// Validate a union's selector: every referenced variant resolves, a discriminated
+// selector has distinct values and at most one default, a structural selector
+// dispatches on something. Keeps a malformed selector from shipping silently.
+function checkSelector(name, selector, has) {
+  const errors = []
+  if (!selector) return [`${name}: union has no selector`]
+  if (selector.correlated) return [] // resolved by request id, not the payload — nothing to dispatch
+  if (selector.by) {
+    const values = selector.variants.map((v) => JSON.stringify(v.value))
+    if (new Set(values).size !== values.length) errors.push(`${name}: selector has duplicate discriminator values`)
+    for (const v of selector.variants)
+      if (!has(v.ref)) errors.push(`${name}: selector variant ${v.ref} does not resolve`)
+    if (selector.default && !has(selector.default))
+      errors.push(`${name}: selector default ${selector.default} does not resolve`)
+  } else if (selector.ordered) {
+    // A structural selector must actually dispatch from the payload: every arm needs
+    // a distinguishing required field, and no arm's `requires` may be a subset of a
+    // later arm's — that would shadow the later arm under first-match. A union that
+    // cannot satisfy this is not payload-dispatchable and must be `correlated`.
+    selector.ordered.forEach((v, i) => {
+      if (!has(v.ref)) errors.push(`${name}: selector variant ${v.ref} does not resolve`)
+      if (!v.requires.length)
+        errors.push(`${name}: structural selector arm ${v.ref} has no required fields to dispatch on`)
+      for (let j = i + 1; j < selector.ordered.length; j++) {
+        const w = selector.ordered[j]
+        if (v.requires.length && w.requires.length && v.requires.every((k) => w.requires.includes(k)))
+          errors.push(`${name}: structural selector arm ${v.ref} shadows ${w.ref} (requires is a subset)`)
+      }
+    })
+  } else {
+    errors.push(`${name}: selector is neither discriminated, structural, nor correlated`)
   }
   return errors
 }

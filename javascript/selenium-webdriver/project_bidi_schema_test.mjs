@@ -111,8 +111,17 @@ describe('projectType (list / union / alias defs)', () => {
   it('projects a top-level array def as an alias to a list (keeps the element type)', () => {
     assert.deepEqual(schema.types['x.Items'], { kind: 'alias', type: { list: { ref: 'x.Item' } } })
   })
-  it('projects a multi-member choice group as a union of its refs', () => {
-    assert.deepEqual(schema.types['x.Choice'], { kind: 'union', variants: ['x.Item', 'x.Other'] })
+  it('projects a multi-member choice group as a union with a structural selector', () => {
+    assert.deepEqual(schema.types['x.Choice'], {
+      kind: 'union',
+      variants: ['x.Item', 'x.Other'],
+      selector: {
+        ordered: [
+          { ref: 'x.Item', requires: ['a'] },
+          { ref: 'x.Other', requires: ['b'] },
+        ],
+      },
+    })
   })
   it('projects a single-member dispatch choice group as an alias to its ref', () => {
     assert.deepEqual(schema.types['x.FooEvent'], { kind: 'alias', type: { ref: 'x.Item' } })
@@ -149,7 +158,7 @@ describe('projectType (list / union / alias defs)', () => {
     assert.deepEqual(s.types['x.R'].fields[0].type, { ref: 'x.Inner' })
   })
 
-  it('resolves a union arm that is an inline group wrapping a ref (LocalValue date/regexp arms)', () => {
+  it('promotes a union whose arms are inline groups wrapping refs (LocalValue date/regexp arms)', () => {
     const inlineArm = {
       Type: 'group',
       Name: '',
@@ -163,7 +172,104 @@ describe('projectType (list / union / alias defs)', () => {
       ],
       {},
     )
-    assert.deepEqual(s.types['x.U'], { kind: 'alias', type: { union: [{ ref: 'x.A' }, { ref: 'x.B' }] } })
+    // The inline-group arm resolves to x.B, so x.U is a first-class union (not an
+    // alias-to-union) and both arms are reachable variants.
+    assert.deepEqual(s.types['x.U'].kind, 'union')
+    assert.deepEqual(s.types['x.U'].variants, ['x.A', 'x.B'])
+  })
+})
+
+describe('unionSelector', () => {
+  const recAst = (name, typeConst, extra = []) => ({
+    Type: 'group',
+    Name: name,
+    IsChoiceAddition: false,
+    Comments: [],
+    Properties: [{ Name: 'type', Occurrence: { n: 1, m: 1 }, Type: [lit(typeConst)], Comments: [] }, ...extra],
+  })
+  const union = (name, refs) => ({
+    Type: 'variable',
+    Name: name,
+    IsChoiceAddition: false,
+    Comments: [],
+    PropertyType: refs.map(ref),
+  })
+
+  it('discriminates on a constant key, flattening a tagged sub-union and recording an untyped default', () => {
+    // x.Value = ( x.Prim / x.Date / x.Reference ); x.Prim is itself type-tagged,
+    // x.Reference has no `type` (dispatched structurally) → it is the default.
+    const ast = [
+      union('x.Value', ['x.Prim', 'x.Date', 'x.Reference']),
+      union('x.Prim', ['x.StringValue', 'x.NullValue']),
+      recAst('x.StringValue', 'string'),
+      { ...recAst('x.NullValue', null), Properties: [field('type', ['null'])] },
+      recAst('x.Date', 'date'),
+      group('x.Reference', [field('refId', ['text'])]),
+    ]
+    const sel = projectSchema(ast, {}).types['x.Value'].selector
+    assert.equal(sel.by, 'type')
+    assert.equal(sel.default, 'x.Reference')
+    assert.deepEqual(
+      new Map(sel.variants.map((v) => [JSON.stringify(v.value), v.ref])),
+      new Map([
+        ['"string"', 'x.StringValue'],
+        ['null', 'x.NullValue'],
+        ['"date"', 'x.Date'],
+      ]),
+    )
+  })
+
+  it('uses an open base-type arm as the discriminator default (log.Entry shape)', () => {
+    const ast = [
+      union('x.Entry', ['x.Generic', 'x.Console']),
+      group('x.Generic', [field('type', ['text'])]), // open `type` → catch-all
+      recAst('x.Console', 'console'),
+    ]
+    const sel = projectSchema(ast, {}).types['x.Entry'].selector
+    assert.equal(sel.by, 'type')
+    assert.equal(sel.default, 'x.Generic')
+    assert.deepEqual(sel.variants, [{ value: 'console', ref: 'x.Console' }])
+  })
+
+  it('falls back to an ordered structural selector when no shared discriminator exists', () => {
+    const ast = [
+      union('x.Ref', ['x.Shared', 'x.Remote']),
+      group('x.Shared', [
+        field('sharedId', ['text']),
+        { Name: 'handle', Occurrence: { n: 0, m: 1 }, Type: ['text'], Comments: [] },
+      ]),
+      group('x.Remote', [field('handle', ['text'])]),
+    ]
+    const sel = projectSchema(ast, {}).types['x.Ref'].selector
+    assert.deepEqual(sel, {
+      ordered: [
+        { ref: 'x.Shared', requires: ['sharedId'] },
+        { ref: 'x.Remote', requires: ['handle'] },
+      ],
+    })
+  })
+
+  it('marks a result-grouping union (reached via a `result` field, no discriminator) as correlated', () => {
+    // CommandResponse.result -> x.ResultData (a union of result records with no
+    // shared discriminator): dispatched by request id, so it carries no selector.
+    const ast = [
+      group('x.CommandResponse', [field('result', [ref('x.ResultData')])]),
+      union('x.ResultData', ['x.FooResult', 'x.BarResult']),
+      group('x.FooResult', [field('foo', ['text'])]),
+      group('x.BarResult', [field('bar', ['text'])]),
+    ]
+    assert.deepEqual(projectSchema(ast, {}).types['x.ResultData'].selector, { correlated: true })
+  })
+
+  it('does not mark a discriminated result reached via `result` as correlated (e.g. EvaluateResult)', () => {
+    const ast = [
+      group('x.CommandResponse', [field('result', [ref('x.EvalResult')])]),
+      union('x.EvalResult', ['x.Success', 'x.Failure']),
+      recAst('x.Success', 'success'),
+      recAst('x.Failure', 'exception'),
+    ]
+    const sel = projectSchema(ast, {}).types['x.EvalResult'].selector
+    assert.equal(sel.by, 'type') // payload-dispatched, selector preserved
   })
 })
 
@@ -268,5 +374,104 @@ describe('checkSchema (referential integrity)', () => {
       },
     }
     assert.deepEqual(checkSchema(schema), ['x.U: projected an empty inline record (dropped type reference)'])
+  })
+
+  it('rejects a structural selector whose arm shadows a later arm (subset requires)', () => {
+    const schema = {
+      schemaVersion: 1,
+      commands: [],
+      events: [],
+      types: {
+        'x.U': {
+          kind: 'union',
+          variants: ['x.A', 'x.B'],
+          selector: {
+            ordered: [
+              { ref: 'x.A', requires: ['data'] },
+              { ref: 'x.B', requires: ['data', 'more'] },
+            ],
+          },
+        },
+        'x.A': { kind: 'record', fields: [] },
+        'x.B': { kind: 'record', fields: [] },
+      },
+    }
+    assert.deepEqual(checkSchema(schema), ['x.U: structural selector arm x.A shadows x.B (requires is a subset)'])
+  })
+
+  it('rejects a structural selector arm with no required fields to dispatch on', () => {
+    const schema = {
+      schemaVersion: 1,
+      commands: [],
+      events: [],
+      types: {
+        'x.U': {
+          kind: 'union',
+          variants: ['x.A', 'x.B'],
+          selector: {
+            ordered: [
+              { ref: 'x.A', requires: [] },
+              { ref: 'x.B', requires: ['b'] },
+            ],
+          },
+        },
+        'x.A': { kind: 'record', fields: [] },
+        'x.B': { kind: 'record', fields: [] },
+      },
+    }
+    assert.deepEqual(checkSchema(schema), ['x.U: structural selector arm x.A has no required fields to dispatch on'])
+  })
+
+  it('accepts a correlated selector (resolved by request id, not the payload)', () => {
+    const schema = {
+      schemaVersion: 1,
+      commands: [],
+      events: [],
+      types: {
+        'x.ResultData': { kind: 'union', variants: ['x.A'], selector: { correlated: true } },
+        'x.A': { kind: 'record', fields: [] },
+      },
+    }
+    assert.deepEqual(checkSchema(schema), [])
+  })
+
+  it('allows a correlated union at the response `result` position but flags it as a value field', () => {
+    const make = (fieldName) => ({
+      schemaVersion: 1,
+      commands: [],
+      events: [],
+      types: {
+        Envelope: {
+          kind: 'record',
+          fields: [{ name: fieldName, wire: fieldName, required: true, type: { ref: 'x.ResultData' } }],
+        },
+        'x.ResultData': { kind: 'union', variants: ['x.A'], selector: { correlated: true } },
+        'x.A': { kind: 'record', fields: [] },
+      },
+    })
+    assert.deepEqual(checkSchema(make('result')), []) // the correlation point — allowed
+    assert.deepEqual(checkSchema(make('payload')), [
+      'Envelope.payload: correlated union x.ResultData is reachable as a value (needs a payload selector)',
+    ])
+  })
+
+  it('flags a correlated union used as a variant of a non-correlated union', () => {
+    const schema = {
+      schemaVersion: 1,
+      commands: [],
+      events: [],
+      types: {
+        'x.Value': {
+          kind: 'union',
+          variants: ['x.ResultData'],
+          selector: { ordered: [{ ref: 'x.ResultData', requires: ['k'] }] },
+        },
+        'x.ResultData': { kind: 'union', variants: ['x.A'], selector: { correlated: true } },
+        'x.A': { kind: 'record', fields: [{ name: 'k', wire: 'k', required: true, type: { primitive: 'string' } }] },
+      },
+    }
+    assert.deepEqual(checkSchema(schema), [
+      'x.Value: correlated union x.ResultData is reachable as a value (needs a payload selector)',
+    ])
   })
 })
