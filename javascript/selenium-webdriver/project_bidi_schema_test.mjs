@@ -53,19 +53,26 @@ const MODEL = {
 describe('projectSchema', () => {
   const schema = projectSchema(AST, MODEL)
 
-  it('emits a clean enum for an inline string-literal union', () => {
+  it('emits a clean enum for an inline string-literal union, tagged with its origin', () => {
     assert.deepEqual(schema.types['network.SetCacheBehaviorParametersCacheBehavior'], {
       kind: 'enum',
       values: ['default', 'bypass'],
+      synthetic: true,
+      owner: 'network.SetCacheBehaviorParameters',
+      label: 'CacheBehavior',
     })
     assert.deepEqual(schema.types['network.SetCacheBehaviorParameters'].fields[0].type, {
       ref: 'network.SetCacheBehaviorParametersCacheBehavior',
     })
   })
 
-  it('hoists an inline record so the field is a plain ref (no inline records)', () => {
+  it('hoists an inline record so the field is a plain ref (no inline records), tagged with its origin', () => {
     assert.deepEqual(schema.types['session.Caps'].fields[0].type, { ref: 'session.CapsExtra' })
-    assert.ok(schema.types['session.CapsExtra'], 'inline record was hoisted to a named type')
+    const extra = schema.types['session.CapsExtra']
+    assert.ok(extra, 'inline record was hoisted to a named type')
+    assert.equal(extra.synthetic, true)
+    assert.equal(extra.owner, 'session.Caps')
+    assert.equal(extra.label, 'Extra')
   })
 
   it('marks `* text => any` extensible instead of emitting a phantom field', () => {
@@ -236,6 +243,18 @@ describe('checkSchema (referential integrity)', () => {
       },
     }
     assert.deepEqual(checkSchema(schema), ['x.T.a: projected to an unknown primitive (unhandled CDDL type)'])
+  })
+
+  it('flags a synthetic type whose owner does not resolve', () => {
+    const schema = {
+      schemaVersion: 1,
+      commands: [],
+      events: [],
+      types: {
+        'x.E': { kind: 'enum', values: ['a', 'b'], synthetic: true, owner: 'x.Gone', label: 'E' },
+      },
+    }
+    assert.deepEqual(checkSchema(schema), ['x.E: synthetic owner x.Gone does not resolve'])
   })
 
   it('flags an empty inline record in a union arm (dropped type reference)', () => {

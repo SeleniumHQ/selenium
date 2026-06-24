@@ -27,6 +27,11 @@
  *             | { kind: 'alias',  type }
  *   field:      { name, wire, required, type }
  *   type ref:   { primitive } | { const } | { ref } | { enum } | { list } | { map, extensible? } | { union }
+ *
+ * Types the normalizer synthesized for anonymous CDDL constructs additionally
+ * carry `{ synthetic: true, owner, label }`: `owner` is the type the construct
+ * was lifted out of and `label` is the member name within it, so a binding can
+ * keep the flat name or nest it (e.g. `Owner::Label`) without parsing the key.
  */
 
 import { pathToFileURL } from 'node:url'
@@ -192,7 +197,20 @@ const typeRef = (name) => (name ? { ref: name } : null)
  */
 export function projectSchema(ast, model) {
   const types = {}
-  for (const def of normalizeAst(ast)) if (def?.Name) types[def.Name] = projectType(def)
+  for (const def of normalizeAst(ast)) {
+    if (!def?.Name) continue
+    const node = projectType(def)
+    // Types the normalizer minted for anonymous CDDL constructs (hoisted enums /
+    // inline records, union arms) carry their decomposition so a binding can name
+    // or nest them idiomatically without parsing the synthetic key. `owner` is the
+    // type the construct was lifted out of; `label` is the member name within it.
+    if (def['x-selenium-synthetic']) {
+      node.synthetic = true
+      node.owner = def['x-selenium-owner']
+      node.label = def['x-selenium-label']
+    }
+    types[def.Name] = node
+  }
 
   const commands = []
   const events = []
@@ -267,6 +285,7 @@ export function checkSchema(schema) {
     report(c.method, c.result ?? null)
   }
   for (const [name, node] of Object.entries(schema.types)) {
+    if (node.synthetic && !has(node.owner)) errors.push(`${name}: synthetic owner ${node.owner} does not resolve`)
     if (node.kind === 'record') {
       for (const f of node.fields) report(`${name}.${f.name}`, f.type)
       if (node.map) report(`${name}.*`, node.map)

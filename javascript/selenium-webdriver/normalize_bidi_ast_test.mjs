@@ -153,8 +153,47 @@ describe('canonicalizeVariantParams', () => {
       def('browser.DownloadBehaviorAllowed', [field('type', [lit('allowed')])]),
       def('browser.DownloadBehaviorDenied', [field('type', [lit('denied')])]),
     ]
-    const members = byName(canonicalizeVariantParams(ast), 'browser.DownloadBehavior').PropertyType.map((m) => m.Value)
+    const out = canonicalizeVariantParams(ast)
+    const members = byName(out, 'browser.DownloadBehavior').PropertyType.map((m) => m.Value)
     assert.deepEqual(members, ['browser.DownloadBehavior_Allowed', 'browser.DownloadBehavior_Denied'])
+
+    // Each synthesized arm carries its decomposition so a consumer need not parse the name.
+    const allowed = byName(out, 'browser.DownloadBehavior_Allowed')
+    assert.equal(allowed['x-selenium-synthetic'], true)
+    assert.equal(allowed['x-selenium-owner'], 'browser.DownloadBehavior')
+    assert.equal(allowed['x-selenium-label'], 'Allowed')
+  })
+
+  it('re-points a synthetic owner from a merged-away source variant to the absorbing record', () => {
+    // An enum hoisted out of net.NoCreds; the variant merge then drops net.NoCreds,
+    // so the enum's owner must follow into the synthesized variant record.
+    const ast = [
+      def('net.ContinueWithAuthParameters', [
+        field('request', [ref('net.Request')]),
+        field('', {
+          Type: 'group',
+          Name: '',
+          Properties: [[field('', ref('net.Creds'))], field('', [ref('net.NoCreds')])],
+        }),
+      ]),
+      def('net.Creds', [field('action', [lit('provideCredentials')])]),
+      def('net.NoCreds', [field('action', [lit('default')])]),
+      {
+        Type: 'variable',
+        Name: 'net.NoCredsAction',
+        IsChoiceAddition: false,
+        PropertyType: [lit('a'), lit('b')],
+        Comments: [],
+        'x-selenium-synthetic': true,
+        'x-selenium-owner': 'net.NoCreds',
+        'x-selenium-label': 'Action',
+      },
+    ]
+    const out = canonicalizeVariantParams(ast)
+    assert.equal(byName(out, 'net.NoCreds'), undefined, 'source variant was merged away')
+    const enumDef = byName(out, 'net.NoCredsAction')
+    assert.ok(byName(out, enumDef['x-selenium-owner']), 'owner now resolves to a surviving def')
+    assert.equal(enumDef['x-selenium-owner'], 'net.ContinueWithAuthParameters_NoCreds')
   })
 
   it('leaves an already-canonical top-level union (variable) unchanged', () => {

@@ -40,6 +40,12 @@
  *
  * Type-name refs use the dotted CDDL name (e.g. `network.Request`), matching the
  * raw AST. Result/void handling stays in the model (`buildResultTypeNames`).
+ *
+ * Defs synthesized for anonymous constructs (hoisted enums/records, union arms)
+ * carry `x-selenium-synthetic` plus `x-selenium-owner` (the def they were lifted
+ * out of) and `x-selenium-label` (the member name within it). The projector turns
+ * these into `{ synthetic, owner, label }` so a consumer can name or nest the type
+ * idiomatically rather than reverse-engineering the synthetic def name.
  */
 
 /** Normalize a node's `Type` to an array of type entries (group/literal/string). */
@@ -175,6 +181,9 @@ export function hoistInlineEnums(ast) {
         IsChoiceAddition: false,
         PropertyType: entries.map((e) => structuredClone(e)),
         Comments: prop.Comments ?? [],
+        'x-selenium-synthetic': true,
+        'x-selenium-owner': def.Name,
+        'x-selenium-label': base,
       })
       prop.Type = [groupRef(synthName)]
     })
@@ -214,6 +223,9 @@ export function hoistInlineRecords(ast) {
         IsChoiceAddition: false,
         Properties: entries[0].Properties,
         Comments: prop.Comments ?? [],
+        'x-selenium-synthetic': true,
+        'x-selenium-owner': def.Name,
+        'x-selenium-label': pascal(prop.Name),
       }
       created.push(newDef)
       queue.push(newDef)
@@ -310,6 +322,7 @@ export function canonicalizeVariantParams(ast) {
   const alloc = nameAllocator(out.map((d) => d.Name))
   const created = []
   const superseded = new Set()
+  const supersededBy = new Map()
 
   for (const def of out) {
     const detected = detectInlineVariant(def)
@@ -320,7 +333,8 @@ export function canonicalizeVariantParams(ast) {
       const entry = branchType(branch)
       if (!entry) return null
       const { fields, label, supersedes } = variantRecord(detected.commonFields, entry, defMap, i)
-      const localName = `${owner.local}_${trimRedundantPrefix(owner.local, label)}`
+      const memberLabel = trimRedundantPrefix(owner.local, label)
+      const localName = `${owner.local}_${memberLabel}`
       const synthName = alloc(owner.domain ? `${owner.domain}.${localName}` : localName)
       created.push({
         Type: 'group',
@@ -328,8 +342,14 @@ export function canonicalizeVariantParams(ast) {
         IsChoiceAddition: false,
         Properties: fields,
         Comments: [],
+        'x-selenium-synthetic': true,
+        'x-selenium-owner': def.Name,
+        'x-selenium-label': memberLabel,
       })
-      if (supersedes) superseded.add(supersedes)
+      if (supersedes) {
+        superseded.add(supersedes)
+        supersededBy.set(supersedes, synthName)
+      }
       return groupRef(synthName)
     })
 
@@ -344,7 +364,16 @@ export function canonicalizeVariantParams(ast) {
   // Drop source variant defs that the merge inlined and nothing else references.
   const result = [...out, ...created]
   const referenced = collectReferencedNames(result)
-  return result.filter((d) => !(superseded.has(d.Name) && !referenced.has(d.Name)))
+  const kept = result.filter((d) => !(superseded.has(d.Name) && !referenced.has(d.Name)))
+
+  // A def hoisted out of a source variant (e.g. an enum) now belongs to the
+  // record that absorbed it, so re-point a synthetic owner the merge dropped.
+  const keptNames = new Set(kept.map((d) => d.Name))
+  for (const def of kept) {
+    const owner = def['x-selenium-owner']
+    if (owner && !keptNames.has(owner) && supersededBy.has(owner)) def['x-selenium-owner'] = supersededBy.get(owner)
+  }
+  return kept
 }
 
 // ============================================================
