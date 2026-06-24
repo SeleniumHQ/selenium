@@ -85,7 +85,11 @@ const isNullAlt = (e) =>
 function projectRef(type) {
   const all = typeList(type)
   const entries = all.filter((e) => !isNullAlt(e))
-  if (entries.length === 0) return { primitive: 'null', nullable: true } // the type is only `null`
+  // The only sole-`null` field in the spec is NullValue.type, whose CDDL source is
+  // the quoted string literal "null" (its discriminator tag); the cddl parser strips
+  // the quotes, collapsing it to the bareword null type. Genuine nullability is
+  // always `X / null` (handled below), so a sole null here is that string tag.
+  if (entries.length === 0) return { const: 'null' }
   const node =
     entries.length > 1
       ? entries.every(isLiteral)

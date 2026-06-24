@@ -206,14 +206,18 @@ describe('unionSelector', () => {
       recAst('x.Date', 'date'),
       group('x.Reference', [field('refId', ['text'])]),
     ]
-    const sel = projectSchema(ast, {}).types['x.Value'].selector
+    const s = projectSchema(ast, {})
+    const sel = s.types['x.Value'].selector
     assert.equal(sel.by, 'type')
     assert.equal(sel.default, 'x.Reference')
+    // A sole bareword `null` field is the quoted string tag "null", not the JSON
+    // null type, so NullValue dispatches on the string "null" (not JSON null).
+    assert.deepEqual(s.types['x.NullValue'].fields[0].type, { const: 'null' })
     assert.deepEqual(
       new Map(sel.variants.map((v) => [JSON.stringify(v.value), v.ref])),
       new Map([
         ['"string"', 'x.StringValue'],
-        ['null', 'x.NullValue'],
+        ['"null"', 'x.NullValue'],
         ['"date"', 'x.Date'],
       ]),
     )

@@ -61,6 +61,14 @@ const RECORD_ALIAS_DIFFERENCES = {
   Event: { fields: ['method', 'params'], reason: 'envelope composes EventData union' },
 }
 
+// Fields cddl2ts reports as nullable that we intentionally do not. The cddl parser
+// strips the quotes from the reserved word `"null"`, so cddl2ts reads NullValue's
+// string-literal tag `type: "null"` as the JSON null type; we correctly project it
+// as the string const "null" (the real wire discriminator), so it is not nullable.
+const NULLABLE_DIFFERENCES = {
+  'script.NullValue': { fields: ['type'], reason: 'quoted "null" tag, not the null type' },
+}
+
 /** dotted CDDL name → cddl2ts PascalCase name (mirrors normalizeDottedName). */
 function tsName(name) {
   return name
@@ -274,6 +282,7 @@ function diffAgainstCddl2ts(schema, ast) {
       if (missing.length) errors.push(`${name}: missing fields cddl2ts has: ${missing.join(', ')}`)
       if (stale.length) errors.push(`${name}: stale KNOWN_DIFFERENCES fields (resolved, remove): ${stale.join(', ')}`)
       // Type fidelity for fields present in both: optional / nullable / array.
+      const allowNullable = new Set(NULLABLE_DIFFERENCES[name]?.fields ?? [])
       for (const [fname, field] of mine) {
         const o = oracle[fname]
         if (!o) continue
@@ -281,9 +290,13 @@ function diffAgainstCddl2ts(schema, ast) {
           errors.push(
             `${name}.${fname}: optional mismatch (cddl2ts optional=${o.optional}, schema required=${field.required})`,
           )
-        if (o.nullable && !field.type?.nullable) errors.push(`${name}.${fname}: cddl2ts is nullable, schema is not`)
+        if (o.nullable && !field.type?.nullable && !allowNullable.has(fname))
+          errors.push(`${name}.${fname}: cddl2ts is nullable, schema is not`)
         if (o.array && !field.type?.list) errors.push(`${name}.${fname}: cddl2ts is array, schema is not`)
       }
+      const staleNullable = [...allowNullable].filter((f) => !oracle[f]?.nullable || mine.get(f)?.type?.nullable)
+      if (staleNullable.length)
+        errors.push(`${name}: stale NULLABLE_DIFFERENCES (resolved, remove): ${staleNullable.join(', ')}`)
     } else if (node.kind === 'enum') {
       const oracle = enums[tsName(name)]
       if (!oracle) continue // hoisted/synthetic enums have no named cddl2ts counterpart
