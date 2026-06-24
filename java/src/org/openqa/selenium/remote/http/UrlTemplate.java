@@ -149,7 +149,7 @@ public class UrlTemplate {
       return null;
     }
     if (!prefix.isEmpty() && !prefix.equals("/")) {
-      matchAgainst = matchAgainst.replaceFirst(prefix, "");
+      matchAgainst = matchAgainst.replaceFirst(Pattern.quote(prefix), "");
     }
     return match(matchAgainst);
   }
