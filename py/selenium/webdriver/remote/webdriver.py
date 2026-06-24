@@ -48,6 +48,7 @@ from selenium.common.exceptions import (
 )
 from selenium.webdriver.common.bidi.browser import Browser
 from selenium.webdriver.common.bidi.browsing_context import BrowsingContext
+from selenium.webdriver.common.bidi.browsing_context import ReadinessState
 from selenium.webdriver.common.bidi.emulation import Emulation
 from selenium.webdriver.common.bidi.input import Input
 from selenium.webdriver.common.bidi.network import Network
@@ -509,7 +510,12 @@ class WebDriver(BaseWebDriver):
         Example:
             `driver.get("https://example.com")`
         """
-        self.execute(Command.GET, {"url": url})
+        if self._is_bidi_enabled():
+            self.browsing_context.navigate(
+                context=self.current_window_handle, url=url, wait=self._page_load_readiness()
+            )
+        else:
+            self.execute(Command.GET, {"url": url})
 
     @property
     def title(self) -> str:
@@ -708,15 +714,44 @@ class WebDriver(BaseWebDriver):
     # Navigation
     def back(self) -> None:
         """Goes one step backward in the browser history."""
-        self.execute(Command.GO_BACK)
+        if self._is_bidi_enabled():
+            self.browsing_context.traverse_history(context=self.current_window_handle, delta=-1)
+        else:
+            self.execute(Command.GO_BACK)
 
     def forward(self) -> None:
         """Goes one step forward in the browser history."""
-        self.execute(Command.GO_FORWARD)
+        if self._is_bidi_enabled():
+            self.browsing_context.traverse_history(context=self.current_window_handle, delta=1)
+        else:
+            self.execute(Command.GO_FORWARD)
 
     def refresh(self) -> None:
         """Refreshes the current page."""
-        self.execute(Command.REFRESH)
+        if self._is_bidi_enabled():
+            self.browsing_context.reload(context=self.current_window_handle, wait=self._page_load_readiness())
+        else:
+            self.execute(Command.REFRESH)
+
+    def _is_bidi_enabled(self) -> bool:
+        """Returns True if WebDriver BiDi is enabled for this session.
+
+        BiDi is enabled when the remote end advertised a ``webSocketUrl`` in
+        the session capabilities (i.e. the user requested it via options).
+        """
+        return bool(self.caps.get("webSocketUrl"))
+
+    def _page_load_readiness(self) -> ReadinessState:
+        """Maps the session's ``pageLoadStrategy`` capability to a BiDi readiness state.
+
+        ``normal`` -> COMPLETE, ``eager`` -> INTERACTIVE, ``none`` -> NONE.
+        Defaults to COMPLETE to match Classic ``get()`` blocking semantics.
+        """
+        return {
+            "normal": ReadinessState.COMPLETE,
+            "eager": ReadinessState.INTERACTIVE,
+            "none": ReadinessState.NONE,
+        }.get(self.caps.get("pageLoadStrategy", "normal"), ReadinessState.COMPLETE)
 
     def get_cookies(self) -> list[dict]:
         """Get all cookies visible to the current WebDriver instance.
