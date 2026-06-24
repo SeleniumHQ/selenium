@@ -563,7 +563,12 @@ impl SeleniumManager for FirefoxManager {
             }
         } else if MACOS.is(os) {
             artifact_name = "Firefox%20";
-            artifact_extension = "dmg";
+            // Before Firefox 68, only DMG was released
+            if major_browser_version < 68 {
+                artifact_extension = "dmg";
+            } else {
+                artifact_extension = "pkg";
+            }
             if self.is_nightly(browser_version) {
                 platform_label = "osx";
             } else {

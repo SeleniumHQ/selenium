@@ -148,23 +148,21 @@ module Selenium
 
           def use_proxy?
             return false if proxy.nil?
+            return true unless proxy.no_proxy
 
-            if proxy.no_proxy
-              ignored = proxy.no_proxy.split(',').any? do |host|
-                host == '*' ||
-                  host == server_url.host || (
-                begin
-                  IPAddr.new(host).include?(server_url.host)
-                rescue ArgumentError
-                  false
-                end
-              )
-              end
+            !proxy_ignored?
+          end
 
-              !ignored
-            else
-              true
+          def proxy_ignored?
+            proxy.no_proxy.split(',').map(&:strip).reject(&:empty?).any? do |host|
+              host == '*' || host == server_url.host || ip_match?(host)
             end
+          end
+
+          def ip_match?(host)
+            IPAddr.new(host).include?(server_url.host)
+          rescue ArgumentError
+            false
           end
         end # Default
       end # Http
