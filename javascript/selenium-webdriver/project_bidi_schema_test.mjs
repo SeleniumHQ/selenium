@@ -85,6 +85,22 @@ describe('projectSchema', () => {
     assert.deepEqual(checkSchema(schema), [])
     assert.deepEqual(checkCompleteness(AST, schema), [])
   })
+
+  it('recovers command params from the envelope when the model dropped an inline params object', () => {
+    // The command declares an inline `params: { count }` (not a named ref); the model
+    // builder records params: null, but the normalizer hoists it to x.FooCommandParams
+    // and the envelope record points at it — so the command entry must surface it.
+    const ast = [
+      group('x.FooCommand', [
+        field('method', [lit('x.foo')]),
+        field('params', { Type: 'group', Name: '', Properties: [field('count', ['uint'])] }),
+      ]),
+    ]
+    const model = { x: { commands: [{ method: 'x.foo', name: 'foo', params: null, result: null }], events: [] } }
+    const out = projectSchema(ast, model)
+    assert.deepEqual(out.commands[0].params, { ref: 'x.FooCommandParams' })
+    assert.deepEqual(checkSchema(out), [])
+  })
 })
 
 describe('projectType (list / union / alias defs)', () => {
@@ -261,12 +277,15 @@ describe('unionSelector', () => {
     })
   })
 
+  // The response envelope is a record pairing a `result` union with the request `id`.
+  const envelope = (resultRef) => group('x.CommandResponse', [field('id', ['uint']), field('result', [ref(resultRef)])])
+
   it('marks an undispatchable result-grouping union (reached via `result`) as correlated', () => {
     // CommandResponse.result -> x.ResultData, a union of result records that cannot
     // be told apart from the payload (no required fields): it is dispatched by
     // request id, so it carries no selector.
     const ast = [
-      group('x.CommandResponse', [field('result', [ref('x.ResultData')])]),
+      envelope('x.ResultData'),
       union('x.ResultData', ['x.FooResult', 'x.BarResult']),
       group('x.FooResult', []),
       group('x.BarResult', []),
@@ -276,9 +295,9 @@ describe('unionSelector', () => {
 
   it('keeps a structurally-dispatchable result reached via `result` (not correlated)', () => {
     // Distinguishable result records (each has its own required field) stay
-    // payload-dispatched even though they are reached through a `result` field.
+    // payload-dispatched even though they are reached through the envelope.
     const ast = [
-      group('x.CommandResponse', [field('result', [ref('x.ResultData')])]),
+      envelope('x.ResultData'),
       union('x.ResultData', ['x.FooResult', 'x.BarResult']),
       group('x.FooResult', [field('foo', ['text'])]),
       group('x.BarResult', [field('bar', ['text'])]),
@@ -293,13 +312,42 @@ describe('unionSelector', () => {
 
   it('does not mark a discriminated result reached via `result` as correlated (e.g. EvaluateResult)', () => {
     const ast = [
-      group('x.CommandResponse', [field('result', [ref('x.EvalResult')])]),
+      envelope('x.EvalResult'),
       union('x.EvalResult', ['x.Success', 'x.Failure']),
       recAst('x.Success', 'success'),
       recAst('x.Failure', 'exception'),
     ]
     const sel = projectSchema(ast, {}).types['x.EvalResult'].selector
     assert.equal(sel.by, 'type') // payload-dispatched, selector preserved
+  })
+
+  it('does not correlate a union reached via a non-envelope `result` field (no request id)', () => {
+    // A plain payload type has a `result` field but no request `id`, so it is not the
+    // response envelope; its union must keep its payload selector, not be correlated.
+    const ast = [
+      group('x.EvaluateResultSuccess', [field('result', [ref('x.ResultData')]), field('realm', ['text'])]),
+      union('x.ResultData', ['x.FooResult', 'x.BarResult']),
+      group('x.FooResult', []),
+      group('x.BarResult', []),
+    ]
+    const sel = projectSchema(ast, {}).types['x.ResultData'].selector
+    assert.ok(sel.ordered, 'a non-envelope `result` field must not request-correlate its union')
+    assert.equal(sel.correlated, undefined)
+  })
+
+  it('does not treat a record with an optional id/result as the response envelope', () => {
+    // The real envelope has a REQUIRED request id and result; an optional id means
+    // this is not the response envelope, so its union must keep its payload selector.
+    const optional = { n: 0, m: 1 }
+    const ast = [
+      group('x.CommandResponse', [field('id', ['uint'], optional), field('result', [ref('x.ResultData')])]),
+      union('x.ResultData', ['x.FooResult', 'x.BarResult']),
+      group('x.FooResult', []),
+      group('x.BarResult', []),
+    ]
+    const sel = projectSchema(ast, {}).types['x.ResultData'].selector
+    assert.equal(sel.correlated, undefined)
+    assert.ok(sel.ordered)
   })
 
   it('resolves an alias variant to its leaf record when building structural requires', () => {
@@ -482,23 +530,31 @@ describe('checkSchema (referential integrity)', () => {
     assert.deepEqual(checkSchema(schema), [])
   })
 
-  it('allows a correlated union at the response `result` position but flags it as a value field', () => {
-    const make = (fieldName) => ({
+  it('exempts the envelope `result` position but flags any other correlated reference', () => {
+    const make = (fieldName, withId = true) => ({
       schemaVersion: 1,
       commands: [],
       events: [],
       types: {
         Envelope: {
           kind: 'record',
-          fields: [{ name: fieldName, wire: fieldName, required: true, type: { ref: 'x.ResultData' } }],
+          fields: [
+            ...(withId ? [{ name: 'id', wire: 'id', required: true, type: { primitive: 'integer' } }] : []),
+            { name: fieldName, wire: fieldName, required: true, type: { ref: 'x.ResultData' } },
+          ],
         },
         'x.ResultData': { kind: 'union', variants: ['x.A'], selector: { correlated: true } },
         'x.A': { kind: 'record', fields: [] },
       },
     })
-    assert.deepEqual(checkSchema(make('result')), []) // the correlation point — allowed
+    assert.deepEqual(checkSchema(make('result')), []) // the envelope's correlation point — allowed
     assert.deepEqual(checkSchema(make('payload')), [
       'Envelope.payload: correlated union x.ResultData is reachable as a value (needs a payload selector)',
+    ])
+    // A `result` field on a record that is NOT the envelope (no request id) gets no
+    // free pass — otherwise a too-broad envelope match could ship silently.
+    assert.deepEqual(checkSchema(make('result', false)), [
+      'Envelope.result: correlated union x.ResultData is reachable as a value (needs a payload selector)',
     ])
   })
 
@@ -520,5 +576,24 @@ describe('checkSchema (referential integrity)', () => {
     assert.deepEqual(checkSchema(schema), [
       'x.Value: correlated union x.ResultData is reachable as a value (needs a payload selector)',
     ])
+  })
+
+  it('flags a command that emits null params while its envelope requires them', () => {
+    const schema = {
+      schemaVersion: 1,
+      commands: [{ domain: 'x', method: 'x.foo', name: 'foo', params: null, result: null }],
+      events: [],
+      types: {
+        'x.FooCommand': {
+          kind: 'record',
+          fields: [
+            { name: 'method', wire: 'method', required: true, type: { const: 'x.foo' } },
+            { name: 'params', wire: 'params', required: true, type: { ref: 'x.FooParams' } },
+          ],
+        },
+        'x.FooParams': { kind: 'record', fields: [] },
+      },
+    }
+    assert.deepEqual(checkSchema(schema), ['x.foo: params null does not match required envelope params x.FooParams'])
   })
 })

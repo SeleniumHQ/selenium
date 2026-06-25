@@ -206,6 +206,22 @@ function projectRecord(def) {
 
 const typeRef = (name) => (name ? { ref: name } : null)
 
+// Map a command's method to the params type its normalized envelope record carries
+// (skipping EmptyParams, which means no real params). This recovers params the
+// model builder drops when a command declares an inline `params: { ... }` object
+// instead of a named group ref (the normalizer hoists that object to a real type,
+// but the model still records `params: null`).
+function commandEnvelopeParams(types) {
+  const params = new Map()
+  for (const t of Object.values(types)) {
+    if (t.kind !== 'record') continue
+    const method = t.fields.find((f) => f.name === 'method' && f.type.const !== undefined)?.type.const
+    const ref = t.fields.find((f) => f.name === 'params')?.type.ref
+    if (method && ref && ref !== 'EmptyParams') params.set(method, ref)
+  }
+  return params
+}
+
 // Resolve a union member to its leaf record names, following nested unions and
 // single-ref aliases. Every BiDi union bottoms out in records, so this is total.
 function unionLeaves(ref, types, seen = new Set()) {
@@ -316,22 +332,34 @@ function orderedIsDispatchable(ordered) {
   return true
 }
 
+// The command-response envelope is the record that pairs a `result` union with the
+// request `id` that correlates it — that id is what makes its result request-
+// dispatched rather than payload-dispatched. Returns the result union's name, or
+// null. The `id` requirement is what excludes a plain payload type that merely has
+// a `result` field (e.g. script.EvaluateResultSuccess, which has no request id).
+function envelopeResultUnion(record, types) {
+  if (record?.kind !== 'record' || !record.fields.some((f) => f.name === 'id' && f.required)) return null
+  const result = record.fields.find(
+    (f) => f.name === 'result' && f.required && f.type.ref && types[f.type.ref]?.kind === 'union',
+  )
+  return result ? result.type.ref : null
+}
+
 // The command-result hierarchy is dispatched by request id, not by inspecting the
 // payload (a response is matched to the command that produced it), so those unions
 // must not carry a payload selector. They can't be found from the model alone —
 // void commands record `result: null`, erasing whole result unions (e.g. every
-// emulation result) — so identify them structurally: starting from the union(s) a
-// `result` field points at (the response envelope's grouping), walk the variant
-// tree, marking each union that has no payload discriminator. The discriminator
-// guard stops the walk at a result that IS payload-dispatched (e.g.
-// script.EvaluateResult on `type`, or a RemoteValue reached through a result),
+// emulation result) — so identify them structurally from the response envelope's
+// `result` union (envelopeResultUnion), then walk the variant tree, marking each
+// union that has no payload discriminator. The discriminator guard stops the walk
+// at a result that IS payload-dispatched (e.g. script.EvaluateResult on `type`),
 // leaving its selector intact. Requires provisional selectors to already be set.
 function correlatedUnions(types) {
   const roots = new Set()
-  for (const t of Object.values(types))
-    if (t.kind === 'record')
-      for (const f of t.fields)
-        if (f.name === 'result' && f.type.ref && types[f.type.ref]?.kind === 'union') roots.add(f.type.ref)
+  for (const t of Object.values(types)) {
+    const root = envelopeResultUnion(t, types)
+    if (root) roots.add(root)
+  }
   // A union is payload-dispatched — and so must keep its selector — when it has a
   // discriminator OR a structural selector that can actually distinguish its arms
   // (matching the validity the gate enforces). The result groupings fail this
@@ -378,11 +406,19 @@ export function projectSchema(ast, model) {
 
   const commands = []
   const events = []
+  const envelopeParams = commandEnvelopeParams(types)
   for (const [domain, entry] of Object.entries(model)) {
     for (const c of entry.commands ?? [])
-      commands.push({ domain, method: c.method, name: c.name, params: typeRef(c.params), result: typeRef(c.result) })
+      commands.push({
+        domain,
+        method: c.method,
+        name: c.name,
+        // Prefer the envelope's params (it captures inline params the model drops).
+        params: typeRef(envelopeParams.get(c.method) ?? c.params),
+        result: typeRef(c.result),
+      })
     for (const e of entry.events ?? [])
-      events.push({ domain, method: e.method, name: e.name, params: typeRef(e.params) })
+      events.push({ domain, method: e.method, name: e.name, params: typeRef(envelopeParams.get(e.method) ?? e.params) })
   }
 
   return { schemaVersion: 1, commands, events, types }
@@ -448,6 +484,15 @@ export function checkSchema(schema) {
     report(c.method, c.params)
     report(c.method, c.result ?? null)
   }
+  // A command/event whose envelope record carries real params must surface them —
+  // guards the model builder's gap where an inline `params: {...}` (vs a named ref)
+  // was dropped, leaving it parameterless while its type still required them.
+  const envelopeParams = commandEnvelopeParams(schema.types)
+  for (const c of [...schema.commands, ...schema.events]) {
+    const expected = envelopeParams.get(c.method)
+    if (expected && c.params?.ref !== expected)
+      errors.push(`${c.method}: params ${c.params?.ref ?? 'null'} does not match required envelope params ${expected}`)
+  }
   for (const [name, node] of Object.entries(schema.types)) {
     if (node.synthetic && !has(node.owner)) errors.push(`${name}: synthetic owner ${node.owner} does not resolve`)
     if (node.kind === 'record') {
@@ -462,10 +507,12 @@ export function checkSchema(schema) {
   }
 
   // A `correlated` union is resolved by request id, which only holds at the command
-  // response position. If one is reachable anywhere else — a non-`result` field, a
-  // map/list/nested element, an alias, or a variant of a non-correlated union — it
-  // would actually need payload dispatch, and marking it correlated silently drops
-  // its selector. Fail closed so a future misclassification cannot ship.
+  // response envelope's `result` position. If one is reachable anywhere else — a
+  // non-`result` field, a `result` field on a record that is not the envelope (no
+  // request id), a map/list/nested element, an alias, or a variant of a
+  // non-correlated union — it would actually need payload dispatch, and marking it
+  // correlated silently drops its selector. Fail closed so a misclassification (or
+  // a too-broad envelope match) cannot ship.
   const correlated = new Set(
     Object.entries(schema.types)
       .filter(([, t]) => t.kind === 'union' && t.selector?.correlated)
@@ -475,9 +522,11 @@ export function checkSchema(schema) {
     errors.push(`${where}: correlated union ${r} is reachable as a value (needs a payload selector)`)
   for (const [name, node] of Object.entries(schema.types)) {
     if (node.kind === 'record') {
+      const envelopeRoot = envelopeResultUnion(node, schema.types)
       for (const f of node.fields)
         for (const r of refsIn(f.type))
-          if (correlated.has(r) && !(f.name === 'result' && f.type.ref === r)) leak(`${name}.${f.name}`, r)
+          if (correlated.has(r) && !(f.name === 'result' && f.type.ref === r && r === envelopeRoot))
+            leak(`${name}.${f.name}`, r)
       if (node.map) for (const r of refsIn(node.map)) if (correlated.has(r)) leak(`${name}.*`, r)
     } else if (node.kind === 'union' && !node.selector?.correlated) {
       for (const v of node.variants) if (correlated.has(v)) leak(name, v)
