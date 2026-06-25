@@ -84,6 +84,10 @@ const isNullAlt = (e) =>
 
 function projectRef(type) {
   const all = typeList(type)
+  // A missing type (undefined/empty input, e.g. a malformed array element or map
+  // value) is not a `null` value — fail closed so checkSchema's unknown guard
+  // catches it instead of silently producing a valid-looking `null`.
+  if (all.length === 0) return { primitive: 'unknown' }
   const entries = all.filter((e) => !isNullAlt(e))
   // The only sole-`null` field in the spec is NullValue.type, whose CDDL source is
   // the quoted string literal "null" (its discriminator tag); the cddl parser strips
@@ -287,13 +291,29 @@ function unionSelector(name, types) {
   }
 
   // No shared discriminator: dispatch by required-field presence, in spec order.
-  return {
-    ordered: variants.map((ref) => {
-      const t = types[ref]
-      const requires = t?.kind === 'record' ? t.fields.filter((f) => f.required).map((f) => f.name) : []
-      return { ref, requires }
-    }),
+  // Resolve each variant through aliases/sub-unions to its leaf records (as the
+  // discriminator path does) and require the fields required in every leaf, so an
+  // alias-to-record variant is not left with an empty (always-matching) predicate.
+  const requiresOf = (ref) => {
+    const leaves = unionLeaves(ref, types).map(
+      (l) => new Set(types[l].fields.filter((f) => f.required).map((f) => f.name)),
+    )
+    return leaves.length ? [...leaves[0]].filter((k) => leaves.every((s) => s.has(k))) : []
   }
+  return { ordered: variants.map((ref) => ({ ref, requires: requiresOf(ref) })) }
+}
+
+// A structural selector can dispatch a payload only when every arm has a required
+// field to test AND no arm's `requires` is a subset of a later arm's (which would
+// shadow it under first-match) — the same validity checkSelector enforces, used
+// here so the correlated walk treats an undispatchable union as a result grouping.
+function orderedIsDispatchable(ordered) {
+  for (let i = 0; i < ordered.length; i++) {
+    if (ordered[i].requires.length === 0) return false
+    for (let j = i + 1; j < ordered.length; j++)
+      if (ordered[j].requires.length && ordered[i].requires.every((k) => ordered[j].requires.includes(k))) return false
+  }
+  return true
 }
 
 // The command-result hierarchy is dispatched by request id, not by inspecting the
@@ -312,10 +332,15 @@ function correlatedUnions(types) {
     if (t.kind === 'record')
       for (const f of t.fields)
         if (f.name === 'result' && f.type.ref && types[f.type.ref]?.kind === 'union') roots.add(f.type.ref)
+  // A union is payload-dispatched — and so must keep its selector — when it has a
+  // discriminator OR a structural selector that can actually distinguish its arms
+  // (matching the validity the gate enforces). The result groupings fail this
+  // (their arms share/lack distinguishing fields), so the walk passes through them.
+  const payloadDispatched = (sel) => Boolean(sel?.by || (sel?.ordered && orderedIsDispatchable(sel.ordered)))
   const correlated = new Set()
   const mark = (name) => {
     const t = types[name]
-    if (!t || t.kind !== 'union' || correlated.has(name) || t.selector?.by) return
+    if (!t || t.kind !== 'union' || correlated.has(name) || payloadDispatched(t.selector)) return
     correlated.add(name)
     t.variants.forEach(mark)
   }

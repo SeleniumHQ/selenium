@@ -329,6 +329,12 @@ export function canonicalizeVariantParams(ast) {
     if (!detected) continue
 
     const owner = splitName(def.Name)
+    // Stage this def's synthetic records and supersede bookkeeping locally; commit
+    // them only once every branch is supported. A mid-loop bailout would otherwise
+    // leave orphaned (unreferenced) synthetic defs in the output, making it depend
+    // on branch order.
+    const stagedDefs = []
+    const stagedSupersedes = []
     const memberRefs = detected.branches.map((branch, i) => {
       const entry = branchType(branch)
       if (!entry) return null
@@ -336,7 +342,7 @@ export function canonicalizeVariantParams(ast) {
       const memberLabel = trimRedundantPrefix(owner.local, label)
       const localName = `${owner.local}_${memberLabel}`
       const synthName = alloc(owner.domain ? `${owner.domain}.${localName}` : localName)
-      created.push({
+      stagedDefs.push({
         Type: 'group',
         Name: synthName,
         IsChoiceAddition: false,
@@ -346,15 +352,17 @@ export function canonicalizeVariantParams(ast) {
         'x-selenium-owner': def.Name,
         'x-selenium-label': memberLabel,
       })
-      if (supersedes) {
-        superseded.add(supersedes)
-        supersededBy.set(supersedes, synthName)
-      }
+      if (supersedes) stagedSupersedes.push([supersedes, synthName])
       return groupRef(synthName)
     })
 
-    if (memberRefs.some((r) => r === null)) continue // unexpected branch shape: leave def untouched
+    if (memberRefs.some((r) => r === null)) continue // unexpected branch shape: leave def untouched, drop staged defs
 
+    created.push(...stagedDefs)
+    for (const [source, synthName] of stagedSupersedes) {
+      superseded.add(source)
+      supersededBy.set(source, synthName)
+    }
     delete def.Properties
     def.Type = 'variable'
     def.PropertyType = memberRefs

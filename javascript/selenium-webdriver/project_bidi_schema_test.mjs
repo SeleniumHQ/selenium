@@ -111,6 +111,14 @@ describe('projectType (list / union / alias defs)', () => {
   it('projects a top-level array def as an alias to a list (keeps the element type)', () => {
     assert.deepEqual(schema.types['x.Items'], { kind: 'alias', type: { list: { ref: 'x.Item' } } })
   })
+  it('fails closed (unknown, not null) when an array element type is missing', () => {
+    const s = projectSchema([{ Type: 'array', Name: 'x.Bad', Values: [] }], {})
+    assert.deepEqual(s.types['x.Bad'], { kind: 'alias', type: { list: { primitive: 'unknown' } } })
+    assert.ok(
+      checkSchema(s).some((e) => /unknown primitive/.test(e)),
+      'a missing element type must trip the unknown-primitive guard',
+    )
+  })
   it('projects a multi-member choice group as a union with a structural selector', () => {
     assert.deepEqual(schema.types['x.Choice'], {
       kind: 'union',
@@ -253,16 +261,34 @@ describe('unionSelector', () => {
     })
   })
 
-  it('marks a result-grouping union (reached via a `result` field, no discriminator) as correlated', () => {
-    // CommandResponse.result -> x.ResultData (a union of result records with no
-    // shared discriminator): dispatched by request id, so it carries no selector.
+  it('marks an undispatchable result-grouping union (reached via `result`) as correlated', () => {
+    // CommandResponse.result -> x.ResultData, a union of result records that cannot
+    // be told apart from the payload (no required fields): it is dispatched by
+    // request id, so it carries no selector.
+    const ast = [
+      group('x.CommandResponse', [field('result', [ref('x.ResultData')])]),
+      union('x.ResultData', ['x.FooResult', 'x.BarResult']),
+      group('x.FooResult', []),
+      group('x.BarResult', []),
+    ]
+    assert.deepEqual(projectSchema(ast, {}).types['x.ResultData'].selector, { correlated: true })
+  })
+
+  it('keeps a structurally-dispatchable result reached via `result` (not correlated)', () => {
+    // Distinguishable result records (each has its own required field) stay
+    // payload-dispatched even though they are reached through a `result` field.
     const ast = [
       group('x.CommandResponse', [field('result', [ref('x.ResultData')])]),
       union('x.ResultData', ['x.FooResult', 'x.BarResult']),
       group('x.FooResult', [field('foo', ['text'])]),
       group('x.BarResult', [field('bar', ['text'])]),
     ]
-    assert.deepEqual(projectSchema(ast, {}).types['x.ResultData'].selector, { correlated: true })
+    assert.deepEqual(projectSchema(ast, {}).types['x.ResultData'].selector, {
+      ordered: [
+        { ref: 'x.FooResult', requires: ['foo'] },
+        { ref: 'x.BarResult', requires: ['bar'] },
+      ],
+    })
   })
 
   it('does not mark a discriminated result reached via `result` as correlated (e.g. EvaluateResult)', () => {
@@ -274,6 +300,23 @@ describe('unionSelector', () => {
     ]
     const sel = projectSchema(ast, {}).types['x.EvalResult'].selector
     assert.equal(sel.by, 'type') // payload-dispatched, selector preserved
+  })
+
+  it('resolves an alias variant to its leaf record when building structural requires', () => {
+    // x.Alias is a single-ref alias to x.A; its ordered `requires` must reflect
+    // x.A's required fields, not be left empty (which would always match).
+    const ast = [
+      union('x.U', ['x.Alias', 'x.B']),
+      { Type: 'variable', Name: 'x.Alias', IsChoiceAddition: false, Comments: [], PropertyType: [ref('x.A')] },
+      group('x.A', [field('a', ['text'])]),
+      group('x.B', [field('b', ['text'])]),
+    ]
+    assert.deepEqual(projectSchema(ast, {}).types['x.U'].selector, {
+      ordered: [
+        { ref: 'x.Alias', requires: ['a'] },
+        { ref: 'x.B', requires: ['b'] },
+      ],
+    })
   })
 })
 

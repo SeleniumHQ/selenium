@@ -292,6 +292,8 @@ function diffAgainstCddl2ts(schema, ast) {
           )
         if (o.nullable && !field.type?.nullable && !allowNullable.has(fname))
           errors.push(`${name}.${fname}: cddl2ts is nullable, schema is not`)
+        if (field.type?.nullable && !o.nullable && !allowNullable.has(fname))
+          errors.push(`${name}.${fname}: schema is nullable, cddl2ts is not`)
         if (o.array && !field.type?.list) errors.push(`${name}.${fname}: cddl2ts is array, schema is not`)
       }
       const staleNullable = [...allowNullable].filter((f) => !oracle[f]?.nullable || mine.get(f)?.type?.nullable)

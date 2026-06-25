@@ -228,6 +228,27 @@ describe('canonicalizeVariantParams', () => {
       'emu.SetGeolocationOverrideParameters_Error',
     ])
   })
+
+  it('bails cleanly without leaking synthetic defs when a choice branch is unsupported', () => {
+    // The second branch carries a bare literal (no group-ref / inline group), so the
+    // def cannot be canonicalized. The first branch was already processed, but its
+    // staged synthetic def must NOT leak into the output, and the def stays untouched.
+    const ast = [
+      def('x.P', [
+        field('', { Type: 'group', Name: '', Properties: [[field('', ref('x.A'))], field('', [lit('oops')])] }),
+      ]),
+      def('x.A', [field('a', ['text'])]),
+    ]
+    const out = canonicalizeVariantParams(ast)
+    assert.equal(byName(out, 'x.P').Type, 'group', 'def left untouched (not converted to a union)')
+    assert.ok(byName(out, 'x.P').Properties, 'def still carries its original Properties')
+    assert.equal(
+      out.some((d) => d.Name?.startsWith('x.P_')),
+      false,
+      'no orphaned synthetic variant def leaked',
+    )
+    assert.deepEqual(out.map((d) => d.Name).sort(), ['x.A', 'x.P'])
+  })
 })
 
 describe('flattenGroupComposition', () => {
