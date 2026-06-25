@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 class EitherTest {
@@ -28,14 +29,14 @@ class EitherTest {
   @Test
   void streamOnLeftValueShouldBeEmpty() {
     Either<String, Integer> either = Either.left("error");
-    List<Integer> result = either.stream().toList();
+    List<Integer> result = either.stream().collect(Collectors.toList());
     assertThat(result).isEmpty();
   }
 
   @Test
   void streamOnRightValueShouldContainRight() {
     Either<String, Integer> either = Either.right(42);
-    List<Integer> result = either.stream().toList();
+    List<Integer> result = either.stream().collect(Collectors.toList());
     assertThat(result).containsExactly(42);
   }
 
