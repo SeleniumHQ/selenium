@@ -145,7 +145,7 @@ module Selenium
           'proxyType' => TYPES[type].downcase,
           'ftpProxy' => ftp,
           'httpProxy' => http,
-          'noProxy' => no_proxy.is_a?(String) ? no_proxy.split(', ') : no_proxy,
+          'noProxy' => no_proxy.is_a?(String) ? no_proxy.split(',').map(&:strip).reject(&:empty?) : no_proxy,
           'proxyAutoconfigUrl' => pac,
           'sslProxy' => ssl,
           'autodetect' => auto_detect,
