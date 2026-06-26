@@ -102,4 +102,33 @@ class UrlCheckerTest {
     safelyCall(() -> server.stop());
     safelyCall(executorService::shutdownNow);
   }
+
+  @Test
+  void waitUntilUnavailablePreservesInterruptStatus() throws Exception {
+    Thread caller = Thread.currentThread();
+    Thread interrupter =
+        new Thread(
+            () -> {
+              try {
+                Thread.sleep(500);
+              } catch (InterruptedException ignored) {
+              }
+              caller.interrupt();
+            });
+    interrupter.start();
+
+    boolean threw = false;
+    boolean preserved = false;
+    try {
+      urlChecker.waitUntilUnavailable(10, TimeUnit.SECONDS, url);
+    } catch (RuntimeException expected) {
+      threw = true;
+      preserved = Thread.currentThread().isInterrupted();
+      Thread.interrupted();
+    }
+    interrupter.join();
+
+    assertThat(threw).isTrue();
+    assertThat(preserved).isTrue();
+  }
 }
