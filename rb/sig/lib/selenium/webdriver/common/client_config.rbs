@@ -6,9 +6,9 @@ module Selenium
       def self.default_user_agent=: (String? value) -> void
       attr_accessor self.default_extra_headers: Hash[String, String]?
 
-      attr_accessor open_timeout: Integer?
-      attr_accessor read_timeout: Integer?
-      attr_accessor max_redirects: Integer?
+      attr_accessor open_timeout: Numeric?
+      attr_accessor read_timeout: Numeric?
+      attr_accessor max_redirects: Integer
       attr_accessor proxy: Selenium::WebDriver::Proxy?
       def extra_headers: -> Hash[String, String]?
       attr_writer extra_headers: Hash[String, String]?
@@ -19,9 +19,9 @@ module Selenium
       def server_url=: ((String | URI)? url) -> void
 
       def initialize: (
-          ?open_timeout: Integer?,
-          ?read_timeout: Integer?,
-          ?max_redirects: Integer?,
+          ?open_timeout: Numeric?,
+          ?read_timeout: Numeric?,
+          ?max_redirects: Integer,
           ?proxy: Selenium::WebDriver::Proxy?,
           ?extra_headers: Hash[String, String]?,
           ?user_agent: String?,

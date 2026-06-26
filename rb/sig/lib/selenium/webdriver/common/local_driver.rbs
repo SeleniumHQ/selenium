@@ -5,9 +5,11 @@ module Selenium
 
       def initialize_local_driver: (untyped options, untyped service, untyped url, untyped http_client, ClientConfig? client_config) ?{ (untyped, Remote::Http::Common) -> void } -> void
 
-      def assert_local_arguments: (untyped url, untyped http_client, ClientConfig? client_config) -> void
-
       def process_options: (untyped options, untyped service) -> untyped
+
+      private
+
+      def assert_local_arguments: (untyped url, untyped http_client, ClientConfig? client_config) -> void
     end
   end
 end

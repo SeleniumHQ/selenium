@@ -43,7 +43,7 @@ module Selenium
       # @param [Numeric] open_timeout Seconds to wait for the connection to open.
       # @param [Numeric] read_timeout Seconds to wait for a response.
       # @param [Integer] max_redirects Maximum number of redirects to follow.
-      # @param [Proxy, Hash] proxy Proxy to use for the connection.
+      # @param [Proxy] proxy Proxy to use for the connection.
       # @param [Hash] extra_headers Additional headers to send with each request.
       # @param [String] user_agent Value to send as the User-Agent header.
       # @param [String, URI] server_url URL of the server to connect to.
@@ -89,7 +89,7 @@ module Selenium
         return unless proxy
 
         no_proxy = ENV.fetch('no_proxy', nil) || ENV.fetch('NO_PROXY', nil)
-        proxy = "http://#{proxy}" unless proxy.start_with?('http://')
+        proxy = "http://#{proxy}" unless proxy.match?(%r{\Ahttps?://})
         Proxy.new(http: proxy, no_proxy: no_proxy)
       end
     end

@@ -33,8 +33,7 @@ module Selenium
 
         def initialize(capabilities: nil, options: nil, service: nil, url: nil, http_client: nil, client_config: nil,
                        **)
-          raise ArgumentError, "Can not set :service object on #{self.class}" if service
-          raise Error::WebDriverError, 'Cannot use both :http_client and :client_config' if http_client && client_config
+          assert_arguments(service, url, http_client, client_config)
 
           caps = process_options(options, capabilities)
           http_client ||= Remote::Http::Default.new(client_config: client_config)
@@ -47,6 +46,12 @@ module Selenium
         end
 
         private
+
+        def assert_arguments(service, url, http_client, client_config)
+          raise ArgumentError, "Can not set :service object on #{self.class}" if service
+          raise ArgumentError, 'Cannot use both :http_client and :client_config' if http_client && client_config
+          raise ArgumentError, 'Cannot use both :url and a ClientConfig#server_url' if url && client_config&.server_url
+        end
 
         def devtools_url
           capabilities['se:cdp']

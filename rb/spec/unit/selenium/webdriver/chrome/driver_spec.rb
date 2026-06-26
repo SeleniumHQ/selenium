@@ -103,7 +103,7 @@ module Selenium
         it 'rejects both http_client and client_config' do
           expect {
             described_class.new(http_client: Remote::Http::Default.new, client_config: WebDriver::ClientConfig.new)
-          }.to raise_exception(Error::WebDriverError, /cannot use both/i)
+          }.to raise_exception(ArgumentError, /cannot use both/i)
         end
       end
     end # Chrome

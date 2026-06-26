@@ -77,7 +77,14 @@ module Selenium
           config = ClientConfig.new(server_url: 'http://localhost')
           expect {
             described_class.new(options: Options.chrome, http_client: Remote::Http::Default.new, client_config: config)
-          }.to raise_error(Error::WebDriverError, /cannot use both/i)
+          }.to raise_error(ArgumentError, /cannot use both/i)
+        end
+
+        it 'errors when both url and a client_config server_url are provided' do
+          config = ClientConfig.new(server_url: 'http://config-host:4444/wd/hub')
+          expect {
+            described_class.new(options: Options.chrome, url: 'http://url-host:4444/wd/hub', client_config: config)
+          }.to raise_error(ArgumentError, /Cannot use both :url and a ClientConfig#server_url/)
         end
 
         it 'sets a default file detector' do

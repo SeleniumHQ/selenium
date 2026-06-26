@@ -36,14 +36,6 @@ module Selenium
         end
       end
 
-      def assert_local_arguments(url, http_client, client_config)
-        if url || client_config&.server_url
-          raise ArgumentError, "Can't set the server URL for #{self.class}; the service provides it"
-        elsif http_client && client_config
-          raise Error::WebDriverError, 'Cannot use both :http_client and :client_config'
-        end
-      end
-
       def service_url(service)
         @service_manager = service.launch
         @service_manager.uri
@@ -62,6 +54,16 @@ module Selenium
         service.executable_path = finder.driver_path
         options.browser_version = nil if options.respond_to?(:binary) && options.binary
         options.as_json
+      end
+
+      private
+
+      def assert_local_arguments(url, http_client, client_config)
+        if url || client_config&.server_url
+          raise ArgumentError, "Can't set the server URL for #{self.class}; the service provides it"
+        elsif http_client && client_config
+          raise ArgumentError, 'Cannot use both :http_client and :client_config'
+        end
       end
     end
   end

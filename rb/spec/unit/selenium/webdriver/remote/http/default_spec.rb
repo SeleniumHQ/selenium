@@ -60,7 +60,7 @@ module Selenium
             it 'errors when given both a client_config and timeout options' do
               expect {
                 described_class.new(client_config: ClientConfig.new, open_timeout: 23)
-              }.to raise_error(Error::WebDriverError, /Cannot use both/)
+              }.to raise_error(ArgumentError, /Cannot use both/)
             end
           end
 

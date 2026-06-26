@@ -54,7 +54,7 @@ module Selenium
 
         describe '#initialize' do
           it 'uses the provided http client' do
-            custom_http = instance_double(Remote::Http::Default)
+            custom_http = Remote::Http::Default.new
             bridge = described_class.new(http_client: custom_http)
             expect(bridge.http).to eq(custom_http)
           end

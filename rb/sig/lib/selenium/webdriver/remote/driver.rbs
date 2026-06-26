@@ -12,6 +12,8 @@ module Selenium
 
         private
 
+        def assert_arguments: (untyped service, untyped url, untyped http_client, ClientConfig? client_config) -> void
+
         def devtools_url: () -> untyped
 
         def devtools_version: () -> untyped

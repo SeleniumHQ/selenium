@@ -32,7 +32,7 @@ module Selenium
           # @param [Numeric] read_timeout - Read timeout (seconds) to apply to HTTP client.
           def initialize(client_config: nil, open_timeout: nil, read_timeout: nil)
             if client_config && (open_timeout || read_timeout)
-              raise Error::WebDriverError, 'Cannot use both :client_config and :open_timeout/:read_timeout'
+              raise ArgumentError, 'Cannot use both :client_config and :open_timeout/:read_timeout'
             end
 
             client_config ||= ClientConfig.new
