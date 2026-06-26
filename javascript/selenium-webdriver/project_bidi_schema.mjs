@@ -21,7 +21,7 @@
  * The normalizer has already removed the awkward CDDL shapes, so this is a
  * straight mapping into a small vocabulary:
  *
- *   type node:  { kind: 'record', fields: [field] }
+ *   type node:  { kind: 'record', fields: [field], map?, extensible? }
  *             | { kind: 'enum',   values: [string] }
  *             | { kind: 'union',  variants: [ref], selector }
  *             | { kind: 'alias',  type }
@@ -30,6 +30,9 @@
  *             | { correlated: true }                           // resolved by request id, not the payload
  *   field:      { name, wire, required, type }
  *   type ref:   { primitive } | { const } | { ref } | { enum } | { list } | { map, extensible? } | { union }
+ *               any ref may also carry `nullable: true` (a `/ null` alternative). On a
+ *               record node, `map` is the value type of `* key => value` entries and
+ *               `extensible: true` marks an open `* text => any` record.
  *
  * Types the normalizer synthesized for anonymous CDDL constructs additionally
  * carry `{ synthetic: true, owner, label }`: `owner` is the type the construct

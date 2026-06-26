@@ -328,21 +328,20 @@ export function canonicalizeVariantParams(ast) {
     const detected = detectInlineVariant(def)
     if (!detected) continue
 
+    // Verify every branch is supported BEFORE allocating any names or emitting defs.
+    // Allocating up front would reserve synthetic names (skewing later numeric
+    // suffixes) and could leave orphaned defs if a later branch then bailed out, so
+    // the result would depend on the presence/order of unsupported branches.
+    const entries = detected.branches.map(branchType)
+    if (entries.some((e) => !e)) continue // unexpected branch shape: leave def untouched
+
     const owner = splitName(def.Name)
-    // Stage this def's synthetic records and supersede bookkeeping locally; commit
-    // them only once every branch is supported. A mid-loop bailout would otherwise
-    // leave orphaned (unreferenced) synthetic defs in the output, making it depend
-    // on branch order.
-    const stagedDefs = []
-    const stagedSupersedes = []
-    const memberRefs = detected.branches.map((branch, i) => {
-      const entry = branchType(branch)
-      if (!entry) return null
+    const memberRefs = entries.map((entry, i) => {
       const { fields, label, supersedes } = variantRecord(detected.commonFields, entry, defMap, i)
       const memberLabel = trimRedundantPrefix(owner.local, label)
       const localName = `${owner.local}_${memberLabel}`
       const synthName = alloc(owner.domain ? `${owner.domain}.${localName}` : localName)
-      stagedDefs.push({
+      created.push({
         Type: 'group',
         Name: synthName,
         IsChoiceAddition: false,
@@ -352,17 +351,13 @@ export function canonicalizeVariantParams(ast) {
         'x-selenium-owner': def.Name,
         'x-selenium-label': memberLabel,
       })
-      if (supersedes) stagedSupersedes.push([supersedes, synthName])
+      if (supersedes) {
+        superseded.add(supersedes)
+        supersededBy.set(supersedes, synthName)
+      }
       return groupRef(synthName)
     })
 
-    if (memberRefs.some((r) => r === null)) continue // unexpected branch shape: leave def untouched, drop staged defs
-
-    created.push(...stagedDefs)
-    for (const [source, synthName] of stagedSupersedes) {
-      superseded.add(source)
-      supersededBy.set(source, synthName)
-    }
     delete def.Properties
     def.Type = 'variable'
     def.PropertyType = memberRefs
