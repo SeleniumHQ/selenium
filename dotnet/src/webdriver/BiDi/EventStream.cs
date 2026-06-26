@@ -22,7 +22,7 @@ using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
 
-internal sealed class EventStream<TEventArgs> : IAsyncEnumerable<TEventArgs>, IAsyncDisposable, ISubscriptionSink
+internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubscriptionSink
     where TEventArgs : EventArgs
 {
     private static readonly ILogger _logger = Internal.Logging.Log.GetLogger(typeof(EventStream<TEventArgs>));
@@ -30,6 +30,7 @@ internal sealed class EventStream<TEventArgs> : IAsyncEnumerable<TEventArgs>, IA
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
     private readonly CancellationToken _cancellationToken;
     private int _disposed;
+    private int _enumerating;
 
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
         new UnboundedChannelOptions { SingleReader = true, SingleWriter = true });
@@ -60,11 +61,18 @@ internal sealed class EventStream<TEventArgs> : IAsyncEnumerable<TEventArgs>, IA
         _channel.Writer.TryComplete(error);
     }
 
-    public IAsyncEnumerator<TEventArgs> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+    public IAsyncEnumerable<TEventArgs> ReadAllAsync(CancellationToken cancellationToken = default)
     {
+        if (_disposed != 0) throw new ObjectDisposedException(GetType().FullName);
+
+        if (Interlocked.CompareExchange(ref _enumerating, 1, 0) != 0)
+        {
+            throw new InvalidOperationException("The stream can only be enumerated once.");
+        }
+
         CancellationTokenSource? linkedTokenSource = null;
 
-        var effectiveToken = (_cancellationToken.CanBeCanceled, cancellationToken.CanBeCanceled) switch
+        CancellationToken effectiveToken = (_cancellationToken.CanBeCanceled, cancellationToken.CanBeCanceled) switch
         {
             (true, true) => (linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken, cancellationToken)).Token,
             (true, false) => _cancellationToken,
@@ -72,17 +80,27 @@ internal sealed class EventStream<TEventArgs> : IAsyncEnumerable<TEventArgs>, IA
             _ => default
         };
 
-        return new UnsubscribingAsyncEnumerator(this, ReadChannelAsync(_channel.Reader, effectiveToken), linkedTokenSource);
+        return ReadChannelAsync(_channel.Reader, effectiveToken, linkedTokenSource);
     }
 
-    private static async IAsyncEnumerator<TEventArgs> ReadChannelAsync(ChannelReader<TEventArgs> reader, CancellationToken cancellationToken)
+    private static async IAsyncEnumerable<TEventArgs> ReadChannelAsync(
+        ChannelReader<TEventArgs> reader,
+        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken,
+        CancellationTokenSource? linkedTokenSource)
     {
-        while (await reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
+        try
         {
-            while (reader.TryRead(out var item))
+            while (await reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
             {
-                yield return item;
+                while (reader.TryRead(out var item))
+                {
+                    yield return item;
+                }
             }
+        }
+        finally
+        {
+            linkedTokenSource?.Dispose();
         }
     }
 
@@ -103,40 +121,6 @@ internal sealed class EventStream<TEventArgs> : IAsyncEnumerable<TEventArgs>, IA
             {
                 _channel.Writer.TryComplete();
                 GC.SuppressFinalize(this);
-            }
-        }
-    }
-
-    private sealed class UnsubscribingAsyncEnumerator : IAsyncEnumerator<TEventArgs>
-    {
-        private readonly EventStream<TEventArgs> _owner;
-        private readonly IAsyncEnumerator<TEventArgs> _inner;
-        private readonly CancellationTokenSource? _linkedTokenSource;
-
-        internal UnsubscribingAsyncEnumerator(EventStream<TEventArgs> owner, IAsyncEnumerator<TEventArgs> inner, CancellationTokenSource? linkedTokenSource)
-        {
-            _owner = owner;
-            _inner = inner;
-            _linkedTokenSource = linkedTokenSource;
-        }
-
-        public TEventArgs Current => _inner.Current;
-
-        public ValueTask<bool> MoveNextAsync()
-        {
-            return _inner.MoveNextAsync();
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            try
-            {
-                await _inner.DisposeAsync().ConfigureAwait(false);
-            }
-            finally
-            {
-                _linkedTokenSource?.Dispose();
-                await _owner.DisposeAsync().ConfigureAwait(false);
             }
         }
     }

@@ -117,14 +117,14 @@ public sealed class BiDi : IBiDi
         return await EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => new ValueTask(handler(e)), cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
-    public Task<IAsyncEnumerable<TEventArgs>> StreamAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public Task<IEventStream<TEventArgs>> StreamAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(descriptor);
 
         return StreamAsync<TEventArgs>([descriptor], cancellationToken);
     }
 
-    public async Task<IAsyncEnumerable<TEventArgs>> StreamAsync<TEventArgs>(ImmutableArray<EventDescriptor> descriptors, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public async Task<IEventStream<TEventArgs>> StreamAsync<TEventArgs>(ImmutableArray<EventDescriptor> descriptors, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
         return await EventDispatcher.SubscribeReaderAsync<TEventArgs>(descriptors, cancellationToken: cancellationToken).ConfigureAwait(false);
     }

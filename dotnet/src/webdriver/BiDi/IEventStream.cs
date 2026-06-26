@@ -1,4 +1,4 @@
-// <copyright file="IEventSource.cs" company="Selenium Committers">
+// <copyright file="IEventStream.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,11 +19,8 @@
 
 namespace OpenQA.Selenium.BiDi;
 
-public interface IEventSource<TEventArgs> where TEventArgs : EventArgs
+public interface IEventStream<out TEventArgs> : IAsyncDisposable
+    where TEventArgs : EventArgs
 {
-    Task<ISubscription> SubscribeAsync(Action<TEventArgs> handler, CancellationToken cancellationToken = default);
-
-    Task<ISubscription> SubscribeAsync(Func<TEventArgs, Task> handler, CancellationToken cancellationToken = default);
-
-    Task<IEventStream<TEventArgs>> StreamAsync(CancellationToken cancellationToken = default);
+    IAsyncEnumerable<TEventArgs> ReadAllAsync(CancellationToken cancellationToken = default);
 }

@@ -91,10 +91,10 @@ internal class SessionTests : BiDiTestFixture
     [Test]
     public async Task CanConsumeAsyncEventStream()
     {
-        var sub = await bidi.Log.EntryAdded.StreamAsync();
+        await using var sub = await bidi.Log.EntryAdded.StreamAsync();
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        await using var enumerator = sub.GetAsyncEnumerator(cts.Token);
+        await using var enumerator = sub.ReadAllAsync(cts.Token).GetAsyncEnumerator();
 
         await context.Script.EvaluateAsync("console.log('hello stream');", true);
 
@@ -105,12 +105,12 @@ internal class SessionTests : BiDiTestFixture
     [Test]
     public async Task CanConsumeAsyncEventStreamViaLinq()
     {
-        var sub = await bidi.Log.EntryAdded.StreamAsync();
+        await using var sub = await bidi.Log.EntryAdded.StreamAsync();
 
         await context.Script.EvaluateAsync("console.log('hello stream');", true);
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        var log = await sub.FirstAsync(cts.Token);
+        var log = await sub.ReadAllAsync(cts.Token).FirstAsync();
 
         Assert.That(log.Text, Is.EqualTo("hello stream"));
     }
@@ -120,13 +120,13 @@ internal class SessionTests : BiDiTestFixture
     {
         using var cts = new CancellationTokenSource();
 
-        var sub = await bidi.Log.EntryAdded.StreamAsync(cts.Token);
+        await using var sub = await bidi.Log.EntryAdded.StreamAsync();
 
         cts.Cancel();
 
         Assert.ThrowsAsync<TaskCanceledException>(async () =>
         {
-            await foreach (var _ in sub) { }
+            await foreach (var _ in sub.ReadAllAsync(cts.Token)) { }
         });
     }
 
@@ -135,11 +135,11 @@ internal class SessionTests : BiDiTestFixture
     {
         using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(200));
 
-        var sub = await bidi.Log.EntryAdded.StreamAsync(cts.Token);
+        await using var sub = await bidi.Log.EntryAdded.StreamAsync();
 
         Assert.ThrowsAsync<OperationCanceledException>(async () =>
         {
-            await foreach (var _ in sub) { }
+            await foreach (var _ in sub.ReadAllAsync(cts.Token)) { }
         });
     }
 
