@@ -25,12 +25,6 @@ How the WebDriver BiDi protocol is exposed to users across the bindings. The ADR
 boundary sits between supported Selenium API and internal implementation, and how each binding
 marks it.
 
-### Classic fallback for BiDi-backed commands — _ADR pending_
-
-A defined, cross-binding mechanism for running a supported command over BiDi and falling back to
-Classic when BiDi or the browser does not support it. The mechanism is required; migrating every
-command is not.
-
 ### Network async/event API — _ADR pending_
 
 The cross-binding API for adding, removing, and clearing handlers for requests, responses, and
@@ -51,8 +45,13 @@ These are deferred, not rejected: none blocks Selenium 5.
 
 ### Full classic-over-BiDi migration
 
-Routing every classic command through BiDi. Selenium 5 requires the fallback mechanism, not
-coverage of every command.
+Routing every classic command through BiDi.
+
+### Partial BiDi implementation support
+
+What it means to support a remote end that does not implement every BiDi feature — choosing the
+BiDi or Classic path per session (not every command can switch mid-session), for older browsers or
+drivers with incomplete BiDi. Part of the Classic-migration ADR.
 
 ### DevTools deprecation
 
