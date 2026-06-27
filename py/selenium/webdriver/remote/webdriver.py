@@ -736,10 +736,12 @@ class WebDriver(BaseWebDriver):
     def _is_bidi_enabled(self) -> bool:
         """Returns True if WebDriver BiDi is enabled for this session.
 
-        BiDi is enabled when the remote end advertised a ``webSocketUrl`` in
-        the session capabilities (i.e. the user requested it via options).
+        BiDi is enabled when the remote end advertised a ``webSocketUrl`` URL
+        string in the session capabilities. A remote end may echo the requested
+        capability back as a boolean, so only a string value (the actual socket
+        URL) counts as enabled; otherwise navigation falls back to Classic.
         """
-        return bool(self.caps.get("webSocketUrl"))
+        return isinstance(self.caps.get("webSocketUrl"), str)
 
     def _page_load_readiness(self) -> ReadinessState:
         """Maps the session's ``pageLoadStrategy`` capability to a BiDi readiness state.
