@@ -27,7 +27,7 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void ShouldClickOnSubmitInputElements()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         driver.FindElement(By.Id("submitButton")).Click();
         WaitFor(TitleToBe("We Arrive Here"), "Browser title is not 'We Arrive Here'");
         Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
@@ -36,14 +36,14 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void ClickingOnUnclickableElementsDoesNothing()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         driver.FindElement(By.XPath("//body")).Click();
     }
 
     [Test]
     public void ShouldBeAbleToClickImageButtons()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         driver.FindElement(By.Id("imageButton")).Click();
         WaitFor(TitleToBe("We Arrive Here"), "Browser title is not 'We Arrive Here'");
         Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
@@ -52,7 +52,7 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToSubmitForms()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         driver.FindElement(By.Name("login")).Submit();
         WaitFor(TitleToBe("We Arrive Here"), "Browser title is not 'We Arrive Here'");
         Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
@@ -61,7 +61,7 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void ShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         driver.FindElement(By.Id("checky")).Submit();
         WaitFor(TitleToBe("We Arrive Here"), "Browser title is not 'We Arrive Here'");
         Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
@@ -70,7 +70,7 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void ShouldSubmitAFormWhenAnyElementWithinThatFormIsSubmitted()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         driver.FindElement(By.XPath("//form/p")).Submit();
         WaitFor(TitleToBe("We Arrive Here"), "Browser title is not 'We Arrive Here'");
         Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
@@ -79,7 +79,7 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void ShouldSubmitAFormWithIdSubmit()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         driver.FindElement(By.Id("submit")).Submit();
         WaitFor(TitleToBe("We Arrive Here"), "Browser title is not 'We Arrive Here'");
         Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
@@ -89,7 +89,7 @@ public class FormHandlingTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Does not work")]
     public void ShouldSubmitAFormWithNameSubmit()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         driver.FindElement(By.Name("submit")).Submit();
         WaitFor(TitleToBe("We Arrive Here"), "Browser title is not 'We Arrive Here'");
         Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
@@ -98,14 +98,14 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void ShouldNotBeAbleToSubmitAnInputOutsideAForm()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         Assert.That(() => driver.FindElement(By.Name("SearchableText")).Submit(), Throws.InstanceOf<WebDriverException>());
     }
 
     [Test]
     public void ShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         IWebElement textarea = driver.FindElement(By.Id("keyUpArea"));
         string cheesey = "Brie and cheddar";
         textarea.SendKeys(cheesey);
@@ -115,7 +115,7 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void SendKeysKeepsCapitalization()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         IWebElement textarea = driver.FindElement(By.Id("keyUpArea"));
         string cheesey = "BrIe And CheDdar";
         textarea.SendKeys(cheesey);
@@ -126,7 +126,7 @@ public class FormHandlingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox)]
     public void ShouldSubmitAFormUsingTheNewlineLiteral()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement nestedForm = driver.FindElement(By.Id("nested_form"));
         IWebElement input = nestedForm.FindElement(By.Name("x"));
         input.SendKeys("\n");
@@ -139,7 +139,7 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void ShouldSubmitAFormUsingTheEnterKey()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement nestedForm = driver.FindElement(By.Id("nested_form"));
         IWebElement input = nestedForm.FindElement(By.Name("x"));
         input.SendKeys(Keys.Enter);
@@ -152,7 +152,7 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void ShouldEnterDataIntoFormFields()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement element = driver.FindElement(By.XPath("//form[@name='someForm']/input[@id='username']"));
         String originalValue = element.GetAttribute("value");
         Assert.That(originalValue, Is.EqualTo("change"));
@@ -169,7 +169,7 @@ public class FormHandlingTests : DriverTestFixture
     public void ShouldBeAbleToAlterTheContentsOfAFileUploadInputElement()
     {
         string testFileName = string.Format("test-{0}.txt", Guid.NewGuid().ToString("D"));
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement uploadElement = driver.FindElement(By.Id("upload"));
         Assert.That(uploadElement.GetAttribute("value"), Is.Null.Or.Empty);
 
@@ -197,7 +197,7 @@ public class FormHandlingTests : DriverTestFixture
             return;
         }
 
-        driver.Url = xhtmlFormPage;
+        driver.Url = Urls.XhtmlFormPage;
         IWebElement uploadElement = driver.FindElement(By.Id("file"));
         Assert.That(uploadElement.GetAttribute("value"), Is.Empty);
 
@@ -229,7 +229,7 @@ public class FormHandlingTests : DriverTestFixture
 
         for (int i = 0; i < 2; ++i)
         {
-            driver.Url = formsPage;
+            driver.Url = Urls.FormsPage;
             IWebElement uploadElement = driver.FindElement(By.Id("upload"));
             Assert.That(uploadElement.GetAttribute("value"), Is.Null.Or.EqualTo(string.Empty));
 
@@ -247,7 +247,7 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void SendingKeyboardEventsShouldAppendTextInInputs()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.Id("working"));
         element.SendKeys("Some");
         String value = element.GetAttribute("value");
@@ -261,7 +261,7 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void SendingKeyboardEventsShouldAppendTextInInputsWithExistingValue()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.Id("inputWithText"));
         element.SendKeys(". Some text");
         string value = element.GetAttribute("value");
@@ -272,7 +272,7 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void SendingKeyboardEventsShouldAppendTextInTextAreas()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.Id("withText"));
 
         element.SendKeys(". Some text");
@@ -284,7 +284,7 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void EmptyTextBoxesShouldReturnAnEmptyStringNotNull()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement emptyTextBox = driver.FindElement(By.Id("working"));
         Assert.That(emptyTextBox.GetAttribute("value"), Is.Empty);
 
@@ -295,7 +295,7 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void HandleFormWithJavascriptAction()
     {
-        string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("form_handling_js_submit.html");
+        string url = Urls.WhereIs("form_handling_js_submit.html");
         driver.Url = url;
         IWebElement element = driver.FindElement(By.Id("theForm"));
         element.Submit();
@@ -353,9 +353,9 @@ public class FormHandlingTests : DriverTestFixture
     [IgnoreTarget("net48", "Cannot create inline page with UrlBuilder")]
     public void CanSubmitFormWithSubmitButtonIdEqualToSubmit()
     {
-        string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        string blank = Urls.CreateInlinePage(new InlinePage()
             .WithTitle("Submitted Successfully!"));
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithBody(string.Format("<form action='{0}'>", blank),
             "  <input type='submit' id='submit' value='Submit'>",
             "</form>"));
@@ -368,9 +368,9 @@ public class FormHandlingTests : DriverTestFixture
     [IgnoreTarget("net48", "Cannot create inline page with UrlBuilder")]
     public void CanSubmitFormWithSubmitButtonNameEqualToSubmit()
     {
-        string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        string blank = Urls.CreateInlinePage(new InlinePage()
             .WithTitle("Submitted Successfully!"));
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithBody(string.Format("<form action='{0}'>", blank),
             "  <input type='submit' name='submit' value='Submit'>",
             "</form>"));
@@ -385,7 +385,7 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClearTextFromInputElements()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.Id("working"));
         element.SendKeys("Some text");
         String value = element.GetAttribute("value");
@@ -400,7 +400,7 @@ public class FormHandlingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClearTextFromTextAreas()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.Id("withText"));
         element.SendKeys("Some text");
         String value = element.GetAttribute("value");
@@ -414,7 +414,7 @@ public class FormHandlingTests : DriverTestFixture
 
     private void CheckSubmitButton(string buttonId)
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/html5_submit_buttons.html");
+        driver.Url = Urls.WhereIs("click_tests/html5_submit_buttons.html");
         string name = "Gromit";
 
         driver.FindElement(By.Id("name")).SendKeys(name);

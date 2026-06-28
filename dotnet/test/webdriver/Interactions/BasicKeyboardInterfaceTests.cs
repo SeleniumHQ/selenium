@@ -62,7 +62,7 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
     public void ShouldAllowBasicKeyboardInput()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
 
@@ -82,7 +82,7 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
     public void ShouldAllowSendingKeyDownOnly()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keysEventInput = driver.FindElement(By.Id("theworks"));
 
@@ -107,7 +107,7 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
     public void ShouldAllowSendingKeyUp()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         IWebElement keysEventInput = driver.FindElement(By.Id("theworks"));
 
         // Scroll the element into view before attempting any actions on it.
@@ -134,7 +134,7 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
     public void ShouldAllowSendingKeysWithShiftPressed()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keysEventInput = driver.FindElement(By.Id("theworks"));
 
@@ -158,7 +158,7 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
     public void ShouldAllowSendingKeysToActiveElement()
     {
-        driver.Url = bodyTypingPage;
+        driver.Url = Urls.BodyTypingPage;
 
         Actions actionProvider = new Actions(driver);
         IAction someKeys = actionProvider.SendKeys("ab").Build();
@@ -172,14 +172,14 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [Test]
     public void ThrowsIllegalArgumentExceptionWithNullKeys()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         Assert.That(() => driver.FindElement(By.Id("keyReporter")).SendKeys(null), Throws.InstanceOf<ArgumentNullException>());
     }
 
     [Test]
     public void CanGenerateKeyboardShortcuts()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("keyboard_shortcut.html");
+        driver.Url = Urls.WhereIs("keyboard_shortcut.html");
 
         IWebElement body = driver.FindElement(By.XPath("//body"));
         AssertBackgroundColor(body, Color.White);
@@ -201,7 +201,7 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [Test]
     public void SelectionSelectBySymbol()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("single_text_input.html");
+        driver.Url = Urls.WhereIs("single_text_input.html");
 
         IWebElement input = driver.FindElement(By.Id("textInput"));
 
@@ -243,7 +243,7 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
             controlModifier = Keys.Alt;
         }
 
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("single_text_input.html");
+        driver.Url = Urls.WhereIs("single_text_input.html");
 
         IWebElement input = driver.FindElement(By.Id("textInput"));
 
@@ -286,7 +286,7 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
             controlModifier = Keys.Command;
         }
 
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("single_text_input.html");
+        driver.Url = Urls.WhereIs("single_text_input.html");
 
         IWebElement input = driver.FindElement(By.Id("textInput"));
 
@@ -311,7 +311,7 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
     public void ShouldAllowSendingKeysWithLeftShiftPressed()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keysEventInput = driver.FindElement(By.Id("theworks"));
 

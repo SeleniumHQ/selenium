@@ -51,7 +51,7 @@ public class BasicWheelInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Incorrectly throws out of bounds exception")]
     public void ShouldAllowScrollingToAnElement()
     {
-        driver.Url = scrollFrameOutOfViewport;
+        driver.Url = Urls.ScrollFrameOutOfViewport;
         IWebElement iframe = driver.FindElement(By.TagName("iframe"));
 
         Assert.That(IsInViewport(iframe), Is.False);
@@ -65,7 +65,7 @@ public class BasicWheelInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Incorrectly throws out of bounds exception")]
     public void ShouldScrollFromElementByGivenAmount()
     {
-        driver.Url = scrollFrameOutOfViewport;
+        driver.Url = Urls.ScrollFrameOutOfViewport;
         IWebElement iframe = driver.FindElement(By.TagName("iframe"));
         WheelInputDevice.ScrollOrigin scrollOrigin = new WheelInputDevice.ScrollOrigin
         {
@@ -83,7 +83,7 @@ public class BasicWheelInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Incorrectly throws out of bounds exception")]
     public void ShouldAllowScrollingFromElementByGivenAmountWithOffset()
     {
-        driver.Url = scrollFrameOutOfViewport;
+        driver.Url = Urls.ScrollFrameOutOfViewport;
         IWebElement footer = driver.FindElement(By.TagName("footer"));
         var scrollOrigin = new WheelInputDevice.ScrollOrigin
         {
@@ -103,7 +103,7 @@ public class BasicWheelInterfaceTests : DriverTestFixture
     [Test]
     public void ShouldNotAllowScrollingWhenElementOriginOutOfViewport()
     {
-        driver.Url = scrollFrameOutOfViewport;
+        driver.Url = Urls.ScrollFrameOutOfViewport;
         IWebElement footer = driver.FindElement(By.TagName("footer"));
         var scrollOrigin = new WheelInputDevice.ScrollOrigin
         {
@@ -120,7 +120,7 @@ public class BasicWheelInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Does not work on Mac for some reason")]
     public void ShouldAllowScrollingFromViewportByGivenAmount()
     {
-        driver.Url = scrollFrameOutOfViewport;
+        driver.Url = Urls.ScrollFrameOutOfViewport;
         IWebElement footer = driver.FindElement(By.TagName("footer"));
         int deltaY = footer.Location.Y;
 
@@ -132,7 +132,7 @@ public class BasicWheelInterfaceTests : DriverTestFixture
     [Test]
     public void ShouldAllowScrollingFromViewportByGivenAmountFromOrigin()
     {
-        driver.Url = scrollFrameInViewport;
+        driver.Url = Urls.ScrollFrameInViewport;
         var scrollOrigin = new WheelInputDevice.ScrollOrigin
         {
             Viewport = true,
@@ -151,7 +151,7 @@ public class BasicWheelInterfaceTests : DriverTestFixture
     [Test]
     public void ShouldNotAllowScrollingWhenOriginOffsetIsOutOfViewport()
     {
-        driver.Url = scrollFrameInViewport;
+        driver.Url = Urls.ScrollFrameInViewport;
         var scrollOrigin = new WheelInputDevice.ScrollOrigin
         {
             Viewport = true,
@@ -167,7 +167,7 @@ public class BasicWheelInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Incorrectly throws out of bounds exception")]
     public void ShouldAllowScrollingToADoubleWrappedElement()
     {
-        driver.Url = scrollFrameOutOfViewport;
+        driver.Url = Urls.ScrollFrameOutOfViewport;
         IWebElement iframe = driver.FindElement(By.TagName("iframe"));
 
         Assert.That(IsInViewport(iframe), Is.False);

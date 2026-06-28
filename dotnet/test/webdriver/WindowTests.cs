@@ -67,7 +67,7 @@ public class WindowTests : DriverTestFixture
     {
         IWindow window = driver.Manage().Window;
         Size size = window.Size;
-        driver.Url = framesetPage;
+        driver.Url = Urls.FramesetPage;
         driver.SwitchTo().Frame("fourth");
 
         try
@@ -91,7 +91,7 @@ public class WindowTests : DriverTestFixture
     {
         IWindow window = driver.Manage().Window;
         Size size = window.Size;
-        driver.Url = iframePage;
+        driver.Url = Urls.IframesPage;
         driver.SwitchTo().Frame("iframe1-name");
 
         try
@@ -151,7 +151,7 @@ public class WindowTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToMaximizeTheWindowFromFrame()
     {
-        driver.Url = framesetPage;
+        driver.Url = Urls.FramesetPage;
         ChangeSizeTo(new Size(640, 400));
 
         driver.SwitchTo().Frame("fourth");
@@ -168,7 +168,7 @@ public class WindowTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToMaximizeTheWindowFromIframe()
     {
-        driver.Url = iframePage;
+        driver.Url = Urls.IframesPage;
         ChangeSizeTo(new Size(640, 400));
 
         driver.SwitchTo().Frame("iframe1-name");

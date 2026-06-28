@@ -46,7 +46,7 @@ public class DevToolsConsoleTests : DevToolsTestFixture
 
         await domains.Console.Enable();
 
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("devToolsConsoleTest.html");
+        driver.Url = Urls.WhereIs("devToolsConsoleTest.html");
         ((IJavaScriptExecutor)driver).ExecuteScript("console.log('" + consoleMessage + "');");
         sync.Wait(TimeSpan.FromSeconds(5));
         domains.Console.MessageAdded -= messageAddedHandler;

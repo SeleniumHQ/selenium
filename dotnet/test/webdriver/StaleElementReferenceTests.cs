@@ -27,34 +27,34 @@ public class StaleElementReferenceTests : DriverTestFixture
     [Test]
     public void OldPage()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement elem = driver.FindElement(By.Id("links"));
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => elem.Click(), Throws.InstanceOf<StaleElementReferenceException>());
     }
 
     [Test]
     public void ShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement elem = driver.FindElement(By.Id("links"));
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => { Size elementSize = elem.Size; }, Throws.InstanceOf<StaleElementReferenceException>());
     }
 
     [Test]
     public void ShouldNotCrashWhenQueryingTheAttributeOfAStaleElement()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement heading = driver.FindElement(By.XPath("//h1"));
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         Assert.That(() => { string className = heading.GetAttribute("class"); }, Throws.InstanceOf<StaleElementReferenceException>());
     }
 
     [Test]
     public void RemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement toBeDeleted = driver.FindElement(By.Id("deleted"));
         Assert.That(toBeDeleted.Displayed, Is.True);

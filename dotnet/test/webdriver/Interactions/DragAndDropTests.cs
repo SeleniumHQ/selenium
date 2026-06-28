@@ -39,7 +39,7 @@ public class DragAndDropTests : DriverTestFixture
     [Test]
     public void DragAndDropRelative()
     {
-        driver.Url = dragAndDropPage;
+        driver.Url = Urls.DragAndDropPage;
         IWebElement img = driver.FindElement(By.Id("test1"));
         Point expectedLocation = Drag(img, img.Location, 150, 200);
         Assert.That(img.Location, Is.EqualTo(expectedLocation));
@@ -54,7 +54,7 @@ public class DragAndDropTests : DriverTestFixture
     [Test]
     public void DragAndDropToElement()
     {
-        driver.Url = dragAndDropPage;
+        driver.Url = Urls.DragAndDropPage;
         IWebElement img1 = driver.FindElement(By.Id("test1"));
         IWebElement img2 = driver.FindElement(By.Id("test2"));
         Actions actionProvider = new Actions(driver);
@@ -65,10 +65,10 @@ public class DragAndDropTests : DriverTestFixture
     [Test]
     public void DragAndDropToElementInIframe()
     {
-        driver.Url = iframePage;
+        driver.Url = Urls.IframesPage;
         IWebElement iframe = driver.FindElement(By.TagName("iframe"));
         ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].src = arguments[1]", iframe,
-                                                    dragAndDropPage);
+                                                    Urls.DragAndDropPage);
         driver.SwitchTo().Frame(0);
         IWebElement img1 = WaitFor<IWebElement>(() =>
             {
@@ -91,7 +91,7 @@ public class DragAndDropTests : DriverTestFixture
     [Test]
     public void DragAndDropElementWithOffsetInIframeAtBottom()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("iframeAtBottom.html");
+        driver.Url = Urls.WhereIs("iframeAtBottom.html");
 
         IWebElement iframe = driver.FindElement(By.TagName("iframe"));
         driver.SwitchTo().Frame(iframe);
@@ -117,7 +117,7 @@ public class DragAndDropTests : DriverTestFixture
             return;
         }
 
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("dragAndDropInsideScrolledDiv.html");
+        driver.Url = Urls.WhereIs("dragAndDropInsideScrolledDiv.html");
 
         IWebElement el = driver.FindElement(By.Id("test1"));
         Point initial = el.Location;
@@ -130,7 +130,7 @@ public class DragAndDropTests : DriverTestFixture
     [Test]
     public void ElementInDiv()
     {
-        driver.Url = dragAndDropPage;
+        driver.Url = Urls.DragAndDropPage;
         IWebElement img = driver.FindElement(By.Id("test3"));
         Point startLocation = img.Location;
         Point expectedLocation = Drag(img, startLocation, 100, 100);
@@ -141,7 +141,7 @@ public class DragAndDropTests : DriverTestFixture
     [Test]
     public void DragTooFar()
     {
-        driver.Url = dragAndDropPage;
+        driver.Url = Urls.DragAndDropPage;
         IWebElement img = driver.FindElement(By.Id("test1"));
 
         // Dragging too far left and up does not move the element. It will be at
@@ -162,12 +162,12 @@ public class DragAndDropTests : DriverTestFixture
     {
         Size originalSize = driver.Manage().Window.Size;
         Size testSize = new Size(300, 300);
-        driver.Url = dragAndDropPage;
+        driver.Url = Urls.DragAndDropPage;
 
         driver.Manage().Window.Size = testSize;
         try
         {
-            driver.Url = dragAndDropPage;
+            driver.Url = Urls.DragAndDropPage;
             IWebElement img = driver.FindElement(By.Id("test3"));
             Point expectedLocation = Drag(img, img.Location, 100, 100);
             Assert.That(img.Location, Is.EqualTo(expectedLocation));
@@ -181,7 +181,7 @@ public class DragAndDropTests : DriverTestFixture
     [Test]
     public void DragAndDropOnJQueryItems()
     {
-        driver.Url = droppableItems;
+        driver.Url = Urls.DroppableItems;
 
         IWebElement toDrag = driver.FindElement(By.Id("draggable"));
         IWebElement dropInto = driver.FindElement(By.Id("droppable"));
@@ -219,7 +219,7 @@ public class DragAndDropTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
     public void CanDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow()
     {
-        driver.Url = dragDropOverflowPage;
+        driver.Url = Urls.DragDropOverflowPage;
 
         IWebElement toDrag = driver.FindElement(By.Id("time-marker"));
         IWebElement dragTo = driver.FindElement(By.Id("11am"));
@@ -241,7 +241,7 @@ public class DragAndDropTests : DriverTestFixture
     [Test]
     public void DragAndDropRelativeAndToElement()
     {
-        driver.Url = dragAndDropPage;
+        driver.Url = Urls.DragAndDropPage;
         IWebElement img1 = driver.FindElement(By.Id("test1"));
         IWebElement img2 = driver.FindElement(By.Id("test2"));
         Actions actionProvider = new Actions(driver);

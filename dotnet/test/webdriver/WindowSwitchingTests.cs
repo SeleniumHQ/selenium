@@ -29,7 +29,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not properly handle multiple windows")]
     public void ShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         String current = driver.CurrentWindowHandle;
 
         driver.FindElement(By.LinkText("Open new window")).Click();
@@ -40,7 +40,7 @@ public class WindowSwitchingTests : DriverTestFixture
         WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
         Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
 
-        driver.Url = iframesPage;
+        driver.Url = Urls.IframesPage;
         string handle = driver.CurrentWindowHandle;
         driver.FindElement(By.Id("iframe_page_heading"));
         driver.SwitchTo().Frame("iframe1");
@@ -55,7 +55,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [Test]
     public void ShouldThrowNoSuchWindowException()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         String current = driver.CurrentWindowHandle;
 
         Assert.That(
@@ -69,7 +69,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not properly handle multiple windows")]
     public void ShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle()
     {
-        driver.Url = (xhtmlTestPage);
+        driver.Url = (Urls.XhtmlTestPage);
         String current = driver.CurrentWindowHandle;
         int currentWindowHandles = driver.WindowHandles.Count;
 
@@ -98,7 +98,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not properly handle multiple windows")]
     public void ShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed()
     {
-        driver.Url = (xhtmlTestPage);
+        driver.Url = (Urls.XhtmlTestPage);
         String current = driver.CurrentWindowHandle;
         int currentWindowHandles = driver.WindowHandles.Count;
 
@@ -131,7 +131,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not properly handle multiple windows")]
     public void ShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed()
     {
-        driver.Url = (xhtmlTestPage);
+        driver.Url = (Urls.XhtmlTestPage);
         String current = driver.CurrentWindowHandle;
         int currentWindowHandles = driver.WindowHandles.Count;
 
@@ -162,7 +162,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
     public void ShouldBeAbleToIterateOverAllOpenWindows()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         driver.FindElement(By.Name("windowOne")).Click();
         WaitFor(WindowCountToBe(2), "Window count was not 2");
         driver.FindElement(By.Name("windowTwo")).Click();
@@ -186,7 +186,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not properly handle multiple windows")]
     public void ClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         String currentHandle = driver.CurrentWindowHandle;
 
@@ -213,7 +213,7 @@ public class WindowSwitchingTests : DriverTestFixture
         bool isIEDriver = TestUtilities.IsInternetExplorer(driver);
         bool isIE6 = TestUtilities.IsIE6(driver);
 
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         String currentHandle = driver.CurrentWindowHandle;
 
@@ -242,7 +242,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [Test]
     public void CanObtainAWindowHandle()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         String currentHandle = driver.CurrentWindowHandle;
 
@@ -252,7 +252,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [Test]
     public void FailingToSwitchToAWindowLeavesTheCurrentWindowAsIs()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         String current = driver.CurrentWindowHandle;
 
         Assert.That(
@@ -270,7 +270,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
     public void CanCloseWindowWhenMultipleWindowsAreOpen()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         driver.FindElement(By.Name("windowOne")).Click();
 
         WaitFor(WindowCountToBe(2), "Window count was not 2");
@@ -294,7 +294,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
     public void CanCloseWindowAndSwitchBackToMainWindow()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         ReadOnlyCollection<string> currentWindowHandles = driver.WindowHandles;
         string mainHandle = driver.CurrentWindowHandle;
@@ -329,7 +329,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
     public void ClosingOnlyWindowShouldNotCauseTheBrowserToHang()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         driver.Close();
     }
 
@@ -339,7 +339,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/610")]
     public void ShouldFocusOnTheTopMostFrameAfterSwitchingToAWindow()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("window_switching_tests/page_with_frame.html");
+        driver.Url = Urls.WhereIs("window_switching_tests/page_with_frame.html");
 
         ReadOnlyCollection<string> currentWindowHandles = driver.WindowHandles;
         string mainWindow = driver.CurrentWindowHandle;
@@ -363,7 +363,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not properly handle multiple windows")]
     public void ShouldGetBrowserHandles()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         driver.FindElement(By.LinkText("Open new window")).Click();
 
         WaitFor(WindowCountToBe(2), "Window count was not 2");
@@ -385,7 +385,7 @@ public class WindowSwitchingTests : DriverTestFixture
         driver.SwitchTo().Window(handle2);
         driver.Close();
         driver.SwitchTo().Window(handle1);
-        driver.Url = macbethPage;
+        driver.Url = Urls.MacbethPage;
     }
 
     [Test]
@@ -393,7 +393,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void CloseShouldCloseCurrentHandleOnly()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         driver.FindElement(By.LinkText("Open new window")).Click();
 
         WaitFor(WindowCountToBe(2), "Window count was not 2");
@@ -417,7 +417,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToCreateANewWindow()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         string originalHandle = driver.CurrentWindowHandle;
         driver.SwitchTo().NewWindow(WindowType.Tab);
         WaitFor(WindowCountToBe(2), "Window count was not 2");

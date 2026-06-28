@@ -77,7 +77,7 @@ internal class SessionTests : BiDiTestFixture
             }
         });
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("blank.html"), new() { Wait = OpenQA.Selenium.BiDi.BrowsingContext.ReadinessState.Complete });
+        await context.NavigateAsync(Urls.BlankPage, new() { Wait = OpenQA.Selenium.BiDi.BrowsingContext.ReadinessState.Complete });
 
         var e1 = await tcs1.Task.WaitAsync(TimeSpan.FromSeconds(5));
         var e2 = await tcs2.Task.WaitAsync(TimeSpan.FromSeconds(5));

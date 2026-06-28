@@ -30,7 +30,7 @@ public class DriverElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementById()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement e = driver.FindElement(By.Id("oneline"));
         Assert.That(e.Text, Is.EqualTo("A single line of text"));
     }
@@ -38,7 +38,7 @@ public class DriverElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementByLinkText()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement e = driver.FindElement(By.LinkText("link with leading space"));
         Assert.That(e.Text, Is.EqualTo("link with leading space"));
     }
@@ -46,7 +46,7 @@ public class DriverElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementByName()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         IWebElement e = driver.FindElement(By.Name("div1"));
         Assert.That(e.Text, Is.EqualTo("hello world hello world"));
     }
@@ -54,7 +54,7 @@ public class DriverElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementByXPath()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement e = driver.FindElement(By.XPath("/html/body/p[1]"));
         Assert.That(e.Text, Is.EqualTo("A single line of text"));
     }
@@ -62,7 +62,7 @@ public class DriverElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementByClassName()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         IWebElement e = driver.FindElement(By.ClassName("one"));
         Assert.That(e.Text, Is.EqualTo("Span with class of one"));
     }
@@ -70,7 +70,7 @@ public class DriverElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementByPartialLinkText()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement e = driver.FindElement(By.PartialLinkText("leading space"));
         Assert.That(e.Text, Is.EqualTo("link with leading space"));
     }
@@ -78,7 +78,7 @@ public class DriverElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementByTagName()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement e = driver.FindElement(By.TagName("H1"));
         Assert.That(e.Text, Is.EqualTo("Heading"));
     }
@@ -90,7 +90,7 @@ public class DriverElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementsById()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("test_id"));
         Assert.That(elements, Has.Count.EqualTo(2));
     }
@@ -98,7 +98,7 @@ public class DriverElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementsByLinkText()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.LinkText("hello world"));
         Assert.That(elements, Has.Count.EqualTo(12));
     }
@@ -106,7 +106,7 @@ public class DriverElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementsByName()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Name("form1"));
         Assert.That(elements, Has.Count.EqualTo(4));
     }
@@ -114,7 +114,7 @@ public class DriverElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementsByXPath()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.XPath("//a"));
         Assert.That(elements, Has.Count.EqualTo(12));
     }
@@ -122,7 +122,7 @@ public class DriverElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementsByClassName()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("one"));
         Assert.That(elements, Has.Count.EqualTo(3));
     }
@@ -130,7 +130,7 @@ public class DriverElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementsByPartialLinkText()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.PartialLinkText("world"));
         Assert.That(elements, Has.Count.EqualTo(12));
     }
@@ -138,7 +138,7 @@ public class DriverElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementsByTagName()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.TagName("a"));
         Assert.That(elements, Has.Count.EqualTo(12));
     }

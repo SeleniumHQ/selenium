@@ -78,7 +78,7 @@ public class IeSpecificTests : DriverTestFixture
         bool passed = true;
         string errors = string.Empty;
 
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("keyboard_shortcut.html");
+        driver.Url = Urls.WhereIs("keyboard_shortcut.html");
         IWebElement body = driver.FindElement(By.CssSelector("body"));
         Actions actions = new Actions(driver);
         for (int i = 0; i < keyComboNames.Count; i++)
@@ -122,7 +122,7 @@ public class IeSpecificTests : DriverTestFixture
     [Test]
     public void InputOnChangeAlert()
     {
-        driver.Url = alertsPage;
+        driver.Url = Urls.AlertsPage;
         driver.FindElement(By.Id("input")).Clear();
         IAlert alert = WaitFor<IAlert>(() => { return driver.SwitchTo().Alert(); }, "No alert found");
         alert.Accept();
@@ -133,7 +133,7 @@ public class IeSpecificTests : DriverTestFixture
     {
         try
         {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("frameScrollPage.html");
+            driver.Url = Urls.WhereIs("frameScrollPage.html");
 
             WaitFor(FrameToExistAndBeSwitchedTo("scrolling_frame"), "No frame with name or id 'scrolling_frame' found");
             IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
@@ -157,7 +157,7 @@ public class IeSpecificTests : DriverTestFixture
     [Test]
     public void AlertSelectTest()
     {
-        driver.Url = alertsPage;
+        driver.Url = Urls.AlertsPage;
         driver.FindElement(By.Id("value1")).Click();
         IAlert alert = WaitFor<IAlert>(() => { return driver.SwitchTo().Alert(); }, "No alert found");
         alert.Accept();
@@ -166,11 +166,11 @@ public class IeSpecificTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToBrowseTransformedXml()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         driver.FindElement(By.Id("linkId")).Click();
 
         // Using transformed XML (Issue 1203)
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("transformable.xml");
+        driver.Url = Urls.WhereIs("transformable.xml");
         driver.FindElement(By.Id("x")).Click();
         // Sleep is required; driver may not be fast enough after this Click().
         System.Threading.Thread.Sleep(2000);
@@ -186,8 +186,8 @@ public class IeSpecificTests : DriverTestFixture
     {
         IWebDriver secondDriver = new InternetExplorerDriver();
 
-        driver.Url = xhtmlTestPage;
-        secondDriver.Url = formsPage;
+        driver.Url = Urls.XhtmlTestPage;
+        secondDriver.Url = Urls.FormsPage;
 
         Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
         Assert.That(secondDriver.Title, Is.EqualTo("We Arrive Here"));
@@ -199,7 +199,7 @@ public class IeSpecificTests : DriverTestFixture
     [Test]
     public void ShouldPropagateSessionCookies()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("sessionCookie.html");
+        driver.Url = Urls.WhereIs("sessionCookie.html");
         IWebElement setColorButton = driver.FindElement(By.Id("setcolorbutton"));
         setColorButton.Click();
         IWebElement openWindowButton = driver.FindElement(By.Id("openwindowbutton"));
@@ -216,7 +216,7 @@ public class IeSpecificTests : DriverTestFixture
     [Test]
     public void ShouldHandleShowModalDialogWindows()
     {
-        driver.Url = alertsPage;
+        driver.Url = Urls.AlertsPage;
         string originalWindowHandle = driver.CurrentWindowHandle;
         IWebElement element = driver.FindElement(By.Id("dialog"));
         element.Click();
@@ -252,7 +252,7 @@ public class IeSpecificTests : DriverTestFixture
     [Test]
     public void ScrollTest()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll.html");
+        driver.Url = Urls.WhereIs("scroll.html");
         driver.FindElement(By.Id("line8")).Click();
         Assert.That(driver.FindElement(By.Id("clicked")).Text, Is.EqualTo("line8"));
         driver.FindElement(By.Id("line1")).Click();
@@ -262,7 +262,7 @@ public class IeSpecificTests : DriverTestFixture
     [Test]
     public void ShouldNotScrollOverflowElementsWhichAreVisible()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll2.html");
+        driver.Url = Urls.WhereIs("scroll2.html");
         var list = driver.FindElement(By.TagName("ul"));
         var item = list.FindElement(By.Id("desired"));
         item.Click();
@@ -272,7 +272,7 @@ public class IeSpecificTests : DriverTestFixture
     [Test]
     public void ShouldNotScrollIfAlreadyScrolledAndElementIsInView()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");
+        driver.Url = Urls.WhereIs("scroll3.html");
         driver.FindElement(By.Id("button1")).Click();
         var scrollTop = GetScrollTop();
         driver.FindElement(By.Id("button2")).Click();
@@ -282,7 +282,7 @@ public class IeSpecificTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToHandleCascadingModalDialogs()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("modal_dialogs/modalindex.html");
+        driver.Url = Urls.WhereIs("modal_dialogs/modalindex.html");
         string parentHandle = driver.CurrentWindowHandle;
 
         // Launch first modal
@@ -317,7 +317,7 @@ public class IeSpecificTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToHandleCascadingModalDialogsLaunchedWithJavaScriptLinks()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("modal_dialogs/modalindex.html");
+        driver.Url = Urls.WhereIs("modal_dialogs/modalindex.html");
         string parentHandle = driver.CurrentWindowHandle;
 
         // Launch first modal
@@ -353,7 +353,7 @@ public class IeSpecificTests : DriverTestFixture
     [Test]
     public void TestInvisibleZOrder()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("elementObscuredByInvisibleElement.html");
+        driver.Url = Urls.WhereIs("elementObscuredByInvisibleElement.html");
         IWebElement element = driver.FindElement(By.CssSelector("#gLink"));
         element.Click();
     }

@@ -31,7 +31,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         object result = ExecuteScript("return document.title;");
 
@@ -45,7 +45,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         object result = ExecuteScript("return document.title.length;");
 
@@ -59,7 +59,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         object result = ExecuteScript("return document.getElementById('id1');");
 
@@ -73,7 +73,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         object result = ExecuteScript("return true;");
 
@@ -90,7 +90,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
             return;
         }
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         List<object> expectedResult = new List<object>();
         expectedResult.Add("zero");
         expectedResult.Add("one");
@@ -109,7 +109,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
             return;
         }
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         List<object> expectedResult = new List<object>();
         expectedResult.Add("zero");
         List<object> subList = new List<object>();
@@ -129,7 +129,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
             return;
         }
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         object result = ExecuteScript("return {abc: '123', tired: false};");
         Assert.That(result, Is.InstanceOf<Dictionary<string, object>>());
@@ -155,7 +155,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
             return;
         }
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         Dictionary<string, object> expectedPerson = new Dictionary<string, object>();
         expectedPerson.Add("first", "John");
@@ -190,14 +190,14 @@ public class ExecutingJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAComplexObject()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         object result = ExecuteScript("return window.location;");
 
         Assert.That(result, Is.InstanceOf<Dictionary<string, object>>());
         Dictionary<string, object> map = (Dictionary<string, object>)result;
         Assert.That(map["protocol"], Is.EqualTo("http:"));
-        Assert.That(map["href"], Is.EqualTo(javascriptPage));
+        Assert.That(map["href"], Is.EqualTo(Urls.JavascriptPage));
     }
 
     [Test]
@@ -208,7 +208,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
             return;
         }
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         long expectedResult = 1L;
         object result = ExecuteScript("return arguments[0];", expectedResult);
         Assert.That(result, Is.InstanceOf<int>().Or.InstanceOf<long>());
@@ -223,7 +223,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
             return;
         }
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         double expectedResult = 1.2;
         object result = ExecuteScript("return arguments[0];", expectedResult);
         Assert.That(result, Is.InstanceOf<float>().Or.InstanceOf<double>());
@@ -236,7 +236,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => ExecuteScript("return squiggle();"), Throws.InstanceOf<WebDriverException>());
     }
 
@@ -248,7 +248,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, ".NET language bindings do not properly parse JavaScript stack trace")]
     public void ShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         string js = "function functionB() { throw Error('errormessage'); };"
                     + "function functionA() { functionB(); };"
                     + "functionA();";
@@ -266,7 +266,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         ExecuteScript("displayMessage('I like cheese');");
         string text = driver.FindElement(By.Id("result")).Text;
 
@@ -279,7 +279,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         string text = (string)ExecuteScript("return arguments[0] == 'Hello!' ? 'Hello!' : 'Goodbye!';", "Hello!");
         Assert.That(text, Is.EqualTo("Hello!"));
@@ -294,7 +294,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         bool result = (bool)ExecuteScript(function, true);
         Assert.That(result, Is.True);
@@ -311,7 +311,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         string function = string.Format(functionTemplate, 3);
         long result = (long)ExecuteScript(function, 3);
@@ -337,7 +337,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         IWebElement button = driver.FindElement(By.Id("plainButton"));
         string value = (string)ExecuteScript("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];", button);
 
@@ -352,7 +352,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
             return;
         }
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         object[] array = new object[] { "zero", 1, true, 3.14159 };
         long length = (long)ExecuteScript("return arguments[0].length", array);
         Assert.That(length, Is.EqualTo(array.Length));
@@ -366,7 +366,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
             return;
         }
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         object[] array = new object[] { "zero", 1, true, 3.14159, false };
         long length = (long)ExecuteScript("return arguments[1].length", "string", array);
         Assert.That(length, Is.EqualTo(array.Length));
@@ -380,7 +380,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
             return;
         }
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         List<object> collection = new List<object>();
         collection.Add("Cheddar");
         collection.Add("Brie");
@@ -395,7 +395,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         Assert.That(
             () => ExecuteScript("return arguments[0];", driver),
@@ -410,7 +410,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
             return;
         }
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         string result = (string)ExecuteScript("return arguments[0] + arguments[1];", "one", "two");
 
         Assert.That(result, Is.EqualTo("onetwo"));
@@ -419,7 +419,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo()
     {
-        driver.Url = richTextPage;
+        driver.Url = Urls.RichTextPage;
 
         driver.SwitchTo().Frame("editFrame");
         IWebElement body = (IWebElement)((IJavaScriptExecutor)driver).ExecuteScript("return document.body");
@@ -444,7 +444,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
     [Test]
     public void JavascriptStringHandlingShouldWorkAsExpected()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         string value = (string)ExecuteScript("return '';");
         Assert.That(value, Is.Empty);
@@ -459,7 +459,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToExecuteABigChunkOfJavascriptCode()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         string path = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, ".." + System.IO.Path.DirectorySeparatorChar + "..");
         string[] fileList = System.IO.Directory.GetFiles(path, "jquery-1.2.6.min.js", System.IO.SearchOption.AllDirectories);
         if (fileList.Length > 0)
@@ -478,7 +478,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
     {
         using IJavaScriptEngine jsEngine = new JavaScriptEngine(driver);
 
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         PinnedScript script = await jsEngine.PinScript("return document.title;");
         for (int i = 0; i < 5; i++)
@@ -600,7 +600,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToExecuteScriptAndReturnElementsList()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         String scriptToExec = "return document.getElementsByName('snack');";
 
         object resultObject = ((IJavaScriptExecutor)driver).ExecuteScript(scriptToExec);
@@ -613,7 +613,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToCreateAPersistentValue()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         ExecuteScript("document.alerts = []");
         ExecuteScript("document.alerts.push('hello world');");
@@ -625,7 +625,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToHandleAnArrayOfElementsAsAnObjectArray()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         ReadOnlyCollection<IWebElement> forms = driver.FindElements(By.TagName("form"));
         object[] args = new object[] { forms };
@@ -638,7 +638,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToPassADictionaryAsAParameter()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         List<int> nums = new List<int>() { 1, 2 };
         Dictionary<string, object> args = new Dictionary<string, object>();
@@ -658,11 +658,11 @@ public class ExecutingJavascriptTests : DriverTestFixture
             return;
         }
 
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         IWebElement el = driver.FindElement(By.Id("oneline"));
 
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         Dictionary<string, object> args = new Dictionary<string, object>();
         args["key"] = new object[] { "a", new object[] { "zero", 1, true, 3.14159, false, el }, "c" };
@@ -676,7 +676,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
     [IgnoreBrowser(Browser.Edge, "Browser does not return Date object.")]
     public void ShouldBeAbleToReturnADateObject()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         string date = (string)ExecuteScript("return new Date();");
         DateTime.Parse(date);
@@ -690,7 +690,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Driver does not return the documentElement object.")]
     public void ShouldReturnDocumentElementIfDocumentIsReturned()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         object value = ExecuteScript("return document");
 
@@ -701,7 +701,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldHandleObjectThatThatHaveToJSONMethod()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         object value = ExecuteScript("return window.performance.timing");
 
@@ -711,7 +711,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldHandleRecursiveStructures()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         Assert.That(
             () => ExecuteScript(
@@ -796,7 +796,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
             return browserbot.getOuterHTML.apply(browserbot, arguments);
             """;
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         IWebElement element = driver.FindElement(By.TagName("body"));
         object x = ExecuteScript(script, element);
     }
@@ -808,7 +808,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         string text = (string)ExecuteScript("return arguments[0] + arguments[1] + arguments[2] + arguments[3];", "Hello,", " ", "world", "!");
 
         Assert.That(text, Is.EqualTo("Hello, world!"));
@@ -823,7 +823,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         string text = (string)ExecuteScript(function, true, true);
         Assert.That(text, Is.EqualTo("TrueTrue"));
@@ -846,7 +846,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         long result = (long)ExecuteScript(function, 30, 12);
         Assert.That(result, Is.EqualTo(42));
@@ -870,7 +870,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         double result = (double)ExecuteScript(function, (double)4.2);
         Assert.That(result, Is.EqualTo(4.2));
@@ -899,7 +899,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         double result = (double)ExecuteScript(function, 30.1, 12.1);
         Assert.That(result, Is.EqualTo(42.2));
@@ -921,7 +921,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         IWebElement button = driver.FindElement(By.Id("plainButton"));
         IWebElement dynamo = driver.FindElement(By.Id("dynamo"));
         string value = (string)ExecuteScript("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'] + arguments[1].innerHTML;", button, dynamo);
@@ -935,7 +935,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement dynamo = driver.FindElement(By.Id("dynamo"));
         string result = (string)ExecuteScript("return arguments[0].innerHTML + arguments[1].toString() + arguments[2].toString() + arguments[3] + arguments[4]",
@@ -957,7 +957,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
         if (!(driver is IJavaScriptExecutor))
             return;
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         ExecuteScript(function, "2014-05-20T20:00:00+08:00");
         IWebElement element = driver.FindElement(By.Id("result"));

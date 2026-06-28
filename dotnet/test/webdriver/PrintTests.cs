@@ -32,7 +32,7 @@ public class PrintTests : DriverTestFixture
 
         printer = driver as ISupportsPrint;
 
-        driver.Navigate().GoToUrl(this.printPage);
+        driver.Navigate().GoToUrl(Urls.PrintPage);
     }
 
     [Test]

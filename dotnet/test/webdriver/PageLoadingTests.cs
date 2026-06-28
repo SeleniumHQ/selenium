@@ -47,7 +47,7 @@ public class PageLoadingTests : DriverTestFixture
     {
         InitLocalDriver(PageLoadStrategy.None);
 
-        string slowPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=5");
+        string slowPage = Urls.WhereIs("sleep?time=5");
 
         DateTime start = DateTime.Now;
         localDriver.Url = slowPage;
@@ -64,7 +64,7 @@ public class PageLoadingTests : DriverTestFixture
     {
         InitLocalDriver(PageLoadStrategy.None);
 
-        string slowPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=5");
+        string slowPage = Urls.WhereIs("sleep?time=5");
 
         // We discard the element, but want a check to make sure the page is loaded
         WaitFor(() => localDriver.FindElement(By.TagName("body")), TimeSpan.FromSeconds(10), "did not find body");
@@ -84,7 +84,7 @@ public class PageLoadingTests : DriverTestFixture
     {
         InitLocalDriver(PageLoadStrategy.Eager);
 
-        string slowPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("slowLoadingResourcePage.html");
+        string slowPage = Urls.WhereIs("slowLoadingResourcePage.html");
 
         DateTime start = DateTime.Now;
         localDriver.Url = slowPage;
@@ -104,7 +104,7 @@ public class PageLoadingTests : DriverTestFixture
     {
         InitLocalDriver(PageLoadStrategy.Eager);
 
-        string slowPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("slowLoadingResourcePage.html");
+        string slowPage = Urls.WhereIs("slowLoadingResourcePage.html");
         localDriver.Url = slowPage;
 
         // We discard the element, but want a check to make sure the GET actually
@@ -129,7 +129,7 @@ public class PageLoadingTests : DriverTestFixture
     {
         InitLocalDriver(PageLoadStrategy.Eager);
 
-        string slowPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=3");
+        string slowPage = Urls.WhereIs("sleep?time=3");
 
         localDriver.Url = slowPage;
 
@@ -140,7 +140,7 @@ public class PageLoadingTests : DriverTestFixture
     [Test]
     public void NormalStrategyShouldWaitForDocumentToBeLoaded()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         Assert.That(driver.Title, Is.EqualTo("Hello WebDriver"));
     }
@@ -149,14 +149,14 @@ public class PageLoadingTests : DriverTestFixture
     [IgnoreBrowser(Browser.All, "Server not properly redirecting")]
     public void ShouldFollowRedirectsSentInTheHttpResponseHeaders()
     {
-        driver.Url = redirectPage;
+        driver.Url = Urls.RedirectPage;
         Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
     }
 
     [Test]
     public void ShouldFollowMetaRedirects()
     {
-        driver.Url = metaRedirectPage;
+        driver.Url = Urls.MetaRedirectPage;
         WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
         Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
     }
@@ -165,8 +165,8 @@ public class PageLoadingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Browser doesn't see subsequent navigation to a fragment as a new navigation.")]
     public void ShouldBeAbleToGetAFragmentOnTheCurrentPage()
     {
-        driver.Url = xhtmlTestPage;
-        driver.Url = xhtmlTestPage + "#text";
+        driver.Url = Urls.XhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage + "#text";
         driver.FindElement(By.Id("id1"));
     }
 
@@ -187,7 +187,7 @@ public class PageLoadingTests : DriverTestFixture
     [Test]
     public void ShouldReturnUrlOnNotExistedPage()
     {
-        string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("not_existed_page.html");
+        string url = Urls.WhereIs("not_existed_page.html");
         driver.Url = url;
         Assert.That(driver.Url, Is.EqualTo(url));
     }
@@ -195,7 +195,7 @@ public class PageLoadingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded()
     {
-        driver.Url = framesetPage;
+        driver.Url = Urls.FramesetPage;
 
         driver.SwitchTo().Frame(0);
         IWebElement pageNumber = driver.FindElement(By.XPath("//span[@id='pageNumber']"));
@@ -211,7 +211,7 @@ public class PageLoadingTests : DriverTestFixture
     public void ShouldDoNothingIfThereIsNothingToGoBackTo()
     {
         string originalTitle = driver.Title;
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         driver.Navigate().Back();
         // We may have returned to the browser's home page
@@ -227,7 +227,7 @@ public class PageLoadingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToNavigateBackInTheBrowserHistory()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         driver.FindElement(By.Id("imageButton")).Submit();
         WaitFor(TitleToBeEqualTo("We Arrive Here"), "Browser title was not 'We Arrive Here'");
@@ -241,7 +241,7 @@ public class PageLoadingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         driver.FindElement(By.Name("sameWindow")).Click();
         WaitFor(TitleToBeEqualTo("This page has iframes"), "Browser title was not 'This page has iframes'");
@@ -255,7 +255,7 @@ public class PageLoadingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToNavigateForwardsInTheBrowserHistory()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         driver.FindElement(By.Id("imageButton")).Submit();
         WaitFor(TitleToBeEqualTo("We Arrive Here"), "Browser title was not 'We Arrive Here'");
@@ -276,7 +276,7 @@ public class PageLoadingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Browser does not support using insecure SSL certs")]
     public void ShouldBeAbleToAccessPagesWithAnInsecureSslCertificate()
     {
-        String url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("simpleTest.html");
+        String url = Urls.WhereIsSecure("simpleTest.html");
         driver.Url = url;
 
         // This should work
@@ -286,7 +286,7 @@ public class PageLoadingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToRefreshAPage()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         driver.Navigate().Refresh();
 
@@ -301,7 +301,7 @@ public class PageLoadingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Browser does, in fact, hang in this case.")]
     public void ShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
     {
-        driver.Url = documentWrite;
+        driver.Url = Urls.DocumentWrite;
 
         // If this command succeeds, then all is well.
         driver.FindElement(By.XPath("//body"));
@@ -321,7 +321,7 @@ public class PageLoadingTests : DriverTestFixture
     {
         long pageLoadTimeout = 2;
         long pageLoadTimeBuffer = 10;
-        string slowLoadingPageUrl = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=" + (pageLoadTimeout + pageLoadTimeBuffer));
+        string slowLoadingPageUrl = Urls.WhereIs("sleep?time=" + (pageLoadTimeout + pageLoadTimeBuffer));
         driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(2);
         AssertPageLoadTimeoutIsEnforced(() => driver.Url = slowLoadingPageUrl, pageLoadTimeout, pageLoadTimeBuffer);
         AssertPageLoadTimeoutIsEnforced(() => driver.Url = slowLoadingPageUrl, pageLoadTimeout, pageLoadTimeBuffer);
@@ -341,7 +341,7 @@ public class PageLoadingTests : DriverTestFixture
         }
 
         // Load another page after get() timed out but before test HTTP server served previous page.
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         WaitFor(TitleToBeEqualTo("XHTML Test Page"), "Title was not expected value");
     }
 
@@ -351,7 +351,7 @@ public class PageLoadingTests : DriverTestFixture
     {
         driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(2);
 
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("page_with_link_to_slow_loading_page.html");
+        driver.Url = Urls.WhereIs("page_with_link_to_slow_loading_page.html");
         IWebElement link = WaitFor(() => driver.FindElement(By.Id("link-to-slow-loading-page")), "Could not find link");
 
         try
@@ -364,7 +364,7 @@ public class PageLoadingTests : DriverTestFixture
         }
 
         // Load another page after get() timed out but before test HTTP server served previous page.
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         WaitFor(TitleToBeEqualTo("XHTML Test Page"), "Title was not expected value");
     }
 
@@ -373,7 +373,7 @@ public class PageLoadingTests : DriverTestFixture
     public void ShouldTimeoutIfAPageTakesTooLongToRefresh()
     {
         // Get the sleeping servlet with a pause of 5 seconds
-        string slowLoadingPageUrl = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=5");
+        string slowLoadingPageUrl = Urls.WhereIs("sleep?time=5");
         driver.Url = slowLoadingPageUrl;
 
         driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(2);
@@ -388,7 +388,7 @@ public class PageLoadingTests : DriverTestFixture
         }
 
         // Load another page after get() timed out but before test HTTP server served previous page.
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         WaitFor(TitleToBeEqualTo("XHTML Test Page"), "Title was not expected value");
     }
 
@@ -442,7 +442,7 @@ public class PageLoadingTests : DriverTestFixture
     {
         // Test page will load this many seconds longer than WD pageLoadTimeout.
         long pageLoadTimeBufferInSeconds = 10;
-        string slowLoadingPageUrl = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=" + (webDriverPageLoadTimeoutInSeconds + pageLoadTimeBufferInSeconds));
+        string slowLoadingPageUrl = Urls.WhereIs("sleep?time=" + (webDriverPageLoadTimeoutInSeconds + pageLoadTimeBufferInSeconds));
         driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(webDriverPageLoadTimeoutInSeconds);
         AssertPageLoadTimeoutIsEnforced(() => driver.Url = slowLoadingPageUrl, webDriverPageLoadTimeoutInSeconds, pageLoadTimeBufferInSeconds);
     }

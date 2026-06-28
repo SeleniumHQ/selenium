@@ -25,7 +25,7 @@ public class TagNameTests : DriverTestFixture
     [Test]
     public void ShouldReturnInput()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement selectBox = driver.FindElement(By.Id("cheese"));
         Assert.That(selectBox.TagName, Is.EqualTo("input").IgnoreCase);
     }

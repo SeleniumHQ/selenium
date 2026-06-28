@@ -31,7 +31,7 @@ public class ErrorsTests : DriverTestFixture
     [Test]
     public void ShouldNotGenerateErrorsWhenOpeningANewPage()
     {
-        driver.Url = errorsPage;
+        driver.Url = Urls.ErrorsPage;
         object result = ((IJavaScriptExecutor)driver).ExecuteScript("return window.ERRORS.join('\\n');");
         Assert.That(result, Is.Empty, "Should have no errors");
     }

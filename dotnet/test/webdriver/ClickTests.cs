@@ -27,7 +27,7 @@ public class ClickTests : DriverTestFixture
     [SetUp]
     public void SetupMethod()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("clicks.html");
+        driver.Url = Urls.ClicksPage;
     }
 
     [TearDown]
@@ -107,7 +107,7 @@ public class ClickTests : DriverTestFixture
 
     public void CanClickOnAnElementWithTopSetToANegativeNumber()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("styledPage.html");
+        driver.Url = Urls.WhereIs("styledPage.html");
         IWebElement searchBox = driver.FindElement(By.Name("searchBox"));
         searchBox.SendKeys("Cheese");
         driver.FindElement(By.Name("btn")).Click();
@@ -119,7 +119,7 @@ public class ClickTests : DriverTestFixture
     [Test]
     public void ShouldSetRelatedTargetForMouseOver()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         driver.FindElement(By.Id("movable")).Click();
 
@@ -151,7 +151,7 @@ public class ClickTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void ShouldOnlyFollowHrefOnce()
     {
-        driver.Url = clicksPage;
+        driver.Url = Urls.ClicksPage;
         int windowHandlesBefore = driver.WindowHandles.Count;
 
         driver.FindElement(By.Id("new-window")).Click();
@@ -162,7 +162,7 @@ public class ClickTests : DriverTestFixture
     [Test]
     public void ClickingLabelShouldSetCheckbox()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         driver.FindElement(By.Id("label-for-checkbox-with-label")).Click();
 
@@ -213,7 +213,7 @@ public class ClickTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickOnAnElementInTheViewport()
     {
-        string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_out_of_bounds.html");
+        string url = Urls.WhereIs("click_out_of_bounds.html");
 
         driver.Url = url;
         IWebElement button = driver.FindElement(By.Id("button"));
@@ -223,7 +223,7 @@ public class ClickTests : DriverTestFixture
     [Test]
     public void ClicksASurroundingStrongTag()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("ClickTest_testClicksASurroundingStrongTag.html");
+        driver.Url = Urls.WhereIs("ClickTest_testClicksASurroundingStrongTag.html");
         driver.FindElement(By.TagName("a")).Click();
         WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
     }
@@ -232,15 +232,15 @@ public class ClickTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=1502636")]
     public void CanClickAnImageMapArea()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/google_map.html");
+        driver.Url = Urls.WhereIs("click_tests/google_map.html");
         driver.FindElement(By.Id("rectG")).Click();
         WaitFor(() => { return driver.Title == "Target Page 1"; }, "Browser title was not 'Target Page 1'");
 
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/google_map.html");
+        driver.Url = Urls.WhereIs("click_tests/google_map.html");
         driver.FindElement(By.Id("circleO")).Click();
         WaitFor(() => { return driver.Title == "Target Page 2"; }, "Browser title was not 'Target Page 2'");
 
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/google_map.html");
+        driver.Url = Urls.WhereIs("click_tests/google_map.html");
         driver.FindElement(By.Id("polyLE")).Click();
         WaitFor(() => { return driver.Title == "Target Page 3"; }, "Browser title was not 'Target Page 3'");
     }
@@ -249,7 +249,7 @@ public class ClickTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=1422272")]
     public void ShouldBeAbleToClickOnAnElementGreaterThanTwoViewports()
     {
-        string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_too_big.html");
+        string url = Urls.WhereIs("click_too_big.html");
         driver.Url = url;
 
         IWebElement element = driver.FindElement(By.Id("click"));
@@ -263,7 +263,7 @@ public class ClickTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=1937115")]
     public void ShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports()
     {
-        string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_too_big_in_frame.html");
+        string url = Urls.WhereIs("click_too_big_in_frame.html");
         driver.Url = url;
 
         IWebElement frame = driver.FindElement(By.Id("iframe1"));
@@ -279,7 +279,7 @@ public class ClickTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickOnRightToLeftLanguageLink()
     {
-        String url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_rtl.html");
+        String url = Urls.WhereIs("click_rtl.html");
         driver.Url = url;
 
         IWebElement element = driver.FindElement(By.Id("ar_link"));
@@ -292,7 +292,7 @@ public class ClickTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooter()
     {
-        string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("fixedFooterNoScroll.html");
+        string url = Urls.WhereIs("fixedFooterNoScroll.html");
         driver.Url = url;
 
         driver.FindElement(By.Id("link")).Click();
@@ -303,7 +303,7 @@ public class ClickTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooterInQuirksMode()
     {
-        string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("fixedFooterNoScrollQuirksMode.html");
+        string url = Urls.WhereIs("fixedFooterNoScrollQuirksMode.html");
         driver.Url = url;
 
         driver.FindElement(By.Id("link")).Click();
@@ -314,7 +314,7 @@ public class ClickTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickOnLinksWithNoHrefAttribute()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.LinkText("No href"));
         element.Click();
@@ -326,7 +326,7 @@ public class ClickTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickOnALinkThatWrapsToTheNextLine()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/link_that_wraps.html");
+        driver.Url = Urls.WhereIs("click_tests/link_that_wraps.html");
 
         driver.FindElement(By.Id("link")).Click();
 
@@ -337,7 +337,7 @@ public class ClickTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickOnASpanThatWrapsToTheNextLine()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/span_that_wraps.html");
+        driver.Url = Urls.WhereIs("click_tests/span_that_wraps.html");
 
         driver.FindElement(By.Id("span")).Click();
 
@@ -348,7 +348,7 @@ public class ClickTests : DriverTestFixture
     [Test]
     public void ClickingOnADisabledElementIsANoOp()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/disabled_element.html");
+        driver.Url = Urls.WhereIs("click_tests/disabled_element.html");
 
         IWebElement element = driver.FindElement(By.Name("disabled"));
         element.Click();
@@ -360,7 +360,7 @@ public class ClickTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickLinkContainingLineBreak()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         driver.FindElement(By.Id("multilinelink")).Click();
         WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
         Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));

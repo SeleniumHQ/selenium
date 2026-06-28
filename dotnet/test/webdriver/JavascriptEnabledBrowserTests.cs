@@ -28,7 +28,7 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [Test]
     public void DocumentShouldReflectLatestTitle()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         Assert.That(driver.Title, Is.EqualTo("Testing Javascript"));
         driver.FindElement(By.LinkText("Change the page title!")).Click();
@@ -38,7 +38,7 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [Test]
     public void DocumentShouldReflectLatestDom()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         String currentText = driver.FindElement(By.XPath("//div[@id='dynamo']")).Text;
         Assert.That(currentText, Is.EqualTo("What's for dinner?"));
 
@@ -54,7 +54,7 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [IgnoreBrowser(Browser.Edge, "Not working properly in Edge")]
     public void ShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         driver.FindElement(By.Id("changeme")).Click();
         WaitFor(() => { return driver.Title == "Page3"; }, "Browser title was not 'Page3'");
@@ -66,7 +66,7 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [IgnoreBrowser(Browser.Edge, "Not working properly in Edge")]
     public void ShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         driver.FindElement(By.Id("changeme")).Click();
 
@@ -77,7 +77,7 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [Test]
     public void ShouldFireOnChangeEventWhenSettingAnElementsValue()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         driver.FindElement(By.Id("change")).SendKeys("foo");
         String result = driver.FindElement(By.Id("result")).Text;
 
@@ -87,7 +87,7 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         IWebElement element = driver.FindElement(By.Id("jsSubmitButton"));
         element.Click();
 
@@ -98,7 +98,7 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickOnSubmitButtons()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         IWebElement element = driver.FindElement(By.Id("submittingButton"));
         element.Click();
 
@@ -109,7 +109,7 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [Test]
     public void Issue80ClickShouldGenerateClickEvent()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         IWebElement element = driver.FindElement(By.Id("clickField"));
         Assert.That(element.GetAttribute("value"), Is.EqualTo("Hello"));
 
@@ -121,7 +121,7 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToSwitchToFocusedElement()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         driver.FindElement(By.Id("switchFocus")).Click();
 
@@ -132,7 +132,7 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [Test]
     public void IfNoElementHasFocusTheActiveElementIsTheBody()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         IWebElement element = driver.SwitchTo().ActiveElement();
 
@@ -143,7 +143,7 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Window demands focus to work.")]
     public void ChangeEventIsFiredAppropriatelyWhenFocusIsLost()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement input = driver.FindElement(By.Id("changeable"));
         input.SendKeys("test");
@@ -171,7 +171,7 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickIfEvenSomethingHorribleHappens()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         driver.FindElement(By.Id("error")).Click();
 
@@ -184,7 +184,7 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToGetTheLocationOfAnElement()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         if (!(driver is IJavaScriptExecutor))
         {
@@ -210,7 +210,7 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void ShouldBeAbleToClickALinkThatClosesAWindow()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         String handle = driver.CurrentWindowHandle;
         driver.FindElement(By.Id("new_window")).Click();

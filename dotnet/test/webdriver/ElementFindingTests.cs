@@ -30,7 +30,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindASingleElementById()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement element = driver.FindElement(By.Id("linkId"));
         Assert.That(element.GetAttribute("id"), Is.EqualTo("linkId"));
     }
@@ -38,7 +38,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindASingleElementByNumericId()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         IWebElement element = driver.FindElement(By.Id("2"));
         Assert.That(element.GetAttribute("id"), Is.EqualTo("2"));
     }
@@ -46,7 +46,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindASingleElementByIdWithNonAlphanumericCharacters()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         IWebElement element = driver.FindElement(By.Id("white space"));
         Assert.That(element.Text, Is.EqualTo("space"));
         IWebElement element2 = driver.FindElement(By.Id("css#.chars"));
@@ -56,7 +56,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindMultipleElementsById()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("2"));
         Assert.That(elements, Has.Exactly(8).Items);
     }
@@ -64,7 +64,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindMultipleElementsByNumericId()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("2"));
         Assert.That(elements, Has.Exactly(8).Items);
     }
@@ -72,7 +72,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindMultipleElementsByIdWithNonAlphanumericCharacters()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("white space"));
         Assert.That(elements, Has.Exactly(2).Items);
         ReadOnlyCollection<IWebElement> elements2 = driver.FindElements(By.Id("css#.chars"));
@@ -84,14 +84,14 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldNotBeAbleToLocateByIdASingleElementThatDoesNotExist()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         Assert.That(() => driver.FindElement(By.Id("nonExistentButton")), Throws.InstanceOf<NoSuchElementException>());
     }
 
     [Test]
     public void ShouldNotBeAbleToLocateByIdMultipleElementsThatDoNotExist()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("nonExistentButton"));
         Assert.That(elements, Is.Empty);
     }
@@ -99,14 +99,14 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void FindingASingleElementByEmptyIdShouldThrow()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         Assert.That(() => driver.FindElement(By.Id("")), Throws.InstanceOf<WebDriverException>());
     }
 
     [Test]
     public void FindingMultipleElementsByEmptyIdShouldReturnEmptyList()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id(""));
         Assert.That(elements, Is.Empty);
     }
@@ -114,14 +114,14 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void FindingASingleElementByIdWithSpaceShouldThrow()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         Assert.That(() => driver.FindElement(By.Id("nonexistent button")), Throws.InstanceOf<NoSuchElementException>());
     }
 
     [Test]
     public void FindingMultipleElementsByIdWithSpaceShouldReturnEmptyList()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("nonexistent button"));
         Assert.That(elements, Is.Empty);
     }
@@ -131,7 +131,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindASingleElementByName()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.Name("checky"));
         Assert.That(element.GetAttribute("value"), Is.EqualTo("furrfu"));
     }
@@ -139,7 +139,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindMultipleElementsByName()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Name("checky"));
         Assert.That(elements, Has.Count.GreaterThan(1));
     }
@@ -147,7 +147,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindAnElementThatDoesNotSupportTheNameProperty()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         IWebElement element = driver.FindElement(By.Name("div1"));
         Assert.That(element.GetAttribute("name"), Is.EqualTo("div1"));
     }
@@ -157,14 +157,14 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldNotBeAbleToLocateByNameASingleElementThatDoesNotExist()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         Assert.That(() => driver.FindElement(By.Name("nonExistentButton")), Throws.InstanceOf<NoSuchElementException>());
     }
 
     [Test]
     public void ShouldNotBeAbleToLocateByNameMultipleElementsThatDoNotExist()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Name("nonExistentButton"));
         Assert.That(elements, Is.Empty);
     }
@@ -172,14 +172,14 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void FindingASingleElementByEmptyNameShouldThrow()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         Assert.That(() => driver.FindElement(By.Name("")), Throws.InstanceOf<NoSuchElementException>());
     }
 
     [Test]
     public void FindingMultipleElementsByEmptyNameShouldReturnEmptyList()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Name(""));
         Assert.That(elements, Is.Empty);
     }
@@ -187,14 +187,14 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void FindingASingleElementByNameWithSpaceShouldThrow()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         Assert.That(() => driver.FindElement(By.Name("nonexistent button")), Throws.InstanceOf<NoSuchElementException>());
     }
 
     [Test]
     public void FindingMultipleElementsByNameWithSpaceShouldReturnEmptyList()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Name("nonexistent button"));
         Assert.That(elements, Is.Empty);
     }
@@ -204,7 +204,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindASingleElementByTagName()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.TagName("input"));
         Assert.That(element.TagName.ToLower(), Is.EqualTo("input"));
     }
@@ -212,7 +212,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindMultipleElementsByTagName()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.TagName("input"));
         Assert.That(elements, Has.Count.GreaterThan(1));
     }
@@ -222,14 +222,14 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldNotBeAbleToLocateByTagNameASingleElementThatDoesNotExist()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         Assert.That(() => driver.FindElement(By.TagName("nonExistentButton")), Throws.InstanceOf<NoSuchElementException>());
     }
 
     [Test]
     public void ShouldNotBeAbleToLocateByTagNameMultipleElementsThatDoNotExist()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.TagName("nonExistentButton"));
         Assert.That(elements, Is.Empty);
     }
@@ -237,21 +237,21 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void FindingASingleElementByEmptyTagNameShouldThrow()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         Assert.That(() => driver.FindElement(By.TagName("")), Throws.InstanceOf<WebDriverException>());
     }
 
     [Test]
     public void FindingASingleElementByTagNameWithSpaceShouldThrow()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         Assert.That(() => driver.FindElement(By.TagName("nonexistent button")), Throws.InstanceOf<NoSuchElementException>());
     }
 
     [Test]
     public void FindingMultipleElementsByTagNameWithSpaceShouldReturnEmptyList()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.TagName("nonexistent button"));
         Assert.That(elements, Is.Empty);
     }
@@ -261,7 +261,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindASingleElementByClass()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement element = driver.FindElement(By.ClassName("extraDiv"));
         Assert.That(element.Text, Does.StartWith("Another div starts here."));
     }
@@ -269,7 +269,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindMultipleElementsByClassName()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("nameC"));
         Assert.That(elements, Has.Count.GreaterThan(1));
     }
@@ -277,7 +277,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementByClassWhenItIsTheFirstNameAmongMany()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement element = driver.FindElement(By.ClassName("nameA"));
         Assert.That(element.Text, Is.EqualTo("An H2 title"));
     }
@@ -285,7 +285,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementByClassWhenItIsTheLastNameAmongMany()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement element = driver.FindElement(By.ClassName("nameC"));
         Assert.That(element.Text, Is.EqualTo("An H2 title"));
     }
@@ -293,7 +293,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementByClassWhenItIsInTheMiddleAmongMany()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement element = driver.FindElement(By.ClassName("nameBnoise"));
         Assert.That(element.Text, Is.EqualTo("An H2 title"));
     }
@@ -301,7 +301,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementByClassWhenItsNameIsSurroundedByWhitespace()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement element = driver.FindElement(By.ClassName("spaceAround"));
         Assert.That(element.Text, Is.EqualTo("Spaced out"));
     }
@@ -309,7 +309,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementsByClassWhenItsNameIsSurroundedByWhitespace()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("spaceAround"));
         Assert.That(elements, Has.Exactly(1).Items);
         Assert.That(elements[0].Text, Is.EqualTo("Spaced out"));
@@ -320,42 +320,42 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldNotFindElementByClassWhenTheNameQueriedIsShorterThanCandidateName()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => driver.FindElement(By.ClassName("nameB")), Throws.InstanceOf<NoSuchElementException>());
     }
 
     [Test]
     public void FindingASingleElementByEmptyClassNameShouldThrow()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => driver.FindElement(By.ClassName("")), Throws.InstanceOf<WebDriverException>());
     }
 
     [Test]
     public void FindingMultipleElementsByEmptyClassNameShouldThrow()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => driver.FindElements(By.ClassName("")), Throws.InstanceOf<WebDriverException>());
     }
 
     [Test]
     public void FindingASingleElementByCompoundClassNameShouldThrow()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => driver.FindElement(By.ClassName("a b")), Throws.InstanceOf<InvalidSelectorException>());
     }
 
     [Test]
     public void FindingMultipleElementsByCompoundClassNameShouldThrow()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => driver.FindElements(By.ClassName("a b")), Throws.InstanceOf<InvalidSelectorException>());
     }
 
     [Test]
     public void FindingASingleElementByAWeirdLookingClassName()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         String weird = "cls-!@#$%^&*";
         IWebElement element = driver.FindElement(By.ClassName(weird));
         Assert.That(element.GetAttribute("class"), Is.EqualTo(weird));
@@ -364,7 +364,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void FindingMultipleElementsByAWeirdLookingClassName()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         String weird = "cls-!@#$%^&*";
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName(weird));
         Assert.That(elements, Has.Count.EqualTo(1));
@@ -376,7 +376,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindASingleElementByXPath()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement element = driver.FindElement(By.XPath("//h1"));
         Assert.That(element.Text, Is.EqualTo("XHTML Might Be The Future"));
     }
@@ -384,7 +384,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindMultipleElementsByXPath()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.XPath("//div"));
         Assert.That(elements, Has.Count.EqualTo(13));
     }
@@ -392,7 +392,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindManyElementsRepeatedlyByXPath()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         String xpathString = "//node()[contains(@id,'id')]";
         Assert.That(driver.FindElements(By.XPath(xpathString)), Has.Exactly(3).Items);
 
@@ -403,7 +403,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToIdentifyElementsByClass()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement header = driver.FindElement(By.XPath("//h1[@class='header']"));
         Assert.That(header.Text, Is.EqualTo("XHTML Might Be The Future"));
     }
@@ -411,7 +411,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindAnElementByXPathWithMultipleAttributes()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(
             By.XPath("//form[@name='optional']/input[@type='submit' and @value='Click!']"));
         Assert.That(element.TagName.ToLower(), Is.EqualTo("input"));
@@ -421,7 +421,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void FindingALinkByXpathShouldLocateAnElementWithTheGivenText()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement element = driver.FindElement(By.XPath("//a[text()='click me']"));
         Assert.That(element.Text, Is.EqualTo("click me"));
     }
@@ -429,7 +429,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void FindingALinkByXpathUsingContainsKeywordShouldWork()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
         IWebElement element = driver.FindElement(By.XPath("//a[contains(.,'hello world')]"));
         Assert.That(element.Text, Does.Contain("hello world"));
     }
@@ -440,7 +440,7 @@ public class ElementFindingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
     public void ShouldBeAbleToFindElementByXPathWithNamespace()
     {
-        driver.Url = svgPage;
+        driver.Url = Urls.SvgPage;
         IWebElement element = driver.FindElement(By.XPath("//svg:svg//svg:text"));
         Assert.That(element.Text, Is.EqualTo("Test Chart"));
     }
@@ -450,14 +450,14 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldThrowAnExceptionWhenThereIsNoLinkToClick()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => driver.FindElement(By.XPath("//a[@id='Not here']")), Throws.InstanceOf<NoSuchElementException>());
     }
 
     [Test]
     public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         Assert.That(() => driver.FindElement(By.XPath("this][isnot][valid")), Throws.InstanceOf<InvalidSelectorException>());
     }
 
@@ -470,14 +470,14 @@ public class ElementFindingTests : DriverTestFixture
             return;
         }
 
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         Assert.That(() => driver.FindElements(By.XPath("this][isnot][valid")), Throws.InstanceOf<InvalidSelectorException>());
     }
 
     [Test]
     public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement body = driver.FindElement(By.TagName("body"));
         Assert.That(() => body.FindElement(By.XPath("this][isnot][valid")), Throws.InstanceOf<InvalidSelectorException>());
     }
@@ -485,7 +485,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement body = driver.FindElement(By.TagName("body"));
         Assert.That(() => body.FindElements(By.XPath("this][isnot][valid")), Throws.InstanceOf<InvalidSelectorException>());
     }
@@ -493,7 +493,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         Assert.That(() => driver.FindElement(By.XPath("count(//input)")), Throws.InstanceOf<InvalidSelectorException>());
     }
 
@@ -506,14 +506,14 @@ public class ElementFindingTests : DriverTestFixture
             return;
         }
 
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         Assert.That(() => driver.FindElements(By.XPath("count(//input)")), Throws.InstanceOf<InvalidSelectorException>());
     }
 
     [Test]
     public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement body = driver.FindElement(By.TagName("body"));
         Assert.That(() => body.FindElement(By.XPath("count(//input)")), Throws.InstanceOf<InvalidSelectorException>());
@@ -528,7 +528,7 @@ public class ElementFindingTests : DriverTestFixture
             return;
         }
 
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement body = driver.FindElement(By.TagName("body"));
         Assert.That(() => body.FindElements(By.XPath("count(//input)")), Throws.InstanceOf<InvalidSelectorException>());
     }
@@ -538,7 +538,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindASingleElementByCssSelector()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement element = driver.FindElement(By.CssSelector("div.content"));
         Assert.That(element.TagName.ToLower(), Is.EqualTo("div"));
         Assert.That(element.GetAttribute("class"), Is.EqualTo("content"));
@@ -547,7 +547,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindMultipleElementsByCssSelector()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.CssSelector("p"));
         Assert.That(elements, Has.Count.GreaterThan(1));
     }
@@ -555,7 +555,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindASingleElementByCompoundCssSelector()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement element = driver.FindElement(By.CssSelector("div.extraDiv, div.content"));
         Assert.That(element.TagName.ToLower(), Is.EqualTo("div"));
         Assert.That(element.GetAttribute("class"), Is.EqualTo("content"));
@@ -564,7 +564,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindMultipleElementsByCompoundCssSelector()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.CssSelector("div.extraDiv, div.content"));
         Assert.That(elements, Has.Count.GreaterThan(1));
         Assert.That(elements[0].GetAttribute("class"), Is.EqualTo("content"));
@@ -574,7 +574,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindAnElementByBooleanAttributeUsingCssSelector()
     {
-        driver.Url = (EnvironmentManager.Instance.UrlBuilder.WhereIs("locators_tests/boolean_attribute_selected.html"));
+        driver.Url = (Urls.WhereIs("locators_tests/boolean_attribute_selected.html"));
         IWebElement element = driver.FindElement(By.CssSelector("option[selected='selected']"));
         Assert.That(element.GetAttribute("value"), Is.EqualTo("two"));
     }
@@ -582,7 +582,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelector()
     {
-        driver.Url = (EnvironmentManager.Instance.UrlBuilder.WhereIs("locators_tests/boolean_attribute_selected.html"));
+        driver.Url = (Urls.WhereIs("locators_tests/boolean_attribute_selected.html"));
         IWebElement element = driver.FindElement(By.CssSelector("option[selected]"));
         Assert.That(element.GetAttribute("value"), Is.EqualTo("two"));
     }
@@ -590,7 +590,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelectorOnHtml4Page()
     {
-        driver.Url = (EnvironmentManager.Instance.UrlBuilder.WhereIs("locators_tests/boolean_attribute_selected_html4.html"));
+        driver.Url = (Urls.WhereIs("locators_tests/boolean_attribute_selected_html4.html"));
         IWebElement element = driver.FindElement(By.CssSelector("option[selected]"));
         Assert.That(element.GetAttribute("value"), Is.EqualTo("two"));
     }
@@ -600,14 +600,14 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldNotFindElementByCssSelectorWhenThereIsNoSuchElement()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => driver.FindElement(By.CssSelector(".there-is-no-such-class")), Throws.InstanceOf<NoSuchElementException>());
     }
 
     [Test]
     public void ShouldNotFindElementsByCssSelectorWhenThereIsNoSuchElement()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.CssSelector(".there-is-no-such-class"));
         Assert.That(elements, Is.Empty);
     }
@@ -615,28 +615,28 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void FindingASingleElementByEmptyCssSelectorShouldThrow()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => driver.FindElement(By.CssSelector("")), Throws.InstanceOf<WebDriverException>());
     }
 
     [Test]
     public void FindingMultipleElementsByEmptyCssSelectorShouldThrow()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => driver.FindElements(By.CssSelector("")), Throws.InstanceOf<WebDriverException>());
     }
 
     [Test]
     public void FindingASingleElementByInvalidCssSelectorShouldThrow()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => driver.FindElement(By.CssSelector("//a/b/c[@id='1']")), Throws.InstanceOf<WebDriverException>());
     }
 
     [Test]
     public void FindingMultipleElementsByInvalidCssSelectorShouldThrow()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => driver.FindElements(By.CssSelector("//a/b/c[@id='1']")), Throws.InstanceOf<WebDriverException>());
     }
 
@@ -645,7 +645,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindALinkByText()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement link = driver.FindElement(By.LinkText("click me"));
         Assert.That(link.Text, Is.EqualTo("click me"));
     }
@@ -653,7 +653,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindMultipleLinksByText()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.LinkText("click me"));
         Assert.That(elements, Has.Count.EqualTo(2), "Expected 2 links, got " + elements.Count);
     }
@@ -661,7 +661,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementByLinkTextContainingEqualsSign()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement element = driver.FindElement(By.LinkText("Link=equalssign"));
         Assert.That(element.GetAttribute("id"), Is.EqualTo("linkWithEqualsSign"));
     }
@@ -669,7 +669,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindMultipleElementsByLinkTextContainingEqualsSign()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.LinkText("Link=equalssign"));
         Assert.That(elements, Has.Count.EqualTo(1));
         Assert.That(elements[0].GetAttribute("id"), Is.EqualTo("linkWithEqualsSign"));
@@ -684,7 +684,7 @@ public class ElementFindingTests : DriverTestFixture
             return;
         }
 
-        driver.Url = (EnvironmentManager.Instance.UrlBuilder.WhereIs("actualXhtmlPage.xhtml"));
+        driver.Url = (Urls.WhereIs("actualXhtmlPage.xhtml"));
         string linkText = "Foo";
         IWebElement element = driver.FindElement(By.LinkText(linkText));
         Assert.That(element.Text, Is.EqualTo(linkText));
@@ -694,7 +694,7 @@ public class ElementFindingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote)]
     public void LinkWithFormattingTags()
     {
-        driver.Url = (simpleTestPage);
+        driver.Url = (Urls.SimpleTestPage);
         IWebElement elem = driver.FindElement(By.Id("links"));
 
         IWebElement res = elem.FindElement(By.PartialLinkText("link with formatting tags"));
@@ -704,7 +704,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void DriverCanGetLinkByLinkTestIgnoringTrailingWhitespace()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement link = driver.FindElement(By.LinkText("link with trailing space"));
         Assert.That(link.GetAttribute("id"), Is.EqualTo("linkWithTrailingSpace"));
         Assert.That(link.Text, Is.EqualTo("link with trailing space"));
@@ -715,14 +715,14 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldNotBeAbleToLocateByLinkTextASingleElementThatDoesNotExist()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => driver.FindElement(By.LinkText("Not here either")), Throws.InstanceOf<NoSuchElementException>());
     }
 
     [Test]
     public void ShouldNotBeAbleToLocateByLinkTextMultipleElementsThatDoNotExist()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.LinkText("Not here either"));
         Assert.That(elements, Is.Empty);
     }
@@ -732,7 +732,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindMultipleElementsByPartialLinkText()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.PartialLinkText("ick me"));
         Assert.That(elements, Has.Exactly(2).Items);
     }
@@ -740,7 +740,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindASingleElementByPartialLinkText()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement element = driver.FindElement(By.PartialLinkText("anon"));
         Assert.That(element.Text, Does.Contain("anon"));
     }
@@ -748,7 +748,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementByPartialLinkTextContainingEqualsSign()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement element = driver.FindElement(By.PartialLinkText("Link="));
         Assert.That(element.GetAttribute("id"), Is.EqualTo("linkWithEqualsSign"));
     }
@@ -756,7 +756,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindMultipleElementsByPartialLinkTextContainingEqualsSign()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.PartialLinkText("Link="));
         Assert.That(elements, Has.Count.EqualTo(1));
         Assert.That(elements[0].GetAttribute("id"), Is.EqualTo("linkWithEqualsSign"));
@@ -767,8 +767,8 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void DriverShouldBeAbleToFindElementsAfterLoadingMoreThanOnePageAtATime()
     {
-        driver.Url = formsPage;
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.FormsPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement link = driver.FindElement(By.LinkText("click me"));
         Assert.That(link.Text, Is.EqualTo("click me"));
     }
@@ -777,7 +777,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void WhenFindingByNameShouldNotReturnById()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement element = driver.FindElement(By.Name("id-name1"));
         Assert.That(element.GetAttribute("value"), Is.EqualTo("name"));
@@ -795,7 +795,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindAHiddenElementsByName()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.Name("hidden"));
         Assert.That(element.GetAttribute("name"), Is.EqualTo("hidden"));
     }
@@ -819,7 +819,7 @@ public class ElementFindingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Already updated to https://github.com/w3c/webdriver/issues/1594")]
     public void AnElementFoundInADifferentFrameIsStale()
     {
-        driver.Url = missedJsReferencePage;
+        driver.Url = Urls.MissedJsReferencePage;
         driver.SwitchTo().Frame("inner");
         IWebElement element = driver.FindElement(By.Id("oneline"));
         driver.SwitchTo().DefaultContent();
@@ -832,17 +832,17 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldReturnTitleOfPageIfSet()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
 
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         Assert.That(driver.Title, Is.EqualTo("Hello WebDriver"));
     }
 
     [Test]
     public void ShouldBeAbleToClickOnLinkIdentifiedByText()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         driver.FindElement(By.LinkText("click me")).Click();
         WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title is not 'We Arrive Here'");
         Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
@@ -851,7 +851,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickOnLinkIdentifiedById()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         driver.FindElement(By.Id("linkId")).Click();
         WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title is not 'We Arrive Here'");
         Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
@@ -860,7 +860,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindAnElementBasedOnId()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement element = driver.FindElement(By.Id("checky"));
 
@@ -870,7 +870,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindChildrenOfANode()
     {
-        driver.Url = selectableItemsPage;
+        driver.Url = Urls.SelectableItemsPage;
         ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.XPath("/html/head"));
         IWebElement head = elements[0];
         ReadOnlyCollection<IWebElement> importedScripts = head.FindElements(By.TagName("script"));
@@ -880,7 +880,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ReturnAnEmptyListWhenThereAreNoChildrenOfANode()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement table = driver.FindElement(By.Id("table"));
         ReadOnlyCollection<IWebElement> rows = table.FindElements(By.TagName("tr"));
 
@@ -890,7 +890,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementsByName()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement element = driver.FindElement(By.Name("checky"));
 
@@ -900,7 +900,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementsByClassWhenItIsTheFirstNameAmongMany()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         IWebElement element = driver.FindElement(By.ClassName("nameA"));
         Assert.That(element.Text, Is.EqualTo("An H2 title"));
@@ -909,7 +909,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementsByClassWhenItIsTheLastNameAmongMany()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         IWebElement element = driver.FindElement(By.ClassName("nameC"));
         Assert.That(element.Text, Is.EqualTo("An H2 title"));
@@ -918,7 +918,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementsByClassWhenItIsInTheMiddleAmongMany()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         IWebElement element = driver.FindElement(By.ClassName("nameBnoise"));
         Assert.That(element.Text, Is.EqualTo("An H2 title"));
@@ -927,7 +927,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindGrandChildren()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement form = driver.FindElement(By.Id("nested_form"));
         form.FindElement(By.Name("x"));
     }
@@ -935,7 +935,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldNotFindElementOutSideTree()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.Name("login"));
         Assert.That(() => element.FindElement(By.Name("x")), Throws.InstanceOf<NoSuchElementException>());
     }
@@ -943,7 +943,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldReturnElementsThatDoNotSupportTheNameProperty()
     {
-        driver.Url = nestedPage;
+        driver.Url = Urls.NestedPage;
 
         driver.FindElement(By.Name("div1"));
         // If this works, we're all good
@@ -952,7 +952,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickOnLinksWithNoHrefAttribute()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.LinkText("No href"));
         element.Click();
@@ -964,7 +964,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void FindingByTagNameShouldNotIncludeParentElementIfSameTagType()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement parent = driver.FindElement(By.Id("my_span"));
 
         Assert.That(parent.FindElements(By.TagName("div")), Has.Count.EqualTo(2));
@@ -974,7 +974,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void FindingByCssShouldNotIncludeParentElementIfSameTagType()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement parent = driver.FindElement(By.CssSelector("div#parent"));
         IWebElement child = parent.FindElement(By.CssSelector("div"));
 
@@ -984,7 +984,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void FindingByXPathShouldNotIncludeParentElementIfSameTagType()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         IWebElement parent = driver.FindElement(By.Id("my_span"));
 
         Assert.That(parent.FindElements(By.TagName("div")), Has.Count.EqualTo(2));
@@ -994,7 +994,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToInjectXPathEngineIfNeeded()
     {
-        driver.Url = alertsPage;
+        driver.Url = Urls.AlertsPage;
         driver.FindElement(By.XPath("//body"));
         driver.FindElement(By.XPath("//h1"));
         driver.FindElement(By.XPath("//div"));
@@ -1005,7 +1005,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementByLinkTextContainingDoubleQuote()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement element = driver.FindElement(By.LinkText("link with \" (double quote)"));
         Assert.That(element.GetAttribute("id"), Is.EqualTo("quote"));
     }
@@ -1013,7 +1013,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindElementByLinkTextContainingBackslash()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement element = driver.FindElement(By.LinkText("link with \\ (backslash)"));
         Assert.That(element.GetAttribute("id"), Is.EqualTo("backslash"));
     }

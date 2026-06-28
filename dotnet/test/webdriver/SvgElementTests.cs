@@ -33,7 +33,7 @@ public class SvgElementTests : DriverTestFixture
             Assert.Ignore("SVG support only exists in IE9+");
         }
 
-        driver.Url = svgPage;
+        driver.Url = Urls.SvgPage;
         IWebElement svg = driver.FindElement(By.CssSelector("svg"));
 
         ReadOnlyCollection<IWebElement> groupElements = svg.FindElements(By.CssSelector("g"));
@@ -58,7 +58,7 @@ public class SvgElementTests : DriverTestFixture
             Assert.Ignore("SVG support only exists in IE9+");
         }
 
-        driver.Url = svgPage;
+        driver.Url = Urls.SvgPage;
         IWebElement svg = driver.FindElement(By.CssSelector("svg"));
         ReadOnlyCollection<IWebElement> textElements = svg.FindElements(By.CssSelector("text"));
 

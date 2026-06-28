@@ -205,9 +205,9 @@ public class AlertsTests : DriverTestFixture
     [Test]
     public void ShouldAllowUsersToAcceptAnAlertInAFrame()
     {
-        string iframe = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        string iframe = Urls.CreateInlinePage(new InlinePage()
             .WithBody("<a href='#' id='alertInFrame' onclick='alert(\"framed cheese\");'>click me</a>"));
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithTitle("Testing Alerts")
             .WithBody(String.Format("<iframe src='{0}' name='iframeWithAlert'></iframe>", iframe)));
 
@@ -225,11 +225,11 @@ public class AlertsTests : DriverTestFixture
     [Test]
     public void ShouldAllowUsersToAcceptAnAlertInANestedFrame()
     {
-        string iframe = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        string iframe = Urls.CreateInlinePage(new InlinePage()
             .WithBody("<a href='#' id='alertInFrame' onclick='alert(\"framed cheese\");'>click me</a>"));
-        string iframe2 = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        string iframe2 = Urls.CreateInlinePage(new InlinePage()
             .WithBody(string.Format("<iframe src='{0}' name='iframeWithAlert'></iframe>", iframe)));
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithTitle("Testing Alerts")
             .WithBody(string.Format("<iframe src='{0}' name='iframeWithIframe'></iframe>", iframe2)));
 
@@ -258,8 +258,8 @@ public class AlertsTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not properly handle multiple windows")]
     public void SwitchingToMissingAlertInAClosedWindowThrows()
     {
-        string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage());
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        string blank = Urls.CreateInlinePage(new InlinePage());
+        driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithBody(String.Format(
                 "<a id='open-new-window' href='{0}' target='newwindow'>open new window</a>", blank)));
 
@@ -315,7 +315,7 @@ public class AlertsTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote)]
     public void HandlesTwoAlertsFromOneInteraction()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithScripts(
                 """
                 function setInnerText(id, value) {
@@ -355,10 +355,10 @@ public class AlertsTests : DriverTestFixture
     [Test]
     public void ShouldHandleAlertOnPageLoad()
     {
-        string pageWithOnLoad = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        string pageWithOnLoad = Urls.CreateInlinePage(new InlinePage()
             .WithOnLoad("""javascript:alert("onload")""")
             .WithBody("<p>Page with onload event handler</p>"));
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithBody(string.Format("<a id='open-page-with-onload-alert' href='{0}'>open new page</a>", pageWithOnLoad)));
 
         driver.FindElement(By.Id("open-page-with-onload-alert")).Click();
@@ -376,7 +376,7 @@ public class AlertsTests : DriverTestFixture
 
     public void ShouldHandleAlertOnPageLoadUsingGet()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithOnLoad("javascript:alert(\"onload\")")
             .WithBody("<p>Page with onload event handler</p>"));
 
@@ -395,10 +395,10 @@ public class AlertsTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Safari driver does not allow commands in any window when an alert is active")]
     public void ShouldNotHandleAlertInAnotherWindow()
     {
-        string pageWithOnLoad = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        string pageWithOnLoad = Urls.CreateInlinePage(new InlinePage()
             .WithOnLoad("javascript:alert(\"onload\")")
             .WithBody("<p>Page with onload event handler</p>"));
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithBody(string.Format(
                 "<a id='open-new-window' href='{0}' target='newwindow'>open new window</a>", pageWithOnLoad)));
 
@@ -457,7 +457,7 @@ public class AlertsTests : DriverTestFixture
     [Test]
     public void ShouldHandleAlertOnFormSubmit()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithTitle("Testing Alerts").
             WithBody("<form id='theForm' action='javascript:alert(\"Tasty cheese\");'>",
                 "<input id='unused' type='submit' value='Submit'>",
@@ -480,14 +480,14 @@ public class AlertsTests : DriverTestFixture
 
     private string CreateAlertPage(string alertText)
     {
-        return EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        return Urls.CreateInlinePage(new InlinePage()
             .WithTitle("Testing Alerts")
             .WithBody("<a href='#' id='alert' onclick='alert(\"" + alertText + "\");'>click me</a>"));
     }
 
     private string CreatePromptPage(string defaultText)
     {
-        return EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        return Urls.CreateInlinePage(new InlinePage()
             .WithTitle("Testing Prompt")
             .WithScripts(
                 "function setInnerText(id, value) {",

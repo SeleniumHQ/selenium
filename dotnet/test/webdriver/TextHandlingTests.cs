@@ -30,7 +30,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldReturnTheTextContentOfASingleElementWithNoChildren()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         string selectText = driver.FindElement(By.Id("oneline")).Text;
         Assert.That(selectText, Is.EqualTo("A single line of text"));
 
@@ -41,7 +41,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldReturnTheEntireTextContentOfChildElements()
     {
-        driver.Url = (simpleTestPage);
+        driver.Url = (Urls.SimpleTestPage);
         string text = driver.FindElement(By.Id("multiline")).Text;
 
         Assert.That(text, Does.Contain("A div containing"));
@@ -52,7 +52,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldIgnoreScriptElements()
     {
-        driver.Url = javascriptEnhancedForm;
+        driver.Url = Urls.JavascriptEnhancedForm;
         IWebElement labelForUsername = driver.FindElement(By.Id("labelforusername"));
         string text = labelForUsername.Text;
 
@@ -64,7 +64,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldRepresentABlockLevelElementAsANewline()
     {
-        driver.Url = (simpleTestPage);
+        driver.Url = (Urls.SimpleTestPage);
         string text = driver.FindElement(By.Id("multiline")).Text;
 
         Assert.That(text, Does.StartWith("A div containing" + NewLine));
@@ -75,7 +75,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace()
     {
-        driver.Url = (simpleTestPage);
+        driver.Url = (Urls.SimpleTestPage);
         string text = driver.FindElement(By.Id("lotsofspaces")).Text;
 
         Assert.That(text, Is.EqualTo("This line has lots of spaces."));
@@ -84,7 +84,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldTrimText()
     {
-        driver.Url = (simpleTestPage);
+        driver.Url = (Urls.SimpleTestPage);
         string text = driver.FindElement(By.Id("multiline")).Text;
 
         Assert.That(text, Does.StartWith("A div containing"));
@@ -94,7 +94,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter()
     {
-        driver.Url = (simpleTestPage);
+        driver.Url = (Urls.SimpleTestPage);
         string text = driver.FindElement(By.Id("nbsp")).Text;
 
         Assert.That(text, Is.EqualTo("This line has a non-breaking space"));
@@ -103,7 +103,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldNotCollapseANonBreakingSpaces()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement element = driver.FindElement(By.Id("nbspandspaces"));
         string text = element.Text;
 
@@ -113,7 +113,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldNotTrimNonBreakingSpacesAtTheEndOfALineInTheMiddleOfText()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement element = driver.FindElement(By.Id("multilinenbsp"));
         string text = element.Text;
         string expectedStart = "These lines  " + NewLine;
@@ -123,7 +123,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldNotTrimNonBreakingSpacesAtTheStartOfALineInTheMiddleOfText()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement element = driver.FindElement(By.Id("multilinenbsp"));
         string text = element.Text;
         string expectedContent = NewLine + "  have";
@@ -133,7 +133,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldNotTrimTrailingNonBreakingSpacesInMultilineText()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement element = driver.FindElement(By.Id("multilinenbsp"));
         string text = element.Text;
         string expectedEnd = "trailing NBSPs  ";
@@ -143,7 +143,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void HavingInlineElementsShouldNotAffectHowTextIsReturned()
     {
-        driver.Url = (simpleTestPage);
+        driver.Url = (Urls.SimpleTestPage);
         string text = driver.FindElement(By.Id("inline")).Text;
         Assert.That(text, Is.EqualTo("This line has text within elements that are meant to be displayed inline"));
     }
@@ -151,7 +151,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldReturnTheEntireTextOfInlineElements()
     {
-        driver.Url = (simpleTestPage);
+        driver.Url = (Urls.SimpleTestPage);
         string text = driver.FindElement(By.Id("span")).Text;
 
         Assert.That(text, Is.EqualTo("An inline element"));
@@ -160,7 +160,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldRetainTheFormatingOfTextWithinAPreElement()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         string text = driver.FindElement(By.Id("preformatted")).Text;
 
         Assert.That(text, Is.EqualTo("   This section has a preformatted" + NewLine +
@@ -172,7 +172,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldRetainTheFormatingOfTextWithinAPreElementThatIsWithinARegularBlock()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         string text = driver.FindElement(By.Id("div-with-pre")).Text;
         Assert.That(text, Is.EqualTo("before pre" + NewLine +
             "   This section has a preformatted" + NewLine +
@@ -186,7 +186,7 @@ public class TextHandlingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Firefox is doubling the new lines")]
     public void ShouldBeAbleToSetMoreThanOneLineOfTextInATextArea()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement textarea = driver.FindElement(By.Id("withText"));
         textarea.Clear();
         string expectedText = "I like cheese" + NewLine + NewLine + "It's really nice";
@@ -199,7 +199,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement input = driver.FindElement(By.Id("working"));
         string expectedValue = "10/03/2007 to 30/07/1993";
         input.SendKeys(expectedValue);
@@ -211,7 +211,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldReturnEmptyStringWhenTextIsOnlySpaces()
     {
-        driver.Url = (xhtmlTestPage);
+        driver.Url = (Urls.XhtmlTestPage);
 
         string text = driver.FindElement(By.Id("spaces")).Text;
         Assert.That(text, Is.Empty);
@@ -220,7 +220,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldReturnEmptyStringWhenTextIsEmpty()
     {
-        driver.Url = (xhtmlTestPage);
+        driver.Url = (Urls.XhtmlTestPage);
 
         string text = driver.FindElement(By.Id("empty")).Text;
         Assert.That(text, Is.Empty);
@@ -229,7 +229,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldReturnEmptyStringWhenTagIsSelfClosing()
     {
-        driver.Url = (xhtmlFormPage);
+        driver.Url = (Urls.XhtmlFormPage);
 
         string text = driver.FindElement(By.Id("self-closed")).Text;
         Assert.That(text, Is.Empty);
@@ -238,7 +238,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldNotTrimSpacesWhenLineWraps()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         string text = driver.FindElement(By.XPath("//table/tbody/tr[1]/td[1]")).Text;
         Assert.That(text, Is.EqualTo("beforeSpace afterSpace"));
@@ -247,7 +247,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldHandleSiblingBlockLevelElements()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         string text = driver.FindElement(By.Id("twoblocks")).Text;
 
@@ -257,7 +257,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldHandleNestedBlockLevelElements()
     {
-        driver.Url = (simpleTestPage);
+        driver.Url = (Urls.SimpleTestPage);
 
         string text = driver.FindElement(By.Id("nestedblocks")).Text;
 
@@ -268,7 +268,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldHandleWhitespaceInInlineElements()
     {
-        driver.Url = (simpleTestPage);
+        driver.Url = (Urls.SimpleTestPage);
 
         string text = driver.FindElement(By.Id("inlinespan")).Text;
 
@@ -278,7 +278,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ReadALargeAmountOfData()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("macbeth.html");
+        driver.Url = Urls.MacbethPage;
         string source = driver.PageSource.Trim().ToLower();
 
         Assert.That(source, Does.EndWith("</html>"));
@@ -287,7 +287,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void GetTextWithLineBreakForInlineElement()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         IWebElement label = driver.FindElement(By.Id("label1"));
         string labelText = label.Text;
@@ -298,7 +298,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldOnlyIncludeVisibleText()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         string empty = driver.FindElement(By.Id("suppressedParagraph")).Text;
         string explicitText = driver.FindElement(By.Id("outer")).Text;
@@ -310,7 +310,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldGetTextFromTableCells()
     {
-        driver.Url = tables;
+        driver.Url = Urls.Tables;
 
         IWebElement tr = driver.FindElement(By.Id("hidden_text"));
         String text = tr.Text;
@@ -322,7 +322,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void TextOfAnInputFieldShouldBeEmpty()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement input = driver.FindElement(By.Id("inputWithText"));
         Assert.That(input.Text, Is.Empty);
     }
@@ -330,7 +330,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void TextOfATextAreaShouldBeEqualToItsDefaultText()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement area = driver.FindElement(By.Id("withText"));
         Assert.That(area.Text, Is.EqualTo("Example text"));
     }
@@ -339,7 +339,7 @@ public class TextHandlingTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Fails on IE")]
     public void TextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement area = driver.FindElement(By.Id("withText"));
         string oldText = area.Text;
         area.SendKeys("New Text");
@@ -350,7 +350,7 @@ public class TextHandlingTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Fails on IE")]
     public void TextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterChangingTheValue()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement area = driver.FindElement(By.Id("withText"));
         string oldText = area.GetAttribute("value");
         ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].value = arguments[1]", area, "New Text");
@@ -360,7 +360,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldGetTextWhichIsAValidJSONObject()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement element = driver.FindElement(By.Id("simpleJsonText"));
         Assert.That(element.Text, Is.EqualTo("{a=\"b\", c=1, d=true}"));
         //assertEquals("{a=\"b\", \"c\"=d, e=true, f=\\123\\\\g\\\\\"\"\"\\\'}", element.getText());
@@ -369,7 +369,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldGetTextWhichIsAValidComplexJSONObject()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement element = driver.FindElement(By.Id("complexJsonText"));
         Assert.That(element.Text, Is.EqualTo("{a=\"\\\\b\\\\\\\"\'\\\'\"}"));
     }
@@ -378,7 +378,7 @@ public class TextHandlingTests : DriverTestFixture
     [IgnoreBrowser(Browser.All, "Hidden LTR Unicode marks are currently returned by WebDriver but shouldn't, issue 4473")]
     public void ShouldNotReturnLtrMarks()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("utf8/unicode_ltr.html");
+        driver.Url = Urls.WhereIs("utf8/unicode_ltr.html");
         IWebElement element = driver.FindElement(By.Id("EH")).FindElement(By.TagName("nobr"));
         string text = element.Text;
         String expected = "Some notes";
@@ -393,7 +393,7 @@ public class TextHandlingTests : DriverTestFixture
     [IgnoreBrowser(Browser.All, "Not all unicode whitespace characters are trimmed, issue 6072")]
     public void ShouldTrimTextWithMultiByteWhitespaces()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         String text = driver.FindElement(By.Id("trimmedSpace")).Text;
 
         Assert.That(text, Is.EqualTo("test"));
@@ -403,7 +403,7 @@ public class TextHandlingTests : DriverTestFixture
     [IgnoreTarget("net48", "Cannot create inline page with UrlBuilder")]
     public void CanHandleTextThatLooksLikeANumber()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(
+        driver.Url = Urls.CreateInlinePage(
             new InlinePage().WithBody("<div id='point'>12.345</div>",
                                       "<div id='comma'>12,345</div>",
                                       "<div id='space'>12 345</div>"));
@@ -417,7 +417,7 @@ public class TextHandlingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "getText does not normalize spaces")]
     public void CanHandleTextTransformProperty()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         Assert.That(driver.FindElement(By.Id("capitalized")).Text, Is.EqualTo("Hello, World! Bla-Bla-BLA").Or.EqualTo("Hello, World! Bla-bla-BLA"));
         Assert.That(driver.FindElement(By.Id("lowercased")).Text, Is.EqualTo("hello, world! bla-bla-bla"));
         Assert.That(driver.FindElement(By.Id("uppercased")).Text, Is.EqualTo("HELLO, WORLD! BLA-BLA-BLA"));

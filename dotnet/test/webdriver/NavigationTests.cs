@@ -39,8 +39,8 @@ public class NavigationTests : DriverTestFixture
         INavigation navigation;
         navigation = driver.Navigate();
 
-        driver.Url = macbethPage;
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.MacbethPage;
+        driver.Url = Urls.SimpleTestPage;
 
         navigation.Back();
         Assert.That(driver.Title, Is.EqualTo(macbethTitle));
@@ -65,20 +65,20 @@ public class NavigationTests : DriverTestFixture
         INavigation navigation;
         navigation = driver.Navigate();
 
-        navigation.GoToUrl(macbethPage);
+        navigation.GoToUrl(Urls.MacbethPage);
         Assert.That(driver.Title, Is.EqualTo(macbethTitle));
 
         // We go to two pages to ensure that the browser wasn't
         // already at the desired page through a previous test.
-        navigation.GoToUrl(simpleTestPage);
+        navigation.GoToUrl(Urls.SimpleTestPage);
         Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
     }
 
     [Test]
     public void ShouldGoToUrlUsingUri()
     {
-        Uri macBeth = new Uri(macbethPage);
-        Uri simpleTest = new Uri(simpleTestPage);
+        Uri macBeth = new Uri(Urls.MacbethPage);
+        Uri simpleTest = new Uri(Urls.SimpleTestPage);
         INavigation navigation;
         navigation = driver.Navigate();
 
@@ -94,7 +94,7 @@ public class NavigationTests : DriverTestFixture
     [Test]
     public void ShouldRefreshPage()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         IWebElement changedDiv = driver.FindElement(By.Id("dynamo"));
         driver.FindElement(By.Id("updatediv")).Click();
 
@@ -119,8 +119,8 @@ public class NavigationTests : DriverTestFixture
     {
         INavigation navigation = driver.Navigate();
 
-        await navigation.GoToUrlAsync(macbethPage);
-        await navigation.GoToUrlAsync(simpleTestPage);
+        await navigation.GoToUrlAsync(Urls.MacbethPage);
+        await navigation.GoToUrlAsync(Urls.SimpleTestPage);
 
         await navigation.BackAsync();
         Assert.That(driver.Title, Is.EqualTo(macbethTitle));
@@ -141,10 +141,10 @@ public class NavigationTests : DriverTestFixture
     {
         var navigation = driver.Navigate();
 
-        await navigation.GoToUrlAsync(macbethPage);
+        await navigation.GoToUrlAsync(Urls.MacbethPage);
         Assert.That(driver.Title, Is.EqualTo(macbethTitle));
 
-        await navigation.GoToUrlAsync(simpleTestPage);
+        await navigation.GoToUrlAsync(Urls.SimpleTestPage);
         Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
     }
 
@@ -153,16 +153,16 @@ public class NavigationTests : DriverTestFixture
     {
         var navigation = driver.Navigate();
 
-        navigation.GoToUrlAsync(new Uri(macbethPage));
+        navigation.GoToUrlAsync(new Uri(Urls.MacbethPage));
         Assert.That(macbethTitle, Is.EqualTo(driver.Title));
-        navigation.GoToUrl(new Uri(simpleTestPage));
+        navigation.GoToUrl(new Uri(Urls.SimpleTestPage));
         Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
     }
 
     [Test]
     public async Task ShouldRefreshPageAsync()
     {
-        await driver.Navigate().GoToUrlAsync(javascriptPage);
+        await driver.Navigate().GoToUrlAsync(Urls.JavascriptPage);
         IWebElement changedDiv = driver.FindElement(By.Id("dynamo"));
         driver.FindElement(By.Id("updatediv")).Click();
 

@@ -69,7 +69,7 @@ public class ProxySettingTests : DriverTestFixture
         Proxy proxyToUse = proxyServer.AsProxy();
         InitLocalDriver(proxyToUse);
 
-        localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("simpleTest.html");
+        localDriver.Url = Urls.SimpleTestPage;
         Assert.That(proxyServer.HasBeenCalled("simpleTest.html"), Is.True);
     }
 
@@ -79,7 +79,7 @@ public class ProxySettingTests : DriverTestFixture
     {
         proxyServer.EnableLogResourcesOnResponse();
         Proxy proxyToUse = proxyServer.AsProxy();
-        proxyToUse.AddBypassAddresses(EnvironmentManager.Instance.UrlBuilder.HostName);
+        proxyToUse.AddBypassAddresses(Urls.HostName);
 
         if (TestUtilities.IsInternetExplorer(driver))
         {
@@ -88,10 +88,10 @@ public class ProxySettingTests : DriverTestFixture
 
         InitLocalDriver(proxyToUse);
 
-        localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("simpleTest.html");
+        localDriver.Url = Urls.SimpleTestPage;
         Assert.That(proxyServer.HasBeenCalled("simpleTest.html"), Is.False);
 
-        localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsViaNonLoopbackAddress("simpleTest.html");
+        localDriver.Url = Urls.WhereIsViaNonLoopbackAddress("simpleTest.html");
         Assert.That(proxyServer.HasBeenCalled("simpleTest.html"), Is.True);
     }
 
@@ -111,7 +111,7 @@ public class ProxySettingTests : DriverTestFixture
             Proxy proxyToUse = new Proxy();
             proxyToUse.ProxyAutoConfigUrl = string.Format("http://{0}:{1}/proxy.pac", pacServer.HostName, pacServer.Port);
             InitLocalDriver(proxyToUse);
-            localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("simpleTest.html");
+            localDriver.Url = Urls.SimpleTestPage;
             Assert.That(localDriver.FindElement(By.TagName("h3")).Text, Is.EqualTo("Hello, world!"));
         }
     }
@@ -123,7 +123,7 @@ public class ProxySettingTests : DriverTestFixture
     {
         StringBuilder pacFileContentBuilder = new StringBuilder();
         pacFileContentBuilder.AppendLine("function FindProxyForURL(url, host) {");
-        pacFileContentBuilder.AppendFormat("  if (url.indexOf('{0}') != -1) {{\n", EnvironmentManager.Instance.UrlBuilder.HostName);
+        pacFileContentBuilder.AppendFormat("  if (url.indexOf('{0}') != -1) {{\n", Urls.HostName);
         pacFileContentBuilder.AppendFormat("    return 'PROXY {0}';\n", proxyServer.BaseUrl);
         pacFileContentBuilder.AppendLine("  }");
         pacFileContentBuilder.AppendLine("  return 'DIRECT';");
@@ -136,9 +136,9 @@ public class ProxySettingTests : DriverTestFixture
             Proxy proxyToUse = new Proxy();
             proxyToUse.ProxyAutoConfigUrl = string.Format("http://{0}:{1}/proxy.pac", pacServer.HostName, pacServer.Port);
             InitLocalDriver(proxyToUse);
-            localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("simpleTest.html");
+            localDriver.Url = Urls.SimpleTestPage;
             Assert.That(localDriver.FindElement(By.TagName("h3")).Text, Is.EqualTo("Hello, world!"));
-            localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsViaNonLoopbackAddress("simpleTest.html");
+            localDriver.Url = Urls.WhereIsViaNonLoopbackAddress("simpleTest.html");
             Assert.That(localDriver.FindElement(By.TagName("h1")).Text, Is.EqualTo("Heading"));
         }
     }

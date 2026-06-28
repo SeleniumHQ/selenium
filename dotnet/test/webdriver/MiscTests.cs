@@ -27,30 +27,30 @@ public class MiscTests : DriverTestFixture
     [Test]
     public void ShouldReturnTitleOfPageIfSet()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
 
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         Assert.That(driver.Title, Is.EqualTo("Hello WebDriver"));
     }
 
     [Test]
     public void ShouldReportTheCurrentUrlCorrectly()
     {
-        driver.Url = macbethPage;
-        Assert.That(driver.Url, Is.EqualTo(macbethPage));
+        driver.Url = Urls.MacbethPage;
+        Assert.That(driver.Url, Is.EqualTo(Urls.MacbethPage));
 
-        driver.Url = simpleTestPage;
-        Assert.That(driver.Url, Is.EqualTo(simpleTestPage));
+        driver.Url = Urls.SimpleTestPage;
+        Assert.That(driver.Url, Is.EqualTo(Urls.SimpleTestPage));
 
-        driver.Url = javascriptPage;
-        Assert.That(driver.Url, Is.EqualTo(javascriptPage));
+        driver.Url = Urls.JavascriptPage;
+        Assert.That(driver.Url, Is.EqualTo(Urls.JavascriptPage));
     }
 
     [Test]
     public void ShouldReturnTagName()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement selectBox = driver.FindElement(By.Id("cheese"));
         Assert.That(selectBox.TagName.ToLower(), Is.EqualTo("input"));
     }
@@ -59,7 +59,7 @@ public class MiscTests : DriverTestFixture
     public void ShouldReturnTheSourceOfAPage()
     {
         string pageSource;
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         pageSource = driver.PageSource.ToLower();
 
         Assert.That(pageSource, Does.StartWith("<html"));
@@ -77,7 +77,7 @@ public class MiscTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "returns XML content formatted for display as HTML document")]
     public void ShouldBeAbleToGetTheSourceOfAnXmlDocument()
     {
-        driver.Url = simpleXmlDocument;
+        driver.Url = Urls.SimpleXmlDocument;
         string source = driver.PageSource.ToLower();
         source = System.Text.RegularExpressions.Regex.Replace(source, "\\s", string.Empty);
         Assert.That(source, Is.EqualTo("<xml><foo><bar>baz</bar></foo></xml>"));
@@ -101,7 +101,7 @@ public class MiscTests : DriverTestFixture
     [Test]
     public void ClickingShouldNotTrampleWOrHInGlobalScope()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("globalscope.html");
+        driver.Url = Urls.WhereIs("globalscope.html");
         List<string> values = new List<string>() { "w", "h" };
 
         foreach (string val in values)

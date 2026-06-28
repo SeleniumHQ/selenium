@@ -27,7 +27,7 @@ public class CssValueTests : DriverTestFixture
     [Test]
     public void ShouldPickUpStyleOfAnElement()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("green-parent"));
         string backgroundColour = element.GetCssValue("background-color");
@@ -43,7 +43,7 @@ public class CssValueTests : DriverTestFixture
     [Test]
     public void GetCssValueShouldReturnStandardizedColour()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("colorPage.html");
+        driver.Url = Urls.WhereIs("colorPage.html");
 
         IWebElement element = driver.FindElement(By.Id("namedColor"));
         string backgroundColour = element.GetCssValue("background-color");
@@ -57,7 +57,7 @@ public class CssValueTests : DriverTestFixture
     [Test]
     public void ShouldAllowInheritedStylesToBeUsed()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("green-item"));
         string backgroundColour = element.GetCssValue("background-color");

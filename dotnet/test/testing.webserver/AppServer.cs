@@ -41,6 +41,8 @@ public class AppServer : IAsyncDisposable
     private readonly string _webContentRoot = FindWebContentRoot();
     private readonly ConcurrentDictionary<string, string> _pages = new();
 
+    public UrlBuilder Urls { get; private set; } = null!;
+
     public async Task<(string HttpUrl, string HttpsUrl)> StartAsync()
     {
         var builder = WebApplication.CreateSlimBuilder();
@@ -96,7 +98,12 @@ public class AppServer : IAsyncDisposable
         int httpPort = new Uri(_app.Urls.First(u => u.StartsWith("http://"))).Port;
         int httpsPort = new Uri(_app.Urls.First(u => u.StartsWith("https://"))).Port;
 
-        return ($"http://localhost:{httpPort}", $"https://localhost:{httpsPort}");
+        var httpUrl = $"http://localhost:{httpPort}";
+        var httpsUrl = $"https://localhost:{httpsPort}";
+
+        Urls = new UrlBuilder(httpUrl, httpsUrl);
+
+        return (httpUrl, httpsUrl);
     }
 
     public async Task StopAsync()

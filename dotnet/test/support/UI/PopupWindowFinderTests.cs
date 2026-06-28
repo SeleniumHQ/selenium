@@ -28,7 +28,7 @@ public class PopupWindowFinderTests : DriverTestFixture
     [Test]
     public void ShouldFindPopupWindowUsingAction()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         string current = driver.CurrentWindowHandle;
 
         PopupWindowFinder finder = new PopupWindowFinder(driver);
@@ -47,7 +47,7 @@ public class PopupWindowFinderTests : DriverTestFixture
     [Test]
     public void ShouldFindPopupWindowUsingElementClick()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         string current = driver.CurrentWindowHandle;
 
         PopupWindowFinder finder = new PopupWindowFinder(driver);
@@ -66,7 +66,7 @@ public class PopupWindowFinderTests : DriverTestFixture
     [Test]
     public void ShouldFindMultiplePopupWindowsInSuccession()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         string first = driver.CurrentWindowHandle;
 
         PopupWindowFinder finder = new PopupWindowFinder(driver);
@@ -92,7 +92,7 @@ public class PopupWindowFinderTests : DriverTestFixture
     [Test]
     public void ShouldNotFindPopupWindowWhenNoneExists()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         PopupWindowFinder finder = new PopupWindowFinder(driver);
         Assert.That(
             () => finder.Click(driver.FindElement(By.Id("linkId"))),

@@ -49,7 +49,7 @@ public class DevToolsProfilerTests : DevToolsTestFixture
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Profiler.Enable();
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         await domains.Profiler.SetSamplingInterval(new CurrentCdpVersion.Profiler.SetSamplingIntervalCommandSettings()
         {
             Interval = 30
@@ -71,7 +71,7 @@ public class DevToolsProfilerTests : DevToolsTestFixture
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Profiler.Enable();
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         await domains.Profiler.StartPreciseCoverage(new CurrentCdpVersion.Profiler.StartPreciseCoverageCommandSettings()
         {
             CallCount = true,
@@ -96,7 +96,7 @@ public class DevToolsProfilerTests : DevToolsTestFixture
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Profiler.Enable();
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         ManualResetEventSlim startSync = new ManualResetEventSlim(false);
         EventHandler<CurrentCdpVersion.Profiler.ConsoleProfileStartedEventArgs> consoleProfileStartedHandler = (sender, e) =>
         {

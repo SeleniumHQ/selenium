@@ -36,14 +36,14 @@ public class I18Tests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToReadChinese()
     {
-        driver.Url = chinesePage;
+        driver.Url = Urls.ChinesePage;
         driver.FindElement(By.LinkText(linkText)).Click();
     }
 
     [Test]
     public void ShouldBeAbleToEnterHebrewTextFromLeftToRight()
     {
-        driver.Url = chinesePage;
+        driver.Url = Urls.ChinesePage;
         IWebElement input = driver.FindElement(By.Name("i18n"));
 
         input.SendKeys(shalom);
@@ -54,7 +54,7 @@ public class I18Tests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToEnterHebrewTextFromRightToLeft()
     {
-        driver.Url = chinesePage;
+        driver.Url = Urls.ChinesePage;
         IWebElement input = driver.FindElement(By.Name("i18n"));
 
         input.SendKeys(tmunot);
@@ -73,7 +73,7 @@ public class I18Tests : DriverTestFixture
             return;
         }
 
-        driver.Url = chinesePage;
+        driver.Url = Urls.ChinesePage;
 
         string input = string.Empty;
         input += char.ConvertFromUtf32(0x20000);
@@ -92,7 +92,7 @@ public class I18Tests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedBeforeTest = true)]
     public void ShouldBeAbleToReturnTheTextInAPage()
     {
-        string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("encoding");
+        string url = Urls.WhereIs("encoding");
         driver.Url = url;
 
         string text = driver.FindElement(By.TagName("body")).Text;

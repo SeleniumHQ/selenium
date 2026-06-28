@@ -36,7 +36,7 @@ public class ClickScrollingTests : DriverTestFixture
         scrollScript += "}";
         scrollScript += "return pageY;";
 
-        driver.Url = macbethPage;
+        driver.Url = Urls.MacbethPage;
 
         driver.FindElement(By.PartialLinkText("last speech")).Click();
 
@@ -52,7 +52,7 @@ public class ClickScrollingTests : DriverTestFixture
     [Test]
     public void ShouldScrollToClickOnAnElementHiddenByOverflow()
     {
-        string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_out_of_bounds_overflow.html");
+        string url = Urls.WhereIs("click_out_of_bounds_overflow.html");
         driver.Url = url;
 
         IWebElement link = driver.FindElement(By.Id("link"));
@@ -62,7 +62,7 @@ public class ClickScrollingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickOnAnElementHiddenByOverflow()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll.html");
+        driver.Url = Urls.WhereIs("scroll.html");
 
         IWebElement link = driver.FindElement(By.Id("line8"));
         // This used to throw a MoveTargetOutOfBoundsException - we don't expect it to
@@ -75,7 +75,7 @@ public class ClickScrollingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2013")]
     public void ShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_double_overflow_auto.html");
+        driver.Url = Urls.WhereIs("scrolling_tests/page_with_double_overflow_auto.html");
 
         driver.FindElement(By.Id("link")).Click();
         WaitFor(TitleToBe("Clicked Successfully!"), "Browser title was not 'Clicked Successfully'");
@@ -84,7 +84,7 @@ public class ClickScrollingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickOnAnElementHiddenByYOverflow()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_y_overflow_auto.html");
+        driver.Url = Urls.WhereIs("scrolling_tests/page_with_y_overflow_auto.html");
 
         driver.FindElement(By.Id("link")).Click();
         WaitFor(TitleToBe("Clicked Successfully!"), "Browser title was not 'Clicked Successfully'");
@@ -95,7 +95,7 @@ public class ClickScrollingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2013")]
     public void ShouldBeAbleToClickOnAnElementPartiallyHiddenByOverflow()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_partially_hidden_element.html");
+        driver.Url = Urls.WhereIs("scrolling_tests/page_with_partially_hidden_element.html");
         driver.FindElement(By.Id("btn")).Click();
         WaitFor(TitleToBe("Clicked Successfully!"), "Browser title was not 'Clicked Successfully'");
     }
@@ -103,7 +103,7 @@ public class ClickScrollingTests : DriverTestFixture
     [Test]
     public void ShouldNotScrollOverflowElementsWhichAreVisible()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll2.html");
+        driver.Url = Urls.WhereIs("scroll2.html");
         IWebElement list = driver.FindElement(By.TagName("ul"));
         IWebElement item = list.FindElement(By.Id("desired"));
         item.Click();
@@ -116,7 +116,7 @@ public class ClickScrollingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2013")]
     public void ShouldNotScrollIfAlreadyScrolledAndElementIsInView()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");
+        driver.Url = Urls.WhereIs("scroll3.html");
         driver.FindElement(By.Id("button2")).Click();
         double scrollTop = GetScrollTop();
         driver.FindElement(By.Id("button1")).Click();
@@ -126,7 +126,7 @@ public class ClickScrollingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickRadioButtonScrolledIntoView()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll4.html");
+        driver.Url = Urls.WhereIs("scroll4.html");
         driver.FindElement(By.Id("radio")).Click();
         // If we don't throw, we're good
     }
@@ -135,7 +135,7 @@ public class ClickScrollingTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "IE has special overflow handling")]
     public void ShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll5.html");
+        driver.Url = Urls.WhereIs("scroll5.html");
         driver.FindElement(By.Id("inner")).Click();
         Assert.That(driver.FindElement(By.Id("clicked")).Text, Is.EqualTo("clicked"));
     }
@@ -146,7 +146,7 @@ public class ClickScrollingTests : DriverTestFixture
     {
         try
         {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_frame_out_of_view.html");
+            driver.Url = Urls.WhereIs("scrolling_tests/page_with_frame_out_of_view.html");
             driver.SwitchTo().Frame("frame");
             IWebElement element = driver.FindElement(By.Name("checkbox"));
             element.Click();
@@ -163,7 +163,7 @@ public class ClickScrollingTests : DriverTestFixture
     {
         try
         {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_scrolling_frame.html");
+            driver.Url = Urls.WhereIs("scrolling_tests/page_with_scrolling_frame.html");
             driver.SwitchTo().Frame("scrolling_frame");
             IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
             element.Click();
@@ -180,7 +180,7 @@ public class ClickScrollingTests : DriverTestFixture
     {
         try
         {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_scrolling_frame_out_of_view.html");
+            driver.Url = Urls.WhereIs("scrolling_tests/page_with_scrolling_frame_out_of_view.html");
             driver.SwitchTo().Frame("scrolling_frame");
             IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
             element.Click();
@@ -198,7 +198,7 @@ public class ClickScrollingTests : DriverTestFixture
     {
         try
         {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_nested_scrolling_frames.html");
+            driver.Url = Urls.WhereIs("scrolling_tests/page_with_nested_scrolling_frames.html");
             driver.SwitchTo().Frame("scrolling_frame");
             driver.SwitchTo().Frame("nested_scrolling_frame");
             IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
@@ -217,7 +217,7 @@ public class ClickScrollingTests : DriverTestFixture
     {
         try
         {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html");
+            driver.Url = Urls.WhereIs("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html");
             driver.SwitchTo().Frame("scrolling_frame");
             driver.SwitchTo().Frame("nested_scrolling_frame");
             IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
@@ -233,7 +233,7 @@ public class ClickScrollingTests : DriverTestFixture
     [Test]
     public void ShouldNotScrollWhenGettingElementSize()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");
+        driver.Url = Urls.WhereIs("scroll3.html");
         double scrollTop = GetScrollTop();
         Size ignoredSize = driver.FindElement(By.Id("button1")).Size;
         Assert.That(GetScrollTop(), Is.EqualTo(scrollTop));
@@ -243,7 +243,7 @@ public class ClickScrollingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=1314462")]
     public void ShouldBeAbleToClickElementInATallFrame()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_tall_frame.html");
+        driver.Url = Urls.WhereIs("scrolling_tests/page_with_tall_frame.html");
         driver.SwitchTo().Frame("tall_frame");
         IWebElement element = driver.FindElement(By.Name("checkbox"));
         element.Click();
@@ -258,7 +258,7 @@ public class ClickScrollingTests : DriverTestFixture
     [IgnoreTarget("net48", "Cannot create inline page with UrlBuilder")]
     public void ShouldBeAbleToClickInlineTextElementWithChildElementAfterScrolling()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithBody(
                 "<div style='height: 2000px;'>Force scroll needed</div><label id='wrapper'>wraps a checkbox <input id='check' type='checkbox' checked='checked'/></label>"));
         IWebElement label = driver.FindElement(By.Id("wrapper"));

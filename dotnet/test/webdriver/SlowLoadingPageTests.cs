@@ -29,7 +29,7 @@ public class SlowLoadingPageTests : DriverTestFixture
     public void ShouldBlockUntilPageLoads()
     {
         DateTime start = DateTime.Now;
-        driver.Url = sleepingPage + "?time=" + LoadTimeInSeconds.ToString();
+        driver.Url = Urls.SleepingPage + "?time=" + LoadTimeInSeconds.ToString();
         DateTime now = DateTime.Now;
         double elapsedTime = now.Subtract(start).TotalSeconds;
         Assert.That(elapsedTime, Is.GreaterThanOrEqualTo(LoadTimeInSeconds));
@@ -40,7 +40,7 @@ public class SlowLoadingPageTests : DriverTestFixture
     public void ShouldBlockUntilIFramesAreLoaded()
     {
         DateTime start = DateTime.Now;
-        driver.Url = slowIframes;
+        driver.Url = Urls.SlowIframes;
         DateTime now = DateTime.Now;
         double elapsedTime = now.Subtract(start).TotalSeconds;
         Assert.That(elapsedTime, Is.GreaterThanOrEqualTo(LoadTimeInSeconds));
@@ -51,7 +51,7 @@ public class SlowLoadingPageTests : DriverTestFixture
     public void RefreshShouldBlockUntilPageLoads()
     {
         DateTime start = DateTime.Now;
-        driver.Url = sleepingPage + "?time=" + LoadTimeInSeconds.ToString();
+        driver.Url = Urls.SleepingPage + "?time=" + LoadTimeInSeconds.ToString();
         DateTime now = DateTime.Now;
         double elapsedTime = now.Subtract(start).TotalSeconds;
         Assert.That(elapsedTime, Is.GreaterThanOrEqualTo(LoadTimeInSeconds));

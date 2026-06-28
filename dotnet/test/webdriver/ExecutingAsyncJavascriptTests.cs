@@ -58,7 +58,7 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldNotTimeoutIfCallbackInvokedImmediately()
     {
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
         object result = executor.ExecuteAsyncScript("arguments[arguments.length - 1](123);");
         Assert.That(result, Is.InstanceOf<long>());
         Assert.That((long)result, Is.EqualTo(123));
@@ -67,20 +67,20 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNullNorUndefined()
     {
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
         Assert.That((long)executor.ExecuteAsyncScript("arguments[arguments.length - 1](123);"), Is.EqualTo(123));
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
         Assert.That(executor.ExecuteAsyncScript("arguments[arguments.length - 1]('abc');").ToString(), Is.EqualTo("abc"));
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
         Assert.That((bool)executor.ExecuteAsyncScript("arguments[arguments.length - 1](false);"), Is.False);
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
         Assert.That((bool)executor.ExecuteAsyncScript("arguments[arguments.length - 1](true);"), Is.True);
     }
 
     [Test]
     public void ShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NullAndUndefined()
     {
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
         Assert.That(executor.ExecuteAsyncScript("arguments[arguments.length - 1](null);"), Is.Null);
         Assert.That(executor.ExecuteAsyncScript("arguments[arguments.length - 1]();"), Is.Null);
     }
@@ -88,7 +88,7 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript()
     {
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
 
         object result = executor.ExecuteAsyncScript("arguments[arguments.length - 1]([]);");
         Assert.That(result, Is.Not.Null);
@@ -99,7 +99,7 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToReturnAnArrayObjectFromAnAsyncScript()
     {
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
 
         object result = executor.ExecuteAsyncScript("arguments[arguments.length - 1](new Array());");
         Assert.That(result, Is.Not.Null);
@@ -110,7 +110,7 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts()
     {
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
 
         object result = executor.ExecuteAsyncScript("arguments[arguments.length - 1]([null, 123, 'abc', true, false]);");
         Assert.That(result, Is.Not.Null);
@@ -127,7 +127,7 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToReturnWebElementsFromAsyncScripts()
     {
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
 
         object result = executor.ExecuteAsyncScript("arguments[arguments.length - 1](document.body);");
         Assert.That(result, Is.InstanceOf<IWebElement>());
@@ -137,7 +137,7 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts()
     {
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
 
         object result = executor.ExecuteAsyncScript("arguments[arguments.length - 1]([document.body, document.body]);");
         Assert.That(result, Is.Not.Null);
@@ -153,21 +153,21 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldTimeoutIfScriptDoesNotInvokeCallback()
     {
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
         Assert.That(() => executor.ExecuteAsyncScript("return 1 + 2;"), Throws.InstanceOf<WebDriverTimeoutException>());
     }
 
     [Test]
     public void ShouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout()
     {
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
         Assert.That(() => executor.ExecuteAsyncScript("window.setTimeout(function() {}, 0);"), Throws.InstanceOf<WebDriverTimeoutException>());
     }
 
     [Test]
     public void ShouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout()
     {
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
         executor.ExecuteAsyncScript(
             "var callback = arguments[arguments.length - 1];" +
             "window.setTimeout(function() { callback(123); }, 0)");
@@ -177,7 +177,7 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     public void ShouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout()
     {
         driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromMilliseconds(500);
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
         Assert.That(() => executor.ExecuteAsyncScript(
             "var callback = arguments[arguments.length - 1];" +
             "window.setTimeout(callback, 1500);"), Throws.InstanceOf<WebDriverTimeoutException>());
@@ -186,21 +186,21 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError()
     {
-        driver.Url = ajaxyPage;
-        Assert.That(() => executor.ExecuteAsyncScript("window.location = '" + dynamicPage + "';"), Throws.InstanceOf<WebDriverException>());
+        driver.Url = Urls.AjaxyPage;
+        Assert.That(() => executor.ExecuteAsyncScript("window.location = '" + Urls.DynamicPage + "';"), Throws.InstanceOf<WebDriverException>());
     }
 
     [Test]
     public void ShouldCatchErrorsWhenExecutingInitialScript()
     {
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
         Assert.That(() => executor.ExecuteAsyncScript("throw Error('you should catch this!');"), Throws.InstanceOf<WebDriverException>());
     }
 
     [Test]
     public void ShouldNotTimeoutWithMultipleCallsTheFirstOneBeingSynchronous()
     {
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
         driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromMilliseconds(1000);
         Assert.That((bool)executor.ExecuteAsyncScript("arguments[arguments.length - 1](true);"), Is.True);
         Assert.That((bool)executor.ExecuteAsyncScript("var cb = arguments[arguments.length - 1]; window.setTimeout(function(){cb(true);}, 9);"), Is.True);
@@ -214,7 +214,7 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, ".NET language bindings do not properly parse JavaScript stack trace")]
     public void ShouldCatchErrorsWithMessageAndStacktraceWhenExecutingInitialScript()
     {
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
         string js = "function functionB() { throw Error('errormessage'); };"
                     + "function functionA() { functionB(); };"
                     + "functionA();";
@@ -231,7 +231,7 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     {
         // Reset the timeout to the 30-second default instead of zero.
         driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(30);
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
 
         IWebElement typer = driver.FindElement(By.Name("typer"));
         typer.SendKeys("bob");
@@ -255,7 +255,7 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToPassMultipleArgumentsToAsyncScripts()
     {
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
         long result = (long)executor.ExecuteAsyncScript("arguments[arguments.length - 1](arguments[0] + arguments[1]);", 1, 2);
         Assert.That(result, Is.EqualTo(3));
     }
@@ -286,16 +286,16 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
             "};" +
             "xhr.send();";
 
-        driver.Url = ajaxyPage;
+        driver.Url = Urls.AjaxyPage;
         driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(3);
-        string response = (string)executor.ExecuteAsyncScript(script, sleepingPage + "?time=2");
+        string response = (string)executor.ExecuteAsyncScript(script, Urls.SleepingPage + "?time=2");
         Assert.That(response.Trim(), Is.EqualTo("<html><head><title>Done</title></head><body>Slept for 2s</body></html>"));
     }
 
     [Test]
     public void ThrowsIfScriptTriggersAlert()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(5);
         ((IJavaScriptExecutor)driver).ExecuteAsyncScript(
             "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('Look! An alert!'); }, 50);");
@@ -307,7 +307,7 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     [Test]
     public void ThrowsIfAlertHappensDuringScript()
     {
-        driver.Url = slowLoadingAlertPage;
+        driver.Url = Urls.SlowLoadingAlertPage;
         driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(5);
         ((IJavaScriptExecutor)driver).ExecuteAsyncScript("setTimeout(arguments[0], 1000);");
         Assert.That(() => driver.Title, Throws.InstanceOf<UnhandledAlertException>());
@@ -319,7 +319,7 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     [Test]
     public void ThrowsIfScriptTriggersAlertWhichTimesOut()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(5);
         ((IJavaScriptExecutor)driver)
             .ExecuteAsyncScript("setTimeout(function() { window.alert('Look! An alert!'); }, 50);");
@@ -332,7 +332,7 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
     [Test]
     public void ThrowsIfAlertHappensDuringScriptWhichTimesOut()
     {
-        driver.Url = slowLoadingAlertPage;
+        driver.Url = Urls.SlowLoadingAlertPage;
         driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(5);
         ((IJavaScriptExecutor)driver).ExecuteAsyncScript("");
         Assert.That(() => driver.Title, Throws.InstanceOf<UnhandledAlertException>());

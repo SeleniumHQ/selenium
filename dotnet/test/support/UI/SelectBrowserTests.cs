@@ -28,7 +28,7 @@ public class SelectBrowserTests : DriverTestFixture
     [SetUp]
     public void Setup()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
     }
 
     [Test]

@@ -28,7 +28,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldFireKeyPressEvents()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys("a");
@@ -41,7 +41,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldFireKeyDownEvents()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys("I");
@@ -54,7 +54,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldFireKeyUpEvents()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys("a");
@@ -67,7 +67,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldTypeLowerCaseLetters()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys("abc def");
@@ -78,7 +78,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToTypeCapitalLetters()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys("ABC DEF");
@@ -89,7 +89,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToTypeQuoteMarks()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys("\"");
@@ -106,7 +106,7 @@ public class TypingTests : DriverTestFixture
         // in a lightweight manner when my keyboard is set to the DE mapping
         // and we're using IE.
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys("@");
@@ -117,7 +117,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToMixUpperAndLowerCaseLetters()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys("me@eXample.com");
@@ -128,7 +128,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ArrowKeysShouldNotBePrintable()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys(Keys.ArrowLeft);
@@ -139,7 +139,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToUseArrowKeys()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys("Tet" + Keys.ArrowLeft + "s");
@@ -150,7 +150,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void WillSimulateAKeyUpWhenEnteringTextIntoInputElements()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyUp"));
         element.SendKeys("I like cheese");
@@ -162,7 +162,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void WillSimulateAKeyDownWhenEnteringTextIntoInputElements()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyDown"));
         element.SendKeys("I like cheese");
@@ -176,7 +176,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void WillSimulateAKeyPressWhenEnteringTextIntoInputElements()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyPress"));
         element.SendKeys("I like cheese");
@@ -190,7 +190,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void WillSimulateAKeyUpWhenEnteringTextIntoTextAreas()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyUpArea"));
         element.SendKeys("I like cheese");
@@ -202,7 +202,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void WillSimulateAKeyDownWhenEnteringTextIntoTextAreas()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyDownArea"));
         element.SendKeys("I like cheese");
@@ -216,7 +216,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void WillSimulateAKeyPressWhenEnteringTextIntoTextAreas()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyPressArea"));
         element.SendKeys("I like cheese");
@@ -230,7 +230,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldFireFocusKeyEventsInTheRightOrder()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement result = driver.FindElement(By.Id("result"));
         IWebElement element = driver.FindElement(By.Id("theworks"));
@@ -242,7 +242,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldReportKeyCodeOfArrowKeys()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement result = driver.FindElement(By.Id("result"));
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
@@ -266,7 +266,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldReportKeyCodeOfArrowKeysUpDownEvents()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement result = driver.FindElement(By.Id("result"));
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
@@ -298,7 +298,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void NumericNonShiftKeys()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
@@ -312,7 +312,7 @@ public class TypingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/646")]
     public void NumericShiftKeys()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement result = driver.FindElement(By.Id("result"));
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
@@ -328,7 +328,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void LowerCaseAlphaKeys()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
@@ -342,7 +342,7 @@ public class TypingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/646")]
     public void UppercaseAlphaKeys()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement result = driver.FindElement(By.Id("result"));
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
@@ -359,7 +359,7 @@ public class TypingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/646")]
     public void AllPrintableKeys()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement result = driver.FindElement(By.Id("result"));
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
@@ -377,7 +377,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ArrowKeysAndPageUpAndDown()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
@@ -390,7 +390,7 @@ public class TypingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2015")]
     public void HomeAndEndAndPageUpAndPageDownKeys()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
@@ -403,7 +403,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void DeleteAndBackspaceKeys()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
@@ -420,7 +420,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void SpecialSpaceKeys()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
@@ -431,7 +431,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void NumberpadKeys()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
@@ -445,7 +445,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void FunctionKeys()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
@@ -457,7 +457,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShiftSelectionDeletes()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
@@ -474,7 +474,7 @@ public class TypingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/646")]
     public void ChordControlHomeShiftEndDelete()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement result = driver.FindElement(By.Id("result"));
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
@@ -493,7 +493,7 @@ public class TypingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2015")]
     public void ChordReverseShiftHomeSelectionDeletes()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement result = driver.FindElement(By.Id("result"));
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
@@ -521,7 +521,7 @@ public class TypingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2015")]
     public void ChordControlCutAndPaste()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
@@ -557,7 +557,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldTypeIntoInputElementsThatHaveNoTypeAttribute()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement element = driver.FindElement(By.Id("no-type"));
 
@@ -568,7 +568,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldNotTypeIntoElementsThatPreventKeyDownEvents()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement silent = driver.FindElement(By.Name("suppress"));
 
@@ -579,7 +579,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void GenerateKeyPressEventEvenWhenElementPreventsDefault()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement silent = driver.FindElement(By.Name("suppress"));
         IWebElement result = driver.FindElement(By.Id("result"));
@@ -591,7 +591,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToTypeOnAnEmailInputField()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement email = driver.FindElement(By.Id("email"));
         email.SendKeys("foobar");
         Assert.That(email.GetAttribute("value"), Is.EqualTo("foobar"));
@@ -600,7 +600,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToTypeOnANumberInputField()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement numberElement = driver.FindElement(By.Id("age"));
         numberElement.SendKeys("33");
         Assert.That(numberElement.GetAttribute("value"), Is.EqualTo("33"));
@@ -609,7 +609,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldThrowIllegalArgumentException()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement email = driver.FindElement(By.Id("age"));
         Assert.That(() => email.SendKeys(null), Throws.InstanceOf<ArgumentNullException>());
     }
@@ -617,7 +617,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void CanSafelyTypeOnElementThatIsRemovedFromTheDomOnKeyPress()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("key_tests/remove_on_keypress.html");
+        driver.Url = Urls.WhereIs("key_tests/remove_on_keypress.html");
 
         IWebElement input = driver.FindElement(By.Id("target"));
         IWebElement log = driver.FindElement(By.Id("log"));
@@ -640,7 +640,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void CanClearNumberInputAfterTypingInvalidInput()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement input = driver.FindElement(By.Id("age"));
         input.SendKeys("e");
         input.Clear();
@@ -655,7 +655,7 @@ public class TypingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
     public void TypingIntoAnIFrameWithContentEditableOrDesignModeSet()
     {
-        driver.Url = richTextPage;
+        driver.Url = Urls.RichTextPage;
 
         driver.SwitchTo().Frame("editFrame");
         IWebElement element = driver.SwitchTo().ActiveElement();
@@ -673,7 +673,7 @@ public class TypingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
     public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
     {
-        driver.Url = richTextPage;
+        driver.Url = Urls.RichTextPage;
 
         driver.SwitchTo().Frame("editFrame");
         IWebElement element = driver.SwitchTo().ActiveElement();
@@ -688,7 +688,7 @@ public class TypingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToTypeIntoEmptyContentEditableElement()
     {
-        driver.Url = readOnlyPage;
+        driver.Url = Urls.ReadOnlyPage;
         IWebElement editable = driver.FindElement(By.Id("content-editable"));
 
         editable.Clear();
@@ -703,7 +703,7 @@ public class TypingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2015")]
     public void ShouldBeAbleToTypeIntoContentEditableElementWithExistingValue()
     {
-        driver.Url = readOnlyPage;
+        driver.Url = Urls.ReadOnlyPage;
         IWebElement editable = driver.FindElement(By.Id("content-editable"));
 
         string initialText = editable.Text;
@@ -718,7 +718,7 @@ public class TypingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Edge, "Typing into rich text editors broken since 149")]
     public void ShouldBeAbleToTypeIntoTinyMCE()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("tinymce.html");
+        driver.Url = Urls.WhereIs("tinymce.html");
         driver.SwitchTo().Frame("mce_0_ifr");
 
         IWebElement editable = driver.FindElement(By.Id("tinymce"));

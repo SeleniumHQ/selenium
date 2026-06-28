@@ -27,49 +27,49 @@ public class ElementSelectingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToSelectAnEnabledUnselectedCheckbox()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         AssertCanSelect(this.EnabledUnselectedCheckbox);
     }
 
     [Test]
     public void ShouldBeAbleToSelectAnEnabledUnselectedRadioButton()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         AssertCanSelect(this.EnabledUnselectedRadioButton);
     }
 
     [Test]
     public void ShouldNotBeAbleToSelectADisabledCheckbox()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         AssertCannotSelect(this.DisabledUnselectedCheckbox);
     }
 
     [Test]
     public void ShouldNotBeAbleToSelectADisabledCheckboxDisabledWithRandomString()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         AssertCannotSelect(this.RandomlyDisabledSelectedCheckbox);
     }
 
     [Test]
     public void ShouldNotBeAbleToSelectADisabledRadioButton()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         AssertCannotSelect(this.DisabledUnselectedRadioButton);
     }
 
     [Test]
     public void ShouldNotBeAbleToSelectADisabledRadioButtonDisabledWithRandomString()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         AssertCannotSelect(this.RandomlyDisabledUnselectedRadioButton);
     }
 
     [Test]
     public void SelectingRadioButtonShouldUnselectItsSibling()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement originallySelected = this.EnabledSelectedRadioButton;
         AssertSelected(originallySelected);
@@ -85,7 +85,7 @@ public class ElementSelectingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToToggleAnEnabledUnselectedCheckbox()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement checkbox = this.EnabledUnselectedCheckbox;
         AssertNotSelected(checkbox);
@@ -100,7 +100,7 @@ public class ElementSelectingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToToggleAnEnabledSelectedCheckbox()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement checkbox = this.EnabledSelectedCheckbox;
         AssertSelected(checkbox);
@@ -115,7 +115,7 @@ public class ElementSelectingTests : DriverTestFixture
     [Test]
     public void ClickingOnASelectedRadioButtonShouldLeaveItSelected()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement button = this.EnabledSelectedRadioButton;
         Assert.That(button.Selected, "Radio button should be selected");
@@ -128,14 +128,14 @@ public class ElementSelectingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToToggleEnabledMultiSelectOption()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         AssertCanToggle(this.SelectedMultipleSelectOption);
     }
 
     [Test]
     public void ShouldBeAbleToToggleSelectableCheckboxByClickingOnIt()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement checkbox = this.EnabledUnselectedCheckbox;
         AssertNotSelected(checkbox);
@@ -150,7 +150,7 @@ public class ElementSelectingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToSelectSelectableRadioButtonByClickingOnIt()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement radioButton = this.EnabledUnselectedRadioButton;
         AssertNotSelected(radioButton);
@@ -165,28 +165,28 @@ public class ElementSelectingTests : DriverTestFixture
     [Test]
     public void ClickingDisabledSelectedCheckboxShouldBeNoop()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         AssertClickingPreservesCurrentlySelectedStatus(this.RandomlyDisabledSelectedCheckbox);
     }
 
     [Test]
     public void ClickingDisabledUnselectedCheckboxShouldBeNoop()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         AssertClickingPreservesCurrentlySelectedStatus(this.DisabledUnselectedCheckbox);
     }
 
     [Test]
     public void ClickingDisabledSelectedRadioButtonShouldBeNoop()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         AssertClickingPreservesCurrentlySelectedStatus(this.DisabledSelectedRadioButton);
     }
 
     [Test]
     public void ClickingDisabledUnselectedRadioButtonShouldBeNoop()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         AssertClickingPreservesCurrentlySelectedStatus(this.DisabledUnselectedRadioButton);
     }
 

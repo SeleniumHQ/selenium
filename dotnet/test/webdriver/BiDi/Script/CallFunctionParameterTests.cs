@@ -83,7 +83,7 @@ internal class CallFunctionParameterTests : BiDiTestFixture
     [Test]
     public async Task CanCallFunctionToGetIFrameBrowsingContext()
     {
-        driver.Url = UrlBuilder.WhereIs("click_too_big_in_frame.html");
+        driver.Url = Urls.WhereIs("click_too_big_in_frame.html");
 
         var res = await context.Script.CallFunctionAsync("""
             () => document.querySelector('iframe[id="iframe1"]').contentWindow
@@ -97,7 +97,7 @@ internal class CallFunctionParameterTests : BiDiTestFixture
     [Test]
     public async Task CanCallFunctionToGetElement()
     {
-        driver.Url = UrlBuilder.WhereIs("bidi/logEntryAdded.html");
+        driver.Url = Urls.WhereIs("bidi/logEntryAdded.html");
 
         var res = await context.Script.CallFunctionAsync("""
             () => document.getElementById("consoleLog")

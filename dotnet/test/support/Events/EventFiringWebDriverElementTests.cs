@@ -28,7 +28,7 @@ public class EventFiringWebDriverElementTests : DriverTestFixture
     [SetUp]
     public void Setup()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
     }
 
     [Test]

@@ -37,7 +37,7 @@ internal class PermissionsTests : BiDiTestFixture
             Background = true
         })).Context;
 
-        var newPage = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        var newPage = Urls.CreateInlinePage(new InlinePage()
             .WithBody("<div>new page</div>"));
 
         await window.NavigateAsync(newPage);

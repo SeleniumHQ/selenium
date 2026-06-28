@@ -47,7 +47,7 @@ public class GetLogsTests : DriverTestFixture
         ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
         foreach (string logType in logTypes)
         {
-            driver.Url = simpleTestPage;
+            driver.Url = Urls.SimpleTestPage;
             ReadOnlyCollection<LogEntry> firstEntries = driver.Manage().Logs.GetLog(logType);
             if (firstEntries.Count > 0)
             {
@@ -60,7 +60,7 @@ public class GetLogsTests : DriverTestFixture
     [Test]
     public void DifferentLogsShouldNotContainTheSameLogEntries()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         Dictionary<string, ReadOnlyCollection<LogEntry>> logTypeToEntriesDictionary = new Dictionary<string, ReadOnlyCollection<LogEntry>>();
         ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
         foreach (string logType in logTypes)
@@ -102,7 +102,7 @@ public class GetLogsTests : DriverTestFixture
             localDriver = new ChromeDriver(options);
         }
 
-        localDriver.Url = simpleTestPage;
+        localDriver.Url = Urls.SimpleTestPage;
     }
 
     private bool HasOverlappingLogEntries(ReadOnlyCollection<LogEntry> firstLog, ReadOnlyCollection<LogEntry> secondLog)

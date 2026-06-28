@@ -28,7 +28,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement head = driver.FindElement(By.XPath("/html"));
         string attribute = head.GetAttribute("cheese");
         Assert.That(attribute, Is.Null);
@@ -37,7 +37,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldReturnNullWhenGettingSrcAttributeOfInvalidImgTag()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement img = driver.FindElement(By.Id("invalidImgTag"));
         string attribute = img.GetAttribute("src");
         Assert.That(attribute, Is.Null);
@@ -46,25 +46,25 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldReturnAnAbsoluteUrlWhenGettingSrcAttributeOfAValidImgTag()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement img = driver.FindElement(By.Id("validImgTag"));
         string attribute = img.GetAttribute("src");
-        Assert.That(attribute, Is.EqualTo(EnvironmentManager.Instance.UrlBuilder.WhereIs("icon.gif")));
+        Assert.That(attribute, Is.EqualTo(Urls.WhereIs("icon.gif")));
     }
 
     [Test]
     public void ShouldReturnAnAbsoluteUrlWhenGettingHrefAttributeOfAValidAnchorTag()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement img = driver.FindElement(By.Id("validAnchorTag"));
         string attribute = img.GetAttribute("href");
-        Assert.That(attribute, Is.EqualTo(EnvironmentManager.Instance.UrlBuilder.WhereIs("icon.gif")));
+        Assert.That(attribute, Is.EqualTo(Urls.WhereIs("icon.gif")));
     }
 
     [Test]
     public void ShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement body = driver.FindElement(By.XPath("//body"));
         Assert.That(body.GetAttribute("style"), Is.Empty);
     }
@@ -72,7 +72,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement inputElement = driver.FindElement(By.XPath("//input[@id='working']"));
         Assert.That(inputElement.GetAttribute("disabled"), Is.Null);
         Assert.That(inputElement.Enabled, "Element is not enabled");
@@ -85,7 +85,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldReturnTheValueOfTheIndexAttrbuteEvenIfItIsMissing()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement multiSelect = driver.FindElement(By.Id("multi"));
         ReadOnlyCollection<IWebElement> options = multiSelect.FindElements(By.TagName("option"));
@@ -95,7 +95,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldIndicateTheElementsThatAreDisabledAreNotEnabled()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement inputElement = driver.FindElement(By.XPath("//input[@id='notWorking']"));
         Assert.That(inputElement.Enabled, Is.False, "Element should be disabled");
 
@@ -106,7 +106,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ElementsShouldBeDisabledIfTheyAreDisabledUsingRandomDisabledStrings()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement disabledTextElement1 = driver.FindElement(By.Id("disabledTextElement1"));
         Assert.That(disabledTextElement1.Enabled, Is.False, "disabledTextElement1 should be disabled");
 
@@ -120,7 +120,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement disabledTextElement1 = driver.FindElement(By.Id("disabledTextElement1"));
 
         Assert.That(() =>
@@ -142,7 +142,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldIndicateWhenATextAreaIsDisabled()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement textArea = driver.FindElement(By.XPath("//textarea[@id='notWorkingArea']"));
         Assert.That(textArea.Enabled, Is.False);
     }
@@ -150,7 +150,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldIndicateWhenASelectIsDisabled()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement enabled = driver.FindElement(By.Name("selectomatic"));
         IWebElement disabled = driver.FindElement(By.Name("no-select"));
@@ -162,7 +162,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldReturnTheValueOfCheckedForACheckboxOnlyIfItIsChecked()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement checkbox = driver.FindElement(By.XPath("//input[@id='checky']"));
         Assert.That(checkbox.GetAttribute("checked"), Is.Null);
         checkbox.Click();
@@ -172,7 +172,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldOnlyReturnTheValueOfSelectedForRadioButtonsIfItIsSet()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement neverSelected = driver.FindElement(By.Id("cheese"));
         IWebElement initiallyNotSelected = driver.FindElement(By.Id("peas"));
         IWebElement initiallySelected = driver.FindElement(By.Id("cheese_and_peas"));
@@ -190,7 +190,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldReturnTheValueOfSelectedForOptionsOnlyIfTheyAreSelected()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement selectBox = driver.FindElement(By.XPath("//select[@name='selectomatic']"));
         ReadOnlyCollection<IWebElement> options = selectBox.FindElements(By.TagName("option"));
         IWebElement one = options[0];
@@ -204,7 +204,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldReturnValueOfClassAttributeOfAnElement()
     {
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         IWebElement heading = driver.FindElement(By.XPath("//h1"));
         String className = heading.GetAttribute("class");
@@ -215,7 +215,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldReturnTheContentsOfATextAreaAsItsValue()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         String value = driver.FindElement(By.Id("withText")).GetAttribute("value");
 
@@ -225,7 +225,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldReturnInnerHtml()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         string html = driver.FindElement(By.Id("wrappingtext")).GetAttribute("innerHTML");
         Assert.That(html, Does.Contain("<tbody>"));
@@ -234,7 +234,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldTreatReadonlyAsAValue()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement element = driver.FindElement(By.Name("readonly"));
         string readOnlyAttribute = element.GetAttribute("readonly");
@@ -250,7 +250,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldReturnHiddenTextForTextContentAttribute()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         IWebElement element = driver.FindElement(By.Id("hiddenline"));
         string textContent = element.GetAttribute("textContent");
@@ -261,7 +261,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldGetNumericAtribute()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.Id("withText"));
         Assert.That(element.GetAttribute("rows"), Is.EqualTo("5"));
     }
@@ -269,7 +269,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void CanReturnATextApproximationOfTheStyleAttribute()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         string style = driver.FindElement(By.Id("red-item")).GetAttribute("style");
 
         Assert.That(style.ToLower(), Does.Contain("background-color"));
@@ -277,7 +277,7 @@ public class ElementAttributeTests : DriverTestFixture
 
     public void ShouldCorrectlyReportValueOfColspan()
     {
-        driver.Url = tables;
+        driver.Url = Urls.Tables;
         System.Threading.Thread.Sleep(1000);
 
         IWebElement th1 = driver.FindElement(By.Id("th1"));
@@ -294,7 +294,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldReturnValueOfOnClickAttribute()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement mouseclickDiv = driver.FindElement(By.Id("mouseclick"));
 
@@ -318,7 +318,7 @@ public class ElementAttributeTests : DriverTestFixture
             Assert.Ignore("IE8 and earlier do not support SVG");
         }
 
-        driver.Url = svgPage;
+        driver.Url = Urls.SvgPage;
         IWebElement svgElement = driver.FindElement(By.Id("rotate"));
         Assert.That(svgElement.GetAttribute("transform"), Is.EqualTo("rotate(30)"));
     }
@@ -326,7 +326,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void CanRetrieveTheCurrentValueOfATextFormField_textInput()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.Id("working"));
         Assert.That(element.GetAttribute("value"), Is.Empty);
         element.SendKeys("hello world");
@@ -336,7 +336,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void CanRetrieveTheCurrentValueOfATextFormField_emailInput()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.Id("email"));
         Assert.That(element.GetAttribute("value"), Is.Empty);
         element.SendKeys("hello world");
@@ -346,7 +346,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void CanRetrieveTheCurrentValueOfATextFormField_textArea()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.Id("emptyTextArea"));
         Assert.That(element.GetAttribute("value"), Is.Empty);
         element.SendKeys("hello world");
@@ -356,7 +356,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldReturnNullForNonPresentBooleanAttributes()
     {
-        driver.Url = booleanAttributes;
+        driver.Url = Urls.BooleanAttributes;
         IWebElement element1 = driver.FindElement(By.Id("working"));
         Assert.That(element1.GetAttribute("required"), Is.Null);
         IWebElement element2 = driver.FindElement(By.Id("wallace"));
@@ -366,7 +366,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldReturnTrueForPresentBooleanAttributes()
     {
-        driver.Url = booleanAttributes;
+        driver.Url = Urls.BooleanAttributes;
         IWebElement element1 = driver.FindElement(By.Id("emailRequired"));
         Assert.That(element1.GetAttribute("required"), Is.EqualTo("true"));
         IWebElement element2 = driver.FindElement(By.Id("emptyTextAreaRequired"));
@@ -382,7 +382,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void MultipleAttributeShouldBeNullWhenNotSet()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement element = driver.FindElement(By.Id("selectWithoutMultiple"));
         Assert.That(element.GetAttribute("multiple"), Is.Null);
     }
@@ -390,7 +390,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void MultipleAttributeShouldBeTrueWhenSet()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement element = driver.FindElement(By.Id("selectWithMultipleEqualsMultiple"));
         Assert.That(element.GetAttribute("multiple"), Is.EqualTo("true"));
     }
@@ -398,7 +398,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void MultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsBlank()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement element = driver.FindElement(By.Id("selectWithEmptyStringMultiple"));
         Assert.That(element.GetAttribute("multiple"), Is.EqualTo("true"));
     }
@@ -406,7 +406,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void MultipleAttributeShouldBeTrueWhenSelectHasMultipleWithoutAValue()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement element = driver.FindElement(By.Id("selectWithMultipleWithoutValue"));
         Assert.That(element.GetAttribute("multiple"), Is.EqualTo("true"));
     }
@@ -414,7 +414,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void MultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsSomethingElse()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement element = driver.FindElement(By.Id("selectWithRandomMultipleValue"));
         Assert.That(element.GetAttribute("multiple"), Is.EqualTo("true"));
     }
@@ -422,7 +422,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void GetAttributeOfUserDefinedProperty()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("userDefinedProperty.html");
+        driver.Url = Urls.WhereIs("userDefinedProperty.html");
         IWebElement element = driver.FindElement(By.Id("d"));
         Assert.That(element.GetAttribute("dynamicProperty"), Is.EqualTo("sampleValue"));
     }
@@ -430,7 +430,7 @@ public class ElementAttributeTests : DriverTestFixture
     [Test]
     public void ShouldReturnValueOfClassAttributeOfAnElementAfterSwitchingIFrame()
     {
-        driver.Url = iframePage;
+        driver.Url = Urls.IframesPage;
         driver.SwitchTo().Frame("iframe1");
 
         IWebElement wallace = driver.FindElement(By.XPath("//div[@id='wallace']"));

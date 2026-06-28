@@ -99,7 +99,7 @@ internal class NetworkTests : BiDiTestFixture
             }
         });
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         Assert.That(times, Is.GreaterThan(0));
     }
@@ -121,7 +121,7 @@ internal class NetworkTests : BiDiTestFixture
             }
         });
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         Assert.That(times, Is.GreaterThan(0));
     }
@@ -143,7 +143,7 @@ internal class NetworkTests : BiDiTestFixture
             }
         });
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         Assert.That(times, Is.GreaterThan(0));
     }
@@ -173,7 +173,7 @@ internal class NetworkTests : BiDiTestFixture
             }
         });
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         Assert.That(times, Is.GreaterThan(0));
         Assert.That(driver.Title, Is.EqualTo("Hello"));
@@ -202,7 +202,7 @@ internal class NetworkTests : BiDiTestFixture
             }
         });
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.AuthenticationPage, new() { Wait = ReadinessState.Complete });
 
         Assert.That(driver.FindElement(By.CssSelector("h1")).Text, Is.EqualTo("authorized"));
     }
@@ -222,7 +222,7 @@ internal class NetworkTests : BiDiTestFixture
         });
 
         Assert.That(
-            async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete }),
+            async () => await context.NavigateAsync(Urls.AuthenticationPage, new() { Wait = ReadinessState.Complete }),
             Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_INVALID_AUTH_CREDENTIALS"));
     }
 
@@ -241,7 +241,7 @@ internal class NetworkTests : BiDiTestFixture
         });
 
         Assert.That(
-            async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete }),
+            async () => await context.NavigateAsync(Urls.AuthenticationPage, new() { Wait = ReadinessState.Complete }),
             Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_HTTP_RESPONSE_CODE_FAILURE"));
     }
 
@@ -259,7 +259,7 @@ internal class NetworkTests : BiDiTestFixture
         });
 
         Assert.That(
-            async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete }),
+            async () => await context.NavigateAsync(Urls.AuthenticationPage, new() { Wait = ReadinessState.Complete }),
             Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_FAILED").Or.Message.Contain("NS_ERROR_ABORT"));
     }
 
@@ -280,7 +280,7 @@ internal class NetworkTests : BiDiTestFixture
             }
         });
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("simpleTest.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.SimpleTestPage, new() { Wait = ReadinessState.Complete });
 
         var responseBody = await responseBodyCompletionSource.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
@@ -294,7 +294,7 @@ internal class NetworkTests : BiDiTestFixture
 
         await using var stream = await bidi.Network.ResponseCompleted.StreamAsync();
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("simpleTest.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.SimpleTestPage, new() { Wait = ReadinessState.Complete });
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 

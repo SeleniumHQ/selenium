@@ -37,7 +37,7 @@ public class ObjectStateAssumptionsTests : DriverTestFixture
     [Test]
     public void InitializedWebDriverDoesNotThrowException()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         variousMethodCallsToCheckAssumptions();
     }
 

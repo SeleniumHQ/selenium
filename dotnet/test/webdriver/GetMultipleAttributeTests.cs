@@ -25,7 +25,7 @@ public class GetMultipleAttributeTests : DriverTestFixture
     [Test]
     public void MultipleAttributeShouldBeNullWhenNotSet()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement element = driver.FindElement(By.Id("selectWithoutMultiple"));
         Assert.That(element.GetAttribute("multiple"), Is.Null);
     }
@@ -33,7 +33,7 @@ public class GetMultipleAttributeTests : DriverTestFixture
     [Test]
     public void MultipleAttributeShouldBeTrueWhenSet()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement element = driver.FindElement(By.Id("selectWithMultipleEqualsMultiple"));
         Assert.That(element.GetAttribute("multiple"), Is.EqualTo("true"));
     }
@@ -41,7 +41,7 @@ public class GetMultipleAttributeTests : DriverTestFixture
     [Test]
     public void MultipleAttributeShouldBeTrueWhenSelectHasMutilpeWithValueAsBlank()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement element = driver.FindElement(By.Id("selectWithEmptyStringMultiple"));
         Assert.That(element.GetAttribute("multiple"), Is.EqualTo("true"));
     }
@@ -49,7 +49,7 @@ public class GetMultipleAttributeTests : DriverTestFixture
     [Test]
     public void MultipleAttributeShouldBeTrueWhenSelectHasMutilpeWithoutAValue()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement element = driver.FindElement(By.Id("selectWithMultipleWithoutValue"));
         Assert.That(element.GetAttribute("multiple"), Is.EqualTo("true"));
     }
@@ -57,7 +57,7 @@ public class GetMultipleAttributeTests : DriverTestFixture
     [Test]
     public void MultipleAttributeShouldBeTrueWhenSelectHasMutilpeWithValueAsSomethingElse()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement element = driver.FindElement(By.Id("selectWithRandomMultipleValue"));
         Assert.That(element.GetAttribute("multiple"), Is.EqualTo("true"));
     }

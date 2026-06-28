@@ -26,7 +26,7 @@ public class TargetLocatorTests : DriverTestFixture
     [Test]
     public void ShouldThrowExceptionAfterSwitchingToNonExistingFrameIndex()
     {
-        driver.Url = framesPage;
+        driver.Url = Urls.FramesPage;
 
         Assert.That(
             () => driver.SwitchTo().Frame(10),
@@ -36,7 +36,7 @@ public class TargetLocatorTests : DriverTestFixture
     [Test]
     public void ShouldThrowExceptionAfterSwitchingToNonExistingFrameName()
     {
-        driver.Url = framesPage;
+        driver.Url = Urls.FramesPage;
 
         Assert.That(
             () => driver.SwitchTo().Frame("æ©ñµøöíúüþ®éåä²doesnotexist"),
@@ -47,7 +47,7 @@ public class TargetLocatorTests : DriverTestFixture
     public void ShouldThrowExceptionAfterSwitchingToNullFrameName()
     {
         string frameName = null;
-        driver.Url = framesPage;
+        driver.Url = Urls.FramesPage;
 
         Assert.That(
             () => driver.SwitchTo().Frame(frameName),
@@ -57,7 +57,7 @@ public class TargetLocatorTests : DriverTestFixture
     [Test]
     public void ShouldSwitchToIframeByNameAndBackToDefaultContent()
     {
-        driver.Url = iframesPage;
+        driver.Url = Urls.IframesPage;
         driver.SwitchTo().Frame("iframe1");
         IWebElement element = driver.FindElement(By.Name("id-name1"));
         Assert.That(element, Is.Not.Null);
@@ -70,7 +70,7 @@ public class TargetLocatorTests : DriverTestFixture
     [Test]
     public void ShouldSwitchToIframeByIndexAndBackToDefaultContent()
     {
-        driver.Url = iframesPage;
+        driver.Url = Urls.IframesPage;
         driver.SwitchTo().Frame(0);
         IWebElement element = driver.FindElement(By.Name("id-name1"));
         Assert.That(element, Is.Not.Null);
@@ -83,7 +83,7 @@ public class TargetLocatorTests : DriverTestFixture
     [Test]
     public void ShouldSwitchToFrameByNameAndBackToDefaultContent()
     {
-        driver.Url = framesPage;
+        driver.Url = Urls.FramesPage;
 
         driver.SwitchTo().Frame("first");
         Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("1"));
@@ -109,7 +109,7 @@ public class TargetLocatorTests : DriverTestFixture
     [Test]
     public void ShouldSwitchToFrameByIndexAndBackToDefaultContent()
     {
-        driver.Url = framesPage;
+        driver.Url = Urls.FramesPage;
 
         driver.SwitchTo().Frame(0);
         Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("1"));

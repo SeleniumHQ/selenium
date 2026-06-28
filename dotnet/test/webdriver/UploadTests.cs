@@ -46,7 +46,7 @@ public class UploadTests : DriverTestFixture
     [Test]
     public void ShouldAllowFileUploading()
     {
-        driver.Url = uploadPage;
+        driver.Url = Urls.UploadPage;
         driver.FindElement(By.Id("upload")).SendKeys(testFile.FullName);
         driver.FindElement(By.Id("go")).Submit();
 
@@ -64,7 +64,7 @@ public class UploadTests : DriverTestFixture
     [Test]
     public void CleanFileInput()
     {
-        driver.Url = uploadPage;
+        driver.Url = Urls.UploadPage;
         IWebElement element = driver.FindElement(By.Id("upload"));
         element.SendKeys(testFile.FullName);
         element.Clear();
@@ -74,7 +74,7 @@ public class UploadTests : DriverTestFixture
     [Test]
     public void ClickFileInput()
     {
-        driver.Url = uploadPage;
+        driver.Url = Urls.UploadPage;
         IWebElement element = driver.FindElement(By.Id("upload"));
         Assert.That(() => element.Click(), Throws.InstanceOf<WebDriverException>());
     }
@@ -82,7 +82,7 @@ public class UploadTests : DriverTestFixture
     [Test]
     public void UploadingWithHiddenFileInput()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("upload_invisible.html");
+        driver.Url = Urls.WhereIs("upload_invisible.html");
         driver.FindElement(By.Id("upload")).SendKeys(testFile.FullName);
         driver.FindElement(By.Id("go")).Click();
 
@@ -106,7 +106,7 @@ public class UploadTests : DriverTestFixture
     [Test]
     public void ShouldAllowFileUploadingUsingTransparentUploadElement()
     {
-        driver.Url = transparentUploadPage;
+        driver.Url = Urls.TransparentUploadPage;
         driver.FindElement(By.Id("upload")).SendKeys(testFile.FullName);
         driver.FindElement(By.Id("go")).Submit();
 

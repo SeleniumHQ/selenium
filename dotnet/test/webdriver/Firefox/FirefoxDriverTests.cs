@@ -33,26 +33,26 @@ public class FirefoxDriverTests : DriverTestFixture
     [Test]
     public void ShouldContinueToWorkIfUnableToFindElementById()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         Assert.That(
             () => driver.FindElement(By.Id("notThere")),
             Throws.InstanceOf<NoSuchElementException>());
 
         // Is this works, then we're golden
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
     }
 
     [Ignore("")]
     [Test]
     public void ShouldWaitUntilBrowserHasClosedProperly()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         driver.Close();
 
         CreateFreshDriver();
 
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement textarea = driver.FindElement(By.Id("withText"));
         string expectedText = "I like cheese" + System.Environment.NewLine
             + System.Environment.NewLine + "It's really nice";
@@ -69,8 +69,8 @@ public class FirefoxDriverTests : DriverTestFixture
     {
         IWebDriver secondDriver = new FirefoxDriver();
 
-        driver.Url = xhtmlTestPage;
-        secondDriver.Url = formsPage;
+        driver.Url = Urls.XhtmlTestPage;
+        secondDriver.Url = Urls.FormsPage;
 
         Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
         Assert.That(secondDriver.Title, Is.EqualTo("We Leave From Here"));
@@ -122,13 +122,13 @@ public class FirefoxDriverTests : DriverTestFixture
         }
         // Scenario: Open a new window, make sure the current window still gets
         // native events (keyboard events in this case).
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         driver.FindElement(By.Name("windowOne")).Click();
 
         SleepBecauseWindowsTakeTimeToOpen();
 
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys("ABC DEF");
@@ -147,7 +147,7 @@ public class FirefoxDriverTests : DriverTestFixture
         }
         // Scenario: Open a new window, switch to it, make sure it gets native events.
         // Then switch back to the original window, make sure it gets native events.
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
 
         string originalWinHandle = driver.CurrentWindowHandle;
 
@@ -166,7 +166,7 @@ public class FirefoxDriverTests : DriverTestFixture
         // Key events in new window.
         driver.SwitchTo().Window(newWinHandle);
         SleepBecauseWindowsTakeTimeToOpen();
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys("ABC DEF");
@@ -175,7 +175,7 @@ public class FirefoxDriverTests : DriverTestFixture
         // Key events in original window.
         driver.SwitchTo().Window(originalWinHandle);
         SleepBecauseWindowsTakeTimeToOpen();
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement keyReporter2 = driver.FindElement(By.Id("keyReporter"));
         keyReporter2.SendKeys("QWERTY");
@@ -193,7 +193,7 @@ public class FirefoxDriverTests : DriverTestFixture
         }
         // Scenario: Open a new window, switch to it, close it, switch back to the
         // original window - make sure it gets native events.
-        driver.Url = xhtmlTestPage;
+        driver.Url = Urls.XhtmlTestPage;
         string originalWinHandle = driver.CurrentWindowHandle;
 
         driver.FindElement(By.Name("windowOne")).Click();
@@ -216,7 +216,7 @@ public class FirefoxDriverTests : DriverTestFixture
         SleepBecauseWindowsTakeTimeToOpen();
 
         // Send events to the new window.
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys("ABC DEF");
         Assert.That(keyReporter.GetAttribute("value"), Is.EqualTo("ABC DEF"));
@@ -227,7 +227,7 @@ public class FirefoxDriverTests : DriverTestFixture
     public void CanBlockInvalidSslCertificates()
     {
         FirefoxProfile profile = new FirefoxProfile();
-        string url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("simpleTest.html");
+        string url = Urls.WhereIsSecure("simpleTest.html");
 
         IWebDriver secondDriver = null;
         try
@@ -258,7 +258,7 @@ public class FirefoxDriverTests : DriverTestFixture
     {
         FirefoxProfile profile = new FirefoxProfile();
         profile.SetPreference("browser.startup.page", "1");
-        profile.SetPreference("browser.startup.homepage", javascriptPage);
+        profile.SetPreference("browser.startup.homepage", Urls.JavascriptPage);
 
         FirefoxOptions options = new FirefoxOptions();
         options.Profile = profile;
@@ -267,7 +267,7 @@ public class FirefoxDriverTests : DriverTestFixture
 
         try
         {
-            Assert.That(driver2.Url, Is.EqualTo(javascriptPage));
+            Assert.That(driver2.Url, Is.EqualTo(Urls.JavascriptPage));
         }
         finally
         {
@@ -283,7 +283,7 @@ public class FirefoxDriverTests : DriverTestFixture
         string extension = GetPath("webextensions-selenium-example.xpi");
         string id = firefoxDriver.InstallAddOnFromFile(extension);
 
-        driver.Url = blankPage;
+        driver.Url = Urls.BlankPage;
 
         IWebElement injected = firefoxDriver.FindElement(By.Id("webextensions-selenium-example"));
         Assert.That(injected.Text, Is.EqualTo("Content injected by webextensions-selenium-example"));
@@ -303,7 +303,7 @@ public class FirefoxDriverTests : DriverTestFixture
         string extension = GetPath("webextensions-selenium-example-unsigned.zip");
         string id = firefoxDriver.InstallAddOnFromFile(extension, true);
 
-        driver.Url = blankPage;
+        driver.Url = Urls.BlankPage;
 
         IWebElement injected = firefoxDriver.FindElement(By.Id("webextensions-selenium-example"));
         Assert.That(injected.Text, Is.EqualTo("Content injected by webextensions-selenium-example"));
@@ -322,7 +322,7 @@ public class FirefoxDriverTests : DriverTestFixture
         string extension = GetPath("webextensions-selenium-example.zip");
         string id = firefoxDriver.InstallAddOnFromFile(extension);
 
-        driver.Url = blankPage;
+        driver.Url = Urls.BlankPage;
 
         IWebElement injected = firefoxDriver.FindElement(By.Id("webextensions-selenium-example"));
         Assert.That(injected.Text, Is.EqualTo("Content injected by webextensions-selenium-example"));
@@ -342,7 +342,7 @@ public class FirefoxDriverTests : DriverTestFixture
         string extension = GetPath("webextensions-selenium-example-signed");
         string id = firefoxDriver.InstallAddOnFromDirectory(extension);
 
-        driver.Url = blankPage;
+        driver.Url = Urls.BlankPage;
 
         IWebElement injected = firefoxDriver.FindElement(By.Id("webextensions-selenium-example"));
         Assert.That(injected.Text, Is.EqualTo("Content injected by webextensions-selenium-example"));
@@ -362,7 +362,7 @@ public class FirefoxDriverTests : DriverTestFixture
         string extension = GetPath("webextensions-selenium-example");
         string id = firefoxDriver.InstallAddOnFromDirectory(extension, true);
 
-        driver.Url = blankPage;
+        driver.Url = Urls.BlankPage;
 
         IWebElement injected = firefoxDriver.FindElement(By.Id("webextensions-selenium-example"));
         Assert.That(injected.Text, Is.EqualTo("Content injected by webextensions-selenium-example"));

@@ -56,7 +56,7 @@ public class RemoteWebDriverSpecificTests : DriverTestFixture
         EnvironmentManager.Instance.CloseCurrentDriver();
         DriverOptions options = OperatingSystem.IsWindows() ? new EdgeOptions() : new ChromeOptions();
         RemoteWebDriver noSlashDriver = new RemoteWebDriver(RemoteSeleniumServer.ServerUri, options);
-        noSlashDriver.Url = javascriptPage;
+        noSlashDriver.Url = Urls.JavascriptPage;
         noSlashDriver.Quit();
     }
 
@@ -71,7 +71,7 @@ public class RemoteWebDriverSpecificTests : DriverTestFixture
 
         fileDetectionDriver.FileDetector = new LocalFileDetector();
 
-        driver.Url = uploadPage;
+        driver.Url = Urls.UploadPage;
         IWebElement uploadElement = driver.FindElement(By.Id("upload"));
         uploadElement.SendKeys(testFile.FullName);
         driver.FindElement(By.Id("go")).Submit();

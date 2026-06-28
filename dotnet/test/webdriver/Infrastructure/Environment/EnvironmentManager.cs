@@ -87,9 +87,7 @@ public class EnvironmentManager
         RemoteCapabilities = driverConfig.RemoteCapabilities;
 
         WebServer = new AppServer();
-        var (httpUrl, httpsUrl) = WebServer.StartAsync().Result;
-
-        UrlBuilder = new UrlBuilder(httpUrl, httpsUrl);
+        WebServer.StartAsync().GetAwaiter().GetResult();
 
         // Find selenium-manager binary.
         try
@@ -168,8 +166,6 @@ public class EnvironmentManager
     public RemoteSeleniumServer RemoteServer { get; }
 
     public string RemoteCapabilities { get; }
-
-    public UrlBuilder UrlBuilder { get; }
 
     public IWebDriver GetCurrentDriver()
     {

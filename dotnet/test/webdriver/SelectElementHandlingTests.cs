@@ -27,7 +27,7 @@ public class SelectElementHandlingTests : DriverTestFixture
     [Test]
     public void ShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement multiSelect = driver.FindElement(By.Id("multi"));
         ReadOnlyCollection<IWebElement> options = multiSelect.FindElements(By.TagName("option"));
@@ -46,7 +46,7 @@ public class SelectElementHandlingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToChangeTheSelectedOptionInASelect()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement selectBox = driver.FindElement(By.XPath("//select[@name='selectomatic']"));
         ReadOnlyCollection<IWebElement> options = selectBox.FindElements(By.TagName("option"));
         IWebElement one = options[0];
@@ -62,7 +62,7 @@ public class SelectElementHandlingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement multiSelect = driver.FindElement(By.Id("multi"));
         ReadOnlyCollection<IWebElement> options = multiSelect.FindElements(By.TagName("option"));
@@ -84,7 +84,7 @@ public class SelectElementHandlingTests : DriverTestFixture
     [Test]
     public void ShouldSelectFirstOptionByDefaultIfNoneIsSelected()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement selectBox = driver.FindElement(By.XPath("//select[@name='select-default']"));
         IList<IWebElement> options = selectBox.FindElements(By.TagName("option"));
         IWebElement one = options[0];
@@ -100,7 +100,7 @@ public class SelectElementHandlingTests : DriverTestFixture
     [Test]
     public void CanSelectElementsInOptGroups()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement element = driver.FindElement(By.Id("two-in-group"));
         element.Click();
         Assert.That(element.Selected, Is.True, "Expected to be selected");
@@ -109,7 +109,7 @@ public class SelectElementHandlingTests : DriverTestFixture
     [Test]
     public void CanGetValueFromOptionViaAttributeWhenAttributeDoesntExist()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.CssSelector("select[name='select-default'] option"));
         Assert.That(element.GetAttribute("value"), Is.EqualTo("One"));
         element = driver.FindElement(By.Id("blankOption"));
@@ -119,7 +119,7 @@ public class SelectElementHandlingTests : DriverTestFixture
     [Test]
     public void CanGetValueFromOptionViaAttributeWhenAttributeIsEmptyString()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.Id("optionEmptyValueSet"));
         Assert.That(element.GetAttribute("value"), Is.EqualTo(""));
     }
@@ -127,7 +127,7 @@ public class SelectElementHandlingTests : DriverTestFixture
     [Test]
     public void CanSelectFromMultipleSelectWhereValueIsBelowVisibleRange()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement option = driver.FindElements(By.CssSelector("#selectWithMultipleLongList option"))[4];
         option.Click();
         Assert.That(option.Selected, Is.True);
@@ -136,7 +136,7 @@ public class SelectElementHandlingTests : DriverTestFixture
     [Test]
     public void CannotSetDisabledOption()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement element = driver.FindElement(By.CssSelector("#visibility .disabled"));
         element.Click();
         Assert.That(element.Selected, Is.False, "Expected to not be selected");
@@ -145,7 +145,7 @@ public class SelectElementHandlingTests : DriverTestFixture
     [Test]
     public void CanSetHiddenOption()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement element = driver.FindElement(By.CssSelector("#visibility .hidden"));
         element.Click();
         Assert.That(element.Selected, Is.True, "Expected to be selected");
@@ -154,7 +154,7 @@ public class SelectElementHandlingTests : DriverTestFixture
     [Test]
     public void CanSetInvisibleOption()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement element = driver.FindElement(By.CssSelector("#visibility .invisible"));
         element.Click();
         Assert.That(element.Selected, Is.True, "Expected to be selected");
@@ -163,7 +163,7 @@ public class SelectElementHandlingTests : DriverTestFixture
     [Test]
     public void CanHandleTransparentSelect()
     {
-        driver.Url = selectPage;
+        driver.Url = Urls.SelectPage;
         IWebElement element = driver.FindElement(By.CssSelector("#transparent option"));
         element.Click();
         Assert.That(element.Selected, Is.True, "Expected to be selected");

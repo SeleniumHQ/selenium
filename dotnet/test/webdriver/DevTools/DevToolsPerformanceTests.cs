@@ -33,7 +33,7 @@ public class DevToolsPerformanceTests : DevToolsTestFixture
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Performance.Enable(new CurrentCdpVersion.Performance.EnableCommandSettings());
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         await domains.Performance.Disable();
     }
 
@@ -46,7 +46,7 @@ public class DevToolsPerformanceTests : DevToolsTestFixture
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Performance.Disable();
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         await domains.Performance.Disable();
     }
 
@@ -64,7 +64,7 @@ public class DevToolsPerformanceTests : DevToolsTestFixture
             TimeDomain = "timeTicks"
         });
         await domains.Performance.Enable(new CurrentCdpVersion.Performance.EnableCommandSettings());
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         await domains.Performance.Disable();
     }
 
@@ -83,7 +83,7 @@ public class DevToolsPerformanceTests : DevToolsTestFixture
             TimeDomain = "threadTicks"
         });
         await domains.Performance.Enable(new CurrentCdpVersion.Performance.EnableCommandSettings());
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         await domains.Performance.Disable();
     }
 
@@ -100,7 +100,7 @@ public class DevToolsPerformanceTests : DevToolsTestFixture
             TimeDomain = "timeTicks"
         });
         await domains.Performance.Enable(new CurrentCdpVersion.Performance.EnableCommandSettings());
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         var response = await domains.Performance.GetMetrics();
         var metrics = response.Metrics;
         Assert.That(metrics, Is.Not.Null);
@@ -122,7 +122,7 @@ public class DevToolsPerformanceTests : DevToolsTestFixture
             TimeDomain = "threadTicks"
         });
         await domains.Performance.Enable(new CurrentCdpVersion.Performance.EnableCommandSettings());
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         var response = await domains.Performance.GetMetrics();
         var metrics = response.Metrics;
         Assert.That(metrics, Is.Not.Null);

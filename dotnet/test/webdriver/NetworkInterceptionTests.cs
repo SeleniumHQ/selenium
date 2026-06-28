@@ -52,7 +52,7 @@ public class NetworkInterceptionTests : DriverTestFixture
             };
             network.AddResponseHandler(handler);
             await network.StartMonitoring();
-            driver.Url = simpleTestPage;
+            driver.Url = Urls.SimpleTestPage;
             string text = driver.FindElement(By.CssSelector("p")).Text;
             await network.StopMonitoring();
             Assert.That(text, Is.EqualTo("I intercepted you"));
@@ -76,7 +76,7 @@ public class NetworkInterceptionTests : DriverTestFixture
             };
             network.AddAuthenticationHandler(handler);
             await network.StartMonitoring();
-            driver.Url = authenticationPage;
+            driver.Url = Urls.AuthenticationPage;
             string text = driver.FindElement(By.CssSelector("h1")).Text;
             await network.StopMonitoring();
             Assert.That(text, Is.EqualTo("authorized"));

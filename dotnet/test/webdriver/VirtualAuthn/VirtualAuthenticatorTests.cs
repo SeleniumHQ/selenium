@@ -64,7 +64,7 @@ public class VirtualAuthenticatorTests : DriverTestFixture
 
         // Maximize window to ensure focus
         webDriver.Manage().Window.Maximize();
-        webDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("virtual-authenticator.html");
+        webDriver.Url = Urls.WhereIs("virtual-authenticator.html");
     }
 
     [TearDown]

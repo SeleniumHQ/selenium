@@ -29,7 +29,7 @@ public class VisibilityTests : DriverTestFixture
     [Test]
     public void ShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         Assert.That(driver.FindElement(By.Id("displayed")).Displayed, Is.True, "Element with ID 'displayed' should be displayed");
         Assert.That(driver.FindElement(By.Id("none")).Displayed, Is.False, "Element with ID 'none' should not be displayed");
@@ -40,7 +40,7 @@ public class VisibilityTests : DriverTestFixture
     [Test]
     public void VisibilityShouldTakeIntoAccountParentVisibility()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement childDiv = driver.FindElement(By.Id("hiddenchild"));
         IWebElement hiddenLink = driver.FindElement(By.Id("hiddenlink"));
@@ -52,7 +52,7 @@ public class VisibilityTests : DriverTestFixture
     [Test]
     public void ShouldCountElementsAsVisibleIfStylePropertyHasBeenSet()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement shown = driver.FindElement(By.Id("visibleSubElement"));
 
@@ -62,7 +62,7 @@ public class VisibilityTests : DriverTestFixture
     [Test]
     public void ShouldModifyTheVisibilityOfAnElementDynamically()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("hideMe"));
 
@@ -76,7 +76,7 @@ public class VisibilityTests : DriverTestFixture
     [Test]
     public void HiddenInputElementsAreNeverVisible()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement shown = driver.FindElement(By.Name("hidden"));
 
@@ -86,7 +86,7 @@ public class VisibilityTests : DriverTestFixture
     [Test]
     public void ShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         IWebElement element = driver.FindElement(By.Id("unclickable"));
         Assert.That(() => element.Click(), Throws.InstanceOf<ElementNotInteractableException>());
     }
@@ -94,7 +94,7 @@ public class VisibilityTests : DriverTestFixture
     [Test]
     public void ShouldNotBeAbleToTypeAnElementThatIsNotDisplayed()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         IWebElement element = driver.FindElement(By.Id("unclickable"));
         Assert.That(() => element.SendKeys("You don't see me"), Throws.InstanceOf<ElementNotInteractableException>());
 
@@ -104,7 +104,7 @@ public class VisibilityTests : DriverTestFixture
     [Test]
     public void ZeroSizedDivIsShownIfDescendantHasSize()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement element = driver.FindElement(By.Id("zero"));
         Size size = element.Size;
@@ -117,7 +117,7 @@ public class VisibilityTests : DriverTestFixture
     [Test]
     public void ParentNodeVisibleWhenAllChildrenAreAbsolutelyPositionedAndOverflowIsHidden()
     {
-        String url = EnvironmentManager.Instance.UrlBuilder.WhereIs("visibility-css.html");
+        String url = Urls.WhereIs("visibility-css.html");
         driver.Url = url;
 
         IWebElement element = driver.FindElement(By.Id("suggest"));
@@ -134,7 +134,7 @@ public class VisibilityTests : DriverTestFixture
         };
         foreach (string page in pages)
         {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
+            driver.Url = Urls.WhereIs(page);
             IWebElement right = driver.FindElement(By.Id("right"));
             Assert.That(right.Displayed, Is.False, "Failed for " + page);
             IWebElement bottomRight = driver.FindElement(By.Id("bottom-right"));
@@ -152,7 +152,7 @@ public class VisibilityTests : DriverTestFixture
         };
         foreach (string page in pages)
         {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
+            driver.Url = Urls.WhereIs(page);
             IWebElement bottom = driver.FindElement(By.Id("bottom"));
             Assert.That(bottom.Displayed, Is.False, "Failed for " + page);
             IWebElement bottomRight = driver.FindElement(By.Id("bottom-right"));
@@ -173,7 +173,7 @@ public class VisibilityTests : DriverTestFixture
         };
         foreach (string page in pages)
         {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
+            driver.Url = Urls.WhereIs(page);
             IWebElement right = driver.FindElement(By.Id("right"));
             Assert.That(right.Displayed, Is.True, "Failed for " + page);
         }
@@ -192,7 +192,7 @@ public class VisibilityTests : DriverTestFixture
         };
         foreach (string page in pages)
         {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
+            driver.Url = Urls.WhereIs(page);
             IWebElement bottom = driver.FindElement(By.Id("bottom"));
             Assert.That(bottom.Displayed, Is.True, "Failed for " + page);
         }
@@ -209,7 +209,7 @@ public class VisibilityTests : DriverTestFixture
         };
         foreach (string page in pages)
         {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
+            driver.Url = Urls.WhereIs(page);
             IWebElement bottomRight = driver.FindElement(By.Id("bottom-right"));
             Assert.That(bottomRight.Displayed, Is.True, "Failed for " + page);
         }
@@ -226,7 +226,7 @@ public class VisibilityTests : DriverTestFixture
             // Short in the Y dimension
             window.Size = new Size(1024, 500);
 
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("overflow-body.html");
+            driver.Url = Urls.WhereIs("overflow-body.html");
 
             IWebElement element = driver.FindElement(By.Name("resultsFrame"));
             Assert.That(element.Displayed, Is.True);
@@ -240,7 +240,7 @@ public class VisibilityTests : DriverTestFixture
     [Test]
     public void ShouldShowElementNotVisibleWithHiddenAttribute()
     {
-        string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("hidden.html");
+        string url = Urls.WhereIs("hidden.html");
         driver.Url = url;
         IWebElement element = driver.FindElement(By.Id("singleHidden"));
         Assert.That(element.Displayed, Is.False);
@@ -249,7 +249,7 @@ public class VisibilityTests : DriverTestFixture
     [Test]
     public void ShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute()
     {
-        string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("hidden.html");
+        string url = Urls.WhereIs("hidden.html");
         driver.Url = url;
 
         IWebElement element = driver.FindElement(By.Id("child"));
@@ -264,7 +264,7 @@ public class VisibilityTests : DriverTestFixture
             return;
         }
 
-        driver.Url = clickJackerPage;
+        driver.Url = Urls.ClickJackerPage;
         IWebElement element = driver.FindElement(By.Id("clickJacker"));
         Assert.That(element.GetCssValue("opacity"), Is.EqualTo("0"), "Precondition failed: clickJacker should be transparent");
         element.Click();
@@ -274,7 +274,7 @@ public class VisibilityTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToSelectOptionsFromAnInvisibleSelect()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
 
         IWebElement select = driver.FindElement(By.Id("invisi_select"));
 
@@ -293,7 +293,7 @@ public class VisibilityTests : DriverTestFixture
     [Test]
     public void CorrectlyDetectMapElementsAreShown()
     {
-        driver.Url = mapVisibilityPage;
+        driver.Url = Urls.MapVisibilityPage;
 
         IWebElement area = driver.FindElement(By.Id("mtgt_unnamed_0"));
 
@@ -307,7 +307,7 @@ public class VisibilityTests : DriverTestFixture
     [Test]
     public void ShouldNotBeAbleToSelectAnElementThatIsNotDisplayed()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         IWebElement element = driver.FindElement(By.Id("untogglable"));
         Assert.That(() => element.Click(), Throws.InstanceOf<ElementNotInteractableException>());
     }
@@ -315,7 +315,7 @@ public class VisibilityTests : DriverTestFixture
     [Test]
     public void ElementsWithOpacityZeroShouldNotBeVisible()
     {
-        driver.Url = clickJackerPage;
+        driver.Url = Urls.ClickJackerPage;
         IWebElement element = driver.FindElement(By.Id("clickJacker"));
         Assert.That(element.Displayed, Is.False);
     }

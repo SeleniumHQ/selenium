@@ -91,7 +91,7 @@ public class DownloadsTests : DriverTestFixture
 
     private void DownloadWithBrowser()
     {
-        string downloadPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("downloads/download.html");
+        string downloadPage = Urls.WhereIs("downloads/download.html");
         localDriver.Url = downloadPage;
         driver.FindElement(By.Id("file-1")).Click();
         driver.FindElement(By.Id("file-2")).Click();

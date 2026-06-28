@@ -25,7 +25,7 @@ public class WebElementTests : DriverTestFixture
     [Test]
     public void ElementShouldImplementWrapsDriver()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement parent = driver.FindElement(By.Id("containsSomeDiv"));
         Assert.That(parent, Is.InstanceOf<IWrapsDriver>());
     }
@@ -33,7 +33,7 @@ public class WebElementTests : DriverTestFixture
     [Test]
     public void ElementShouldReturnOriginDriver()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement parent = driver.FindElement(By.Id("containsSomeDiv"));
         Assert.That(((IWrapsDriver)parent).WrappedDriver, Is.EqualTo(driver));
     }
@@ -44,7 +44,7 @@ public class WebElementTests : DriverTestFixture
     [Test]
     public void ShouldToggleElementAndCheckIfElementIsSelected()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement checkbox = driver.FindElement(By.Id("checkbox1"));
         Assert.That(checkbox.Selected, Is.False);
         checkbox.Click();
@@ -56,14 +56,14 @@ public class WebElementTests : DriverTestFixture
     [Test]
     public void ShouldThrowExceptionOnNonExistingElement()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         Assert.That(() => driver.FindElement(By.Id("doesnotexist")), Throws.InstanceOf<NoSuchElementException>());
     }
 
     [Test]
     public void ShouldGetElementName()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         IWebElement oneliner = driver.FindElement(By.Id("oneline"));
         Assert.That(oneliner.TagName, Is.EqualTo("p").IgnoreCase);
@@ -73,7 +73,7 @@ public class WebElementTests : DriverTestFixture
     [Test]
     public void ShouldGetElementText()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
 
         IWebElement oneliner = driver.FindElement(By.Id("oneline"));
         Assert.That(oneliner.Text, Is.EqualTo("A single line of text"));
@@ -88,7 +88,7 @@ public class WebElementTests : DriverTestFixture
     [Test]
     public void ShouldReturnWhetherElementIsDisplayed()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement hidden = driver.FindElement(By.Id("hidden"));
         Assert.That(hidden.Displayed, Is.False, "Element with ID 'hidden' should not be displayed");
@@ -103,7 +103,7 @@ public class WebElementTests : DriverTestFixture
     [Test]
     public void ShouldClearElement()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement textbox = driver.FindElement(By.Id("keyUp"));
         textbox.SendKeys("a@#$ç.ó");
@@ -114,7 +114,7 @@ public class WebElementTests : DriverTestFixture
     [Test]
     public void ShouldClearRenderedElement()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement textbox = driver.FindElement(By.Id("keyUp"));
         textbox.SendKeys("a@#$ç.ó");
@@ -125,7 +125,7 @@ public class WebElementTests : DriverTestFixture
     [Test]
     public void ShouldSendKeysToElement()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement textbox = driver.FindElement(By.Id("keyUp"));
         textbox.SendKeys("a@#$ç.ó");
@@ -135,7 +135,7 @@ public class WebElementTests : DriverTestFixture
     [Test]
     public void ShouldSubmitElement()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
 
         IWebElement submit = driver.FindElement(By.Id("submittingButton"));
         submit.Submit();
@@ -143,7 +143,7 @@ public class WebElementTests : DriverTestFixture
         Assert.That(
             () =>
                 WaitFor(
-                    () => driver.Url.StartsWith(resultPage),
+                    () => driver.Url.StartsWith(Urls.ResultPage),
                     "We are not redirected to the resultPage after submitting web element"),
             Throws.Nothing);
     }
@@ -151,7 +151,7 @@ public class WebElementTests : DriverTestFixture
     [Test]
     public void ShouldClickLinkElement()
     {
-        driver.Url = javascriptPage;
+        driver.Url = Urls.JavascriptPage;
         IWebElement changedDiv = driver.FindElement(By.Id("dynamo"));
         IWebElement link = driver.FindElement(By.LinkText("Update a div"));
         link.Click();
@@ -161,7 +161,7 @@ public class WebElementTests : DriverTestFixture
     [Test]
     public void ShouldGetAttributesFromElement()
     {
-        driver.Url = (javascriptPage);
+        driver.Url = (Urls.JavascriptPage);
 
         IWebElement dynamo = driver.FindElement(By.Id("dynamo"));
         IWebElement mousedown = driver.FindElement(By.Id("mousedown"));

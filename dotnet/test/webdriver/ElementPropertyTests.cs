@@ -26,7 +26,7 @@ public class ElementPropertyTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote)]
     public void ShouldReturnNullWhenGettingTheValueOfAPropertyThatIsNotListed()
     {
-        driver.Url = simpleTestPage;
+        driver.Url = Urls.SimpleTestPage;
         IWebElement head = driver.FindElement(By.XPath("/html"));
         string attribute = head.GetDomProperty("cheese");
         Assert.That(attribute, Is.Null);
@@ -36,7 +36,7 @@ public class ElementPropertyTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote)]
     public void CanRetrieveTheCurrentValueOfAProperty()
     {
-        driver.Url = formsPage;
+        driver.Url = Urls.FormsPage;
         IWebElement element = driver.FindElement(By.Id("working"));
 
         Assert.That(element.GetDomProperty("value"), Is.Empty);

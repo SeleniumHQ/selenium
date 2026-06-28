@@ -31,7 +31,7 @@ public class SvgDocumentTests : DriverTestFixture
             Assert.Ignore("SVG support only exists in IE9+");
         }
 
-        driver.Url = svgTestPage;
+        driver.Url = Urls.SvgTestPage;
         IWebElement rect = driver.FindElement(By.Id("rect"));
 
         Assert.That(rect.GetAttribute("fill"), Is.EqualTo("blue"));
@@ -47,7 +47,7 @@ public class SvgDocumentTests : DriverTestFixture
             Assert.Ignore("SVG support only exists in IE9+");
         }
 
-        driver.Url = svgTestPage;
+        driver.Url = Urls.SvgTestPage;
         IWebElement rect = driver.FindElement(By.Id("rect"));
 
         Assert.That(rect.GetAttribute("fill"), Is.EqualTo("blue"));
