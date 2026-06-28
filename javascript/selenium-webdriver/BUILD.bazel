@@ -25,6 +25,40 @@ js_binary(
     entry_point = "generate_bidi.mjs",
 )
 
+# Projects the normalized, flat BiDi schema (commands + events + types) consumed
+# by the generated Ruby / Java / Python clients. Pure JS — no npm dependencies.
+js_binary(
+    name = "project_bidi_schema_script",
+    data = [
+        "normalize_bidi_ast.mjs",
+        "project_bidi_schema.mjs",
+    ],
+    entry_point = "project_bidi_schema.mjs",
+)
+
+# Tests for the BiDi schema tooling: unit tests for the normalizer + projector
+# transforms, plus the authoritative field-fidelity check that diffs the
+# projected schema against cddl2ts (an independent generator over the same AST,
+# run over the generated artifacts) — catching dropped/mistyped fields and enum
+# drift that the structural validators cannot see.
+mocha_test(
+    name = "bidi-schema-tests",
+    size = "small",
+    args = ["./*_test.mjs"],
+    chdir = package_name(),
+    data = [
+        "bidi_schema_diff_test.mjs",
+        "normalize_bidi_ast.mjs",
+        "normalize_bidi_ast_test.mjs",
+        "project_bidi_schema.mjs",
+        "project_bidi_schema_test.mjs",
+        ":create-bidi-src_ast",
+        ":create-bidi-src_schema",
+        ":node_modules/cddl2ts",
+        ":node_modules/mocha",
+    ],
+)
+
 # Generate WebDriver BiDi TypeScript modules from CDDL specification.
 # extra_cddl_files are merged with the primary BiDi spec before generation so that
 # adjacent specs (Permissions, Prefetch, UA Client Hints, Web Bluetooth) are included.

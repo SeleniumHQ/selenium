@@ -129,7 +129,7 @@ module Selenium
           it 'is not created when :url is provided' do
             expect {
               driver.new(url: 'http://example.com:4321')
-            }.to raise_error(ArgumentError, "Can't initialize Selenium::WebDriver::IE::Driver with :url")
+            }.to raise_error(ArgumentError, /Can't set the server URL for/)
           end
 
           it 'is created when :url is not provided' do

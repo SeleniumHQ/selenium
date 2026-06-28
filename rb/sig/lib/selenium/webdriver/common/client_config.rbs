@@ -1,0 +1,36 @@
+module Selenium
+  module WebDriver
+
+    class ClientConfig
+      def self.default_user_agent: -> String
+      def self.default_user_agent=: (String? value) -> void
+      attr_accessor self.default_extra_headers: Hash[String, String]?
+
+      attr_accessor open_timeout: Numeric?
+      attr_accessor read_timeout: Numeric?
+      attr_accessor max_redirects: Integer
+      attr_accessor proxy: Selenium::WebDriver::Proxy?
+      def extra_headers: -> Hash[String, String]?
+      attr_writer extra_headers: Hash[String, String]?
+      def user_agent: -> String
+      attr_writer user_agent: String?
+      attr_reader server_url: URI?
+
+      def server_url=: ((String | URI)? url) -> void
+
+      def initialize: (
+          ?open_timeout: Numeric?,
+          ?read_timeout: Numeric?,
+          ?max_redirects: Integer,
+          ?proxy: Selenium::WebDriver::Proxy?,
+          ?extra_headers: Hash[String, String]?,
+          ?user_agent: String?,
+          ?server_url: (String | URI)?
+        ) -> void
+
+      private
+
+      def proxy_from_environment: () -> Selenium::WebDriver::Proxy?
+    end
+  end
+end
