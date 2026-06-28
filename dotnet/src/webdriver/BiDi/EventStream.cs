@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.Runtime.CompilerServices;
 using System.Threading.Channels;
 using OpenQA.Selenium.Internal.Logging;
 
@@ -28,7 +29,6 @@ internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubsc
     private static readonly ILogger _logger = Internal.Logging.Log.GetLogger(typeof(EventStream<TEventArgs>));
 
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
-    private readonly CancellationToken _cancellationToken;
     private int _disposed;
     private int _enumerating;
 
@@ -37,11 +37,10 @@ internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubsc
 
     private readonly Func<TEventArgs, bool>? _filter;
 
-    internal EventStream(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, bool>? filter = null, CancellationToken cancellationToken = default)
+    internal EventStream(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, bool>? filter = null)
     {
         _unsubscribe = unsubscribe;
         _filter = filter;
-        _cancellationToken = cancellationToken;
     }
 
     void ISubscriptionSink.Deliver(EventArgs args)
@@ -65,42 +64,22 @@ internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubsc
     {
         if (_disposed != 0) throw new ObjectDisposedException(GetType().FullName);
 
-        if (Interlocked.CompareExchange(ref _enumerating, 1, 0) != 0)
-        {
-            throw new InvalidOperationException("The stream can only be enumerated once.");
-        }
-
-        CancellationTokenSource? linkedTokenSource = null;
-
-        CancellationToken effectiveToken = (_cancellationToken.CanBeCanceled, cancellationToken.CanBeCanceled) switch
-        {
-            (true, true) => (linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken, cancellationToken)).Token,
-            (true, false) => _cancellationToken,
-            (false, true) => cancellationToken,
-            _ => default
-        };
-
-        return ReadChannelAsync(_channel.Reader, effectiveToken, linkedTokenSource);
+        return ReadAllCoreAsync(cancellationToken);
     }
 
-    private static async IAsyncEnumerable<TEventArgs> ReadChannelAsync(
-        ChannelReader<TEventArgs> reader,
-        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken,
-        CancellationTokenSource? linkedTokenSource)
+    private async IAsyncEnumerable<TEventArgs> ReadAllCoreAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        try
+        if (Interlocked.CompareExchange(ref _enumerating, 1, 0) != 0)
         {
-            while (await reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
-            {
-                while (reader.TryRead(out var item))
-                {
-                    yield return item;
-                }
-            }
+            throw new InvalidOperationException("This event stream can only be enumerated once; create a new stream to read again.");
         }
-        finally
+
+        while (await _channel.Reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
         {
-            linkedTokenSource?.Dispose();
+            while (_channel.Reader.TryRead(out var item))
+            {
+                yield return item;
+            }
         }
     }
 
@@ -120,7 +99,6 @@ internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubsc
             finally
             {
                 _channel.Writer.TryComplete();
-                GC.SuppressFinalize(this);
             }
         }
     }
