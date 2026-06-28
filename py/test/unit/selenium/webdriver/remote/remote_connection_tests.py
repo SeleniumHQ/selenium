@@ -645,6 +645,7 @@ def test_get_remote_connection_selects_browser_specific_handler(
     prepare_options: Callable[[BaseOptions], None] | None,
     expected_handler: type[RemoteConnection],
 ) -> None:
+    """Test that each browserName, including variant capabilities, selects its RemoteConnection handler."""
     if prepare_options:
         prepare_options(options)
     conn = get_remote_connection(
