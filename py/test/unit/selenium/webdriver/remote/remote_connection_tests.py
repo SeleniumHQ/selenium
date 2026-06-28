@@ -645,7 +645,13 @@ def test_get_remote_connection_selects_browser_specific_handler(
     prepare_options: Callable[[BaseOptions], None] | None,
     expected_handler: type[RemoteConnection],
 ) -> None:
-    """Test that each browserName, including variant capabilities, selects its RemoteConnection handler."""
+    """Test that each browserName, including variant capabilities, selects its RemoteConnection handler.
+
+    Args:
+        options: Browser options whose emitted browserName drives handler selection.
+        prepare_options: Callable that mutates the options to enable a variant, or None for none.
+        expected_handler: RemoteConnection subclass the selection is expected to resolve to.
+    """
     if prepare_options:
         prepare_options(options)
     conn = get_remote_connection(
