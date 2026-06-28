@@ -43,10 +43,10 @@ public class NavigationTests : DriverTestFixture
         driver.Url = Urls.SimpleTestPage;
 
         navigation.Back();
-        Assert.That(driver.Title, Is.EqualTo(macbethTitle));
+        Assert.That(driver.Title, Is.EqualTo("Macbeth: Entire Play"));
 
         navigation.Forward();
-        Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
+        Assert.That(driver.Title, Is.EqualTo("Hello WebDriver"));
     }
 
     [Test]
@@ -66,12 +66,12 @@ public class NavigationTests : DriverTestFixture
         navigation = driver.Navigate();
 
         navigation.GoToUrl(Urls.MacbethPage);
-        Assert.That(driver.Title, Is.EqualTo(macbethTitle));
+        Assert.That(driver.Title, Is.EqualTo("Macbeth: Entire Play"));
 
         // We go to two pages to ensure that the browser wasn't
         // already at the desired page through a previous test.
         navigation.GoToUrl(Urls.SimpleTestPage);
-        Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
+        Assert.That(driver.Title, Is.EqualTo("Hello WebDriver"));
     }
 
     [Test]
@@ -83,12 +83,12 @@ public class NavigationTests : DriverTestFixture
         navigation = driver.Navigate();
 
         navigation.GoToUrl(macBeth);
-        Assert.That(macbethTitle, Is.EqualTo(driver.Title));
+        Assert.That("Macbeth: Entire Play", Is.EqualTo(driver.Title));
 
         // We go to two pages to ensure that the browser wasn't
         // already at the desired page through a previous test.
         navigation.GoToUrl(simpleTest);
-        Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
+        Assert.That(driver.Title, Is.EqualTo("Hello WebDriver"));
     }
 
     [Test]
@@ -123,10 +123,10 @@ public class NavigationTests : DriverTestFixture
         await navigation.GoToUrlAsync(Urls.SimpleTestPage);
 
         await navigation.BackAsync();
-        Assert.That(driver.Title, Is.EqualTo(macbethTitle));
+        Assert.That(driver.Title, Is.EqualTo("Macbeth: Entire Play"));
 
         await navigation.ForwardAsync();
-        Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
+        Assert.That(driver.Title, Is.EqualTo("Hello WebDriver"));
     }
 
     [Test]
@@ -142,10 +142,10 @@ public class NavigationTests : DriverTestFixture
         var navigation = driver.Navigate();
 
         await navigation.GoToUrlAsync(Urls.MacbethPage);
-        Assert.That(driver.Title, Is.EqualTo(macbethTitle));
+        Assert.That(driver.Title, Is.EqualTo("Macbeth: Entire Play"));
 
         await navigation.GoToUrlAsync(Urls.SimpleTestPage);
-        Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
+        Assert.That(driver.Title, Is.EqualTo("Hello WebDriver"));
     }
 
     [Test]
@@ -154,9 +154,9 @@ public class NavigationTests : DriverTestFixture
         var navigation = driver.Navigate();
 
         navigation.GoToUrlAsync(new Uri(Urls.MacbethPage));
-        Assert.That(macbethTitle, Is.EqualTo(driver.Title));
+        Assert.That("Macbeth: Entire Play", Is.EqualTo(driver.Title));
         navigation.GoToUrl(new Uri(Urls.SimpleTestPage));
-        Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
+        Assert.That(driver.Title, Is.EqualTo("Hello WebDriver"));
     }
 
     [Test]

@@ -153,7 +153,7 @@ public class SessionHandlingTests : DriverTestFixture
             EnvironmentManager.Instance.CloseCurrentDriver();
             CreateFreshDriver();
             driver.Url = Urls.SimpleTestPage;
-            Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
+            Assert.That(driver.Title, Is.EqualTo("Hello WebDriver"));
         }
     }
 }
