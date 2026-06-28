@@ -154,7 +154,7 @@ public class NavigationTests : DriverTestFixture
         var navigation = driver.Navigate();
 
         navigation.GoToUrlAsync(new Uri(Urls.MacbethPage));
-        Assert.That("Macbeth: Entire Play", Is.EqualTo(driver.Title));
+        Assert.That(driver.Title, Is.EqualTo("Macbeth: Entire Play"));
         navigation.GoToUrl(new Uri(Urls.SimpleTestPage));
         Assert.That(driver.Title, Is.EqualTo("Hello WebDriver"));
     }
