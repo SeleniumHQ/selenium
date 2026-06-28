@@ -27,16 +27,6 @@ public abstract class DriverTestFixture
 {
     protected static UrlBuilder Urls => EnvironmentManager.Instance.WebServer.Urls;
 
-    public string macbethTitle = "Macbeth: Entire Play";
-
-    public string simpleTestTitle = "Hello WebDriver";
-
-    public string framesTitle = "This page has frames";
-
-    public string iframesTitle = "This page has iframes";
-
-    public string formsTitle = "We Leave From Here";
-
     protected internal IWebDriver Driver { get; set; }
 
     public bool IsNativeEventsEnabled
