@@ -31,36 +31,36 @@ public class FrameSwitchingTests : DriverTestFixture
     [Test]
     public void ShouldAlwaysFocusOnTheTopMostFrameAfterANavigationEvent()
     {
-        driver.Url = Urls.FramesetPage;
-        IWebElement element = driver.FindElement(By.TagName("frameset"));
+        Driver.Url = Urls.FramesetPage;
+        IWebElement element = Driver.FindElement(By.TagName("frameset"));
         Assert.That(element, Is.Not.Null);
     }
 
     [Test]
     public void ShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded()
     {
-        driver.Url = Urls.IframesPage;
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
-        IWebElement element = driver.FindElement(By.Id("iframe_page_heading"));
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
+        Driver.Url = Urls.IframesPage;
+        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
+        IWebElement element = Driver.FindElement(By.Id("iframe_page_heading"));
+        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
         Assert.That(element, Is.Not.Null);
     }
 
     [Test]
     public void ShouldOpenPageWithBrokenFrameset()
     {
-        driver.Url = Urls.WhereIs("framesetPage3.html");
+        Driver.Url = Urls.WhereIs("framesetPage3.html");
 
-        IWebElement frame1 = driver.FindElement(By.Id("first"));
-        driver.SwitchTo().Frame(frame1);
+        IWebElement frame1 = Driver.FindElement(By.Id("first"));
+        Driver.SwitchTo().Frame(frame1);
 
-        driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().DefaultContent();
 
-        IWebElement frame2 = driver.FindElement(By.Id("second"));
+        IWebElement frame2 = Driver.FindElement(By.Id("second"));
 
         try
         {
-            driver.SwitchTo().Frame(frame2);
+            Driver.SwitchTo().Frame(frame2);
         }
         catch (WebDriverException)
         {
@@ -77,131 +77,131 @@ public class FrameSwitchingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToSwitchToAFrameByItsIndex()
     {
-        driver.Url = Urls.FramesetPage;
-        driver.SwitchTo().Frame(1);
+        Driver.Url = Urls.FramesetPage;
+        Driver.SwitchTo().Frame(1);
 
-        Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("2"));
+        Assert.That(Driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("2"));
     }
 
     [Test]
     public void ShouldBeAbleToSwitchToAnIframeByItsIndex()
     {
-        driver.Url = Urls.IframesPage;
-        driver.SwitchTo().Frame(0);
+        Driver.Url = Urls.IframesPage;
+        Driver.SwitchTo().Frame(0);
 
-        Assert.That(driver.FindElement(By.Name("id-name1")).GetAttribute("value"), Is.EqualTo("name"));
+        Assert.That(Driver.FindElement(By.Name("id-name1")).GetAttribute("value"), Is.EqualTo("name"));
     }
 
     [Test]
     public void ShouldBeAbleToSwitchToAFrameByItsName()
     {
-        driver.Url = Urls.FramesetPage;
-        driver.SwitchTo().Frame("fourth");
-        Assert.That(driver.FindElement(By.TagName("frame")).GetAttribute("name"), Is.EqualTo("child1"));
+        Driver.Url = Urls.FramesetPage;
+        Driver.SwitchTo().Frame("fourth");
+        Assert.That(Driver.FindElement(By.TagName("frame")).GetAttribute("name"), Is.EqualTo("child1"));
 
     }
 
     [Test]
     public void ShouldBeAbleToSwitchToAnIframeByItsName()
     {
-        driver.Url = Urls.IframesPage;
-        driver.SwitchTo().Frame("iframe1-name");
-        Assert.That(driver.FindElement(By.Name("id-name1")).GetAttribute("value"), Is.EqualTo("name"));
+        Driver.Url = Urls.IframesPage;
+        Driver.SwitchTo().Frame("iframe1-name");
+        Assert.That(Driver.FindElement(By.Name("id-name1")).GetAttribute("value"), Is.EqualTo("name"));
 
     }
 
     [Test]
     public void ShouldBeAbleToSwitchToAFrameByItsID()
     {
-        driver.Url = Urls.FramesetPage;
-        driver.SwitchTo().Frame("fifth");
-        Assert.That(driver.FindElement(By.Name("windowOne")).Text, Is.EqualTo("Open new window"));
+        Driver.Url = Urls.FramesetPage;
+        Driver.SwitchTo().Frame("fifth");
+        Assert.That(Driver.FindElement(By.Name("windowOne")).Text, Is.EqualTo("Open new window"));
 
     }
 
     [Test]
     public void ShouldBeAbleToSwitchToAnIframeByItsID()
     {
-        driver.Url = Urls.IframesPage;
-        driver.SwitchTo().Frame("iframe1");
-        Assert.That(driver.FindElement(By.Name("id-name1")).GetAttribute("value"), Is.EqualTo("name"));
+        Driver.Url = Urls.IframesPage;
+        Driver.SwitchTo().Frame("iframe1");
+        Assert.That(Driver.FindElement(By.Name("id-name1")).GetAttribute("value"), Is.EqualTo("name"));
     }
 
     [Test]
     public void ShouldBeAbleToSwitchToFrameWithNameContainingDot()
     {
-        driver.Url = Urls.FramesetPage;
-        driver.SwitchTo().Frame("sixth.iframe1");
-        Assert.That(driver.FindElement(By.TagName("body")).Text, Does.Contain("Page number 3"));
+        Driver.Url = Urls.FramesetPage;
+        Driver.SwitchTo().Frame("sixth.iframe1");
+        Assert.That(Driver.FindElement(By.TagName("body")).Text, Does.Contain("Page number 3"));
     }
 
     [Test]
     public void ShouldBeAbleToSwitchToAFrameUsingAPreviouslyLocatedWebElement()
     {
-        driver.Url = Urls.FramesetPage;
-        IWebElement frame = driver.FindElement(By.TagName("frame"));
-        driver.SwitchTo().Frame(frame);
-        Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("1"));
+        Driver.Url = Urls.FramesetPage;
+        IWebElement frame = Driver.FindElement(By.TagName("frame"));
+        Driver.SwitchTo().Frame(frame);
+        Assert.That(Driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("1"));
     }
 
     [Test]
     public void ShouldBeAbleToSwitchToAnIFrameUsingAPreviouslyLocatedWebElement()
     {
-        driver.Url = Urls.IframesPage;
-        IWebElement frame = driver.FindElement(By.TagName("iframe"));
-        driver.SwitchTo().Frame(frame);
-        Assert.That(driver.FindElement(By.Name("id-name1")).GetAttribute("value"), Is.EqualTo("name"));
+        Driver.Url = Urls.IframesPage;
+        IWebElement frame = Driver.FindElement(By.TagName("iframe"));
+        Driver.SwitchTo().Frame(frame);
+        Assert.That(Driver.FindElement(By.Name("id-name1")).GetAttribute("value"), Is.EqualTo("name"));
 
     }
 
     [Test]
     public void ShouldEnsureElementIsAFrameBeforeSwitching()
     {
-        driver.Url = Urls.FramesetPage;
-        IWebElement frame = driver.FindElement(By.TagName("frameset"));
-        Assert.That(() => driver.SwitchTo().Frame(frame), Throws.InstanceOf<NoSuchFrameException>());
+        Driver.Url = Urls.FramesetPage;
+        IWebElement frame = Driver.FindElement(By.TagName("frameset"));
+        Assert.That(() => Driver.SwitchTo().Frame(frame), Throws.InstanceOf<NoSuchFrameException>());
     }
 
     [Test]
     public void FrameSearchesShouldBeRelativeToTheCurrentlySelectedFrame()
     {
-        driver.Url = Urls.FramesetPage;
+        Driver.Url = Urls.FramesetPage;
 
-        IWebElement frameElement = WaitFor(() => driver.FindElement(By.Name("second")), "did not find frame");
-        driver.SwitchTo().Frame(frameElement);
-        Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("2"));
-
-        Assert.That(
-            () => driver.SwitchTo().Frame("third"),
-            Throws.TypeOf<NoSuchFrameException>());
-
-        driver.SwitchTo().DefaultContent();
-        driver.SwitchTo().Frame("third");
+        IWebElement frameElement = WaitFor(() => Driver.FindElement(By.Name("second")), "did not find frame");
+        Driver.SwitchTo().Frame(frameElement);
+        Assert.That(Driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("2"));
 
         Assert.That(
-            () => driver.SwitchTo().Frame("second"),
+            () => Driver.SwitchTo().Frame("third"),
             Throws.TypeOf<NoSuchFrameException>());
 
-        driver.SwitchTo().DefaultContent();
-        driver.SwitchTo().Frame("second");
-        Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("2"));
+        Driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().Frame("third");
+
+        Assert.That(
+            () => Driver.SwitchTo().Frame("second"),
+            Throws.TypeOf<NoSuchFrameException>());
+
+        Driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().Frame("second");
+        Assert.That(Driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("2"));
     }
 
     [Test]
     public void ShouldSelectChildFramesByChainedCalls()
     {
-        driver.Url = Urls.FramesetPage;
-        driver.SwitchTo().Frame("fourth").SwitchTo().Frame("child2");
-        Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("11"));
+        Driver.Url = Urls.FramesetPage;
+        Driver.SwitchTo().Frame("fourth").SwitchTo().Frame("child2");
+        Assert.That(Driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("11"));
     }
 
     [Test]
     public void ShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames()
     {
-        driver.Url = Urls.FramesetPage;
-        driver.SwitchTo().Frame("fourth");
+        Driver.Url = Urls.FramesetPage;
+        Driver.SwitchTo().Frame("fourth");
         Assert.That(
-            () => driver.SwitchTo().Frame("second"),
+            () => Driver.SwitchTo().Frame("second"),
             Throws.TypeOf<NoSuchFrameException>());
 
     }
@@ -209,56 +209,56 @@ public class FrameSwitchingTests : DriverTestFixture
     [Test]
     public void ShouldThrowAnExceptionWhenAFrameCannotBeFound()
     {
-        driver.Url = Urls.XhtmlTestPage;
+        Driver.Url = Urls.XhtmlTestPage;
 
         Assert.That(
-            () => driver.SwitchTo().Frame("Nothing here"),
+            () => Driver.SwitchTo().Frame("Nothing here"),
             Throws.TypeOf<NoSuchFrameException>());
     }
 
     [Test]
     public void ShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex()
     {
-        driver.Url = Urls.XhtmlTestPage;
+        Driver.Url = Urls.XhtmlTestPage;
 
         Assert.That(
-            () => driver.SwitchTo().Frame(27),
+            () => Driver.SwitchTo().Frame(27),
             Throws.TypeOf<NoSuchFrameException>());
     }
 
     [Test]
     public void ShouldBeAbleToSwitchToParentFrame()
     {
-        driver.Url = Urls.FramesetPage;
-        driver.SwitchTo().Frame("fourth").SwitchTo().ParentFrame().SwitchTo().Frame("first");
-        Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("1"));
+        Driver.Url = Urls.FramesetPage;
+        Driver.SwitchTo().Frame("fourth").SwitchTo().ParentFrame().SwitchTo().Frame("first");
+        Assert.That(Driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("1"));
     }
 
     [Test]
     public void ShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame()
     {
-        driver.Url = Urls.FramesetPage;
+        Driver.Url = Urls.FramesetPage;
 
-        driver.SwitchTo().Frame("fourth").SwitchTo().Frame("child1").SwitchTo().ParentFrame().SwitchTo().Frame("child2");
-        Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("11"));
+        Driver.SwitchTo().Frame("fourth").SwitchTo().Frame("child1").SwitchTo().ParentFrame().SwitchTo().Frame("child2");
+        Assert.That(Driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("11"));
     }
 
     [Test]
     public void SwitchingToParentFrameFromDefaultContextIsNoOp()
     {
-        driver.Url = Urls.XhtmlTestPage;
-        driver.SwitchTo().ParentFrame();
-        Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+        Driver.Url = Urls.XhtmlTestPage;
+        Driver.SwitchTo().ParentFrame();
+        Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
     }
 
     [Test]
     public void ShouldBeAbleToSwitchToParentFromAnIframe()
     {
-        driver.Url = Urls.IframesPage;
-        driver.SwitchTo().Frame(0);
+        Driver.Url = Urls.IframesPage;
+        Driver.SwitchTo().Frame(0);
 
-        driver.SwitchTo().ParentFrame();
-        driver.FindElement(By.Id("iframe_page_heading"));
+        Driver.SwitchTo().ParentFrame();
+        Driver.FindElement(By.Id("iframe_page_heading"));
     }
 
     // ----------------------------------------------------------------------------------------------
@@ -269,44 +269,44 @@ public class FrameSwitchingTests : DriverTestFixture
     [Test]
     public void ShouldContinueToReferToTheSameFrameOnceItHasBeenSelected()
     {
-        driver.Url = Urls.FramesetPage;
+        Driver.Url = Urls.FramesetPage;
 
-        driver.SwitchTo().Frame(2);
-        IWebElement checkbox = driver.FindElement(By.XPath("//input[@name='checky']"));
+        Driver.SwitchTo().Frame(2);
+        IWebElement checkbox = Driver.FindElement(By.XPath("//input[@name='checky']"));
         checkbox.Click();
         checkbox.Submit();
-        WaitFor(() => driver.FindElement(By.XPath("//p")).Text == "Success!", "result element not found");
+        WaitFor(() => Driver.FindElement(By.XPath("//p")).Text == "Success!", "result element not found");
     }
 
     [Test]
     public void ShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage()
     {
-        driver.Url = Urls.FramesetPage;
+        Driver.Url = Urls.FramesetPage;
 
-        driver.SwitchTo().Frame(0);
-        driver.FindElement(By.LinkText("top")).Click();
+        Driver.SwitchTo().Frame(0);
+        Driver.FindElement(By.LinkText("top")).Click();
 
-        WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
-        Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+        WaitFor(() => { return Driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
+        Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
     }
 
     [Test]
     public void ShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage()
     {
-        driver.Url = Urls.IframesPage;
-        driver.SwitchTo().Frame(0);
+        Driver.Url = Urls.IframesPage;
+        Driver.SwitchTo().Frame(0);
 
-        driver.SwitchTo().DefaultContent();
-        driver.FindElement(By.Id("iframe_page_heading"));
+        Driver.SwitchTo().DefaultContent();
+        Driver.FindElement(By.Id("iframe_page_heading"));
     }
 
     [Test]
     public void ShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt()
     {
-        driver.Url = Urls.IframesPage;
-        driver.SwitchTo().Frame(0);
+        Driver.Url = Urls.IframesPage;
+        Driver.SwitchTo().Frame(0);
 
-        driver.FindElement(By.Id("submitButton")).Click();
+        Driver.FindElement(By.Id("submitButton")).Click();
 
         string hello = GetTextOfGreetingElement();
         Assert.That(hello, Is.EqualTo("Success!"));
@@ -315,55 +315,55 @@ public class FrameSwitchingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickInAFrame()
     {
-        driver.Url = Urls.FramesetPage;
-        driver.SwitchTo().Frame("third");
+        Driver.Url = Urls.FramesetPage;
+        Driver.SwitchTo().Frame("third");
 
         // This should replace frame "third" ...
-        driver.FindElement(By.Id("submitButton")).Click();
+        Driver.FindElement(By.Id("submitButton")).Click();
 
         // driver should still be focused on frame "third" ...
         Assert.That(GetTextOfGreetingElement(), Is.EqualTo("Success!"));
 
         // Make sure it was really frame "third" which was replaced ...
-        driver.SwitchTo().DefaultContent().SwitchTo().Frame("third");
+        Driver.SwitchTo().DefaultContent().SwitchTo().Frame("third");
         Assert.That(GetTextOfGreetingElement(), Is.EqualTo("Success!"));
     }
 
     [Test]
     public void ShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation()
     {
-        driver.Url = Urls.WhereIs("click_tests/issue5237.html");
-        driver.SwitchTo().Frame("search");
-        driver.FindElement(By.Id("submit")).Click();
-        driver.SwitchTo().DefaultContent();
-        WaitFor(() => { return driver.Title == "Target page for issue 5237"; }, "Browser title was not 'Target page for issue 5237'");
+        Driver.Url = Urls.WhereIs("click_tests/issue5237.html");
+        Driver.SwitchTo().Frame("search");
+        Driver.FindElement(By.Id("submit")).Click();
+        Driver.SwitchTo().DefaultContent();
+        WaitFor(() => { return Driver.Title == "Target page for issue 5237"; }, "Browser title was not 'Target page for issue 5237'");
     }
 
     [Test]
     public void ShouldBeAbleToClickInASubFrame()
     {
-        driver.Url = Urls.FramesetPage;
-        driver.SwitchTo().Frame("sixth").SwitchTo().Frame("iframe1");
+        Driver.Url = Urls.FramesetPage;
+        Driver.SwitchTo().Frame("sixth").SwitchTo().Frame("iframe1");
 
         // This should replaxe frame "iframe1" inside frame "sixth" ...
-        driver.FindElement(By.Id("submitButton")).Click();
+        Driver.FindElement(By.Id("submitButton")).Click();
 
         // driver should still be focused on frame "iframe1" inside frame "sixth" ...
         Assert.That(GetTextOfGreetingElement(), Is.EqualTo("Success!"));
 
         // Make sure it was really frame "iframe1" inside frame "sixth" which was replaced ...
-        driver.SwitchTo().DefaultContent().SwitchTo().Frame("sixth").SwitchTo().Frame("iframe1");
-        Assert.That(driver.FindElement(By.Id("greeting")).Text, Is.EqualTo("Success!"));
+        Driver.SwitchTo().DefaultContent().SwitchTo().Frame("sixth").SwitchTo().Frame("iframe1");
+        Assert.That(Driver.FindElement(By.Id("greeting")).Text, Is.EqualTo("Success!"));
     }
 
     [Test]
     public void ShouldBeAbleToFindElementsInIframesByXPath()
     {
-        driver.Url = Urls.IframesPage;
+        Driver.Url = Urls.IframesPage;
 
-        driver.SwitchTo().Frame("iframe1");
+        Driver.SwitchTo().Frame("iframe1");
 
-        IWebElement element = driver.FindElement(By.XPath("//*[@id = 'changeme']"));
+        IWebElement element = Driver.FindElement(By.XPath("//*[@id = 'changeme']"));
 
         Assert.That(element, Is.Not.Null);
     }
@@ -371,81 +371,81 @@ public class FrameSwitchingTests : DriverTestFixture
     [Test]
     public void GetCurrentUrlShouldReturnTopLevelBrowsingContextUrl()
     {
-        driver.Url = Urls.FramesetPage;
-        Assert.That(driver.Url, Is.EqualTo(Urls.FramesetPage));
+        Driver.Url = Urls.FramesetPage;
+        Assert.That(Driver.Url, Is.EqualTo(Urls.FramesetPage));
 
-        driver.SwitchTo().Frame("second");
-        Assert.That(driver.Url, Is.EqualTo(Urls.FramesetPage));
+        Driver.SwitchTo().Frame("second");
+        Assert.That(Driver.Url, Is.EqualTo(Urls.FramesetPage));
     }
 
     [Test]
     public void GetCurrentUrlShouldReturnTopLevelBrowsingContextUrlForIframes()
     {
-        driver.Url = Urls.IframesPage;
-        Assert.That(driver.Url, Is.EqualTo(Urls.IframesPage));
+        Driver.Url = Urls.IframesPage;
+        Assert.That(Driver.Url, Is.EqualTo(Urls.IframesPage));
 
-        driver.SwitchTo().Frame("iframe1");
-        Assert.That(driver.Url, Is.EqualTo(Urls.IframesPage));
+        Driver.SwitchTo().Frame("iframe1");
+        Assert.That(Driver.Url, Is.EqualTo(Urls.IframesPage));
     }
 
     [Test]
     public void ShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs()
     {
-        driver.Url = Urls.DeletingFrame;
-        driver.SwitchTo().Frame("iframe1");
+        Driver.Url = Urls.DeletingFrame;
+        Driver.SwitchTo().Frame("iframe1");
 
-        IWebElement killIframe = driver.FindElement(By.Id("killIframe"));
+        IWebElement killIframe = Driver.FindElement(By.Id("killIframe"));
         killIframe.Click();
-        driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().DefaultContent();
 
         AssertFrameNotPresent("iframe1");
 
-        IWebElement addIFrame = driver.FindElement(By.Id("addBackFrame"));
+        IWebElement addIFrame = Driver.FindElement(By.Id("addBackFrame"));
         addIFrame.Click();
 
-        WaitFor(() => driver.FindElement(By.Id("iframe1")), "Did not find frame element");
+        WaitFor(() => Driver.FindElement(By.Id("iframe1")), "Did not find frame element");
 
-        driver.SwitchTo().Frame("iframe1");
-        WaitFor(() => driver.FindElement(By.Id("success")), "Did not find element in frame");
+        Driver.SwitchTo().Frame("iframe1");
+        WaitFor(() => Driver.FindElement(By.Id("success")), "Did not find element in frame");
     }
 
     [Test]
     public void ShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithFrameIndex()
     {
-        driver.Url = Urls.DeletingFrame;
+        Driver.Url = Urls.DeletingFrame;
         int iframe = 0;
         WaitFor(() => FrameExistsAndSwitchedTo(iframe), "Did not switch to frame");
 
         // we should be in the frame now
-        IWebElement killIframe = driver.FindElement(By.Id("killIframe"));
+        IWebElement killIframe = Driver.FindElement(By.Id("killIframe"));
         killIframe.Click();
-        driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().DefaultContent();
 
-        IWebElement addIFrame = driver.FindElement(By.Id("addBackFrame"));
+        IWebElement addIFrame = Driver.FindElement(By.Id("addBackFrame"));
         addIFrame.Click();
         WaitFor(() => FrameExistsAndSwitchedTo(iframe), "Did not switch to frame");
 
-        WaitFor(() => driver.FindElement(By.Id("success")), "Did not find element in frame");
+        WaitFor(() => Driver.FindElement(By.Id("success")), "Did not find element in frame");
     }
 
     [Test]
     public void ShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement()
     {
-        driver.Url = Urls.DeletingFrame;
-        IWebElement iframe = driver.FindElement(By.Id("iframe1"));
+        Driver.Url = Urls.DeletingFrame;
+        IWebElement iframe = Driver.FindElement(By.Id("iframe1"));
         WaitFor(() => FrameExistsAndSwitchedTo(iframe), "Did not switch to frame");
 
         // we should be in the frame now
-        IWebElement killIframe = driver.FindElement(By.Id("killIframe"));
+        IWebElement killIframe = Driver.FindElement(By.Id("killIframe"));
         killIframe.Click();
-        driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().DefaultContent();
 
-        IWebElement addIFrame = driver.FindElement(By.Id("addBackFrame"));
+        IWebElement addIFrame = Driver.FindElement(By.Id("addBackFrame"));
         addIFrame.Click();
 
-        iframe = driver.FindElement(By.Id("iframe1"));
+        iframe = Driver.FindElement(By.Id("iframe1"));
         WaitFor(() => FrameExistsAndSwitchedTo(iframe), "Did not switch to frame");
-        WaitFor(() => driver.FindElement(By.Id("success")), "Did not find element in frame");
+        WaitFor(() => Driver.FindElement(By.Id("success")), "Did not find element in frame");
     }
 
     [Test]
@@ -454,34 +454,34 @@ public class FrameSwitchingTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "IE driver throws NoSuchElementException")]
     public void ShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs()
     {
-        driver.Url = Urls.DeletingFrame;
-        driver.SwitchTo().Frame("iframe1");
+        Driver.Url = Urls.DeletingFrame;
+        Driver.SwitchTo().Frame("iframe1");
 
-        IWebElement killIframe = driver.FindElement(By.Id("killIframe"));
+        IWebElement killIframe = Driver.FindElement(By.Id("killIframe"));
         killIframe.Click();
 
         Assert.That(
-            () => driver.FindElement(By.Id("killIframe")),
+            () => Driver.FindElement(By.Id("killIframe")),
             Throws.TypeOf<NoSuchWindowException>());
     }
 
     [Test]
     public void ShouldReturnWindowTitleInAFrameset()
     {
-        driver.Url = Urls.FramesetPage;
-        driver.SwitchTo().Frame("third");
-        Assert.That(driver.Title, Is.EqualTo("Unique title"));
+        Driver.Url = Urls.FramesetPage;
+        Driver.SwitchTo().Frame("third");
+        Assert.That(Driver.Title, Is.EqualTo("Unique title"));
     }
 
     [Test]
     public void JavaScriptShouldExecuteInTheContextOfTheCurrentFrame()
     {
-        IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+        IJavaScriptExecutor executor = Driver as IJavaScriptExecutor;
 
-        driver.Url = Urls.FramesetPage;
+        Driver.Url = Urls.FramesetPage;
         Assert.That((bool)executor.ExecuteScript("return window == window.top"), Is.True);
 
-        driver.SwitchTo().Frame("third");
+        Driver.SwitchTo().Frame("third");
         Assert.That((bool)executor.ExecuteScript("return window != window.top"), Is.True);
     }
 
@@ -489,16 +489,16 @@ public class FrameSwitchingTests : DriverTestFixture
     public void ShouldNotSwitchMagicallyToTheTopWindow()
     {
         string baseUrl = Urls.WhereIs("frame_switching_tests/");
-        driver.Url = baseUrl + "bug4876.html";
-        driver.SwitchTo().Frame(0);
-        WaitFor(() => driver.FindElement(By.Id("inputText")), "Could not find element");
+        Driver.Url = baseUrl + "bug4876.html";
+        Driver.SwitchTo().Frame(0);
+        WaitFor(() => Driver.FindElement(By.Id("inputText")), "Could not find element");
 
         for (int i = 0; i < 20; i++)
         {
             try
             {
-                IWebElement input = WaitFor(() => driver.FindElement(By.Id("inputText")), "Did not find element");
-                IWebElement submit = WaitFor(() => driver.FindElement(By.Id("submitButton")), "Did not find input element");
+                IWebElement input = WaitFor(() => Driver.FindElement(By.Id("inputText")), "Did not find element");
+                IWebElement submit = WaitFor(() => Driver.FindElement(By.Id("submitButton")), "Did not find input element");
                 input.Clear();
                 input.SendKeys("rand" + new Random().Next());
                 submit.Click();
@@ -506,7 +506,7 @@ public class FrameSwitchingTests : DriverTestFixture
             finally
             {
                 System.Threading.Thread.Sleep(100);
-                string url = (string)((IJavaScriptExecutor)driver).ExecuteScript("return window.location.href");
+                string url = (string)((IJavaScriptExecutor)Driver).ExecuteScript("return window.location.href");
                 // IE6 and Chrome add "?"-symbol to the end of the URL
                 if (url.EndsWith("?"))
                 {
@@ -521,12 +521,12 @@ public class FrameSwitchingTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void GetShouldSwitchToDefaultContext()
     {
-        driver.Url = Urls.IframesPage;
-        driver.SwitchTo().Frame(driver.FindElement(By.Id("iframe1")));
-        driver.FindElement(By.Id("cheese")); // Found on formPage.html but not on iframes.html.
+        Driver.Url = Urls.IframesPage;
+        Driver.SwitchTo().Frame(Driver.FindElement(By.Id("iframe1")));
+        Driver.FindElement(By.Id("cheese")); // Found on formPage.html but not on iframes.html.
 
-        driver.Url = Urls.IframesPage; // This must effectively switchTo().defaultContent(), too.
-        driver.FindElement(By.Id("iframe1"));
+        Driver.Url = Urls.IframesPage; // This must effectively switchTo().defaultContent(), too.
+        Driver.FindElement(By.Id("iframe1"));
     }
 
     // ----------------------------------------------------------------------------------------------
@@ -538,35 +538,35 @@ public class FrameSwitchingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFlipToAFrameIdentifiedByItsId()
     {
-        driver.Url = Urls.FramesetPage;
+        Driver.Url = Urls.FramesetPage;
 
-        driver.SwitchTo().Frame("fifth");
-        driver.FindElement(By.Id("username"));
+        Driver.SwitchTo().Frame("fifth");
+        Driver.FindElement(By.Id("username"));
     }
 
     [Test]
     [IgnoreBrowser(Browser.Firefox)]
     public void ShouldBeAbleToSelectAFrameByName()
     {
-        driver.Url = Urls.FramesetPage;
+        Driver.Url = Urls.FramesetPage;
 
-        driver.SwitchTo().Frame("second");
-        Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("2"));
+        Driver.SwitchTo().Frame("second");
+        Assert.That(Driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("2"));
 
-        driver.SwitchTo().DefaultContent().SwitchTo().Frame("third");
-        driver.FindElement(By.Id("changeme")).Click();
+        Driver.SwitchTo().DefaultContent().SwitchTo().Frame("third");
+        Driver.FindElement(By.Id("changeme")).Click();
 
-        driver.SwitchTo().DefaultContent().SwitchTo().Frame("second");
-        Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("2"));
+        Driver.SwitchTo().DefaultContent().SwitchTo().Frame("second");
+        Assert.That(Driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("2"));
     }
 
     [Test]
     public void ShouldBeAbleToFindElementsInIframesByName()
     {
-        driver.Url = Urls.IframesPage;
+        Driver.Url = Urls.IframesPage;
 
-        driver.SwitchTo().Frame("iframe1");
-        IWebElement element = driver.FindElement(By.Name("id-name1"));
+        Driver.SwitchTo().Frame("iframe1");
+        IWebElement element = Driver.FindElement(By.Name("id-name1"));
 
         Assert.That(element, Is.Not.Null);
     }
@@ -579,7 +579,7 @@ public class FrameSwitchingTests : DriverTestFixture
         {
             try
             {
-                IWebElement element = driver.FindElement(By.Id("greeting"));
+                IWebElement element = Driver.FindElement(By.Id("greeting"));
                 text = element.Text;
                 break;
             }
@@ -593,16 +593,16 @@ public class FrameSwitchingTests : DriverTestFixture
 
     private void AssertFrameNotPresent(string locator)
     {
-        driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().DefaultContent();
         WaitFor(() => !FrameExistsAndSwitchedTo(locator), "Frame still present after timeout");
-        driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().DefaultContent();
     }
 
     private bool FrameExistsAndSwitchedTo(string locator)
     {
         try
         {
-            driver.SwitchTo().Frame(locator);
+            Driver.SwitchTo().Frame(locator);
             return true;
         }
         catch (NoSuchFrameException)
@@ -615,7 +615,7 @@ public class FrameSwitchingTests : DriverTestFixture
     {
         try
         {
-            driver.SwitchTo().Frame(index);
+            Driver.SwitchTo().Frame(index);
             return true;
         }
         catch (NoSuchFrameException)
@@ -628,7 +628,7 @@ public class FrameSwitchingTests : DriverTestFixture
     {
         try
         {
-            driver.SwitchTo().Frame(frameElement);
+            Driver.SwitchTo().Frame(frameElement);
             return true;
         }
         catch (NoSuchFrameException)

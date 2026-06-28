@@ -27,8 +27,8 @@ public class TextPagesTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToLoadASimplePageOfText()
     {
-        driver.Url = textPage;
-        string source = driver.PageSource;
+        Driver.Url = textPage;
+        string source = Driver.PageSource;
         Assert.That(source, Does.Contain("Test"));
     }
 
@@ -40,10 +40,10 @@ public class TextPagesTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Safari allows addition of cookie on text pages")]
     public void ShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml()
     {
-        driver.Url = textPage;
+        Driver.Url = textPage;
 
         Cookie cookie = new Cookie("hello", "goodbye");
-        Assert.That(() => driver.Manage().Cookies.AddCookie(cookie), Throws.InstanceOf<WebDriverException>());
+        Assert.That(() => Driver.Manage().Cookies.AddCookie(cookie), Throws.InstanceOf<WebDriverException>());
     }
 
     //------------------------------------------------------------------
@@ -52,7 +52,7 @@ public class TextPagesTests : DriverTestFixture
     [Test]
     public void FindingAnElementOnAPlainTextPageWillNeverWork()
     {
-        driver.Url = textPage;
-        Assert.That(() => driver.FindElement(By.Id("foo")), Throws.InstanceOf<NoSuchElementException>());
+        Driver.Url = textPage;
+        Assert.That(() => Driver.FindElement(By.Id("foo")), Throws.InstanceOf<NoSuchElementException>());
     }
 }

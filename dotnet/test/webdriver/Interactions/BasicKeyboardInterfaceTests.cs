@@ -30,7 +30,7 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     public void Setup()
     {
         //new Actions(driver).SendKeys(Keys.Null).Perform();
-        if (driver is IActionExecutor actionExecutor)
+        if (Driver is IActionExecutor actionExecutor)
         {
             actionExecutor.ResetInputState();
         }
@@ -40,7 +40,7 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     public void ReleaseModifierKeys()
     {
         //new Actions(driver).SendKeys(Keys.Null).Perform();
-        if (driver is IActionExecutor actionExecutor)
+        if (Driver is IActionExecutor actionExecutor)
         {
             actionExecutor.ResetInputState();
         }
@@ -49,7 +49,7 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [Test]
     public void ShouldSetActiveKeyboard()
     {
-        Actions actionProvider = new Actions(driver);
+        Actions actionProvider = new Actions(Driver);
         actionProvider.SetActiveKeyboard("test keyboard");
 
         KeyInputDevice device = actionProvider.GetActiveKeyboard();
@@ -61,14 +61,14 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
     public void ShouldAllowBasicKeyboardInput()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
+        IWebElement keyReporter = Driver.FindElement(By.Id("keyReporter"));
 
         // Scroll the element into view before attempting any actions on it.
-        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView();", keyReporter);
+        ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView();", keyReporter);
 
-        Actions actionProvider = new Actions(driver);
+        Actions actionProvider = new Actions(Driver);
         IAction sendLowercase = actionProvider.SendKeys(keyReporter, "abc def").Build();
 
         sendLowercase.Perform();
@@ -81,19 +81,19 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
     public void ShouldAllowSendingKeyDownOnly()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement keysEventInput = driver.FindElement(By.Id("theworks"));
+        IWebElement keysEventInput = Driver.FindElement(By.Id("theworks"));
 
         // Scroll the element into view before attempting any actions on it.
-        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView();", keysEventInput);
+        ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView();", keysEventInput);
 
-        Actions actionProvider = new Actions(driver);
+        Actions actionProvider = new Actions(Driver);
 
         IAction pressShift = actionProvider.KeyDown(keysEventInput, Keys.Shift).Build();
         pressShift.Perform();
 
-        IWebElement keyLoggingElement = driver.FindElement(By.Id("result"));
+        IWebElement keyLoggingElement = Driver.FindElement(By.Id("result"));
         string logText = keyLoggingElement.Text;
 
         IAction releaseShift = actionProvider.KeyDown(keysEventInput, Keys.Shift).Build();
@@ -106,21 +106,21 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
     public void ShouldAllowSendingKeyUp()
     {
-        driver.Url = Urls.JavascriptPage;
-        IWebElement keysEventInput = driver.FindElement(By.Id("theworks"));
+        Driver.Url = Urls.JavascriptPage;
+        IWebElement keysEventInput = Driver.FindElement(By.Id("theworks"));
 
         // Scroll the element into view before attempting any actions on it.
-        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView();", keysEventInput);
+        ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView();", keysEventInput);
 
-        IAction pressShift = new Actions(driver).KeyDown(keysEventInput, Keys.Shift).Build();
+        IAction pressShift = new Actions(Driver).KeyDown(keysEventInput, Keys.Shift).Build();
         pressShift.Perform();
 
-        IWebElement keyLoggingElement = driver.FindElement(By.Id("result"));
+        IWebElement keyLoggingElement = Driver.FindElement(By.Id("result"));
 
         string eventsText = keyLoggingElement.Text;
         Assert.That(keyLoggingElement.Text, Does.EndWith("keydown"));
 
-        IAction releaseShift = new Actions(driver).KeyUp(keysEventInput, Keys.Shift).Build();
+        IAction releaseShift = new Actions(Driver).KeyUp(keysEventInput, Keys.Shift).Build();
 
         releaseShift.Perform();
 
@@ -133,19 +133,19 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
     public void ShouldAllowSendingKeysWithShiftPressed()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement keysEventInput = driver.FindElement(By.Id("theworks"));
+        IWebElement keysEventInput = Driver.FindElement(By.Id("theworks"));
 
         keysEventInput.Click();
 
-        IAction pressShift = new Actions(driver).KeyDown(Keys.Shift).Build();
+        IAction pressShift = new Actions(Driver).KeyDown(Keys.Shift).Build();
         pressShift.Perform();
 
-        IAction sendLowercase = new Actions(driver).SendKeys("ab").Build();
+        IAction sendLowercase = new Actions(Driver).SendKeys("ab").Build();
         sendLowercase.Perform();
 
-        IAction releaseShift = new Actions(driver).KeyUp(Keys.Shift).Build();
+        IAction releaseShift = new Actions(Driver).KeyUp(Keys.Shift).Build();
         releaseShift.Perform();
 
         AssertThatFormEventsFiredAreExactly("focus keydown keydown keypress keyup keydown keypress keyup keyup");
@@ -157,39 +157,39 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
     public void ShouldAllowSendingKeysToActiveElement()
     {
-        driver.Url = Urls.BodyTypingPage;
+        Driver.Url = Urls.BodyTypingPage;
 
-        Actions actionProvider = new Actions(driver);
+        Actions actionProvider = new Actions(Driver);
         IAction someKeys = actionProvider.SendKeys("ab").Build();
         someKeys.Perform();
 
         AssertThatBodyEventsFiredAreExactly("keypress keypress");
-        IWebElement formLoggingElement = driver.FindElement(By.Id("result"));
+        IWebElement formLoggingElement = Driver.FindElement(By.Id("result"));
         AssertThatFormEventsFiredAreExactly(string.Empty);
     }
 
     [Test]
     public void ThrowsIllegalArgumentExceptionWithNullKeys()
     {
-        driver.Url = Urls.JavascriptPage;
-        Assert.That(() => driver.FindElement(By.Id("keyReporter")).SendKeys(null), Throws.InstanceOf<ArgumentNullException>());
+        Driver.Url = Urls.JavascriptPage;
+        Assert.That(() => Driver.FindElement(By.Id("keyReporter")).SendKeys(null), Throws.InstanceOf<ArgumentNullException>());
     }
 
     [Test]
     public void CanGenerateKeyboardShortcuts()
     {
-        driver.Url = Urls.WhereIs("keyboard_shortcut.html");
+        Driver.Url = Urls.WhereIs("keyboard_shortcut.html");
 
-        IWebElement body = driver.FindElement(By.XPath("//body"));
+        IWebElement body = Driver.FindElement(By.XPath("//body"));
         AssertBackgroundColor(body, Color.White);
 
-        new Actions(driver).KeyDown(Keys.Shift).SendKeys("1").KeyUp(Keys.Shift).Perform();
+        new Actions(Driver).KeyDown(Keys.Shift).SendKeys("1").KeyUp(Keys.Shift).Perform();
         AssertBackgroundColor(body, Color.Green);
 
-        new Actions(driver).KeyDown(Keys.Alt).SendKeys("1").KeyUp(Keys.Alt).Perform();
+        new Actions(Driver).KeyDown(Keys.Alt).SendKeys("1").KeyUp(Keys.Alt).Perform();
         AssertBackgroundColor(body, Color.LightBlue);
 
-        new Actions(driver)
+        new Actions(Driver)
             .KeyDown(Keys.Shift).KeyDown(Keys.Alt)
             .SendKeys("1")
             .KeyUp(Keys.Shift).KeyUp(Keys.Alt)
@@ -200,15 +200,15 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [Test]
     public void SelectionSelectBySymbol()
     {
-        driver.Url = Urls.WhereIs("single_text_input.html");
+        Driver.Url = Urls.WhereIs("single_text_input.html");
 
-        IWebElement input = driver.FindElement(By.Id("textInput"));
+        IWebElement input = Driver.FindElement(By.Id("textInput"));
 
-        new Actions(driver).Click(input).SendKeys("abc def").Perform();
+        new Actions(Driver).Click(input).SendKeys("abc def").Perform();
 
         WaitFor(() => input.GetAttribute("value") == "abc def", "did not send initial keys");
 
-        if (!TestUtilities.IsInternetExplorer(driver))
+        if (!TestUtilities.IsInternetExplorer(Driver))
         {
             // When using drivers other than the IE, the click in
             // the below action sequence may fall inside the double-
@@ -216,13 +216,13 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
             // inadvertent double-clicks with multiple actions calls),
             // so we call the "release actions" end point before
             // doing the second action.
-            if (driver is IActionExecutor executor)
+            if (Driver is IActionExecutor executor)
             {
                 executor.ResetInputState();
             }
         }
 
-        new Actions(driver).Click(input)
+        new Actions(Driver).Click(input)
             .KeyDown(Keys.Shift)
             .SendKeys(Keys.Left)
             .SendKeys(Keys.Left)
@@ -242,15 +242,15 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
             controlModifier = Keys.Alt;
         }
 
-        driver.Url = Urls.WhereIs("single_text_input.html");
+        Driver.Url = Urls.WhereIs("single_text_input.html");
 
-        IWebElement input = driver.FindElement(By.Id("textInput"));
+        IWebElement input = Driver.FindElement(By.Id("textInput"));
 
-        new Actions(driver).Click(input).SendKeys("abc def").Perform();
+        new Actions(Driver).Click(input).SendKeys("abc def").Perform();
 
         WaitFor(() => input.GetAttribute("value") == "abc def", "did not send initial keys");
 
-        if (!TestUtilities.IsInternetExplorer(driver))
+        if (!TestUtilities.IsInternetExplorer(Driver))
         {
             // When using drivers other than the IE, the click in
             // the below action sequence may fall inside the double-
@@ -258,13 +258,13 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
             // inadvertent double-clicks with multiple actions calls),
             // so we call the "release actions" end point before
             // doing the second action.
-            if (driver is IActionExecutor executor)
+            if (Driver is IActionExecutor executor)
             {
                 executor.ResetInputState();
             }
         }
 
-        new Actions(driver).Click(input)
+        new Actions(Driver).Click(input)
             .KeyDown(Keys.Shift)
             .KeyDown(controlModifier)
             .SendKeys(Keys.Left)
@@ -285,15 +285,15 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
             controlModifier = Keys.Command;
         }
 
-        driver.Url = Urls.WhereIs("single_text_input.html");
+        Driver.Url = Urls.WhereIs("single_text_input.html");
 
-        IWebElement input = driver.FindElement(By.Id("textInput"));
+        IWebElement input = Driver.FindElement(By.Id("textInput"));
 
-        new Actions(driver).Click(input).SendKeys("abc def").Perform();
+        new Actions(Driver).Click(input).SendKeys("abc def").Perform();
 
         WaitFor(() => input.GetAttribute("value") == "abc def", "did not send initial keys");
 
-        new Actions(driver).Click(input)
+        new Actions(Driver).Click(input)
             .KeyDown(controlModifier)
             .SendKeys("a")
             .KeyUp(controlModifier)
@@ -310,19 +310,19 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
     public void ShouldAllowSendingKeysWithLeftShiftPressed()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement keysEventInput = driver.FindElement(By.Id("theworks"));
+        IWebElement keysEventInput = Driver.FindElement(By.Id("theworks"));
 
         keysEventInput.Click();
 
-        IAction pressShift = new Actions(driver).KeyDown(Keys.LeftShift).Build();
+        IAction pressShift = new Actions(Driver).KeyDown(Keys.LeftShift).Build();
         pressShift.Perform();
 
-        IAction sendLowercase = new Actions(driver).SendKeys("ab").Build();
+        IAction sendLowercase = new Actions(Driver).SendKeys("ab").Build();
         sendLowercase.Perform();
 
-        IAction releaseShift = new Actions(driver).KeyUp(Keys.LeftShift).Build();
+        IAction releaseShift = new Actions(Driver).KeyUp(Keys.LeftShift).Build();
         releaseShift.Perform();
 
         AssertThatFormEventsFiredAreExactly("focus keydown keydown keypress keyup keydown keypress keyup keyup");
@@ -332,7 +332,7 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
 
     private void AssertThatFormEventsFiredAreExactly(string message, string expected)
     {
-        Assert.That(driver.FindElement(By.Id("result")).Text.Trim(), Is.EqualTo(expected), message);
+        Assert.That(Driver.FindElement(By.Id("result")).Text.Trim(), Is.EqualTo(expected), message);
     }
 
     private void AssertThatFormEventsFiredAreExactly(string expected)
@@ -342,7 +342,7 @@ public class BasicKeyboardInterfaceTests : DriverTestFixture
 
     private void AssertThatBodyEventsFiredAreExactly(string expected)
     {
-        Assert.That(driver.FindElement(By.Id("body_result")).Text.Trim(), Is.EqualTo(expected));
+        Assert.That(Driver.FindElement(By.Id("body_result")).Text.Trim(), Is.EqualTo(expected));
     }
 
     private Func<bool> BackgroundColorToChangeFrom(IWebElement element, Color currentColor)

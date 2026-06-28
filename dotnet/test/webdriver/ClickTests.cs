@@ -25,39 +25,39 @@ public class ClickTests : DriverTestFixture
     [SetUp]
     public void SetupMethod()
     {
-        driver.Url = Urls.ClicksPage;
+        Driver.Url = Urls.ClicksPage;
     }
 
     [TearDown]
     public void TearDownMethod()
     {
-        driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().DefaultContent();
     }
 
     [Test]
     public void CanClickOnALinkAndFollowIt()
     {
-        driver.FindElement(By.Id("normal")).Click();
-        WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
-        Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+        Driver.FindElement(By.Id("normal")).Click();
+        WaitFor(() => { return Driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
+        Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
     }
 
     [Test]
     public void CanClickOnALinkThatOverflowsAndFollowIt()
     {
-        driver.FindElement(By.Id("overflowLink")).Click();
+        Driver.FindElement(By.Id("overflowLink")).Click();
 
-        WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
+        WaitFor(() => { return Driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
     }
 
     [Test]
     public void CanClickOnAnAnchorAndNotReloadThePage()
     {
-        ((IJavaScriptExecutor)driver).ExecuteScript("document.latch = true");
+        ((IJavaScriptExecutor)Driver).ExecuteScript("document.latch = true");
 
-        driver.FindElement(By.Id("anchor")).Click();
+        Driver.FindElement(By.Id("anchor")).Click();
 
-        bool samePage = (bool)((IJavaScriptExecutor)driver).ExecuteScript("return document.latch");
+        bool samePage = (bool)((IJavaScriptExecutor)Driver).ExecuteScript("return document.latch");
 
         Assert.That(samePage, Is.True, "Latch was reset");
     }
@@ -65,63 +65,63 @@ public class ClickTests : DriverTestFixture
     [Test]
     public void CanClickOnALinkThatUpdatesAnotherFrame()
     {
-        driver.SwitchTo().Frame("source");
+        Driver.SwitchTo().Frame("source");
 
-        driver.FindElement(By.Id("otherframe")).Click();
-        driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
+        Driver.FindElement(By.Id("otherframe")).Click();
+        Driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
 
-        Assert.That(driver.PageSource, Does.Contain("Hello WebDriver"));
+        Assert.That(Driver.PageSource, Does.Contain("Hello WebDriver"));
     }
 
     [Test]
     public void ElementsFoundByJsCanLoadUpdatesInAnotherFrame()
     {
-        driver.SwitchTo().Frame("source");
+        Driver.SwitchTo().Frame("source");
 
-        IWebElement toClick = (IWebElement)((IJavaScriptExecutor)driver).ExecuteScript("return document.getElementById('otherframe');");
+        IWebElement toClick = (IWebElement)((IJavaScriptExecutor)Driver).ExecuteScript("return document.getElementById('otherframe');");
         toClick.Click();
-        driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
+        Driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
 
-        Assert.That(driver.PageSource, Does.Contain("Hello WebDriver"));
+        Assert.That(Driver.PageSource, Does.Contain("Hello WebDriver"));
     }
 
     [Test]
     public void JsLocatedElementsCanUpdateFramesIfFoundSomehowElse()
     {
-        driver.SwitchTo().Frame("source");
+        Driver.SwitchTo().Frame("source");
 
         // Prime the cache of elements
-        driver.FindElement(By.Id("otherframe"));
+        Driver.FindElement(By.Id("otherframe"));
 
         // This _should_ return the same element
-        IWebElement toClick = (IWebElement)((IJavaScriptExecutor)driver).ExecuteScript("return document.getElementById('otherframe');");
+        IWebElement toClick = (IWebElement)((IJavaScriptExecutor)Driver).ExecuteScript("return document.getElementById('otherframe');");
         toClick.Click();
-        driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
+        Driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
 
-        Assert.That(driver.PageSource, Does.Contain("Hello WebDriver"));
+        Assert.That(Driver.PageSource, Does.Contain("Hello WebDriver"));
     }
 
     [Test]
 
     public void CanClickOnAnElementWithTopSetToANegativeNumber()
     {
-        driver.Url = Urls.WhereIs("styledPage.html");
-        IWebElement searchBox = driver.FindElement(By.Name("searchBox"));
+        Driver.Url = Urls.WhereIs("styledPage.html");
+        IWebElement searchBox = Driver.FindElement(By.Name("searchBox"));
         searchBox.SendKeys("Cheese");
-        driver.FindElement(By.Name("btn")).Click();
+        Driver.FindElement(By.Name("btn")).Click();
 
-        string log = driver.FindElement(By.Id("log")).Text;
+        string log = Driver.FindElement(By.Id("log")).Text;
         Assert.That(log, Is.EqualTo("click"));
     }
 
     [Test]
     public void ShouldSetRelatedTargetForMouseOver()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        driver.FindElement(By.Id("movable")).Click();
+        Driver.FindElement(By.Id("movable")).Click();
 
-        string log = driver.FindElement(By.Id("result")).Text;
+        string log = Driver.FindElement(By.Id("result")).Text;
 
         // Note: It is not guaranteed that the relatedTarget property of the mouseover
         // event will be the parent, when using native events. Only check that the mouse
@@ -139,9 +139,9 @@ public class ClickTests : DriverTestFixture
     [Test]
     public void ShouldClickOnFirstBoundingClientRectWithNonZeroSize()
     {
-        driver.FindElement(By.Id("twoClientRects")).Click();
-        WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
-        Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+        Driver.FindElement(By.Id("twoClientRects")).Click();
+        WaitFor(() => { return Driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
+        Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
     }
 
     [Test]
@@ -149,63 +149,63 @@ public class ClickTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void ShouldOnlyFollowHrefOnce()
     {
-        driver.Url = Urls.ClicksPage;
-        int windowHandlesBefore = driver.WindowHandles.Count;
+        Driver.Url = Urls.ClicksPage;
+        int windowHandlesBefore = Driver.WindowHandles.Count;
 
-        driver.FindElement(By.Id("new-window")).Click();
-        WaitFor(() => { return driver.WindowHandles.Count >= windowHandlesBefore + 1; }, "Window handles was not " + (windowHandlesBefore + 1).ToString());
-        Assert.That(driver.WindowHandles, Has.Exactly(windowHandlesBefore + 1).Items);
+        Driver.FindElement(By.Id("new-window")).Click();
+        WaitFor(() => { return Driver.WindowHandles.Count >= windowHandlesBefore + 1; }, "Window handles was not " + (windowHandlesBefore + 1).ToString());
+        Assert.That(Driver.WindowHandles, Has.Exactly(windowHandlesBefore + 1).Items);
     }
 
     [Test]
     public void ClickingLabelShouldSetCheckbox()
     {
-        driver.Url = Urls.FormsPage;
+        Driver.Url = Urls.FormsPage;
 
-        driver.FindElement(By.Id("label-for-checkbox-with-label")).Click();
+        Driver.FindElement(By.Id("label-for-checkbox-with-label")).Click();
 
-        Assert.That(driver.FindElement(By.Id("checkbox-with-label")).Selected, "Checkbox should be selected");
+        Assert.That(Driver.FindElement(By.Id("checkbox-with-label")).Selected, "Checkbox should be selected");
     }
 
     [Test]
     public void CanClickOnALinkWithEnclosedImage()
     {
-        driver.FindElement(By.Id("link-with-enclosed-image")).Click();
-        WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
-        Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+        Driver.FindElement(By.Id("link-with-enclosed-image")).Click();
+        WaitFor(() => { return Driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
+        Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
     }
 
     [Test]
     public void CanClickOnAnImageEnclosedInALink()
     {
-        driver.FindElement(By.Id("link-with-enclosed-image")).FindElement(By.TagName("img")).Click();
-        WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
-        Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+        Driver.FindElement(By.Id("link-with-enclosed-image")).FindElement(By.TagName("img")).Click();
+        WaitFor(() => { return Driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
+        Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
     }
 
     [Test]
     public void CanClickOnALinkThatContainsTextWrappedInASpan()
     {
-        driver.FindElement(By.Id("link-with-enclosed-span")).Click();
-        WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
-        Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+        Driver.FindElement(By.Id("link-with-enclosed-span")).Click();
+        WaitFor(() => { return Driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
+        Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
     }
 
     [Test]
     [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/653")]
     public void CanClickOnALinkThatContainsEmbeddedBlockElements()
     {
-        driver.FindElement(By.Id("embeddedBlock")).Click();
-        WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
-        Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+        Driver.FindElement(By.Id("embeddedBlock")).Click();
+        WaitFor(() => { return Driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
+        Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
     }
 
     [Test]
     public void CanClickOnAnElementEnclosedInALink()
     {
-        driver.FindElement(By.Id("link-with-enclosed-span")).FindElement(By.TagName("span")).Click();
-        WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
-        Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+        Driver.FindElement(By.Id("link-with-enclosed-span")).FindElement(By.TagName("span")).Click();
+        WaitFor(() => { return Driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
+        Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
     }
 
     [Test]
@@ -213,34 +213,34 @@ public class ClickTests : DriverTestFixture
     {
         string url = Urls.WhereIs("click_out_of_bounds.html");
 
-        driver.Url = url;
-        IWebElement button = driver.FindElement(By.Id("button"));
+        Driver.Url = url;
+        IWebElement button = Driver.FindElement(By.Id("button"));
         button.Click();
     }
 
     [Test]
     public void ClicksASurroundingStrongTag()
     {
-        driver.Url = Urls.WhereIs("ClickTest_testClicksASurroundingStrongTag.html");
-        driver.FindElement(By.TagName("a")).Click();
-        WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
+        Driver.Url = Urls.WhereIs("ClickTest_testClicksASurroundingStrongTag.html");
+        Driver.FindElement(By.TagName("a")).Click();
+        WaitFor(() => { return Driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
     }
 
     [Test]
     [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=1502636")]
     public void CanClickAnImageMapArea()
     {
-        driver.Url = Urls.WhereIs("click_tests/google_map.html");
-        driver.FindElement(By.Id("rectG")).Click();
-        WaitFor(() => { return driver.Title == "Target Page 1"; }, "Browser title was not 'Target Page 1'");
+        Driver.Url = Urls.WhereIs("click_tests/google_map.html");
+        Driver.FindElement(By.Id("rectG")).Click();
+        WaitFor(() => { return Driver.Title == "Target Page 1"; }, "Browser title was not 'Target Page 1'");
 
-        driver.Url = Urls.WhereIs("click_tests/google_map.html");
-        driver.FindElement(By.Id("circleO")).Click();
-        WaitFor(() => { return driver.Title == "Target Page 2"; }, "Browser title was not 'Target Page 2'");
+        Driver.Url = Urls.WhereIs("click_tests/google_map.html");
+        Driver.FindElement(By.Id("circleO")).Click();
+        WaitFor(() => { return Driver.Title == "Target Page 2"; }, "Browser title was not 'Target Page 2'");
 
-        driver.Url = Urls.WhereIs("click_tests/google_map.html");
-        driver.FindElement(By.Id("polyLE")).Click();
-        WaitFor(() => { return driver.Title == "Target Page 3"; }, "Browser title was not 'Target Page 3'");
+        Driver.Url = Urls.WhereIs("click_tests/google_map.html");
+        Driver.FindElement(By.Id("polyLE")).Click();
+        WaitFor(() => { return Driver.Title == "Target Page 3"; }, "Browser title was not 'Target Page 3'");
     }
 
     [Test]
@@ -248,13 +248,13 @@ public class ClickTests : DriverTestFixture
     public void ShouldBeAbleToClickOnAnElementGreaterThanTwoViewports()
     {
         string url = Urls.WhereIs("click_too_big.html");
-        driver.Url = url;
+        Driver.Url = url;
 
-        IWebElement element = driver.FindElement(By.Id("click"));
+        IWebElement element = Driver.FindElement(By.Id("click"));
 
         element.Click();
 
-        WaitFor(() => { return driver.Title == "clicks"; }, "Browser title was not 'clicks'");
+        WaitFor(() => { return Driver.Title == "clicks"; }, "Browser title was not 'clicks'");
     }
 
     [Test]
@@ -262,93 +262,93 @@ public class ClickTests : DriverTestFixture
     public void ShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports()
     {
         string url = Urls.WhereIs("click_too_big_in_frame.html");
-        driver.Url = url;
+        Driver.Url = url;
 
-        IWebElement frame = driver.FindElement(By.Id("iframe1"));
-        driver.SwitchTo().Frame(frame);
+        IWebElement frame = Driver.FindElement(By.Id("iframe1"));
+        Driver.SwitchTo().Frame(frame);
 
-        IWebElement element = driver.FindElement(By.Id("click"));
+        IWebElement element = Driver.FindElement(By.Id("click"));
 
         element.Click();
 
-        WaitFor(() => { return driver.Title == "clicks"; }, "Browser title was not 'clicks'");
+        WaitFor(() => { return Driver.Title == "clicks"; }, "Browser title was not 'clicks'");
     }
 
     [Test]
     public void ShouldBeAbleToClickOnRightToLeftLanguageLink()
     {
         String url = Urls.WhereIs("click_rtl.html");
-        driver.Url = url;
+        Driver.Url = url;
 
-        IWebElement element = driver.FindElement(By.Id("ar_link"));
+        IWebElement element = Driver.FindElement(By.Id("ar_link"));
         element.Click();
 
-        WaitFor(() => driver.Title == "clicks", "Expected title to be 'clicks'");
-        Assert.That(driver.Title, Is.EqualTo("clicks"));
+        WaitFor(() => Driver.Title == "clicks", "Expected title to be 'clicks'");
+        Assert.That(Driver.Title, Is.EqualTo("clicks"));
     }
 
     [Test]
     public void ShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooter()
     {
         string url = Urls.WhereIs("fixedFooterNoScroll.html");
-        driver.Url = url;
+        Driver.Url = url;
 
-        driver.FindElement(By.Id("link")).Click();
-        WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
-        Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+        Driver.FindElement(By.Id("link")).Click();
+        WaitFor(() => { return Driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
+        Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
     }
 
     [Test]
     public void ShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooterInQuirksMode()
     {
         string url = Urls.WhereIs("fixedFooterNoScrollQuirksMode.html");
-        driver.Url = url;
+        Driver.Url = url;
 
-        driver.FindElement(By.Id("link")).Click();
-        WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
-        Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+        Driver.FindElement(By.Id("link")).Click();
+        WaitFor(() => { return Driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
+        Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
     }
 
     [Test]
     public void ShouldBeAbleToClickOnLinksWithNoHrefAttribute()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement element = driver.FindElement(By.LinkText("No href"));
+        IWebElement element = Driver.FindElement(By.LinkText("No href"));
         element.Click();
 
-        WaitFor(() => driver.Title == "Changed", "Expected title to be 'Changed'");
-        Assert.That(driver.Title, Is.EqualTo("Changed"));
+        WaitFor(() => Driver.Title == "Changed", "Expected title to be 'Changed'");
+        Assert.That(Driver.Title, Is.EqualTo("Changed"));
     }
 
     [Test]
     public void ShouldBeAbleToClickOnALinkThatWrapsToTheNextLine()
     {
-        driver.Url = Urls.WhereIs("click_tests/link_that_wraps.html");
+        Driver.Url = Urls.WhereIs("click_tests/link_that_wraps.html");
 
-        driver.FindElement(By.Id("link")).Click();
+        Driver.FindElement(By.Id("link")).Click();
 
-        WaitFor(() => driver.Title == "Submitted Successfully!", "Expected title to be 'Submitted Successfully!'");
-        Assert.That(driver.Title, Is.EqualTo("Submitted Successfully!"));
+        WaitFor(() => Driver.Title == "Submitted Successfully!", "Expected title to be 'Submitted Successfully!'");
+        Assert.That(Driver.Title, Is.EqualTo("Submitted Successfully!"));
     }
 
     [Test]
     public void ShouldBeAbleToClickOnASpanThatWrapsToTheNextLine()
     {
-        driver.Url = Urls.WhereIs("click_tests/span_that_wraps.html");
+        Driver.Url = Urls.WhereIs("click_tests/span_that_wraps.html");
 
-        driver.FindElement(By.Id("span")).Click();
+        Driver.FindElement(By.Id("span")).Click();
 
-        WaitFor(() => driver.Title == "Submitted Successfully!", "Expected title to be 'Submitted Successfully!'");
-        Assert.That(driver.Title, Is.EqualTo("Submitted Successfully!"));
+        WaitFor(() => Driver.Title == "Submitted Successfully!", "Expected title to be 'Submitted Successfully!'");
+        Assert.That(Driver.Title, Is.EqualTo("Submitted Successfully!"));
     }
 
     [Test]
     public void ClickingOnADisabledElementIsANoOp()
     {
-        driver.Url = Urls.WhereIs("click_tests/disabled_element.html");
+        Driver.Url = Urls.WhereIs("click_tests/disabled_element.html");
 
-        IWebElement element = driver.FindElement(By.Name("disabled"));
+        IWebElement element = Driver.FindElement(By.Name("disabled"));
         element.Click();
     }
 
@@ -358,9 +358,9 @@ public class ClickTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickLinkContainingLineBreak()
     {
-        driver.Url = Urls.SimpleTestPage;
-        driver.FindElement(By.Id("multilinelink")).Click();
-        WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
-        Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
+        Driver.Url = Urls.SimpleTestPage;
+        Driver.FindElement(By.Id("multilinelink")).Click();
+        WaitFor(() => { return Driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
+        Assert.That(Driver.Title, Is.EqualTo("We Arrive Here"));
     }
 }

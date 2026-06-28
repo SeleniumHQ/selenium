@@ -48,9 +48,9 @@ public class CookieImplementationTests : DriverTestFixture
         }
 
         string key = string.Format("key_{0}", random.Next());
-        ((IJavaScriptExecutor)driver).ExecuteScript("document.cookie = arguments[0] + '=set';", key);
+        ((IJavaScriptExecutor)Driver).ExecuteScript("document.cookie = arguments[0] + '=set';", key);
 
-        Cookie cookie = driver.Manage().Cookies.GetCookieNamed(key);
+        Cookie cookie = Driver.Manage().Cookies.GetCookieNamed(key);
         Assert.That(cookie.Value, Is.EqualTo("set"));
     }
 
@@ -67,10 +67,10 @@ public class CookieImplementationTests : DriverTestFixture
         Cookie cookie = new Cookie(key, value);
         AssertCookieIsNotPresentWithName(key);
 
-        driver.Manage().Cookies.AddCookie(cookie);
+        Driver.Manage().Cookies.AddCookie(cookie);
 
         AssertCookieHasValue(key, value);
-        Assert.That(driver.Manage().Cookies.AllCookies, Does.Contain(cookie), "Cookie was not added successfully");
+        Assert.That(Driver.Manage().Cookies.AllCookies, Does.Contain(cookie), "Cookie was not added successfully");
     }
 
     [Test]
@@ -87,17 +87,17 @@ public class CookieImplementationTests : DriverTestFixture
         AssertCookieIsNotPresentWithName(key1);
         AssertCookieIsNotPresentWithName(key2);
 
-        ReadOnlyCollection<Cookie> cookies = driver.Manage().Cookies.AllCookies;
+        ReadOnlyCollection<Cookie> cookies = Driver.Manage().Cookies.AllCookies;
         int count = cookies.Count;
 
         Cookie one = new Cookie(key1, "value");
         Cookie two = new Cookie(key2, "value");
 
-        driver.Manage().Cookies.AddCookie(one);
-        driver.Manage().Cookies.AddCookie(two);
+        Driver.Manage().Cookies.AddCookie(one);
+        Driver.Manage().Cookies.AddCookie(two);
 
-        driver.Url = Urls.SimpleTestPage;
-        cookies = driver.Manage().Cookies.AllCookies;
+        Driver.Url = Urls.SimpleTestPage;
+        cookies = Driver.Manage().Cookies.AllCookies;
         Assert.That(cookies, Has.Count.EqualTo(count + 2));
 
         Assert.That(cookies, Does.Contain(one));
@@ -112,10 +112,10 @@ public class CookieImplementationTests : DriverTestFixture
             return;
         }
 
-        ((IJavaScriptExecutor)driver).ExecuteScript("document.cookie = 'foo=set';");
+        ((IJavaScriptExecutor)Driver).ExecuteScript("document.cookie = 'foo=set';");
         AssertSomeCookiesArePresent();
 
-        driver.Manage().Cookies.DeleteAllCookies();
+        Driver.Manage().Cookies.DeleteAllCookies();
 
         AssertNoCookiesArePresent();
     }
@@ -131,13 +131,13 @@ public class CookieImplementationTests : DriverTestFixture
         string key1 = GenerateUniqueKey();
         string key2 = GenerateUniqueKey();
 
-        ((IJavaScriptExecutor)driver).ExecuteScript("document.cookie = arguments[0] + '=set';", key1);
-        ((IJavaScriptExecutor)driver).ExecuteScript("document.cookie = arguments[0] + '=set';", key2);
+        ((IJavaScriptExecutor)Driver).ExecuteScript("document.cookie = arguments[0] + '=set';", key1);
+        ((IJavaScriptExecutor)Driver).ExecuteScript("document.cookie = arguments[0] + '=set';", key2);
 
         AssertCookieIsPresentWithName(key1);
         AssertCookieIsPresentWithName(key2);
 
-        driver.Manage().Cookies.DeleteCookieNamed(key1);
+        Driver.Manage().Cookies.DeleteCookieNamed(key1);
 
         AssertCookieIsNotPresentWithName(key1);
         AssertCookieIsPresentWithName(key2);
@@ -154,7 +154,7 @@ public class CookieImplementationTests : DriverTestFixture
         string cookieOneName = "fish";
         Cookie cookie1 = new Cookie(cookieOneName, "cod");
         Cookie cookie2 = new Cookie(cookieOneName + "x", "earth");
-        IOptions options = driver.Manage();
+        IOptions options = Driver.Manage();
         AssertCookieIsNotPresentWithName(cookie1.Name);
 
         options.Cookies.AddCookie(cookie1);
@@ -164,8 +164,8 @@ public class CookieImplementationTests : DriverTestFixture
 
         options.Cookies.DeleteCookieNamed(cookieOneName);
 
-        Assert.That(driver.Manage().Cookies.AllCookies, Does.Not.Contain(cookie1));
-        Assert.That(driver.Manage().Cookies.AllCookies, Does.Contain(cookie2));
+        Assert.That(Driver.Manage().Cookies.AllCookies, Does.Not.Contain(cookie1));
+        Assert.That(Driver.Manage().Cookies.AllCookies, Does.Contain(cookie2));
     }
 
     [Test]
@@ -178,18 +178,18 @@ public class CookieImplementationTests : DriverTestFixture
 
         Cookie cookie1 = new Cookie("fish", "cod", "/common/animals");
         Cookie cookie2 = new Cookie("planet", "earth", "/common/");
-        IOptions options = driver.Manage();
+        IOptions options = Driver.Manage();
         options.Cookies.AddCookie(cookie1);
         options.Cookies.AddCookie(cookie2);
 
         UrlBuilder builder = Urls;
-        driver.Url = builder.WhereIs("animals");
+        Driver.Url = builder.WhereIs("animals");
 
         ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
         AssertCookieIsPresentWithName(cookie1.Name);
         AssertCookieIsPresentWithName(cookie2.Name);
 
-        driver.Url = builder.WhereIs("simpleTest.html");
+        Driver.Url = builder.WhereIs("simpleTest.html");
         AssertCookieIsNotPresentWithName(cookie1.Name);
     }
 
@@ -197,14 +197,14 @@ public class CookieImplementationTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/1104")]
     public void GetCookiesInAFrame()
     {
-        driver.Url = Urls.WhereIs("animals");
+        Driver.Url = Urls.WhereIs("animals");
         Cookie cookie1 = new Cookie("fish", "cod", "/common/animals");
-        driver.Manage().Cookies.AddCookie(cookie1);
+        Driver.Manage().Cookies.AddCookie(cookie1);
 
-        driver.Url = Urls.WhereIs("frameWithAnimals.html");
+        Driver.Url = Urls.WhereIs("frameWithAnimals.html");
         AssertCookieIsNotPresentWithName(cookie1.Name);
 
-        driver.SwitchTo().Frame("iframe1");
+        Driver.SwitchTo().Frame("iframe1");
         AssertCookieIsPresentWithName(cookie1.Name);
     }
 
@@ -217,10 +217,10 @@ public class CookieImplementationTests : DriverTestFixture
         }
 
         string cookieName = "fish";
-        driver.Manage().Cookies.AddCookie(new Cookie(cookieName, "cod", "/Common/animals"));
+        Driver.Manage().Cookies.AddCookie(new Cookie(cookieName, "cod", "/Common/animals"));
 
-        driver.Url = Urls.WhereIs("animals");
-        Assert.That(driver.Manage().Cookies.GetCookieNamed(cookieName), Is.Null);
+        Driver.Url = Urls.WhereIs("animals");
+        Assert.That(Driver.Manage().Cookies.GetCookieNamed(cookieName), Is.Null);
     }
 
     [Test]
@@ -232,10 +232,10 @@ public class CookieImplementationTests : DriverTestFixture
         }
 
         string cookieName = "fish";
-        driver.Manage().Cookies.AddCookie(new Cookie(cookieName, "cod"));
+        Driver.Manage().Cookies.AddCookie(new Cookie(cookieName, "cod"));
         AssertCookieIsPresentWithName(cookieName);
 
-        driver.Url = Urls.WhereElseIs("simpleTest.html");
+        Driver.Url = Urls.WhereElseIs("simpleTest.html");
 
         AssertCookieIsNotPresentWithName(cookieName);
     }
@@ -263,7 +263,7 @@ public class CookieImplementationTests : DriverTestFixture
         string shorter = replaceRegex.Replace(this.hostname, ".", 1);
         Cookie cookie = new Cookie("name", "value", shorter, "/", GetTimeInTheFuture());
 
-        driver.Manage().Cookies.AddCookie(cookie);
+        Driver.Manage().Cookies.AddCookie(cookie);
 
         AssertCookieIsPresentWithName("name");
     }
@@ -284,12 +284,12 @@ public class CookieImplementationTests : DriverTestFixture
         string subdomain = replaceRegex.Replace(this.hostname, "subdomain.", 1);
         Cookie cookie = new Cookie(cookieName, "value", subdomain, "/", GetTimeInTheFuture());
 
-        string originalUrl = driver.Url;
+        string originalUrl = Driver.Url;
         string subdomainUrl = originalUrl.Replace(this.hostname, subdomain);
-        driver.Url = subdomainUrl;
-        driver.Manage().Cookies.AddCookie(cookie);
+        Driver.Url = subdomainUrl;
+        Driver.Manage().Cookies.AddCookie(cookie);
 
-        driver.Url = originalUrl;
+        Driver.Url = originalUrl;
         AssertCookieIsNotPresentWithName(cookieName);
     }
 
@@ -317,7 +317,7 @@ public class CookieImplementationTests : DriverTestFixture
         string shorter = replaceRegex.Replace(this.hostname, ".", 1);
         Cookie cookie = new Cookie("name", "value", shorter, "/", DateTime.Now.AddSeconds(100000));
 
-        driver.Manage().Cookies.AddCookie(cookie);
+        Driver.Manage().Cookies.AddCookie(cookie);
 
         AssertCookieIsPresentWithName("name");
     }
@@ -339,14 +339,14 @@ public class CookieImplementationTests : DriverTestFixture
             Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
         }
 
-        Uri url = new Uri(driver.Url);
+        Uri url = new Uri(Driver.Url);
         String host = url.Host + ":" + url.Port.ToString();
 
         Cookie cookie1 = new Cookie("fish", "cod", host, "/", null);
-        IOptions options = driver.Manage();
+        IOptions options = Driver.Manage();
         options.Cookies.AddCookie(cookie1);
 
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
         ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
         Assert.That(cookies, Does.Contain(cookie1));
     }
@@ -360,32 +360,32 @@ public class CookieImplementationTests : DriverTestFixture
         }
 
         Cookie cookie1 = new Cookie("fish", "cod");
-        driver.Manage().Cookies.AddCookie(cookie1);
-        int count = driver.Manage().Cookies.AllCookies.Count;
+        Driver.Manage().Cookies.AddCookie(cookie1);
+        int count = Driver.Manage().Cookies.AllCookies.Count;
 
-        driver.Url = Urls.ChildPage;
+        Driver.Url = Urls.ChildPage;
         Cookie cookie2 = new Cookie("rodent", "hamster", "/common/child");
-        driver.Manage().Cookies.AddCookie(cookie2);
-        count = driver.Manage().Cookies.AllCookies.Count;
+        Driver.Manage().Cookies.AddCookie(cookie2);
+        count = Driver.Manage().Cookies.AllCookies.Count;
 
-        driver.Url = Urls.GrandchildPage;
+        Driver.Url = Urls.GrandchildPage;
         Cookie cookie3 = new Cookie("dog", "dalmatian", "/common/child/grandchild/");
-        driver.Manage().Cookies.AddCookie(cookie3);
-        count = driver.Manage().Cookies.AllCookies.Count;
+        Driver.Manage().Cookies.AddCookie(cookie3);
+        count = Driver.Manage().Cookies.AllCookies.Count;
 
-        driver.Url = (Urls.WhereIs("child/grandchild"));
-        driver.Manage().Cookies.DeleteCookieNamed("rodent");
-        count = driver.Manage().Cookies.AllCookies.Count;
+        Driver.Url = (Urls.WhereIs("child/grandchild"));
+        Driver.Manage().Cookies.DeleteCookieNamed("rodent");
+        count = Driver.Manage().Cookies.AllCookies.Count;
 
-        Assert.That(driver.Manage().Cookies.GetCookieNamed("rodent"), Is.Null);
+        Assert.That(Driver.Manage().Cookies.GetCookieNamed("rodent"), Is.Null);
 
-        ReadOnlyCollection<Cookie> cookies = driver.Manage().Cookies.AllCookies;
+        ReadOnlyCollection<Cookie> cookies = Driver.Manage().Cookies.AllCookies;
         Assert.That(cookies, Has.Exactly(2).Items);
         Assert.That(cookies, Does.Contain(cookie1));
         Assert.That(cookies, Does.Contain(cookie3));
 
-        driver.Manage().Cookies.DeleteAllCookies();
-        driver.Url = Urls.GrandchildPage;
+        Driver.Manage().Cookies.DeleteAllCookies();
+        Driver.Url = Urls.GrandchildPage;
         AssertNoCookiesArePresent();
     }
 
@@ -406,12 +406,12 @@ public class CookieImplementationTests : DriverTestFixture
             Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
         }
 
-        Uri uri = new Uri(driver.Url);
+        Uri uri = new Uri(Driver.Url);
         string host = string.Format("{0}:{1}", uri.Host, uri.Port);
         string cookieName = "name";
         AssertCookieIsNotPresentWithName(cookieName);
         Cookie cookie = new Cookie(cookieName, "value", host, "/", null);
-        driver.Manage().Cookies.AddCookie(cookie);
+        Driver.Manage().Cookies.AddCookie(cookie);
         AssertCookieIsPresentWithName(cookieName);
     }
 
@@ -425,7 +425,7 @@ public class CookieImplementationTests : DriverTestFixture
 
         DateTime time = DateTime.Now.AddDays(1);
         Cookie cookie1 = new Cookie("fish", "cod", null, "/common/animals", time);
-        IOptions options = driver.Manage();
+        IOptions options = Driver.Manage();
         options.Cookies.AddCookie(cookie1);
 
         ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
@@ -458,7 +458,7 @@ public class CookieImplementationTests : DriverTestFixture
         DateTime expireDate = new DateTime(current.Year, current.Month, current.Day, current.Hour, current.Minute, current.Second, DateTimeKind.Local).AddDays(1);
 
         Cookie addCookie = new Cookie("fish", "cod", "/common/animals", expireDate);
-        IOptions options = driver.Manage();
+        IOptions options = Driver.Manage();
         options.Cookies.AddCookie(addCookie);
 
         Cookie retrieved = options.Cookies.GetCookieNamed("fish");
@@ -471,14 +471,14 @@ public class CookieImplementationTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Browser does not handle untrusted SSL certificates.")]
     public void CanHandleSecureCookie()
     {
-        driver.Url = Urls.WhereIsSecure("animals");
+        Driver.Url = Urls.WhereIsSecure("animals");
 
         Cookie addedCookie = new ReturnedCookie("fish", "cod", null, "/common/animals", null, true, false, null);
-        driver.Manage().Cookies.AddCookie(addedCookie);
+        Driver.Manage().Cookies.AddCookie(addedCookie);
 
-        driver.Navigate().Refresh();
+        Driver.Navigate().Refresh();
 
-        Cookie retrieved = driver.Manage().Cookies.GetCookieNamed("fish");
+        Cookie retrieved = Driver.Manage().Cookies.GetCookieNamed("fish");
         Assert.That(retrieved, Is.Not.Null);
     }
 
@@ -487,15 +487,15 @@ public class CookieImplementationTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Browser does not handle untrusted SSL certificates.")]
     public void ShouldRetainCookieSecure()
     {
-        driver.Url = Urls.WhereIsSecure("animals");
+        Driver.Url = Urls.WhereIsSecure("animals");
 
         ReturnedCookie addedCookie = new ReturnedCookie("fish", "cod", string.Empty, "/common/animals", null, true, false, null);
 
-        driver.Manage().Cookies.AddCookie(addedCookie);
+        Driver.Manage().Cookies.AddCookie(addedCookie);
 
-        driver.Navigate().Refresh();
+        Driver.Navigate().Refresh();
 
-        Cookie retrieved = driver.Manage().Cookies.GetCookieNamed("fish");
+        Cookie retrieved = Driver.Manage().Cookies.GetCookieNamed("fish");
         Assert.That(retrieved, Is.Not.Null);
         Assert.That(retrieved.Secure, "Secure attribute not set to true");
     }
@@ -510,10 +510,10 @@ public class CookieImplementationTests : DriverTestFixture
         url.Append("&path=").Append("/common/animals");
         url.Append("&httpOnly=").Append("true");
 
-        driver.Url = url.ToString();
+        Driver.Url = url.ToString();
 
-        driver.Url = Urls.WhereIs("animals");
-        Cookie retrieved = driver.Manage().Cookies.GetCookieNamed("fish");
+        Driver.Url = Urls.WhereIs("animals");
+        Cookie retrieved = Driver.Manage().Cookies.GetCookieNamed("fish");
         Assert.That(retrieved, Is.Not.Null);
     }
 
@@ -527,11 +527,11 @@ public class CookieImplementationTests : DriverTestFixture
         url.Append("&path=").Append("/common/animals");
         url.Append("&httpOnly=").Append("true");
 
-        driver.Url = url.ToString();
+        Driver.Url = url.ToString();
 
-        driver.Url = Urls.WhereElseIs("animals");
+        Driver.Url = Urls.WhereElseIs("animals");
 
-        Cookie retrieved = driver.Manage().Cookies.GetCookieNamed("fish");
+        Cookie retrieved = Driver.Manage().Cookies.GetCookieNamed("fish");
         Assert.That(retrieved, Is.Not.Null);
         Assert.That(retrieved.IsHttpOnly, "HttpOnly attribute not set to true");
     }
@@ -541,7 +541,7 @@ public class CookieImplementationTests : DriverTestFixture
     {
         DateTime expires = DateTime.Now.AddSeconds(-1000);
         Cookie cookie = new Cookie("expired", "yes", "/common/animals", expires);
-        IOptions options = driver.Manage();
+        IOptions options = Driver.Manage();
         options.Cookies.AddCookie(cookie);
 
         cookie = options.Cookies.GetCookieNamed("expired");
@@ -561,7 +561,7 @@ public class CookieImplementationTests : DriverTestFixture
         Cookie cookie = new Cookie(key, value);
         AssertCookieIsNotPresentWithName(key);
 
-        driver.Manage().Cookies.AddCookie(cookie);
+        Driver.Manage().Cookies.AddCookie(cookie);
 
         AssertCookieHasValue(key, value);
     }
@@ -572,7 +572,7 @@ public class CookieImplementationTests : DriverTestFixture
         String key = GenerateUniqueKey();
         AssertCookieIsNotPresentWithName(key);
 
-        driver.Manage().Cookies.DeleteCookieNamed(key);
+        Driver.Manage().Cookies.DeleteCookieNamed(key);
     }
 
     [Test]
@@ -590,24 +590,24 @@ public class CookieImplementationTests : DriverTestFixture
         string url1 = Urls.WhereIs("");
         string url2 = Urls.WhereElseIs("");
 
-        IOptions options = driver.Manage();
+        IOptions options = Driver.Manage();
 
         options.Cookies.AddCookie(cookie1);
         AssertCookieIsPresentWithName(cookie1.Name);
 
-        driver.Url = url2;
+        Driver.Url = url2;
         options.Cookies.AddCookie(cookie2);
         AssertCookieIsNotPresentWithName(cookie1.Name);
         AssertCookieIsPresentWithName(cookie2.Name);
 
-        driver.Url = url1;
+        Driver.Url = url1;
         AssertCookieIsPresentWithName(cookie1.Name);
         AssertCookieIsNotPresentWithName(cookie2.Name);
 
         options.Cookies.DeleteAllCookies();
         AssertCookieIsNotPresentWithName(cookie1.Name);
 
-        driver.Url = url2;
+        Driver.Url = url2;
         AssertCookieIsPresentWithName(cookie2.Name);
     }
 
@@ -617,7 +617,7 @@ public class CookieImplementationTests : DriverTestFixture
     [TestCase("   ")]
     public void ShouldThrowWhenGetInvalidCookieByName(string cookieName)
     {
-        var getCookieAction = () => driver.Manage().Cookies.GetCookieNamed(cookieName);
+        var getCookieAction = () => Driver.Manage().Cookies.GetCookieNamed(cookieName);
 
         Assert.That(getCookieAction, Throws.ArgumentException);
     }
@@ -628,7 +628,7 @@ public class CookieImplementationTests : DriverTestFixture
     [TestCase("   ")]
     public void ShouldThrowWhenDeleteInvalidCookieByName(string cookieName)
     {
-        var deleteCookieAction = () => driver.Manage().Cookies.DeleteCookieNamed(cookieName);
+        var deleteCookieAction = () => Driver.Manage().Cookies.DeleteCookieNamed(cookieName);
 
         Assert.That(deleteCookieAction, Throws.ArgumentException);
     }
@@ -647,20 +647,20 @@ public class CookieImplementationTests : DriverTestFixture
         Cookie cookie1 = new Cookie("fish", "cod", "/common/animals");
         Cookie cookie2 = new Cookie("planet", "earth", "/common/galaxy");
 
-        IOptions options = driver.Manage();
+        IOptions options = Driver.Manage();
         ReadOnlyCollection<Cookie> count = options.Cookies.AllCookies;
 
         options.Cookies.AddCookie(cookie1);
         options.Cookies.AddCookie(cookie2);
 
         string url = Urls.WhereIs("animals");
-        driver.Url = url;
+        Driver.Url = url;
         ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
 
         Assert.That(cookies, Does.Contain(cookie1));
         Assert.That(cookies, Does.Not.Contain(cookie2));
 
-        driver.Url = Urls.WhereIs("galaxy");
+        Driver.Url = Urls.WhereIs("galaxy");
         cookies = options.Cookies.AllCookies;
         Assert.That(cookies, Does.Not.Contain(cookie1));
         Assert.That(cookies, Does.Contain(cookie2));
@@ -675,11 +675,11 @@ public class CookieImplementationTests : DriverTestFixture
         }
 
         Cookie cookie1 = new Cookie("fish", "cod");
-        IOptions options = driver.Manage();
+        IOptions options = Driver.Manage();
         options.Cookies.AddCookie(cookie1);
 
         string url = Urls.WhereElseIs("simpleTest.html");
-        driver.Url = url;
+        Driver.Url = url;
 
         Assert.That(options.Cookies.GetCookieNamed("fish"), Is.Null);
     }
@@ -693,11 +693,11 @@ public class CookieImplementationTests : DriverTestFixture
         }
 
         Cookie cookie1 = new Cookie("fish", "cod");
-        IOptions options = driver.Manage();
+        IOptions options = Driver.Manage();
         options.Cookies.AddCookie(cookie1);
 
         String url = Urls.WhereElseIs("");
-        driver.Url = url;
+        Driver.Url = url;
 
         ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
         Assert.That(cookies, Does.Not.Contain(cookie1));
@@ -720,8 +720,8 @@ public class CookieImplementationTests : DriverTestFixture
             Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
         }
 
-        driver.Url = Urls.MacbethPage;
-        IOptions options = driver.Manage();
+        Driver.Url = Urls.MacbethPage;
+        IOptions options = Driver.Manage();
         Cookie cookie = new Cookie("Homer", "Simpson", this.hostname, "/common", null);
         options.Cookies.AddCookie(cookie);
         ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
@@ -736,8 +736,8 @@ public class CookieImplementationTests : DriverTestFixture
             Assert.Ignore("Not on a standard domain for cookies (localhost doesn't count).");
         }
 
-        driver.Url = Urls.MacbethPage;
-        IOptions options = driver.Manage();
+        Driver.Url = Urls.MacbethPage;
+        IOptions options = Driver.Manage();
         Cookie cookie = new Cookie("Bart", "Simpson", Urls.HostName + ".com", "/common", null);
         Assert.That(
             () => options.Cookies.AddCookie(cookie),
@@ -764,8 +764,8 @@ public class CookieImplementationTests : DriverTestFixture
             Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
         }
 
-        driver.Url = Urls.MacbethPage;
-        IOptions options = driver.Manage();
+        Driver.Url = Urls.MacbethPage;
+        IOptions options = Driver.Manage();
         Cookie cookie = new Cookie("Lisa", "Simpson", Urls.HostName, "/commonIDoNotExist", null);
         options.Cookies.AddCookie(cookie);
         ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
@@ -782,9 +782,9 @@ public class CookieImplementationTests : DriverTestFixture
 
         // URLs using a non-network scheme (like "about:" or "data:") are
         // averse to cookies, and should throw an InvalidCookieDomainException.
-        driver.Url = "about:blank";
+        Driver.Url = "about:blank";
 
-        IOptions options = driver.Manage();
+        IOptions options = Driver.Manage();
         Cookie cookie = new Cookie("question", "dunno");
         Assert.That(
             () => options.Cookies.AddCookie(cookie),
@@ -800,7 +800,7 @@ public class CookieImplementationTests : DriverTestFixture
         }
 
         Cookie addCookie = new Cookie("fish", "cod", "/common/animals", DateTime.Now.AddHours(-1));
-        IOptions options = driver.Manage();
+        IOptions options = Driver.Manage();
         options.Cookies.AddCookie(addCookie);
 
         Cookie retrieved = options.Cookies.GetCookieNamed("fish");
@@ -815,8 +815,8 @@ public class CookieImplementationTests : DriverTestFixture
             return;
         }
 
-        driver.Url = Urls.MacbethPage;
-        IOptions options = driver.Manage();
+        Driver.Url = Urls.MacbethPage;
+        IOptions options = Driver.Manage();
         Cookie cookie = new Cookie("Marge", "Simpson", "/");
         options.Cookies.AddCookie(cookie);
         ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
@@ -831,8 +831,8 @@ public class CookieImplementationTests : DriverTestFixture
             return;
         }
 
-        driver.Url = Urls.MacbethPage;
-        IOptions options = driver.Manage();
+        Driver.Url = Urls.MacbethPage;
+        IOptions options = Driver.Manage();
         Cookie cookieToDelete = new Cookie("answer", "42");
         Cookie cookieToKeep = new Cookie("canIHaz", "Cheeseburguer");
         options.Cookies.AddCookie(cookieToDelete);
@@ -867,14 +867,14 @@ public class CookieImplementationTests : DriverTestFixture
 
         GoToPage(page);
 
-        driver.Manage().Cookies.DeleteAllCookies();
-        if (driver.Manage().Cookies.AllCookies.Count != 0)
+        Driver.Manage().Cookies.DeleteAllCookies();
+        if (Driver.Manage().Cookies.AllCookies.Count != 0)
         {
             // If cookies are still present, restart the driver and try again.
             // This may mask some errors, where DeleteAllCookies doesn't fully
             // delete all it should, but that's a tradeoff we need to be willing
             // to make.
-            driver = EnvironmentManager.Instance.CreateFreshDriver();
+            Driver = EnvironmentManager.Instance.CreateFreshDriver();
             GoToPage(page);
         }
     }
@@ -892,12 +892,12 @@ public class CookieImplementationTests : DriverTestFixture
 
     private void GoToPage(String pageName)
     {
-        driver.Url = this.isOnAlternativeHostName ? Urls.WhereElseIs(pageName) : Urls.WhereIs(pageName);
+        Driver.Url = this.isOnAlternativeHostName ? Urls.WhereElseIs(pageName) : Urls.WhereIs(pageName);
     }
 
     private void GoToOtherPage(String pageName)
     {
-        driver.Url = this.isOnAlternativeHostName ? Urls.WhereIs(pageName) : Urls.WhereElseIs(pageName);
+        Driver.Url = this.isOnAlternativeHostName ? Urls.WhereIs(pageName) : Urls.WhereElseIs(pageName);
     }
 
     private bool IsValidHostNameForCookieTests(string hostname)
@@ -907,7 +907,7 @@ public class CookieImplementationTests : DriverTestFixture
         // Re-enable this when we have a better solution per DanielWagnerHall.
         // ChromeDriver2 has trouble with localhost. IE and Firefox don't.
         // return !IsIpv4Address(hostname) && "localhost" != hostname;
-        bool isLocalHostOkay = !("localhost" == hostname && !TestUtilities.IsInternetExplorer(driver));
+        bool isLocalHostOkay = !("localhost" == hostname && !TestUtilities.IsInternetExplorer(Driver));
 
         return !IsIpv4Address(hostname) && isLocalHostOkay;
     }
@@ -924,7 +924,7 @@ public class CookieImplementationTests : DriverTestFixture
 
     private string GetDocumentCookieOrNull()
     {
-        if (driver is not IJavaScriptExecutor jsDriver)
+        if (Driver is not IJavaScriptExecutor jsDriver)
         {
             return null;
         }
@@ -940,7 +940,7 @@ public class CookieImplementationTests : DriverTestFixture
 
     private void AssertNoCookiesArePresent()
     {
-        Assert.That(driver.Manage().Cookies.AllCookies, Is.Empty, "Cookies were not empty");
+        Assert.That(Driver.Manage().Cookies.AllCookies, Is.Empty, "Cookies were not empty");
         string documentCookie = GetDocumentCookieOrNull();
         if (documentCookie != null)
         {
@@ -950,7 +950,7 @@ public class CookieImplementationTests : DriverTestFixture
 
     private void AssertSomeCookiesArePresent()
     {
-        Assert.That(driver.Manage().Cookies.AllCookies, Is.Not.Empty, "Cookies were empty");
+        Assert.That(Driver.Manage().Cookies.AllCookies, Is.Not.Empty, "Cookies were empty");
         String documentCookie = GetDocumentCookieOrNull();
         if (documentCookie != null)
         {
@@ -960,7 +960,7 @@ public class CookieImplementationTests : DriverTestFixture
 
     private void AssertCookieIsNotPresentWithName(string key)
     {
-        Assert.That(driver.Manage().Cookies.GetCookieNamed(key), Is.Null, "Cookie was present with name " + key);
+        Assert.That(Driver.Manage().Cookies.GetCookieNamed(key), Is.Null, "Cookie was present with name " + key);
         string documentCookie = GetDocumentCookieOrNull();
         if (documentCookie != null)
         {
@@ -970,7 +970,7 @@ public class CookieImplementationTests : DriverTestFixture
 
     private void AssertCookieIsPresentWithName(string key)
     {
-        Assert.That(driver.Manage().Cookies.GetCookieNamed(key), Is.Not.Null, "Cookie was present with name " + key);
+        Assert.That(Driver.Manage().Cookies.GetCookieNamed(key), Is.Not.Null, "Cookie was present with name " + key);
         string documentCookie = GetDocumentCookieOrNull();
         if (documentCookie != null)
         {
@@ -980,7 +980,7 @@ public class CookieImplementationTests : DriverTestFixture
 
     private void AssertCookieHasValue(string key, string value)
     {
-        Assert.That(driver.Manage().Cookies.GetCookieNamed(key).Value, Is.EqualTo(value), "Cookie had wrong value");
+        Assert.That(Driver.Manage().Cookies.GetCookieNamed(key).Value, Is.EqualTo(value), "Cookie had wrong value");
         string documentCookie = GetDocumentCookieOrNull();
         if (documentCookie != null)
         {

@@ -44,7 +44,7 @@ public class DevToolsLogTests : DevToolsTestFixture
         await domains.Log.Enable();
         domains.Log.EntryAdded += entryAddedHandler;
 
-        driver.Url = Urls.WhereIsSecure("notValidPath");
+        Driver.Url = Urls.WhereIsSecure("notValidPath");
         sync.Wait(TimeSpan.FromSeconds(5));
 
         domains.Log.EntryAdded -= entryAddedHandler;

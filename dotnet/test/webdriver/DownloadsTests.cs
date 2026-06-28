@@ -54,7 +54,7 @@ public class DownloadsTests : DriverTestFixture
     {
         DownloadWithBrowser();
 
-        IReadOnlyList<string> names = ((RemoteWebDriver)driver).GetDownloadableFiles();
+        IReadOnlyList<string> names = ((RemoteWebDriver)Driver).GetDownloadableFiles();
         Assert.That(names, Contains.Item("file_1.txt"));
         Assert.That(names, Contains.Item("file_2.jpg"));
     }
@@ -65,11 +65,11 @@ public class DownloadsTests : DriverTestFixture
     {
         DownloadWithBrowser();
 
-        IReadOnlyList<string> names = ((RemoteWebDriver)driver).GetDownloadableFiles();
+        IReadOnlyList<string> names = ((RemoteWebDriver)Driver).GetDownloadableFiles();
         string fileName = names[0];
         string targetDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
-        ((RemoteWebDriver)driver).DownloadFile(fileName, targetDirectory);
+        ((RemoteWebDriver)Driver).DownloadFile(fileName, targetDirectory);
 
         string fileContent = File.ReadAllText(Path.Combine(targetDirectory, fileName));
         Assert.That(fileContent.Trim(), Is.EqualTo("Hello, World!"));
@@ -83,9 +83,9 @@ public class DownloadsTests : DriverTestFixture
     {
         DownloadWithBrowser();
 
-        ((RemoteWebDriver)driver).DeleteDownloadableFiles();
+        ((RemoteWebDriver)Driver).DeleteDownloadableFiles();
 
-        IReadOnlyList<string> names = ((RemoteWebDriver)driver).GetDownloadableFiles();
+        IReadOnlyList<string> names = ((RemoteWebDriver)Driver).GetDownloadableFiles();
         Assert.That(names, Is.Empty, "The names list should be empty.");
     }
 
@@ -93,10 +93,10 @@ public class DownloadsTests : DriverTestFixture
     {
         string downloadPage = Urls.WhereIs("downloads/download.html");
         localDriver.Url = downloadPage;
-        driver.FindElement(By.Id("file-1")).Click();
-        driver.FindElement(By.Id("file-2")).Click();
+        Driver.FindElement(By.Id("file-1")).Click();
+        Driver.FindElement(By.Id("file-2")).Click();
 
-        WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(3));
+        WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(3));
         wait.Until(d => ((RemoteWebDriver)d).GetDownloadableFiles().Contains("file_2.jpg"));
     }
 

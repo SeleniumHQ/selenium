@@ -26,13 +26,13 @@ public class SvgDocumentTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "IE driver in Edge does not support clicking on SVG element")]
     public void ClickOnSvgElement()
     {
-        if (TestUtilities.IsOldIE(driver))
+        if (TestUtilities.IsOldIE(Driver))
         {
             Assert.Ignore("SVG support only exists in IE9+");
         }
 
-        driver.Url = Urls.SvgTestPage;
-        IWebElement rect = driver.FindElement(By.Id("rect"));
+        Driver.Url = Urls.SvgTestPage;
+        IWebElement rect = Driver.FindElement(By.Id("rect"));
 
         Assert.That(rect.GetAttribute("fill"), Is.EqualTo("blue"));
         rect.Click();
@@ -42,16 +42,16 @@ public class SvgDocumentTests : DriverTestFixture
     [Test]
     public void ExecuteScriptInSvgDocument()
     {
-        if (TestUtilities.IsOldIE(driver))
+        if (TestUtilities.IsOldIE(Driver))
         {
             Assert.Ignore("SVG support only exists in IE9+");
         }
 
-        driver.Url = Urls.SvgTestPage;
-        IWebElement rect = driver.FindElement(By.Id("rect"));
+        Driver.Url = Urls.SvgTestPage;
+        IWebElement rect = Driver.FindElement(By.Id("rect"));
 
         Assert.That(rect.GetAttribute("fill"), Is.EqualTo("blue"));
-        ((IJavaScriptExecutor)driver).ExecuteScript("document.getElementById('rect').setAttribute('fill', 'yellow');");
+        ((IJavaScriptExecutor)Driver).ExecuteScript("document.getElementById('rect').setAttribute('fill', 'yellow');");
         Assert.That(rect.GetAttribute("fill"), Is.EqualTo("yellow"));
     }
 }

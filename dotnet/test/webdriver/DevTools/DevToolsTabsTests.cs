@@ -34,10 +34,10 @@ public class DevToolsTabsTests : DevToolsTestFixture
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Console.Enable();
-        var oldWindowHandle = driver.CurrentWindowHandle;
-        driver.SwitchTo().NewWindow(WindowType.Tab);
-        driver.SwitchTo().Window(oldWindowHandle);
-        driver.Close();
+        var oldWindowHandle = Driver.CurrentWindowHandle;
+        Driver.SwitchTo().NewWindow(WindowType.Tab);
+        Driver.SwitchTo().Window(oldWindowHandle);
+        Driver.Close();
         Assert.That(
             async () =>
             {

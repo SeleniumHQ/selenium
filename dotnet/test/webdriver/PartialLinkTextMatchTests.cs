@@ -27,8 +27,8 @@ public class PartialLinkTextMatchTests : DriverTestFixture
     [Test]
     public void LinkWithFormattingTags()
     {
-        driver.Url = Urls.SimpleTestPage;
-        IWebElement elem = driver.FindElement(By.Id("links"));
+        Driver.Url = Urls.SimpleTestPage;
+        IWebElement elem = Driver.FindElement(By.Id("links"));
 
         IWebElement res = elem.FindElement(By.PartialLinkText("link with formatting tags"));
         Assert.That(res, Is.Not.Null);
@@ -38,8 +38,8 @@ public class PartialLinkTextMatchTests : DriverTestFixture
     [Test]
     public void LinkWithLeadingSpaces()
     {
-        driver.Url = Urls.SimpleTestPage;
-        IWebElement elem = driver.FindElement(By.Id("links"));
+        Driver.Url = Urls.SimpleTestPage;
+        IWebElement elem = Driver.FindElement(By.Id("links"));
 
         IWebElement res = elem.FindElement(By.PartialLinkText("link with leading space"));
         Assert.That(res, Is.Not.Null);
@@ -49,8 +49,8 @@ public class PartialLinkTextMatchTests : DriverTestFixture
     [Test]
     public void LinkWithTrailingSpace()
     {
-        driver.Url = Urls.SimpleTestPage;
-        IWebElement elem = driver.FindElement(By.Id("links"));
+        Driver.Url = Urls.SimpleTestPage;
+        IWebElement elem = Driver.FindElement(By.Id("links"));
 
         IWebElement res =
             elem.FindElement(By.PartialLinkText("link with trailing space"));
@@ -61,8 +61,8 @@ public class PartialLinkTextMatchTests : DriverTestFixture
     [Test]
     public void FindMultipleElements()
     {
-        driver.Url = Urls.SimpleTestPage;
-        IWebElement elem = driver.FindElement(By.Id("links"));
+        Driver.Url = Urls.SimpleTestPage;
+        IWebElement elem = Driver.FindElement(By.Id("links"));
 
         ReadOnlyCollection<IWebElement> elements = elem.FindElements(By.PartialLinkText("link"));
         Assert.That(elements, Is.Not.Null);
@@ -72,16 +72,16 @@ public class PartialLinkTextMatchTests : DriverTestFixture
     [Test]
     public void DriverCanGetLinkByLinkTestIgnoringTrailingWhitespace()
     {
-        driver.Url = Urls.SimpleTestPage;
-        IWebElement link = driver.FindElement(By.LinkText("link with trailing space"));
+        Driver.Url = Urls.SimpleTestPage;
+        IWebElement link = Driver.FindElement(By.LinkText("link with trailing space"));
         Assert.That(link.GetAttribute("id"), Is.EqualTo("linkWithTrailingSpace"));
     }
 
     [Test]
     public void ElementCanGetLinkByLinkTestIgnoringTrailingWhitespace()
     {
-        driver.Url = Urls.SimpleTestPage;
-        IWebElement elem = driver.FindElement(By.Id("links"));
+        Driver.Url = Urls.SimpleTestPage;
+        IWebElement elem = Driver.FindElement(By.Id("links"));
         IWebElement link = elem.FindElement(By.LinkText("link with trailing space"));
         Assert.That(link.GetAttribute("id"), Is.EqualTo("linkWithTrailingSpace"));
     }

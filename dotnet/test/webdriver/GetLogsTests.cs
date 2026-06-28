@@ -44,14 +44,14 @@ public class GetLogsTests : DriverTestFixture
     [Test]
     public void LogBufferShouldBeResetAfterEachGetLogCall()
     {
-        ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
+        ReadOnlyCollection<string> logTypes = Driver.Manage().Logs.AvailableLogTypes;
         foreach (string logType in logTypes)
         {
-            driver.Url = Urls.SimpleTestPage;
-            ReadOnlyCollection<LogEntry> firstEntries = driver.Manage().Logs.GetLog(logType);
+            Driver.Url = Urls.SimpleTestPage;
+            ReadOnlyCollection<LogEntry> firstEntries = Driver.Manage().Logs.GetLog(logType);
             if (firstEntries.Count > 0)
             {
-                ReadOnlyCollection<LogEntry> secondEntries = driver.Manage().Logs.GetLog(logType);
+                ReadOnlyCollection<LogEntry> secondEntries = Driver.Manage().Logs.GetLog(logType);
                 Assert.That(HasOverlappingLogEntries(firstEntries, secondEntries), Is.False, string.Format("There should be no overlapping log entries in consecutive get log calls for {0} logs", logType));
             }
         }
@@ -60,12 +60,12 @@ public class GetLogsTests : DriverTestFixture
     [Test]
     public void DifferentLogsShouldNotContainTheSameLogEntries()
     {
-        driver.Url = Urls.SimpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
         Dictionary<string, ReadOnlyCollection<LogEntry>> logTypeToEntriesDictionary = new Dictionary<string, ReadOnlyCollection<LogEntry>>();
-        ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
+        ReadOnlyCollection<string> logTypes = Driver.Manage().Logs.AvailableLogTypes;
         foreach (string logType in logTypes)
         {
-            logTypeToEntriesDictionary.Add(logType, driver.Manage().Logs.GetLog(logType));
+            logTypeToEntriesDictionary.Add(logType, Driver.Manage().Logs.GetLog(logType));
         }
 
         foreach (string firstLogType in logTypeToEntriesDictionary.Keys)
@@ -83,7 +83,7 @@ public class GetLogsTests : DriverTestFixture
     [Test]
     public void TurningOffLogShouldMeanNoLogMessages()
     {
-        ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
+        ReadOnlyCollection<string> logTypes = Driver.Manage().Logs.AvailableLogTypes;
         foreach (string logType in logTypes)
         {
             CreateWebDriverWithLogging(logType, LogLevel.Off);
@@ -95,7 +95,7 @@ public class GetLogsTests : DriverTestFixture
 
     private void CreateWebDriverWithLogging(string logType, LogLevel logLevel)
     {
-        if (TestUtilities.IsChrome(driver))
+        if (TestUtilities.IsChrome(Driver))
         {
             ChromeOptions options = new ChromeOptions();
             options.SetLoggingPreference(logType, logLevel);

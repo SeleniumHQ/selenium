@@ -37,7 +37,7 @@ public class ObjectStateAssumptionsTests : DriverTestFixture
     [Test]
     public void InitializedWebDriverDoesNotThrowException()
     {
-        driver.Url = Urls.SimpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
         variousMethodCallsToCheckAssumptions();
     }
 
@@ -47,7 +47,7 @@ public class ObjectStateAssumptionsTests : DriverTestFixture
     [Test]
     public void OptionsForUninitializedWebDriverDoesNotThrowException()
     {
-        IOptions options = driver.Manage();
+        IOptions options = Driver.Manage();
         ReadOnlyCollection<Cookie> allCookies = options.Cookies.AllCookies;
     }
 
@@ -56,11 +56,11 @@ public class ObjectStateAssumptionsTests : DriverTestFixture
     */
     private void variousMethodCallsToCheckAssumptions()
     {
-        string currentUrl = driver.Url;
-        string currentTitle = driver.Title;
-        string pageSource = driver.PageSource;
+        string currentUrl = Driver.Url;
+        string currentTitle = Driver.Title;
+        string pageSource = Driver.PageSource;
         By byHtml = By.XPath("//html");
-        driver.FindElement(byHtml);
-        driver.FindElements(byHtml);
+        Driver.FindElement(byHtml);
+        Driver.FindElements(byHtml);
     }
 }

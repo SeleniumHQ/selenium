@@ -28,11 +28,11 @@ public class PrintTests : DriverTestFixture
     [SetUp]
     public void LocalSetUp()
     {
-        Assert.That(driver, Is.InstanceOf<ISupportsPrint>(), $"Driver does not support {nameof(ISupportsPrint)}.");
+        Assert.That(Driver, Is.InstanceOf<ISupportsPrint>(), $"Driver does not support {nameof(ISupportsPrint)}.");
 
-        printer = driver as ISupportsPrint;
+        printer = Driver as ISupportsPrint;
 
-        driver.Navigate().GoToUrl(Urls.PrintPage);
+        Driver.Navigate().GoToUrl(Urls.PrintPage);
     }
 
     [Test]

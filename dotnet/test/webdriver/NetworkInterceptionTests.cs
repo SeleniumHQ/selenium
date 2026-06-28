@@ -27,9 +27,9 @@ public class NetworkInterceptionTests : DriverTestFixture
     [TearDown]
     public void RemoveHandlers()
     {
-        if (driver is IDevTools)
+        if (Driver is IDevTools)
         {
-            INetwork network = driver.Manage().Network;
+            INetwork network = Driver.Manage().Network;
             network.ClearAuthenticationHandlers();
             network.ClearRequestHandlers();
             network.ClearResponseHandlers();
@@ -40,9 +40,9 @@ public class NetworkInterceptionTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Firefox does not implement the CDP Fetch domain required for network interception")]
     public async Task TestCanInterceptNetworkCalls()
     {
-        if (driver is IDevTools)
+        if (Driver is IDevTools)
         {
-            INetwork network = driver.Manage().Network;
+            INetwork network = Driver.Manage().Network;
             NetworkResponseHandler handler = new NetworkResponseHandler();
             handler.ResponseMatcher = (responseData) => responseData.Url.Contains("simpleTest.html");
             handler.ResponseTransformer = (responseData) =>
@@ -52,12 +52,12 @@ public class NetworkInterceptionTests : DriverTestFixture
             };
             network.AddResponseHandler(handler);
             await network.StartMonitoring();
-            driver.Url = Urls.SimpleTestPage;
-            string text = driver.FindElement(By.CssSelector("p")).Text;
+            Driver.Url = Urls.SimpleTestPage;
+            string text = Driver.FindElement(By.CssSelector("p")).Text;
             await network.StopMonitoring();
             Assert.That(text, Is.EqualTo("I intercepted you"));
-            driver.Navigate().Refresh();
-            text = driver.FindElement(By.CssSelector("h1")).Text;
+            Driver.Navigate().Refresh();
+            text = Driver.FindElement(By.CssSelector("h1")).Text;
             Assert.That(text, Is.EqualTo("Heading"));
         }
     }
@@ -66,9 +66,9 @@ public class NetworkInterceptionTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Firefox does not implement the CDP Fetch domain required for network interception")]
     public async Task TestCanUseAuthorizationHandler()
     {
-        if (driver is IDevTools)
+        if (Driver is IDevTools)
         {
-            INetwork network = driver.Manage().Network;
+            INetwork network = Driver.Manage().Network;
             NetworkAuthenticationHandler handler = new NetworkAuthenticationHandler()
             {
                 UriMatcher = (uri) => uri.PathAndQuery.Contains("basicAuth"),
@@ -76,8 +76,8 @@ public class NetworkInterceptionTests : DriverTestFixture
             };
             network.AddAuthenticationHandler(handler);
             await network.StartMonitoring();
-            driver.Url = Urls.AuthenticationPage;
-            string text = driver.FindElement(By.CssSelector("h1")).Text;
+            Driver.Url = Urls.AuthenticationPage;
+            string text = Driver.FindElement(By.CssSelector("h1")).Text;
             await network.StopMonitoring();
             Assert.That(text, Is.EqualTo("authorized"));
         }
@@ -87,7 +87,7 @@ public class NetworkInterceptionTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
     public async Task TransformNetworkResponse()
     {
-        if (driver is IDevTools)
+        if (Driver is IDevTools)
         {
             var handler = new NetworkResponseHandler()
             {
@@ -98,14 +98,14 @@ public class NetworkInterceptionTests : DriverTestFixture
                     Body = "Creamy, delicious cheese!"
                 }
             };
-            INetwork networkInterceptor = driver.Manage().Network;
+            INetwork networkInterceptor = Driver.Manage().Network;
             networkInterceptor.AddResponseHandler(handler);
             await networkInterceptor.StartMonitoring();
 
-            driver.Navigate().GoToUrl("https://www.selenium.dev");
+            Driver.Navigate().GoToUrl("https://www.selenium.dev");
             await networkInterceptor.StopMonitoring();
 
-            var body = driver.FindElement(By.TagName("body"));
+            var body = Driver.FindElement(By.TagName("body"));
             Assert.AreEqual("Creamy, delicious cheese!", body.Text);
         }
     }

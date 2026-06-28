@@ -27,39 +27,39 @@ public class StaleElementReferenceTests : DriverTestFixture
     [Test]
     public void OldPage()
     {
-        driver.Url = Urls.SimpleTestPage;
-        IWebElement elem = driver.FindElement(By.Id("links"));
-        driver.Url = Urls.XhtmlTestPage;
+        Driver.Url = Urls.SimpleTestPage;
+        IWebElement elem = Driver.FindElement(By.Id("links"));
+        Driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => elem.Click(), Throws.InstanceOf<StaleElementReferenceException>());
     }
 
     [Test]
     public void ShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement()
     {
-        driver.Url = Urls.SimpleTestPage;
-        IWebElement elem = driver.FindElement(By.Id("links"));
-        driver.Url = Urls.XhtmlTestPage;
+        Driver.Url = Urls.SimpleTestPage;
+        IWebElement elem = Driver.FindElement(By.Id("links"));
+        Driver.Url = Urls.XhtmlTestPage;
         Assert.That(() => { Size elementSize = elem.Size; }, Throws.InstanceOf<StaleElementReferenceException>());
     }
 
     [Test]
     public void ShouldNotCrashWhenQueryingTheAttributeOfAStaleElement()
     {
-        driver.Url = Urls.XhtmlTestPage;
-        IWebElement heading = driver.FindElement(By.XPath("//h1"));
-        driver.Url = Urls.SimpleTestPage;
+        Driver.Url = Urls.XhtmlTestPage;
+        IWebElement heading = Driver.FindElement(By.XPath("//h1"));
+        Driver.Url = Urls.SimpleTestPage;
         Assert.That(() => { string className = heading.GetAttribute("class"); }, Throws.InstanceOf<StaleElementReferenceException>());
     }
 
     [Test]
     public void RemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement toBeDeleted = driver.FindElement(By.Id("deleted"));
+        IWebElement toBeDeleted = Driver.FindElement(By.Id("deleted"));
         Assert.That(toBeDeleted.Displayed, Is.True);
 
-        driver.FindElement(By.Id("delete")).Click();
+        Driver.FindElement(By.Id("delete")).Click();
 
         Assert.That(() =>
         {

@@ -34,8 +34,8 @@ public abstract class DevToolsTestFixture : DriverTestFixture
     [SetUp]
     public void Setup()
     {
-        driver = EnvironmentManager.Instance.GetCurrentDriver();
-        devTools = driver as IDevTools;
+        Driver = EnvironmentManager.Instance.GetCurrentDriver();
+        devTools = Driver as IDevTools;
         if (devTools == null)
         {
             Assert.Ignore($"{EnvironmentManager.Instance.Browser} does not support Chrome DevTools Protocol");
@@ -53,7 +53,7 @@ public abstract class DevToolsTestFixture : DriverTestFixture
             session.Dispose();
             EnvironmentManager.Instance.CloseCurrentDriver();
             session = null;
-            driver = null;
+            Driver = null;
         }
     }
 }

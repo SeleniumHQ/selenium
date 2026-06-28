@@ -58,8 +58,8 @@ public class VirtualAuthenticatorTests : DriverTestFixture
         byte[] bytes = System.Convert.FromBase64String(base64EncodedRSAPK);
         base64EncodedPK = Base64UrlEncoder.Encode(bytes);
 
-        jsDriver = (IJavaScriptExecutor)driver;
-        webDriver = (WebDriver)driver;
+        jsDriver = (IJavaScriptExecutor)Driver;
+        webDriver = (WebDriver)Driver;
 
         // Maximize window to ensure focus
         webDriver.Manage().Window.Maximize();

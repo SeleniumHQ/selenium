@@ -27,33 +27,33 @@ public class AlertsTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToOverrideTheWindowAlertMethod()
     {
-        driver.Url = CreateAlertPage("cheese");
+        Driver.Url = CreateAlertPage("cheese");
 
-        ((IJavaScriptExecutor)driver).ExecuteScript(
+        ((IJavaScriptExecutor)Driver).ExecuteScript(
             "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }");
-        driver.FindElement(By.Id("alert")).Click();
+        Driver.FindElement(By.Id("alert")).Click();
     }
 
     [Test]
     public void ShouldAllowUsersToAcceptAnAlertManually()
     {
-        driver.Url = CreateAlertPage("cheese");
+        Driver.Url = CreateAlertPage("cheese");
 
-        driver.FindElement(By.Id("alert")).Click();
+        Driver.FindElement(By.Id("alert")).Click();
 
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         alert.Accept();
 
         // If we can perform any action, we're good to go
-        Assert.That(driver.Title, Is.EqualTo("Testing Alerts"));
+        Assert.That(Driver.Title, Is.EqualTo("Testing Alerts"));
     }
 
     [Test]
     public void ShouldThrowArgumentNullExceptionWhenKeysNull()
     {
-        driver.Url = CreateAlertPage("cheese");
+        Driver.Url = CreateAlertPage("cheese");
 
-        driver.FindElement(By.Id("alert")).Click();
+        Driver.FindElement(By.Id("alert")).Click();
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         try
         {
@@ -70,80 +70,80 @@ public class AlertsTests : DriverTestFixture
     [Test]
     public void ShouldAllowUsersToAcceptAnAlertWithNoTextManually()
     {
-        driver.Url = CreateAlertPage("");
+        Driver.Url = CreateAlertPage("");
 
-        driver.FindElement(By.Id("alert")).Click();
+        Driver.FindElement(By.Id("alert")).Click();
 
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         alert.Accept();
 
         // If we can perform any action, we're good to go
-        Assert.That(driver.Title, Is.EqualTo("Testing Alerts"));
+        Assert.That(Driver.Title, Is.EqualTo("Testing Alerts"));
     }
 
     [Test]
     public void ShouldAllowUsersToDismissAnAlertManually()
     {
-        driver.Url = CreateAlertPage("cheese");
+        Driver.Url = CreateAlertPage("cheese");
 
-        driver.FindElement(By.Id("alert")).Click();
+        Driver.FindElement(By.Id("alert")).Click();
 
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         alert.Dismiss();
 
         // If we can perform any action, we're good to go
-        Assert.That(driver.Title, Is.EqualTo("Testing Alerts"));
+        Assert.That(Driver.Title, Is.EqualTo("Testing Alerts"));
     }
 
     [Test]
     public void ShouldAllowAUserToAcceptAPrompt()
     {
-        driver.Url = CreatePromptPage(null);
+        Driver.Url = CreatePromptPage(null);
 
-        driver.FindElement(By.Id("prompt")).Click();
+        Driver.FindElement(By.Id("prompt")).Click();
 
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         alert.Accept();
 
         // If we can perform any action, we're good to go
-        Assert.That(driver.Title, Is.EqualTo("Testing Prompt"));
+        Assert.That(Driver.Title, Is.EqualTo("Testing Prompt"));
     }
 
     [Test]
     public void ShouldAllowAUserToDismissAPrompt()
     {
-        driver.Url = CreatePromptPage(null);
+        Driver.Url = CreatePromptPage(null);
 
-        driver.FindElement(By.Id("prompt")).Click();
+        Driver.FindElement(By.Id("prompt")).Click();
 
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         alert.Dismiss();
 
         // If we can perform any action, we're good to go
-        Assert.That(driver.Title, Is.EqualTo("Testing Prompt"));
+        Assert.That(Driver.Title, Is.EqualTo("Testing Prompt"));
     }
 
     [Test]
     public void ShouldAllowAUserToSetTheValueOfAPrompt()
     {
-        driver.Url = CreatePromptPage(null);
+        Driver.Url = CreatePromptPage(null);
 
-        driver.FindElement(By.Id("prompt")).Click();
+        Driver.FindElement(By.Id("prompt")).Click();
 
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         alert.SendKeys("cheese");
         alert.Accept();
 
-        string result = driver.FindElement(By.Id("text")).Text;
+        string result = Driver.FindElement(By.Id("text")).Text;
         Assert.That(result, Is.EqualTo("cheese"));
     }
 
     [Test]
     public void SettingTheValueOfAnAlertThrows()
     {
-        driver.Url = CreateAlertPage("cheese");
+        Driver.Url = CreateAlertPage("cheese");
 
-        driver.FindElement(By.Id("alert")).Click();
+        Driver.FindElement(By.Id("alert")).Click();
 
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
 
@@ -162,9 +162,9 @@ public class AlertsTests : DriverTestFixture
     [Test]
     public void ShouldAllowTheUserToGetTheTextOfAnAlert()
     {
-        driver.Url = CreateAlertPage("cheese");
+        Driver.Url = CreateAlertPage("cheese");
 
-        driver.FindElement(By.Id("alert")).Click();
+        Driver.FindElement(By.Id("alert")).Click();
 
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         string value = alert.Text;
@@ -176,9 +176,9 @@ public class AlertsTests : DriverTestFixture
     [Test]
     public void ShouldAllowTheUserToGetTheTextOfAPrompt()
     {
-        driver.Url = CreatePromptPage(null);
+        Driver.Url = CreatePromptPage(null);
 
-        driver.FindElement(By.Id("prompt")).Click();
+        Driver.FindElement(By.Id("prompt")).Click();
 
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         string value = alert.Text;
@@ -190,9 +190,9 @@ public class AlertsTests : DriverTestFixture
     [Test]
     public void AlertShouldNotAllowAdditionalCommandsIfDismissed()
     {
-        driver.Url = CreateAlertPage("cheese");
+        Driver.Url = CreateAlertPage("cheese");
 
-        driver.FindElement(By.Id("alert")).Click();
+        Driver.FindElement(By.Id("alert")).Click();
 
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         alert.Dismiss();
@@ -207,19 +207,19 @@ public class AlertsTests : DriverTestFixture
     {
         string iframe = Urls.CreateInlinePage(new InlinePage()
             .WithBody("<a href='#' id='alertInFrame' onclick='alert(\"framed cheese\");'>click me</a>"));
-        driver.Url = Urls.CreateInlinePage(new InlinePage()
+        Driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithTitle("Testing Alerts")
             .WithBody(String.Format("<iframe src='{0}' name='iframeWithAlert'></iframe>", iframe)));
 
-        driver.SwitchTo().Frame("iframeWithAlert");
+        Driver.SwitchTo().Frame("iframeWithAlert");
 
-        driver.FindElement(By.Id("alertInFrame")).Click();
+        Driver.FindElement(By.Id("alertInFrame")).Click();
 
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         alert.Accept();
 
         // If we can perform any action, we're good to go
-        Assert.That(driver.Title, Is.EqualTo("Testing Alerts"));
+        Assert.That(Driver.Title, Is.EqualTo("Testing Alerts"));
     }
 
     [Test]
@@ -229,25 +229,25 @@ public class AlertsTests : DriverTestFixture
             .WithBody("<a href='#' id='alertInFrame' onclick='alert(\"framed cheese\");'>click me</a>"));
         string iframe2 = Urls.CreateInlinePage(new InlinePage()
             .WithBody(string.Format("<iframe src='{0}' name='iframeWithAlert'></iframe>", iframe)));
-        driver.Url = Urls.CreateInlinePage(new InlinePage()
+        Driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithTitle("Testing Alerts")
             .WithBody(string.Format("<iframe src='{0}' name='iframeWithIframe'></iframe>", iframe2)));
 
-        driver.SwitchTo().Frame("iframeWithIframe").SwitchTo().Frame("iframeWithAlert");
+        Driver.SwitchTo().Frame("iframeWithIframe").SwitchTo().Frame("iframeWithAlert");
 
-        driver.FindElement(By.Id("alertInFrame")).Click();
+        Driver.FindElement(By.Id("alertInFrame")).Click();
 
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         alert.Accept();
 
         // If we can perform any action, we're good to go
-        Assert.That(driver.Title, Is.EqualTo("Testing Alerts"));
+        Assert.That(Driver.Title, Is.EqualTo("Testing Alerts"));
     }
 
     [Test]
     public void SwitchingToMissingAlertThrows()
     {
-        driver.Url = CreateAlertPage("cheese");
+        Driver.Url = CreateAlertPage("cheese");
 
         Assert.That(
             () => AlertToBePresent(),
@@ -259,17 +259,17 @@ public class AlertsTests : DriverTestFixture
     public void SwitchingToMissingAlertInAClosedWindowThrows()
     {
         string blank = Urls.CreateInlinePage(new InlinePage());
-        driver.Url = Urls.CreateInlinePage(new InlinePage()
+        Driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithBody(String.Format(
                 "<a id='open-new-window' href='{0}' target='newwindow'>open new window</a>", blank)));
 
-        string mainWindow = driver.CurrentWindowHandle;
+        string mainWindow = Driver.CurrentWindowHandle;
         try
         {
-            driver.FindElement(By.Id("open-new-window")).Click();
+            Driver.FindElement(By.Id("open-new-window")).Click();
             WaitFor(WindowHandleCountToBe(2), "Window count was not 2");
             WaitFor(WindowWithName("newwindow"), "Could not find window with name 'newwindow'");
-            driver.Close();
+            Driver.Close();
             WaitFor(WindowHandleCountToBe(1), "Window count was not 1");
 
             Assert.That(
@@ -279,21 +279,21 @@ public class AlertsTests : DriverTestFixture
         }
         finally
         {
-            driver.SwitchTo().Window(mainWindow);
-            WaitFor(ElementTextToEqual(driver.FindElement(By.Id("open-new-window")), "open new window"), "Could not find element with text 'open new window'");
+            Driver.SwitchTo().Window(mainWindow);
+            WaitFor(ElementTextToEqual(Driver.FindElement(By.Id("open-new-window")), "open new window"), "Could not find element with text 'open new window'");
         }
     }
 
     [Test]
     public void PromptShouldUseDefaultValueIfNoKeysSent()
     {
-        driver.Url = CreatePromptPage("This is a default value");
-        driver.FindElement(By.Id("prompt")).Click();
+        Driver.Url = CreatePromptPage("This is a default value");
+        Driver.FindElement(By.Id("prompt")).Click();
 
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         alert.Accept();
 
-        IWebElement element = driver.FindElement(By.Id("text"));
+        IWebElement element = Driver.FindElement(By.Id("text"));
         WaitFor(ElementTextToEqual(element, "This is a default value"), "Element text was not 'This is a default value'");
         Assert.That(element.Text, Is.EqualTo("This is a default value"));
     }
@@ -301,12 +301,12 @@ public class AlertsTests : DriverTestFixture
     [Test]
     public void PromptShouldHaveNullValueIfDismissed()
     {
-        driver.Url = CreatePromptPage("This is a default value");
-        driver.FindElement(By.Id("prompt")).Click();
+        Driver.Url = CreatePromptPage("This is a default value");
+        Driver.FindElement(By.Id("prompt")).Click();
 
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         alert.Dismiss();
-        IWebElement element = driver.FindElement(By.Id("text"));
+        IWebElement element = Driver.FindElement(By.Id("text"));
         WaitFor(ElementTextToEqual(element, "null"), "Element text was not 'null'");
         Assert.That(element.Text, Is.EqualTo("null"));
     }
@@ -315,7 +315,7 @@ public class AlertsTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote)]
     public void HandlesTwoAlertsFromOneInteraction()
     {
-        driver.Url = Urls.CreateInlinePage(new InlinePage()
+        Driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithScripts(
                 """
                 function setInnerText(id, value) {
@@ -334,7 +334,7 @@ public class AlertsTests : DriverTestFixture
                 <div id='text2'></div>
                 """));
 
-        driver.FindElement(By.Id("double-prompt")).Click();
+        Driver.FindElement(By.Id("double-prompt")).Click();
 
         IAlert alert1 = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         alert1.SendKeys("brie");
@@ -344,10 +344,10 @@ public class AlertsTests : DriverTestFixture
         alert2.SendKeys("cheddar");
         alert2.Accept();
 
-        IWebElement element1 = driver.FindElement(By.Id("text1"));
+        IWebElement element1 = Driver.FindElement(By.Id("text1"));
         WaitFor(ElementTextToEqual(element1, "brie"), "Element text was not 'brie'");
         Assert.That(element1.Text, Is.EqualTo("brie"));
-        IWebElement element2 = driver.FindElement(By.Id("text2"));
+        IWebElement element2 = Driver.FindElement(By.Id("text2"));
         WaitFor(ElementTextToEqual(element2, "cheddar"), "Element text was not 'cheddar'");
         Assert.That(element2.Text, Is.EqualTo("cheddar"));
     }
@@ -358,17 +358,17 @@ public class AlertsTests : DriverTestFixture
         string pageWithOnLoad = Urls.CreateInlinePage(new InlinePage()
             .WithOnLoad("""javascript:alert("onload")""")
             .WithBody("<p>Page with onload event handler</p>"));
-        driver.Url = Urls.CreateInlinePage(new InlinePage()
+        Driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithBody(string.Format("<a id='open-page-with-onload-alert' href='{0}'>open new page</a>", pageWithOnLoad)));
 
-        driver.FindElement(By.Id("open-page-with-onload-alert")).Click();
+        Driver.FindElement(By.Id("open-page-with-onload-alert")).Click();
 
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         string value = alert.Text;
         alert.Accept();
 
         Assert.That(value, Is.EqualTo("onload"));
-        IWebElement element = driver.FindElement(By.TagName("p"));
+        IWebElement element = Driver.FindElement(By.TagName("p"));
         WaitFor(ElementTextToEqual(element, "Page with onload event handler"), "Element text was not 'Page with onload event handler'");
     }
 
@@ -376,7 +376,7 @@ public class AlertsTests : DriverTestFixture
 
     public void ShouldHandleAlertOnPageLoadUsingGet()
     {
-        driver.Url = Urls.CreateInlinePage(new InlinePage()
+        Driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithOnLoad("javascript:alert(\"onload\")")
             .WithBody("<p>Page with onload event handler</p>"));
 
@@ -385,7 +385,7 @@ public class AlertsTests : DriverTestFixture
         alert.Accept();
 
         Assert.That(value, Is.EqualTo("onload"));
-        WaitFor(ElementTextToEqual(driver.FindElement(By.TagName("p")), "Page with onload event handler"), "Could not find element with text 'Page with onload event handler'");
+        WaitFor(ElementTextToEqual(Driver.FindElement(By.TagName("p")), "Page with onload event handler"), "Could not find element with text 'Page with onload event handler'");
     }
 
     [Test]
@@ -398,23 +398,23 @@ public class AlertsTests : DriverTestFixture
         string pageWithOnLoad = Urls.CreateInlinePage(new InlinePage()
             .WithOnLoad("javascript:alert(\"onload\")")
             .WithBody("<p>Page with onload event handler</p>"));
-        driver.Url = Urls.CreateInlinePage(new InlinePage()
+        Driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithBody(string.Format(
                 "<a id='open-new-window' href='{0}' target='newwindow'>open new window</a>", pageWithOnLoad)));
 
-        string mainWindow = driver.CurrentWindowHandle;
+        string mainWindow = Driver.CurrentWindowHandle;
         string onloadWindow = null;
         try
         {
-            driver.FindElement(By.Id("open-new-window")).Click();
-            List<String> allWindows = new List<string>(driver.WindowHandles);
+            Driver.FindElement(By.Id("open-new-window")).Click();
+            List<String> allWindows = new List<string>(Driver.WindowHandles);
             allWindows.Remove(mainWindow);
             Assert.That(allWindows, Has.One.Items);
             onloadWindow = allWindows[0];
 
             Assert.That(() =>
             {
-                IWebElement el = driver.FindElement(By.Id("open-new-window"));
+                IWebElement el = Driver.FindElement(By.Id("open-new-window"));
                 WaitFor<IAlert>(AlertToBePresent, TimeSpan.FromSeconds(5), "No alert found");
             },
             Throws.InstanceOf<WebDriverException>());
@@ -422,11 +422,11 @@ public class AlertsTests : DriverTestFixture
         }
         finally
         {
-            driver.SwitchTo().Window(onloadWindow);
+            Driver.SwitchTo().Window(onloadWindow);
             WaitFor<IAlert>(AlertToBePresent, "No alert found").Dismiss();
-            driver.Close();
-            driver.SwitchTo().Window(mainWindow);
-            WaitFor(ElementTextToEqual(driver.FindElement(By.Id("open-new-window")), "open new window"), "Could not find element with text 'open new window'");
+            Driver.Close();
+            Driver.SwitchTo().Window(mainWindow);
+            WaitFor(ElementTextToEqual(Driver.FindElement(By.Id("open-new-window")), "open new window"), "Could not find element with text 'open new window'");
         }
     }
 
@@ -434,13 +434,13 @@ public class AlertsTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Driver chooses not to return text from unhandled alert")]
     public void IncludesAlertTextInUnhandledAlertException()
     {
-        driver.Url = CreateAlertPage("cheese");
+        Driver.Url = CreateAlertPage("cheese");
 
-        driver.FindElement(By.Id("alert")).Click();
+        Driver.FindElement(By.Id("alert")).Click();
         WaitFor<IAlert>(AlertToBePresent, "No alert found");
 
         Assert.That(
-            () => driver.Title,
+            () => Driver.Title,
             Throws.TypeOf<UnhandledAlertException>().With.Property(nameof(UnhandledAlertException.AlertText)).EqualTo("cheese"));
     }
 
@@ -448,8 +448,8 @@ public class AlertsTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void CanQuitWhenAnAlertIsPresent()
     {
-        driver.Url = CreateAlertPage("cheese");
-        driver.FindElement(By.Id("alert")).Click();
+        Driver.Url = CreateAlertPage("cheese");
+        Driver.FindElement(By.Id("alert")).Click();
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         EnvironmentManager.Instance.CloseCurrentDriver();
     }
@@ -457,25 +457,25 @@ public class AlertsTests : DriverTestFixture
     [Test]
     public void ShouldHandleAlertOnFormSubmit()
     {
-        driver.Url = Urls.CreateInlinePage(new InlinePage()
+        Driver.Url = Urls.CreateInlinePage(new InlinePage()
             .WithTitle("Testing Alerts").
             WithBody("<form id='theForm' action='javascript:alert(\"Tasty cheese\");'>",
                 "<input id='unused' type='submit' value='Submit'>",
                 "</form>"));
 
-        IWebElement element = driver.FindElement(By.Id("theForm"));
+        IWebElement element = Driver.FindElement(By.Id("theForm"));
         element.Submit();
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
         string text = alert.Text;
         alert.Accept();
 
         Assert.That(text, Is.EqualTo("Tasty cheese"));
-        Assert.That(driver.Title, Is.EqualTo("Testing Alerts"));
+        Assert.That(Driver.Title, Is.EqualTo("Testing Alerts"));
     }
 
     private IAlert AlertToBePresent()
     {
-        return driver.SwitchTo().Alert();
+        return Driver.SwitchTo().Alert();
     }
 
     private string CreateAlertPage(string alertText)
@@ -504,7 +504,7 @@ public class AlertsTests : DriverTestFixture
 
     private void SetSimpleOnBeforeUnload(string returnText)
     {
-        ((IJavaScriptExecutor)driver).ExecuteScript(
+        ((IJavaScriptExecutor)Driver).ExecuteScript(
             "var returnText = arguments[0]; window.onbeforeunload = function() { return returnText; }",
             returnText);
     }
@@ -515,7 +515,7 @@ public class AlertsTests : DriverTestFixture
         {
             try
             {
-                return driver.FindElement(By.Id("open-page-with-onunload-alert"));
+                return Driver.FindElement(By.Id("open-page-with-onunload-alert"));
             }
             catch (NoSuchElementException)
             {
@@ -538,7 +538,7 @@ public class AlertsTests : DriverTestFixture
         {
             try
             {
-                driver.SwitchTo().Window(name);
+                Driver.SwitchTo().Window(name);
                 return true;
             }
             catch (NoSuchWindowException)
@@ -552,7 +552,7 @@ public class AlertsTests : DriverTestFixture
     {
         return () =>
         {
-            return driver.WindowHandles.Count == count;
+            return Driver.WindowHandles.Count == count;
         };
     }
 }

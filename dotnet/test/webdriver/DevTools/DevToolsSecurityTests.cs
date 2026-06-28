@@ -48,12 +48,12 @@ public class DevToolsSecurityTests : DevToolsTestFixture
         };
         domains.Security.SecurityStateChanged += securityStateChangedHandler;
 
-        driver.Url = Urls.WhereIs("devToolsSecurityTest");
+        Driver.Url = Urls.WhereIs("devToolsSecurityTest");
         sync.Wait(TimeSpan.FromSeconds(5));
 
         await domains.Security.Disable();
 
-        Assert.That(driver.PageSource, Contains.Substring("Security Test"));
+        Assert.That(Driver.PageSource, Contains.Substring("Security Test"));
         Assert.That(summary, Contains.Substring("This page has a non-HTTPS secure origin"));
     }
 
@@ -72,7 +72,7 @@ public class DevToolsSecurityTests : DevToolsTestFixture
             Ignore = true
         });
 
-        driver.Url = Urls.WhereIs("devToolsSecurityTest");
-        Assert.That(driver.PageSource, Contains.Substring("Security Test"));
+        Driver.Url = Urls.WhereIs("devToolsSecurityTest");
+        Assert.That(Driver.PageSource, Contains.Substring("Security Test"));
     }
 }

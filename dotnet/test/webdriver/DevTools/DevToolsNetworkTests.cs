@@ -124,7 +124,7 @@ public class DevToolsNetworkTests : DevToolsTestFixture
         };
         domains.Network.DataReceived += dataReceivedHandler;
 
-        driver.Url = Urls.LinkedImage;
+        Driver.Url = Urls.LinkedImage;
         Assert.That(loadingFailedSync.Wait(TimeSpan.FromSeconds(5)), Is.True);
         Assert.That(requestSentSync.Wait(TimeSpan.FromSeconds(5)), Is.True);
         Assert.That(dataSync.Wait(TimeSpan.FromSeconds(5)), Is.True);
@@ -162,7 +162,7 @@ public class DevToolsNetworkTests : DevToolsTestFixture
 
         try
         {
-            driver.Url = Urls.SimpleTestPage;
+            Driver.Url = Urls.SimpleTestPage;
         }
         catch (WebDriverException e)
         {
@@ -205,8 +205,8 @@ public class DevToolsNetworkTests : DevToolsTestFixture
         };
         domains.Network.LoadingFinished += loadingFinishedHandler;
 
-        driver.Url = Urls.SimpleTestPage;
-        driver.Url = Urls.SimpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
         Assert.That(loadingFinishedSync.Wait(TimeSpan.FromSeconds(5)), Is.True);
         Assert.That(servedFromCacheSync.Wait(TimeSpan.FromSeconds(5)), Is.True);
 
@@ -242,7 +242,7 @@ public class DevToolsNetworkTests : DevToolsTestFixture
         };
         domains.Network.ResponseReceived += responseReceivedHandler;
 
-        driver.Url = Urls.SimpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
         Assert.That(responseSync.Wait(TimeSpan.FromSeconds(5)), Is.True);
 
         var searchResponse = await domains.Network.SearchInResponseBody(new CurrentCdpVersion.Network.SearchInResponseBodyCommandSettings()
@@ -276,7 +276,7 @@ public class DevToolsNetworkTests : DevToolsTestFixture
         };
         domains.Network.ResponseReceived += responseReceivedHandler;
 
-        driver.Url = Urls.SimpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
         Assert.That(responseSync.Wait(TimeSpan.FromSeconds(5)), Is.True);
 
         await domains.Network.SetCacheDisabled(new CurrentCdpVersion.Network.SetCacheDisabledCommandSettings()
@@ -284,7 +284,7 @@ public class DevToolsNetworkTests : DevToolsTestFixture
             CacheDisabled = true
         });
 
-        driver.Url = Urls.SimpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
         await domains.Network.ClearBrowserCache();
     }
 
@@ -313,7 +313,7 @@ public class DevToolsNetworkTests : DevToolsTestFixture
         domains.Network.RequestWillBeSent += requestWillBeSentHandler;
 
         string origin = Urls.WhereIsSecure("simpleTest.html");
-        driver.Url = origin;
+        Driver.Url = origin;
         Assert.That(requestSync.Wait(TimeSpan.FromSeconds(5)), Is.True);
 
         var result = await domains.Network.GetCertificate(new CurrentCdpVersion.Network.GetCertificateCommandSettings()
@@ -341,7 +341,7 @@ public class DevToolsNetworkTests : DevToolsTestFixture
         };
         domains.Network.ResponseReceived += responseReceivedHandler;
 
-        driver.Url = Urls.SimpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
         Assert.That(responseSync.Wait(TimeSpan.FromSeconds(5)), Is.True);
         await domains.Network.Disable();
     }
@@ -386,7 +386,7 @@ public class DevToolsNetworkTests : DevToolsTestFixture
         };
         domains.Network.WebSocketClosed += webSocketClosedHandler;
 
-        driver.Url = Urls.SimpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
     }
 
     [Test]
@@ -414,8 +414,8 @@ public class DevToolsNetworkTests : DevToolsTestFixture
 
         domains.Network.RequestWillBeSent += requestWillBeSentHandler;
 
-        driver.Url = Urls.WhereIs("postForm.html");
-        driver.FindElement(By.XPath("//form/input")).Click();
+        Driver.Url = Urls.WhereIs("postForm.html");
+        Driver.FindElement(By.XPath("//form/input")).Click();
         bool requestEventFired = requestSync.Wait(TimeSpan.FromSeconds(5));
         Assert.That(requestEventFired, Is.True);
 
@@ -460,7 +460,7 @@ public class DevToolsNetworkTests : DevToolsTestFixture
         };
         domains.Network.SignedExchangeReceived += signedExchangeReceivedHandler;
 
-        driver.Url = Urls.WhereIsSecure("simpleTest.html");
+        Driver.Url = Urls.WhereIsSecure("simpleTest.html");
         Assert.That(requestSync.Wait(TimeSpan.FromSeconds(5)), Is.True);
     }
 
@@ -496,7 +496,7 @@ public class DevToolsNetworkTests : DevToolsTestFixture
             Patterns = new CurrentCdpVersion.Network.RequestPattern[] { pattern }
         });
 
-        driver.Url = Urls.WhereIs("js/skins/lightgray/content.min.css");
+        Driver.Url = Urls.WhereIs("js/skins/lightgray/content.min.css");
         Assert.That(requestSync.Wait(TimeSpan.FromSeconds(5)), Is.True);
     }
 }

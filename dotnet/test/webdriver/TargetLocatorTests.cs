@@ -26,20 +26,20 @@ public class TargetLocatorTests : DriverTestFixture
     [Test]
     public void ShouldThrowExceptionAfterSwitchingToNonExistingFrameIndex()
     {
-        driver.Url = Urls.FramesPage;
+        Driver.Url = Urls.FramesPage;
 
         Assert.That(
-            () => driver.SwitchTo().Frame(10),
+            () => Driver.SwitchTo().Frame(10),
             Throws.TypeOf<NoSuchFrameException>());
     }
 
     [Test]
     public void ShouldThrowExceptionAfterSwitchingToNonExistingFrameName()
     {
-        driver.Url = Urls.FramesPage;
+        Driver.Url = Urls.FramesPage;
 
         Assert.That(
-            () => driver.SwitchTo().Frame("æ©ñµøöíúüþ®éåä²doesnotexist"),
+            () => Driver.SwitchTo().Frame("æ©ñµøöíúüþ®éåä²doesnotexist"),
             Throws.TypeOf<NoSuchFrameException>());
     }
 
@@ -47,88 +47,88 @@ public class TargetLocatorTests : DriverTestFixture
     public void ShouldThrowExceptionAfterSwitchingToNullFrameName()
     {
         string frameName = null;
-        driver.Url = Urls.FramesPage;
+        Driver.Url = Urls.FramesPage;
 
         Assert.That(
-            () => driver.SwitchTo().Frame(frameName),
+            () => Driver.SwitchTo().Frame(frameName),
             Throws.TypeOf<ArgumentNullException>());
     }
 
     [Test]
     public void ShouldSwitchToIframeByNameAndBackToDefaultContent()
     {
-        driver.Url = Urls.IframesPage;
-        driver.SwitchTo().Frame("iframe1");
-        IWebElement element = driver.FindElement(By.Name("id-name1"));
+        Driver.Url = Urls.IframesPage;
+        Driver.SwitchTo().Frame("iframe1");
+        IWebElement element = Driver.FindElement(By.Name("id-name1"));
         Assert.That(element, Is.Not.Null);
 
-        driver.SwitchTo().DefaultContent();
-        element = driver.FindElement(By.Id("iframe_page_heading"));
+        Driver.SwitchTo().DefaultContent();
+        element = Driver.FindElement(By.Id("iframe_page_heading"));
         Assert.That(element, Is.Not.Null);
     }
 
     [Test]
     public void ShouldSwitchToIframeByIndexAndBackToDefaultContent()
     {
-        driver.Url = Urls.IframesPage;
-        driver.SwitchTo().Frame(0);
-        IWebElement element = driver.FindElement(By.Name("id-name1"));
+        Driver.Url = Urls.IframesPage;
+        Driver.SwitchTo().Frame(0);
+        IWebElement element = Driver.FindElement(By.Name("id-name1"));
         Assert.That(element, Is.Not.Null);
 
-        driver.SwitchTo().DefaultContent();
-        element = driver.FindElement(By.Id("iframe_page_heading"));
+        Driver.SwitchTo().DefaultContent();
+        element = Driver.FindElement(By.Id("iframe_page_heading"));
         Assert.That(element, Is.Not.Null);
     }
 
     [Test]
     public void ShouldSwitchToFrameByNameAndBackToDefaultContent()
     {
-        driver.Url = Urls.FramesPage;
+        Driver.Url = Urls.FramesPage;
 
-        driver.SwitchTo().Frame("first");
-        Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("1"));
+        Driver.SwitchTo().Frame("first");
+        Assert.That(Driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("1"));
 
-        driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().DefaultContent();
 
         // DefaultContent should not have the element in it.
         Assert.That(
-            () => driver.FindElement(By.Id("pageNumber")),
+            () => Driver.FindElement(By.Id("pageNumber")),
             Throws.TypeOf<NoSuchElementException>());
 
-        driver.SwitchTo().Frame("second");
-        Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("2"));
+        Driver.SwitchTo().Frame("second");
+        Assert.That(Driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("2"));
 
-        driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().DefaultContent();
 
         // DefaultContent should not have the element in it.
         Assert.That(
-            () => driver.FindElement(By.Id("pageNumber")),
+            () => Driver.FindElement(By.Id("pageNumber")),
             Throws.TypeOf<NoSuchElementException>());
     }
 
     [Test]
     public void ShouldSwitchToFrameByIndexAndBackToDefaultContent()
     {
-        driver.Url = Urls.FramesPage;
+        Driver.Url = Urls.FramesPage;
 
-        driver.SwitchTo().Frame(0);
-        Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("1"));
+        Driver.SwitchTo().Frame(0);
+        Assert.That(Driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("1"));
 
-        driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().DefaultContent();
 
         // DefaultContent should not have the element in it.
         Assert.That(
-            () => driver.FindElement(By.Id("pageNumber")),
+            () => Driver.FindElement(By.Id("pageNumber")),
             Throws.TypeOf<NoSuchElementException>());
 
-        driver.SwitchTo().Frame(1);
-        Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("2"));
+        Driver.SwitchTo().Frame(1);
+        Assert.That(Driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("2"));
 
-        driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().DefaultContent();
 
         // DefaultContent should not have the element in it.
         Assert.That(
-            () => driver.FindElement(By.Id("pageNumber")).Text,
+            () => Driver.FindElement(By.Id("pageNumber")).Text,
             Throws.TypeOf<NoSuchElementException>());
     }
 
