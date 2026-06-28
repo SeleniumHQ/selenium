@@ -21,7 +21,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using Bazel;
-using OpenQA.Selenium.Testing.WebServer;
 
 namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
 

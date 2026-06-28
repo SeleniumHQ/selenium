@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
-
 namespace OpenQA.Selenium.Tests;
 
 [TestFixture]

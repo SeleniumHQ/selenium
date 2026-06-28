@@ -20,7 +20,6 @@
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests.IE;
 

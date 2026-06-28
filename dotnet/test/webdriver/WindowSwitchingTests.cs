@@ -18,7 +18,6 @@
 // </copyright>
 
 using System.Collections.ObjectModel;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests;
 

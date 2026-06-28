@@ -21,7 +21,6 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests.Interactions;
 

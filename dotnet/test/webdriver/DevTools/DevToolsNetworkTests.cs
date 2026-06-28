@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 using CurrentCdpVersion = OpenQA.Selenium.DevTools.V149;
 
 namespace OpenQA.Selenium.Tests.DevTools;

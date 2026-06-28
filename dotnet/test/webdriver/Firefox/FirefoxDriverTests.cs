@@ -19,7 +19,6 @@
 
 using System.IO;
 using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests.Firefox;
 

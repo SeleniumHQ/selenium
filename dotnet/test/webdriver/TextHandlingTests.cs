@@ -18,7 +18,6 @@
 // </copyright>
 
 using System.Text.RegularExpressions;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests;
 

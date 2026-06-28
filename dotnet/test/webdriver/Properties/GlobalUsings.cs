@@ -18,8 +18,8 @@
 // </copyright>
 
 global using global::NUnit.Framework;
-global using global::OpenQA.Selenium.Tests.Infrastructure;
 global using global::OpenQA.Selenium.Testing.WebServer;
+global using global::OpenQA.Selenium.Tests.Infrastructure;
 global using global::System;
 global using global::System.Collections.Generic;
 global using global::System.Linq;

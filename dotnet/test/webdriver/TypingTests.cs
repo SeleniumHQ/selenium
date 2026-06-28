@@ -18,7 +18,6 @@
 // </copyright>
 
 using System.Runtime.InteropServices;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests;
 

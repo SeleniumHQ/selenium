@@ -19,7 +19,6 @@
 
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 using OpenQA.Selenium.VirtualAuth;
 using static OpenQA.Selenium.VirtualAuth.VirtualAuthenticatorOptions;
 
