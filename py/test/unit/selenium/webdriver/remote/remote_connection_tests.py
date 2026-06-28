@@ -635,6 +635,6 @@ def test_get_remote_connection_selects_browser_specific_handler(
         options.to_capabilities(),
         command_executor="http://localhost:4444",
         keep_alive=True,
-        ignore_local_proxy=False,
+        ignore_local_proxy=True,
     )
     assert type(conn) is expected_handler
