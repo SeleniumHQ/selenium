@@ -191,19 +191,19 @@ class SessionUnitTests
     }
 
     [Test]
-    public async Task StreamCanOnlyBeEnumeratedOnce()
+    public async Task StreamCanBeReadSequentially()
     {
         var stream = await _bidi.Script.RealmDestroyed.StreamAsync()
             .WithResponse(_transport, """{"subscription":"sub-1"}""");
 
         _transport.EnqueueEvent("script.realmDestroyed", """{"realm":"r-1"}""");
+        _transport.EnqueueEvent("script.realmDestroyed", """{"realm":"r-2"}""");
 
-        await stream.ReadAllAsync().FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+        var first = await stream.ReadAllAsync().FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+        var second = await stream.ReadAllAsync().FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
 
-        Assert.That(
-            async () => await stream.ReadAllAsync().FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5)),
-            Throws.InstanceOf<InvalidOperationException>()
-                  .With.Message.Contains("can only be enumerated once"));
+        Assert.That(first.Realm.Id, Is.EqualTo("r-1"));
+        Assert.That(second.Realm.Id, Is.EqualTo("r-2"));
 
         await stream.DisposeAsync().WithResponse(_transport);
     }

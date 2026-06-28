@@ -30,10 +30,9 @@ internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubsc
 
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
     private int _disposed;
-    private int _enumerating;
 
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
-        new UnboundedChannelOptions { SingleReader = true, SingleWriter = true });
+        new UnboundedChannelOptions { SingleReader = false, SingleWriter = true });
 
     private readonly Func<TEventArgs, bool>? _filter;
 
@@ -60,19 +59,9 @@ internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubsc
         _channel.Writer.TryComplete(error);
     }
 
-    public IAsyncEnumerable<TEventArgs> ReadAllAsync(CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<TEventArgs> ReadAllAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         if (_disposed != 0) throw new ObjectDisposedException(GetType().FullName);
-
-        return ReadAllCoreAsync(cancellationToken);
-    }
-
-    private async IAsyncEnumerable<TEventArgs> ReadAllCoreAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        if (Interlocked.CompareExchange(ref _enumerating, 1, 0) != 0)
-        {
-            throw new InvalidOperationException("This event stream can only be enumerated once; create a new stream to read again.");
-        }
 
         while (await _channel.Reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
         {
