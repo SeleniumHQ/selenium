@@ -17,6 +17,7 @@
 
 import base64
 import os
+from collections.abc import Callable
 from unittest.mock import patch
 from urllib import parse
 
@@ -619,18 +620,33 @@ def test_proxy_auth_with_multiple_special_characters():
 
 
 @pytest.mark.parametrize(
-    ("options", "expected_handler"),
+    ("options", "prepare_options", "expected_handler"),
     [
-        (ChromeOptions(), ChromeRemoteConnection),
-        (EdgeOptions(), EdgeRemoteConnection),
-        (FirefoxOptions(), FirefoxRemoteConnection),
-        (SafariOptions(), SafariRemoteConnection),
+        pytest.param(ChromeOptions(), None, ChromeRemoteConnection, id="chrome"),
+        pytest.param(EdgeOptions(), None, EdgeRemoteConnection, id="edge"),
+        pytest.param(FirefoxOptions(), None, FirefoxRemoteConnection, id="firefox"),
+        pytest.param(SafariOptions(), None, SafariRemoteConnection, id="safari"),
+        pytest.param(
+            SafariOptions(),
+            lambda o: setattr(o, "use_technology_preview", True),
+            SafariRemoteConnection,
+            id="safari-technology-preview",
+        ),
+        pytest.param(
+            EdgeOptions(),
+            lambda o: setattr(o, "use_webview", True),
+            EdgeRemoteConnection,
+            id="edge-webview2",
+        ),
     ],
-    ids=lambda value: type(value).__name__,
 )
 def test_get_remote_connection_selects_browser_specific_handler(
-    options: BaseOptions, expected_handler: type[RemoteConnection]
+    options: BaseOptions,
+    prepare_options: Callable[[BaseOptions], None] | None,
+    expected_handler: type[RemoteConnection],
 ) -> None:
+    if prepare_options:
+        prepare_options(options)
     conn = get_remote_connection(
         options.to_capabilities(),
         command_executor="http://localhost:4444",
