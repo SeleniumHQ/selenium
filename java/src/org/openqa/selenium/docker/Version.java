@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.docker;
 
-import static java.lang.Long.parseLong;
+import static java.math.BigInteger.ZERO;
 
+import java.math.BigInteger;
 import org.openqa.selenium.internal.Require;
 
 /**
@@ -91,11 +92,11 @@ class Version {
   private int compare(String[] ours, String[] theirs, int index) {
     String mine = index < ours.length ? ours[index] : "";
     String others = index < theirs.length ? theirs[index] : "";
-    boolean mineIsNumber = isNumber(mine) || mine.isEmpty();
-    boolean othersIsNumber = isNumber(others) || others.isEmpty();
+    boolean mineIsNumber = isNumeric(mine) || mine.isEmpty();
+    boolean othersIsNumber = isNumeric(others) || others.isEmpty();
 
     if (mineIsNumber && othersIsNumber) {
-      return Long.compare(toLong(mine), toLong(others));
+      return parseNumber(mine).compareTo(parseNumber(others));
     }
     if (mineIsNumber) {
       return 1;
@@ -106,12 +107,12 @@ class Version {
     return mine.compareTo(others);
   }
 
-  private boolean isNumber(String value) {
+  private boolean isNumeric(String value) {
     return value.chars().allMatch(Character::isDigit);
   }
 
-  private long toLong(String mine) {
-    return mine.isEmpty() ? 0L : parseLong(mine);
+  private BigInteger parseNumber(String mine) {
+    return mine.isEmpty() ? ZERO : new BigInteger(mine);
   }
 
   @Override

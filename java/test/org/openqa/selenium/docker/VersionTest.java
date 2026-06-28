@@ -41,6 +41,13 @@ class VersionTest {
               {"2.2", "1.2", false, false, true},
               {"1.2.3", "1.2.3.4", false, true, false},
               {"1.2.4", "1.2.3.4", false, false, true},
+              {
+                "1.2.4444444444444444444444444",
+                "1.2.3.4444444444444444444444444",
+                false,
+                false,
+                true
+              }, // large
 
               // versions with non-digits
               {"1.2.beta", "1.2.beta", true, false, false}, // equals to itself
