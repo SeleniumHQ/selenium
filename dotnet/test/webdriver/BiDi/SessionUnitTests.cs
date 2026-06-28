@@ -189,4 +189,22 @@ class SessionUnitTests
 
         await stream.DisposeAsync().WithResponse(_transport);
     }
+
+    [Test]
+    public async Task StreamCanOnlyBeEnumeratedOnce()
+    {
+        var stream = await _bidi.Script.RealmDestroyed.StreamAsync()
+            .WithResponse(_transport, """{"subscription":"sub-1"}""");
+
+        _transport.EnqueueEvent("script.realmDestroyed", """{"realm":"r-1"}""");
+
+        await stream.ReadAllAsync().FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.That(
+            async () => await stream.ReadAllAsync().FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5)),
+            Throws.InstanceOf<InvalidOperationException>()
+                  .With.Message.Contains("can only be enumerated once"));
+
+        await stream.DisposeAsync().WithResponse(_transport);
+    }
 }
