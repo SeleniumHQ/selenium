@@ -29,6 +29,7 @@ from selenium import __version__
 from selenium.webdriver import Proxy
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
+from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.proxy import ProxyType
 from selenium.webdriver.edge.options import Options as EdgeOptions
 from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
@@ -618,7 +619,7 @@ def test_proxy_auth_with_multiple_special_characters():
 
 
 @pytest.mark.parametrize(
-    "options, expected_handler",
+    ("options", "expected_handler"),
     [
         (ChromeOptions(), ChromeRemoteConnection),
         (EdgeOptions(), EdgeRemoteConnection),
@@ -627,7 +628,9 @@ def test_proxy_auth_with_multiple_special_characters():
     ],
     ids=lambda value: type(value).__name__,
 )
-def test_get_remote_connection_selects_browser_specific_handler(options, expected_handler):
+def test_get_remote_connection_selects_browser_specific_handler(
+    options: BaseOptions, expected_handler: type[RemoteConnection]
+) -> None:
     conn = get_remote_connection(
         options.to_capabilities(),
         command_executor="http://localhost:4444",
