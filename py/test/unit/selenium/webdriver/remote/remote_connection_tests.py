@@ -27,9 +27,18 @@ from urllib3.util import Retry, Timeout
 
 from selenium import __version__
 from selenium.webdriver import Proxy
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
 from selenium.webdriver.common.proxy import ProxyType
+from selenium.webdriver.edge.options import Options as EdgeOptions
+from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
 from selenium.webdriver.remote.client_config import AuthType
 from selenium.webdriver.remote.remote_connection import ClientConfig, RemoteConnection
+from selenium.webdriver.remote.webdriver import get_remote_connection
+from selenium.webdriver.safari.options import Options as SafariOptions
+from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 
 
 @pytest.fixture
@@ -606,3 +615,23 @@ def test_proxy_auth_with_multiple_special_characters():
 
         assert conn.proxy_headers == expected_headers
         assert conn.proxy_headers["proxy-authorization"] == f"Basic {expected_auth}"
+
+
+@pytest.mark.parametrize(
+    "options, expected_handler",
+    [
+        (ChromeOptions(), ChromeRemoteConnection),
+        (EdgeOptions(), EdgeRemoteConnection),
+        (FirefoxOptions(), FirefoxRemoteConnection),
+        (SafariOptions(), SafariRemoteConnection),
+    ],
+    ids=lambda value: type(value).__name__,
+)
+def test_get_remote_connection_selects_browser_specific_handler(options, expected_handler):
+    conn = get_remote_connection(
+        options.to_capabilities(),
+        command_executor="http://localhost:4444",
+        keep_alive=True,
+        ignore_local_proxy=False,
+    )
+    assert type(conn) is expected_handler

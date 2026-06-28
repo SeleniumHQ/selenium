@@ -128,7 +128,7 @@ def get_remote_connection(
         from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
 
         handler = FirefoxRemoteConnection
-    elif browser_name == "Safari":
+    elif browser_name == "safari":
         from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 
         handler = SafariRemoteConnection
