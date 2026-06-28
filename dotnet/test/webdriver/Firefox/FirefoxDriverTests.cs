@@ -32,27 +32,27 @@ public class FirefoxDriverTests : DriverTestFixture
     [Test]
     public void ShouldContinueToWorkIfUnableToFindElementById()
     {
-        driver.Url = Urls.FormsPage;
+        Driver.Url = Urls.FormsPage;
 
         Assert.That(
-            () => driver.FindElement(By.Id("notThere")),
+            () => Driver.FindElement(By.Id("notThere")),
             Throws.InstanceOf<NoSuchElementException>());
 
         // Is this works, then we're golden
-        driver.Url = Urls.XhtmlTestPage;
+        Driver.Url = Urls.XhtmlTestPage;
     }
 
     [Ignore("")]
     [Test]
     public void ShouldWaitUntilBrowserHasClosedProperly()
     {
-        driver.Url = Urls.SimpleTestPage;
-        driver.Close();
+        Driver.Url = Urls.SimpleTestPage;
+        Driver.Close();
 
         CreateFreshDriver();
 
-        driver.Url = Urls.FormsPage;
-        IWebElement textarea = driver.FindElement(By.Id("withText"));
+        Driver.Url = Urls.FormsPage;
+        IWebElement textarea = Driver.FindElement(By.Id("withText"));
         string expectedText = "I like cheese" + System.Environment.NewLine
             + System.Environment.NewLine + "It's really nice";
         textarea.Clear();
@@ -68,10 +68,10 @@ public class FirefoxDriverTests : DriverTestFixture
     {
         IWebDriver secondDriver = new FirefoxDriver();
 
-        driver.Url = Urls.XhtmlTestPage;
+        Driver.Url = Urls.XhtmlTestPage;
         secondDriver.Url = Urls.FormsPage;
 
-        Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+        Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
         Assert.That(secondDriver.Title, Is.EqualTo("We Leave From Here"));
 
         // We only need to quit the second driver if the test passes
@@ -121,15 +121,15 @@ public class FirefoxDriverTests : DriverTestFixture
         }
         // Scenario: Open a new window, make sure the current window still gets
         // native events (keyboard events in this case).
-        driver.Url = Urls.XhtmlTestPage;
+        Driver.Url = Urls.XhtmlTestPage;
 
-        driver.FindElement(By.Name("windowOne")).Click();
+        Driver.FindElement(By.Name("windowOne")).Click();
 
         SleepBecauseWindowsTakeTimeToOpen();
 
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
+        IWebElement keyReporter = Driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys("ABC DEF");
 
         Assert.That(keyReporter.GetAttribute("value"), Is.EqualTo("ABC DEF"));
@@ -146,15 +146,15 @@ public class FirefoxDriverTests : DriverTestFixture
         }
         // Scenario: Open a new window, switch to it, make sure it gets native events.
         // Then switch back to the original window, make sure it gets native events.
-        driver.Url = Urls.XhtmlTestPage;
+        Driver.Url = Urls.XhtmlTestPage;
 
-        string originalWinHandle = driver.CurrentWindowHandle;
+        string originalWinHandle = Driver.CurrentWindowHandle;
 
-        driver.FindElement(By.Name("windowOne")).Click();
+        Driver.FindElement(By.Name("windowOne")).Click();
 
         SleepBecauseWindowsTakeTimeToOpen();
 
-        List<string> allWindowHandles = new List<string>(driver.WindowHandles);
+        List<string> allWindowHandles = new List<string>(Driver.WindowHandles);
 
         // There should be two windows. We should also see each of the window titles at least once.
         Assert.That(allWindowHandles, Has.Exactly(2).Items);
@@ -163,20 +163,20 @@ public class FirefoxDriverTests : DriverTestFixture
         string newWinHandle = (string)allWindowHandles[0];
 
         // Key events in new window.
-        driver.SwitchTo().Window(newWinHandle);
+        Driver.SwitchTo().Window(newWinHandle);
         SleepBecauseWindowsTakeTimeToOpen();
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
+        IWebElement keyReporter = Driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys("ABC DEF");
         Assert.That(keyReporter.GetAttribute("value"), Is.EqualTo("ABC DEF"));
 
         // Key events in original window.
-        driver.SwitchTo().Window(originalWinHandle);
+        Driver.SwitchTo().Window(originalWinHandle);
         SleepBecauseWindowsTakeTimeToOpen();
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement keyReporter2 = driver.FindElement(By.Id("keyReporter"));
+        IWebElement keyReporter2 = Driver.FindElement(By.Id("keyReporter"));
         keyReporter2.SendKeys("QWERTY");
         Assert.That(keyReporter2.GetAttribute("value"), Is.EqualTo("QWERTY"));
     }
@@ -192,31 +192,31 @@ public class FirefoxDriverTests : DriverTestFixture
         }
         // Scenario: Open a new window, switch to it, close it, switch back to the
         // original window - make sure it gets native events.
-        driver.Url = Urls.XhtmlTestPage;
-        string originalWinHandle = driver.CurrentWindowHandle;
+        Driver.Url = Urls.XhtmlTestPage;
+        string originalWinHandle = Driver.CurrentWindowHandle;
 
-        driver.FindElement(By.Name("windowOne")).Click();
+        Driver.FindElement(By.Name("windowOne")).Click();
 
         SleepBecauseWindowsTakeTimeToOpen();
-        List<string> allWindowHandles = new List<string>(driver.WindowHandles);
+        List<string> allWindowHandles = new List<string>(Driver.WindowHandles);
         // There should be two windows. We should also see each of the window titles at least once.
         Assert.That(allWindowHandles, Has.Exactly(2).Items);
 
         allWindowHandles.Remove(originalWinHandle);
         string newWinHandle = (string)allWindowHandles[0];
         // Switch to the new window.
-        driver.SwitchTo().Window(newWinHandle);
+        Driver.SwitchTo().Window(newWinHandle);
         SleepBecauseWindowsTakeTimeToOpen();
         // Close new window.
-        driver.Close();
+        Driver.Close();
 
         // Switch back to old window.
-        driver.SwitchTo().Window(originalWinHandle);
+        Driver.SwitchTo().Window(originalWinHandle);
         SleepBecauseWindowsTakeTimeToOpen();
 
         // Send events to the new window.
-        driver.Url = Urls.JavascriptPage;
-        IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
+        Driver.Url = Urls.JavascriptPage;
+        IWebElement keyReporter = Driver.FindElement(By.Id("keyReporter"));
         keyReporter.SendKeys("ABC DEF");
         Assert.That(keyReporter.GetAttribute("value"), Is.EqualTo("ABC DEF"));
     }
@@ -277,99 +277,99 @@ public class FirefoxDriverTests : DriverTestFixture
     [Test]
     public void ShouldInstallAndUninstallXpiAddon()
     {
-        FirefoxDriver firefoxDriver = driver as FirefoxDriver;
+        FirefoxDriver firefoxDriver = Driver as FirefoxDriver;
 
         string extension = GetPath("webextensions-selenium-example.xpi");
         string id = firefoxDriver.InstallAddOnFromFile(extension);
 
-        driver.Url = Urls.BlankPage;
+        Driver.Url = Urls.BlankPage;
 
         IWebElement injected = firefoxDriver.FindElement(By.Id("webextensions-selenium-example"));
         Assert.That(injected.Text, Is.EqualTo("Content injected by webextensions-selenium-example"));
 
         firefoxDriver.UninstallAddOn(id);
 
-        driver.Navigate().Refresh();
-        Assert.That(driver.FindElements(By.Id("webextensions-selenium-example")).Count, Is.Zero);
+        Driver.Navigate().Refresh();
+        Assert.That(Driver.FindElements(By.Id("webextensions-selenium-example")).Count, Is.Zero);
     }
 
     [Test]
     [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=2045054")]
     public void ShouldInstallAndUninstallUnSignedZipAddon()
     {
-        FirefoxDriver firefoxDriver = driver as FirefoxDriver;
+        FirefoxDriver firefoxDriver = Driver as FirefoxDriver;
 
         string extension = GetPath("webextensions-selenium-example-unsigned.zip");
         string id = firefoxDriver.InstallAddOnFromFile(extension, true);
 
-        driver.Url = Urls.BlankPage;
+        Driver.Url = Urls.BlankPage;
 
         IWebElement injected = firefoxDriver.FindElement(By.Id("webextensions-selenium-example"));
         Assert.That(injected.Text, Is.EqualTo("Content injected by webextensions-selenium-example"));
 
         firefoxDriver.UninstallAddOn(id);
 
-        driver.Navigate().Refresh();
-        Assert.That(driver.FindElements(By.Id("webextensions-selenium-example")).Count, Is.Zero);
+        Driver.Navigate().Refresh();
+        Assert.That(Driver.FindElements(By.Id("webextensions-selenium-example")).Count, Is.Zero);
     }
 
     [Test]
     public void ShouldInstallAndUninstallSignedZipAddon()
     {
-        FirefoxDriver firefoxDriver = driver as FirefoxDriver;
+        FirefoxDriver firefoxDriver = Driver as FirefoxDriver;
 
         string extension = GetPath("webextensions-selenium-example.zip");
         string id = firefoxDriver.InstallAddOnFromFile(extension);
 
-        driver.Url = Urls.BlankPage;
+        Driver.Url = Urls.BlankPage;
 
         IWebElement injected = firefoxDriver.FindElement(By.Id("webextensions-selenium-example"));
         Assert.That(injected.Text, Is.EqualTo("Content injected by webextensions-selenium-example"));
 
         firefoxDriver.UninstallAddOn(id);
 
-        driver.Navigate().Refresh();
-        Assert.That(driver.FindElements(By.Id("webextensions-selenium-example")).Count, Is.Zero);
+        Driver.Navigate().Refresh();
+        Assert.That(Driver.FindElements(By.Id("webextensions-selenium-example")).Count, Is.Zero);
     }
 
     [Test]
     [IgnorePlatform("windows", "Signed directory add-on install fails on Windows (ERROR_CORRUPT_FILE).")]
     public void ShouldInstallAndUninstallSignedDirAddon()
     {
-        FirefoxDriver firefoxDriver = driver as FirefoxDriver;
+        FirefoxDriver firefoxDriver = Driver as FirefoxDriver;
 
         string extension = GetPath("webextensions-selenium-example-signed");
         string id = firefoxDriver.InstallAddOnFromDirectory(extension);
 
-        driver.Url = Urls.BlankPage;
+        Driver.Url = Urls.BlankPage;
 
         IWebElement injected = firefoxDriver.FindElement(By.Id("webextensions-selenium-example"));
         Assert.That(injected.Text, Is.EqualTo("Content injected by webextensions-selenium-example"));
 
         firefoxDriver.UninstallAddOn(id);
 
-        driver.Navigate().Refresh();
-        Assert.That(driver.FindElements(By.Id("webextensions-selenium-example")).Count, Is.Zero);
+        Driver.Navigate().Refresh();
+        Assert.That(Driver.FindElements(By.Id("webextensions-selenium-example")).Count, Is.Zero);
     }
 
     [Test]
     [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=2045054")]
     public void ShouldInstallAndUninstallUnSignedDirAddon()
     {
-        FirefoxDriver firefoxDriver = driver as FirefoxDriver;
+        FirefoxDriver firefoxDriver = Driver as FirefoxDriver;
 
         string extension = GetPath("webextensions-selenium-example");
         string id = firefoxDriver.InstallAddOnFromDirectory(extension, true);
 
-        driver.Url = Urls.BlankPage;
+        Driver.Url = Urls.BlankPage;
 
         IWebElement injected = firefoxDriver.FindElement(By.Id("webextensions-selenium-example"));
         Assert.That(injected.Text, Is.EqualTo("Content injected by webextensions-selenium-example"));
 
         firefoxDriver.UninstallAddOn(id);
 
-        driver.Navigate().Refresh();
-        Assert.That(driver.FindElements(By.Id("webextensions-selenium-example")).Count, Is.Zero);
+        Driver.Navigate().Refresh();
+        Assert.That(Driver.FindElements(By.Id("webextensions-selenium-example")).Count, Is.Zero);
     }
 
     private string GetPath(string name)

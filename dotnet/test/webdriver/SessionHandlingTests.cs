@@ -28,12 +28,12 @@ public class SessionHandlingTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void CallingQuitMoreThanOnceOnASessionIsANoOp()
     {
-        driver.Url = Urls.SimpleTestPage;
-        driver.Quit();
-        driver.Quit();
-        driver = EnvironmentManager.Instance.CreateDriverInstance();
-        driver.Url = Urls.XhtmlTestPage;
-        driver.Quit();
+        Driver.Url = Urls.SimpleTestPage;
+        Driver.Quit();
+        Driver.Quit();
+        Driver = EnvironmentManager.Instance.CreateDriverInstance();
+        Driver.Url = Urls.XhtmlTestPage;
+        Driver.Quit();
     }
 
     [Test]
@@ -152,8 +152,8 @@ public class SessionHandlingTests : DriverTestFixture
         {
             EnvironmentManager.Instance.CloseCurrentDriver();
             CreateFreshDriver();
-            driver.Url = Urls.SimpleTestPage;
-            Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
+            Driver.Url = Urls.SimpleTestPage;
+            Assert.That(Driver.Title, Is.EqualTo(simpleTestTitle));
         }
     }
 }

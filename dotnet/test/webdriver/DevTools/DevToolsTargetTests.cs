@@ -34,7 +34,7 @@ public class DevToolsTargetTests : DevToolsTestFixture
     public async Task GetTargetActivateAndAttach()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
-        driver.Url = Urls.WhereIs("devToolsConsoleTest.html");
+        Driver.Url = Urls.WhereIs("devToolsConsoleTest.html");
         var response = await domains.Target.GetTargets(new CurrentCdpVersion.Target.GetTargetsCommandSettings());
         CurrentCdpVersion.Target.TargetInfo[] allTargets = response.TargetInfos;
         foreach (CurrentCdpVersion.Target.TargetInfo targetInfo in allTargets)
@@ -69,7 +69,7 @@ public class DevToolsTargetTests : DevToolsTestFixture
         CurrentCdpVersion.Target.TargetInfo[] allTargets = null;
         string sessionId = null;
         CurrentCdpVersion.Target.TargetInfo targetInfo = null;
-        driver.Url = Urls.WhereIs("devToolsConsoleTest.html");
+        Driver.Url = Urls.WhereIs("devToolsConsoleTest.html");
         ManualResetEventSlim sync = new ManualResetEventSlim(false);
         domains.Target.ReceivedMessageFromTarget += (sender, e) =>
         {

@@ -27,8 +27,8 @@ public class ShadowRootHandlingTests : DriverTestFixture
     [Test]
     public void ShouldReturnShadowRoot()
     {
-        driver.Url = Urls.ShadowRootPage;
-        IWebElement element = driver.FindElement(By.CssSelector("custom-checkbox-element"));
+        Driver.Url = Urls.ShadowRootPage;
+        IWebElement element = Driver.FindElement(By.CssSelector("custom-checkbox-element"));
         ISearchContext shadowRoot = element.GetShadowRoot();
         Assert.That(shadowRoot, Is.Not.Null, "Did not find shadow root");
     }
@@ -37,8 +37,8 @@ public class ShadowRootHandlingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Firefox does not support finding Shadow DOM elements")]
     public void ShouldFindElementUnderShadowRoot()
     {
-        driver.Url = Urls.ShadowRootPage;
-        IWebElement element = driver.FindElement(By.CssSelector("custom-checkbox-element"));
+        Driver.Url = Urls.ShadowRootPage;
+        IWebElement element = Driver.FindElement(By.CssSelector("custom-checkbox-element"));
         ISearchContext shadowRoot = element.GetShadowRoot();
         IWebElement elementInShadow = shadowRoot.FindElement(By.CssSelector("input"));
         Assert.That(elementInShadow.GetAttribute("type"), Is.EqualTo("checkbox"), "Did not find element in shadow root");
@@ -49,8 +49,8 @@ public class ShadowRootHandlingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Edge, "https://issues.chromium.org/issues/375892677")]
     public void ShouldThrowGettingShadowRootWithElementNotHavingShadowRoot()
     {
-        driver.Url = Urls.ShadowRootPage;
-        IWebElement element = driver.FindElement(By.CssSelector("#noShadowRoot"));
+        Driver.Url = Urls.ShadowRootPage;
+        IWebElement element = Driver.FindElement(By.CssSelector("#noShadowRoot"));
         Assert.That(() => element.GetShadowRoot(), Throws.InstanceOf(typeof(NoSuchShadowRootException)));
     }
 
@@ -58,19 +58,19 @@ public class ShadowRootHandlingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Firefox does not support finding Shadow DOM elements")]
     public void ShouldGetShadowRootReferenceFromJavaScript()
     {
-        driver.Url = Urls.ShadowRootPage;
-        IWebElement element = driver.FindElement(By.CssSelector("custom-checkbox-element"));
-        object shadowRoot = ((IJavaScriptExecutor)driver).ExecuteScript("return arguments[0].shadowRoot;", element);
+        Driver.Url = Urls.ShadowRootPage;
+        IWebElement element = Driver.FindElement(By.CssSelector("custom-checkbox-element"));
+        object shadowRoot = ((IJavaScriptExecutor)Driver).ExecuteScript("return arguments[0].shadowRoot;", element);
         Assert.That(shadowRoot, Is.InstanceOf<ISearchContext>(), "Did not find shadow root");
     }
 
     [Test]
     public void ShouldAllowShadowRootReferenceAsArgumentToJavaScript()
     {
-        driver.Url = Urls.ShadowRootPage;
-        IWebElement element = driver.FindElement(By.CssSelector("custom-checkbox-element"));
+        Driver.Url = Urls.ShadowRootPage;
+        IWebElement element = Driver.FindElement(By.CssSelector("custom-checkbox-element"));
         ISearchContext shadowRoot = element.GetShadowRoot();
-        object elementInShadow = ((IJavaScriptExecutor)driver).ExecuteScript("return arguments[0].querySelector('input');", shadowRoot);
+        object elementInShadow = ((IJavaScriptExecutor)Driver).ExecuteScript("return arguments[0].querySelector('input');", shadowRoot);
         Assert.That(elementInShadow, Is.InstanceOf<IWebElement>(), "Did not find shadow root");
     }
 }

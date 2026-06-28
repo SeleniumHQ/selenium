@@ -28,24 +28,24 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [Test]
     public void DocumentShouldReflectLatestTitle()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        Assert.That(driver.Title, Is.EqualTo("Testing Javascript"));
-        driver.FindElement(By.LinkText("Change the page title!")).Click();
-        Assert.That(driver.Title, Is.EqualTo("Changed"));
+        Assert.That(Driver.Title, Is.EqualTo("Testing Javascript"));
+        Driver.FindElement(By.LinkText("Change the page title!")).Click();
+        Assert.That(Driver.Title, Is.EqualTo("Changed"));
     }
 
     [Test]
     public void DocumentShouldReflectLatestDom()
     {
-        driver.Url = Urls.JavascriptPage;
-        String currentText = driver.FindElement(By.XPath("//div[@id='dynamo']")).Text;
+        Driver.Url = Urls.JavascriptPage;
+        String currentText = Driver.FindElement(By.XPath("//div[@id='dynamo']")).Text;
         Assert.That(currentText, Is.EqualTo("What's for dinner?"));
 
-        IWebElement element = driver.FindElement(By.LinkText("Update a div"));
+        IWebElement element = Driver.FindElement(By.LinkText("Update a div"));
         element.Click();
 
-        String newText = driver.FindElement(By.XPath("//div[@id='dynamo']")).Text;
+        String newText = Driver.FindElement(By.XPath("//div[@id='dynamo']")).Text;
         Assert.That(newText, Is.EqualTo("Fish and chips!"));
     }
 
@@ -54,11 +54,11 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [IgnoreBrowser(Browser.Edge, "Not working properly in Edge")]
     public void ShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad()
     {
-        driver.Url = Urls.FormsPage;
+        Driver.Url = Urls.FormsPage;
 
-        driver.FindElement(By.Id("changeme")).Click();
-        WaitFor(() => { return driver.Title == "Page3"; }, "Browser title was not 'Page3'");
-        Assert.That(driver.Title, Is.EqualTo("Page3"));
+        Driver.FindElement(By.Id("changeme")).Click();
+        WaitFor(() => { return Driver.Title == "Page3"; }, "Browser title was not 'Page3'");
+        Assert.That(Driver.Title, Is.EqualTo("Page3"));
     }
 
     [Test]
@@ -66,20 +66,20 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [IgnoreBrowser(Browser.Edge, "Not working properly in Edge")]
     public void ShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad()
     {
-        driver.Url = Urls.FormsPage;
+        Driver.Url = Urls.FormsPage;
 
-        driver.FindElement(By.Id("changeme")).Click();
+        Driver.FindElement(By.Id("changeme")).Click();
 
-        WaitFor(() => { return driver.Title == "Page3"; }, "Browser title was not 'Page3'");
-        Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("3"));
+        WaitFor(() => { return Driver.Title == "Page3"; }, "Browser title was not 'Page3'");
+        Assert.That(Driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("3"));
     }
 
     [Test]
     public void ShouldFireOnChangeEventWhenSettingAnElementsValue()
     {
-        driver.Url = Urls.JavascriptPage;
-        driver.FindElement(By.Id("change")).SendKeys("foo");
-        String result = driver.FindElement(By.Id("result")).Text;
+        Driver.Url = Urls.JavascriptPage;
+        Driver.FindElement(By.Id("change")).SendKeys("foo");
+        String result = Driver.FindElement(By.Id("result")).Text;
 
         Assert.That(result, Is.EqualTo("change"));
     }
@@ -87,30 +87,30 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire()
     {
-        driver.Url = Urls.JavascriptPage;
-        IWebElement element = driver.FindElement(By.Id("jsSubmitButton"));
+        Driver.Url = Urls.JavascriptPage;
+        IWebElement element = Driver.FindElement(By.Id("jsSubmitButton"));
         element.Click();
 
-        WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
-        Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
+        WaitFor(() => { return Driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
+        Assert.That(Driver.Title, Is.EqualTo("We Arrive Here"));
     }
 
     [Test]
     public void ShouldBeAbleToClickOnSubmitButtons()
     {
-        driver.Url = Urls.JavascriptPage;
-        IWebElement element = driver.FindElement(By.Id("submittingButton"));
+        Driver.Url = Urls.JavascriptPage;
+        IWebElement element = Driver.FindElement(By.Id("submittingButton"));
         element.Click();
 
-        WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
-        Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
+        WaitFor(() => { return Driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
+        Assert.That(Driver.Title, Is.EqualTo("We Arrive Here"));
     }
 
     [Test]
     public void Issue80ClickShouldGenerateClickEvent()
     {
-        driver.Url = Urls.JavascriptPage;
-        IWebElement element = driver.FindElement(By.Id("clickField"));
+        Driver.Url = Urls.JavascriptPage;
+        IWebElement element = Driver.FindElement(By.Id("clickField"));
         Assert.That(element.GetAttribute("value"), Is.EqualTo("Hello"));
 
         element.Click();
@@ -121,20 +121,20 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToSwitchToFocusedElement()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        driver.FindElement(By.Id("switchFocus")).Click();
+        Driver.FindElement(By.Id("switchFocus")).Click();
 
-        IWebElement element = driver.SwitchTo().ActiveElement();
+        IWebElement element = Driver.SwitchTo().ActiveElement();
         Assert.That(element.GetAttribute("id"), Is.EqualTo("theworks"));
     }
 
     [Test]
     public void IfNoElementHasFocusTheActiveElementIsTheBody()
     {
-        driver.Url = Urls.SimpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
 
-        IWebElement element = driver.SwitchTo().ActiveElement();
+        IWebElement element = Driver.SwitchTo().ActiveElement();
 
         Assert.That(element.GetAttribute("name"), Is.EqualTo("body"));
     }
@@ -143,25 +143,25 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Window demands focus to work.")]
     public void ChangeEventIsFiredAppropriatelyWhenFocusIsLost()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement input = driver.FindElement(By.Id("changeable"));
+        IWebElement input = Driver.FindElement(By.Id("changeable"));
         input.SendKeys("test");
-        driver.FindElement(By.Id("clickField")).Click(); // move focus
+        Driver.FindElement(By.Id("clickField")).Click(); // move focus
         EqualConstraint firstConstraint = new EqualConstraint("focus change blur");
         EqualConstraint secondConstraint = new EqualConstraint("focus change blur");
 
-        Assert.That(driver.FindElement(By.Id("result")).Text.Trim(), firstConstraint | secondConstraint);
+        Assert.That(Driver.FindElement(By.Id("result")).Text.Trim(), firstConstraint | secondConstraint);
 
         input.SendKeys(Keys.Backspace + "t");
-        driver.FindElement(By.Id("clickField")).Click();  // move focus
+        Driver.FindElement(By.Id("clickField")).Click();  // move focus
 
         firstConstraint = new EqualConstraint("focus change blur focus blur");
         secondConstraint = new EqualConstraint("focus blur change focus blur");
         EqualConstraint thirdConstraint = new EqualConstraint("focus blur change focus blur change");
         EqualConstraint fourthConstraint = new EqualConstraint("focus change blur focus change blur"); //What Chrome does
         // I weep.
-        Assert.That(driver.FindElement(By.Id("result")).Text.Trim(),
+        Assert.That(Driver.FindElement(By.Id("result")).Text.Trim(),
                    firstConstraint | secondConstraint | thirdConstraint | fourthConstraint);
     }
 
@@ -171,12 +171,12 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToClickIfEvenSomethingHorribleHappens()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        driver.FindElement(By.Id("error")).Click();
+        Driver.FindElement(By.Id("error")).Click();
 
         // If we get this far then the test has passed, but let's do something basic to prove the point
-        String text = driver.FindElement(By.Id("error")).Text;
+        String text = Driver.FindElement(By.Id("error")).Text;
 
         Assert.That(text, Is.Not.Null);
     }
@@ -184,15 +184,15 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToGetTheLocationOfAnElement()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        if (!(driver is IJavaScriptExecutor))
+        if (!(Driver is IJavaScriptExecutor))
         {
             return;
         }
 
-        ((IJavaScriptExecutor)driver).ExecuteScript("window.focus();");
-        IWebElement element = driver.FindElement(By.Id("keyUp"));
+        ((IJavaScriptExecutor)Driver).ExecuteScript("window.focus();");
+        IWebElement element = Driver.FindElement(By.Id("keyUp"));
 
         if (!(element is ILocatable))
         {
@@ -210,17 +210,17 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void ShouldBeAbleToClickALinkThatClosesAWindow()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        String handle = driver.CurrentWindowHandle;
-        driver.FindElement(By.Id("new_window")).Click();
-        WaitFor(() => { driver.SwitchTo().Window("close_me"); return true; }, "Could not find window with name 'close_me'");
+        String handle = Driver.CurrentWindowHandle;
+        Driver.FindElement(By.Id("new_window")).Click();
+        WaitFor(() => { Driver.SwitchTo().Window("close_me"); return true; }, "Could not find window with name 'close_me'");
 
         IWebElement closeElement = WaitFor<IWebElement>(() =>
         {
             try
             {
-                return driver.FindElement(By.Id("close"));
+                return Driver.FindElement(By.Id("close"));
             }
             catch (NoSuchElementException)
             {
@@ -229,6 +229,6 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
         }, "No element to close window found");
         closeElement.Click();
 
-        driver.SwitchTo().Window(handle);
+        Driver.SwitchTo().Window(handle);
     }
 }

@@ -46,26 +46,26 @@ public class UploadTests : DriverTestFixture
     [Test]
     public void ShouldAllowFileUploading()
     {
-        driver.Url = Urls.UploadPage;
-        driver.FindElement(By.Id("upload")).SendKeys(testFile.FullName);
-        driver.FindElement(By.Id("go")).Submit();
+        Driver.Url = Urls.UploadPage;
+        Driver.FindElement(By.Id("upload")).SendKeys(testFile.FullName);
+        Driver.FindElement(By.Id("go")).Submit();
 
-        driver.SwitchTo().Frame("upload_target");
+        Driver.SwitchTo().Frame("upload_target");
 
         IWebElement body = null;
         WaitFor(() =>
         {
-            body = driver.FindElement(By.CssSelector("body"));
+            body = Driver.FindElement(By.CssSelector("body"));
             return body.Text.Contains(LoremIpsumText);
-        }, "Page source is: " + driver.PageSource);
-        Assert.That(body.Text, Is.EqualTo(LoremIpsumText), "Page source is: " + driver.PageSource);
+        }, "Page source is: " + Driver.PageSource);
+        Assert.That(body.Text, Is.EqualTo(LoremIpsumText), "Page source is: " + Driver.PageSource);
     }
 
     [Test]
     public void CleanFileInput()
     {
-        driver.Url = Urls.UploadPage;
-        IWebElement element = driver.FindElement(By.Id("upload"));
+        Driver.Url = Urls.UploadPage;
+        IWebElement element = Driver.FindElement(By.Id("upload"));
         element.SendKeys(testFile.FullName);
         element.Clear();
         Assert.That(element.GetAttribute("value"), Is.Empty);
@@ -74,29 +74,29 @@ public class UploadTests : DriverTestFixture
     [Test]
     public void ClickFileInput()
     {
-        driver.Url = Urls.UploadPage;
-        IWebElement element = driver.FindElement(By.Id("upload"));
+        Driver.Url = Urls.UploadPage;
+        IWebElement element = Driver.FindElement(By.Id("upload"));
         Assert.That(() => element.Click(), Throws.InstanceOf<WebDriverException>());
     }
 
     [Test]
     public void UploadingWithHiddenFileInput()
     {
-        driver.Url = Urls.WhereIs("upload_invisible.html");
-        driver.FindElement(By.Id("upload")).SendKeys(testFile.FullName);
-        driver.FindElement(By.Id("go")).Click();
+        Driver.Url = Urls.WhereIs("upload_invisible.html");
+        Driver.FindElement(By.Id("upload")).SendKeys(testFile.FullName);
+        Driver.FindElement(By.Id("go")).Click();
 
         // Uploading files across a network may take a while, even if they're really small
-        IWebElement label = driver.FindElement(By.Id("upload_label"));
-        driver.SwitchTo().Frame("upload_target");
+        IWebElement label = Driver.FindElement(By.Id("upload_label"));
+        Driver.SwitchTo().Frame("upload_target");
 
         IWebElement body = null;
         WaitFor(() =>
         {
-            body = driver.FindElement(By.XPath("//body"));
+            body = Driver.FindElement(By.XPath("//body"));
             return body.Text.Contains(LoremIpsumText);
-        }, "Page source is: " + driver.PageSource);
-        Assert.That(body.Text, Is.EqualTo(LoremIpsumText), "Page source is: " + driver.PageSource);
+        }, "Page source is: " + Driver.PageSource);
+        Assert.That(body.Text, Is.EqualTo(LoremIpsumText), "Page source is: " + Driver.PageSource);
 
     }
 
@@ -106,20 +106,20 @@ public class UploadTests : DriverTestFixture
     [Test]
     public void ShouldAllowFileUploadingUsingTransparentUploadElement()
     {
-        driver.Url = Urls.TransparentUploadPage;
-        driver.FindElement(By.Id("upload")).SendKeys(testFile.FullName);
-        driver.FindElement(By.Id("go")).Submit();
+        Driver.Url = Urls.TransparentUploadPage;
+        Driver.FindElement(By.Id("upload")).SendKeys(testFile.FullName);
+        Driver.FindElement(By.Id("go")).Submit();
 
-        driver.SwitchTo().Frame("upload_target");
+        Driver.SwitchTo().Frame("upload_target");
 
         IWebElement body = null;
         WaitFor(() =>
         {
-            body = driver.FindElement(By.XPath("//body"));
+            body = Driver.FindElement(By.XPath("//body"));
             return body.Text.Contains(LoremIpsumText);
-        }, "Page source is: " + driver.PageSource);
-        Assert.That(body.Text, Is.EqualTo(LoremIpsumText), "Page source is: " + driver.PageSource);
-        driver.Url = "about:blank";
+        }, "Page source is: " + Driver.PageSource);
+        Assert.That(body.Text, Is.EqualTo(LoremIpsumText), "Page source is: " + Driver.PageSource);
+        Driver.Url = "about:blank";
     }
 
     private void CreateTempFile(string content)

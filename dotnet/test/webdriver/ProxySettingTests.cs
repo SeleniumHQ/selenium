@@ -38,7 +38,7 @@ public class ProxySettingTests : DriverTestFixture
     [SetUp]
     public void RestartOriginalDriver()
     {
-        driver = EnvironmentManager.Instance.GetCurrentDriver();
+        Driver = EnvironmentManager.Instance.GetCurrentDriver();
         proxyServer = new ProxyServer();
         EnvironmentManager.Instance.DriverStarting += EnvironmentManagerDriverStarting;
     }
@@ -81,7 +81,7 @@ public class ProxySettingTests : DriverTestFixture
         Proxy proxyToUse = proxyServer.AsProxy();
         proxyToUse.AddBypassAddresses(Urls.HostName);
 
-        if (TestUtilities.IsInternetExplorer(driver))
+        if (TestUtilities.IsInternetExplorer(Driver))
         {
             proxyToUse.AddBypassAddress("<-localhost>");
         }

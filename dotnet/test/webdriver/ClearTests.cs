@@ -25,8 +25,8 @@ public class ClearTests : DriverTestFixture
     [Test]
     public void WritableTextInputShouldClear()
     {
-        driver.Url = Urls.ReadOnlyPage;
-        IWebElement element = driver.FindElement(By.Id("writableTextInput"));
+        Driver.Url = Urls.ReadOnlyPage;
+        IWebElement element = Driver.FindElement(By.Id("writableTextInput"));
         element.Clear();
         Assert.That(element.GetAttribute("value"), Is.Empty);
     }
@@ -34,8 +34,8 @@ public class ClearTests : DriverTestFixture
     [Test]
     public void TextInputShouldNotClearWhenDisabled()
     {
-        driver.Url = Urls.ReadOnlyPage;
-        IWebElement element = driver.FindElement(By.Id("textInputNotEnabled"));
+        Driver.Url = Urls.ReadOnlyPage;
+        IWebElement element = Driver.FindElement(By.Id("textInputNotEnabled"));
         Assert.That(element.Enabled, Is.False);
         Assert.That(
             () => element.Clear(),
@@ -45,8 +45,8 @@ public class ClearTests : DriverTestFixture
     [Test]
     public void TextInputShouldNotClearWhenReadOnly()
     {
-        driver.Url = Urls.ReadOnlyPage;
-        IWebElement element = driver.FindElement(By.Id("readOnlyTextInput"));
+        Driver.Url = Urls.ReadOnlyPage;
+        IWebElement element = Driver.FindElement(By.Id("readOnlyTextInput"));
         Assert.That(
             () => element.Clear(),
             Throws.InstanceOf<InvalidElementStateException>());
@@ -55,8 +55,8 @@ public class ClearTests : DriverTestFixture
     [Test]
     public void WritableTextAreaShouldClear()
     {
-        driver.Url = Urls.ReadOnlyPage;
-        IWebElement element = driver.FindElement(By.Id("writableTextArea"));
+        Driver.Url = Urls.ReadOnlyPage;
+        IWebElement element = Driver.FindElement(By.Id("writableTextArea"));
         element.Clear();
         Assert.That(element.GetAttribute("value"), Is.Empty);
     }
@@ -64,16 +64,16 @@ public class ClearTests : DriverTestFixture
     [Test]
     public void TextAreaShouldNotClearWhenDisabled()
     {
-        driver.Url = Urls.ReadOnlyPage;
-        IWebElement element = driver.FindElement(By.Id("textAreaNotEnabled"));
+        Driver.Url = Urls.ReadOnlyPage;
+        IWebElement element = Driver.FindElement(By.Id("textAreaNotEnabled"));
         Assert.That(() => element.Clear(), Throws.InstanceOf<InvalidElementStateException>());
     }
 
     [Test]
     public void TextAreaShouldNotClearWhenReadOnly()
     {
-        driver.Url = Urls.ReadOnlyPage;
-        IWebElement element = driver.FindElement(By.Id("textAreaReadOnly"));
+        Driver.Url = Urls.ReadOnlyPage;
+        IWebElement element = Driver.FindElement(By.Id("textAreaReadOnly"));
         Assert.That(
             () => element.Clear(),
              Throws.InstanceOf<InvalidElementStateException>());
@@ -82,8 +82,8 @@ public class ClearTests : DriverTestFixture
     [Test]
     public void ContentEditableAreaShouldClear()
     {
-        driver.Url = Urls.ReadOnlyPage;
-        IWebElement element = driver.FindElement(By.Id("content-editable"));
+        Driver.Url = Urls.ReadOnlyPage;
+        IWebElement element = Driver.FindElement(By.Id("content-editable"));
         element.Clear();
 
         Assert.That(element.Text, Is.Empty);
@@ -193,8 +193,8 @@ public class ClearTests : DriverTestFixture
 
     private void ShouldBeAbleToClearInput(By locator, string oldValue, string clearedValue)
     {
-        driver.Url = Urls.WhereIs("inputs.html");
-        IWebElement element = driver.FindElement(locator);
+        Driver.Url = Urls.WhereIs("inputs.html");
+        IWebElement element = Driver.FindElement(locator);
         Assert.That(element.GetAttribute("value"), Is.EqualTo(oldValue));
 
         element.Clear();

@@ -29,20 +29,20 @@ public class WindowTests : DriverTestFixture
     [SetUp]
     public void GetBrowserWindowSize()
     {
-        driver.Manage().Window.Position = new Point(50, 50);
-        this.originalWindowSize = driver.Manage().Window.Size;
+        Driver.Manage().Window.Position = new Point(50, 50);
+        this.originalWindowSize = Driver.Manage().Window.Size;
     }
 
     [TearDown]
     public void RestoreBrowserWindow()
     {
-        driver.Manage().Window.Size = originalWindowSize;
+        Driver.Manage().Window.Size = originalWindowSize;
     }
 
     [Test]
     public void ShouldBeAbleToGetTheSizeOfTheCurrentWindow()
     {
-        Size size = driver.Manage().Window.Size;
+        Size size = Driver.Manage().Window.Size;
         Assert.That(size.Width, Is.GreaterThan(0));
         Assert.That(size.Height, Is.GreaterThan(0));
     }
@@ -50,7 +50,7 @@ public class WindowTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToSetTheSizeOfTheCurrentWindow()
     {
-        IWindow window = driver.Manage().Window;
+        IWindow window = Driver.Manage().Window;
         Size size = window.Size;
 
         // resize relative to the initial size, since we don't know what it is
@@ -65,10 +65,10 @@ public class WindowTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToSetTheSizeOfTheCurrentWindowFromFrame()
     {
-        IWindow window = driver.Manage().Window;
+        IWindow window = Driver.Manage().Window;
         Size size = window.Size;
-        driver.Url = Urls.FramesetPage;
-        driver.SwitchTo().Frame("fourth");
+        Driver.Url = Urls.FramesetPage;
+        Driver.SwitchTo().Frame("fourth");
 
         try
         {
@@ -82,17 +82,17 @@ public class WindowTests : DriverTestFixture
         }
         finally
         {
-            driver.SwitchTo().DefaultContent();
+            Driver.SwitchTo().DefaultContent();
         }
     }
 
     [Test]
     public void ShouldBeAbleToSetTheSizeOfTheCurrentWindowFromIFrame()
     {
-        IWindow window = driver.Manage().Window;
+        IWindow window = Driver.Manage().Window;
         Size size = window.Size;
-        driver.Url = Urls.IframesPage;
-        driver.SwitchTo().Frame("iframe1-name");
+        Driver.Url = Urls.IframesPage;
+        Driver.SwitchTo().Frame("iframe1-name");
 
         try
         {
@@ -106,14 +106,14 @@ public class WindowTests : DriverTestFixture
         }
         finally
         {
-            driver.SwitchTo().DefaultContent();
+            Driver.SwitchTo().DefaultContent();
         }
     }
 
     [Test]
     public void ShouldBeAbleToGetThePositionOfTheCurrentWindow()
     {
-        Point position = driver.Manage().Window.Position;
+        Point position = Driver.Manage().Window.Position;
         Assert.That(position.X, Is.GreaterThan(0));
         Assert.That(position.Y, Is.GreaterThan(0));
     }
@@ -121,7 +121,7 @@ public class WindowTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToSetThePositionOfTheCurrentWindow()
     {
-        IWindow window = driver.Manage().Window;
+        IWindow window = Driver.Manage().Window;
         window.Size = new Size(200, 200);
         Point position = window.Position;
 
@@ -143,7 +143,7 @@ public class WindowTests : DriverTestFixture
 
         Maximize();
 
-        IWindow window = driver.Manage().Window;
+        IWindow window = Driver.Manage().Window;
         Assert.That(window.Size.Height, Is.GreaterThan(targetSize.Height));
         Assert.That(window.Size.Width, Is.GreaterThan(targetSize.Width));
     }
@@ -151,34 +151,34 @@ public class WindowTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToMaximizeTheWindowFromFrame()
     {
-        driver.Url = Urls.FramesetPage;
+        Driver.Url = Urls.FramesetPage;
         ChangeSizeTo(new Size(640, 400));
 
-        driver.SwitchTo().Frame("fourth");
+        Driver.SwitchTo().Frame("fourth");
         try
         {
             Maximize();
         }
         finally
         {
-            driver.SwitchTo().DefaultContent();
+            Driver.SwitchTo().DefaultContent();
         }
     }
 
     [Test]
     public void ShouldBeAbleToMaximizeTheWindowFromIframe()
     {
-        driver.Url = Urls.IframesPage;
+        Driver.Url = Urls.IframesPage;
         ChangeSizeTo(new Size(640, 400));
 
-        driver.SwitchTo().Frame("iframe1-name");
+        Driver.SwitchTo().Frame("iframe1-name");
         try
         {
             Maximize();
         }
         finally
         {
-            driver.SwitchTo().DefaultContent();
+            Driver.SwitchTo().DefaultContent();
         }
     }
 
@@ -190,7 +190,7 @@ public class WindowTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not support full screen")]
     public void ShouldBeAbleToFullScreenTheCurrentWindow()
     {
-        IWindow window = driver.Manage().Window;
+        IWindow window = Driver.Manage().Window;
         Size origSize = window.Size;
 
         Size targetSize = new Size(640, 400);
@@ -212,21 +212,21 @@ public class WindowTests : DriverTestFixture
 
         ChangeSizeTo(targetSize);
 
-        driver.Manage().Window.Minimize();
+        Driver.Manage().Window.Minimize();
 
-        Assert.That(((IJavaScriptExecutor)driver).ExecuteScript("return document.hidden;"), Is.True);
+        Assert.That(((IJavaScriptExecutor)Driver).ExecuteScript("return document.hidden;"), Is.True);
     }
 
     private void FullScreen()
     {
-        IWindow window = driver.Manage().Window;
+        IWindow window = Driver.Manage().Window;
         Size currentSize = window.Size;
         window.FullScreen();
     }
 
     private void Maximize()
     {
-        IWindow window = driver.Manage().Window;
+        IWindow window = Driver.Manage().Window;
         Size currentSize = window.Size;
         window.Maximize();
         WaitFor(WindowHeightToBeGreaterThan(currentSize.Height), "Window height was not greater than " + currentSize.Height.ToString());
@@ -235,7 +235,7 @@ public class WindowTests : DriverTestFixture
 
     private void ChangeSizeTo(Size targetSize)
     {
-        IWindow window = driver.Manage().Window;
+        IWindow window = Driver.Manage().Window;
         window.Size = targetSize;
         WaitFor(WindowHeightToBeEqualTo(targetSize.Height), "Window height was " + window.Size.Height + " not " + targetSize.Height.ToString());
         WaitFor(WindowWidthToBeEqualTo(targetSize.Width), "Window width was not " + targetSize.Width.ToString());
@@ -243,38 +243,38 @@ public class WindowTests : DriverTestFixture
 
     private void ChangeSizeBy(int deltaX, int deltaY)
     {
-        IWindow window = driver.Manage().Window;
+        IWindow window = Driver.Manage().Window;
         Size size = window.Size;
         ChangeSizeTo(new Size(size.Width + deltaX, size.Height + deltaY));
     }
 
     private Func<bool> WindowHeightToBeEqualTo(int height)
     {
-        return () => { return driver.Manage().Window.Size.Height == height; };
+        return () => { return Driver.Manage().Window.Size.Height == height; };
     }
 
     private Func<bool> WindowWidthToBeEqualTo(int width)
     {
-        return () => { return driver.Manage().Window.Size.Width == width; };
+        return () => { return Driver.Manage().Window.Size.Width == width; };
     }
 
     private Func<bool> WindowHeightToBeGreaterThan(int height)
     {
-        return () => { return driver.Manage().Window.Size.Height > height; };
+        return () => { return Driver.Manage().Window.Size.Height > height; };
     }
 
     private Func<bool> WindowWidthToBeGreaterThan(int width)
     {
-        return () => { return driver.Manage().Window.Size.Width > width; };
+        return () => { return Driver.Manage().Window.Size.Width > width; };
     }
 
     private Func<bool> WindowHeightToBeLessThan(int height)
     {
-        return () => { return driver.Manage().Window.Size.Height < height; };
+        return () => { return Driver.Manage().Window.Size.Height < height; };
     }
 
     private Func<bool> WindowWidthToBeLessThan(int width)
     {
-        return () => { return driver.Manage().Window.Size.Width < width; };
+        return () => { return Driver.Manage().Window.Size.Width < width; };
     }
 }

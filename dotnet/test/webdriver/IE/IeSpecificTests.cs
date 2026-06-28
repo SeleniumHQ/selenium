@@ -77,9 +77,9 @@ public class IeSpecificTests : DriverTestFixture
         bool passed = true;
         string errors = string.Empty;
 
-        driver.Url = Urls.WhereIs("keyboard_shortcut.html");
-        IWebElement body = driver.FindElement(By.CssSelector("body"));
-        Actions actions = new Actions(driver);
+        Driver.Url = Urls.WhereIs("keyboard_shortcut.html");
+        IWebElement body = Driver.FindElement(By.CssSelector("body"));
+        Actions actions = new Actions(Driver);
         for (int i = 0; i < keyComboNames.Count; i++)
         {
             for (int j = 0; j < modifierCombonations[i].Count; j++)
@@ -121,9 +121,9 @@ public class IeSpecificTests : DriverTestFixture
     [Test]
     public void InputOnChangeAlert()
     {
-        driver.Url = Urls.AlertsPage;
-        driver.FindElement(By.Id("input")).Clear();
-        IAlert alert = WaitFor<IAlert>(() => { return driver.SwitchTo().Alert(); }, "No alert found");
+        Driver.Url = Urls.AlertsPage;
+        Driver.FindElement(By.Id("input")).Clear();
+        IAlert alert = WaitFor<IAlert>(() => { return Driver.SwitchTo().Alert(); }, "No alert found");
         alert.Accept();
     }
 
@@ -132,52 +132,52 @@ public class IeSpecificTests : DriverTestFixture
     {
         try
         {
-            driver.Url = Urls.WhereIs("frameScrollPage.html");
+            Driver.Url = Urls.WhereIs("frameScrollPage.html");
 
             WaitFor(FrameToExistAndBeSwitchedTo("scrolling_frame"), "No frame with name or id 'scrolling_frame' found");
-            IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
+            IWebElement element = Driver.FindElement(By.Name("scroll_checkbox"));
             element.Click();
             Assert.That(element.Selected);
 
-            driver.SwitchTo().DefaultContent();
+            Driver.SwitchTo().DefaultContent();
 
             WaitFor(FrameToExistAndBeSwitchedTo("scrolling_child_frame"), "No frame with name or id 'scrolling_child_frame' found");
             WaitFor(FrameToExistAndBeSwitchedTo("scrolling_frame"), "No frame with name or id 'scrolling_frame' found");
-            element = driver.FindElement(By.Name("scroll_checkbox"));
+            element = Driver.FindElement(By.Name("scroll_checkbox"));
             element.Click();
             Assert.That(element.Selected);
         }
         finally
         {
-            driver.SwitchTo().DefaultContent();
+            Driver.SwitchTo().DefaultContent();
         }
     }
 
     [Test]
     public void AlertSelectTest()
     {
-        driver.Url = Urls.AlertsPage;
-        driver.FindElement(By.Id("value1")).Click();
-        IAlert alert = WaitFor<IAlert>(() => { return driver.SwitchTo().Alert(); }, "No alert found");
+        Driver.Url = Urls.AlertsPage;
+        Driver.FindElement(By.Id("value1")).Click();
+        IAlert alert = WaitFor<IAlert>(() => { return Driver.SwitchTo().Alert(); }, "No alert found");
         alert.Accept();
     }
 
     [Test]
     public void ShouldBeAbleToBrowseTransformedXml()
     {
-        driver.Url = Urls.XhtmlTestPage;
-        driver.FindElement(By.Id("linkId")).Click();
+        Driver.Url = Urls.XhtmlTestPage;
+        Driver.FindElement(By.Id("linkId")).Click();
 
         // Using transformed XML (Issue 1203)
-        driver.Url = Urls.WhereIs("transformable.xml");
-        driver.FindElement(By.Id("x")).Click();
+        Driver.Url = Urls.WhereIs("transformable.xml");
+        Driver.FindElement(By.Id("x")).Click();
         // Sleep is required; driver may not be fast enough after this Click().
         System.Threading.Thread.Sleep(2000);
-        Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+        Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
 
         // Act on the result page to make sure the window handling is still valid.
-        driver.FindElement(By.Id("linkId")).Click();
-        Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
+        Driver.FindElement(By.Id("linkId")).Click();
+        Assert.That(Driver.Title, Is.EqualTo("We Arrive Here"));
     }
 
     [Test]
@@ -185,10 +185,10 @@ public class IeSpecificTests : DriverTestFixture
     {
         IWebDriver secondDriver = new InternetExplorerDriver();
 
-        driver.Url = Urls.XhtmlTestPage;
+        Driver.Url = Urls.XhtmlTestPage;
         secondDriver.Url = Urls.FormsPage;
 
-        Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+        Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
         Assert.That(secondDriver.Title, Is.EqualTo("We Arrive Here"));
 
         // We only need to quit the second driver if the test passes
@@ -198,31 +198,31 @@ public class IeSpecificTests : DriverTestFixture
     [Test]
     public void ShouldPropagateSessionCookies()
     {
-        driver.Url = Urls.WhereIs("sessionCookie.html");
-        IWebElement setColorButton = driver.FindElement(By.Id("setcolorbutton"));
+        Driver.Url = Urls.WhereIs("sessionCookie.html");
+        IWebElement setColorButton = Driver.FindElement(By.Id("setcolorbutton"));
         setColorButton.Click();
-        IWebElement openWindowButton = driver.FindElement(By.Id("openwindowbutton"));
+        IWebElement openWindowButton = Driver.FindElement(By.Id("openwindowbutton"));
         openWindowButton.Click();
         System.Threading.Thread.Sleep(2000);
-        string startWindow = driver.CurrentWindowHandle;
-        driver.SwitchTo().Window("cookiedestwindow");
-        string bodyStyle = driver.FindElement(By.TagName("body")).GetAttribute("style");
-        driver.Close();
-        driver.SwitchTo().Window(startWindow);
+        string startWindow = Driver.CurrentWindowHandle;
+        Driver.SwitchTo().Window("cookiedestwindow");
+        string bodyStyle = Driver.FindElement(By.TagName("body")).GetAttribute("style");
+        Driver.Close();
+        Driver.SwitchTo().Window(startWindow);
         Assert.That(bodyStyle, Does.Contain("BACKGROUND-COLOR: #80ffff").Or.Contain("background-color: rgb(128, 255, 255)"));
     }
 
     [Test]
     public void ShouldHandleShowModalDialogWindows()
     {
-        driver.Url = Urls.AlertsPage;
-        string originalWindowHandle = driver.CurrentWindowHandle;
-        IWebElement element = driver.FindElement(By.Id("dialog"));
+        Driver.Url = Urls.AlertsPage;
+        string originalWindowHandle = Driver.CurrentWindowHandle;
+        IWebElement element = Driver.FindElement(By.Id("dialog"));
         element.Click();
 
-        WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
+        WaitFor(() => { return Driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
 
-        ReadOnlyCollection<string> windowHandles = driver.WindowHandles;
+        ReadOnlyCollection<string> windowHandles = Driver.WindowHandles;
         Assert.That(windowHandles, Has.Exactly(2).Items);
 
         string dialogHandle = string.Empty;
@@ -237,129 +237,129 @@ public class IeSpecificTests : DriverTestFixture
 
         Assert.That(dialogHandle, Is.Not.Empty);
 
-        driver.SwitchTo().Window(dialogHandle);
-        IWebElement closeElement = driver.FindElement(By.Id("close"));
+        Driver.SwitchTo().Window(dialogHandle);
+        IWebElement closeElement = Driver.FindElement(By.Id("close"));
         closeElement.Click();
 
-        WaitFor(() => { return driver.WindowHandles.Count == 1; }, "Window count was not 1");
+        WaitFor(() => { return Driver.WindowHandles.Count == 1; }, "Window count was not 1");
 
-        windowHandles = driver.WindowHandles;
+        windowHandles = Driver.WindowHandles;
         Assert.That(windowHandles, Has.One.Items);
-        driver.SwitchTo().Window(originalWindowHandle);
+        Driver.SwitchTo().Window(originalWindowHandle);
     }
 
     [Test]
     public void ScrollTest()
     {
-        driver.Url = Urls.WhereIs("scroll.html");
-        driver.FindElement(By.Id("line8")).Click();
-        Assert.That(driver.FindElement(By.Id("clicked")).Text, Is.EqualTo("line8"));
-        driver.FindElement(By.Id("line1")).Click();
-        Assert.That(driver.FindElement(By.Id("clicked")).Text, Is.EqualTo("line1"));
+        Driver.Url = Urls.WhereIs("scroll.html");
+        Driver.FindElement(By.Id("line8")).Click();
+        Assert.That(Driver.FindElement(By.Id("clicked")).Text, Is.EqualTo("line8"));
+        Driver.FindElement(By.Id("line1")).Click();
+        Assert.That(Driver.FindElement(By.Id("clicked")).Text, Is.EqualTo("line1"));
     }
 
     [Test]
     public void ShouldNotScrollOverflowElementsWhichAreVisible()
     {
-        driver.Url = Urls.WhereIs("scroll2.html");
-        var list = driver.FindElement(By.TagName("ul"));
+        Driver.Url = Urls.WhereIs("scroll2.html");
+        var list = Driver.FindElement(By.TagName("ul"));
         var item = list.FindElement(By.Id("desired"));
         item.Click();
-        Assert.That(((IJavaScriptExecutor)driver).ExecuteScript("return arguments[0].scrollTop;", list), Is.Zero, "Should not have scrolled");
+        Assert.That(((IJavaScriptExecutor)Driver).ExecuteScript("return arguments[0].scrollTop;", list), Is.Zero, "Should not have scrolled");
     }
 
     [Test]
     public void ShouldNotScrollIfAlreadyScrolledAndElementIsInView()
     {
-        driver.Url = Urls.WhereIs("scroll3.html");
-        driver.FindElement(By.Id("button1")).Click();
+        Driver.Url = Urls.WhereIs("scroll3.html");
+        Driver.FindElement(By.Id("button1")).Click();
         var scrollTop = GetScrollTop();
-        driver.FindElement(By.Id("button2")).Click();
+        Driver.FindElement(By.Id("button2")).Click();
         Assert.That(GetScrollTop(), Is.EqualTo(scrollTop));
     }
 
     [Test]
     public void ShouldBeAbleToHandleCascadingModalDialogs()
     {
-        driver.Url = Urls.WhereIs("modal_dialogs/modalindex.html");
-        string parentHandle = driver.CurrentWindowHandle;
+        Driver.Url = Urls.WhereIs("modal_dialogs/modalindex.html");
+        string parentHandle = Driver.CurrentWindowHandle;
 
         // Launch first modal
-        driver.FindElement(By.CssSelector("input[type='button'][value='btn1']")).Click();
-        WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
-        ReadOnlyCollection<string> windows = driver.WindowHandles;
+        Driver.FindElement(By.CssSelector("input[type='button'][value='btn1']")).Click();
+        WaitFor(() => { return Driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
+        ReadOnlyCollection<string> windows = Driver.WindowHandles;
         string firstWindowHandle = windows.Except(new List<string>() { parentHandle }).First();
-        driver.SwitchTo().Window(firstWindowHandle);
+        Driver.SwitchTo().Window(firstWindowHandle);
         Assert.That(windows, Has.Exactly(2).Items);
 
         // Launch second modal
-        driver.FindElement(By.CssSelector("input[type='button'][value='btn2']")).Click();
-        WaitFor(() => { return driver.WindowHandles.Count > 2; }, "Window count was not greater than 2");
-        ReadOnlyCollection<string> windows_1 = driver.WindowHandles;
+        Driver.FindElement(By.CssSelector("input[type='button'][value='btn2']")).Click();
+        WaitFor(() => { return Driver.WindowHandles.Count > 2; }, "Window count was not greater than 2");
+        ReadOnlyCollection<string> windows_1 = Driver.WindowHandles;
         string secondWindowHandle = windows_1.Except(windows).First();
-        driver.SwitchTo().Window(secondWindowHandle);
+        Driver.SwitchTo().Window(secondWindowHandle);
         Assert.That(windows_1, Has.Exactly(3).Items);
 
         // Launch third modal
-        driver.FindElement(By.CssSelector("input[type='button'][value='btn3']")).Click();
-        WaitFor(() => { return driver.WindowHandles.Count > 3; }, "Window count was not greater than 3");
-        ReadOnlyCollection<string> windows_2 = driver.WindowHandles;
+        Driver.FindElement(By.CssSelector("input[type='button'][value='btn3']")).Click();
+        WaitFor(() => { return Driver.WindowHandles.Count > 3; }, "Window count was not greater than 3");
+        ReadOnlyCollection<string> windows_2 = Driver.WindowHandles;
         string finalWindowHandle = windows_2.Except(windows_1).First();
         Assert.That(windows_2, Has.Exactly(4).Items);
 
-        driver.SwitchTo().Window(finalWindowHandle).Close();
-        driver.SwitchTo().Window(secondWindowHandle).Close();
-        driver.SwitchTo().Window(firstWindowHandle).Close();
-        driver.SwitchTo().Window(parentHandle);
+        Driver.SwitchTo().Window(finalWindowHandle).Close();
+        Driver.SwitchTo().Window(secondWindowHandle).Close();
+        Driver.SwitchTo().Window(firstWindowHandle).Close();
+        Driver.SwitchTo().Window(parentHandle);
     }
 
     [Test]
     public void ShouldBeAbleToHandleCascadingModalDialogsLaunchedWithJavaScriptLinks()
     {
-        driver.Url = Urls.WhereIs("modal_dialogs/modalindex.html");
-        string parentHandle = driver.CurrentWindowHandle;
+        Driver.Url = Urls.WhereIs("modal_dialogs/modalindex.html");
+        string parentHandle = Driver.CurrentWindowHandle;
 
         // Launch first modal
-        driver.FindElement(By.CssSelector("a[id='lnk1']")).Click();
-        WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
-        ReadOnlyCollection<string> windows = driver.WindowHandles;
+        Driver.FindElement(By.CssSelector("a[id='lnk1']")).Click();
+        WaitFor(() => { return Driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
+        ReadOnlyCollection<string> windows = Driver.WindowHandles;
         string firstWindowHandle = windows.Except(new List<string>() { parentHandle }).First();
-        driver.SwitchTo().Window(firstWindowHandle);
+        Driver.SwitchTo().Window(firstWindowHandle);
         Assert.That(windows, Has.Exactly(2).Items);
 
         // Launch second modal
-        driver.FindElement(By.CssSelector("a[id='lnk2']")).Click();
+        Driver.FindElement(By.CssSelector("a[id='lnk2']")).Click();
         System.Threading.Thread.Sleep(5000);
-        WaitFor(() => { return driver.WindowHandles.Count > 2; }, "Window count was not greater than 2");
-        ReadOnlyCollection<string> windows_1 = driver.WindowHandles;
+        WaitFor(() => { return Driver.WindowHandles.Count > 2; }, "Window count was not greater than 2");
+        ReadOnlyCollection<string> windows_1 = Driver.WindowHandles;
         string secondWindowHandle = windows_1.Except(windows).First();
-        driver.SwitchTo().Window(secondWindowHandle);
+        Driver.SwitchTo().Window(secondWindowHandle);
         Assert.That(windows_1, Has.Exactly(3).Items);
 
         // Launch third modal
-        driver.FindElement(By.CssSelector("a[id='lnk3']")).Click();
-        WaitFor(() => { return driver.WindowHandles.Count > 3; }, "Window count was not greater than 3");
-        ReadOnlyCollection<string> windows_2 = driver.WindowHandles;
+        Driver.FindElement(By.CssSelector("a[id='lnk3']")).Click();
+        WaitFor(() => { return Driver.WindowHandles.Count > 3; }, "Window count was not greater than 3");
+        ReadOnlyCollection<string> windows_2 = Driver.WindowHandles;
         string finalWindowHandle = windows_2.Except(windows_1).First();
         Assert.That(windows_2, Has.Exactly(4).Items);
 
-        driver.SwitchTo().Window(finalWindowHandle).Close();
-        driver.SwitchTo().Window(secondWindowHandle).Close();
-        driver.SwitchTo().Window(firstWindowHandle).Close();
-        driver.SwitchTo().Window(parentHandle);
+        Driver.SwitchTo().Window(finalWindowHandle).Close();
+        Driver.SwitchTo().Window(secondWindowHandle).Close();
+        Driver.SwitchTo().Window(firstWindowHandle).Close();
+        Driver.SwitchTo().Window(parentHandle);
     }
 
     [Test]
     public void TestInvisibleZOrder()
     {
-        driver.Url = Urls.WhereIs("elementObscuredByInvisibleElement.html");
-        IWebElement element = driver.FindElement(By.CssSelector("#gLink"));
+        Driver.Url = Urls.WhereIs("elementObscuredByInvisibleElement.html");
+        IWebElement element = Driver.FindElement(By.CssSelector("#gLink"));
         element.Click();
     }
 
     private long GetScrollTop()
     {
-        return (long)((IJavaScriptExecutor)driver).ExecuteScript("return document.body.scrollTop;");
+        return (long)((IJavaScriptExecutor)Driver).ExecuteScript("return document.body.scrollTop;");
     }
 
     private Func<bool> FrameToExistAndBeSwitchedTo(string frameName)
@@ -368,7 +368,7 @@ public class IeSpecificTests : DriverTestFixture
         {
             try
             {
-                driver.SwitchTo().Frame(frameName);
+                Driver.SwitchTo().Frame(frameName);
             }
             catch (NoSuchFrameException)
             {

@@ -28,7 +28,7 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [SetUp]
     public void SetupTest()
     {
-        if (driver is IActionExecutor actionExecutor)
+        if (Driver is IActionExecutor actionExecutor)
         {
             actionExecutor.ResetInputState();
         }
@@ -37,7 +37,7 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [Test]
     public void ShouldSetActivePointer()
     {
-        Actions actionProvider = new Actions(driver);
+        Actions actionProvider = new Actions(Driver);
         actionProvider.SetActivePointer(PointerKind.Mouse, "test mouse");
 
         PointerInputDevice device = actionProvider.GetActivePointer();
@@ -49,7 +49,7 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     public void ShouldAllowDraggingElementWithMouseMovesItToAnotherList()
     {
         PerformDragAndDropWithMouse();
-        IWebElement dragInto = driver.FindElement(By.Id("sortable1"));
+        IWebElement dragInto = Driver.FindElement(By.Id("sortable1"));
         Assert.That(dragInto.FindElements(By.TagName("li")), Has.Exactly(6).Items);
     }
 
@@ -59,7 +59,7 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     public void DraggingElementWithMouseFiresEvents()
     {
         PerformDragAndDropWithMouse();
-        IWebElement dragReporter = driver.FindElement(By.Id("dragging_reports"));
+        IWebElement dragReporter = Driver.FindElement(By.Id("dragging_reports"));
         // This is failing under HtmlUnit. A bug was filed.
         Assert.That(dragReporter.Text, Does.Match("Nothing happened\\. (?:DragOut *)+DropIn RightItem 3"));
     }
@@ -67,38 +67,38 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [Test]
     public void ShouldAllowDoubleClickThenNavigate()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement toDoubleClick = driver.FindElement(By.Id("doubleClickField"));
+        IWebElement toDoubleClick = Driver.FindElement(By.Id("doubleClickField"));
 
-        Actions actionProvider = new Actions(driver);
+        Actions actionProvider = new Actions(Driver);
         IAction dblClick = actionProvider.DoubleClick(toDoubleClick).Build();
 
         dblClick.Perform();
-        driver.Url = Urls.DroppableItems;
+        Driver.Url = Urls.DroppableItems;
     }
 
     [Test]
     public void ShouldAllowDragAndDrop()
     {
-        driver.Url = Urls.DroppableItems;
+        Driver.Url = Urls.DroppableItems;
 
         DateTime waitEndTime = DateTime.Now.Add(TimeSpan.FromSeconds(15));
 
-        while (!IsElementAvailable(driver, By.Id("draggable")) && (DateTime.Now < waitEndTime))
+        while (!IsElementAvailable(Driver, By.Id("draggable")) && (DateTime.Now < waitEndTime))
         {
             System.Threading.Thread.Sleep(200);
         }
 
-        if (!IsElementAvailable(driver, By.Id("draggable")))
+        if (!IsElementAvailable(Driver, By.Id("draggable")))
         {
             throw new Exception("Could not find draggable element after 15 seconds.");
         }
 
-        IWebElement toDrag = driver.FindElement(By.Id("draggable"));
-        IWebElement dropInto = driver.FindElement(By.Id("droppable"));
+        IWebElement toDrag = Driver.FindElement(By.Id("draggable"));
+        IWebElement dropInto = Driver.FindElement(By.Id("droppable"));
 
-        Actions actionProvider = new Actions(driver);
+        Actions actionProvider = new Actions(Driver);
 
         IAction holdDrag = actionProvider.ClickAndHold(toDrag).Build();
 
@@ -110,7 +110,7 @@ public class BasicMouseInterfaceTests : DriverTestFixture
         move.Perform();
         drop.Perform();
 
-        dropInto = driver.FindElement(By.Id("droppable"));
+        dropInto = Driver.FindElement(By.Id("droppable"));
         string text = dropInto.FindElement(By.TagName("p")).Text;
 
         Assert.That(text, Is.EqualTo("Dropped!"));
@@ -119,11 +119,11 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [Test]
     public void ShouldAllowDoubleClick()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement toDoubleClick = driver.FindElement(By.Id("doubleClickField"));
+        IWebElement toDoubleClick = Driver.FindElement(By.Id("doubleClickField"));
 
-        Actions actionProvider = new Actions(driver);
+        Actions actionProvider = new Actions(Driver);
         IAction dblClick = actionProvider.DoubleClick(toDoubleClick).Build();
 
         dblClick.Perform();
@@ -133,11 +133,11 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [Test]
     public void ShouldAllowContextClick()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement toContextClick = driver.FindElement(By.Id("doubleClickField"));
+        IWebElement toContextClick = Driver.FindElement(By.Id("doubleClickField"));
 
-        Actions actionProvider = new Actions(driver);
+        Actions actionProvider = new Actions(Driver);
         IAction contextClick = actionProvider.ContextClick(toContextClick).Build();
 
         contextClick.Perform();
@@ -148,11 +148,11 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
     public void ShouldAllowMoveAndClick()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement toClick = driver.FindElement(By.Id("clickField"));
+        IWebElement toClick = Driver.FindElement(By.Id("clickField"));
 
-        Actions actionProvider = new Actions(driver);
+        Actions actionProvider = new Actions(Driver);
         IAction contextClick = actionProvider.MoveToElement(toClick).Click().Build();
 
         contextClick.Perform();
@@ -163,14 +163,14 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
     public void ShouldAllowMoveAndClickDoubleWrappedElement()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement toClick = driver.FindElement(By.Id("clickField"));
+        IWebElement toClick = Driver.FindElement(By.Id("clickField"));
 
         toClick = new WebElementWrapper(toClick);
         toClick = new WebElementWrapper(toClick);
 
-        Actions actionProvider = new Actions(driver);
+        Actions actionProvider = new Actions(Driver);
         IAction contextClick = actionProvider.MoveToElement(toClick).Click().Build();
 
         contextClick.Perform();
@@ -183,12 +183,12 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Not working properly in RBE, works locally with pinned browsers")]
     public void ShouldMoveToLocation()
     {
-        driver.Url = Urls.MouseInteractionPage;
+        Driver.Url = Urls.MouseInteractionPage;
 
-        Actions actionProvider = new Actions(driver);
+        Actions actionProvider = new Actions(Driver);
         actionProvider.MoveToLocation(100, 200).Build().Perform();
 
-        IWebElement location = driver.FindElement(By.Id("absolute-location"));
+        IWebElement location = Driver.FindElement(By.Id("absolute-location"));
         var coordinates = location.Text.Split(',');
         Assert.That(coordinates[0].Trim(), Is.EqualTo("100"));
         Assert.That(coordinates[1].Trim(), Is.EqualTo("200"));
@@ -197,9 +197,9 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [Test]
     public void ShouldNotMoveToANullLocator()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        Assert.That(() => new Actions(driver).MoveToElement(null).Perform(), Throws.InstanceOf<ArgumentException>());
+        Assert.That(() => new Actions(Driver).MoveToElement(null).Perform(), Throws.InstanceOf<ArgumentException>());
     }
 
     [Test]
@@ -210,30 +210,30 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Drivers correctly click at current mouse position without another move, preserving mouse position.")]
     public void MousePositionIsNotPreservedInActionsChain()
     {
-        driver.Url = Urls.JavascriptPage;
-        IWebElement toMoveTo = driver.FindElement(By.Id("clickField"));
+        Driver.Url = Urls.JavascriptPage;
+        IWebElement toMoveTo = Driver.FindElement(By.Id("clickField"));
 
-        new Actions(driver).MoveToElement(toMoveTo).Perform();
-        Assert.That(() => new Actions(driver).Click().Perform(), Throws.InstanceOf<WebDriverException>());
+        new Actions(Driver).MoveToElement(toMoveTo).Perform();
+        Assert.That(() => new Actions(Driver).Click().Perform(), Throws.InstanceOf<WebDriverException>());
     }
 
     [Test]
     [IgnoreBrowser(Browser.All, "Behaviour not finalized yet regarding linked images.")]
     public void MovingIntoAnImageEnclosedInALink()
     {
-        driver.Url = Urls.LinkedImage;
+        Driver.Url = Urls.LinkedImage;
 
         // Note: For some reason, the Accessibility API in Firefox will not be available before we
         // click on something. As a work-around, click on a different element just to get going.
-        driver.FindElement(By.Id("linkToAnchorOnThisPage")).Click();
+        Driver.FindElement(By.Id("linkToAnchorOnThisPage")).Click();
 
-        IWebElement linkElement = driver.FindElement(By.Id("linkWithEnclosedImage"));
+        IWebElement linkElement = Driver.FindElement(By.Id("linkWithEnclosedImage"));
 
         // Image is 644 x 41 - move towards the end.
         // Note: The width of the link element itself is correct - 644 pixels. However,
         // the height is 17 pixels and the rectangle containing it is *underneath* the image.
         // For this reason, this action will fail.
-        new Actions(driver).MoveToElement(linkElement, 500, 30).Click().Perform();
+        new Actions(Driver).MoveToElement(linkElement, 500, 30).Click().Perform();
 
         WaitFor(TitleToBe("We Arrive Here"), "Title was not expected value");
     }
@@ -246,27 +246,27 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Moving outside of view port throws exception in spec-compliant driver")]
     public void MovingMouseBackAndForthPastViewPort()
     {
-        driver.Url = Urls.WhereIs("veryLargeCanvas.html");
+        Driver.Url = Urls.WhereIs("veryLargeCanvas.html");
 
-        IWebElement firstTarget = driver.FindElement(By.Id("r1"));
-        new Actions(driver).MoveToElement(firstTarget).Click().Perform();
+        IWebElement firstTarget = Driver.FindElement(By.Id("r1"));
+        new Actions(Driver).MoveToElement(firstTarget).Click().Perform();
 
-        IWebElement resultArea = driver.FindElement(By.Id("result"));
+        IWebElement resultArea = Driver.FindElement(By.Id("result"));
         String expectedEvents = "First";
         WaitFor(ElementTextToEqual(resultArea, expectedEvents), "Element text did not equal " + expectedEvents);
 
         // Move to element with id 'r2', at (2500, 50) to (2580, 100)
-        new Actions(driver).MoveByOffset(2540 - 150, 75 - 125).Click().Perform();
+        new Actions(Driver).MoveByOffset(2540 - 150, 75 - 125).Click().Perform();
         expectedEvents += " Second";
         WaitFor(ElementTextToEqual(resultArea, expectedEvents), "Element text did not equal " + expectedEvents);
 
         // Move to element with id 'r3' at (60, 1500) to (140, 1550)
-        new Actions(driver).MoveByOffset(100 - 2540, 1525 - 75).Click().Perform();
+        new Actions(Driver).MoveByOffset(100 - 2540, 1525 - 75).Click().Perform();
         expectedEvents += " Third";
         WaitFor(ElementTextToEqual(resultArea, expectedEvents), "Element text did not equal " + expectedEvents);
 
         // Move to element with id 'r4' at (220,180) to (320, 230)
-        new Actions(driver).MoveByOffset(270 - 100, 205 - 1525).Click().Perform();
+        new Actions(Driver).MoveByOffset(270 - 100, 205 - 1525).Click().Perform();
         expectedEvents += " Fourth";
         WaitFor(ElementTextToEqual(resultArea, expectedEvents), "Element text did not equal " + expectedEvents);
     }
@@ -274,54 +274,54 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [Test]
     public void ShouldClickElementInIFrame()
     {
-        driver.Url = Urls.ClicksPage;
+        Driver.Url = Urls.ClicksPage;
         try
         {
-            driver.SwitchTo().Frame("source");
-            IWebElement element = driver.FindElement(By.Id("otherframe"));
-            new Actions(driver).MoveToElement(element).Click().Perform();
-            driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
-            WaitFor(() => { return driver.FindElement(By.Id("span")).Text == "An inline element"; }, "Could not find element with text 'An inline element'");
+            Driver.SwitchTo().Frame("source");
+            IWebElement element = Driver.FindElement(By.Id("otherframe"));
+            new Actions(Driver).MoveToElement(element).Click().Perform();
+            Driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
+            WaitFor(() => { return Driver.FindElement(By.Id("span")).Text == "An inline element"; }, "Could not find element with text 'An inline element'");
         }
         finally
         {
-            driver.SwitchTo().DefaultContent();
+            Driver.SwitchTo().DefaultContent();
         }
     }
 
     [Test]
     public void ShouldAllowUsersToHoverOverElements()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement element = driver.FindElement(By.Id("menu1"));
+        IWebElement element = Driver.FindElement(By.Id("menu1"));
 
-        IWebElement item = driver.FindElement(By.Id("item1"));
+        IWebElement item = Driver.FindElement(By.Id("item1"));
         Assert.That(item.Text, Is.EqualTo(""));
 
-        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.background = 'green'", element);
-        Actions actionBuilder = new Actions(driver);
+        ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].style.background = 'green'", element);
+        Actions actionBuilder = new Actions(Driver);
         actionBuilder.MoveToElement(element).Perform();
 
-        item = driver.FindElement(By.Id("item1"));
+        item = Driver.FindElement(By.Id("item1"));
         Assert.That(item.Text, Is.EqualTo("Item 1"));
     }
 
     [Test]
     public void HoverPersists()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
         // Move to a different element to make sure the mouse is not over the
         // element with id 'item1' (from a previous test).
-        new Actions(driver).MoveToElement(driver.FindElement(By.Id("dynamo"))).Perform();
+        new Actions(Driver).MoveToElement(Driver.FindElement(By.Id("dynamo"))).Perform();
 
-        IWebElement element = driver.FindElement(By.Id("menu1"));
+        IWebElement element = Driver.FindElement(By.Id("menu1"));
 
-        IWebElement item = driver.FindElement(By.Id("item1"));
+        IWebElement item = Driver.FindElement(By.Id("item1"));
         Assert.That(item.Text, Is.Empty);
 
-        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.background = 'green'", element);
-        new Actions(driver).MoveToElement(element).Perform();
+        ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].style.background = 'green'", element);
+        new Actions(Driver).MoveToElement(element).Perform();
 
         // Intentionally wait to make sure hover persists.
         System.Threading.Thread.Sleep(2000);
@@ -334,16 +334,16 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [Test]
     public void MovingMouseByRelativeOffset()
     {
-        driver.Url = Urls.MouseTrackerPage;
+        Driver.Url = Urls.MouseTrackerPage;
 
-        IWebElement trackerDiv = driver.FindElement(By.Id("mousetracker"));
-        new Actions(driver).MoveToElement(trackerDiv).Build().Perform();
+        IWebElement trackerDiv = Driver.FindElement(By.Id("mousetracker"));
+        new Actions(Driver).MoveToElement(trackerDiv).Build().Perform();
 
-        IWebElement reporter = driver.FindElement(By.Id("status"));
+        IWebElement reporter = Driver.FindElement(By.Id("status"));
 
         WaitFor(FuzzyMatchingOfCoordinates(reporter, 50, 200), "Coordinate matching was not within tolerance");
 
-        new Actions(driver).MoveByOffset(10, 20).Build().Perform();
+        new Actions(Driver).MoveByOffset(10, 20).Build().Perform();
 
         WaitFor(FuzzyMatchingOfCoordinates(reporter, 60, 220), "Coordinate matching was not within tolerance");
     }
@@ -351,14 +351,14 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [Test]
     public void MovingMouseToRelativeElementOffset()
     {
-        driver.Url = Urls.MouseTrackerPage;
+        Driver.Url = Urls.MouseTrackerPage;
 
-        IWebElement trackerDiv = driver.FindElement(By.Id("mousetracker"));
+        IWebElement trackerDiv = Driver.FindElement(By.Id("mousetracker"));
         Size size = trackerDiv.Size;
 
-        new Actions(driver).MoveToElement(trackerDiv, 95 - size.Width / 2, 195 - size.Height / 2).Build().Perform();
+        new Actions(Driver).MoveToElement(trackerDiv, 95 - size.Width / 2, 195 - size.Height / 2).Build().Perform();
 
-        IWebElement reporter = driver.FindElement(By.Id("status"));
+        IWebElement reporter = Driver.FindElement(By.Id("status"));
 
         WaitFor(FuzzyMatchingOfCoordinates(reporter, 95, 195), "Coordinate matching was not within tolerance");
     }
@@ -366,14 +366,14 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [Test]
     public void MovingMouseToRelativeZeroElementOffset()
     {
-        driver.Url = Urls.MouseTrackerPage;
+        Driver.Url = Urls.MouseTrackerPage;
 
-        IWebElement trackerDiv = driver.FindElement(By.Id("mousetracker"));
+        IWebElement trackerDiv = Driver.FindElement(By.Id("mousetracker"));
         Size size = trackerDiv.Size;
 
-        new Actions(driver).MoveToElement(trackerDiv, -size.Width / 2, -size.Height / 2).Perform();
+        new Actions(Driver).MoveToElement(trackerDiv, -size.Width / 2, -size.Height / 2).Perform();
 
-        IWebElement reporter = driver.FindElement(By.Id("status"));
+        IWebElement reporter = Driver.FindElement(By.Id("status"));
 
         WaitFor(FuzzyMatchingOfCoordinates(reporter, 0, 0), "Coordinate matching was not within tolerance");
     }
@@ -382,11 +382,11 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedBeforeTest = true)]
     public void MoveRelativeToBody()
     {
-        driver.Url = Urls.MouseTrackerPage;
+        Driver.Url = Urls.MouseTrackerPage;
 
-        new Actions(driver).MoveByOffset(50, 100).Build().Perform();
+        new Actions(Driver).MoveByOffset(50, 100).Build().Perform();
 
-        IWebElement reporter = driver.FindElement(By.Id("status"));
+        IWebElement reporter = Driver.FindElement(By.Id("status"));
 
         WaitFor(FuzzyMatchingOfCoordinates(reporter, 50, 100), "Coordinate matching was not within tolerance");
     }
@@ -394,10 +394,10 @@ public class BasicMouseInterfaceTests : DriverTestFixture
     [Test]
     public void MoveMouseByOffsetOverAndOutOfAnElement()
     {
-        driver.Url = Urls.MouseOverPage;
+        Driver.Url = Urls.MouseOverPage;
 
-        IWebElement greenbox = driver.FindElement(By.Id("greenbox"));
-        IWebElement redbox = driver.FindElement(By.Id("redbox"));
+        IWebElement greenbox = Driver.FindElement(By.Id("greenbox"));
+        IWebElement redbox = Driver.FindElement(By.Id("redbox"));
         Point greenboxPosition = greenbox.Location;
         Point redboxPosition = redbox.Location;
         int shiftX = redboxPosition.X - greenboxPosition.X;
@@ -407,33 +407,33 @@ public class BasicMouseInterfaceTests : DriverTestFixture
         int xOffset = 2 - greenBoxSize.Width / 2;
         int yOffset = 2 - greenBoxSize.Height / 2;
 
-        new Actions(driver).MoveToElement(greenbox, xOffset, yOffset).Perform();
+        new Actions(Driver).MoveToElement(greenbox, xOffset, yOffset).Perform();
         WaitFor(ElementColorToBe(redbox, Color.Green), "element color was not green");
 
-        new Actions(driver).MoveToElement(greenbox, xOffset, yOffset).MoveByOffset(shiftX, shiftY).Perform();
+        new Actions(Driver).MoveToElement(greenbox, xOffset, yOffset).MoveByOffset(shiftX, shiftY).Perform();
         WaitFor(ElementColorToBe(redbox, Color.Red), "element color was not red");
 
-        new Actions(driver).MoveToElement(greenbox, xOffset, yOffset).MoveByOffset(shiftX, shiftY).MoveByOffset(-shiftX, -shiftY).Perform();
+        new Actions(Driver).MoveToElement(greenbox, xOffset, yOffset).MoveByOffset(shiftX, shiftY).MoveByOffset(-shiftX, -shiftY).Perform();
         WaitFor(ElementColorToBe(redbox, Color.Green), "element color was not red");
     }
 
     [Test]
     public void CanMouseOverAndOutOfAnElement()
     {
-        driver.Url = Urls.MouseOverPage;
+        Driver.Url = Urls.MouseOverPage;
 
-        IWebElement greenbox = driver.FindElement(By.Id("greenbox"));
-        IWebElement redbox = driver.FindElement(By.Id("redbox"));
+        IWebElement greenbox = Driver.FindElement(By.Id("greenbox"));
+        IWebElement redbox = Driver.FindElement(By.Id("redbox"));
         Size greenSize = greenbox.Size;
         Size redSize = redbox.Size;
 
-        new Actions(driver).MoveToElement(greenbox, 1 - greenSize.Width / 2, 1 - greenSize.Height / 2).Perform();
+        new Actions(Driver).MoveToElement(greenbox, 1 - greenSize.Width / 2, 1 - greenSize.Height / 2).Perform();
         Assert.That(redbox.GetCssValue("background-color"), Is.EqualTo("rgba(0, 128, 0, 1)").Or.EqualTo("rgb(0, 128, 0)"));
 
-        new Actions(driver).MoveToElement(redbox).Perform();
+        new Actions(Driver).MoveToElement(redbox).Perform();
         Assert.That(redbox.GetCssValue("background-color"), Is.EqualTo("rgba(255, 0, 0, 1)").Or.EqualTo("rgb(255, 0, 0)"));
 
-        new Actions(driver).MoveToElement(redbox, redSize.Width / 2 + 2, redSize.Height / 2 + 2).Perform();
+        new Actions(Driver).MoveToElement(redbox, redSize.Width / 2 + 2, redSize.Height / 2 + 2).Perform();
         Assert.That(redbox.GetCssValue("background-color"), Is.EqualTo("rgba(0, 128, 0, 1)").Or.EqualTo("rgb(0, 128, 0)"));
     }
 
@@ -458,20 +458,20 @@ public class BasicMouseInterfaceTests : DriverTestFixture
 
     private void PerformDragAndDropWithMouse()
     {
-        driver.Url = Urls.DraggableLists;
+        Driver.Url = Urls.DraggableLists;
 
-        IWebElement dragReporter = driver.FindElement(By.Id("dragging_reports"));
+        IWebElement dragReporter = Driver.FindElement(By.Id("dragging_reports"));
 
-        IWebElement toDrag = driver.FindElement(By.Id("rightitem-3"));
-        IWebElement dragInto = driver.FindElement(By.Id("sortable1"));
+        IWebElement toDrag = Driver.FindElement(By.Id("rightitem-3"));
+        IWebElement dragInto = Driver.FindElement(By.Id("sortable1"));
 
-        IAction holdItem = new Actions(driver).ClickAndHold(toDrag).Build();
+        IAction holdItem = new Actions(Driver).ClickAndHold(toDrag).Build();
 
-        IAction moveToSpecificItem = new Actions(driver).MoveToElement(driver.FindElement(By.Id("leftitem-4"))).Build();
+        IAction moveToSpecificItem = new Actions(Driver).MoveToElement(Driver.FindElement(By.Id("leftitem-4"))).Build();
 
-        IAction moveToOtherList = new Actions(driver).MoveToElement(dragInto).Build();
+        IAction moveToOtherList = new Actions(Driver).MoveToElement(dragInto).Build();
 
-        IAction drop = new Actions(driver).Release(dragInto).Build();
+        IAction drop = new Actions(Driver).Release(dragInto).Build();
 
         Assert.That(dragReporter.Text, Is.EqualTo("Nothing happened."));
 
@@ -498,7 +498,7 @@ public class BasicMouseInterfaceTests : DriverTestFixture
 
     private Func<bool> TitleToBe(string desiredTitle)
     {
-        return () => driver.Title == desiredTitle;
+        return () => Driver.Title == desiredTitle;
     }
 
     private Func<bool> ValueToBe(IWebElement element, string desiredValue)

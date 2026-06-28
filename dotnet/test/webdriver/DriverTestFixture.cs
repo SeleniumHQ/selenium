@@ -37,13 +37,13 @@ public abstract class DriverTestFixture
 
     public string formsTitle = "We Leave From Here";
 
-    public IWebDriver driver { get; set; }
+    protected internal IWebDriver Driver { get; set; }
 
     public bool IsNativeEventsEnabled
     {
         get
         {
-            if (driver is IHasCapabilities capabilitiesDriver &&
+            if (Driver is IHasCapabilities capabilitiesDriver &&
                 capabilitiesDriver.Capabilities.HasCapability(CapabilityType.HasNativeEvents) &&
                 (bool)capabilitiesDriver.Capabilities.GetCapability(CapabilityType.HasNativeEvents))
             {
@@ -57,14 +57,14 @@ public abstract class DriverTestFixture
     [OneTimeSetUp]
     public void SetUp()
     {
-        driver = EnvironmentManager.Instance.GetCurrentDriver();
+        Driver = EnvironmentManager.Instance.GetCurrentDriver();
     }
 
     [OneTimeTearDown]
     public void TearDown()
     {
         EnvironmentManager.Instance.CloseCurrentDriver();
-        driver?.Dispose();
+        Driver?.Dispose();
     }
 
     [TearDown]
@@ -72,8 +72,8 @@ public abstract class DriverTestFixture
     {
         if (TestContext.CurrentContext.Result.Outcome == Error)
         {
-            driver?.Dispose();
-            driver = EnvironmentManager.Instance.CreateFreshDriver();
+            Driver?.Dispose();
+            Driver = EnvironmentManager.Instance.CreateFreshDriver();
         }
     }
 
@@ -82,7 +82,7 @@ public abstract class DriverTestFixture
     /// </summary>
     protected void CreateFreshDriver()
     {
-        driver = EnvironmentManager.Instance.CreateFreshDriver();
+        Driver = EnvironmentManager.Instance.CreateFreshDriver();
     }
 
     protected void WaitFor(Func<bool> waitFunction, string timeoutMessage)
@@ -97,7 +97,7 @@ public abstract class DriverTestFixture
 
     protected T WaitFor<T>(Func<T> waitFunction, TimeSpan timeout, string timeoutMessage)
     {
-        var waiter = new WebDriverWait(driver, timeout)
+        var waiter = new WebDriverWait(Driver, timeout)
         {
             PollingInterval = TimeSpan.FromMilliseconds(100),
             Message = $"Condition timed out: {timeoutMessage}",

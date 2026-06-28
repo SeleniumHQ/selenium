@@ -27,8 +27,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindElementByXPath()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement element = driver.FindElement(By.Name("form2"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement element = Driver.FindElement(By.Name("form2"));
         IWebElement child = element.FindElement(By.XPath("select"));
         Assert.That(child.GetAttribute("id"), Is.EqualTo("2"));
     }
@@ -36,9 +36,9 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindingElementsOnElementByXPathShouldFindTopLevelElements()
     {
-        driver.Url = Urls.SimpleTestPage;
-        IWebElement parent = driver.FindElement(By.Id("multiline"));
-        ReadOnlyCollection<IWebElement> allParaElements = driver.FindElements(By.XPath("//p"));
+        Driver.Url = Urls.SimpleTestPage;
+        IWebElement parent = Driver.FindElement(By.Id("multiline"));
+        ReadOnlyCollection<IWebElement> allParaElements = Driver.FindElements(By.XPath("//p"));
         ReadOnlyCollection<IWebElement> children = parent.FindElements(By.XPath("//p"));
         Assert.That(children, Has.Exactly(allParaElements.Count).Items);
     }
@@ -46,8 +46,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindingDotSlashElementsOnElementByXPathShouldFindNotTopLevelElements()
     {
-        driver.Url = Urls.SimpleTestPage;
-        IWebElement parent = driver.FindElement(By.Id("multiline"));
+        Driver.Url = Urls.SimpleTestPage;
+        IWebElement parent = Driver.FindElement(By.Id("multiline"));
 
         ReadOnlyCollection<IWebElement> children = parent.FindElements(By.XPath("./p"));
         Assert.That(children, Has.One.Items);
@@ -57,8 +57,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindElementByXPathWhenNoMatch()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement element = driver.FindElement(By.Name("form2"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement element = Driver.FindElement(By.Name("form2"));
 
         Assert.That(
             () => element.FindElement(By.XPath("select/x")),
@@ -68,8 +68,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindElementsByXPath()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement element = driver.FindElement(By.Name("form2"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement element = Driver.FindElement(By.Name("form2"));
 
         ReadOnlyCollection<IWebElement> children = element.FindElements(By.XPath("select/option"));
         Assert.That(children, Has.Exactly(8).Items);
@@ -80,8 +80,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindElementsByXPathWhenNoMatch()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement element = driver.FindElement(By.Name("form2"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement element = Driver.FindElement(By.Name("form2"));
         ReadOnlyCollection<IWebElement> children = element.FindElements(By.XPath("select/x"));
         Assert.That(children, Is.Empty);
     }
@@ -89,8 +89,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindElementByName()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement element = driver.FindElement(By.Name("form2"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement element = Driver.FindElement(By.Name("form2"));
         IWebElement child = element.FindElement(By.Name("selectomatic"));
         Assert.That(child.GetAttribute("id"), Is.EqualTo("2"));
     }
@@ -98,8 +98,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindElementsByName()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement element = driver.FindElement(By.Name("form2"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement element = Driver.FindElement(By.Name("form2"));
 
         ReadOnlyCollection<IWebElement> children = element.FindElements(By.Name("selectomatic"));
         Assert.That(children, Has.Exactly(2).Items);
@@ -108,8 +108,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindElementById()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement element = driver.FindElement(By.Name("form2"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement element = Driver.FindElement(By.Name("form2"));
 
         IWebElement child = element.FindElement(By.Id("2"));
         Assert.That(child.GetAttribute("name"), Is.EqualTo("selectomatic"));
@@ -118,8 +118,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindElementByIdWhenMultipleMatchesExist()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement element = driver.FindElement(By.Id("test_id_div"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement element = Driver.FindElement(By.Id("test_id_div"));
 
         IWebElement child = element.FindElement(By.Id("test_id"));
         Assert.That(child.Text, Is.EqualTo("inside"));
@@ -128,8 +128,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindElementByIdWhenIdContainsNonAlphanumericCharacters()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement element = driver.FindElement(By.Id("test_special_chars"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement element = Driver.FindElement(By.Id("test_special_chars"));
 
         IWebElement childWithSpaces = element.FindElement(By.Id("white space"));
         Assert.That(childWithSpaces.Text, Does.Contain("space"));
@@ -140,8 +140,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindElementByIdWhenNoMatchInContext()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement element = driver.FindElement(By.Id("test_id_div"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement element = Driver.FindElement(By.Id("test_id_div"));
 
         Assert.That(
             () => element.FindElement(By.Id("test_id_out")),
@@ -151,8 +151,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindElementsById()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement element = driver.FindElement(By.Name("form2"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement element = Driver.FindElement(By.Name("form2"));
         ReadOnlyCollection<IWebElement> children = element.FindElements(By.Id("2"));
         Assert.That(children, Has.Exactly(2).Items);
     }
@@ -160,8 +160,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindElementsByIdWithNonAlphanumericCharacters()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement element = driver.FindElement(By.Id("test_special_chars"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement element = Driver.FindElement(By.Id("test_special_chars"));
         ReadOnlyCollection<IWebElement> children = element.FindElements(By.Id("white space"));
         Assert.That(children, Has.One.Items);
         ReadOnlyCollection<IWebElement> children2 = element.FindElements(By.Id("css#.chars"));
@@ -171,8 +171,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindElementByLinkText()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement element = driver.FindElement(By.Name("div1"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement element = Driver.FindElement(By.Name("div1"));
 
         IWebElement child = element.FindElement(By.LinkText("hello world"));
         Assert.That(child.GetAttribute("name"), Is.EqualTo("link1"));
@@ -181,8 +181,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindElementsByLinkText()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement element = driver.FindElement(By.Name("div1"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement element = Driver.FindElement(By.Name("div1"));
         ReadOnlyCollection<IWebElement> elements = element.FindElements(By.LinkText("hello world"));
 
         Assert.That(elements, Has.Exactly(2).Items);
@@ -193,8 +193,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindChildElementsById()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement parent = driver.FindElement(By.Id("test_id_div"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement parent = Driver.FindElement(By.Id("test_id_div"));
 
         IWebElement element = parent.FindElement(By.Id("test_id"));
         Assert.That(element.Text, Is.EqualTo("inside"));
@@ -203,8 +203,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void ShouldNotReturnRootElementWhenFindingChildrenById()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement parent = driver.FindElement(By.Id("test_id"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement parent = Driver.FindElement(By.Id("test_id"));
 
         Assert.That(parent.FindElements(By.Id("test_id")), Is.Empty);
         Assert.That(
@@ -215,8 +215,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindChildElementsByClassName()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement parent = driver.FindElement(By.Name("classes"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement parent = Driver.FindElement(By.Name("classes"));
 
         IWebElement element = parent.FindElement(By.ClassName("one"));
 
@@ -226,8 +226,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindChildrenByClassName()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement parent = driver.FindElement(By.Name("classes"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement parent = Driver.FindElement(By.Name("classes"));
 
         ReadOnlyCollection<IWebElement> elements = parent.FindElements(By.ClassName("one"));
 
@@ -237,8 +237,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindChildElementsByTagName()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement parent = driver.FindElement(By.Name("div1"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement parent = Driver.FindElement(By.Name("div1"));
 
         IWebElement element = parent.FindElement(By.TagName("a"));
 
@@ -248,8 +248,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindChildrenByTagName()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement parent = driver.FindElement(By.Name("div1"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement parent = Driver.FindElement(By.Name("div1"));
 
         ReadOnlyCollection<IWebElement> elements = parent.FindElements(By.TagName("a"));
 
@@ -259,8 +259,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindAnElementByCssSelector()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement parent = driver.FindElement(By.Name("form2"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement parent = Driver.FindElement(By.Name("form2"));
 
         IWebElement element = parent.FindElement(By.CssSelector("*[name=\"selectomatic\"]"));
 
@@ -270,8 +270,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindAnElementByCss3Selector()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement parent = driver.FindElement(By.Name("form2"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement parent = Driver.FindElement(By.Name("form2"));
 
         IWebElement element = parent.FindElement(By.CssSelector("*[name^=\"selecto\"]"));
 
@@ -281,8 +281,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindElementsByCssSelector()
     {
-        driver.Url = Urls.NestedPage;
-        IWebElement parent = driver.FindElement(By.Name("form2"));
+        Driver.Url = Urls.NestedPage;
+        IWebElement parent = Driver.FindElement(By.Name("form2"));
 
         ReadOnlyCollection<IWebElement> elements = parent.FindElements(By.CssSelector("*[name=\"selectomatic\"]"));
 
@@ -292,8 +292,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindChildrenOfANode()
     {
-        driver.Url = Urls.SelectableItemsPage;
-        ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.XPath("/html/head"));
+        Driver.Url = Urls.SelectableItemsPage;
+        ReadOnlyCollection<IWebElement> elements = Driver.FindElements(By.XPath("/html/head"));
         IWebElement head = elements[0];
 
         ReadOnlyCollection<IWebElement> importedScripts = head.FindElements(By.TagName("script"));
@@ -303,8 +303,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void ReturnAnEmptyListWhenThereAreNoChildrenOfANode()
     {
-        driver.Url = Urls.XhtmlTestPage;
-        IWebElement table = driver.FindElement(By.Id("table"));
+        Driver.Url = Urls.XhtmlTestPage;
+        IWebElement table = Driver.FindElement(By.Id("table"));
 
         ReadOnlyCollection<IWebElement> rows = table.FindElements(By.TagName("tr"));
         Assert.That(rows, Is.Empty);
@@ -313,16 +313,16 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void ShouldFindGrandChildren()
     {
-        driver.Url = Urls.FormsPage;
-        IWebElement form = driver.FindElement(By.Id("nested_form"));
+        Driver.Url = Urls.FormsPage;
+        IWebElement form = Driver.FindElement(By.Id("nested_form"));
         form.FindElement(By.Name("x"));
     }
 
     [Test]
     public void ShouldNotFindElementOutSideTree()
     {
-        driver.Url = Urls.FormsPage;
-        IWebElement element = driver.FindElement(By.Name("login"));
+        Driver.Url = Urls.FormsPage;
+        IWebElement element = Driver.FindElement(By.Name("login"));
         Assert.That(
             () => element.FindElement(By.Name("x")),
             Throws.InstanceOf<NoSuchElementException>());
@@ -331,8 +331,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindingByTagNameShouldNotIncludeParentElementIfSameTagType()
     {
-        driver.Url = Urls.XhtmlTestPage;
-        IWebElement parent = driver.FindElement(By.Id("my_span"));
+        Driver.Url = Urls.XhtmlTestPage;
+        IWebElement parent = Driver.FindElement(By.Id("my_span"));
 
         Assert.That(parent.FindElements(By.TagName("div")), Has.Exactly(2).Items);
         Assert.That(parent.FindElements(By.TagName("span")), Has.Exactly(2).Items);
@@ -341,8 +341,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindingByCssShouldNotIncludeParentElementIfSameTagType()
     {
-        driver.Url = Urls.XhtmlTestPage;
-        IWebElement parent = driver.FindElement(By.CssSelector("div#parent"));
+        Driver.Url = Urls.XhtmlTestPage;
+        IWebElement parent = Driver.FindElement(By.CssSelector("div#parent"));
         IWebElement child = parent.FindElement(By.CssSelector("div"));
 
         Assert.That(child.GetAttribute("id"), Is.EqualTo("child"));
@@ -351,8 +351,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void FindMultipleElements()
     {
-        driver.Url = Urls.SimpleTestPage;
-        IWebElement elem = driver.FindElement(By.Id("links"));
+        Driver.Url = Urls.SimpleTestPage;
+        IWebElement elem = Driver.FindElement(By.Id("links"));
 
         ReadOnlyCollection<IWebElement> elements = elem.FindElements(By.PartialLinkText("link"));
         Assert.That(elements, Is.Not.Null);
@@ -363,8 +363,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Safari does not trim")]
     public void LinkWithLeadingSpaces()
     {
-        driver.Url = Urls.SimpleTestPage;
-        IWebElement elem = driver.FindElement(By.Id("links"));
+        Driver.Url = Urls.SimpleTestPage;
+        IWebElement elem = Driver.FindElement(By.Id("links"));
 
         IWebElement res = elem.FindElement(By.PartialLinkText("link with leading space"));
         Assert.That(res.Text, Is.EqualTo("link with leading space"));
@@ -374,8 +374,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Safari does not trim")]
     public void LinkWithTrailingSpace()
     {
-        driver.Url = Urls.SimpleTestPage;
-        IWebElement elem = driver.FindElement(By.Id("links"));
+        Driver.Url = Urls.SimpleTestPage;
+        IWebElement elem = Driver.FindElement(By.Id("links"));
 
         IWebElement res = elem.FindElement(By.PartialLinkText("link with trailing space"));
         Assert.That(res.Text, Is.EqualTo("link with trailing space"));
@@ -384,8 +384,8 @@ public class ChildrenFindingTests : DriverTestFixture
     [Test]
     public void ElementCanGetLinkByLinkTestIgnoringTrailingWhitespace()
     {
-        driver.Url = Urls.SimpleTestPage;
-        IWebElement elem = driver.FindElement(By.Id("links"));
+        Driver.Url = Urls.SimpleTestPage;
+        IWebElement elem = Driver.FindElement(By.Id("links"));
 
         IWebElement link = elem.FindElement(By.LinkText("link with trailing space"));
         Assert.That(link.GetAttribute("id"), Is.EqualTo("linkWithTrailingSpace"));

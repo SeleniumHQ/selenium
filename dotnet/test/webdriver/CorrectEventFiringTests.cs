@@ -30,11 +30,11 @@ public class CorrectEventFiringTests : DriverTestFixture
     [Test]
     public void ShouldFireFocusEventWhenClicking()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        ClickOnElementWhichRecordsEvents(driver);
+        ClickOnElementWhichRecordsEvents(Driver);
 
-        AssertEventFired("focus", driver);
+        AssertEventFired("focus", Driver);
     }
 
     [Test]
@@ -51,9 +51,9 @@ public class CorrectEventFiringTests : DriverTestFixture
             AssertEventFired("focus", driver2);
 
             // non-topmost
-            driver.Url = Urls.JavascriptPage;
-            ClickOnElementWhichRecordsEvents(driver);
-            AssertEventFired("focus", driver);
+            Driver.Url = Urls.JavascriptPage;
+            ClickOnElementWhichRecordsEvents(Driver);
+            AssertEventFired("focus", Driver);
 
         }
         finally
@@ -65,76 +65,76 @@ public class CorrectEventFiringTests : DriverTestFixture
     [Test]
     public void ShouldFireClickEventWhenClicking()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        ClickOnElementWhichRecordsEvents(driver);
+        ClickOnElementWhichRecordsEvents(Driver);
 
-        AssertEventFired("click", driver);
+        AssertEventFired("click", Driver);
     }
 
     [Test]
     public void ShouldFireMouseDownEventWhenClicking()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        ClickOnElementWhichRecordsEvents(driver);
+        ClickOnElementWhichRecordsEvents(Driver);
 
-        AssertEventFired("mousedown", driver);
+        AssertEventFired("mousedown", Driver);
     }
 
     [Test]
     public void ShouldFireMouseUpEventWhenClicking()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        ClickOnElementWhichRecordsEvents(driver);
+        ClickOnElementWhichRecordsEvents(Driver);
 
-        AssertEventFired("mouseup", driver);
+        AssertEventFired("mouseup", Driver);
     }
 
     [Test]
     public void ShouldFireMouseOverEventWhenClicking()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        ClickOnElementWhichRecordsEvents(driver);
+        ClickOnElementWhichRecordsEvents(Driver);
 
-        AssertEventFired("mouseover", driver);
+        AssertEventFired("mouseover", Driver);
     }
 
     [Test]
     [IgnoreBrowser(Browser.Firefox, "Firefox does not report mouse move event when clicking")]
     public void ShouldFireMouseMoveEventWhenClicking()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
         // This bears some explanation. In certain cases, if the prior test
         // leaves the mouse cursor immediately over the wrong element, then
         // the mousemove event may not get fired, because the mouse does not
         // actually move. Prevent this situation by forcing the mouse to move
         // to the origin.
-        new Actions(driver).MoveToElement(driver.FindElement(By.TagName("body"))).Perform();
+        new Actions(Driver).MoveToElement(Driver.FindElement(By.TagName("body"))).Perform();
 
-        ClickOnElementWhichRecordsEvents(driver);
+        ClickOnElementWhichRecordsEvents(Driver);
 
-        AssertEventFired("mousemove", driver);
+        AssertEventFired("mousemove", Driver);
     }
 
     [Test]
     public void ShouldNotThrowIfEventHandlerThrows()
     {
-        driver.Url = Urls.JavascriptPage;
-        driver.FindElement(By.Id("throwing-mouseover")).Click();
+        Driver.Url = Urls.JavascriptPage;
+        Driver.FindElement(By.Id("throwing-mouseover")).Click();
     }
 
     [Test]
     public void ShouldFireEventsInTheRightOrder()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        ClickOnElementWhichRecordsEvents(driver);
+        ClickOnElementWhichRecordsEvents(Driver);
 
-        string text = driver.FindElement(By.Id("result")).Text;
+        string text = Driver.FindElement(By.Id("result")).Text;
 
         int lastIndex = -1;
         List<string> eventList = new List<string>() { "mousedown", "focus", "mouseup", "click" };
@@ -151,40 +151,40 @@ public class CorrectEventFiringTests : DriverTestFixture
     [Test]
     public void ShouldIssueMouseDownEvents()
     {
-        driver.Url = Urls.JavascriptPage;
-        driver.FindElement(By.Id("mousedown")).Click();
+        Driver.Url = Urls.JavascriptPage;
+        Driver.FindElement(By.Id("mousedown")).Click();
 
-        String result = driver.FindElement(By.Id("result")).Text;
+        String result = Driver.FindElement(By.Id("result")).Text;
         Assert.That(result, Is.EqualTo("mouse down"));
     }
 
     [Test]
     public void ShouldIssueClickEvents()
     {
-        driver.Url = Urls.JavascriptPage;
-        driver.FindElement(By.Id("mouseclick")).Click();
+        Driver.Url = Urls.JavascriptPage;
+        Driver.FindElement(By.Id("mouseclick")).Click();
 
-        String result = driver.FindElement(By.Id("result")).Text;
+        String result = Driver.FindElement(By.Id("result")).Text;
         Assert.That(result, Is.EqualTo("mouse click"));
     }
 
     [Test]
     public void ShouldIssueMouseUpEvents()
     {
-        driver.Url = Urls.JavascriptPage;
-        driver.FindElement(By.Id("mouseup")).Click();
+        Driver.Url = Urls.JavascriptPage;
+        Driver.FindElement(By.Id("mouseup")).Click();
 
-        String result = driver.FindElement(By.Id("result")).Text;
+        String result = Driver.FindElement(By.Id("result")).Text;
         Assert.That(result, Is.EqualTo("mouse up"));
     }
 
     [Test]
     public void MouseEventsShouldBubbleUpToContainingElements()
     {
-        driver.Url = Urls.JavascriptPage;
-        driver.FindElement(By.Id("child")).Click();
+        Driver.Url = Urls.JavascriptPage;
+        Driver.FindElement(By.Id("child")).Click();
 
-        String result = driver.FindElement(By.Id("result")).Text;
+        String result = Driver.FindElement(By.Id("result")).Text;
         Assert.That(result, Is.EqualTo("mouse down"));
     }
 
@@ -192,54 +192,54 @@ public class CorrectEventFiringTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox)]
     public void ShouldEmitOnChangeEventsWhenSelectingElements()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
         //Intentionally not looking up the select tag.  See selenium r7937 for details.
-        ReadOnlyCollection<IWebElement> allOptions = driver.FindElements(By.XPath("//select[@id='selector']//option"));
+        ReadOnlyCollection<IWebElement> allOptions = Driver.FindElements(By.XPath("//select[@id='selector']//option"));
 
-        String initialTextValue = driver.FindElement(By.Id("result")).Text;
+        String initialTextValue = Driver.FindElement(By.Id("result")).Text;
 
         IWebElement foo = allOptions[0];
         IWebElement bar = allOptions[1];
 
         foo.Click();
-        Assert.That(driver.FindElement(By.Id("result")).Text, Is.EqualTo(initialTextValue));
+        Assert.That(Driver.FindElement(By.Id("result")).Text, Is.EqualTo(initialTextValue));
         bar.Click();
-        Assert.That(driver.FindElement(By.Id("result")).Text, Is.EqualTo("bar"));
+        Assert.That(Driver.FindElement(By.Id("result")).Text, Is.EqualTo("bar"));
     }
 
     [Test]
     public void ShouldEmitOnClickEventsWhenSelectingElements()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
         // Intentionally not looking up the select tag. See selenium r7937 for details.
-        ReadOnlyCollection<IWebElement> allOptions = driver.FindElements(By.XPath("//select[@id='selector2']//option"));
+        ReadOnlyCollection<IWebElement> allOptions = Driver.FindElements(By.XPath("//select[@id='selector2']//option"));
 
         IWebElement foo = allOptions[0];
         IWebElement bar = allOptions[1];
 
         foo.Click();
-        Assert.That(driver.FindElement(By.Id("result")).Text, Is.EqualTo("foo"));
+        Assert.That(Driver.FindElement(By.Id("result")).Text, Is.EqualTo("foo"));
         bar.Click();
-        Assert.That(driver.FindElement(By.Id("result")).Text, Is.EqualTo("bar"));
+        Assert.That(Driver.FindElement(By.Id("result")).Text, Is.EqualTo("bar"));
     }
 
     [Test]
     [IgnoreBrowser(Browser.IE, "IE does not fire change event when clicking on checkbox")]
     public void ShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox()
     {
-        driver.Url = Urls.JavascriptPage;
-        IWebElement checkbox = driver.FindElement(By.Id("checkbox"));
+        Driver.Url = Urls.JavascriptPage;
+        IWebElement checkbox = Driver.FindElement(By.Id("checkbox"));
 
         checkbox.Click();
-        Assert.That(driver.FindElement(By.Id("result")).Text, Is.EqualTo("checkbox thing"));
+        Assert.That(Driver.FindElement(By.Id("result")).Text, Is.EqualTo("checkbox thing"));
     }
 
     [Test]
     public void ShouldEmitClickEventWhenClickingOnATextInputElement()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement clicker = driver.FindElement(By.Id("clickField"));
+        IWebElement clicker = Driver.FindElement(By.Id("clickField"));
         clicker.Click();
 
         Assert.That(clicker.GetAttribute("value"), Is.EqualTo("Clicked"));
@@ -248,35 +248,35 @@ public class CorrectEventFiringTests : DriverTestFixture
     [Test]
     public void ShouldFireTwoClickEventsWhenClickingOnALabel()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        driver.FindElement(By.Id("labelForCheckbox")).Click();
+        Driver.FindElement(By.Id("labelForCheckbox")).Click();
 
-        IWebElement result = driver.FindElement(By.Id("result"));
+        IWebElement result = Driver.FindElement(By.Id("result"));
         Assert.That(() => WaitFor(() => { return result.Text.Contains("labelclick chboxclick"); }, "Did not find text: " + result.Text), Throws.Nothing);
     }
 
     [Test]
     public void ClearingAnElementShouldCauseTheOnChangeHandlerToFire()
     {
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
 
-        IWebElement element = driver.FindElement(By.Id("clearMe"));
+        IWebElement element = Driver.FindElement(By.Id("clearMe"));
         element.Clear();
 
-        IWebElement result = driver.FindElement(By.Id("result"));
+        IWebElement result = Driver.FindElement(By.Id("result"));
         Assert.That(result.Text.Trim(), Is.EqualTo("Cleared"));
     }
 
     [Test]
     public void SendingKeysToAnotherElementShouldCauseTheBlurEventToFire()
     {
-        driver.Url = Urls.JavascriptPage;
-        IWebElement element = driver.FindElement(By.Id("theworks"));
+        Driver.Url = Urls.JavascriptPage;
+        IWebElement element = Driver.FindElement(By.Id("theworks"));
         element.SendKeys("foo");
-        IWebElement element2 = driver.FindElement(By.Id("changeable"));
+        IWebElement element2 = Driver.FindElement(By.Id("changeable"));
         element2.SendKeys("bar");
-        AssertEventFired("blur", driver);
+        AssertEventFired("blur", Driver);
     }
 
     [Test]
@@ -297,45 +297,45 @@ public class CorrectEventFiringTests : DriverTestFixture
             AssertEventFired("blur", driver2);
 
             // non-topmost
-            driver.Url = Urls.JavascriptPage;
-            element = driver.FindElement(By.Id("theworks"));
+            Driver.Url = Urls.JavascriptPage;
+            element = Driver.FindElement(By.Id("theworks"));
             element.SendKeys("foo");
-            element2 = driver.FindElement(By.Id("changeable"));
+            element2 = Driver.FindElement(By.Id("changeable"));
             element2.SendKeys("bar");
-            AssertEventFired("blur", driver);
+            AssertEventFired("blur", Driver);
         }
         finally
         {
             driver2.Quit();
         }
 
-        driver.Url = Urls.JavascriptPage;
-        element = driver.FindElement(By.Id("theworks"));
+        Driver.Url = Urls.JavascriptPage;
+        element = Driver.FindElement(By.Id("theworks"));
         element.SendKeys("foo");
-        element2 = driver.FindElement(By.Id("changeable"));
+        element2 = Driver.FindElement(By.Id("changeable"));
         element2.SendKeys("bar");
-        AssertEventFired("blur", driver);
+        AssertEventFired("blur", Driver);
     }
 
     [Test]
     public void SendingKeysToAnElementShouldCauseTheFocusEventToFire()
     {
-        driver.Url = Urls.JavascriptPage;
-        IWebElement element = driver.FindElement(By.Id("theworks"));
+        Driver.Url = Urls.JavascriptPage;
+        IWebElement element = Driver.FindElement(By.Id("theworks"));
         element.SendKeys("foo");
-        AssertEventFired("focus", driver);
+        AssertEventFired("focus", Driver);
     }
 
     [Test]
     public void SendingKeysToAFocusedElementShouldNotBlurThatElement()
     {
-        driver.Url = Urls.JavascriptPage;
-        IWebElement element = driver.FindElement(By.Id("theworks"));
+        Driver.Url = Urls.JavascriptPage;
+        IWebElement element = Driver.FindElement(By.Id("theworks"));
         element.Click();
 
         //Wait until focused
         bool focused = false;
-        IWebElement result = driver.FindElement(By.Id("result"));
+        IWebElement result = Driver.FindElement(By.Id("result"));
         for (int i = 0; i < 5; ++i)
         {
             string fired = result.Text;
@@ -358,60 +358,60 @@ public class CorrectEventFiringTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Clicking on child does blur parent, whether focused or not.")]
     public void ClickingAnUnfocusableChildShouldNotBlurTheParent()
     {
-        if (TestUtilities.IsOldIE(driver))
+        if (TestUtilities.IsOldIE(Driver))
         {
             return;
         }
 
-        driver.Url = Urls.JavascriptPage;
+        Driver.Url = Urls.JavascriptPage;
         // Click on parent, giving it the focus.
-        IWebElement parent = driver.FindElement(By.Id("hideOnBlur"));
+        IWebElement parent = Driver.FindElement(By.Id("hideOnBlur"));
         parent.Click();
         AssertEventNotFired("blur");
         // Click on child. It is not focusable, so focus should stay on the parent.
-        driver.FindElement(By.Id("hideOnBlurChild")).Click();
+        Driver.FindElement(By.Id("hideOnBlurChild")).Click();
         System.Threading.Thread.Sleep(2000);
         Assert.That(parent.Displayed, Is.True, "#hideOnBlur should still be displayed after click");
         AssertEventNotFired("blur");
         // Click elsewhere, and let the element disappear.
-        driver.FindElement(By.Id("result")).Click();
-        AssertEventFired("blur", driver);
+        Driver.FindElement(By.Id("result")).Click();
+        AssertEventFired("blur", Driver);
     }
 
     [Test]
     public void SubmittingFormFromFormElementShouldFireOnSubmitForThatForm()
     {
-        driver.Url = Urls.JavascriptPage;
-        IWebElement formElement = driver.FindElement(By.Id("submitListeningForm"));
+        Driver.Url = Urls.JavascriptPage;
+        IWebElement formElement = Driver.FindElement(By.Id("submitListeningForm"));
         formElement.Submit();
-        AssertEventFired("form-onsubmit", driver);
+        AssertEventFired("form-onsubmit", Driver);
     }
 
     [Test]
     public void SubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm()
     {
-        driver.Url = Urls.JavascriptPage;
-        IWebElement submit = driver.FindElement(By.Id("submitListeningForm-submit"));
+        Driver.Url = Urls.JavascriptPage;
+        IWebElement submit = Driver.FindElement(By.Id("submitListeningForm-submit"));
         submit.Submit();
-        AssertEventFired("form-onsubmit", driver);
+        AssertEventFired("form-onsubmit", Driver);
     }
 
     [Test]
     public void SubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput()
     {
-        driver.Url = Urls.JavascriptPage;
-        IWebElement submit = driver.FindElement(By.Id("submitListeningForm-submit"));
+        Driver.Url = Urls.JavascriptPage;
+        IWebElement submit = Driver.FindElement(By.Id("submitListeningForm-submit"));
         submit.Submit();
-        AssertEventFired("form-onsubmit", driver);
+        AssertEventFired("form-onsubmit", Driver);
         AssertEventNotFired("text-onclick");
     }
 
     [Test]
     public void UploadingFileShouldFireOnChangeEvent()
     {
-        driver.Url = Urls.FormsPage;
-        IWebElement uploadElement = driver.FindElement(By.Id("upload"));
-        IWebElement result = driver.FindElement(By.Id("fileResults"));
+        Driver.Url = Urls.FormsPage;
+        IWebElement uploadElement = Driver.FindElement(By.Id("upload"));
+        IWebElement result = Driver.FindElement(By.Id("fileResults"));
         Assert.That(result.Text, Is.Empty);
 
         string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, "test.txt");
@@ -422,7 +422,7 @@ public class CorrectEventFiringTests : DriverTestFixture
 
         uploadElement.SendKeys(inputFile.FullName);
         // Shift focus to something else because send key doesn't make the focus leave
-        driver.FindElement(By.Id("id-name1")).Click();
+        Driver.FindElement(By.Id("id-name1")).Click();
 
         inputFile.Delete();
         Assert.That(result.Text, Is.EqualTo("changed"));
@@ -431,15 +431,15 @@ public class CorrectEventFiringTests : DriverTestFixture
     [Test]
     public void ShouldReportTheXAndYCoordinatesWhenClicking()
     {
-        driver.Url = Urls.ClickEventPage;
+        Driver.Url = Urls.ClickEventPage;
 
-        IWebElement element = driver.FindElement(By.Id("eventish"));
+        IWebElement element = Driver.FindElement(By.Id("eventish"));
         element.Click();
 
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-        string clientX = driver.FindElement(By.Id("clientX")).Text;
-        string clientY = driver.FindElement(By.Id("clientY")).Text;
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
+        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+        string clientX = Driver.FindElement(By.Id("clientX")).Text;
+        string clientY = Driver.FindElement(By.Id("clientY")).Text;
+        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
 
         Assert.That(clientX, Is.Not.EqualTo("0"));
         Assert.That(clientY, Is.Not.EqualTo("0"));
@@ -448,28 +448,28 @@ public class CorrectEventFiringTests : DriverTestFixture
     [Test]
     public void ClickEventsShouldBubble()
     {
-        driver.Url = Urls.ClicksPage;
-        driver.FindElement(By.Id("bubblesFrom")).Click();
-        bool eventBubbled = (bool)((IJavaScriptExecutor)driver).ExecuteScript("return !!window.bubbledClick;");
+        Driver.Url = Urls.ClicksPage;
+        Driver.FindElement(By.Id("bubblesFrom")).Click();
+        bool eventBubbled = (bool)((IJavaScriptExecutor)Driver).ExecuteScript("return !!window.bubbledClick;");
         Assert.That(eventBubbled, Is.True, "Event didn't bubble up");
     }
 
     [Test]
     public void ClickOverlappingElements()
     {
-        if (TestUtilities.IsOldIE(driver))
+        if (TestUtilities.IsOldIE(Driver))
         {
             Assert.Ignore("Not supported on IE < 9");
         }
 
-        driver.Url = Urls.WhereIs("click_tests/overlapping_elements.html");
-        Assert.That(() => driver.FindElement(By.Id("under")).Click(), Throws.InstanceOf<ElementClickInterceptedException>().Or.InstanceOf<WebDriverException>().With.Message.Contains("Other element would receive the click"));
+        Driver.Url = Urls.WhereIs("click_tests/overlapping_elements.html");
+        Assert.That(() => Driver.FindElement(By.Id("under")).Click(), Throws.InstanceOf<ElementClickInterceptedException>().Or.InstanceOf<WebDriverException>().With.Message.Contains("Other element would receive the click"));
     }
 
     [Test]
     public void ClickAnElementThatDisappear()
     {
-        if (TestUtilities.IsOldIE(driver))
+        if (TestUtilities.IsOldIE(Driver))
         {
             Assert.Ignore("Not supported on IE < 9");
         }
@@ -481,14 +481,14 @@ public class CorrectEventFiringTests : DriverTestFixture
         expectedLogBuilder.AppendLine("mouseup in under (handled by under)");
         expectedLogBuilder.Append("mouseup in under (handled by body)");
 
-        driver.Url = Urls.WhereIs("click_tests/disappearing_element.html");
-        driver.FindElement(By.Id("over")).Click();
-        Assert.That(driver.FindElement(By.Id("log")).Text, Does.StartWith(expectedLogBuilder.ToString()));
+        Driver.Url = Urls.WhereIs("click_tests/disappearing_element.html");
+        Driver.FindElement(By.Id("over")).Click();
+        Assert.That(Driver.FindElement(By.Id("log")).Text, Does.StartWith(expectedLogBuilder.ToString()));
     }
 
     private void AssertEventNotFired(string eventName)
     {
-        IWebElement result = driver.FindElement(By.Id("result"));
+        IWebElement result = Driver.FindElement(By.Id("result"));
         string text = result.Text;
         Assert.That(text, Does.Not.Contain(eventName));
     }

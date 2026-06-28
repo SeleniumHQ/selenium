@@ -25,31 +25,31 @@ public class MiscTests : DriverTestFixture
     [Test]
     public void ShouldReturnTitleOfPageIfSet()
     {
-        driver.Url = Urls.XhtmlTestPage;
-        Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+        Driver.Url = Urls.XhtmlTestPage;
+        Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
 
-        driver.Url = Urls.SimpleTestPage;
-        Assert.That(driver.Title, Is.EqualTo("Hello WebDriver"));
+        Driver.Url = Urls.SimpleTestPage;
+        Assert.That(Driver.Title, Is.EqualTo("Hello WebDriver"));
     }
 
     [Test]
     public void ShouldReportTheCurrentUrlCorrectly()
     {
-        driver.Url = Urls.MacbethPage;
-        Assert.That(driver.Url, Is.EqualTo(Urls.MacbethPage));
+        Driver.Url = Urls.MacbethPage;
+        Assert.That(Driver.Url, Is.EqualTo(Urls.MacbethPage));
 
-        driver.Url = Urls.SimpleTestPage;
-        Assert.That(driver.Url, Is.EqualTo(Urls.SimpleTestPage));
+        Driver.Url = Urls.SimpleTestPage;
+        Assert.That(Driver.Url, Is.EqualTo(Urls.SimpleTestPage));
 
-        driver.Url = Urls.JavascriptPage;
-        Assert.That(driver.Url, Is.EqualTo(Urls.JavascriptPage));
+        Driver.Url = Urls.JavascriptPage;
+        Assert.That(Driver.Url, Is.EqualTo(Urls.JavascriptPage));
     }
 
     [Test]
     public void ShouldReturnTagName()
     {
-        driver.Url = Urls.FormsPage;
-        IWebElement selectBox = driver.FindElement(By.Id("cheese"));
+        Driver.Url = Urls.FormsPage;
+        IWebElement selectBox = Driver.FindElement(By.Id("cheese"));
         Assert.That(selectBox.TagName.ToLower(), Is.EqualTo("input"));
     }
 
@@ -57,8 +57,8 @@ public class MiscTests : DriverTestFixture
     public void ShouldReturnTheSourceOfAPage()
     {
         string pageSource;
-        driver.Url = Urls.SimpleTestPage;
-        pageSource = driver.PageSource.ToLower();
+        Driver.Url = Urls.SimpleTestPage;
+        pageSource = Driver.PageSource.ToLower();
 
         Assert.That(pageSource, Does.StartWith("<html"));
         Assert.That(pageSource, Does.EndWith("</html>"));
@@ -75,8 +75,8 @@ public class MiscTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "returns XML content formatted for display as HTML document")]
     public void ShouldBeAbleToGetTheSourceOfAnXmlDocument()
     {
-        driver.Url = Urls.SimpleXmlDocument;
-        string source = driver.PageSource.ToLower();
+        Driver.Url = Urls.SimpleXmlDocument;
+        string source = Driver.PageSource.ToLower();
         source = System.Text.RegularExpressions.Regex.Replace(source, "\\s", string.Empty);
         Assert.That(source, Is.EqualTo("<xml><foo><bar>baz</bar></foo></xml>"));
     }
@@ -99,19 +99,19 @@ public class MiscTests : DriverTestFixture
     [Test]
     public void ClickingShouldNotTrampleWOrHInGlobalScope()
     {
-        driver.Url = Urls.WhereIs("globalscope.html");
+        Driver.Url = Urls.WhereIs("globalscope.html");
         List<string> values = new List<string>() { "w", "h" };
 
         foreach (string val in values)
         {
-            Assert.That(GetGlobalVar(driver, val), Is.EqualTo(val));
+            Assert.That(GetGlobalVar(Driver, val), Is.EqualTo(val));
         }
 
-        driver.FindElement(By.Id("toclick")).Click();
+        Driver.FindElement(By.Id("toclick")).Click();
 
         foreach (string val in values)
         {
-            Assert.That(GetGlobalVar(driver, val), Is.EqualTo(val));
+            Assert.That(GetGlobalVar(Driver, val), Is.EqualTo(val));
         }
     }
 

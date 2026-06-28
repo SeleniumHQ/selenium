@@ -28,74 +28,74 @@ public class PopupWindowFinderTests : DriverTestFixture
     [Test]
     public void ShouldFindPopupWindowUsingAction()
     {
-        driver.Url = Urls.XhtmlTestPage;
-        string current = driver.CurrentWindowHandle;
+        Driver.Url = Urls.XhtmlTestPage;
+        string current = Driver.CurrentWindowHandle;
 
-        PopupWindowFinder finder = new PopupWindowFinder(driver);
-        string newHandle = finder.Invoke(() => { driver.FindElement(By.LinkText("Open new window")).Click(); });
+        PopupWindowFinder finder = new PopupWindowFinder(Driver);
+        string newHandle = finder.Invoke(() => { Driver.FindElement(By.LinkText("Open new window")).Click(); });
 
         Assert.That(newHandle, Is.Not.Null.And.Not.Empty);
         Assert.That(newHandle, Is.Not.EqualTo(current));
 
-        driver.SwitchTo().Window(newHandle);
-        Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
-        driver.Close();
+        Driver.SwitchTo().Window(newHandle);
+        Assert.That(Driver.Title, Is.EqualTo("We Arrive Here"));
+        Driver.Close();
 
-        driver.SwitchTo().Window(current);
+        Driver.SwitchTo().Window(current);
     }
 
     [Test]
     public void ShouldFindPopupWindowUsingElementClick()
     {
-        driver.Url = Urls.XhtmlTestPage;
-        string current = driver.CurrentWindowHandle;
+        Driver.Url = Urls.XhtmlTestPage;
+        string current = Driver.CurrentWindowHandle;
 
-        PopupWindowFinder finder = new PopupWindowFinder(driver);
-        string newHandle = finder.Click(driver.FindElement(By.LinkText("Open new window")));
+        PopupWindowFinder finder = new PopupWindowFinder(Driver);
+        string newHandle = finder.Click(Driver.FindElement(By.LinkText("Open new window")));
 
         Assert.That(newHandle, Is.Not.Null.And.Not.Empty);
         Assert.That(newHandle, Is.Not.EqualTo(current));
 
-        driver.SwitchTo().Window(newHandle);
-        Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
-        driver.Close();
+        Driver.SwitchTo().Window(newHandle);
+        Assert.That(Driver.Title, Is.EqualTo("We Arrive Here"));
+        Driver.Close();
 
-        driver.SwitchTo().Window(current);
+        Driver.SwitchTo().Window(current);
     }
 
     [Test]
     public void ShouldFindMultiplePopupWindowsInSuccession()
     {
-        driver.Url = Urls.XhtmlTestPage;
-        string first = driver.CurrentWindowHandle;
+        Driver.Url = Urls.XhtmlTestPage;
+        string first = Driver.CurrentWindowHandle;
 
-        PopupWindowFinder finder = new PopupWindowFinder(driver);
-        string second = finder.Click(driver.FindElement(By.Name("windowOne")));
+        PopupWindowFinder finder = new PopupWindowFinder(Driver);
+        string second = finder.Click(Driver.FindElement(By.Name("windowOne")));
         Assert.That(second, Is.Not.Null.And.Not.Empty);
         Assert.That(second, Is.Not.EqualTo(first));
 
-        finder = new PopupWindowFinder(driver);
-        string third = finder.Click(driver.FindElement(By.Name("windowTwo")));
+        finder = new PopupWindowFinder(Driver);
+        string third = finder.Click(Driver.FindElement(By.Name("windowTwo")));
         Assert.That(third, Is.Not.Null.And.Not.Empty);
         Assert.That(third, Is.Not.EqualTo(first));
         Assert.That(third, Is.Not.EqualTo(second));
 
-        driver.SwitchTo().Window(second);
-        driver.Close();
+        Driver.SwitchTo().Window(second);
+        Driver.Close();
 
-        driver.SwitchTo().Window(third);
-        driver.Close();
+        Driver.SwitchTo().Window(third);
+        Driver.Close();
 
-        driver.SwitchTo().Window(first);
+        Driver.SwitchTo().Window(first);
     }
 
     [Test]
     public void ShouldNotFindPopupWindowWhenNoneExists()
     {
-        driver.Url = Urls.XhtmlTestPage;
-        PopupWindowFinder finder = new PopupWindowFinder(driver);
+        Driver.Url = Urls.XhtmlTestPage;
+        PopupWindowFinder finder = new PopupWindowFinder(Driver);
         Assert.That(
-            () => finder.Click(driver.FindElement(By.Id("linkId"))),
+            () => finder.Click(Driver.FindElement(By.Id("linkId"))),
             Throws.TypeOf<WebDriverTimeoutException>());
     }
 }

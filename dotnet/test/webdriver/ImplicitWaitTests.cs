@@ -27,51 +27,51 @@ public class ImplicitWaitTests : DriverTestFixture
     [TearDown]
     public void ResetImplicitWaitTimeout()
     {
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);
+        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);
     }
 
     [Test]
     public void ShouldImplicitlyWaitForASingleElement()
     {
-        driver.Url = Urls.DynamicPage;
-        IWebElement add = driver.FindElement(By.Id("adder"));
+        Driver.Url = Urls.DynamicPage;
+        IWebElement add = Driver.FindElement(By.Id("adder"));
 
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(3000);
+        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(3000);
 
         add.Click();
-        driver.FindElement(By.Id("box0"));  // All is well if this doesn't throw.
+        Driver.FindElement(By.Id("box0"));  // All is well if this doesn't throw.
     }
 
     [Test]
     public void ShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled()
     {
-        driver.Url = Urls.DynamicPage;
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(500);
-        Assert.That(() => driver.FindElement(By.Id("box0")), Throws.InstanceOf<NoSuchElementException>());
+        Driver.Url = Urls.DynamicPage;
+        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(500);
+        Assert.That(() => Driver.FindElement(By.Id("box0")), Throws.InstanceOf<NoSuchElementException>());
     }
 
     [Test]
     [NeedsFreshDriver]
     public void ShouldReturnAfterFirstAttemptToFindOneAfterDisablingImplicitWaits()
     {
-        driver.Url = Urls.DynamicPage;
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(3000);
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);
-        Assert.That(() => driver.FindElement(By.Id("box0")), Throws.InstanceOf<NoSuchElementException>());
+        Driver.Url = Urls.DynamicPage;
+        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(3000);
+        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);
+        Assert.That(() => Driver.FindElement(By.Id("box0")), Throws.InstanceOf<NoSuchElementException>());
     }
 
     [Test]
     [NeedsFreshDriver]
     public void ShouldImplicitlyWaitUntilAtLeastOneElementIsFoundWhenSearchingForMany()
     {
-        driver.Url = Urls.DynamicPage;
-        IWebElement add = driver.FindElement(By.Id("adder"));
+        Driver.Url = Urls.DynamicPage;
+        IWebElement add = Driver.FindElement(By.Id("adder"));
 
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(2000);
+        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(2000);
         add.Click();
         add.Click();
 
-        ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("redbox"));
+        ReadOnlyCollection<IWebElement> elements = Driver.FindElements(By.ClassName("redbox"));
         Assert.That(elements, Has.Count.GreaterThanOrEqualTo(1));
     }
 
@@ -79,10 +79,10 @@ public class ImplicitWaitTests : DriverTestFixture
     [NeedsFreshDriver]
     public void ShouldStillFailToFindElementsWhenImplicitWaitsAreEnabled()
     {
-        driver.Url = Urls.DynamicPage;
+        Driver.Url = Urls.DynamicPage;
 
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(500);
-        ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("redbox"));
+        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(500);
+        ReadOnlyCollection<IWebElement> elements = Driver.FindElements(By.ClassName("redbox"));
         Assert.That(elements, Is.Empty);
     }
 
@@ -90,12 +90,12 @@ public class ImplicitWaitTests : DriverTestFixture
     [NeedsFreshDriver]
     public void ShouldReturnAfterFirstAttemptToFindManyAfterDisablingImplicitWaits()
     {
-        driver.Url = Urls.DynamicPage;
-        IWebElement add = driver.FindElement(By.Id("adder"));
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(1100);
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);
+        Driver.Url = Urls.DynamicPage;
+        IWebElement add = Driver.FindElement(By.Id("adder"));
+        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(1100);
+        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);
         add.Click();
-        ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("redbox"));
+        ReadOnlyCollection<IWebElement> elements = Driver.FindElements(By.ClassName("redbox"));
         Assert.That(elements, Is.Empty);
     }
 
@@ -105,11 +105,11 @@ public class ImplicitWaitTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Driver does not implement waiting for element visible for interaction")]
     public void ShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting()
     {
-        driver.Url = Urls.DynamicPage;
+        Driver.Url = Urls.DynamicPage;
 
-        IWebElement reveal = driver.FindElement(By.Id("reveal"));
-        IWebElement revealed = driver.FindElement(By.Id("revealed"));
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(5000);
+        IWebElement reveal = Driver.FindElement(By.Id("reveal"));
+        IWebElement revealed = Driver.FindElement(By.Id("revealed"));
+        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(5000);
 
         Assert.That(revealed.Displayed, Is.False, "revealed should not be visible");
         reveal.Click();
@@ -129,24 +129,24 @@ public class ImplicitWaitTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not properly handle multiple windows")]
     public void ShouldRetainImplicitlyWaitFromTheReturnedWebDriverOfWindowSwitchTo()
     {
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
-        driver.Url = Urls.XhtmlTestPage;
-        driver.FindElement(By.Name("windowOne")).Click();
+        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
+        Driver.Url = Urls.XhtmlTestPage;
+        Driver.FindElement(By.Name("windowOne")).Click();
 
-        string originalHandle = driver.CurrentWindowHandle;
-        WaitFor(() => driver.WindowHandles.Count == 2, "Window handle count was not 2");
-        List<string> handles = new List<string>(driver.WindowHandles);
+        string originalHandle = Driver.CurrentWindowHandle;
+        WaitFor(() => Driver.WindowHandles.Count == 2, "Window handle count was not 2");
+        List<string> handles = new List<string>(Driver.WindowHandles);
         handles.Remove(originalHandle);
 
-        IWebDriver newWindow = driver.SwitchTo().Window(handles[0]);
+        IWebDriver newWindow = Driver.SwitchTo().Window(handles[0]);
 
         DateTime start = DateTime.Now;
         newWindow.FindElements(By.Id("this-crazy-thing-does-not-exist"));
         DateTime end = DateTime.Now;
         TimeSpan time = end - start;
 
-        driver.Close();
-        driver.SwitchTo().Window(originalHandle);
+        Driver.Close();
+        Driver.SwitchTo().Window(originalHandle);
         Assert.That(time.TotalMilliseconds, Is.GreaterThanOrEqualTo(1000));
     }
 }
