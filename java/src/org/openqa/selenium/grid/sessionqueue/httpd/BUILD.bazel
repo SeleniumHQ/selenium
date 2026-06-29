@@ -7,6 +7,7 @@ java_library(
     visibility = [
         "//java/src/org/openqa/selenium/grid:__pkg__",
         "//java/test/org/openqa/selenium/grid/router:__pkg__",
+        "//java/test/org/openqa/selenium/grid/sessionqueue/httpd:__pkg__",
     ],
     deps = [
         "//java:auto-service",
@@ -17,9 +18,7 @@ java_library(
         "//java/src/org/openqa/selenium/grid/server",
         "//java/src/org/openqa/selenium/grid/sessionqueue",
         "//java/src/org/openqa/selenium/grid/sessionqueue/config",
-        # Loaded via reflection when the default local implementation is used.
         "//java/src/org/openqa/selenium/grid/sessionqueue/local",
-        # Loaded via reflection when redis-backed session queue is configured.
         "//java/src/org/openqa/selenium/grid/sessionqueue/redis",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/netty/server",
