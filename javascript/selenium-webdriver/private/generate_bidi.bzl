@@ -2,7 +2,8 @@
 
 load("@aspect_rules_js//js:defs.bzl", "js_run_binary")
 
-# Language bindings that may consume the shared bidi-ast.json / bidi-model.json artifacts.
+# Language bindings consume the generated schema artifact; the ast/model are
+# internal inputs to it (and to the JS generator) and stay package-private.
 _ARTIFACT_VISIBILITY = [
     "//java:__subpackages__",
     "//py:__subpackages__",
@@ -121,6 +122,7 @@ def generate_bidi_library(
         extra_cddl_files = [],
         enhancements_manifest = None,
         generator = None,
+        schema_generator = None,
         merge_tool = "//py/private:merge_cddl",
         spec_version = "1.0",
         output_path = "bidi/generated"):
@@ -132,12 +134,15 @@ def generate_bidi_library(
         extra_cddl_files: Additional CDDL files merged before generation.
         enhancements_manifest: JSON manifest for per-domain customisations.
         generator: The generate_bidi.mjs js_binary label. Defaults to :generate_bidi_script.
+        schema_generator: The project_bidi_schema.mjs js_binary label. Defaults to :project_bidi_schema_script.
         merge_tool: Python binary that concatenates CDDL files (output first, then inputs).
         spec_version: Spec version string passed to the generator.
         output_path: Output path for generated files within the package (default: bidi/generated).
     """
     if generator == None:
         generator = ":generate_bidi_script"
+    if schema_generator == None:
+        schema_generator = ":project_bidi_schema_script"
 
     pkg = native.package_name()
     ts_src_path = output_path + "_src"
@@ -154,8 +159,8 @@ def generate_bidi_library(
         tool = merge_tool,
     )
 
-    # Step 2: parse the merged CDDL once into the reusable AST artifact.
-    # Exposed to the other bindings so they can consume it directly.
+    # Step 2: parse the merged CDDL once into the reusable AST artifact. Internal
+    # input to the schema and the JS generator; not consumed by other bindings.
     ast_target = name + "_ast"
     ast_out = name + "_ast.json"
     js_run_binary(
@@ -169,11 +174,10 @@ def generate_bidi_library(
             pkg + "/" + ast_out,
         ],
         tool = generator,
-        visibility = _ARTIFACT_VISIBILITY,
     )
 
-    # Step 3: extract the binding-neutral command/event model from the AST.
-    # Exposed to the other bindings so they can consume it directly.
+    # Step 3: extract the binding-neutral command/event model from the AST. Folded
+    # into the schema below; still consumed directly by the JS generator in-package.
     json_target = name + "_json"
     model_out = name + "_model.json"
     js_run_binary(
@@ -187,6 +191,27 @@ def generate_bidi_library(
             pkg + "/" + model_out,
         ],
         tool = generator,
+    )
+
+    # Step 3b: project the normalized, flat schema (commands + events + types) that
+    # the generated Ruby / Java / Python clients consume. The step validates the
+    # schema (referential integrity + input/output completeness) and fails the
+    # build on any error, so a dropped or dangling type cannot ship silently.
+    schema_target = name + "_schema"
+    schema_out = name + "_schema.json"
+    js_run_binary(
+        name = schema_target,
+        srcs = [":" + ast_target, ":" + json_target],
+        outs = [schema_out],
+        args = [
+            "--ast",
+            "$(location :" + ast_target + ")",
+            "--model",
+            "$(location :" + json_target + ")",
+            "--dump-schema",
+            pkg + "/" + schema_out,
+        ],
+        tool = schema_generator,
         visibility = _ARTIFACT_VISIBILITY,
     )
 

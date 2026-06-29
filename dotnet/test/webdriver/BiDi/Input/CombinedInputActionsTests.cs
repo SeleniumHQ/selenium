@@ -58,7 +58,7 @@ internal class CombinedInputActionsTests : BiDiTestFixture
     [Test]
     public async Task TestShiftClickingOnMultiSelectionList()
     {
-        driver.Url = UrlBuilder.WhereIs("formSelectionPage.html");
+        driver.Url = Urls.FormSelectionPage;
 
         var options = (await context.LocateNodesAsync(new CssLocator("option"))).Nodes;
 

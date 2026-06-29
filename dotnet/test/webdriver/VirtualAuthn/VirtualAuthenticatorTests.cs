@@ -19,7 +19,6 @@
 
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 using OpenQA.Selenium.VirtualAuth;
 using static OpenQA.Selenium.VirtualAuth.VirtualAuthenticatorOptions;
 
@@ -59,12 +58,12 @@ public class VirtualAuthenticatorTests : DriverTestFixture
         byte[] bytes = System.Convert.FromBase64String(base64EncodedRSAPK);
         base64EncodedPK = Base64UrlEncoder.Encode(bytes);
 
-        jsDriver = (IJavaScriptExecutor)driver;
-        webDriver = (WebDriver)driver;
+        jsDriver = (IJavaScriptExecutor)Driver;
+        webDriver = (WebDriver)Driver;
 
         // Maximize window to ensure focus
         webDriver.Manage().Window.Maximize();
-        webDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("virtual-authenticator.html");
+        webDriver.Url = Urls.WhereIs("virtual-authenticator.html");
     }
 
     [TearDown]
