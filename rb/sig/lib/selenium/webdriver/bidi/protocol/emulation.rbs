@@ -29,7 +29,7 @@ module Selenium
 
           SCREEN_ORIENTATION_TYPE: Hash[Symbol, String]
 
-          class SetForcedColorsModeThemeOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetForcedColorsModeThemeOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader theme: String?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
@@ -37,13 +37,13 @@ module Selenium
           end
 
           class SetGeolocationOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Union
-            class Coordinates < ::Selenium::WebDriver::BiDi::Serialization::Data
+            class Coordinates < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader contexts: untyped
               attr_reader user_contexts: untyped
               attr_reader coordinates: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationCoordinates?
               def self.new: (?contexts: Array[String]?, ?user_contexts: Array[String]?, coordinates: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationCoordinates?) -> instance
             end
-            class Error < ::Selenium::WebDriver::BiDi::Serialization::Data
+            class Error < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader contexts: untyped
               attr_reader user_contexts: untyped
               attr_reader error: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationPositionError
@@ -51,7 +51,7 @@ module Selenium
             end
           end
 
-          class GeolocationCoordinates < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class GeolocationCoordinates < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader latitude: Integer
             attr_reader longitude: Integer
             attr_reader accuracy: untyped
@@ -62,85 +62,85 @@ module Selenium
             def self.new: (latitude: Integer, longitude: Integer, ?accuracy: Numeric?, ?altitude: Numeric?, ?altitude_accuracy: Numeric?, ?heading: Integer?, ?speed: Numeric?) -> instance
           end
 
-          class GeolocationPositionError < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class GeolocationPositionError < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             def self.new: (?type: untyped) -> instance
           end
 
-          class SetLocaleOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetLocaleOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader locale: String?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
             def self.new: (locale: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
           end
 
-          class SetNetworkConditionsParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetNetworkConditionsParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader network_conditions: ::Selenium::WebDriver::BiDi::Protocol::Emulation::NetworkConditionsOffline?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
             def self.new: (network_conditions: ::Selenium::WebDriver::BiDi::Protocol::Emulation::NetworkConditionsOffline?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
           end
 
-          class NetworkConditionsOffline < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class NetworkConditionsOffline < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             def self.new: (?type: untyped) -> instance
           end
 
-          class ScreenArea < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class ScreenArea < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader width: Integer
             attr_reader height: Integer
             def self.new: (width: Integer, height: Integer) -> instance
           end
 
-          class SetScreenSettingsOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetScreenSettingsOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader screen_area: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenArea?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
             def self.new: (screen_area: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenArea?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
           end
 
-          class ScreenOrientation < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class ScreenOrientation < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader natural: String
             attr_reader type: String
             def self.new: (natural: String, type: String) -> instance
           end
 
-          class SetScreenOrientationOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetScreenOrientationOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader screen_orientation: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenOrientation?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
             def self.new: (screen_orientation: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenOrientation?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
           end
 
-          class SetUserAgentOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetUserAgentOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader user_agent: String?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
             def self.new: (user_agent: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
           end
 
-          class SetScriptingEnabledParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetScriptingEnabledParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader enabled: bool?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
             def self.new: (enabled: bool?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
           end
 
-          class SetScrollbarTypeOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetScrollbarTypeOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader scrollbar_type: untyped
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
             def self.new: (scrollbar_type: untyped, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
           end
 
-          class SetTimezoneOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetTimezoneOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader timezone: String?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
             def self.new: (timezone: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
           end
 
-          class SetTouchOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetTouchOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader max_touch_points: Integer?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped

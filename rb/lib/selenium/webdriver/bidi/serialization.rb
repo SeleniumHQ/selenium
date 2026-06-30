@@ -21,7 +21,7 @@ module Selenium
   module WebDriver
     class BiDi
       # Wire round-trip runtime for the generated protocol layer: the value-type bases
-      # (Data, Union), the omit sentinel (UNSET), and outbound enum validation.
+      # (Record, Union), the omit sentinel (UNSET), and outbound enum validation.
       #
       # @api private
       module Serialization
@@ -53,5 +53,5 @@ module Selenium
   end # WebDriver
 end # Selenium
 
-require 'selenium/webdriver/bidi/serialization/data'
+require 'selenium/webdriver/bidi/serialization/record'
 require 'selenium/webdriver/bidi/serialization/union'

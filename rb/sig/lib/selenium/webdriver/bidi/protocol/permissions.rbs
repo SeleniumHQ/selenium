@@ -25,12 +25,12 @@ module Selenium
         class Permissions
           PERMISSION_STATE: Hash[Symbol, String]
 
-          class PermissionDescriptor < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class PermissionDescriptor < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader name: String
             def self.new: (name: String) -> instance
           end
 
-          class SetPermissionParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetPermissionParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader descriptor: ::Selenium::WebDriver::BiDi::Protocol::Permissions::PermissionDescriptor
             attr_reader state: String
             attr_reader origin: String

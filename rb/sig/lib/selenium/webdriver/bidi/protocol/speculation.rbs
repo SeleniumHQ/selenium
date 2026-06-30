@@ -27,7 +27,7 @@ module Selenium
 
           PRELOADING_STATUS: Hash[Symbol, String]
 
-          class PrefetchStatusUpdatedParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class PrefetchStatusUpdatedParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader url: String
             attr_reader status: String

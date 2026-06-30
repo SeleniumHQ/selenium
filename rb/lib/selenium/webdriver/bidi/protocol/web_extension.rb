@@ -29,7 +29,7 @@ module Selenium
         class WebExtension
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          InstallParameters = Serialization::Data.define(
+          InstallParameters = Serialization::Record.define(
             extension_data: {json_key: 'extensionData', ref: 'WebExtension::ExtensionData'}
           )
 
@@ -46,23 +46,23 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ExtensionPath = Serialization::Data.define(type: {fixed: 'path'}, path: 'path')
+          ExtensionPath = Serialization::Record.define(type: {fixed: 'path'}, path: 'path')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ExtensionArchivePath = Serialization::Data.define(type: {fixed: 'archivePath'}, path: 'path')
+          ExtensionArchivePath = Serialization::Record.define(type: {fixed: 'archivePath'}, path: 'path')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ExtensionBase64Encoded = Serialization::Data.define(type: {fixed: 'base64'}, value: 'value')
+          ExtensionBase64Encoded = Serialization::Record.define(type: {fixed: 'base64'}, value: 'value')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          InstallResult = Serialization::Data.define(extension: 'extension')
+          InstallResult = Serialization::Record.define(extension: 'extension')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          UninstallParameters = Serialization::Data.define(extension: 'extension')
+          UninstallParameters = Serialization::Record.define(extension: 'extension')
 
           def initialize(transport)
             @transport = transport

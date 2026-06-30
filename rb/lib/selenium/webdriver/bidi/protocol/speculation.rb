@@ -40,7 +40,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          PrefetchStatusUpdatedParameters = Serialization::Data.define(
+          PrefetchStatusUpdatedParameters = Serialization::Record.define(
             context: 'context',
             url: 'url',
             status: {json_key: 'status', enum: 'Speculation::PRELOADING_STATUS'}

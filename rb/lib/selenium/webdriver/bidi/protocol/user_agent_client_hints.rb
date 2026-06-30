@@ -29,7 +29,7 @@ module Selenium
         class UserAgentClientHints
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ClientHintsMetadata = Serialization::Data.define(
+          ClientHintsMetadata = Serialization::Record.define(
             brands: {json_key: 'brands', ref: 'UserAgentClientHints::BrandVersion', list: true},
             full_version_list: {json_key: 'fullVersionList', ref: 'UserAgentClientHints::BrandVersion', list: true},
             platform: 'platform',
@@ -44,11 +44,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          BrandVersion = Serialization::Data.define(brand: 'brand', version: 'version')
+          BrandVersion = Serialization::Record.define(brand: 'brand', version: 'version')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetClientHintsOverrideCommandParams = Serialization::Data.define(
+          SetClientHintsOverrideCommandParams = Serialization::Record.define(
             client_hints: {json_key: 'clientHints', nullable: true, ref: 'UserAgentClientHints::ClientHintsMetadata'},
             contexts: {json_key: 'contexts', list: true},
             user_contexts: {json_key: 'userContexts', list: true}

@@ -23,7 +23,7 @@ module Selenium
     class BiDi
       module Protocol
         class UserAgentClientHints
-          class ClientHintsMetadata < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class ClientHintsMetadata < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader brands: untyped
             attr_reader full_version_list: untyped
             attr_reader platform: untyped
@@ -37,13 +37,13 @@ module Selenium
             def self.new: (?brands: Array[::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::BrandVersion]?, ?full_version_list: Array[::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::BrandVersion]?, ?platform: String?, ?platform_version: String?, ?architecture: String?, ?model: String?, ?mobile: bool?, ?bitness: String?, ?wow64: bool?, ?form_factors: Array[String]?) -> instance
           end
 
-          class BrandVersion < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class BrandVersion < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader brand: String
             attr_reader version: String
             def self.new: (brand: String, version: String) -> instance
           end
 
-          class SetClientHintsOverrideCommandParams < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetClientHintsOverrideCommandParams < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader client_hints: ::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::ClientHintsMetadata?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped

@@ -30,7 +30,7 @@ module Selenium
           class Entry < ::Selenium::WebDriver::BiDi::Serialization::Union
           end
 
-          class BaseLogEntry < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class BaseLogEntry < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader level: String
             attr_reader source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source
             attr_reader text: String?
@@ -39,7 +39,7 @@ module Selenium
             def self.new: (level: String, source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source, text: String?, timestamp: Integer, ?stack_trace: ::Selenium::WebDriver::BiDi::Protocol::Script::StackTrace?) -> instance
           end
 
-          class GenericLogEntry < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class GenericLogEntry < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader level: String
             attr_reader source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source
             attr_reader text: String?
@@ -49,7 +49,7 @@ module Selenium
             def self.new: (level: String, source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source, text: String?, timestamp: Integer, ?stack_trace: ::Selenium::WebDriver::BiDi::Protocol::Script::StackTrace?, type: String) -> instance
           end
 
-          class ConsoleLogEntry < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class ConsoleLogEntry < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader level: String
             attr_reader source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source
@@ -61,7 +61,7 @@ module Selenium
             def self.new: (?type: untyped, level: String, source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source, text: String?, timestamp: Integer, ?stack_trace: ::Selenium::WebDriver::BiDi::Protocol::Script::StackTrace?, method_: String, args: Array[::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue]) -> instance
           end
 
-          class JavascriptLogEntry < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class JavascriptLogEntry < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader level: String
             attr_reader source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source

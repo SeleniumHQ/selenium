@@ -42,7 +42,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ClientWindowInfo = Serialization::Data.define(
+          ClientWindowInfo = Serialization::Record.define(
             active: 'active',
             client_window: 'clientWindow',
             height: 'height',
@@ -54,11 +54,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          UserContextInfo = Serialization::Data.define(user_context: 'userContext')
+          UserContextInfo = Serialization::Record.define(user_context: 'userContext')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          CreateUserContextParameters = Serialization::Data.define(
+          CreateUserContextParameters = Serialization::Record.define(
             accept_insecure_certs: 'acceptInsecureCerts',
             proxy: {json_key: 'proxy', ref: 'Session::ProxyConfiguration'},
             unhandled_prompt_behavior: {json_key: 'unhandledPromptBehavior', ref: 'Session::UserPromptHandler'}
@@ -66,19 +66,19 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          GetClientWindowsResult = Serialization::Data.define(
+          GetClientWindowsResult = Serialization::Record.define(
             client_windows: {json_key: 'clientWindows', ref: 'Browser::ClientWindowInfo', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          GetUserContextsResult = Serialization::Data.define(
+          GetUserContextsResult = Serialization::Record.define(
             user_contexts: {json_key: 'userContexts', ref: 'Browser::UserContextInfo', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          RemoveUserContextParameters = Serialization::Data.define(user_context: 'userContext')
+          RemoveUserContextParameters = Serialization::Record.define(user_context: 'userContext')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -91,14 +91,14 @@ module Selenium
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-            ClientWindowNamedState = Serialization::Data.define(
+            ClientWindowNamedState = Serialization::Record.define(
               client_window: 'clientWindow',
               state: {json_key: 'state', enum: 'Browser::CLIENT_WINDOW_NAMED_STATE_STATE'}
             )
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-            ClientWindowRectState = Serialization::Data.define(
+            ClientWindowRectState = Serialization::Record.define(
               state: {fixed: 'normal'},
               client_window: 'clientWindow',
               width: 'width',
@@ -110,7 +110,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetDownloadBehaviorParameters = Serialization::Data.define(
+          SetDownloadBehaviorParameters = Serialization::Record.define(
             download_behavior: {json_key: 'downloadBehavior', nullable: true, ref: 'Browser::DownloadBehavior'},
             user_contexts: {json_key: 'userContexts', list: true}
           )
@@ -126,11 +126,11 @@ module Selenium
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-            Allowed = Serialization::Data.define(type: {fixed: 'allowed'}, destination_folder: 'destinationFolder')
+            Allowed = Serialization::Record.define(type: {fixed: 'allowed'}, destination_folder: 'destinationFolder')
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-            Denied = Serialization::Data.define(type: {fixed: 'denied'})
+            Denied = Serialization::Record.define(type: {fixed: 'denied'})
           end
 
           def initialize(transport)

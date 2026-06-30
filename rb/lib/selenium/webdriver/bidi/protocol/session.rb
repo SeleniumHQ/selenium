@@ -35,14 +35,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          CapabilitiesRequest = Serialization::Data.define(
+          CapabilitiesRequest = Serialization::Record.define(
             always_match: {json_key: 'alwaysMatch', ref: 'Session::CapabilityRequest'},
             first_match: {json_key: 'firstMatch', ref: 'Session::CapabilityRequest', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          CapabilityRequest = Serialization::Data.define(
+          CapabilityRequest = Serialization::Record.define(
             accept_insecure_certs: 'acceptInsecureCerts',
             browser_name: 'browserName',
             browser_version: 'browserVersion',
@@ -67,21 +67,21 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          AutodetectProxyConfiguration = Serialization::Data.define(
+          AutodetectProxyConfiguration = Serialization::Record.define(
             proxy_type: {json_key: 'proxyType', fixed: 'autodetect'},
             extensible: true
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          DirectProxyConfiguration = Serialization::Data.define(
+          DirectProxyConfiguration = Serialization::Record.define(
             proxy_type: {json_key: 'proxyType', fixed: 'direct'},
             extensible: true
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ManualProxyConfiguration = Serialization::Data.define(
+          ManualProxyConfiguration = Serialization::Record.define(
             proxy_type: {json_key: 'proxyType', fixed: 'manual'},
             http_proxy: 'httpProxy',
             ssl_proxy: 'sslProxy',
@@ -93,11 +93,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SocksProxyConfiguration = Serialization::Data.define(socks_proxy: 'socksProxy', socks_version: 'socksVersion')
+          SocksProxyConfiguration = Serialization::Record.define(
+            socks_proxy: 'socksProxy',
+            socks_version: 'socksVersion'
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          PacProxyConfiguration = Serialization::Data.define(
+          PacProxyConfiguration = Serialization::Record.define(
             proxy_type: {json_key: 'proxyType', fixed: 'pac'},
             proxy_autoconfig_url: 'proxyAutoconfigUrl',
             extensible: true
@@ -105,14 +108,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SystemProxyConfiguration = Serialization::Data.define(
+          SystemProxyConfiguration = Serialization::Record.define(
             proxy_type: {json_key: 'proxyType', fixed: 'system'},
             extensible: true
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          UserPromptHandler = Serialization::Data.define(
+          UserPromptHandler = Serialization::Record.define(
             alert: {json_key: 'alert', enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
             before_unload: {json_key: 'beforeUnload', enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
             confirm: {json_key: 'confirm', enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
@@ -123,7 +126,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SubscribeParameters = Serialization::Data.define(
+          SubscribeParameters = Serialization::Record.define(
             events: {json_key: 'events', list: true},
             contexts: {json_key: 'contexts', list: true},
             user_contexts: {json_key: 'userContexts', list: true}
@@ -131,32 +134,32 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          UnsubscribeByIDRequest = Serialization::Data.define(subscriptions: {json_key: 'subscriptions', list: true})
+          UnsubscribeByIDRequest = Serialization::Record.define(subscriptions: {json_key: 'subscriptions', list: true})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          UnsubscribeByAttributesRequest = Serialization::Data.define(events: {json_key: 'events', list: true})
+          UnsubscribeByAttributesRequest = Serialization::Record.define(events: {json_key: 'events', list: true})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          StatusResult = Serialization::Data.define(ready: 'ready', message: 'message')
+          StatusResult = Serialization::Record.define(ready: 'ready', message: 'message')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          NewParameters = Serialization::Data.define(
+          NewParameters = Serialization::Record.define(
             capabilities: {json_key: 'capabilities', ref: 'Session::CapabilitiesRequest'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          NewResult = Serialization::Data.define(
+          NewResult = Serialization::Record.define(
             session_id: 'sessionId',
             capabilities: {json_key: 'capabilities', ref: 'Session::NewResult::Capabilities'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          NewResult::Capabilities = Serialization::Data.define(
+          NewResult::Capabilities = Serialization::Record.define(
             accept_insecure_certs: 'acceptInsecureCerts',
             browser_name: 'browserName',
             browser_version: 'browserVersion',
@@ -171,7 +174,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SubscribeResult = Serialization::Data.define(subscription: 'subscription')
+          SubscribeResult = Serialization::Record.define(subscription: 'subscription')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/

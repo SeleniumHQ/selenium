@@ -40,7 +40,7 @@ module BiDiGenerate
   # implementation layer is internal and what higher-level API to use instead (see #17628).
   BIDI_DOC_URL = 'https://www.selenium.dev/documentation/warnings/bidi-implementation/'
 
-  # RuboCop's Layout/LineLength max; emitted Serialization::Data.define calls wrap to stay within it.
+  # RuboCop's Layout/LineLength max; emitted Serialization::Record.define calls wrap to stay within it.
   LINE_LIMIT = 120
 
   # Ruby keywords that cannot be used as method names unquoted.
@@ -234,7 +234,7 @@ module BiDiGenerate
   # for a scalar/opaque field); list wraps it in an array. json_key is the exact
   # JSON payload key (the schema's `wire` name, baked verbatim).
   FieldIR = Struct.new(:ruby_name, :json_key, :required, :nullable, :ref, :list, :enum, :rbs, keyword_init: true) do
-    # A `Serialization::Data.define` spec entry: `name: 'jsonKey'` shorthand, or
+    # A `Serialization::Record.define` spec entry: `name: 'jsonKey'` shorthand, or
     # `name: {json_key:, …}` when the field carries JSON facts beyond its name.
     # enum carries the allowed-values constant path, validated at construction.
     def spec_entry
@@ -262,7 +262,7 @@ module BiDiGenerate
     end
   end
 
-  # A generated immutable value type (a Serialization::Data.define(...) class). discriminator is the
+  # A generated immutable value type (a Serialization::Record.define(...) class). discriminator is the
   # baked variant tag {ruby_name:, wire:, value:} or nil; schema_name/synthetic/owner/
   # nested drive owner-nesting (see nest_synthetic).
   TypeClass = Struct.new(:ruby_name, :fields, :discriminator, :extensible,
@@ -270,7 +270,7 @@ module BiDiGenerate
     def union? = false
     def nested_types = nested || []
 
-    # Keyword arguments for `Serialization::Data.define(...)`: the fixed discriminator member
+    # Keyword arguments for `Serialization::Record.define(...)`: the fixed discriminator member
     # first, then the fields, then the extensible flag.
     def define_entries
       entries = []
@@ -280,11 +280,11 @@ module BiDiGenerate
       entries
     end
 
-    # `Name = Serialization::Data.define(...)` as one line when it fits within the line limit at the
+    # `Name = Serialization::Record.define(...)` as one line when it fits within the line limit at the
     # given indent, else wrapped one entry per line — so the emitted source stays inside
     # RuboCop's length limit without a per-file exception.
     def define_assignment(name, indent)
-      BiDiGenerate.wrap_call("#{name} = Serialization::Data.define", define_entries, indent)
+      BiDiGenerate.wrap_call("#{name} = Serialization::Record.define", define_entries, indent)
     end
 
     def discriminator_entry

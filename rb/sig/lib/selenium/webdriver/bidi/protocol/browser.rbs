@@ -27,7 +27,7 @@ module Selenium
 
           CLIENT_WINDOW_NAMED_STATE_STATE: Hash[Symbol, String]
 
-          class ClientWindowInfo < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class ClientWindowInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader active: bool
             attr_reader client_window: String
             attr_reader height: Integer
@@ -38,40 +38,40 @@ module Selenium
             def self.new: (active: bool, client_window: String, height: Integer, state: String, width: Integer, x: Integer, y: Integer) -> instance
           end
 
-          class UserContextInfo < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class UserContextInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader user_context: String
             def self.new: (user_context: String) -> instance
           end
 
-          class CreateUserContextParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class CreateUserContextParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader accept_insecure_certs: untyped
             attr_reader proxy: untyped
             attr_reader unhandled_prompt_behavior: untyped
             def self.new: (?accept_insecure_certs: bool?, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration?, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler?) -> instance
           end
 
-          class GetClientWindowsResult < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class GetClientWindowsResult < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader client_windows: Array[::Selenium::WebDriver::BiDi::Protocol::Browser::ClientWindowInfo]
             def self.new: (client_windows: Array[::Selenium::WebDriver::BiDi::Protocol::Browser::ClientWindowInfo]) -> instance
           end
 
-          class GetUserContextsResult < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class GetUserContextsResult < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader user_contexts: Array[::Selenium::WebDriver::BiDi::Protocol::Browser::UserContextInfo]
             def self.new: (user_contexts: Array[::Selenium::WebDriver::BiDi::Protocol::Browser::UserContextInfo]) -> instance
           end
 
-          class RemoveUserContextParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class RemoveUserContextParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader user_context: String
             def self.new: (user_context: String) -> instance
           end
 
           class SetClientWindowStateParameters < ::Selenium::WebDriver::BiDi::Serialization::Union
-            class ClientWindowNamedState < ::Selenium::WebDriver::BiDi::Serialization::Data
+            class ClientWindowNamedState < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader client_window: String
               attr_reader state: String
               def self.new: (client_window: String, state: String) -> instance
             end
-            class ClientWindowRectState < ::Selenium::WebDriver::BiDi::Serialization::Data
+            class ClientWindowRectState < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader state: untyped
               attr_reader client_window: String
               attr_reader width: untyped
@@ -82,19 +82,19 @@ module Selenium
             end
           end
 
-          class SetDownloadBehaviorParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetDownloadBehaviorParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader download_behavior: ::Selenium::WebDriver::BiDi::Protocol::Browser::DownloadBehavior?
             attr_reader user_contexts: untyped
             def self.new: (download_behavior: ::Selenium::WebDriver::BiDi::Protocol::Browser::DownloadBehavior?, ?user_contexts: Array[String]?) -> instance
           end
 
           class DownloadBehavior < ::Selenium::WebDriver::BiDi::Serialization::Union
-            class Allowed < ::Selenium::WebDriver::BiDi::Serialization::Data
+            class Allowed < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader type: untyped
               attr_reader destination_folder: String
               def self.new: (?type: untyped, destination_folder: String) -> instance
             end
-            class Denied < ::Selenium::WebDriver::BiDi::Serialization::Data
+            class Denied < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader type: untyped
               def self.new: (?type: untyped) -> instance
             end

@@ -76,11 +76,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          AuthChallenge = Serialization::Data.define(scheme: 'scheme', realm: 'realm')
+          AuthChallenge = Serialization::Record.define(scheme: 'scheme', realm: 'realm')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          AuthCredentials = Serialization::Data.define(
+          AuthCredentials = Serialization::Record.define(
             type: {fixed: 'password'},
             username: 'username',
             password: 'password'
@@ -88,7 +88,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          BaseParameters = Serialization::Data.define(
+          BaseParameters = Serialization::Record.define(
             context: {json_key: 'context', nullable: true},
             is_blocked: 'isBlocked',
             navigation: {json_key: 'navigation', nullable: true},
@@ -111,15 +111,15 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          StringValue = Serialization::Data.define(type: {fixed: 'string'}, value: 'value')
+          StringValue = Serialization::Record.define(type: {fixed: 'string'}, value: 'value')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          Base64Value = Serialization::Data.define(type: {fixed: 'base64'}, value: 'value')
+          Base64Value = Serialization::Record.define(type: {fixed: 'base64'}, value: 'value')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          Cookie = Serialization::Data.define(
+          Cookie = Serialization::Record.define(
             name: 'name',
             value: {json_key: 'value', ref: 'Network::BytesValue'},
             domain: 'domain',
@@ -134,14 +134,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          CookieHeader = Serialization::Data.define(
+          CookieHeader = Serialization::Record.define(
             name: 'name',
             value: {json_key: 'value', ref: 'Network::BytesValue'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          FetchTimingInfo = Serialization::Data.define(
+          FetchTimingInfo = Serialization::Record.define(
             time_origin: 'timeOrigin',
             request_time: 'requestTime',
             redirect_start: 'redirectStart',
@@ -159,11 +159,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          Header = Serialization::Data.define(name: 'name', value: {json_key: 'value', ref: 'Network::BytesValue'})
+          Header = Serialization::Record.define(name: 'name', value: {json_key: 'value', ref: 'Network::BytesValue'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          Initiator = Serialization::Data.define(
+          Initiator = Serialization::Record.define(
             column_number: 'columnNumber',
             line_number: 'lineNumber',
             request: 'request',
@@ -173,7 +173,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          RequestData = Serialization::Data.define(
+          RequestData = Serialization::Record.define(
             request: 'request',
             url: 'url',
             method_: 'method',
@@ -188,11 +188,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ResponseContent = Serialization::Data.define(size: 'size')
+          ResponseContent = Serialization::Record.define(size: 'size')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ResponseData = Serialization::Data.define(
+          ResponseData = Serialization::Record.define(
             url: 'url',
             protocol: 'protocol',
             status: 'status',
@@ -209,7 +209,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetCookieHeader = Serialization::Data.define(
+          SetCookieHeader = Serialization::Record.define(
             name: 'name',
             value: {json_key: 'value', ref: 'Network::BytesValue'},
             domain: 'domain',
@@ -233,7 +233,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          UrlPatternPattern = Serialization::Data.define(
+          UrlPatternPattern = Serialization::Record.define(
             type: {fixed: 'pattern'},
             protocol: 'protocol',
             hostname: 'hostname',
@@ -244,11 +244,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          UrlPatternString = Serialization::Data.define(type: {fixed: 'string'}, pattern: 'pattern')
+          UrlPatternString = Serialization::Record.define(type: {fixed: 'string'}, pattern: 'pattern')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          AddDataCollectorParameters = Serialization::Data.define(
+          AddDataCollectorParameters = Serialization::Record.define(
             data_types: {json_key: 'dataTypes', list: true, enum: 'Network::DATA_TYPE'},
             max_encoded_data_size: 'maxEncodedDataSize',
             collector_type: {json_key: 'collectorType', enum: 'Network::COLLECTOR_TYPE'},
@@ -258,11 +258,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          AddDataCollectorResult = Serialization::Data.define(collector: 'collector')
+          AddDataCollectorResult = Serialization::Record.define(collector: 'collector')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          AddInterceptParameters = Serialization::Data.define(
+          AddInterceptParameters = Serialization::Record.define(
             phases: {json_key: 'phases', list: true, enum: 'Network::INTERCEPT_PHASE'},
             contexts: {json_key: 'contexts', list: true},
             url_patterns: {json_key: 'urlPatterns', ref: 'Network::UrlPattern', list: true}
@@ -270,11 +270,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          AddInterceptResult = Serialization::Data.define(intercept: 'intercept')
+          AddInterceptResult = Serialization::Record.define(intercept: 'intercept')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ContinueRequestParameters = Serialization::Data.define(
+          ContinueRequestParameters = Serialization::Record.define(
             request: 'request',
             body: {json_key: 'body', ref: 'Network::BytesValue'},
             cookies: {json_key: 'cookies', ref: 'Network::CookieHeader', list: true},
@@ -285,7 +285,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ContinueResponseParameters = Serialization::Data.define(
+          ContinueResponseParameters = Serialization::Record.define(
             request: 'request',
             cookies: {json_key: 'cookies', ref: 'Network::SetCookieHeader', list: true},
             credentials: {json_key: 'credentials', ref: 'Network::AuthCredentials'},
@@ -305,7 +305,7 @@ module Selenium
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-            Credentials = Serialization::Data.define(
+            Credentials = Serialization::Record.define(
               action: {fixed: 'provideCredentials'},
               request: 'request',
               credentials: {json_key: 'credentials', ref: 'Network::AuthCredentials'}
@@ -313,7 +313,7 @@ module Selenium
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-            NoCredentials = Serialization::Data.define(
+            NoCredentials = Serialization::Record.define(
               request: 'request',
               action: {json_key: 'action', enum: 'Network::CONTINUE_WITH_AUTH_NO_CREDENTIALS_ACTION'}
             )
@@ -321,7 +321,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          DisownDataParameters = Serialization::Data.define(
+          DisownDataParameters = Serialization::Record.define(
             data_type: {json_key: 'dataType', enum: 'Network::DATA_TYPE'},
             collector: 'collector',
             request: 'request'
@@ -329,11 +329,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          FailRequestParameters = Serialization::Data.define(request: 'request')
+          FailRequestParameters = Serialization::Record.define(request: 'request')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          GetDataParameters = Serialization::Data.define(
+          GetDataParameters = Serialization::Record.define(
             data_type: {json_key: 'dataType', enum: 'Network::DATA_TYPE'},
             collector: 'collector',
             disown: 'disown',
@@ -342,11 +342,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          GetDataResult = Serialization::Data.define(bytes: {json_key: 'bytes', ref: 'Network::BytesValue'})
+          GetDataResult = Serialization::Record.define(bytes: {json_key: 'bytes', ref: 'Network::BytesValue'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ProvideResponseParameters = Serialization::Data.define(
+          ProvideResponseParameters = Serialization::Record.define(
             request: 'request',
             body: {json_key: 'body', ref: 'Network::BytesValue'},
             cookies: {json_key: 'cookies', ref: 'Network::SetCookieHeader', list: true},
@@ -357,22 +357,22 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          RemoveDataCollectorParameters = Serialization::Data.define(collector: 'collector')
+          RemoveDataCollectorParameters = Serialization::Record.define(collector: 'collector')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          RemoveInterceptParameters = Serialization::Data.define(intercept: 'intercept')
+          RemoveInterceptParameters = Serialization::Record.define(intercept: 'intercept')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetCacheBehaviorParameters = Serialization::Data.define(
+          SetCacheBehaviorParameters = Serialization::Record.define(
             cache_behavior: {json_key: 'cacheBehavior', enum: 'Network::SET_CACHE_BEHAVIOR_PARAMETERS_CACHE_BEHAVIOR'},
             contexts: {json_key: 'contexts', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetExtraHeadersParameters = Serialization::Data.define(
+          SetExtraHeadersParameters = Serialization::Record.define(
             headers: {json_key: 'headers', ref: 'Network::Header', list: true},
             contexts: {json_key: 'contexts', list: true},
             user_contexts: {json_key: 'userContexts', list: true}
@@ -380,7 +380,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          AuthRequiredParameters = Serialization::Data.define(
+          AuthRequiredParameters = Serialization::Record.define(
             context: {json_key: 'context', nullable: true},
             is_blocked: 'isBlocked',
             navigation: {json_key: 'navigation', nullable: true},
@@ -394,7 +394,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          BeforeRequestSentParameters = Serialization::Data.define(
+          BeforeRequestSentParameters = Serialization::Record.define(
             context: {json_key: 'context', nullable: true},
             is_blocked: 'isBlocked',
             navigation: {json_key: 'navigation', nullable: true},
@@ -408,7 +408,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          FetchErrorParameters = Serialization::Data.define(
+          FetchErrorParameters = Serialization::Record.define(
             context: {json_key: 'context', nullable: true},
             is_blocked: 'isBlocked',
             navigation: {json_key: 'navigation', nullable: true},
@@ -422,7 +422,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ResponseCompletedParameters = Serialization::Data.define(
+          ResponseCompletedParameters = Serialization::Record.define(
             context: {json_key: 'context', nullable: true},
             is_blocked: 'isBlocked',
             navigation: {json_key: 'navigation', nullable: true},
@@ -436,7 +436,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ResponseStartedParameters = Serialization::Data.define(
+          ResponseStartedParameters = Serialization::Record.define(
             context: {json_key: 'context', nullable: true},
             is_blocked: 'isBlocked',
             navigation: {json_key: 'navigation', nullable: true},

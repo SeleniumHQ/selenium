@@ -24,8 +24,8 @@ module Selenium
 
         def self.validate!: (String name, untyped value, untyped allowed) -> void
 
-        class Data < ::Data
-          def self.define: (**untyped spec) -> singleton(Data)
+        class Record < ::Data
+          def self.define: (**untyped spec) -> singleton(Record)
 
           def self.field: (Symbol name, untyped meta) -> untyped
 

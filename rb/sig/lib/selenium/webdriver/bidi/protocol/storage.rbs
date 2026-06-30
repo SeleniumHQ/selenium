@@ -23,14 +23,14 @@ module Selenium
     class BiDi
       module Protocol
         class Storage
-          class PartitionKey < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class PartitionKey < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader user_context: untyped
             attr_reader source_origin: untyped
             attr_reader extensions: Hash[String, untyped]
             def self.new: (?user_context: String?, ?source_origin: String?, ?extensions: untyped) -> instance
           end
 
-          class CookieFilter < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class CookieFilter < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader name: untyped
             attr_reader value: untyped
             attr_reader domain: untyped
@@ -44,13 +44,13 @@ module Selenium
             def self.new: (?name: String?, ?value: ::Selenium::WebDriver::BiDi::Protocol::Network::BytesValue?, ?domain: String?, ?path: String?, ?size: Integer?, ?http_only: bool?, ?secure: bool?, ?same_site: String?, ?expiry: Integer?, ?extensions: untyped) -> instance
           end
 
-          class BrowsingContextPartitionDescriptor < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class BrowsingContextPartitionDescriptor < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader context: String
             def self.new: (?type: untyped, context: String) -> instance
           end
 
-          class StorageKeyPartitionDescriptor < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class StorageKeyPartitionDescriptor < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader user_context: untyped
             attr_reader source_origin: untyped
@@ -61,19 +61,19 @@ module Selenium
           class PartitionDescriptor < ::Selenium::WebDriver::BiDi::Serialization::Union
           end
 
-          class GetCookiesParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class GetCookiesParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader filter: untyped
             attr_reader partition: untyped
             def self.new: (?filter: ::Selenium::WebDriver::BiDi::Protocol::Storage::CookieFilter?, ?partition: ::Selenium::WebDriver::BiDi::Protocol::Storage::PartitionDescriptor?) -> instance
           end
 
-          class GetCookiesResult < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class GetCookiesResult < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader cookies: Array[::Selenium::WebDriver::BiDi::Protocol::Network::Cookie]
             attr_reader partition_key: ::Selenium::WebDriver::BiDi::Protocol::Storage::PartitionKey
             def self.new: (cookies: Array[::Selenium::WebDriver::BiDi::Protocol::Network::Cookie], partition_key: ::Selenium::WebDriver::BiDi::Protocol::Storage::PartitionKey) -> instance
           end
 
-          class PartialCookie < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class PartialCookie < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader name: String
             attr_reader value: ::Selenium::WebDriver::BiDi::Protocol::Network::BytesValue
             attr_reader domain: String
@@ -86,24 +86,24 @@ module Selenium
             def self.new: (name: String, value: ::Selenium::WebDriver::BiDi::Protocol::Network::BytesValue, domain: String, ?path: String?, ?http_only: bool?, ?secure: bool?, ?same_site: String?, ?expiry: Integer?, ?extensions: untyped) -> instance
           end
 
-          class SetCookieParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetCookieParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader cookie: ::Selenium::WebDriver::BiDi::Protocol::Storage::PartialCookie
             attr_reader partition: untyped
             def self.new: (cookie: ::Selenium::WebDriver::BiDi::Protocol::Storage::PartialCookie, ?partition: ::Selenium::WebDriver::BiDi::Protocol::Storage::PartitionDescriptor?) -> instance
           end
 
-          class SetCookieResult < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetCookieResult < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader partition_key: ::Selenium::WebDriver::BiDi::Protocol::Storage::PartitionKey
             def self.new: (partition_key: ::Selenium::WebDriver::BiDi::Protocol::Storage::PartitionKey) -> instance
           end
 
-          class DeleteCookiesParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class DeleteCookiesParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader filter: untyped
             attr_reader partition: untyped
             def self.new: (?filter: ::Selenium::WebDriver::BiDi::Protocol::Storage::CookieFilter?, ?partition: ::Selenium::WebDriver::BiDi::Protocol::Storage::PartitionDescriptor?) -> instance
           end
 
-          class DeleteCookiesResult < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class DeleteCookiesResult < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader partition_key: ::Selenium::WebDriver::BiDi::Protocol::Storage::PartitionKey
             def self.new: (partition_key: ::Selenium::WebDriver::BiDi::Protocol::Storage::PartitionKey) -> instance
           end

@@ -41,13 +41,13 @@ module Selenium
 
           DESCRIPTOR_EVENT_GENERATED_PARAMETERS_TYPE: Hash[Symbol, String]
 
-          class BluetoothManufacturerData < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class BluetoothManufacturerData < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader key: Integer
             attr_reader data: String
             def self.new: (key: Integer, data: String) -> instance
           end
 
-          class CharacteristicProperties < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class CharacteristicProperties < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader broadcast: untyped
             attr_reader read: untyped
             attr_reader write_without_response: untyped
@@ -59,13 +59,13 @@ module Selenium
             def self.new: (?broadcast: bool?, ?read: bool?, ?write_without_response: bool?, ?write: bool?, ?notify: bool?, ?indicate: bool?, ?authenticated_signed_writes: bool?, ?extended_properties: bool?) -> instance
           end
 
-          class RequestDeviceInfo < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class RequestDeviceInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader id: String
             attr_reader name: String?
             def self.new: (id: String, name: String?) -> instance
           end
 
-          class ScanRecord < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class ScanRecord < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader name: untyped
             attr_reader uuids: untyped
             attr_reader appearance: untyped
@@ -74,14 +74,14 @@ module Selenium
           end
 
           class HandleRequestDevicePromptParameters < ::Selenium::WebDriver::BiDi::Serialization::Union
-            class AcceptParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+            class AcceptParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader accept: untyped
               attr_reader context: String
               attr_reader prompt: String
               attr_reader device: String
               def self.new: (?accept: untyped, context: String, prompt: String, device: String) -> instance
             end
-            class CancelParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+            class CancelParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader accept: untyped
               attr_reader context: String
               attr_reader prompt: String
@@ -89,19 +89,19 @@ module Selenium
             end
           end
 
-          class SimulateAdapterParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SimulateAdapterParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader le_supported: untyped
             attr_reader state: String
             def self.new: (context: String, ?le_supported: bool?, state: String) -> instance
           end
 
-          class DisableSimulationParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class DisableSimulationParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             def self.new: (context: String) -> instance
           end
 
-          class SimulatePreconnectedPeripheralParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SimulatePreconnectedPeripheralParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader address: String
             attr_reader name: String
@@ -110,33 +110,33 @@ module Selenium
             def self.new: (context: String, address: String, name: String, manufacturer_data: Array[::Selenium::WebDriver::BiDi::Protocol::Bluetooth::BluetoothManufacturerData], known_service_uuids: Array[String]) -> instance
           end
 
-          class SimulateAdvertisementParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SimulateAdvertisementParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader scan_entry: ::Selenium::WebDriver::BiDi::Protocol::Bluetooth::SimulateAdvertisementScanEntryParameters
             def self.new: (context: String, scan_entry: ::Selenium::WebDriver::BiDi::Protocol::Bluetooth::SimulateAdvertisementScanEntryParameters) -> instance
           end
 
-          class SimulateAdvertisementScanEntryParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SimulateAdvertisementScanEntryParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader device_address: String
             attr_reader rssi: Numeric
             attr_reader scan_record: ::Selenium::WebDriver::BiDi::Protocol::Bluetooth::ScanRecord
             def self.new: (device_address: String, rssi: Numeric, scan_record: ::Selenium::WebDriver::BiDi::Protocol::Bluetooth::ScanRecord) -> instance
           end
 
-          class SimulateGattConnectionResponseParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SimulateGattConnectionResponseParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader address: String
             attr_reader code: Integer
             def self.new: (context: String, address: String, code: Integer) -> instance
           end
 
-          class SimulateGattDisconnectionParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SimulateGattDisconnectionParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader address: String
             def self.new: (context: String, address: String) -> instance
           end
 
-          class SimulateServiceParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SimulateServiceParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader address: String
             attr_reader uuid: String
@@ -144,7 +144,7 @@ module Selenium
             def self.new: (context: String, address: String, uuid: String, type: String) -> instance
           end
 
-          class SimulateCharacteristicParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SimulateCharacteristicParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader address: String
             attr_reader service_uuid: String
@@ -154,7 +154,7 @@ module Selenium
             def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, ?characteristic_properties: ::Selenium::WebDriver::BiDi::Protocol::Bluetooth::CharacteristicProperties?, type: String) -> instance
           end
 
-          class SimulateCharacteristicResponseParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SimulateCharacteristicResponseParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader address: String
             attr_reader service_uuid: String
@@ -165,7 +165,7 @@ module Selenium
             def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, type: String, code: Integer, ?data: Array[Integer]?) -> instance
           end
 
-          class SimulateDescriptorParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SimulateDescriptorParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader address: String
             attr_reader service_uuid: String
@@ -175,7 +175,7 @@ module Selenium
             def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, descriptor_uuid: String, type: String) -> instance
           end
 
-          class SimulateDescriptorResponseParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SimulateDescriptorResponseParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader address: String
             attr_reader service_uuid: String
@@ -187,20 +187,20 @@ module Selenium
             def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, descriptor_uuid: String, type: String, code: Integer, ?data: Array[Integer]?) -> instance
           end
 
-          class RequestDevicePromptUpdatedParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class RequestDevicePromptUpdatedParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader prompt: String
             attr_reader devices: Array[::Selenium::WebDriver::BiDi::Protocol::Bluetooth::RequestDeviceInfo]
             def self.new: (context: String, prompt: String, devices: Array[::Selenium::WebDriver::BiDi::Protocol::Bluetooth::RequestDeviceInfo]) -> instance
           end
 
-          class GattConnectionAttemptedParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class GattConnectionAttemptedParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader address: String
             def self.new: (context: String, address: String) -> instance
           end
 
-          class CharacteristicEventGeneratedParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class CharacteristicEventGeneratedParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader address: String
             attr_reader service_uuid: String
@@ -210,7 +210,7 @@ module Selenium
             def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, type: String, ?data: Array[Integer]?) -> instance
           end
 
-          class DescriptorEventGeneratedParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class DescriptorEventGeneratedParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader address: String
             attr_reader service_uuid: String

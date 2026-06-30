@@ -39,14 +39,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ElementOrigin = Serialization::Data.define(
+          ElementOrigin = Serialization::Record.define(
             type: {fixed: 'element'},
             element: {json_key: 'element', ref: 'Script::SharedReference'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          PerformActionsParameters = Serialization::Data.define(
+          PerformActionsParameters = Serialization::Record.define(
             context: 'context',
             actions: {json_key: 'actions', ref: 'Input::SourceActions', list: true}
           )
@@ -65,7 +65,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          NoneSourceActions = Serialization::Data.define(
+          NoneSourceActions = Serialization::Record.define(
             type: {fixed: 'none'},
             id: 'id',
             actions: {json_key: 'actions', ref: 'Input::PauseAction', list: true}
@@ -73,7 +73,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          KeySourceActions = Serialization::Data.define(
+          KeySourceActions = Serialization::Record.define(
             type: {fixed: 'key'},
             id: 'id',
             actions: {json_key: 'actions', ref: 'Input::KeySourceAction', list: true}
@@ -92,7 +92,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          PointerSourceActions = Serialization::Data.define(
+          PointerSourceActions = Serialization::Record.define(
             type: {fixed: 'pointer'},
             id: 'id',
             parameters: {json_key: 'parameters', ref: 'Input::PointerParameters'},
@@ -101,7 +101,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          PointerParameters = Serialization::Data.define(
+          PointerParameters = Serialization::Record.define(
             pointer_type: {json_key: 'pointerType', enum: 'Input::POINTER_TYPE'}
           )
 
@@ -119,7 +119,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          WheelSourceActions = Serialization::Data.define(
+          WheelSourceActions = Serialization::Record.define(
             type: {fixed: 'wheel'},
             id: 'id',
             actions: {json_key: 'actions', ref: 'Input::WheelSourceAction', list: true}
@@ -137,23 +137,23 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          PauseAction = Serialization::Data.define(type: {fixed: 'pause'}, duration: 'duration')
+          PauseAction = Serialization::Record.define(type: {fixed: 'pause'}, duration: 'duration')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          KeyDownAction = Serialization::Data.define(type: {fixed: 'keyDown'}, value: 'value')
+          KeyDownAction = Serialization::Record.define(type: {fixed: 'keyDown'}, value: 'value')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          KeyUpAction = Serialization::Data.define(type: {fixed: 'keyUp'}, value: 'value')
+          KeyUpAction = Serialization::Record.define(type: {fixed: 'keyUp'}, value: 'value')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          PointerUpAction = Serialization::Data.define(type: {fixed: 'pointerUp'}, button: 'button')
+          PointerUpAction = Serialization::Record.define(type: {fixed: 'pointerUp'}, button: 'button')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          PointerDownAction = Serialization::Data.define(
+          PointerDownAction = Serialization::Record.define(
             type: {fixed: 'pointerDown'},
             button: 'button',
             width: 'width',
@@ -167,7 +167,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          PointerMoveAction = Serialization::Data.define(
+          PointerMoveAction = Serialization::Record.define(
             type: {fixed: 'pointerMove'},
             x: 'x',
             y: 'y',
@@ -184,7 +184,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          WheelScrollAction = Serialization::Data.define(
+          WheelScrollAction = Serialization::Record.define(
             type: {fixed: 'scroll'},
             x: 'x',
             y: 'y',
@@ -196,7 +196,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          PointerCommonProperties = Serialization::Data.define(
+          PointerCommonProperties = Serialization::Record.define(
             width: 'width',
             height: 'height',
             pressure: 'pressure',
@@ -217,11 +217,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ReleaseActionsParameters = Serialization::Data.define(context: 'context')
+          ReleaseActionsParameters = Serialization::Record.define(context: 'context')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetFilesParameters = Serialization::Data.define(
+          SetFilesParameters = Serialization::Record.define(
             context: 'context',
             element: {json_key: 'element', ref: 'Script::SharedReference'},
             files: {json_key: 'files', list: true}
@@ -229,7 +229,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          FileDialogInfo = Serialization::Data.define(
+          FileDialogInfo = Serialization::Record.define(
             context: 'context',
             user_context: 'userContext',
             element: {json_key: 'element', ref: 'Script::SharedReference'},

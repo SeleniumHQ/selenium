@@ -27,13 +27,13 @@ module Selenium
 
           POINTER_TYPE: Hash[Symbol, String]
 
-          class ElementOrigin < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class ElementOrigin < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference
             def self.new: (?type: untyped, element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference) -> instance
           end
 
-          class PerformActionsParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class PerformActionsParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::SourceActions]
             def self.new: (context: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::SourceActions]) -> instance
@@ -42,14 +42,14 @@ module Selenium
           class SourceActions < ::Selenium::WebDriver::BiDi::Serialization::Union
           end
 
-          class NoneSourceActions < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class NoneSourceActions < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader id: String
             attr_reader actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::PauseAction]
             def self.new: (?type: untyped, id: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::PauseAction]) -> instance
           end
 
-          class KeySourceActions < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class KeySourceActions < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader id: String
             attr_reader actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::KeySourceAction]
@@ -59,7 +59,7 @@ module Selenium
           class KeySourceAction < ::Selenium::WebDriver::BiDi::Serialization::Union
           end
 
-          class PointerSourceActions < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class PointerSourceActions < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader id: String
             attr_reader parameters: untyped
@@ -67,7 +67,7 @@ module Selenium
             def self.new: (?type: untyped, id: String, ?parameters: ::Selenium::WebDriver::BiDi::Protocol::Input::PointerParameters?, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::PointerSourceAction]) -> instance
           end
 
-          class PointerParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class PointerParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader pointer_type: untyped
             def self.new: (?pointer_type: String?) -> instance
           end
@@ -75,7 +75,7 @@ module Selenium
           class PointerSourceAction < ::Selenium::WebDriver::BiDi::Serialization::Union
           end
 
-          class WheelSourceActions < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class WheelSourceActions < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader id: String
             attr_reader actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::WheelSourceAction]
@@ -85,31 +85,31 @@ module Selenium
           class WheelSourceAction < ::Selenium::WebDriver::BiDi::Serialization::Union
           end
 
-          class PauseAction < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class PauseAction < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader duration: untyped
             def self.new: (?type: untyped, ?duration: Integer?) -> instance
           end
 
-          class KeyDownAction < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class KeyDownAction < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader value: String
             def self.new: (?type: untyped, value: String) -> instance
           end
 
-          class KeyUpAction < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class KeyUpAction < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader value: String
             def self.new: (?type: untyped, value: String) -> instance
           end
 
-          class PointerUpAction < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class PointerUpAction < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader button: Integer
             def self.new: (?type: untyped, button: Integer) -> instance
           end
 
-          class PointerDownAction < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class PointerDownAction < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader button: Integer
             attr_reader width: untyped
@@ -122,7 +122,7 @@ module Selenium
             def self.new: (?type: untyped, button: Integer, ?width: Integer?, ?height: Integer?, ?pressure: Integer?, ?tangential_pressure: Integer?, ?twist: Integer?, ?altitude_angle: Numeric?, ?azimuth_angle: Numeric?) -> instance
           end
 
-          class PointerMoveAction < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class PointerMoveAction < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader x: Numeric
             attr_reader y: Numeric
@@ -138,7 +138,7 @@ module Selenium
             def self.new: (?type: untyped, x: Numeric, y: Numeric, ?duration: Integer?, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::Origin?, ?width: Integer?, ?height: Integer?, ?pressure: Integer?, ?tangential_pressure: Integer?, ?twist: Integer?, ?altitude_angle: Numeric?, ?azimuth_angle: Numeric?) -> instance
           end
 
-          class WheelScrollAction < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class WheelScrollAction < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader x: Integer
             attr_reader y: Integer
@@ -149,7 +149,7 @@ module Selenium
             def self.new: (?type: untyped, x: Integer, y: Integer, delta_x: Integer, delta_y: Integer, ?duration: Integer?, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::Origin?) -> instance
           end
 
-          class PointerCommonProperties < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class PointerCommonProperties < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader width: untyped
             attr_reader height: untyped
             attr_reader pressure: untyped
@@ -163,19 +163,19 @@ module Selenium
           class Origin < ::Selenium::WebDriver::BiDi::Serialization::Union
           end
 
-          class ReleaseActionsParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class ReleaseActionsParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             def self.new: (context: String) -> instance
           end
 
-          class SetFilesParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SetFilesParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference
             attr_reader files: Array[String]
             def self.new: (context: String, element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference, files: Array[String]) -> instance
           end
 
-          class FileDialogInfo < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class FileDialogInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader user_context: untyped
             attr_reader element: untyped

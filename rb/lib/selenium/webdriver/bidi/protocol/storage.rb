@@ -29,7 +29,7 @@ module Selenium
         class Storage
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          PartitionKey = Serialization::Data.define(
+          PartitionKey = Serialization::Record.define(
             user_context: 'userContext',
             source_origin: 'sourceOrigin',
             extensible: true
@@ -37,7 +37,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          CookieFilter = Serialization::Data.define(
+          CookieFilter = Serialization::Record.define(
             name: 'name',
             value: {json_key: 'value', ref: 'Network::BytesValue'},
             domain: 'domain',
@@ -52,11 +52,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          BrowsingContextPartitionDescriptor = Serialization::Data.define(type: {fixed: 'context'}, context: 'context')
+          BrowsingContextPartitionDescriptor = Serialization::Record.define(
+            type: {fixed: 'context'},
+            context: 'context'
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          StorageKeyPartitionDescriptor = Serialization::Data.define(
+          StorageKeyPartitionDescriptor = Serialization::Record.define(
             type: {fixed: 'storageKey'},
             user_context: 'userContext',
             source_origin: 'sourceOrigin',
@@ -75,21 +78,21 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          GetCookiesParameters = Serialization::Data.define(
+          GetCookiesParameters = Serialization::Record.define(
             filter: {json_key: 'filter', ref: 'Storage::CookieFilter'},
             partition: {json_key: 'partition', ref: 'Storage::PartitionDescriptor'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          GetCookiesResult = Serialization::Data.define(
+          GetCookiesResult = Serialization::Record.define(
             cookies: {json_key: 'cookies', ref: 'Network::Cookie', list: true},
             partition_key: {json_key: 'partitionKey', ref: 'Storage::PartitionKey'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          PartialCookie = Serialization::Data.define(
+          PartialCookie = Serialization::Record.define(
             name: 'name',
             value: {json_key: 'value', ref: 'Network::BytesValue'},
             domain: 'domain',
@@ -103,27 +106,27 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetCookieParameters = Serialization::Data.define(
+          SetCookieParameters = Serialization::Record.define(
             cookie: {json_key: 'cookie', ref: 'Storage::PartialCookie'},
             partition: {json_key: 'partition', ref: 'Storage::PartitionDescriptor'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetCookieResult = Serialization::Data.define(
+          SetCookieResult = Serialization::Record.define(
             partition_key: {json_key: 'partitionKey', ref: 'Storage::PartitionKey'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          DeleteCookiesParameters = Serialization::Data.define(
+          DeleteCookiesParameters = Serialization::Record.define(
             filter: {json_key: 'filter', ref: 'Storage::CookieFilter'},
             partition: {json_key: 'partition', ref: 'Storage::PartitionDescriptor'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          DeleteCookiesResult = Serialization::Data.define(
+          DeleteCookiesResult = Serialization::Record.define(
             partition_key: {json_key: 'partitionKey', ref: 'Storage::PartitionKey'}
           )
 

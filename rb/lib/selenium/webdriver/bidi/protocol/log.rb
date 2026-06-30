@@ -51,7 +51,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          BaseLogEntry = Serialization::Data.define(
+          BaseLogEntry = Serialization::Record.define(
             level: {json_key: 'level', enum: 'Log::LEVEL'},
             source: {json_key: 'source', ref: 'Script::Source'},
             text: {json_key: 'text', nullable: true},
@@ -61,7 +61,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          GenericLogEntry = Serialization::Data.define(
+          GenericLogEntry = Serialization::Record.define(
             level: {json_key: 'level', enum: 'Log::LEVEL'},
             source: {json_key: 'source', ref: 'Script::Source'},
             text: {json_key: 'text', nullable: true},
@@ -72,7 +72,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ConsoleLogEntry = Serialization::Data.define(
+          ConsoleLogEntry = Serialization::Record.define(
             type: {fixed: 'console'},
             level: {json_key: 'level', enum: 'Log::LEVEL'},
             source: {json_key: 'source', ref: 'Script::Source'},
@@ -85,7 +85,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          JavascriptLogEntry = Serialization::Data.define(
+          JavascriptLogEntry = Serialization::Record.define(
             type: {fixed: 'javascript'},
             level: {json_key: 'level', enum: 'Log::LEVEL'},
             source: {json_key: 'source', ref: 'Script::Source'},

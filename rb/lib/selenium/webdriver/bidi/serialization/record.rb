@@ -21,13 +21,13 @@ module Selenium
   module WebDriver
     class BiDi
       module Serialization
-        # Immutable value type for the generated protocol classes. +Data.define(spec)+
+        # Immutable value type for the generated protocol classes. +Record.define(spec)+
         # bakes each field's wire facts and returns a +::Data+ subclass with serialization.
         #
-        #   Cookie = Data.define(name: 'name', value: {json_key: 'value', ref: 'Network::BytesValue'})
+        #   Cookie = Record.define(name: 'name', value: {json_key: 'value', ref: 'Network::BytesValue'})
         #
         # @api private
-        class Data < ::Data
+        class Record < ::Data
           # Named Field, not Member, to avoid colliding with +::Data#members+.
           Field = ::Data.define(:name, :json_key, :nullable, :ref, :list, :fixed, :enum)
 
@@ -39,7 +39,7 @@ module Selenium
 
             klass = super(*names)
             fields.freeze
-            # Singleton methods are inherited by `X = Data.define(…)`; ivars would not.
+            # Singleton methods are inherited by `X = Record.define(…)`; ivars would not.
             klass.define_singleton_method(:fields) { fields }
             klass.define_singleton_method(:extensible?) { extensible }
             klass.include(Serializable)

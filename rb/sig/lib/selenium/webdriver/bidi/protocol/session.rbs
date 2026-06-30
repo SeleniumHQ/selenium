@@ -25,13 +25,13 @@ module Selenium
         class Session
           USER_PROMPT_HANDLER_TYPE: Hash[Symbol, String]
 
-          class CapabilitiesRequest < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class CapabilitiesRequest < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader always_match: untyped
             attr_reader first_match: untyped
             def self.new: (?always_match: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequest?, ?first_match: Array[::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequest]?) -> instance
           end
 
-          class CapabilityRequest < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class CapabilityRequest < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader accept_insecure_certs: untyped
             attr_reader browser_name: untyped
             attr_reader browser_version: untyped
@@ -45,19 +45,19 @@ module Selenium
           class ProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Union
           end
 
-          class AutodetectProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class AutodetectProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader proxy_type: untyped
             attr_reader extensions: Hash[String, untyped]
             def self.new: (?proxy_type: untyped, ?extensions: untyped) -> instance
           end
 
-          class DirectProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class DirectProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader proxy_type: untyped
             attr_reader extensions: Hash[String, untyped]
             def self.new: (?proxy_type: untyped, ?extensions: untyped) -> instance
           end
 
-          class ManualProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class ManualProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader proxy_type: untyped
             attr_reader http_proxy: untyped
             attr_reader ssl_proxy: untyped
@@ -68,26 +68,26 @@ module Selenium
             def self.new: (?proxy_type: untyped, ?http_proxy: String?, ?ssl_proxy: String?, socks_proxy: String, socks_version: Integer, ?no_proxy: Array[String]?, ?extensions: untyped) -> instance
           end
 
-          class SocksProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SocksProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader socks_proxy: String
             attr_reader socks_version: Integer
             def self.new: (socks_proxy: String, socks_version: Integer) -> instance
           end
 
-          class PacProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class PacProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader proxy_type: untyped
             attr_reader proxy_autoconfig_url: String
             attr_reader extensions: Hash[String, untyped]
             def self.new: (?proxy_type: untyped, proxy_autoconfig_url: String, ?extensions: untyped) -> instance
           end
 
-          class SystemProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SystemProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader proxy_type: untyped
             attr_reader extensions: Hash[String, untyped]
             def self.new: (?proxy_type: untyped, ?extensions: untyped) -> instance
           end
 
-          class UserPromptHandler < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class UserPromptHandler < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader alert: untyped
             attr_reader before_unload: untyped
             attr_reader confirm: untyped
@@ -97,40 +97,40 @@ module Selenium
             def self.new: (?alert: String?, ?before_unload: String?, ?confirm: String?, ?default: String?, ?file: String?, ?prompt: String?) -> instance
           end
 
-          class SubscribeParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SubscribeParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader events: Array[String]
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
             def self.new: (events: Array[String], ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
           end
 
-          class UnsubscribeByIDRequest < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class UnsubscribeByIDRequest < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader subscriptions: Array[String]
             def self.new: (subscriptions: Array[String]) -> instance
           end
 
-          class UnsubscribeByAttributesRequest < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class UnsubscribeByAttributesRequest < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader events: Array[String]
             def self.new: (events: Array[String]) -> instance
           end
 
-          class StatusResult < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class StatusResult < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader ready: bool
             attr_reader message: String
             def self.new: (ready: bool, message: String) -> instance
           end
 
-          class NewParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class NewParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader capabilities: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilitiesRequest
             def self.new: (capabilities: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilitiesRequest) -> instance
           end
 
-          class NewResult < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class NewResult < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader session_id: String
             attr_reader capabilities: ::Selenium::WebDriver::BiDi::Protocol::Session::NewResult::Capabilities
             def self.new: (session_id: String, capabilities: ::Selenium::WebDriver::BiDi::Protocol::Session::NewResult::Capabilities) -> instance
 
-            class Capabilities < ::Selenium::WebDriver::BiDi::Serialization::Data
+            class Capabilities < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader accept_insecure_certs: bool
               attr_reader browser_name: String
               attr_reader browser_version: String
@@ -145,7 +145,7 @@ module Selenium
             end
           end
 
-          class SubscribeResult < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class SubscribeResult < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader subscription: String
             def self.new: (subscription: String) -> instance
           end

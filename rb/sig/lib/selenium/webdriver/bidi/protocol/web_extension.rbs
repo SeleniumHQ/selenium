@@ -23,7 +23,7 @@ module Selenium
     class BiDi
       module Protocol
         class WebExtension
-          class InstallParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class InstallParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData
             def self.new: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData) -> instance
           end
@@ -31,30 +31,30 @@ module Selenium
           class ExtensionData < ::Selenium::WebDriver::BiDi::Serialization::Union
           end
 
-          class ExtensionPath < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class ExtensionPath < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader path: String
             def self.new: (?type: untyped, path: String) -> instance
           end
 
-          class ExtensionArchivePath < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class ExtensionArchivePath < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader path: String
             def self.new: (?type: untyped, path: String) -> instance
           end
 
-          class ExtensionBase64Encoded < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class ExtensionBase64Encoded < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader value: String
             def self.new: (?type: untyped, value: String) -> instance
           end
 
-          class InstallResult < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class InstallResult < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader extension: String
             def self.new: (extension: String) -> instance
           end
 
-          class UninstallParameters < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class UninstallParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader extension: String
             def self.new: (extension: String) -> instance
           end

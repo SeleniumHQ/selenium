@@ -46,7 +46,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetForcedColorsModeThemeOverrideParameters = Serialization::Data.define(
+          SetForcedColorsModeThemeOverrideParameters = Serialization::Record.define(
             theme: {json_key: 'theme', nullable: true, enum: 'Emulation::FORCED_COLORS_MODE_THEME'},
             contexts: {json_key: 'contexts', list: true},
             user_contexts: {json_key: 'userContexts', list: true}
@@ -62,7 +62,7 @@ module Selenium
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-            Coordinates = Serialization::Data.define(
+            Coordinates = Serialization::Record.define(
               contexts: {json_key: 'contexts', list: true},
               user_contexts: {json_key: 'userContexts', list: true},
               coordinates: {json_key: 'coordinates', nullable: true, ref: 'Emulation::GeolocationCoordinates'}
@@ -70,7 +70,7 @@ module Selenium
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-            Error = Serialization::Data.define(
+            Error = Serialization::Record.define(
               contexts: {json_key: 'contexts', list: true},
               user_contexts: {json_key: 'userContexts', list: true},
               error: {json_key: 'error', ref: 'Emulation::GeolocationPositionError'}
@@ -79,7 +79,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          GeolocationCoordinates = Serialization::Data.define(
+          GeolocationCoordinates = Serialization::Record.define(
             latitude: 'latitude',
             longitude: 'longitude',
             accuracy: 'accuracy',
@@ -91,11 +91,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          GeolocationPositionError = Serialization::Data.define(type: {fixed: 'positionUnavailable'})
+          GeolocationPositionError = Serialization::Record.define(type: {fixed: 'positionUnavailable'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetLocaleOverrideParameters = Serialization::Data.define(
+          SetLocaleOverrideParameters = Serialization::Record.define(
             locale: {json_key: 'locale', nullable: true},
             contexts: {json_key: 'contexts', list: true},
             user_contexts: {json_key: 'userContexts', list: true}
@@ -103,7 +103,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetNetworkConditionsParameters = Serialization::Data.define(
+          SetNetworkConditionsParameters = Serialization::Record.define(
             network_conditions: {json_key: 'networkConditions', nullable: true, ref: 'Emulation::NetworkConditionsOffline'},
             contexts: {json_key: 'contexts', list: true},
             user_contexts: {json_key: 'userContexts', list: true}
@@ -111,15 +111,15 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          NetworkConditionsOffline = Serialization::Data.define(type: {fixed: 'offline'})
+          NetworkConditionsOffline = Serialization::Record.define(type: {fixed: 'offline'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ScreenArea = Serialization::Data.define(width: 'width', height: 'height')
+          ScreenArea = Serialization::Record.define(width: 'width', height: 'height')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetScreenSettingsOverrideParameters = Serialization::Data.define(
+          SetScreenSettingsOverrideParameters = Serialization::Record.define(
             screen_area: {json_key: 'screenArea', nullable: true, ref: 'Emulation::ScreenArea'},
             contexts: {json_key: 'contexts', list: true},
             user_contexts: {json_key: 'userContexts', list: true}
@@ -127,14 +127,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ScreenOrientation = Serialization::Data.define(
+          ScreenOrientation = Serialization::Record.define(
             natural: {json_key: 'natural', enum: 'Emulation::SCREEN_ORIENTATION_NATURAL'},
             type: {json_key: 'type', enum: 'Emulation::SCREEN_ORIENTATION_TYPE'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetScreenOrientationOverrideParameters = Serialization::Data.define(
+          SetScreenOrientationOverrideParameters = Serialization::Record.define(
             screen_orientation: {json_key: 'screenOrientation', nullable: true, ref: 'Emulation::ScreenOrientation'},
             contexts: {json_key: 'contexts', list: true},
             user_contexts: {json_key: 'userContexts', list: true}
@@ -142,7 +142,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetUserAgentOverrideParameters = Serialization::Data.define(
+          SetUserAgentOverrideParameters = Serialization::Record.define(
             user_agent: {json_key: 'userAgent', nullable: true},
             contexts: {json_key: 'contexts', list: true},
             user_contexts: {json_key: 'userContexts', list: true}
@@ -150,7 +150,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetScriptingEnabledParameters = Serialization::Data.define(
+          SetScriptingEnabledParameters = Serialization::Record.define(
             enabled: {json_key: 'enabled', nullable: true},
             contexts: {json_key: 'contexts', list: true},
             user_contexts: {json_key: 'userContexts', list: true}
@@ -158,7 +158,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetScrollbarTypeOverrideParameters = Serialization::Data.define(
+          SetScrollbarTypeOverrideParameters = Serialization::Record.define(
             scrollbar_type: {json_key: 'scrollbarType', nullable: true},
             contexts: {json_key: 'contexts', list: true},
             user_contexts: {json_key: 'userContexts', list: true}
@@ -166,7 +166,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetTimezoneOverrideParameters = Serialization::Data.define(
+          SetTimezoneOverrideParameters = Serialization::Record.define(
             timezone: {json_key: 'timezone', nullable: true},
             contexts: {json_key: 'contexts', list: true},
             user_contexts: {json_key: 'userContexts', list: true}
@@ -174,7 +174,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SetTouchOverrideParameters = Serialization::Data.define(
+          SetTouchOverrideParameters = Serialization::Record.define(
             max_touch_points: {json_key: 'maxTouchPoints', nullable: true},
             contexts: {json_key: 'contexts', list: true},
             user_contexts: {json_key: 'userContexts', list: true}

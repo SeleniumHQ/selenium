@@ -35,7 +35,7 @@ module Selenium
 <%- if type.union? -%>
           class <%= type.ruby_name %> < ::Selenium::WebDriver::BiDi::Serialization::Union
 <%- type.nested_types.each do |nested| -%>
-            class <%= nested.ruby_name %> < ::Selenium::WebDriver::BiDi::Serialization::Data
+            class <%= nested.ruby_name %> < ::Selenium::WebDriver::BiDi::Serialization::Record
 <%- nested.rbs_readers.each do |reader| -%>
               attr_reader <%= reader %>
 <%- end -%>
@@ -45,14 +45,14 @@ module Selenium
           end
 
 <%- else -%>
-          class <%= type.ruby_name %> < ::Selenium::WebDriver::BiDi::Serialization::Data
+          class <%= type.ruby_name %> < ::Selenium::WebDriver::BiDi::Serialization::Record
 <%- type.rbs_readers.each do |reader| -%>
             attr_reader <%= reader %>
 <%- end -%>
             def self.new: (<%= type.rbs_new_args %>) -> instance
 <%- type.nested_types.each do |nested| -%>
 
-            class <%= nested.ruby_name %> < ::Selenium::WebDriver::BiDi::Serialization::Data
+            class <%= nested.ruby_name %> < ::Selenium::WebDriver::BiDi::Serialization::Record
 <%- nested.rbs_readers.each do |reader| -%>
               attr_reader <%= reader %>
 <%- end -%>

@@ -80,11 +80,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          BluetoothManufacturerData = Serialization::Data.define(key: 'key', data: 'data')
+          BluetoothManufacturerData = Serialization::Record.define(key: 'key', data: 'data')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          CharacteristicProperties = Serialization::Data.define(
+          CharacteristicProperties = Serialization::Record.define(
             broadcast: 'broadcast',
             read: 'read',
             write_without_response: 'writeWithoutResponse',
@@ -97,11 +97,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          RequestDeviceInfo = Serialization::Data.define(id: 'id', name: {json_key: 'name', nullable: true})
+          RequestDeviceInfo = Serialization::Record.define(id: 'id', name: {json_key: 'name', nullable: true})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ScanRecord = Serialization::Data.define(
+          ScanRecord = Serialization::Record.define(
             name: 'name',
             uuids: {json_key: 'uuids', list: true},
             appearance: 'appearance',
@@ -119,7 +119,7 @@ module Selenium
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-            AcceptParameters = Serialization::Data.define(
+            AcceptParameters = Serialization::Record.define(
               accept: {fixed: true},
               context: 'context',
               prompt: 'prompt',
@@ -128,12 +128,16 @@ module Selenium
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-            CancelParameters = Serialization::Data.define(accept: {fixed: false}, context: 'context', prompt: 'prompt')
+            CancelParameters = Serialization::Record.define(
+              accept: {fixed: false},
+              context: 'context',
+              prompt: 'prompt'
+            )
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SimulateAdapterParameters = Serialization::Data.define(
+          SimulateAdapterParameters = Serialization::Record.define(
             context: 'context',
             le_supported: 'leSupported',
             state: {json_key: 'state', enum: 'Bluetooth::SIMULATE_ADAPTER_PARAMETERS_STATE'}
@@ -141,11 +145,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          DisableSimulationParameters = Serialization::Data.define(context: 'context')
+          DisableSimulationParameters = Serialization::Record.define(context: 'context')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SimulatePreconnectedPeripheralParameters = Serialization::Data.define(
+          SimulatePreconnectedPeripheralParameters = Serialization::Record.define(
             context: 'context',
             address: 'address',
             name: 'name',
@@ -155,14 +159,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SimulateAdvertisementParameters = Serialization::Data.define(
+          SimulateAdvertisementParameters = Serialization::Record.define(
             context: 'context',
             scan_entry: {json_key: 'scanEntry', ref: 'Bluetooth::SimulateAdvertisementScanEntryParameters'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SimulateAdvertisementScanEntryParameters = Serialization::Data.define(
+          SimulateAdvertisementScanEntryParameters = Serialization::Record.define(
             device_address: 'deviceAddress',
             rssi: 'rssi',
             scan_record: {json_key: 'scanRecord', ref: 'Bluetooth::ScanRecord'}
@@ -170,7 +174,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SimulateGattConnectionResponseParameters = Serialization::Data.define(
+          SimulateGattConnectionResponseParameters = Serialization::Record.define(
             context: 'context',
             address: 'address',
             code: 'code'
@@ -178,11 +182,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SimulateGattDisconnectionParameters = Serialization::Data.define(context: 'context', address: 'address')
+          SimulateGattDisconnectionParameters = Serialization::Record.define(context: 'context', address: 'address')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SimulateServiceParameters = Serialization::Data.define(
+          SimulateServiceParameters = Serialization::Record.define(
             context: 'context',
             address: 'address',
             uuid: 'uuid',
@@ -191,7 +195,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SimulateCharacteristicParameters = Serialization::Data.define(
+          SimulateCharacteristicParameters = Serialization::Record.define(
             context: 'context',
             address: 'address',
             service_uuid: 'serviceUuid',
@@ -202,7 +206,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SimulateCharacteristicResponseParameters = Serialization::Data.define(
+          SimulateCharacteristicResponseParameters = Serialization::Record.define(
             context: 'context',
             address: 'address',
             service_uuid: 'serviceUuid',
@@ -214,7 +218,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SimulateDescriptorParameters = Serialization::Data.define(
+          SimulateDescriptorParameters = Serialization::Record.define(
             context: 'context',
             address: 'address',
             service_uuid: 'serviceUuid',
@@ -225,7 +229,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SimulateDescriptorResponseParameters = Serialization::Data.define(
+          SimulateDescriptorResponseParameters = Serialization::Record.define(
             context: 'context',
             address: 'address',
             service_uuid: 'serviceUuid',
@@ -238,7 +242,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          RequestDevicePromptUpdatedParameters = Serialization::Data.define(
+          RequestDevicePromptUpdatedParameters = Serialization::Record.define(
             context: 'context',
             prompt: 'prompt',
             devices: {json_key: 'devices', ref: 'Bluetooth::RequestDeviceInfo', list: true}
@@ -246,11 +250,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          GattConnectionAttemptedParameters = Serialization::Data.define(context: 'context', address: 'address')
+          GattConnectionAttemptedParameters = Serialization::Record.define(context: 'context', address: 'address')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          CharacteristicEventGeneratedParameters = Serialization::Data.define(
+          CharacteristicEventGeneratedParameters = Serialization::Record.define(
             context: 'context',
             address: 'address',
             service_uuid: 'serviceUuid',
@@ -261,7 +265,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          DescriptorEventGeneratedParameters = Serialization::Data.define(
+          DescriptorEventGeneratedParameters = Serialization::Record.define(
             context: 'context',
             address: 'address',
             service_uuid: 'serviceUuid',
