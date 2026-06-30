@@ -62,6 +62,8 @@ module Selenium
 
             def read: (untyped field, untyped raw) -> untyped
 
+            def read_list: (untyped raw, untyped klass) -> untyped
+
             def extra: (Hash[untyped, untyped] json_payload) -> Hash[untyped, untyped]
           end
 

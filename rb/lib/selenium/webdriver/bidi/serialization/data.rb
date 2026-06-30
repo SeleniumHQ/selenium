@@ -117,7 +117,13 @@ module Selenium
               return raw if raw.nil? || field.ref.nil?
 
               klass = (@refs ||= {})[field.name] ||= Protocol.const_get(field.ref)
-              field.list ? raw.map { |element| klass.from_json(element) } : klass.from_json(raw)
+              field.list ? read_list(raw, klass) : klass.from_json(raw)
+            end
+
+            # Parses each element, recursing into nested lists (e.g. a map's [key, value] pairs)
+            # so their entries become typed too.
+            def read_list(raw, klass)
+              raw.map { |element| element.is_a?(::Array) ? read_list(element, klass) : klass.from_json(element) }
             end
 
             def extra(json_payload)

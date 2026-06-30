@@ -494,8 +494,32 @@ module BiDiGenerate
         named = resolve_named(node['ref'])
         return {ref: named[:ref], list: named[:list], nullable: nullable, rbs: nilable(named[:rbs], nullable)}
       end
+      return resolve_union(node, nullable) if node.key?('union')
 
       {ref: nil, list: false, nullable: nullable, rbs: nilable(scalar_rbs(node), nullable)}
+    end
+
+    # An inline union of one union-typed arm plus scalars (e.g. a MappingRemoteValue entry,
+    # RemoteValue / string) parses through that arm — its from_json returns a non-Hash value
+    # unchanged, so the scalar siblings pass through. Carry its ref so nested entries are typed;
+    # any other shape (a record arm, multiple structured arms, all scalars) stays opaque.
+    def resolve_union(node, nullable)
+      refs = node['union'].select { |arm| arm.key?('ref') }
+      opaque = {ref: nil, list: false, nullable: nullable, rbs: nilable('untyped', nullable)}
+      return opaque unless refs.one? && union_ref?(refs.first['ref'])
+
+      named = resolve_named(refs.first['ref'])
+      {ref: named[:ref], list: named[:list], nullable: nullable, rbs: nilable('untyped', nullable)}
+    end
+
+    # True when a ref (following aliases) is a union — the only arm whose from_json tolerates a
+    # scalar sibling. A record arm would raise on one, so it is not carried.
+    def union_ref?(name)
+      type = @types[name]
+      return false unless type
+      return union_ref?(type['type']['ref']) if type['kind'] == 'alias' && type['type'].key?('ref')
+
+      type['kind'] == 'union'
     end
 
     # Resolves a named ref to the same {ref:, list:, rbs:} facts, transparently

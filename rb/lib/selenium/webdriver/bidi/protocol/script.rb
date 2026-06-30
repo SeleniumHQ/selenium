@@ -153,11 +153,17 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          MapLocalValue = Serialization::Data.define(type: {fixed: 'map'}, value: {json_key: 'value', list: true})
+          MapLocalValue = Serialization::Data.define(
+            type: {fixed: 'map'},
+            value: {json_key: 'value', ref: 'Script::LocalValue', list: true}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ObjectLocalValue = Serialization::Data.define(type: {fixed: 'object'}, value: {json_key: 'value', list: true})
+          ObjectLocalValue = Serialization::Data.define(
+            type: {fixed: 'object'},
+            value: {json_key: 'value', ref: 'Script::LocalValue', list: true}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -369,7 +375,7 @@ module Selenium
             type: {fixed: 'object'},
             handle: 'handle',
             internal_id: 'internalId',
-            value: {json_key: 'value', list: true}
+            value: {json_key: 'value', ref: 'Script::RemoteValue', list: true}
           )
 
           # @api private
@@ -404,7 +410,7 @@ module Selenium
             type: {fixed: 'map'},
             handle: 'handle',
             internal_id: 'internalId',
-            value: {json_key: 'value', list: true}
+            value: {json_key: 'value', ref: 'Script::RemoteValue', list: true}
           )
 
           # @api private

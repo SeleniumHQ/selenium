@@ -107,6 +107,18 @@ module Selenium
               )
               expect(Script::LocalValue.from_json(outer.as_json)).to eq(outer)
             end
+
+            it 'parses nested RemoteValues inside an object/map result (list of pairs)' do
+              parsed = Script::ObjectRemoteValue.from_json(
+                'type' => 'object',
+                'value' => [['k', {'type' => 'number', 'value' => 2}]]
+              )
+
+              key, value = parsed.value.first
+              expect(key).to eq('k')
+              expect(value).to be_a(Script::NumberValue)
+              expect(value.value).to eq(2)
+            end
           end
 
           describe 'optional + nullable fields' do
