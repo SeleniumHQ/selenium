@@ -20,8 +20,6 @@ package org.openqa.selenium.bidi.network;
 import java.util.Optional;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.bidi.log.StackTrace;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 
 @Beta
 public class Initiator {
@@ -70,43 +68,6 @@ public class Initiator {
     this.lineNumber = lineNumber;
     this.stackTrace = stackTrace;
     this.requestId = requestId;
-  }
-
-  public static Initiator fromJson(JsonInput input) {
-    Type type = null;
-    Optional<Long> columnNumber = Optional.empty();
-    Optional<Long> lineNumber = Optional.empty();
-    Optional<StackTrace> stackTrace = Optional.empty();
-    Optional<String> requestId = Optional.empty();
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "type":
-          String initiatorType = input.readNonNull(String.class);
-          type = Type.findByName(initiatorType);
-          break;
-        case "columnNumber":
-          columnNumber = Optional.of(input.readNonNull(Long.class));
-          break;
-        case "lineNumber":
-          lineNumber = Optional.of(input.readNonNull(Long.class));
-          break;
-        case "stackTrace":
-          stackTrace = Optional.of(input.readNonNull(StackTrace.class));
-          break;
-        case "requestId":
-          requestId = Optional.of(input.readNonNull(String.class));
-          break;
-        default:
-          input.skipValue();
-      }
-    }
-
-    input.endObject();
-
-    return new Initiator(
-        Require.nonNull("type", type), columnNumber, lineNumber, stackTrace, requestId);
   }
 
   public Type getType() {
