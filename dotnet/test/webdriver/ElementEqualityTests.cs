@@ -18,7 +18,6 @@
 // </copyright>
 
 using System.Collections.ObjectModel;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests;
 
@@ -28,10 +27,10 @@ public class ElementEqualityTests : DriverTestFixture
     [Test]
     public void SameElementLookedUpDifferentWaysShouldBeEqual()
     {
-        driver.Url = (simpleTestPage);
+        Driver.Url = (Urls.SimpleTestPage);
 
-        IWebElement body = driver.FindElement(By.TagName("body"));
-        IWebElement xbody = driver.FindElement(By.XPath("//body"));
+        IWebElement body = Driver.FindElement(By.TagName("body"));
+        IWebElement xbody = Driver.FindElement(By.XPath("//body"));
 
         Assert.That(xbody, Is.EqualTo(body));
     }
@@ -39,9 +38,9 @@ public class ElementEqualityTests : DriverTestFixture
     [Test]
     public void DifferentElementsShouldNotBeEqual()
     {
-        driver.Url = (simpleTestPage);
+        Driver.Url = (Urls.SimpleTestPage);
 
-        ReadOnlyCollection<IWebElement> ps = driver.FindElements(By.TagName("p"));
+        ReadOnlyCollection<IWebElement> ps = Driver.FindElements(By.TagName("p"));
 
         Assert.That(ps[1], Is.Not.EqualTo(ps[0]));
     }
@@ -49,18 +48,18 @@ public class ElementEqualityTests : DriverTestFixture
     [Test]
     public void SameElementLookedUpDifferentWaysUsingFindElementShouldHaveSameHashCode()
     {
-        driver.Url = (simpleTestPage);
-        IWebElement body = driver.FindElement(By.TagName("body"));
-        IWebElement xbody = driver.FindElement(By.XPath("//body"));
+        Driver.Url = (Urls.SimpleTestPage);
+        IWebElement body = Driver.FindElement(By.TagName("body"));
+        IWebElement xbody = Driver.FindElement(By.XPath("//body"));
 
         Assert.That(xbody.GetHashCode(), Is.EqualTo(body.GetHashCode()));
     }
 
     public void SameElementLookedUpDifferentWaysUsingFindElementsShouldHaveSameHashCode()
     {
-        driver.Url = (simpleTestPage);
-        ReadOnlyCollection<IWebElement> body = driver.FindElements(By.TagName("body"));
-        ReadOnlyCollection<IWebElement> xbody = driver.FindElements(By.XPath("//body"));
+        Driver.Url = (Urls.SimpleTestPage);
+        ReadOnlyCollection<IWebElement> body = Driver.FindElements(By.TagName("body"));
+        ReadOnlyCollection<IWebElement> xbody = Driver.FindElements(By.XPath("//body"));
 
         Assert.That(xbody[0].GetHashCode(), Is.EqualTo(body[0].GetHashCode()));
     }
@@ -68,12 +67,12 @@ public class ElementEqualityTests : DriverTestFixture
     [Test]
     public void AnElementFoundInViaJsShouldHaveSameId()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("missedJsReference.html");
+        Driver.Url = Urls.MissedJsReferencePage;
 
-        driver.SwitchTo().Frame("inner");
-        IWebElement first = driver.FindElement(By.Id("oneline"));
+        Driver.SwitchTo().Frame("inner");
+        IWebElement first = Driver.FindElement(By.Id("oneline"));
 
-        IWebElement element = (IWebElement)((IJavaScriptExecutor)driver).ExecuteScript("return document.getElementById('oneline');");
+        IWebElement element = (IWebElement)((IJavaScriptExecutor)Driver).ExecuteScript("return document.getElementById('oneline');");
 
         Assert.That(element, Is.EqualTo(first));
     }

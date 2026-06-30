@@ -51,20 +51,13 @@ module Selenium
         end
 
         #
-        # Initializes the bridge with the given server URL
-        # @param [String, URI] url url for the remote server
-        # @param [Object] http_client an HTTP client instance that implements the same protocol as Http::Default
+        # @param [Object] http_client a configured HTTP client implementing the same protocol as Http::Default
         # @api private
         #
 
-        def initialize(url:, http_client: nil)
-          uri = url.is_a?(URI) ? url : URI.parse(url)
-          uri.path += '/' unless uri.path.end_with?('/')
-
-          @http = http_client || Http::Default.new
-          @http.server_url = uri
+        def initialize(http_client:)
+          @http = http_client
           @file_detector = nil
-
           @locator_converter = self.class.locator_converter
         end
 

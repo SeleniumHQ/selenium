@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
-
 namespace OpenQA.Selenium.Tests;
 
 [TestFixture]
@@ -27,22 +25,22 @@ public class ContentEditableTests : DriverTestFixture
     [TearDown]
     public void SwitchToDefaultContent()
     {
-        driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().DefaultContent();
     }
 
     [Test]
     [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
     public void TypingIntoAnIFrameWithContentEditableOrDesignModeSet()
     {
-        driver.Url = richTextPage;
+        Driver.Url = Urls.RichTextPage;
 
-        driver.SwitchTo().Frame("editFrame");
-        IWebElement element = driver.SwitchTo().ActiveElement();
+        Driver.SwitchTo().Frame("editFrame");
+        IWebElement element = Driver.SwitchTo().ActiveElement();
         element.SendKeys("Fishy");
 
-        driver.SwitchTo().DefaultContent();
-        IWebElement trusted = driver.FindElement(By.Id("istrusted"));
-        IWebElement id = driver.FindElement(By.Id("tagId"));
+        Driver.SwitchTo().DefaultContent();
+        IWebElement trusted = Driver.FindElement(By.Id("istrusted"));
+        IWebElement id = Driver.FindElement(By.Id("tagId"));
 
         // Chrome does not set a trusted flag.
         Assert.That(trusted.Text, Is.AnyOf("[true]", "[n/a]", "[]"));
@@ -54,10 +52,10 @@ public class ContentEditableTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Non-printable characters do not navigate within element")]
     public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
     {
-        driver.Url = richTextPage;
+        Driver.Url = Urls.RichTextPage;
 
-        driver.SwitchTo().Frame("editFrame");
-        IWebElement element = driver.SwitchTo().ActiveElement();
+        Driver.SwitchTo().Frame("editFrame");
+        IWebElement element = Driver.SwitchTo().ActiveElement();
         element.SendKeys("Dishy" + Keys.Backspace + Keys.Left + Keys.Left);
         element.SendKeys(Keys.Left + Keys.Left + "F" + Keys.Delete + Keys.End + "ee!");
 
@@ -67,8 +65,8 @@ public class ContentEditableTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToTypeIntoEmptyContentEditableElement()
     {
-        driver.Url = readOnlyPage;
-        IWebElement editable = driver.FindElement(By.Id("content-editable-blank"));
+        Driver.Url = Urls.ReadOnlyPage;
+        IWebElement editable = Driver.FindElement(By.Id("content-editable-blank"));
 
         editable.SendKeys("cheese");
 
@@ -80,8 +78,8 @@ public class ContentEditableTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]
     public void ShouldBeAbleToTypeIntoContentEditableElementWithExistingValue()
     {
-        driver.Url = readOnlyPage;
-        IWebElement editable = driver.FindElement(By.Id("content-editable"));
+        Driver.Url = Urls.ReadOnlyPage;
+        IWebElement editable = Driver.FindElement(By.Id("content-editable"));
 
         String initialText = editable.Text;
         editable.SendKeys(", edited");
@@ -94,10 +92,10 @@ public class ContentEditableTests : DriverTestFixture
     [IgnoreBrowser(Browser.Edge, "Typing into rich text editors broken since 149")]
     public void ShouldBeAbleToTypeIntoTinyMCE()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("tinymce.html");
-        driver.SwitchTo().Frame("mce_0_ifr");
+        Driver.Url = Urls.WhereIs("tinymce.html");
+        Driver.SwitchTo().Frame("mce_0_ifr");
 
-        IWebElement editable = driver.FindElement(By.Id("tinymce"));
+        IWebElement editable = Driver.FindElement(By.Id("tinymce"));
 
         editable.Clear();
         editable.SendKeys("cheese"); // requires focus on OS X
@@ -113,10 +111,10 @@ public class ContentEditableTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]
     public void ShouldAppendToTinyMCE()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("tinymce.html");
-        driver.SwitchTo().Frame("mce_0_ifr");
+        Driver.Url = Urls.WhereIs("tinymce.html");
+        Driver.SwitchTo().Frame("mce_0_ifr");
 
-        IWebElement editable = driver.FindElement(By.Id("tinymce"));
+        IWebElement editable = Driver.FindElement(By.Id("tinymce"));
 
         editable.SendKeys(" and cheese"); // requires focus on OS X
         WaitFor(() => editable.Text != "Initial content", "Text remained the original text");
@@ -129,8 +127,8 @@ public class ContentEditableTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]
     public void AppendsTextToEndOfContentEditableWithMultipleTextNodes()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("content-editable.html");
-        IWebElement input = driver.FindElement(By.Id("editable"));
+        Driver.Url = Urls.WhereIs("content-editable.html");
+        IWebElement input = Driver.FindElement(By.Id("editable"));
         input.SendKeys(", world!");
         WaitFor(() => input.Text != "Why hello", "Text remained the original text");
         Assert.That(input.Text, Is.EqualTo("Why hello, world!"));

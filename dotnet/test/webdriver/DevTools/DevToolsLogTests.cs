@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 using CurrentCdpVersion = OpenQA.Selenium.DevTools.V149;
 
 namespace OpenQA.Selenium.Tests.DevTools;
@@ -45,7 +44,7 @@ public class DevToolsLogTests : DevToolsTestFixture
         await domains.Log.Enable();
         domains.Log.EntryAdded += entryAddedHandler;
 
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("notValidPath");
+        Driver.Url = Urls.WhereIsSecure("notValidPath");
         sync.Wait(TimeSpan.FromSeconds(5));
 
         domains.Log.EntryAdded -= entryAddedHandler;

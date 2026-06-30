@@ -71,6 +71,9 @@ Metrics/PerceivedComplexity:
   Exclude:
     - '../rake_tasks/**/*'
 
+Metrics/ParameterLists:
+  CountKeywordArgs: false
+
 Naming/BlockForwarding:
   EnforcedStyle: explicit
 

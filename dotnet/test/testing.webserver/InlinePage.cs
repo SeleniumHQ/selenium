@@ -17,9 +17,10 @@
 // under the License.
 // </copyright>
 
+using System.Collections.Generic;
 using System.Text;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
+namespace OpenQA.Selenium.Testing.WebServer;
 
 public class InlinePage
 {
@@ -27,8 +28,8 @@ public class InlinePage
     private readonly List<string> scripts = new List<string>();
     private readonly List<string> styles = new List<string>();
     private readonly List<string> bodyParts = new List<string>();
-    private string onLoad;
-    private string onBeforeUnload;
+    private string? onLoad;
+    private string? onBeforeUnload;
 
     public InlinePage WithTitle(string title)
     {

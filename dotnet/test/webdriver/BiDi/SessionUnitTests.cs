@@ -168,7 +168,7 @@ class SessionUnitTests
 
         _transport.EnqueueEvent("script.realmDestroyed", """{"realm":"r-1","foo":"extra"}""");
 
-        var received = await stream.FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+        var received = await stream.ReadAllAsync().FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
 
         Assert.That(received.AdditionalData["foo"].GetString(), Is.EqualTo("extra"));
 
@@ -183,9 +183,27 @@ class SessionUnitTests
 
         _transport.Enqueue("""{"type":"event","method":"script.realmDestroyed","params":{"realm":"r-1"},"bar":"topLevel"}""");
 
-        var received = await stream.FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+        var received = await stream.ReadAllAsync().FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
 
         Assert.That(received.AdditionalMessageData["bar"].GetString(), Is.EqualTo("topLevel"));
+
+        await stream.DisposeAsync().WithResponse(_transport);
+    }
+
+    [Test]
+    public async Task StreamCanBeReadSequentially()
+    {
+        var stream = await _bidi.Script.RealmDestroyed.StreamAsync()
+            .WithResponse(_transport, """{"subscription":"sub-1"}""");
+
+        _transport.EnqueueEvent("script.realmDestroyed", """{"realm":"r-1"}""");
+        _transport.EnqueueEvent("script.realmDestroyed", """{"realm":"r-2"}""");
+
+        var first = await stream.ReadAllAsync().FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+        var second = await stream.ReadAllAsync().FirstAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.That(first.Realm.Id, Is.EqualTo("r-1"));
+        Assert.That(second.Realm.Id, Is.EqualTo("r-2"));
 
         await stream.DisposeAsync().WithResponse(_transport);
     }
