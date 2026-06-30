@@ -90,10 +90,6 @@ module Selenium
           end
 <%- mod.commands.each do |cmd| -%>
 
-<%- if cmd.passthrough -%>
-          # params are a spec union; forward verbatim until variant dispatch lands
-          #
-<%- end -%>
           # @api private
           # @see <%= BiDiGenerate::BIDI_DOC_URL %>
           <%= cmd.def_header(10) %>

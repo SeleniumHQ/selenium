@@ -67,11 +67,12 @@ module Selenium
           # @api private
           module Deserializer
             def new(**kwargs)
-              attributes = fields.to_h do |f|
-                [f.name, fixed?(f) ? f.fixed : kwargs.fetch(f.name, UNSET)]
-              end
+              # Start from what was passed so ::Data's constructor rejects an unknown key, then fill
+              # each field with its value or UNSET (omitted), forcing fixed discriminators.
+              attributes = kwargs.dup
+              fields.each { |f| attributes[f.name] = fixed?(f) ? f.fixed : attributes.fetch(f.name, UNSET) }
               attributes[:extensions] = kwargs.fetch(:extensions, {}) if extensible?
-              validate_enums(attributes)
+              validate_values(attributes)
               construct(**attributes)
             end
 
@@ -87,9 +88,9 @@ module Selenium
 
             private
 
-            # The allowed-values constant is resolved lazily so a cross-domain enum need
-            # not be loaded first.
-            def validate_enums(attributes)
+            # Checks each constrained field's value against its allowed set. The allowed-values
+            # constant is resolved lazily so a cross-domain enum need not be loaded first.
+            def validate_values(attributes)
               fields.each do |f|
                 next unless f.enum
 

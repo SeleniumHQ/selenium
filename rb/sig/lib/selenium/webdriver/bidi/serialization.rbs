@@ -54,7 +54,7 @@ module Selenium
 
             private
 
-            def validate_enums: (Hash[Symbol, untyped] attributes) -> void
+            def validate_values: (Hash[Symbol, untyped] attributes) -> void
 
             def fixed?: (untyped field) -> bool
 
@@ -97,7 +97,7 @@ module Selenium
 
           def self.outbound_variant: (Hash[untyped, untyped] kwargs) -> untyped
 
-          def self.variant_for: (untyped tag, payload: untyped) { (untyped) -> untyped } -> untyped
+          def self.variant_for: (untyped tag) { (untyped) -> untyped } -> untyped
 
           def self.payload_tag: (Hash[untyped, untyped] json_payload) -> untyped
         end

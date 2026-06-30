@@ -33,6 +33,8 @@ require 'fileutils'
 # the schema path (resolved through runfiles) plus the workspace-relative output
 # directory as ARGV. Can also be run directly:
 #   ruby bidi_generate.rb schema.json output/dir
+#
+# @api private
 module BiDiGenerate
   # Companion to the generated `@api private` tags: the page explaining why the BiDi
   # implementation layer is internal and what higher-level API to use instead (see #17628).
@@ -164,32 +166,27 @@ module BiDiGenerate
     end
   end
 
-  # passthrough commands have params the schema models as an alias (not a flat record
-  # or union of records), which keyword args can't express; they forward raw kwargs.
-  # params_class is the Parameters class the named args construct (nil for
-  # passthrough/none); union_params picks its variant via `.build` rather than `.new`.
-  # result_ref is the Protocol-relative result class path, or nil to return the raw hash.
-  Command = Struct.new(:wire_name, :method_name, :params, :passthrough, :result_ref, :params_class,
+  # params_class is the Parameters class the named args construct (nil for a no-arg
+  # command); union_params picks its variant via `.build` rather than `.new`. result_ref
+  # is the Protocol-relative result class path, or nil to return the raw hash.
+  Command = Struct.new(:wire_name, :method_name, :params, :result_ref, :params_class,
                        :union_params, keyword_init: true) do
     def required_params = params.select(&:required)
     def optional_params = params.reject(&:required)
     def enum_checks = params.filter_map(&:enum_check)
 
-    # `def name`, `def name(**params)`, or `def name(...)` — wrapped one argument per
-    # line when the signature would exceed the line limit.
+    # `def name` or `def name(...)` — wrapped one argument per line when the signature
+    # would exceed the line limit.
     def def_header(indent)
-      return "def #{method_name}(**params)" if passthrough
       return "def #{method_name}" if params.empty?
 
       BiDiGenerate.wrap_call("def #{method_name}", required_params.map(&:sig_part) + optional_params.map(&:sig_part),
                              indent)
     end
 
-    # The RBS method signature `(params) -> return`. A passthrough forwards `**untyped`;
-    # the return is the typed result class when the command parses one, else `untyped`.
+    # The RBS method signature `(params) -> return` — the return is the typed result class
+    # when the command parses one, else `untyped`.
     def rbs_signature
-      return '(**untyped) -> untyped' if passthrough
-
       "(#{rbs_params}) -> #{rbs_return}"
     end
 
@@ -201,33 +198,26 @@ module BiDiGenerate
       result_ref ? "::Selenium::WebDriver::BiDi::Protocol::#{result_ref}" : 'untyped'
     end
 
-    # The `params = …` line built before the execute call, or nil when there is nothing
-    # to build (a passthrough forwards its own `**params`; a no-arg command has none). A
+    # The `params = …` line built before the execute call, or nil for a no-arg command. A
     # record builds its Parameters object and a union dispatches via `.build` (whose typed
-    # as_json emits explicit null where a flat hash through Transport could not); a
-    # non-record/union flattened param forwards a flat wire-keyed hash. Wrapped one entry
-    # per line when long, so it (and the resulting short execute call) stay within the limit.
+    # as_json emits explicit null where a flat hash through Transport could not). Wrapped
+    # one entry per line when long, so it (and the short execute call) stay within the limit.
     def params_assignment(indent)
-      return nil if passthrough || params.empty?
+      return nil if params.empty?
 
       kwargs = params.map { |p| "#{p.ruby_name}: #{p.ruby_name}" }
-      return BiDiGenerate.wrap_call('params = ', hash_pairs, indent, open: '{', close: '}') unless params_class
-
       BiDiGenerate.wrap_call("params = #{params_class}.#{union_params ? 'build' : 'new'}", kwargs, indent)
     end
 
     # `@transport.execute(cmd:[, params: params][, result:])`. The result type is
     # referenced directly (resolved lazily in the method body, and unambiguous within
-    # Protocol). Params, when present, are the `params` local (or passthrough kwarg) built
-    # above, keeping this call short.
+    # Protocol). Params, when present, are the `params` local built above.
     def execute_call(indent)
       args = ["cmd: '#{wire_name}'"]
-      args << 'params: params' if passthrough || !params.empty?
+      args << 'params: params' unless params.empty?
       args << "result: #{result_ref}" if result_ref
       BiDiGenerate.wrap_call('@transport.execute', args, indent)
     end
-
-    def hash_pairs = params.map { |p| "#{p.wire_name}: #{p.ruby_name}" }
   end
 
   # payload_ref is the Protocol-relative class the event's params parse into (nil when
@@ -784,14 +774,19 @@ module BiDiGenerate
 
   def self.build_command(schema, cmd)
     params = schema.params_for(cmd['params'])
+    # A param that can't flatten to a typed object (alias or non-record union) would be
+    # silently dropped, so fail generation and handle that shape deliberately if it appears.
+    if cmd['params'] && params.nil?
+      raise "command #{cmd['method']} has params that cannot be expressed as a typed object"
+    end
+
     params_ref = cmd['params'] && cmd['params']['ref']
     params_kind = schema.type_kind(params_ref)
-    params_class = type_class_name(params_ref) if params && !params.empty? && PARAMS_CLASS_KINDS.include?(params_kind)
+    params_class = type_class_name(params_ref) if !params.empty? && PARAMS_CLASS_KINDS.include?(params_kind)
     Command.new(
       wire_name: cmd['method'],
       method_name: safe_method_name(camel_to_snake(cmd['name'])),
-      params: params || [],
-      passthrough: params.nil?,
+      params: params,
       result_ref: cmd['result'] && schema.structured_ref(cmd['result']['ref']),
       params_class: params_class,
       union_params: params_kind == 'union'

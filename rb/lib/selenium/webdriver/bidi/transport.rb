@@ -40,13 +40,7 @@ module Selenium
         private
 
         def serialize(params)
-          case params
-          when nil then {}
-          when ::Hash
-            params.reject { |_, value| value.nil? || Serialization::UNSET.equal?(value) }
-                  .transform_values { |value| Serialization::Data::Serializable.as_json(value) }
-          else params.as_json
-          end
+          params&.as_json || {}
         end
 
         def error_message(reply)

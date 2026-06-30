@@ -58,13 +58,6 @@ module Selenium
           expect(connection).to have_received(:send_cmd).with(method: 'browser.close', params: {})
         end
 
-        it 'drops omitted entries from a passthrough hash' do
-          stub_result
-          transport.execute(cmd: 'session.unsubscribe', params: {events: ['log.entryAdded'], subscriptions: nil})
-          expect(connection).to have_received(:send_cmd)
-            .with(method: 'session.unsubscribe', params: {events: ['log.entryAdded']})
-        end
-
         it 'emits explicit wire null for a nullable field set to nil, omitting UNSET ones' do
           stub_result
           params = Protocol::BrowsingContext::SetViewportParameters.new(context: 'c', viewport: nil)

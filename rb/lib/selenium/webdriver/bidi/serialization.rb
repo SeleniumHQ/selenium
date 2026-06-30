@@ -22,6 +22,8 @@ module Selenium
     class BiDi
       # Wire round-trip runtime for the generated protocol layer: the value-type bases
       # (Data, Union), the omit sentinel (UNSET), and outbound enum validation.
+      #
+      # @api private
       module Serialization
         # Sentinel for an omitted optional: dropped from the payload entirely, vs nil which
         # a nullable field serializes as wire null.

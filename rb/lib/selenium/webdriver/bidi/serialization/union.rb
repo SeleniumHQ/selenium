@@ -43,15 +43,31 @@ module Selenium
             def from_json(json_payload)
               return json_payload unless json_payload.is_a?(::Hash)
 
-              Protocol.const_get(select(json_payload)).from_json(json_payload)
+              variant = select(json_payload)
+              unless variant
+                WebDriver.logger.debug("#{name} received a variant not in this Selenium's BiDi schema; " \
+                                       'returning the raw payload.', id: :bidi)
+                return json_payload
+              end
+              Protocol.const_get(variant).from_json(json_payload)
             end
 
             # Outbound mirror of from_json: build the variant the command's kwargs describe
             # so its typed as_json drives null-vs-absent per field (a flat hash through
             # Transport cannot). Dispatch keys are wire names equal to their ruby kwarg
-            # (asserted at generation), so they match the kwargs by symbol.
+            # (asserted at generation), so they match the kwargs by symbol. A mismatch here
+            # is a caller error (unlike an unknown inbound value), so it fails loudly.
             def build(**kwargs)
-              Protocol.const_get(outbound_variant(kwargs)).new(**kwargs)
+              variant = outbound_variant(kwargs) ||
+                        raise(::ArgumentError, "no #{name} variant matches #{kwargs.inspect}")
+              klass = Protocol.const_get(variant)
+              # An omitted optional arrives as UNSET; forward only what was provided. A provided
+              # key that isn't a field of the chosen variant is an invalid combination for this union.
+              provided = kwargs.reject { |_, value| UNSET.equal?(value) }
+              invalid = provided.keys - klass.fields.map(&:name)
+              return klass.new(**provided) if invalid.empty?
+
+              raise ::ArgumentError, "invalid combination for #{name}: #{invalid.join(', ')}"
             end
 
             private
@@ -59,20 +75,21 @@ module Selenium
             # The discriminator value may legitimately be null (e.g. script.NullValue's
             # "null" tag), so it is matched by key presence.
             def select(json_payload)
-              variant_for(payload_tag(json_payload), payload: json_payload) { |k| json_payload.key?(k) }
+              variant_for(payload_tag(json_payload)) { |k| json_payload.key?(k) }
             end
 
             # An explicit nil kwarg still counts as supplied, so a nullable field can dispatch.
             def outbound_variant(kwargs)
               tag = @discriminator ? kwargs.fetch(@discriminator.to_sym, UNSET) : UNSET
-              variant_for(tag, payload: kwargs) { |k| kwargs.key?(k.to_sym) && !UNSET.equal?(kwargs[k.to_sym]) }
+              variant_for(tag) { |k| kwargs.key?(k.to_sym) && !UNSET.equal?(kwargs[k.to_sym]) }
             end
 
-            def variant_for(tag, payload:, &supplied)
+            # The matching variant's ref, or nil when none matches (the fallback if declared).
+            def variant_for(tag, &supplied)
               return @variants[tag] if !UNSET.equal?(tag) && @variants&.key?(tag)
 
               @presence&.each { |path, keys| return path if keys.all?(&supplied) }
-              @fallback || raise(::ArgumentError, "no #{name} variant matches #{payload.inspect}")
+              @fallback
             end
 
             def payload_tag(json_payload)

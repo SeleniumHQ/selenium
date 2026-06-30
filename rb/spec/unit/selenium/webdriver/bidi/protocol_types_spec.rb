@@ -64,6 +64,12 @@ module Selenium
               expect(Script::NullValue.new.as_json).to eq('type' => 'null')
               expect(Script::LocalValue.from_json('type' => 'null')).to eq(Script::NullValue.new)
             end
+
+            it 'returns the raw payload for an unknown variant instead of raising (forward-compatible)' do
+              payload = {'type' => 'futuristic', 'value' => 'x'}
+
+              expect(BrowsingContext::Locator.from_json(payload)).to eq(payload)
+            end
           end
 
           describe 'nested structured fields' do
@@ -145,6 +151,11 @@ module Selenium
               expect(params.as_json).to eq('error' => {'type' => 'positionUnavailable'})
             end
 
+            it 'rejects a field that does not belong to the selected variant' do
+              expect { Network::ContinueWithAuthParameters.build(request: 'r', action: 'default', credentials: 'x') }
+                .to raise_error(ArgumentError, /invalid combination/)
+            end
+
             it 'dispatches a discriminated union by its value, falling back to the default variant' do
               provide = Network::ContinueWithAuthParameters.build(
                 request: 'r', action: 'provideCredentials',
@@ -197,6 +208,11 @@ module Selenium
             it 'rejects an out-of-set enum value at construction, so an invalid object cannot exist' do
               expect { Network::Cookie.new(name: 'c', same_site: 'sideways') }
                 .to raise_error(ArgumentError, /Cookie#same_site must be one of/)
+            end
+
+            it 'rejects an unknown keyword at construction' do
+              expect { Network::Cookie.new(name: 'c', bogus: 'x') }
+                .to raise_error(ArgumentError, /unknown keyword: :bogus/)
             end
 
             it 'does not validate inbound from_json (trusts the browser, stays forward-compatible)' do
