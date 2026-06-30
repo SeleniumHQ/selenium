@@ -26,6 +26,11 @@ on:
         required: false
         type: boolean
         default: false
+      needs-safari-preview:
+        description: Whether this job needs Safari Technology Preview installed (macos only)
+        required: false
+        type: boolean
+        default: false
       node-version:
         description: Custom Node version to install
         required: false
@@ -190,6 +195,11 @@ jobs:
       - name: Setup Safari
         if: inputs.needs-display && inputs.os == 'macos'
         run: sudo safaridriver --enable
+      - name: Setup Safari Technology Preview
+        if: inputs.needs-safari-preview && inputs.os == 'macos'
+        run: |
+          brew install --cask safari-technology-preview
+          sudo "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver" --enable
       - name: Import GPG key
         if: inputs.gpg-sign
         uses: crazy-max/ghaction-import-gpg@v7

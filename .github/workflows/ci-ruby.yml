@@ -90,10 +90,11 @@ jobs:
         tag_filters: [chrome-beta, firefox-beta, edge-local]
         include:
           - os: macos
-            tag_filters: safari-local
+            tag_filters: safari-local,safari-preview-bidi
     with:
       name: (${{ matrix.tag_filters }})
       needs-display: true
+      needs-safari-preview: ${{ contains(matrix.tag_filters, 'safari-preview') }}
       os: ${{ matrix.os }}
       rerun-with-debug: true
       run: >
