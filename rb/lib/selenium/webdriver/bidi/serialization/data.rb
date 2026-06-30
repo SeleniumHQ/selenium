@@ -88,13 +88,17 @@ module Selenium
 
             private
 
-            # Checks each constrained field's value against its allowed set. The allowed-values
-            # constant is resolved lazily so a cross-domain enum need not be loaded first.
+            # Checks each field's value: a non-nullable field cannot be nil (nil is neither a
+            # value nor the UNSET omit-sentinel, so it would be silently dropped on the wire), and
+            # an enum field must be in its allowed set. The enum constant is resolved lazily so a
+            # cross-domain enum need not be loaded first. Outbound only — from_json stays lenient.
             def validate_values(attributes)
               fields.each do |f|
+                value = attributes[f.name]
+                raise ::ArgumentError, "#{name}##{f.name} cannot be nil" if value.nil? && !f.nullable
                 next unless f.enum
 
-                Serialization.validate!("#{name}##{f.name}", attributes[f.name], Protocol.const_get(f.enum))
+                Serialization.validate!("#{name}##{f.name}", value, Protocol.const_get(f.enum))
               end
             end
 

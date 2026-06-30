@@ -151,6 +151,11 @@ module Selenium
               expect(params.as_json).to eq('error' => {'type' => 'positionUnavailable'})
             end
 
+            it 'rejects a non-nullable variant field set to nil (it would be dropped on the wire)' do
+              expect { Emulation::SetGeolocationOverrideParameters.build(error: nil) }
+                .to raise_error(ArgumentError, /error cannot be nil/)
+            end
+
             it 'rejects a field that does not belong to the selected variant' do
               expect { Network::ContinueWithAuthParameters.build(request: 'r', action: 'default', credentials: 'x') }
                 .to raise_error(ArgumentError, /invalid combination/)
@@ -213,6 +218,11 @@ module Selenium
             it 'rejects an unknown keyword at construction' do
               expect { Network::Cookie.new(name: 'c', bogus: 'x') }
                 .to raise_error(ArgumentError, /unknown keyword: :bogus/)
+            end
+
+            it 'rejects a non-nullable field set to nil, instead of silently dropping it' do
+              expect { BrowsingContext::NavigateParameters.new(context: nil, url: 'x') }
+                .to raise_error(ArgumentError, /context cannot be nil/)
             end
 
             it 'does not validate inbound from_json (trusts the browser, stays forward-compatible)' do

@@ -78,7 +78,8 @@ module Selenium
               variant_for(payload_tag(json_payload)) { |k| json_payload.key?(k) }
             end
 
-            # An explicit nil kwarg still counts as supplied, so a nullable field can dispatch.
+            # An explicit nil kwarg still counts as supplied; a non-nullable field set to nil is
+            # rejected at construction (Data.new), not here.
             def outbound_variant(kwargs)
               tag = @discriminator ? kwargs.fetch(@discriminator.to_sym, UNSET) : UNSET
               variant_for(tag) { |k| kwargs.key?(k.to_sym) && !UNSET.equal?(kwargs[k.to_sym]) }
