@@ -45,7 +45,9 @@ module Selenium
         end
       end
 
-      it 'logs console messages' do
+      it 'logs console messages',
+         pending_if: {browser: %i[safari safari_preview],
+                      reason: 'Safari does not deliver BiDi log entries for console messages'} do
         driver.navigate.to url_for('bidi/logEntryAdded.html')
 
         log_entries = []
@@ -80,7 +82,9 @@ module Selenium
         )
       end
 
-      it 'logs multiple console messages' do
+      it 'logs multiple console messages',
+         pending_if: {browser: %i[safari safari_preview],
+                      reason: 'Safari does not deliver BiDi log entries for console messages'} do
         driver.navigate.to url_for('bidi/logEntryAdded.html')
 
         log_entries = []
@@ -94,7 +98,9 @@ module Selenium
         expect(log_entries.size).to eq(2)
       end
 
-      it 'removes console message handler' do
+      it 'removes console message handler',
+         pending_if: {browser: %i[safari safari_preview],
+                      reason: 'Safari does not deliver BiDi log entries for console messages'} do
         driver.navigate.to url_for('bidi/logEntryAdded.html')
 
         log_entries = []
@@ -113,7 +119,9 @@ module Selenium
         expect(log_entries.size).to eq(3)
       end
 
-      it 'logs javascript errors' do
+      it 'logs javascript errors',
+         pending_if: {browser: %i[safari safari_preview],
+                      reason: 'Safari does not deliver BiDi log entries for console messages'} do
         driver.navigate.to url_for('bidi/logEntryAdded.html')
 
         log_entries = []

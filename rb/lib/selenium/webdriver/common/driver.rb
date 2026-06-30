@@ -91,6 +91,17 @@ module Selenium
       end
 
       #
+      # Returns the WebDriver BiDi connection for this session.
+      #
+      # @return [BiDi]
+      # @raise [Error::WebDriverError] if BiDi was not enabled for this session
+      #
+
+      def bidi
+        @bridge.bidi
+      end
+
+      #
       # @return [Navigation]
       # @see Navigation
       #
