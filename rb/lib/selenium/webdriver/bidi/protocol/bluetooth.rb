@@ -26,7 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        class Bluetooth
+        class Bluetooth < Domain
           EVENTS = {
             request_device_prompt_updated: 'bluetooth.requestDevicePromptUpdated',
             gatt_connection_attempted: 'bluetooth.gattConnectionAttempted'
@@ -280,10 +280,6 @@ module Selenium
             'bluetooth.gattConnectionAttempted' => Bluetooth::GattConnectionAttemptedParameters
           }.freeze
 
-          def initialize(transport)
-            @transport = transport
-          end
-
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def handle_request_device_prompt(context:, prompt:, accept:, device: Serialization::UNSET)
@@ -293,7 +289,7 @@ module Selenium
               accept: accept,
               device: device
             )
-            @transport.execute(cmd: 'bluetooth.handleRequestDevicePrompt', params: params)
+            execute(cmd: 'bluetooth.handleRequestDevicePrompt', params: params)
           end
 
           # @api private
@@ -301,14 +297,14 @@ module Selenium
           def simulate_adapter(context:, state:, le_supported: Serialization::UNSET)
             Serialization.validate!('state', state, Bluetooth::SIMULATE_ADAPTER_PARAMETERS_STATE)
             params = SimulateAdapterParameters.new(context: context, le_supported: le_supported, state: state)
-            @transport.execute(cmd: 'bluetooth.simulateAdapter', params: params)
+            execute(cmd: 'bluetooth.simulateAdapter', params: params)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def disable_simulation(context:)
             params = DisableSimulationParameters.new(context: context)
-            @transport.execute(cmd: 'bluetooth.disableSimulation', params: params)
+            execute(cmd: 'bluetooth.disableSimulation', params: params)
           end
 
           # @api private
@@ -321,28 +317,28 @@ module Selenium
               manufacturer_data: manufacturer_data,
               known_service_uuids: known_service_uuids
             )
-            @transport.execute(cmd: 'bluetooth.simulatePreconnectedPeripheral', params: params)
+            execute(cmd: 'bluetooth.simulatePreconnectedPeripheral', params: params)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def simulate_advertisement(context:, scan_entry:)
             params = SimulateAdvertisementParameters.new(context: context, scan_entry: scan_entry)
-            @transport.execute(cmd: 'bluetooth.simulateAdvertisement', params: params)
+            execute(cmd: 'bluetooth.simulateAdvertisement', params: params)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def simulate_gatt_connection_response(context:, address:, code:)
             params = SimulateGattConnectionResponseParameters.new(context: context, address: address, code: code)
-            @transport.execute(cmd: 'bluetooth.simulateGattConnectionResponse', params: params)
+            execute(cmd: 'bluetooth.simulateGattConnectionResponse', params: params)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def simulate_gatt_disconnection(context:, address:)
             params = SimulateGattDisconnectionParameters.new(context: context, address: address)
-            @transport.execute(cmd: 'bluetooth.simulateGattDisconnection', params: params)
+            execute(cmd: 'bluetooth.simulateGattDisconnection', params: params)
           end
 
           # @api private
@@ -350,7 +346,7 @@ module Selenium
           def simulate_service(context:, address:, uuid:, type:)
             Serialization.validate!('type', type, Bluetooth::SIMULATE_SERVICE_PARAMETERS_TYPE)
             params = SimulateServiceParameters.new(context: context, address: address, uuid: uuid, type: type)
-            @transport.execute(cmd: 'bluetooth.simulateService', params: params)
+            execute(cmd: 'bluetooth.simulateService', params: params)
           end
 
           # @api private
@@ -372,7 +368,7 @@ module Selenium
               characteristic_properties: characteristic_properties,
               type: type
             )
-            @transport.execute(cmd: 'bluetooth.simulateCharacteristic', params: params)
+            execute(cmd: 'bluetooth.simulateCharacteristic', params: params)
           end
 
           # @api private
@@ -396,7 +392,7 @@ module Selenium
               code: code,
               data: data
             )
-            @transport.execute(cmd: 'bluetooth.simulateCharacteristicResponse', params: params)
+            execute(cmd: 'bluetooth.simulateCharacteristicResponse', params: params)
           end
 
           # @api private
@@ -411,7 +407,7 @@ module Selenium
               descriptor_uuid: descriptor_uuid,
               type: type
             )
-            @transport.execute(cmd: 'bluetooth.simulateDescriptor', params: params)
+            execute(cmd: 'bluetooth.simulateDescriptor', params: params)
           end
 
           # @api private
@@ -437,7 +433,7 @@ module Selenium
               code: code,
               data: data
             )
-            @transport.execute(cmd: 'bluetooth.simulateDescriptorResponse', params: params)
+            execute(cmd: 'bluetooth.simulateDescriptorResponse', params: params)
           end
         end # Bluetooth
       end # Protocol

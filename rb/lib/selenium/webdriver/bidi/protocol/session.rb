@@ -26,7 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        class Session
+        class Session < Domain
           USER_PROMPT_HANDLER_TYPE = {
             accept: 'accept',
             dismiss: 'dismiss',
@@ -185,41 +185,37 @@ module Selenium
             )
           end
 
-          def initialize(transport)
-            @transport = transport
-          end
-
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def end_
-            @transport.execute(cmd: 'session.end')
+            execute(cmd: 'session.end')
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def new(capabilities:)
             params = NewParameters.new(capabilities: capabilities)
-            @transport.execute(cmd: 'session.new', params: params, result: Session::NewResult)
+            execute(cmd: 'session.new', params: params, result: Session::NewResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def status
-            @transport.execute(cmd: 'session.status', result: Session::StatusResult)
+            execute(cmd: 'session.status', result: Session::StatusResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def subscribe(events:, contexts: Serialization::UNSET, user_contexts: Serialization::UNSET)
             params = SubscribeParameters.new(events: events, contexts: contexts, user_contexts: user_contexts)
-            @transport.execute(cmd: 'session.subscribe', params: params, result: Session::SubscribeResult)
+            execute(cmd: 'session.subscribe', params: params, result: Session::SubscribeResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def unsubscribe(events: Serialization::UNSET, subscriptions: Serialization::UNSET)
             params = UnsubscribeParameters.build(events: events, subscriptions: subscriptions)
-            @transport.execute(cmd: 'session.unsubscribe', params: params)
+            execute(cmd: 'session.unsubscribe', params: params)
           end
         end # Session
       end # Protocol

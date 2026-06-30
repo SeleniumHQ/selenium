@@ -22,7 +22,7 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        class Bluetooth
+        class Bluetooth < ::Selenium::WebDriver::BiDi::Protocol::Domain
           EVENTS: Hash[Symbol, String]
 
           SIMULATE_ADAPTER_PARAMETERS_STATE: Hash[Symbol, String]
@@ -222,8 +222,6 @@ module Selenium
           end
 
           EVENT_TYPES: Hash[String, untyped]
-
-          def initialize: (untyped transport) -> void
 
           def handle_request_device_prompt: (context: String, prompt: String, accept: bool, ?device: String?) -> untyped
           def simulate_adapter: (context: String, state: String, ?le_supported: bool?) -> untyped

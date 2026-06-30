@@ -26,7 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        class Permissions
+        class Permissions < Domain
           PERMISSION_STATE = {
             granted: 'granted',
             denied: 'denied',
@@ -47,10 +47,6 @@ module Selenium
             user_context: 'userContext'
           )
 
-          def initialize(transport)
-            @transport = transport
-          end
-
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def set_permission(
@@ -68,7 +64,7 @@ module Selenium
               embedded_origin: embedded_origin,
               user_context: user_context
             )
-            @transport.execute(cmd: 'permissions.setPermission', params: params)
+            execute(cmd: 'permissions.setPermission', params: params)
           end
         end # Permissions
       end # Protocol

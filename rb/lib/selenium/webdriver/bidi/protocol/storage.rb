@@ -26,7 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        class Storage
+        class Storage < Domain
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PartitionKey = Serialization::Record.define(
@@ -130,29 +130,25 @@ module Selenium
             partition_key: {json_key: 'partitionKey', ref: 'Storage::PartitionKey'}
           )
 
-          def initialize(transport)
-            @transport = transport
-          end
-
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def delete_cookies(filter: Serialization::UNSET, partition: Serialization::UNSET)
             params = DeleteCookiesParameters.new(filter: filter, partition: partition)
-            @transport.execute(cmd: 'storage.deleteCookies', params: params, result: Storage::DeleteCookiesResult)
+            execute(cmd: 'storage.deleteCookies', params: params, result: Storage::DeleteCookiesResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def get_cookies(filter: Serialization::UNSET, partition: Serialization::UNSET)
             params = GetCookiesParameters.new(filter: filter, partition: partition)
-            @transport.execute(cmd: 'storage.getCookies', params: params, result: Storage::GetCookiesResult)
+            execute(cmd: 'storage.getCookies', params: params, result: Storage::GetCookiesResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def set_cookie(cookie:, partition: Serialization::UNSET)
             params = SetCookieParameters.new(cookie: cookie, partition: partition)
-            @transport.execute(cmd: 'storage.setCookie', params: params, result: Storage::SetCookieResult)
+            execute(cmd: 'storage.setCookie', params: params, result: Storage::SetCookieResult)
           end
         end # Storage
       end # Protocol

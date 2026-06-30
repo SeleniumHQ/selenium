@@ -22,7 +22,7 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        class Input
+        class Input < ::Selenium::WebDriver::BiDi::Protocol::Domain
           EVENTS: Hash[Symbol, String]
 
           POINTER_TYPE: Hash[Symbol, String]
@@ -184,8 +184,6 @@ module Selenium
           end
 
           EVENT_TYPES: Hash[String, untyped]
-
-          def initialize: (untyped transport) -> void
 
           def perform_actions: (context: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::SourceActions]) -> untyped
           def release_actions: (context: String) -> untyped

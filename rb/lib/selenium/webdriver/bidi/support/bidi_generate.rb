@@ -216,7 +216,7 @@ module BiDiGenerate
       args = ["cmd: '#{wire_name}'"]
       args << 'params: params' unless params.empty?
       args << "result: #{result_ref}" if result_ref
-      BiDiGenerate.wrap_call('@transport.execute', args, indent)
+      BiDiGenerate.wrap_call('execute', args, indent)
     end
   end
 

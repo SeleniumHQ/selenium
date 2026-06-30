@@ -26,7 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        class Input
+        class Input < Domain
           EVENTS = {
             file_dialog_opened: 'input.fileDialogOpened'
           }.freeze
@@ -240,29 +240,25 @@ module Selenium
             'input.fileDialogOpened' => Input::FileDialogInfo
           }.freeze
 
-          def initialize(transport)
-            @transport = transport
-          end
-
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def perform_actions(context:, actions:)
             params = PerformActionsParameters.new(context: context, actions: actions)
-            @transport.execute(cmd: 'input.performActions', params: params)
+            execute(cmd: 'input.performActions', params: params)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def release_actions(context:)
             params = ReleaseActionsParameters.new(context: context)
-            @transport.execute(cmd: 'input.releaseActions', params: params)
+            execute(cmd: 'input.releaseActions', params: params)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def set_files(context:, element:, files:)
             params = SetFilesParameters.new(context: context, element: element, files: files)
-            @transport.execute(cmd: 'input.setFiles', params: params)
+            execute(cmd: 'input.setFiles', params: params)
           end
         end # Input
       end # Protocol

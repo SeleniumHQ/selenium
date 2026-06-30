@@ -22,7 +22,7 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        class BrowsingContext
+        class BrowsingContext < ::Selenium::WebDriver::BiDi::Protocol::Domain
           EVENTS: Hash[Symbol, String]
 
           READINESS_STATE: Hash[Symbol, String]
@@ -345,8 +345,6 @@ module Selenium
           end
 
           EVENT_TYPES: Hash[String, untyped]
-
-          def initialize: (untyped transport) -> void
 
           def activate: (context: String) -> untyped
           def capture_screenshot: (context: String, ?origin: String?, ?format: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ImageFormat?, ?clip: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ClipRectangle?) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CaptureScreenshotResult

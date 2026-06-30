@@ -22,7 +22,7 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        class UserAgentClientHints
+        class UserAgentClientHints < ::Selenium::WebDriver::BiDi::Protocol::Domain
           class ClientHintsMetadata < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader brands: untyped
             attr_reader full_version_list: untyped
@@ -49,8 +49,6 @@ module Selenium
             attr_reader user_contexts: untyped
             def self.new: (client_hints: ::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::ClientHintsMetadata?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
           end
-
-          def initialize: (untyped transport) -> void
 
           def set_client_hints_override: (client_hints: ::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::ClientHintsMetadata?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
         end

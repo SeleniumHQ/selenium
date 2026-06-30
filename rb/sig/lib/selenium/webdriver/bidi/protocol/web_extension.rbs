@@ -22,7 +22,7 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        class WebExtension
+        class WebExtension < ::Selenium::WebDriver::BiDi::Protocol::Domain
           class InstallParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData
             def self.new: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData) -> instance
@@ -58,8 +58,6 @@ module Selenium
             attr_reader extension: String
             def self.new: (extension: String) -> instance
           end
-
-          def initialize: (untyped transport) -> void
 
           def install: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData) -> ::Selenium::WebDriver::BiDi::Protocol::WebExtension::InstallResult
           def uninstall: (extension: String) -> untyped

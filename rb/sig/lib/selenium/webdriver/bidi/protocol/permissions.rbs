@@ -22,7 +22,7 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        class Permissions
+        class Permissions < ::Selenium::WebDriver::BiDi::Protocol::Domain
           PERMISSION_STATE: Hash[Symbol, String]
 
           class PermissionDescriptor < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -38,8 +38,6 @@ module Selenium
             attr_reader user_context: untyped
             def self.new: (descriptor: ::Selenium::WebDriver::BiDi::Protocol::Permissions::PermissionDescriptor, state: String, origin: String, ?embedded_origin: String?, ?user_context: String?) -> instance
           end
-
-          def initialize: (untyped transport) -> void
 
           def set_permission: (descriptor: ::Selenium::WebDriver::BiDi::Protocol::Permissions::PermissionDescriptor, state: String, origin: String, ?embedded_origin: String?, ?user_context: String?) -> untyped
         end

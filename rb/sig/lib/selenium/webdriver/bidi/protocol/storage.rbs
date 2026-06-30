@@ -22,7 +22,7 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        class Storage
+        class Storage < ::Selenium::WebDriver::BiDi::Protocol::Domain
           class PartitionKey < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader user_context: untyped
             attr_reader source_origin: untyped
@@ -107,8 +107,6 @@ module Selenium
             attr_reader partition_key: ::Selenium::WebDriver::BiDi::Protocol::Storage::PartitionKey
             def self.new: (partition_key: ::Selenium::WebDriver::BiDi::Protocol::Storage::PartitionKey) -> instance
           end
-
-          def initialize: (untyped transport) -> void
 
           def delete_cookies: (?filter: ::Selenium::WebDriver::BiDi::Protocol::Storage::CookieFilter?, ?partition: ::Selenium::WebDriver::BiDi::Protocol::Storage::PartitionDescriptor?) -> ::Selenium::WebDriver::BiDi::Protocol::Storage::DeleteCookiesResult
           def get_cookies: (?filter: ::Selenium::WebDriver::BiDi::Protocol::Storage::CookieFilter?, ?partition: ::Selenium::WebDriver::BiDi::Protocol::Storage::PartitionDescriptor?) -> ::Selenium::WebDriver::BiDi::Protocol::Storage::GetCookiesResult

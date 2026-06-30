@@ -26,7 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        class Emulation
+        class Emulation < Domain
           FORCED_COLORS_MODE_THEME = {
             light: 'light',
             dark: 'dark'
@@ -180,10 +180,6 @@ module Selenium
             user_contexts: {json_key: 'userContexts', list: true}
           )
 
-          def initialize(transport)
-            @transport = transport
-          end
-
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def set_forced_colors_mode_theme_override(
@@ -197,7 +193,7 @@ module Selenium
               contexts: contexts,
               user_contexts: user_contexts
             )
-            @transport.execute(cmd: 'emulation.setForcedColorsModeThemeOverride', params: params)
+            execute(cmd: 'emulation.setForcedColorsModeThemeOverride', params: params)
           end
 
           # @api private
@@ -214,14 +210,14 @@ module Selenium
               coordinates: coordinates,
               error: error
             )
-            @transport.execute(cmd: 'emulation.setGeolocationOverride', params: params)
+            execute(cmd: 'emulation.setGeolocationOverride', params: params)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def set_locale_override(locale:, contexts: Serialization::UNSET, user_contexts: Serialization::UNSET)
             params = SetLocaleOverrideParameters.new(locale: locale, contexts: contexts, user_contexts: user_contexts)
-            @transport.execute(cmd: 'emulation.setLocaleOverride', params: params)
+            execute(cmd: 'emulation.setLocaleOverride', params: params)
           end
 
           # @api private
@@ -236,7 +232,7 @@ module Selenium
               contexts: contexts,
               user_contexts: user_contexts
             )
-            @transport.execute(cmd: 'emulation.setNetworkConditions', params: params)
+            execute(cmd: 'emulation.setNetworkConditions', params: params)
           end
 
           # @api private
@@ -251,7 +247,7 @@ module Selenium
               contexts: contexts,
               user_contexts: user_contexts
             )
-            @transport.execute(cmd: 'emulation.setScreenOrientationOverride', params: params)
+            execute(cmd: 'emulation.setScreenOrientationOverride', params: params)
           end
 
           # @api private
@@ -266,7 +262,7 @@ module Selenium
               contexts: contexts,
               user_contexts: user_contexts
             )
-            @transport.execute(cmd: 'emulation.setScreenSettingsOverride', params: params)
+            execute(cmd: 'emulation.setScreenSettingsOverride', params: params)
           end
 
           # @api private
@@ -277,7 +273,7 @@ module Selenium
               contexts: contexts,
               user_contexts: user_contexts
             )
-            @transport.execute(cmd: 'emulation.setScriptingEnabled', params: params)
+            execute(cmd: 'emulation.setScriptingEnabled', params: params)
           end
 
           # @api private
@@ -292,7 +288,7 @@ module Selenium
               contexts: contexts,
               user_contexts: user_contexts
             )
-            @transport.execute(cmd: 'emulation.setScrollbarTypeOverride', params: params)
+            execute(cmd: 'emulation.setScrollbarTypeOverride', params: params)
           end
 
           # @api private
@@ -303,7 +299,7 @@ module Selenium
               contexts: contexts,
               user_contexts: user_contexts
             )
-            @transport.execute(cmd: 'emulation.setTimezoneOverride', params: params)
+            execute(cmd: 'emulation.setTimezoneOverride', params: params)
           end
 
           # @api private
@@ -314,7 +310,7 @@ module Selenium
               contexts: contexts,
               user_contexts: user_contexts
             )
-            @transport.execute(cmd: 'emulation.setTouchOverride', params: params)
+            execute(cmd: 'emulation.setTouchOverride', params: params)
           end
 
           # @api private
@@ -325,7 +321,7 @@ module Selenium
               contexts: contexts,
               user_contexts: user_contexts
             )
-            @transport.execute(cmd: 'emulation.setUserAgentOverride', params: params)
+            execute(cmd: 'emulation.setUserAgentOverride', params: params)
           end
         end # Emulation
       end # Protocol

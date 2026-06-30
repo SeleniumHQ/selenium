@@ -22,7 +22,7 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        class <%= mod.ruby_class %>
+        class <%= mod.ruby_class %> < ::Selenium::WebDriver::BiDi::Protocol::Domain
 <%- unless mod.events.empty? -%>
           EVENTS: Hash[Symbol, String]
 
@@ -67,8 +67,6 @@ module Selenium
           EVENT_TYPES: Hash[String, untyped]
 
 <%- end -%>
-          def initialize: (untyped transport) -> void
-
 <%- mod.commands.each do |cmd| -%>
           def <%= cmd.method_name %>: <%= cmd.rbs_signature %>
 <%- end -%>

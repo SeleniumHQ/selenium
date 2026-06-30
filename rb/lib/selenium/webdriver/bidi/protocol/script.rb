@@ -26,7 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        class Script
+        class Script < Domain
           EVENTS = {
             message: 'script.message',
             realm_created: 'script.realmCreated',
@@ -669,10 +669,6 @@ module Selenium
             'script.realmDestroyed' => Script::RealmDestroyedParameters
           }.freeze
 
-          def initialize(transport)
-            @transport = transport
-          end
-
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def add_preload_script(
@@ -689,7 +685,7 @@ module Selenium
               user_contexts: user_contexts,
               sandbox: sandbox
             )
-            @transport.execute(cmd: 'script.addPreloadScript', params: params, result: Script::AddPreloadScriptResult)
+            execute(cmd: 'script.addPreloadScript', params: params, result: Script::AddPreloadScriptResult)
           end
 
           # @api private
@@ -715,14 +711,14 @@ module Selenium
               this: this,
               user_activation: user_activation
             )
-            @transport.execute(cmd: 'script.callFunction', params: params, result: Script::EvaluateResult)
+            execute(cmd: 'script.callFunction', params: params, result: Script::EvaluateResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def disown(handles:, target:)
             params = DisownParameters.new(handles: handles, target: target)
-            @transport.execute(cmd: 'script.disown', params: params)
+            execute(cmd: 'script.disown', params: params)
           end
 
           # @api private
@@ -744,7 +740,7 @@ module Selenium
               serialization_options: serialization_options,
               user_activation: user_activation
             )
-            @transport.execute(cmd: 'script.evaluate', params: params, result: Script::EvaluateResult)
+            execute(cmd: 'script.evaluate', params: params, result: Script::EvaluateResult)
           end
 
           # @api private
@@ -752,14 +748,14 @@ module Selenium
           def get_realms(context: Serialization::UNSET, type: Serialization::UNSET)
             Serialization.validate!('type', type, Script::REALM_TYPE)
             params = GetRealmsParameters.new(context: context, type: type)
-            @transport.execute(cmd: 'script.getRealms', params: params, result: Script::GetRealmsResult)
+            execute(cmd: 'script.getRealms', params: params, result: Script::GetRealmsResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def remove_preload_script(script:)
             params = RemovePreloadScriptParameters.new(script: script)
-            @transport.execute(cmd: 'script.removePreloadScript', params: params)
+            execute(cmd: 'script.removePreloadScript', params: params)
           end
         end # Script
       end # Protocol

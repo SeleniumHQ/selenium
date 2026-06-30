@@ -26,7 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        class Speculation
+        class Speculation < Domain
           EVENTS = {
             prefetch_status_updated: 'speculation.prefetchStatusUpdated'
           }.freeze
@@ -49,10 +49,6 @@ module Selenium
           EVENT_TYPES = {
             'speculation.prefetchStatusUpdated' => Speculation::PrefetchStatusUpdatedParameters
           }.freeze
-
-          def initialize(transport)
-            @transport = transport
-          end
         end # Speculation
       end # Protocol
     end # BiDi

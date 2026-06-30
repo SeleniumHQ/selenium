@@ -26,7 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        class WebExtension
+        class WebExtension < Domain
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           InstallParameters = Serialization::Record.define(
@@ -64,22 +64,18 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           UninstallParameters = Serialization::Record.define(extension: 'extension')
 
-          def initialize(transport)
-            @transport = transport
-          end
-
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def install(extension_data:)
             params = InstallParameters.new(extension_data: extension_data)
-            @transport.execute(cmd: 'webExtension.install', params: params, result: WebExtension::InstallResult)
+            execute(cmd: 'webExtension.install', params: params, result: WebExtension::InstallResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def uninstall(extension:)
             params = UninstallParameters.new(extension: extension)
-            @transport.execute(cmd: 'webExtension.uninstall', params: params)
+            execute(cmd: 'webExtension.uninstall', params: params)
           end
         end # WebExtension
       end # Protocol

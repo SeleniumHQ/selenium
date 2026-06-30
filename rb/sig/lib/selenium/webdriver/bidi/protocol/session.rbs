@@ -22,7 +22,7 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        class Session
+        class Session < ::Selenium::WebDriver::BiDi::Protocol::Domain
           USER_PROMPT_HANDLER_TYPE: Hash[Symbol, String]
 
           class CapabilitiesRequest < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -152,8 +152,6 @@ module Selenium
 
           class UnsubscribeParameters < ::Selenium::WebDriver::BiDi::Serialization::Union
           end
-
-          def initialize: (untyped transport) -> void
 
           def end_: () -> untyped
           def new: (capabilities: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilitiesRequest) -> ::Selenium::WebDriver::BiDi::Protocol::Session::NewResult

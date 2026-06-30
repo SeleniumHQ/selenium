@@ -26,7 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        class Network
+        class Network < Domain
           EVENTS = {
             auth_required: 'network.authRequired',
             before_request_sent: 'network.beforeRequestSent',
@@ -456,10 +456,6 @@ module Selenium
             'network.responseStarted' => Network::ResponseStartedParameters
           }.freeze
 
-          def initialize(transport)
-            @transport = transport
-          end
-
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def add_data_collector(
@@ -478,7 +474,7 @@ module Selenium
               contexts: contexts,
               user_contexts: user_contexts
             )
-            @transport.execute(cmd: 'network.addDataCollector', params: params, result: Network::AddDataCollectorResult)
+            execute(cmd: 'network.addDataCollector', params: params, result: Network::AddDataCollectorResult)
           end
 
           # @api private
@@ -486,7 +482,7 @@ module Selenium
           def add_intercept(phases:, contexts: Serialization::UNSET, url_patterns: Serialization::UNSET)
             Serialization.validate!('phases', phases, Network::INTERCEPT_PHASE)
             params = AddInterceptParameters.new(phases: phases, contexts: contexts, url_patterns: url_patterns)
-            @transport.execute(cmd: 'network.addIntercept', params: params, result: Network::AddInterceptResult)
+            execute(cmd: 'network.addIntercept', params: params, result: Network::AddInterceptResult)
           end
 
           # @api private
@@ -507,7 +503,7 @@ module Selenium
               method_: method_,
               url: url
             )
-            @transport.execute(cmd: 'network.continueRequest', params: params)
+            execute(cmd: 'network.continueRequest', params: params)
           end
 
           # @api private
@@ -528,7 +524,7 @@ module Selenium
               reason_phrase: reason_phrase,
               status_code: status_code
             )
-            @transport.execute(cmd: 'network.continueResponse', params: params)
+            execute(cmd: 'network.continueResponse', params: params)
           end
 
           # @api private
@@ -536,7 +532,7 @@ module Selenium
           def continue_with_auth(request:, action:, credentials: Serialization::UNSET)
             Serialization.validate!('action', action, %w[provideCredentials default cancel])
             params = ContinueWithAuthParameters.build(request: request, action: action, credentials: credentials)
-            @transport.execute(cmd: 'network.continueWithAuth', params: params)
+            execute(cmd: 'network.continueWithAuth', params: params)
           end
 
           # @api private
@@ -544,14 +540,14 @@ module Selenium
           def disown_data(data_type:, collector:, request:)
             Serialization.validate!('dataType', data_type, Network::DATA_TYPE)
             params = DisownDataParameters.new(data_type: data_type, collector: collector, request: request)
-            @transport.execute(cmd: 'network.disownData', params: params)
+            execute(cmd: 'network.disownData', params: params)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def fail_request(request:)
             params = FailRequestParameters.new(request: request)
-            @transport.execute(cmd: 'network.failRequest', params: params)
+            execute(cmd: 'network.failRequest', params: params)
           end
 
           # @api private
@@ -559,7 +555,7 @@ module Selenium
           def get_data(data_type:, request:, collector: Serialization::UNSET, disown: Serialization::UNSET)
             Serialization.validate!('dataType', data_type, Network::DATA_TYPE)
             params = GetDataParameters.new(data_type: data_type, collector: collector, disown: disown, request: request)
-            @transport.execute(cmd: 'network.getData', params: params, result: Network::GetDataResult)
+            execute(cmd: 'network.getData', params: params, result: Network::GetDataResult)
           end
 
           # @api private
@@ -580,21 +576,21 @@ module Selenium
               reason_phrase: reason_phrase,
               status_code: status_code
             )
-            @transport.execute(cmd: 'network.provideResponse', params: params)
+            execute(cmd: 'network.provideResponse', params: params)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def remove_data_collector(collector:)
             params = RemoveDataCollectorParameters.new(collector: collector)
-            @transport.execute(cmd: 'network.removeDataCollector', params: params)
+            execute(cmd: 'network.removeDataCollector', params: params)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def remove_intercept(intercept:)
             params = RemoveInterceptParameters.new(intercept: intercept)
-            @transport.execute(cmd: 'network.removeIntercept', params: params)
+            execute(cmd: 'network.removeIntercept', params: params)
           end
 
           # @api private
@@ -602,14 +598,14 @@ module Selenium
           def set_cache_behavior(cache_behavior:, contexts: Serialization::UNSET)
             Serialization.validate!('cacheBehavior', cache_behavior, Network::SET_CACHE_BEHAVIOR_PARAMETERS_CACHE_BEHAVIOR)
             params = SetCacheBehaviorParameters.new(cache_behavior: cache_behavior, contexts: contexts)
-            @transport.execute(cmd: 'network.setCacheBehavior', params: params)
+            execute(cmd: 'network.setCacheBehavior', params: params)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def set_extra_headers(headers:, contexts: Serialization::UNSET, user_contexts: Serialization::UNSET)
             params = SetExtraHeadersParameters.new(headers: headers, contexts: contexts, user_contexts: user_contexts)
-            @transport.execute(cmd: 'network.setExtraHeaders', params: params)
+            execute(cmd: 'network.setExtraHeaders', params: params)
           end
         end # Network
       end # Protocol

@@ -22,7 +22,7 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        class Script
+        class Script < ::Selenium::WebDriver::BiDi::Protocol::Domain
           EVENTS: Hash[Symbol, String]
 
           SPECIAL_NUMBER: Hash[Symbol, String]
@@ -526,8 +526,6 @@ module Selenium
           end
 
           EVENT_TYPES: Hash[String, untyped]
-
-          def initialize: (untyped transport) -> void
 
           def add_preload_script: (function_declaration: String, ?arguments: Array[::Selenium::WebDriver::BiDi::Protocol::Script::ChannelValue]?, ?contexts: Array[String]?, ?user_contexts: Array[String]?, ?sandbox: String?) -> ::Selenium::WebDriver::BiDi::Protocol::Script::AddPreloadScriptResult
           def call_function: (function_declaration: String, await_promise: bool, target: ::Selenium::WebDriver::BiDi::Protocol::Script::Target, ?arguments: Array[::Selenium::WebDriver::BiDi::Protocol::Script::LocalValue]?, ?result_ownership: String?, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions?, ?this: ::Selenium::WebDriver::BiDi::Protocol::Script::LocalValue?, ?user_activation: bool?) -> ::Selenium::WebDriver::BiDi::Protocol::Script::EvaluateResult

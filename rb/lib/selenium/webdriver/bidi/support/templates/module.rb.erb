@@ -26,7 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see <%= BiDiGenerate::BIDI_DOC_URL %>
-        class <%= mod.ruby_class %>
+        class <%= mod.ruby_class %> < Domain
 <%- unless mod.events.empty? -%>
           EVENTS = {
             <%= mod.events.map { |event| "#{event.event_name}: '#{event.wire_name}'" }.join(",\n            ") %>
@@ -83,13 +83,14 @@ module Selenium
           EVENT_TYPES = {
             <%= mod.events.map(&:type_entry).join(",\n            ") %>
           }.freeze
+<%- unless mod.commands.empty? -%>
 
 <%- end -%>
-          def initialize(transport)
-            @transport = transport
-          end
-<%- mod.commands.each do |cmd| -%>
+<%- end -%>
+<%- mod.commands.each_with_index do |cmd, index| -%>
+<%- unless index.zero? -%>
 
+<%- end -%>
           # @api private
           # @see <%= BiDiGenerate::BIDI_DOC_URL %>
           <%= cmd.def_header(10) %>

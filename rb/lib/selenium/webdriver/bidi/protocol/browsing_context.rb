@@ -26,7 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        class BrowsingContext
+        class BrowsingContext < Domain
           EVENTS = {
             context_created: 'browsingContext.contextCreated',
             context_destroyed: 'browsingContext.contextDestroyed',
@@ -430,15 +430,11 @@ module Selenium
             'browsingContext.userPromptOpened' => BrowsingContext::UserPromptOpenedParameters
           }.freeze
 
-          def initialize(transport)
-            @transport = transport
-          end
-
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def activate(context:)
             params = ActivateParameters.new(context: context)
-            @transport.execute(cmd: 'browsingContext.activate', params: params)
+            execute(cmd: 'browsingContext.activate', params: params)
           end
 
           # @api private
@@ -451,7 +447,7 @@ module Selenium
           )
             Serialization.validate!('origin', origin, BrowsingContext::CAPTURE_SCREENSHOT_PARAMETERS_ORIGIN)
             params = CaptureScreenshotParameters.new(context: context, origin: origin, format: format, clip: clip)
-            @transport.execute(
+            execute(
               cmd: 'browsingContext.captureScreenshot',
               params: params,
               result: BrowsingContext::CaptureScreenshotResult
@@ -462,7 +458,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def close(context:, prompt_unload: Serialization::UNSET)
             params = CloseParameters.new(context: context, prompt_unload: prompt_unload)
-            @transport.execute(cmd: 'browsingContext.close', params: params)
+            execute(cmd: 'browsingContext.close', params: params)
           end
 
           # @api private
@@ -480,21 +476,21 @@ module Selenium
               background: background,
               user_context: user_context
             )
-            @transport.execute(cmd: 'browsingContext.create', params: params, result: BrowsingContext::CreateResult)
+            execute(cmd: 'browsingContext.create', params: params, result: BrowsingContext::CreateResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def get_tree(max_depth: Serialization::UNSET, root: Serialization::UNSET)
             params = GetTreeParameters.new(max_depth: max_depth, root: root)
-            @transport.execute(cmd: 'browsingContext.getTree', params: params, result: BrowsingContext::GetTreeResult)
+            execute(cmd: 'browsingContext.getTree', params: params, result: BrowsingContext::GetTreeResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def handle_user_prompt(context:, accept: Serialization::UNSET, user_text: Serialization::UNSET)
             params = HandleUserPromptParameters.new(context: context, accept: accept, user_text: user_text)
-            @transport.execute(cmd: 'browsingContext.handleUserPrompt', params: params)
+            execute(cmd: 'browsingContext.handleUserPrompt', params: params)
           end
 
           # @api private
@@ -513,11 +509,7 @@ module Selenium
               serialization_options: serialization_options,
               start_nodes: start_nodes
             )
-            @transport.execute(
-              cmd: 'browsingContext.locateNodes',
-              params: params,
-              result: BrowsingContext::LocateNodesResult
-            )
+            execute(cmd: 'browsingContext.locateNodes', params: params, result: BrowsingContext::LocateNodesResult)
           end
 
           # @api private
@@ -525,7 +517,7 @@ module Selenium
           def navigate(context:, url:, wait: Serialization::UNSET)
             Serialization.validate!('wait', wait, BrowsingContext::READINESS_STATE)
             params = NavigateParameters.new(context: context, url: url, wait: wait)
-            @transport.execute(cmd: 'browsingContext.navigate', params: params, result: BrowsingContext::NavigateResult)
+            execute(cmd: 'browsingContext.navigate', params: params, result: BrowsingContext::NavigateResult)
           end
 
           # @api private
@@ -551,7 +543,7 @@ module Selenium
               scale: scale,
               shrink_to_fit: shrink_to_fit
             )
-            @transport.execute(cmd: 'browsingContext.print', params: params, result: BrowsingContext::PrintResult)
+            execute(cmd: 'browsingContext.print', params: params, result: BrowsingContext::PrintResult)
           end
 
           # @api private
@@ -559,14 +551,14 @@ module Selenium
           def reload(context:, ignore_cache: Serialization::UNSET, wait: Serialization::UNSET)
             Serialization.validate!('wait', wait, BrowsingContext::READINESS_STATE)
             params = ReloadParameters.new(context: context, ignore_cache: ignore_cache, wait: wait)
-            @transport.execute(cmd: 'browsingContext.reload', params: params, result: BrowsingContext::NavigateResult)
+            execute(cmd: 'browsingContext.reload', params: params, result: BrowsingContext::NavigateResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def set_bypass_csp(bypass:, contexts: Serialization::UNSET, user_contexts: Serialization::UNSET)
             params = SetBypassCSPParameters.new(bypass: bypass, contexts: contexts, user_contexts: user_contexts)
-            @transport.execute(cmd: 'browsingContext.setBypassCSP', params: params)
+            execute(cmd: 'browsingContext.setBypassCSP', params: params)
           end
 
           # @api private
@@ -583,14 +575,14 @@ module Selenium
               device_pixel_ratio: device_pixel_ratio,
               user_contexts: user_contexts
             )
-            @transport.execute(cmd: 'browsingContext.setViewport', params: params)
+            execute(cmd: 'browsingContext.setViewport', params: params)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def traverse_history(context:, delta:)
             params = TraverseHistoryParameters.new(context: context, delta: delta)
-            @transport.execute(cmd: 'browsingContext.traverseHistory', params: params)
+            execute(cmd: 'browsingContext.traverseHistory', params: params)
           end
         end # BrowsingContext
       end # Protocol

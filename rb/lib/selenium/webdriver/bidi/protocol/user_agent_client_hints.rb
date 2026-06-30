@@ -26,7 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        class UserAgentClientHints
+        class UserAgentClientHints < Domain
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ClientHintsMetadata = Serialization::Record.define(
@@ -54,10 +54,6 @@ module Selenium
             user_contexts: {json_key: 'userContexts', list: true}
           )
 
-          def initialize(transport)
-            @transport = transport
-          end
-
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def set_client_hints_override(
@@ -70,7 +66,7 @@ module Selenium
               contexts: contexts,
               user_contexts: user_contexts
             )
-            @transport.execute(cmd: 'userAgentClientHints.setClientHintsOverride', params: params)
+            execute(cmd: 'userAgentClientHints.setClientHintsOverride', params: params)
           end
         end # UserAgentClientHints
       end # Protocol

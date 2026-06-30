@@ -22,7 +22,7 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        class Emulation
+        class Emulation < ::Selenium::WebDriver::BiDi::Protocol::Domain
           FORCED_COLORS_MODE_THEME: Hash[Symbol, String]
 
           SCREEN_ORIENTATION_NATURAL: Hash[Symbol, String]
@@ -146,8 +146,6 @@ module Selenium
             attr_reader user_contexts: untyped
             def self.new: (max_touch_points: Integer?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
           end
-
-          def initialize: (untyped transport) -> void
 
           def set_forced_colors_mode_theme_override: (theme: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
           def set_geolocation_override: (?contexts: Array[String]?, ?user_contexts: Array[String]?, ?coordinates: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationCoordinates?, ?error: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationPositionError?) -> untyped

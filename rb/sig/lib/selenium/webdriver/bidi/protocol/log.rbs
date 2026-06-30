@@ -22,7 +22,7 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        class Log
+        class Log < ::Selenium::WebDriver::BiDi::Protocol::Domain
           EVENTS: Hash[Symbol, String]
 
           LEVEL: Hash[Symbol, String]
@@ -72,8 +72,6 @@ module Selenium
           end
 
           EVENT_TYPES: Hash[String, untyped]
-
-          def initialize: (untyped transport) -> void
 
         end
       end

@@ -18,8 +18,10 @@
 # under the License.
 
 # serialization must load first (it defines the Serialization runtime the generated
-# classes build on). Add a require below when a new BiDi domain is generated.
+# classes build on), then the Domain base the generated classes subclass. Add a require
+# below when a new BiDi domain is generated.
 require 'selenium/webdriver/bidi/serialization'
+require 'selenium/webdriver/bidi/protocol/domain'
 require 'selenium/webdriver/bidi/protocol/bluetooth'
 require 'selenium/webdriver/bidi/protocol/browser'
 require 'selenium/webdriver/bidi/protocol/browsing_context'

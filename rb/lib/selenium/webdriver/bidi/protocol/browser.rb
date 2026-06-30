@@ -26,7 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        class Browser
+        class Browser < Domain
           CLIENT_WINDOW_INFO_STATE = {
             fullscreen: 'fullscreen',
             maximized: 'maximized',
@@ -133,14 +133,10 @@ module Selenium
             Denied = Serialization::Record.define(type: {fixed: 'denied'})
           end
 
-          def initialize(transport)
-            @transport = transport
-          end
-
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def close
-            @transport.execute(cmd: 'browser.close')
+            execute(cmd: 'browser.close')
           end
 
           # @api private
@@ -155,26 +151,26 @@ module Selenium
               proxy: proxy,
               unhandled_prompt_behavior: unhandled_prompt_behavior
             )
-            @transport.execute(cmd: 'browser.createUserContext', params: params, result: Browser::UserContextInfo)
+            execute(cmd: 'browser.createUserContext', params: params, result: Browser::UserContextInfo)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def get_client_windows
-            @transport.execute(cmd: 'browser.getClientWindows', result: Browser::GetClientWindowsResult)
+            execute(cmd: 'browser.getClientWindows', result: Browser::GetClientWindowsResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def get_user_contexts
-            @transport.execute(cmd: 'browser.getUserContexts', result: Browser::GetUserContextsResult)
+            execute(cmd: 'browser.getUserContexts', result: Browser::GetUserContextsResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def remove_user_context(user_context:)
             params = RemoveUserContextParameters.new(user_context: user_context)
-            @transport.execute(cmd: 'browser.removeUserContext', params: params)
+            execute(cmd: 'browser.removeUserContext', params: params)
           end
 
           # @api private
@@ -196,7 +192,7 @@ module Selenium
               x: x,
               y: y
             )
-            @transport.execute(cmd: 'browser.setClientWindowState', params: params, result: Browser::ClientWindowInfo)
+            execute(cmd: 'browser.setClientWindowState', params: params, result: Browser::ClientWindowInfo)
           end
 
           # @api private
@@ -206,7 +202,7 @@ module Selenium
               download_behavior: download_behavior,
               user_contexts: user_contexts
             )
-            @transport.execute(cmd: 'browser.setDownloadBehavior', params: params)
+            execute(cmd: 'browser.setDownloadBehavior', params: params)
           end
         end # Browser
       end # Protocol

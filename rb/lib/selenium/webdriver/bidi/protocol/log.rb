@@ -26,7 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        class Log
+        class Log < Domain
           EVENTS = {
             entry_added: 'log.entryAdded'
           }.freeze
@@ -97,10 +97,6 @@ module Selenium
           EVENT_TYPES = {
             'log.entryAdded' => Log::Entry
           }.freeze
-
-          def initialize(transport)
-            @transport = transport
-          end
         end # Log
       end # Protocol
     end # BiDi

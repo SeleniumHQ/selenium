@@ -22,7 +22,7 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        class Network
+        class Network < ::Selenium::WebDriver::BiDi::Protocol::Domain
           EVENTS: Hash[Symbol, String]
 
           COLLECTOR_TYPE: Hash[Symbol, String]
@@ -382,8 +382,6 @@ module Selenium
           end
 
           EVENT_TYPES: Hash[String, untyped]
-
-          def initialize: (untyped transport) -> void
 
           def add_data_collector: (data_types: Array[String], max_encoded_data_size: Integer, ?collector_type: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> ::Selenium::WebDriver::BiDi::Protocol::Network::AddDataCollectorResult
           def add_intercept: (phases: Array[String], ?contexts: Array[String]?, ?url_patterns: Array[::Selenium::WebDriver::BiDi::Protocol::Network::UrlPattern]?) -> ::Selenium::WebDriver::BiDi::Protocol::Network::AddInterceptResult
