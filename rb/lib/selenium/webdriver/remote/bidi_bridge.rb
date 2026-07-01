@@ -17,16 +17,20 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/bidi/transport'
+
 module Selenium
   module WebDriver
     module Remote
       class BiDiBridge < Bridge
-        attr_reader :bidi
+        attr_reader :bidi, :transport
 
         def create_session(capabilities)
           super
           socket_url = @capabilities[:web_socket_url]
           @bidi = Selenium::WebDriver::BiDi.new(url: socket_url)
+          # Share the BiDi object's socket until the bridge owns the connection directly.
+          @transport = BiDi::Transport.new(@bidi.instance_variable_get(:@ws))
         end
 
         def get(url)

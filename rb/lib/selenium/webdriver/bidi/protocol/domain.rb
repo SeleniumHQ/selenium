@@ -23,8 +23,9 @@ module Selenium
       module Protocol
         # @api private
         class Domain
-          def initialize(transport)
-            @transport = transport
+          def initialize(source)
+            bridge = source.is_a?(Driver) ? source.send(:bridge) : source
+            @transport = bridge.transport
           end
 
           private

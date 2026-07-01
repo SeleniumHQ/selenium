@@ -21,7 +21,9 @@ module Selenium
     class BiDi
       module Protocol
         class Domain
-          def initialize: (untyped transport) -> void
+          @transport: Transport
+
+          def initialize: (Driver | Remote::Bridge source) -> void
 
           private
 

@@ -52,6 +52,8 @@ module Selenium
 
         def bidi: -> BiDi
 
+        def transport: -> BiDi::Transport
+
         def cancel_fedcm_dialog: -> nil
 
         def click_fedcm_dialog_button: -> nil
