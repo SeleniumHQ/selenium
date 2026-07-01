@@ -27,7 +27,7 @@ module Selenium
 
         let(:bidi) { driver.bidi }
 
-        it 'creates an user context',
+        it 'creates a user context',
            pending_if: {browser: %i[safari safari_preview],
                         reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
           browser = described_class.new(bidi)
@@ -73,7 +73,7 @@ module Selenium
           }.to raise_error(Error::WebDriverError)
         end
 
-        it 'get windows',
+        it 'gets windows',
            pending_if: {browser: %i[safari safari_preview],
                         reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
           browser = described_class.new(bidi)

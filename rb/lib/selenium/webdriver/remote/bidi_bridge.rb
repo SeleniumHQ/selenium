@@ -28,9 +28,15 @@ module Selenium
 
         def create_session(capabilities)
           super
-          @bidi = Selenium::WebDriver::BiDi.new(url: validated_socket_url)
-          # Share the BiDi object's socket until the bridge owns the connection directly.
-          @transport = BiDi::Transport.new(@bidi.ws)
+
+          begin
+            @bidi = Selenium::WebDriver::BiDi.new(url: validated_socket_url)
+            # Share the BiDi object's socket until the bridge owns the connection directly.
+            @transport = BiDi::Transport.new(@bidi.ws)
+          rescue StandardError
+            quit
+            raise
+          end
         end
 
         def get(url)
@@ -50,7 +56,7 @@ module Selenium
         end
 
         def quit
-          bidi.close
+          bidi&.close
         rescue *QUIT_ERRORS
           nil
         ensure

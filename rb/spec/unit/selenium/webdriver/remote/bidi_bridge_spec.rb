@@ -46,6 +46,13 @@ module Selenium
             expect { bridge.create_session(Capabilities.new) }
               .to raise_error(Error::WebDriverError, /did not return a valid webSocketUrl/)
           end
+
+          it 'quits the remote session when the webSocketUrl is invalid' do
+            stub_new_session(true)
+
+            expect { bridge.create_session(Capabilities.new) }.to raise_error(Error::WebDriverError)
+            expect(http).to have_received(:request).at_least(:twice)
+          end
         end
       end
     end # Remote
