@@ -66,6 +66,8 @@ module Selenium
 
             def read: (untyped field, untyped raw) -> untyped
 
+            def check_shape: (untyped field, untyped raw) -> void
+
             def enum_hash: (untyped field) -> untyped
 
             def read_list: (untyped raw, untyped klass) -> untyped

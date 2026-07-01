@@ -30,7 +30,7 @@ module Selenium
           socket_url = @capabilities[:web_socket_url]
           @bidi = Selenium::WebDriver::BiDi.new(url: socket_url)
           # Share the BiDi object's socket until the bridge owns the connection directly.
-          @transport = BiDi::Transport.new(@bidi.instance_variable_get(:@ws))
+          @transport = BiDi::Transport.new(@bidi.ws)
         end
 
         def get(url)

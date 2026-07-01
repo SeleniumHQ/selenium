@@ -239,6 +239,23 @@ module Selenium
                 .to eq(%i[before_request_sent auth_required])
             end
           end
+
+          describe 'inbound shape validation' do
+            it 'raises when a non-nullable field arrives as explicit null' do
+              expect { Network::Cookie.from_json('name' => nil) }
+                .to raise_error(Error::WebDriverError, /Cookie#name received null but is not nullable/)
+            end
+
+            it 'raises when a list-typed field arrives as a scalar' do
+              expect { Network::AddInterceptParameters.from_json('phases' => 'beforeRequestSent') }
+                .to raise_error(Error::WebDriverError, /phases expected a list/)
+            end
+
+            it 'raises when a scalar-typed field arrives as a list' do
+              expect { Network::Cookie.from_json('sameSite' => %w[none]) }
+                .to raise_error(Error::WebDriverError, /same_site expected a single value/)
+            end
+          end
         end
       end # Protocol
     end # BiDi

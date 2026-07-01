@@ -116,12 +116,27 @@ module Selenium
             end
 
             def read(field, raw)
-              return raw if raw.nil?
+              if raw.nil?
+                return raw if field.nullable
+
+                raise Error::WebDriverError, "#{name}##{field.name} received null but is not nullable"
+              end
+              check_shape(field, raw)
               return Serialization.to_symbol("#{name}##{field.name}", raw, enum_hash(field)) if field.enum
               return raw if field.ref.nil?
 
               klass = (@refs ||= {})[field.name] ||= Protocol.const_get(field.ref)
               field.list ? read_list(raw, klass) : klass.from_json(raw)
+            end
+
+            # A declared list must arrive as an array; a scalar-shaped field (enum or ref, not a
+            # list) must not. An opaque field carries no shape descriptor, so it passes through.
+            def check_shape(field, raw)
+              return if field.list == raw.is_a?(::Array)
+              return unless field.list || field.enum || field.ref
+
+              raise Error::WebDriverError,
+                    "#{name}##{field.name} expected #{field.list ? 'a list' : 'a single value'}, got #{raw.inspect}"
             end
 
             def enum_hash(field)

@@ -62,6 +62,7 @@ module Selenium
               BrowsingContext.new(transport).navigate(context: 'c', url: 'u', wait: :complete)
 
               expect(connection).to have_received(:send_cmd)
+                .with(method: 'browsingContext.navigate', params: hash_including('wait' => 'complete'))
             end
           end
 
