@@ -99,7 +99,7 @@ module Selenium
             end
 
             # The wire tag mapped back to its variant symbol (the table's key); an
-            # unrecognized tag falls through as-is so select misses and from_json stays lenient.
+            # unrecognized tag falls through as-is so select misses and from_json raises.
             def payload_tag(json_payload)
               return UNSET unless @discriminator && json_payload.key?(@discriminator)
 

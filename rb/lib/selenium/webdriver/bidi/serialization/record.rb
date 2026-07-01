@@ -76,8 +76,9 @@ module Selenium
               construct(**attributes)
             end
 
-            # Inbound payloads are trusted — no enum validation — so a value newer than our
-            # schema (e.g. an unrecognized enum) still parses.
+            # Inbound: builds from the wire. Enum tokens are mapped back to symbols and an
+            # unrecognized one raises (in +read+); required-presence isn't checked and extra keys
+            # are captured (extensible) or ignored (closed) — strict on values, lenient on keys.
             def from_json(json_payload)
               attributes = fields.to_h do |f|
                 [f.name, wire_value(f, json_payload)]
@@ -91,7 +92,8 @@ module Selenium
             # Checks each field's value: a non-nullable field cannot be nil (nil is neither a
             # value nor the UNSET omit-sentinel, so it would be silently dropped on the wire), and
             # an enum field must be in its allowed set. The enum constant is resolved lazily so a
-            # cross-domain enum need not be loaded first. Outbound only — from_json stays lenient.
+            # cross-domain enum need not be loaded first. Outbound only (from +new+); inbound enum
+            # tokens are mapped-and-checked separately in +read+.
             def validate_values(attributes)
               fields.each do |f|
                 value = attributes[f.name]
