@@ -115,7 +115,7 @@ module Selenium
 
             def read(field, raw)
               return raw if raw.nil?
-              return Serialization.to_symbol(raw, enum_hash(field)) if field.enum
+              return Serialization.to_symbol("#{name}##{field.name}", raw, enum_hash(field)) if field.enum
               return raw if field.ref.nil?
 
               klass = (@refs ||= {})[field.name] ||= Protocol.const_get(field.ref)

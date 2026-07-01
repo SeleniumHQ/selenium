@@ -54,17 +54,19 @@ module Selenium
         def self.to_wire(value, enum)
           return value if UNSET.equal?(value) || value.nil?
 
-          value.is_a?(::Array) ? value.map { |element| enum.fetch(element, element) } : enum.fetch(value, value)
+          value.is_a?(::Array) ? value.map { |element| enum.fetch(element) } : enum.fetch(value)
         end
 
-        # Inbound: map a wire token (or list) back to its enum symbol. A token newer than
-        # our schema has no key, so it is returned unchanged and parsing stays lenient.
+        # Inbound: map a wire token (or list) back to its enum symbol, raising on a token
+        # outside our schema so a non-compliant (or newer-than-schema) browser value fails
+        # loud instead of silently passing through untyped.
         #
         # @api private
-        def self.to_symbol(value, enum)
+        def self.to_symbol(name, value, enum)
           return value if value.nil?
+          return value.map { |element| to_symbol(name, element, enum) } if value.is_a?(::Array)
 
-          value.is_a?(::Array) ? value.map { |element| enum.key(element) || element } : (enum.key(value) || value)
+          enum.key(value) || raise(Error::WebDriverError, "#{name} received an unknown value: #{value.inspect}")
         end
       end
     end # BiDi

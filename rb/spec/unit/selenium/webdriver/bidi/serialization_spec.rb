@@ -65,10 +65,11 @@ module Selenium
               expect(Script::LocalValue.from_json('type' => 'null')).to eq(Script::NullValue.new)
             end
 
-            it 'returns the raw payload for an unknown variant instead of raising (forward-compatible)' do
+            it 'raises on a variant outside our schema instead of passing the raw payload through' do
               payload = {'type' => 'futuristic', 'value' => 'x'}
 
-              expect(BrowsingContext::Locator.from_json(payload)).to eq(payload)
+              expect { BrowsingContext::Locator.from_json(payload) }
+                .to raise_error(Error::WebDriverError, /variant not in this Selenium's BiDi schema/)
             end
           end
 
@@ -205,11 +206,9 @@ module Selenium
                 .to raise_error(ArgumentError, /context cannot be nil/)
             end
 
-            it 'does not validate inbound from_json (trusts the browser, stays forward-compatible)' do
-              entry = Log::ConsoleLogEntry.from_json('type' => 'console', 'level' => 'futureLevel')
-
-              expect(entry).to be_a(Log::ConsoleLogEntry)
-              expect(entry.level).to eq('futureLevel')
+            it 'raises on an inbound enum value outside our schema' do
+              expect { Log::ConsoleLogEntry.from_json('type' => 'console', 'level' => 'futureLevel') }
+                .to raise_error(Error::WebDriverError, /level received an unknown value.*futureLevel/)
             end
           end
 
@@ -227,10 +226,9 @@ module Selenium
               expect(parsed.state).to eq(:powered_off)
             end
 
-            it 'leaves an unrecognized inbound token as-is (forward-compatible)' do
-              parsed = Bluetooth::SimulateAdapterParameters.from_json('context' => 'c', 'state' => 'powered-sideways')
-
-              expect(parsed.state).to eq('powered-sideways')
+            it 'raises on an unrecognized inbound token' do
+              expect { Bluetooth::SimulateAdapterParameters.from_json('context' => 'c', 'state' => 'powered-sideways') }
+                .to raise_error(Error::WebDriverError, /state received an unknown value.*powered-sideways/)
             end
 
             it 'coerces each element of a list-valued enum' do

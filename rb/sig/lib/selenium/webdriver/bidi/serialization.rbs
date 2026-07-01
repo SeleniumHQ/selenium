@@ -26,7 +26,7 @@ module Selenium
 
         def self.to_wire: (untyped value, untyped enum) -> untyped
 
-        def self.to_symbol: (untyped value, untyped enum) -> untyped
+        def self.to_symbol: (String name, untyped value, untyped enum) -> untyped
 
         class Record < ::Data
           def self.define: (**untyped spec) -> singleton(Record)

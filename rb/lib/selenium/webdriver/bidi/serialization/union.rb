@@ -51,9 +51,8 @@ module Selenium
 
               variant = select(json_payload)
               unless variant
-                WebDriver.logger.debug("#{name} received a variant not in this Selenium's BiDi schema; " \
-                                       'returning the raw payload.', id: :bidi)
-                return json_payload
+                raise Error::WebDriverError,
+                      "#{name} received a variant not in this Selenium's BiDi schema: #{json_payload.inspect}"
               end
               Protocol.const_get(variant).from_json(json_payload)
             end
