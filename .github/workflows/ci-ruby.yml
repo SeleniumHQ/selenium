@@ -94,7 +94,7 @@ jobs:
     with:
       name: (${{ matrix.tag_filters }})
       needs-display: true
-      needs-safari-preview: ${{ contains(matrix.tag_filters, 'safari-preview') }}
+      safari-preview: ${{ contains(matrix.tag_filters, 'safari-preview') }}
       os: ${{ matrix.os }}
       rerun-with-debug: true
       run: >

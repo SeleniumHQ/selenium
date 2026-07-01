@@ -26,7 +26,7 @@ on:
         required: false
         type: boolean
         default: false
-      needs-safari-preview:
+      safari-preview:
         description: Whether this job needs Safari Technology Preview installed (macos only)
         required: false
         type: boolean
@@ -196,7 +196,7 @@ jobs:
         if: inputs.needs-display && inputs.os == 'macos'
         run: sudo safaridriver --enable
       - name: Setup Safari Technology Preview
-        if: inputs.needs-safari-preview && inputs.os == 'macos'
+        if: inputs.safari-preview && inputs.os == 'macos'
         run: |
           brew install --cask safari-technology-preview
           sudo "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver" --enable
