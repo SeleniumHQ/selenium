@@ -219,19 +219,18 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
     public void ShouldBeAbleToWrapSubclassesOfSomethingImplementingTheWebDriverInterface()
     {
         // We should get this far
-        EventFiringWebDriver testDriver = new EventFiringWebDriver(new ChildDriver());
+        EventFiringWebDriver testDriver = new EventFiringWebDriver(mockDriver.Object);
     }
 
     [Test]
     public void ShouldBeAbleToAccessWrappedInstanceFromEventCalls()
     {
-        var stubDriver = new StubDriver();
-        EventFiringWebDriver testDriver = new EventFiringWebDriver(stubDriver);
-        StubDriver wrapped = ((IWrapsDriver)testDriver).WrappedDriver as StubDriver;
-        Assert.That(wrapped, Is.EqualTo(stubDriver));
+        EventFiringWebDriver testDriver = new EventFiringWebDriver(mockDriver.Object);
+        IWebDriver wrapped = ((IWrapsDriver)testDriver).WrappedDriver;
+        Assert.That(wrapped, Is.SameAs(mockDriver.Object));
         testDriver.Navigating += new EventHandler<WebDriverNavigationEventArgs>((sender, e) =>
         {
-            Assert.That(stubDriver, Is.EqualTo(e.Driver));
+            Assert.That(e.Driver, Is.SameAs(mockDriver.Object));
         });
 
         testDriver.Url = "http://example.org";
@@ -291,10 +290,6 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
     }
 
     public interface IExecutingDriver : IWebDriver, IJavaScriptExecutor
-    {
-    }
-
-    public class ChildDriver : StubDriver
     {
     }
 }
