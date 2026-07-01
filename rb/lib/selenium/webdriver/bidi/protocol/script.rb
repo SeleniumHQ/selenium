@@ -85,10 +85,10 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class EvaluateResult < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {success: 'success', exception: 'exception'}
             variants(
-              'success' => 'Script::EvaluateResultSuccess',
-              'exception' => 'Script::EvaluateResultException'
+              success: 'Script::EvaluateResultSuccess',
+              exception: 'Script::EvaluateResultException'
             )
           end
 
@@ -121,21 +121,35 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class LocalValue < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {
+              undefined: 'undefined',
+              null: 'null',
+              string: 'string',
+              number: 'number',
+              boolean: 'boolean',
+              bigint: 'bigint',
+              channel: 'channel',
+              array: 'array',
+              date: 'date',
+              map: 'map',
+              object: 'object',
+              regexp: 'regexp',
+              set: 'set'
+            }
             variants(
-              'undefined' => 'Script::UndefinedValue',
-              'null' => 'Script::NullValue',
-              'string' => 'Script::StringValue',
-              'number' => 'Script::NumberValue',
-              'boolean' => 'Script::BooleanValue',
-              'bigint' => 'Script::BigIntValue',
-              'channel' => 'Script::ChannelValue',
-              'array' => 'Script::ArrayLocalValue',
-              'date' => 'Script::DateLocalValue',
-              'map' => 'Script::MapLocalValue',
-              'object' => 'Script::ObjectLocalValue',
-              'regexp' => 'Script::RegExpLocalValue',
-              'set' => 'Script::SetLocalValue'
+              undefined: 'Script::UndefinedValue',
+              null: 'Script::NullValue',
+              string: 'Script::StringValue',
+              number: 'Script::NumberValue',
+              boolean: 'Script::BooleanValue',
+              bigint: 'Script::BigIntValue',
+              channel: 'Script::ChannelValue',
+              array: 'Script::ArrayLocalValue',
+              date: 'Script::DateLocalValue',
+              map: 'Script::MapLocalValue',
+              object: 'Script::ObjectLocalValue',
+              regexp: 'Script::RegExpLocalValue',
+              set: 'Script::SetLocalValue'
             )
             fallback 'Script::RemoteReference'
           end
@@ -186,14 +200,21 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class PrimitiveProtocolValue < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {
+              undefined: 'undefined',
+              null: 'null',
+              string: 'string',
+              number: 'number',
+              boolean: 'boolean',
+              bigint: 'bigint'
+            }
             variants(
-              'undefined' => 'Script::UndefinedValue',
-              'null' => 'Script::NullValue',
-              'string' => 'Script::StringValue',
-              'number' => 'Script::NumberValue',
-              'boolean' => 'Script::BooleanValue',
-              'bigint' => 'Script::BigIntValue'
+              undefined: 'Script::UndefinedValue',
+              null: 'Script::NullValue',
+              string: 'Script::StringValue',
+              number: 'Script::NumberValue',
+              boolean: 'Script::BooleanValue',
+              bigint: 'Script::BigIntValue'
             )
           end
 
@@ -224,16 +245,25 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class RealmInfo < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {
+              window: 'window',
+              dedicated_worker: 'dedicated-worker',
+              shared_worker: 'shared-worker',
+              service_worker: 'service-worker',
+              worker: 'worker',
+              paint_worklet: 'paint-worklet',
+              audio_worklet: 'audio-worklet',
+              worklet: 'worklet'
+            }
             variants(
-              'window' => 'Script::WindowRealmInfo',
-              'dedicated-worker' => 'Script::DedicatedWorkerRealmInfo',
-              'shared-worker' => 'Script::SharedWorkerRealmInfo',
-              'service-worker' => 'Script::ServiceWorkerRealmInfo',
-              'worker' => 'Script::WorkerRealmInfo',
-              'paint-worklet' => 'Script::PaintWorkletRealmInfo',
-              'audio-worklet' => 'Script::AudioWorkletRealmInfo',
-              'worklet' => 'Script::WorkletRealmInfo'
+              window: 'Script::WindowRealmInfo',
+              dedicated_worker: 'Script::DedicatedWorkerRealmInfo',
+              shared_worker: 'Script::SharedWorkerRealmInfo',
+              service_worker: 'Script::ServiceWorkerRealmInfo',
+              worker: 'Script::WorkerRealmInfo',
+              paint_worklet: 'Script::PaintWorkletRealmInfo',
+              audio_worklet: 'Script::AudioWorkletRealmInfo',
+              worklet: 'Script::WorkletRealmInfo'
             )
           end
 
@@ -325,34 +355,61 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class RemoteValue < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {
+              undefined: 'undefined',
+              null: 'null',
+              string: 'string',
+              number: 'number',
+              boolean: 'boolean',
+              bigint: 'bigint',
+              symbol: 'symbol',
+              array: 'array',
+              object: 'object',
+              function: 'function',
+              regexp: 'regexp',
+              date: 'date',
+              map: 'map',
+              set: 'set',
+              weakmap: 'weakmap',
+              weakset: 'weakset',
+              generator: 'generator',
+              error: 'error',
+              proxy: 'proxy',
+              promise: 'promise',
+              typedarray: 'typedarray',
+              arraybuffer: 'arraybuffer',
+              nodelist: 'nodelist',
+              htmlcollection: 'htmlcollection',
+              node: 'node',
+              window: 'window'
+            }
             variants(
-              'undefined' => 'Script::UndefinedValue',
-              'null' => 'Script::NullValue',
-              'string' => 'Script::StringValue',
-              'number' => 'Script::NumberValue',
-              'boolean' => 'Script::BooleanValue',
-              'bigint' => 'Script::BigIntValue',
-              'symbol' => 'Script::SymbolRemoteValue',
-              'array' => 'Script::ArrayRemoteValue',
-              'object' => 'Script::ObjectRemoteValue',
-              'function' => 'Script::FunctionRemoteValue',
-              'regexp' => 'Script::RegExpRemoteValue',
-              'date' => 'Script::DateRemoteValue',
-              'map' => 'Script::MapRemoteValue',
-              'set' => 'Script::SetRemoteValue',
-              'weakmap' => 'Script::WeakMapRemoteValue',
-              'weakset' => 'Script::WeakSetRemoteValue',
-              'generator' => 'Script::GeneratorRemoteValue',
-              'error' => 'Script::ErrorRemoteValue',
-              'proxy' => 'Script::ProxyRemoteValue',
-              'promise' => 'Script::PromiseRemoteValue',
-              'typedarray' => 'Script::TypedArrayRemoteValue',
-              'arraybuffer' => 'Script::ArrayBufferRemoteValue',
-              'nodelist' => 'Script::NodeListRemoteValue',
-              'htmlcollection' => 'Script::HTMLCollectionRemoteValue',
-              'node' => 'Script::NodeRemoteValue',
-              'window' => 'Script::WindowProxyRemoteValue'
+              undefined: 'Script::UndefinedValue',
+              null: 'Script::NullValue',
+              string: 'Script::StringValue',
+              number: 'Script::NumberValue',
+              boolean: 'Script::BooleanValue',
+              bigint: 'Script::BigIntValue',
+              symbol: 'Script::SymbolRemoteValue',
+              array: 'Script::ArrayRemoteValue',
+              object: 'Script::ObjectRemoteValue',
+              function: 'Script::FunctionRemoteValue',
+              regexp: 'Script::RegExpRemoteValue',
+              date: 'Script::DateRemoteValue',
+              map: 'Script::MapRemoteValue',
+              set: 'Script::SetRemoteValue',
+              weakmap: 'Script::WeakMapRemoteValue',
+              weakset: 'Script::WeakSetRemoteValue',
+              generator: 'Script::GeneratorRemoteValue',
+              error: 'Script::ErrorRemoteValue',
+              proxy: 'Script::ProxyRemoteValue',
+              promise: 'Script::PromiseRemoteValue',
+              typedarray: 'Script::TypedArrayRemoteValue',
+              arraybuffer: 'Script::ArrayBufferRemoteValue',
+              nodelist: 'Script::NodeListRemoteValue',
+              htmlcollection: 'Script::HTMLCollectionRemoteValue',
+              node: 'Script::NodeRemoteValue',
+              window: 'Script::WindowProxyRemoteValue'
             )
           end
 

@@ -22,7 +22,11 @@ module Selenium
       module Serialization
         UNSET: untyped
 
-        def self.validate!: (String name, untyped value, untyped allowed) -> void
+        def self.validate!: (String name, untyped value, untyped enum) -> void
+
+        def self.to_wire: (untyped value, untyped enum) -> untyped
+
+        def self.to_symbol: (untyped value, untyped enum) -> untyped
 
         class Record < ::Data
           def self.define: (**untyped spec) -> singleton(Record)
@@ -62,6 +66,8 @@ module Selenium
 
             def read: (untyped field, untyped raw) -> untyped
 
+            def enum_hash: (untyped field) -> untyped
+
             def read_list: (untyped raw, untyped klass) -> untyped
 
             def extra: (Hash[untyped, untyped] json_payload) -> Hash[untyped, untyped]
@@ -81,7 +87,7 @@ module Selenium
         end
 
         class Union
-          def self.discriminator: (String json_key) -> String
+          def self.discriminator: (String json_key, ?Hash[Symbol, String] values) -> void
 
           def self.variants: (Hash[untyped, String] table) -> Hash[untyped, String]
 

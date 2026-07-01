@@ -69,7 +69,7 @@ module Selenium
 
           class PointerParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader pointer_type: untyped
-            def self.new: (?pointer_type: String?) -> instance
+            def self.new: (?pointer_type: Symbol?) -> instance
           end
 
           class PointerSourceAction < ::Selenium::WebDriver::BiDi::Serialization::Union

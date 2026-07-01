@@ -33,7 +33,13 @@ module Selenium
         # @api private
         class Union
           class << self
-            def discriminator(json_key) = @discriminator = json_key
+            # values maps each variant's discriminator symbol to its wire token, so an
+            # inbound payload tag (a wire string) can be matched to the symbol-keyed table.
+            def discriminator(json_key, values = {})
+              @discriminator = json_key
+              @discriminator_values = values
+            end
+
             def variants(table) = @variants = table
             def presence(rules) = @presence = rules
             def fallback(path) = @fallback = path
@@ -93,8 +99,13 @@ module Selenium
               @fallback
             end
 
+            # The wire tag mapped back to its variant symbol (the table's key); an
+            # unrecognized tag falls through as-is so select misses and from_json stays lenient.
             def payload_tag(json_payload)
-              @discriminator && json_payload.key?(@discriminator) ? json_payload[@discriminator] : UNSET
+              return UNSET unless @discriminator && json_payload.key?(@discriminator)
+
+              wire = json_payload[@discriminator]
+              @discriminator_values.key(wire) || wire
             end
           end
         end

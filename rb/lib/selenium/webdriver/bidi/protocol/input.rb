@@ -54,12 +54,12 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class SourceActions < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {none: 'none', key: 'key', pointer: 'pointer', wheel: 'wheel'}
             variants(
-              'none' => 'Input::NoneSourceActions',
-              'key' => 'Input::KeySourceActions',
-              'pointer' => 'Input::PointerSourceActions',
-              'wheel' => 'Input::WheelSourceActions'
+              none: 'Input::NoneSourceActions',
+              key: 'Input::KeySourceActions',
+              pointer: 'Input::PointerSourceActions',
+              wheel: 'Input::WheelSourceActions'
             )
           end
 
@@ -82,11 +82,11 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class KeySourceAction < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {pause: 'pause', key_down: 'keyDown', key_up: 'keyUp'}
             variants(
-              'pause' => 'Input::PauseAction',
-              'keyDown' => 'Input::KeyDownAction',
-              'keyUp' => 'Input::KeyUpAction'
+              pause: 'Input::PauseAction',
+              key_down: 'Input::KeyDownAction',
+              key_up: 'Input::KeyUpAction'
             )
           end
 
@@ -108,12 +108,17 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class PointerSourceAction < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {
+              pause: 'pause',
+              pointer_down: 'pointerDown',
+              pointer_up: 'pointerUp',
+              pointer_move: 'pointerMove'
+            }
             variants(
-              'pause' => 'Input::PauseAction',
-              'pointerDown' => 'Input::PointerDownAction',
-              'pointerUp' => 'Input::PointerUpAction',
-              'pointerMove' => 'Input::PointerMoveAction'
+              pause: 'Input::PauseAction',
+              pointer_down: 'Input::PointerDownAction',
+              pointer_up: 'Input::PointerUpAction',
+              pointer_move: 'Input::PointerMoveAction'
             )
           end
 
@@ -128,10 +133,10 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class WheelSourceAction < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {pause: 'pause', scroll: 'scroll'}
             variants(
-              'pause' => 'Input::PauseAction',
-              'scroll' => 'Input::WheelScrollAction'
+              pause: 'Input::PauseAction',
+              scroll: 'Input::WheelScrollAction'
             )
           end
 
@@ -209,9 +214,9 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class Origin < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {element: 'element'}
             variants(
-              'element' => 'Input::ElementOrigin'
+              element: 'Input::ElementOrigin'
             )
           end
 

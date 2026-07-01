@@ -45,9 +45,9 @@ module Selenium
           # @see <%= BiDiGenerate::BIDI_DOC_URL %>
           class <%= type.ruby_name %> < Serialization::Union
 <%- if type.discriminator_wire && !type.value_variants.empty? -%>
-            discriminator '<%= type.discriminator_wire %>'
+            <%= type.discriminator_decl(12) %>
             variants(
-              <%= type.value_variants.map { |v| "#{BiDiGenerate.ruby_literal(v.value)} => '#{v.ref}'" }.join(",\n              ") %>
+              <%= type.value_variants.map(&:variant_entry).join(",\n              ") %>
             )
 <%- end -%>
 <%- unless type.presence_variants.empty? -%>
@@ -94,7 +94,7 @@ module Selenium
           # @api private
           # @see <%= BiDiGenerate::BIDI_DOC_URL %>
           <%= cmd.def_header(10) %>
-<%- cmd.enum_checks.each do |check| -%>
+<%- cmd.enum_checks(12).each do |check| -%>
             <%= check %>
 <%- end -%>
 <%- if cmd.params_assignment(12) -%>

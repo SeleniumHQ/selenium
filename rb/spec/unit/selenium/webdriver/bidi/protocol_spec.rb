@@ -42,24 +42,24 @@ module Selenium
 
           describe 'enum argument validation' do
             it 'raises on a value outside the allowed enum set, before any wire call' do
-              expect { BrowsingContext.new(transport).navigate(context: 'c', url: 'x', wait: 'tomorrow') }
+              expect { BrowsingContext.new(transport).navigate(context: 'c', url: 'x', wait: :tomorrow) }
                 .to raise_error(ArgumentError, /wait must be one of/)
             end
 
             it 'validates each element of a list-valued enum' do
-              expect { Network.new(transport).add_data_collector(data_types: %w[bogus], max_encoded_data_size: 1) }
+              expect { Network.new(transport).add_data_collector(data_types: %i[bogus], max_encoded_data_size: 1) }
                 .to raise_error(ArgumentError, /dataTypes must be one of/)
             end
 
             it 'validates a union discriminator against the combined allowed set' do
-              expect { Network.new(transport).continue_with_auth(request: 'r', action: 'bogus') }
-                .to raise_error(ArgumentError, /action must be one of.*provideCredentials.*default.*cancel/)
+              expect { Network.new(transport).continue_with_auth(request: 'r', action: :bogus) }
+                .to raise_error(ArgumentError, /action must be one of.*provide_credentials.*default.*cancel/)
             end
 
             it 'passes an allowed value through to the transport' do
               allow(connection).to receive(:send_cmd).and_return('result' => {'navigation' => 'n', 'url' => 'u'})
 
-              BrowsingContext.new(transport).navigate(context: 'c', url: 'u', wait: 'complete')
+              BrowsingContext.new(transport).navigate(context: 'c', url: 'u', wait: :complete)
 
               expect(connection).to have_received(:send_cmd)
             end

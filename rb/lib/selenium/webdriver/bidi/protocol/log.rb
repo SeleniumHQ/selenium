@@ -41,10 +41,10 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class Entry < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {console: 'console', javascript: 'javascript'}
             variants(
-              'console' => 'Log::ConsoleLogEntry',
-              'javascript' => 'Log::JavascriptLogEntry'
+              console: 'Log::ConsoleLogEntry',
+              javascript: 'Log::JavascriptLogEntry'
             )
             fallback 'Log::GenericLogEntry'
           end

@@ -36,11 +36,11 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class ExtensionData < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {archive_path: 'archivePath', base64: 'base64', path: 'path'}
             variants(
-              'archivePath' => 'WebExtension::ExtensionArchivePath',
-              'base64' => 'WebExtension::ExtensionBase64Encoded',
-              'path' => 'WebExtension::ExtensionPath'
+              archive_path: 'WebExtension::ExtensionArchivePath',
+              base64: 'WebExtension::ExtensionBase64Encoded',
+              path: 'WebExtension::ExtensionPath'
             )
           end
 

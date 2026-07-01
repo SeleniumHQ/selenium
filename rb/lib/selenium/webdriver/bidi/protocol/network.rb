@@ -102,10 +102,10 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class BytesValue < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {string: 'string', base64: 'base64'}
             variants(
-              'string' => 'Network::StringValue',
-              'base64' => 'Network::Base64Value'
+              string: 'Network::StringValue',
+              base64: 'Network::Base64Value'
             )
           end
 
@@ -224,10 +224,10 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class UrlPattern < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {pattern: 'pattern', string: 'string'}
             variants(
-              'pattern' => 'Network::UrlPatternPattern',
-              'string' => 'Network::UrlPatternString'
+              pattern: 'Network::UrlPatternPattern',
+              string: 'Network::UrlPatternString'
             )
           end
 
@@ -297,9 +297,9 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class ContinueWithAuthParameters < Serialization::Union
-            discriminator 'action'
+            discriminator 'action', {provide_credentials: 'provideCredentials'}
             variants(
-              'provideCredentials' => 'Network::ContinueWithAuthParameters::Credentials'
+              provide_credentials: 'Network::ContinueWithAuthParameters::Credentials'
             )
             fallback 'Network::ContinueWithAuthParameters::NoCredentials'
 
@@ -530,7 +530,11 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def continue_with_auth(request:, action:, credentials: Serialization::UNSET)
-            Serialization.validate!('action', action, %w[provideCredentials default cancel])
+            Serialization.validate!(
+              'action',
+              action,
+              {provide_credentials: 'provideCredentials', default: 'default', cancel: 'cancel'}
+            )
             params = ContinueWithAuthParameters.build(request: request, action: action, credentials: credentials)
             execute(cmd: 'network.continueWithAuth', params: params)
           end
@@ -596,7 +600,11 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def set_cache_behavior(cache_behavior:, contexts: Serialization::UNSET)
-            Serialization.validate!('cacheBehavior', cache_behavior, Network::SET_CACHE_BEHAVIOR_PARAMETERS_CACHE_BEHAVIOR)
+            Serialization.validate!(
+              'cacheBehavior',
+              cache_behavior,
+              Network::SET_CACHE_BEHAVIOR_PARAMETERS_CACHE_BEHAVIOR
+            )
             params = SetCacheBehaviorParameters.new(cache_behavior: cache_behavior, contexts: contexts)
             execute(cmd: 'network.setCacheBehavior', params: params)
           end

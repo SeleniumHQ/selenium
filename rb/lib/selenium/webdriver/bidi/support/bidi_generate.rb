@@ -153,8 +153,10 @@ module BiDiGenerate
       required ? "#{ruby_name}:" : "#{ruby_name}: Serialization::UNSET"
     end
 
-    def enum_check
-      "Serialization.validate!('#{wire_name}', #{ruby_name}, #{enum})" if enum
+    def enum_check(indent)
+      return unless enum
+
+      BiDiGenerate.wrap_call('Serialization.validate!', ["'#{wire_name}'", ruby_name, enum], indent)
     end
 
     # An RBS keyword parameter carrying the param's value type. A required param is its
@@ -173,7 +175,7 @@ module BiDiGenerate
                        :union_params, keyword_init: true) do
     def required_params = params.select(&:required)
     def optional_params = params.reject(&:required)
-    def enum_checks = params.filter_map(&:enum_check)
+    def enum_checks(indent) = params.filter_map { |p| p.enum_check(indent) }
 
     # `def name` or `def name(...)` — wrapped one argument per line when the signature
     # would exceed the line limit.
@@ -322,7 +324,21 @@ module BiDiGenerate
 
   # mode is :value (matched by discriminator), :fallback (the no-tag variant), or
   # :presence (selected when its required wire keys are all present).
-  VariantIR = Struct.new(:mode, :value, :ref, :requires, keyword_init: true)
+  VariantIR = Struct.new(:mode, :value, :ref, :requires, keyword_init: true) do
+    # A string tag becomes an idiomatic symbol key; a bool/number tag stays a literal.
+    def symbolic? = value.is_a?(::String)
+
+    # The variant table entry: `sym: 'Ref'` for a string tag, else `true => 'Ref'`.
+    def variant_entry
+      key = symbolic? ? "#{BiDiGenerate.enum_key(value)}:" : "#{BiDiGenerate.ruby_literal(value)} =>"
+      "#{key} '#{ref}'"
+    end
+
+    # `sym: 'wireToken'` feeding the union's inbound wire->symbol map (string tags only).
+    def discriminator_pair
+      "#{BiDiGenerate.enum_key(value)}: '#{value}'" if symbolic?
+    end
+  end
 
   # A generated discriminated union (< Serialization::Union, resolved by lexical scope).
   # nested holds its synthetic variant records (see nest_synthetic).
@@ -332,6 +348,16 @@ module BiDiGenerate
     def presence_variants = variants.select { |v| v.mode == :presence }
     def fallback_variant = variants.find { |v| v.mode == :fallback }
     def nested_types = nested || []
+
+    # `discriminator 'wire'`, or `discriminator 'wire', {sym: 'token', …}` (wrapped when
+    # long) carrying the inbound wire->symbol map for string-tagged variants.
+    def discriminator_decl(indent)
+      pairs = value_variants.filter_map(&:discriminator_pair)
+      head = "discriminator '#{discriminator_wire}'"
+      return head if pairs.empty?
+
+      BiDiGenerate.wrap_call("#{head}, ", pairs, indent, open: '{', close: '}')
+    end
   end
 
   Module = Struct.new(:name, :ruby_class, :filename, :commands, :events, :enums, :types, keyword_init: true)
@@ -537,7 +563,7 @@ module BiDiGenerate
       case type['kind']
       when 'record' then type['fields'].empty? ? OPAQUE : named_type(name)
       when 'union' then named_type(name)
-      when 'enum' then {ref: nil, list: false, rbs: 'String'}
+      when 'enum' then {ref: nil, list: false, rbs: 'Symbol'}
       when 'alias' then resolve_named_alias(name, type['type'], seen)
       else OPAQUE
       end
@@ -732,7 +758,8 @@ module BiDiGenerate
     # A discriminated union's `by` field is validated against the whole allowed set:
     # the const values that tag each variant plus the default variant's own enum
     # values (e.g. continueWithAuth.action = {provideCredentials} + {default, cancel}).
-    # That spans variants, so no single enum constant fits — emit an inline list.
+    # That spans variants, so no single enum constant fits — emit an inline symbol=>wire
+    # hash so the check accepts the idiomatic symbol like every other enum.
     # Boolean discriminators (handleRequestDevicePrompt.accept) need no membership check.
     def annotate_discriminator_enum!(params, selector)
       by = selector['by']
@@ -740,8 +767,12 @@ module BiDiGenerate
       return unless !tagged.empty? && tagged.all?(String)
 
       allowed = (tagged + default_variant_enum_values(selector, by)).uniq
+      pairs = allowed.map { |v| "#{BiDiGenerate.enum_key(v)}: '#{v}'" }
       param = params.find { |p| p.wire_name == by }
-      param.enum = "%w[#{allowed.join(' ')}]" if param
+      return unless param
+
+      param.enum = "{#{pairs.join(', ')}}"
+      param.rbs = 'Symbol'
     end
 
     def default_variant_enum_values(selector, by)

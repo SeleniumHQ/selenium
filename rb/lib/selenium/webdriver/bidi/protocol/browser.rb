@@ -83,9 +83,9 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class SetClientWindowStateParameters < Serialization::Union
-            discriminator 'state'
+            discriminator 'state', {normal: 'normal'}
             variants(
-              'normal' => 'Browser::SetClientWindowStateParameters::ClientWindowRectState'
+              normal: 'Browser::SetClientWindowStateParameters::ClientWindowRectState'
             )
             fallback 'Browser::SetClientWindowStateParameters::ClientWindowNamedState'
 
@@ -118,10 +118,10 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class DownloadBehavior < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {allowed: 'allowed', denied: 'denied'}
             variants(
-              'allowed' => 'Browser::DownloadBehavior::Allowed',
-              'denied' => 'Browser::DownloadBehavior::Denied'
+              allowed: 'Browser::DownloadBehavior::Allowed',
+              denied: 'Browser::DownloadBehavior::Denied'
             )
 
             # @api private
@@ -183,7 +183,11 @@ module Selenium
             x: Serialization::UNSET,
             y: Serialization::UNSET
           )
-            Serialization.validate!('state', state, %w[normal fullscreen maximized minimized])
+            Serialization.validate!(
+              'state',
+              state,
+              {normal: 'normal', fullscreen: 'fullscreen', maximized: 'maximized', minimized: 'minimized'}
+            )
             params = SetClientWindowStateParameters.build(
               client_window: client_window,
               state: state,

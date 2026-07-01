@@ -92,13 +92,19 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class Locator < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {
+              accessibility: 'accessibility',
+              css: 'css',
+              context: 'context',
+              inner_text: 'innerText',
+              xpath: 'xpath'
+            }
             variants(
-              'accessibility' => 'BrowsingContext::AccessibilityLocator',
-              'css' => 'BrowsingContext::CssLocator',
-              'context' => 'BrowsingContext::ContextLocator',
-              'innerText' => 'BrowsingContext::InnerTextLocator',
-              'xpath' => 'BrowsingContext::XPathLocator'
+              accessibility: 'BrowsingContext::AccessibilityLocator',
+              css: 'BrowsingContext::CssLocator',
+              context: 'BrowsingContext::ContextLocator',
+              inner_text: 'BrowsingContext::InnerTextLocator',
+              xpath: 'BrowsingContext::XPathLocator'
             )
           end
 
@@ -182,10 +188,10 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class ClipRectangle < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {box: 'box', element: 'element'}
             variants(
-              'box' => 'BrowsingContext::BoxClipRectangle',
-              'element' => 'BrowsingContext::ElementClipRectangle'
+              box: 'BrowsingContext::BoxClipRectangle',
+              element: 'BrowsingContext::ElementClipRectangle'
             )
           end
 
@@ -362,10 +368,10 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class DownloadEndParams < Serialization::Union
-            discriminator 'status'
+            discriminator 'status', {canceled: 'canceled', complete: 'complete'}
             variants(
-              'canceled' => 'BrowsingContext::DownloadEndParams::CanceledParams',
-              'complete' => 'BrowsingContext::DownloadEndParams::CompleteParams'
+              canceled: 'BrowsingContext::DownloadEndParams::CanceledParams',
+              complete: 'BrowsingContext::DownloadEndParams::CompleteParams'
             )
 
             # @api private

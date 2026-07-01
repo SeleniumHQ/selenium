@@ -69,10 +69,10 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class PartitionDescriptor < Serialization::Union
-            discriminator 'type'
+            discriminator 'type', {context: 'context', storage_key: 'storageKey'}
             variants(
-              'context' => 'Storage::BrowsingContextPartitionDescriptor',
-              'storageKey' => 'Storage::StorageKeyPartitionDescriptor'
+              context: 'Storage::BrowsingContextPartitionDescriptor',
+              storage_key: 'Storage::StorageKeyPartitionDescriptor'
             )
           end
 

@@ -92,8 +92,8 @@ module Selenium
           class SimulateAdapterParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader le_supported: untyped
-            attr_reader state: String
-            def self.new: (context: String, ?le_supported: bool?, state: String) -> instance
+            attr_reader state: Symbol
+            def self.new: (context: String, ?le_supported: bool?, state: Symbol) -> instance
           end
 
           class DisableSimulationParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -140,8 +140,8 @@ module Selenium
             attr_reader context: String
             attr_reader address: String
             attr_reader uuid: String
-            attr_reader type: String
-            def self.new: (context: String, address: String, uuid: String, type: String) -> instance
+            attr_reader type: Symbol
+            def self.new: (context: String, address: String, uuid: String, type: Symbol) -> instance
           end
 
           class SimulateCharacteristicParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -150,8 +150,8 @@ module Selenium
             attr_reader service_uuid: String
             attr_reader characteristic_uuid: String
             attr_reader characteristic_properties: untyped
-            attr_reader type: String
-            def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, ?characteristic_properties: ::Selenium::WebDriver::BiDi::Protocol::Bluetooth::CharacteristicProperties?, type: String) -> instance
+            attr_reader type: Symbol
+            def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, ?characteristic_properties: ::Selenium::WebDriver::BiDi::Protocol::Bluetooth::CharacteristicProperties?, type: Symbol) -> instance
           end
 
           class SimulateCharacteristicResponseParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -159,10 +159,10 @@ module Selenium
             attr_reader address: String
             attr_reader service_uuid: String
             attr_reader characteristic_uuid: String
-            attr_reader type: String
+            attr_reader type: Symbol
             attr_reader code: Integer
             attr_reader data: untyped
-            def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, type: String, code: Integer, ?data: Array[Integer]?) -> instance
+            def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, type: Symbol, code: Integer, ?data: Array[Integer]?) -> instance
           end
 
           class SimulateDescriptorParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -171,8 +171,8 @@ module Selenium
             attr_reader service_uuid: String
             attr_reader characteristic_uuid: String
             attr_reader descriptor_uuid: String
-            attr_reader type: String
-            def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, descriptor_uuid: String, type: String) -> instance
+            attr_reader type: Symbol
+            def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, descriptor_uuid: String, type: Symbol) -> instance
           end
 
           class SimulateDescriptorResponseParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -181,10 +181,10 @@ module Selenium
             attr_reader service_uuid: String
             attr_reader characteristic_uuid: String
             attr_reader descriptor_uuid: String
-            attr_reader type: String
+            attr_reader type: Symbol
             attr_reader code: Integer
             attr_reader data: untyped
-            def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, descriptor_uuid: String, type: String, code: Integer, ?data: Array[Integer]?) -> instance
+            def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, descriptor_uuid: String, type: Symbol, code: Integer, ?data: Array[Integer]?) -> instance
           end
 
           class RequestDevicePromptUpdatedParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -205,9 +205,9 @@ module Selenium
             attr_reader address: String
             attr_reader service_uuid: String
             attr_reader characteristic_uuid: String
-            attr_reader type: String
+            attr_reader type: Symbol
             attr_reader data: untyped
-            def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, type: String, ?data: Array[Integer]?) -> instance
+            def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, type: Symbol, ?data: Array[Integer]?) -> instance
           end
 
           class DescriptorEventGeneratedParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -216,25 +216,25 @@ module Selenium
             attr_reader service_uuid: String
             attr_reader characteristic_uuid: String
             attr_reader descriptor_uuid: String
-            attr_reader type: String
+            attr_reader type: Symbol
             attr_reader data: untyped
-            def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, descriptor_uuid: String, type: String, ?data: Array[Integer]?) -> instance
+            def self.new: (context: String, address: String, service_uuid: String, characteristic_uuid: String, descriptor_uuid: String, type: Symbol, ?data: Array[Integer]?) -> instance
           end
 
           EVENT_TYPES: Hash[String, untyped]
 
           def handle_request_device_prompt: (context: String, prompt: String, accept: bool, ?device: String?) -> untyped
-          def simulate_adapter: (context: String, state: String, ?le_supported: bool?) -> untyped
+          def simulate_adapter: (context: String, state: Symbol, ?le_supported: bool?) -> untyped
           def disable_simulation: (context: String) -> untyped
           def simulate_preconnected_peripheral: (context: String, address: String, name: String, manufacturer_data: Array[::Selenium::WebDriver::BiDi::Protocol::Bluetooth::BluetoothManufacturerData], known_service_uuids: Array[String]) -> untyped
           def simulate_advertisement: (context: String, scan_entry: ::Selenium::WebDriver::BiDi::Protocol::Bluetooth::SimulateAdvertisementScanEntryParameters) -> untyped
           def simulate_gatt_connection_response: (context: String, address: String, code: Integer) -> untyped
           def simulate_gatt_disconnection: (context: String, address: String) -> untyped
-          def simulate_service: (context: String, address: String, uuid: String, type: String) -> untyped
-          def simulate_characteristic: (context: String, address: String, service_uuid: String, characteristic_uuid: String, type: String, ?characteristic_properties: ::Selenium::WebDriver::BiDi::Protocol::Bluetooth::CharacteristicProperties?) -> untyped
-          def simulate_characteristic_response: (context: String, address: String, service_uuid: String, characteristic_uuid: String, type: String, code: Integer, ?data: Array[Integer]?) -> untyped
-          def simulate_descriptor: (context: String, address: String, service_uuid: String, characteristic_uuid: String, descriptor_uuid: String, type: String) -> untyped
-          def simulate_descriptor_response: (context: String, address: String, service_uuid: String, characteristic_uuid: String, descriptor_uuid: String, type: String, code: Integer, ?data: Array[Integer]?) -> untyped
+          def simulate_service: (context: String, address: String, uuid: String, type: Symbol) -> untyped
+          def simulate_characteristic: (context: String, address: String, service_uuid: String, characteristic_uuid: String, type: Symbol, ?characteristic_properties: ::Selenium::WebDriver::BiDi::Protocol::Bluetooth::CharacteristicProperties?) -> untyped
+          def simulate_characteristic_response: (context: String, address: String, service_uuid: String, characteristic_uuid: String, type: Symbol, code: Integer, ?data: Array[Integer]?) -> untyped
+          def simulate_descriptor: (context: String, address: String, service_uuid: String, characteristic_uuid: String, descriptor_uuid: String, type: Symbol) -> untyped
+          def simulate_descriptor_response: (context: String, address: String, service_uuid: String, characteristic_uuid: String, descriptor_uuid: String, type: Symbol, code: Integer, ?data: Array[Integer]?) -> untyped
         end
       end
     end

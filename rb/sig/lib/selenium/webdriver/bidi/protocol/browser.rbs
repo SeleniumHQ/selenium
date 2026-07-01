@@ -31,11 +31,11 @@ module Selenium
             attr_reader active: bool
             attr_reader client_window: String
             attr_reader height: Integer
-            attr_reader state: String
+            attr_reader state: Symbol
             attr_reader width: Integer
             attr_reader x: Integer
             attr_reader y: Integer
-            def self.new: (active: bool, client_window: String, height: Integer, state: String, width: Integer, x: Integer, y: Integer) -> instance
+            def self.new: (active: bool, client_window: String, height: Integer, state: Symbol, width: Integer, x: Integer, y: Integer) -> instance
           end
 
           class UserContextInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -68,8 +68,8 @@ module Selenium
           class SetClientWindowStateParameters < ::Selenium::WebDriver::BiDi::Serialization::Union
             class ClientWindowNamedState < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader client_window: String
-              attr_reader state: String
-              def self.new: (client_window: String, state: String) -> instance
+              attr_reader state: Symbol
+              def self.new: (client_window: String, state: Symbol) -> instance
             end
             class ClientWindowRectState < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader state: untyped
@@ -105,7 +105,7 @@ module Selenium
           def get_client_windows: () -> ::Selenium::WebDriver::BiDi::Protocol::Browser::GetClientWindowsResult
           def get_user_contexts: () -> ::Selenium::WebDriver::BiDi::Protocol::Browser::GetUserContextsResult
           def remove_user_context: (user_context: String) -> untyped
-          def set_client_window_state: (client_window: String, state: String, ?width: Integer?, ?height: Integer?, ?x: Integer?, ?y: Integer?) -> ::Selenium::WebDriver::BiDi::Protocol::Browser::ClientWindowInfo
+          def set_client_window_state: (client_window: String, state: Symbol, ?width: Integer?, ?height: Integer?, ?x: Integer?, ?y: Integer?) -> ::Selenium::WebDriver::BiDi::Protocol::Browser::ClientWindowInfo
           def set_download_behavior: (download_behavior: ::Selenium::WebDriver::BiDi::Protocol::Browser::DownloadBehavior?, ?user_contexts: Array[String]?) -> untyped
         end
       end

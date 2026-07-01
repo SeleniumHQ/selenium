@@ -87,10 +87,10 @@ module Selenium
             attr_reader size: Integer
             attr_reader http_only: bool
             attr_reader secure: bool
-            attr_reader same_site: String
+            attr_reader same_site: Symbol
             attr_reader expiry: untyped
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (name: String, value: ::Selenium::WebDriver::BiDi::Protocol::Network::BytesValue, domain: String, path: String, size: Integer, http_only: bool, secure: bool, same_site: String, ?expiry: Integer?, ?extensions: untyped) -> instance
+            def self.new: (name: String, value: ::Selenium::WebDriver::BiDi::Protocol::Network::BytesValue, domain: String, path: String, size: Integer, http_only: bool, secure: bool, same_site: Symbol, ?expiry: Integer?, ?extensions: untyped) -> instance
           end
 
           class CookieHeader < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -128,7 +128,7 @@ module Selenium
             attr_reader request: untyped
             attr_reader stack_trace: untyped
             attr_reader type: untyped
-            def self.new: (?column_number: Integer?, ?line_number: Integer?, ?request: String?, ?stack_trace: ::Selenium::WebDriver::BiDi::Protocol::Script::StackTrace?, ?type: String?) -> instance
+            def self.new: (?column_number: Integer?, ?line_number: Integer?, ?request: String?, ?stack_trace: ::Selenium::WebDriver::BiDi::Protocol::Script::StackTrace?, ?type: Symbol?) -> instance
           end
 
           class RequestData < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -176,7 +176,7 @@ module Selenium
             attr_reader path: untyped
             attr_reader same_site: untyped
             attr_reader secure: untyped
-            def self.new: (name: String, value: ::Selenium::WebDriver::BiDi::Protocol::Network::BytesValue, ?domain: String?, ?http_only: bool?, ?expiry: String?, ?max_age: Integer?, ?path: String?, ?same_site: String?, ?secure: bool?) -> instance
+            def self.new: (name: String, value: ::Selenium::WebDriver::BiDi::Protocol::Network::BytesValue, ?domain: String?, ?http_only: bool?, ?expiry: String?, ?max_age: Integer?, ?path: String?, ?same_site: Symbol?, ?secure: bool?) -> instance
           end
 
           class UrlPattern < ::Selenium::WebDriver::BiDi::Serialization::Union
@@ -199,12 +199,12 @@ module Selenium
           end
 
           class AddDataCollectorParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader data_types: Array[String]
+            attr_reader data_types: Array[Symbol]
             attr_reader max_encoded_data_size: Integer
             attr_reader collector_type: untyped
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
-            def self.new: (data_types: Array[String], max_encoded_data_size: Integer, ?collector_type: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (data_types: Array[Symbol], max_encoded_data_size: Integer, ?collector_type: Symbol?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
           end
 
           class AddDataCollectorResult < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -213,10 +213,10 @@ module Selenium
           end
 
           class AddInterceptParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader phases: Array[String]
+            attr_reader phases: Array[Symbol]
             attr_reader contexts: untyped
             attr_reader url_patterns: untyped
-            def self.new: (phases: Array[String], ?contexts: Array[String]?, ?url_patterns: Array[::Selenium::WebDriver::BiDi::Protocol::Network::UrlPattern]?) -> instance
+            def self.new: (phases: Array[Symbol], ?contexts: Array[String]?, ?url_patterns: Array[::Selenium::WebDriver::BiDi::Protocol::Network::UrlPattern]?) -> instance
           end
 
           class AddInterceptResult < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -253,16 +253,16 @@ module Selenium
             end
             class NoCredentials < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader request: String
-              attr_reader action: String
-              def self.new: (request: String, action: String) -> instance
+              attr_reader action: Symbol
+              def self.new: (request: String, action: Symbol) -> instance
             end
           end
 
           class DisownDataParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader data_type: String
+            attr_reader data_type: Symbol
             attr_reader collector: String
             attr_reader request: String
-            def self.new: (data_type: String, collector: String, request: String) -> instance
+            def self.new: (data_type: Symbol, collector: String, request: String) -> instance
           end
 
           class FailRequestParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -271,11 +271,11 @@ module Selenium
           end
 
           class GetDataParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader data_type: String
+            attr_reader data_type: Symbol
             attr_reader collector: untyped
             attr_reader disown: untyped
             attr_reader request: String
-            def self.new: (data_type: String, ?collector: String?, ?disown: bool?, request: String) -> instance
+            def self.new: (data_type: Symbol, ?collector: String?, ?disown: bool?, request: String) -> instance
           end
 
           class GetDataResult < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -304,9 +304,9 @@ module Selenium
           end
 
           class SetCacheBehaviorParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader cache_behavior: String
+            attr_reader cache_behavior: Symbol
             attr_reader contexts: untyped
-            def self.new: (cache_behavior: String, ?contexts: Array[String]?) -> instance
+            def self.new: (cache_behavior: Symbol, ?contexts: Array[String]?) -> instance
           end
 
           class SetExtraHeadersParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -383,18 +383,18 @@ module Selenium
 
           EVENT_TYPES: Hash[String, untyped]
 
-          def add_data_collector: (data_types: Array[String], max_encoded_data_size: Integer, ?collector_type: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> ::Selenium::WebDriver::BiDi::Protocol::Network::AddDataCollectorResult
-          def add_intercept: (phases: Array[String], ?contexts: Array[String]?, ?url_patterns: Array[::Selenium::WebDriver::BiDi::Protocol::Network::UrlPattern]?) -> ::Selenium::WebDriver::BiDi::Protocol::Network::AddInterceptResult
+          def add_data_collector: (data_types: Array[Symbol], max_encoded_data_size: Integer, ?collector_type: Symbol?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> ::Selenium::WebDriver::BiDi::Protocol::Network::AddDataCollectorResult
+          def add_intercept: (phases: Array[Symbol], ?contexts: Array[String]?, ?url_patterns: Array[::Selenium::WebDriver::BiDi::Protocol::Network::UrlPattern]?) -> ::Selenium::WebDriver::BiDi::Protocol::Network::AddInterceptResult
           def continue_request: (request: String, ?body: ::Selenium::WebDriver::BiDi::Protocol::Network::BytesValue?, ?cookies: Array[::Selenium::WebDriver::BiDi::Protocol::Network::CookieHeader]?, ?headers: Array[::Selenium::WebDriver::BiDi::Protocol::Network::Header]?, ?method_: String?, ?url: String?) -> untyped
           def continue_response: (request: String, ?cookies: Array[::Selenium::WebDriver::BiDi::Protocol::Network::SetCookieHeader]?, ?credentials: ::Selenium::WebDriver::BiDi::Protocol::Network::AuthCredentials?, ?headers: Array[::Selenium::WebDriver::BiDi::Protocol::Network::Header]?, ?reason_phrase: String?, ?status_code: Integer?) -> untyped
-          def continue_with_auth: (request: String, action: String, ?credentials: ::Selenium::WebDriver::BiDi::Protocol::Network::AuthCredentials?) -> untyped
-          def disown_data: (data_type: String, collector: String, request: String) -> untyped
+          def continue_with_auth: (request: String, action: Symbol, ?credentials: ::Selenium::WebDriver::BiDi::Protocol::Network::AuthCredentials?) -> untyped
+          def disown_data: (data_type: Symbol, collector: String, request: String) -> untyped
           def fail_request: (request: String) -> untyped
-          def get_data: (data_type: String, request: String, ?collector: String?, ?disown: bool?) -> ::Selenium::WebDriver::BiDi::Protocol::Network::GetDataResult
+          def get_data: (data_type: Symbol, request: String, ?collector: String?, ?disown: bool?) -> ::Selenium::WebDriver::BiDi::Protocol::Network::GetDataResult
           def provide_response: (request: String, ?body: ::Selenium::WebDriver::BiDi::Protocol::Network::BytesValue?, ?cookies: Array[::Selenium::WebDriver::BiDi::Protocol::Network::SetCookieHeader]?, ?headers: Array[::Selenium::WebDriver::BiDi::Protocol::Network::Header]?, ?reason_phrase: String?, ?status_code: Integer?) -> untyped
           def remove_data_collector: (collector: String) -> untyped
           def remove_intercept: (intercept: String) -> untyped
-          def set_cache_behavior: (cache_behavior: String, ?contexts: Array[String]?) -> untyped
+          def set_cache_behavior: (cache_behavior: Symbol, ?contexts: Array[String]?) -> untyped
           def set_extra_headers: (headers: Array[::Selenium::WebDriver::BiDi::Protocol::Network::Header], ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
         end
       end

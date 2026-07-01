@@ -55,13 +55,19 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           class ProxyConfiguration < Serialization::Union
-            discriminator 'proxyType'
+            discriminator 'proxyType', {
+              autodetect: 'autodetect',
+              direct: 'direct',
+              manual: 'manual',
+              pac: 'pac',
+              system: 'system'
+            }
             variants(
-              'autodetect' => 'Session::AutodetectProxyConfiguration',
-              'direct' => 'Session::DirectProxyConfiguration',
-              'manual' => 'Session::ManualProxyConfiguration',
-              'pac' => 'Session::PacProxyConfiguration',
-              'system' => 'Session::SystemProxyConfiguration'
+              autodetect: 'Session::AutodetectProxyConfiguration',
+              direct: 'Session::DirectProxyConfiguration',
+              manual: 'Session::ManualProxyConfiguration',
+              pac: 'Session::PacProxyConfiguration',
+              system: 'Session::SystemProxyConfiguration'
             )
           end
 

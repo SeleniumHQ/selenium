@@ -114,10 +114,16 @@ module Selenium
             end
 
             def read(field, raw)
-              return raw if raw.nil? || field.ref.nil?
+              return raw if raw.nil?
+              return Serialization.to_symbol(raw, enum_hash(field)) if field.enum
+              return raw if field.ref.nil?
 
               klass = (@refs ||= {})[field.name] ||= Protocol.const_get(field.ref)
               field.list ? read_list(raw, klass) : klass.from_json(raw)
+            end
+
+            def enum_hash(field)
+              (@enums ||= {})[field.name] ||= Protocol.const_get(field.enum)
             end
 
             # Parses each element, recursing into nested lists (e.g. a map's [key, value] pairs)
@@ -151,6 +157,7 @@ module Selenium
                 next if UNSET.equal?(value)
                 next if value.nil? && !f.nullable
 
+                value = Serialization.to_wire(value, Protocol.const_get(f.enum)) if f.enum
                 payload[f.json_key] = Serializable.as_json(value)
               end
               payload.merge!(extensions) if self.class.extensible? && !extensions.empty?

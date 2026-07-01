@@ -29,36 +29,43 @@ module Selenium
 
           let(:browsing_context) { described_class.new(driver) }
 
+          it 'errors when bidi not enabled' do
+            reset_driver!(web_socket_url: false) do |driver|
+              msg = /BiDi must be enabled by setting #web_socket_url to true in options class/
+              expect { described_class.new(driver) }.to raise_error(WebDriver::Error::WebDriverError, msg)
+            end
+          end
+
           describe '#create' do
             it 'accepts a tab type' do
-              id = browsing_context.create(type: 'tab').context
+              id = browsing_context.create(type: :tab).context
 
               expect(driver.window_handles).to include(id)
             end
 
             it 'accepts a window type' do
-              id = browsing_context.create(type: 'window').context
+              id = browsing_context.create(type: :window).context
 
               expect(driver.window_handles).to include(id)
             end
 
             it 'accepts a reference context' do
               id = driver.window_handle
-              result = browsing_context.create(type: 'tab', reference_context: id).context
+              result = browsing_context.create(type: :tab, reference_context: id).context
 
               expect(driver.window_handles).to include(id, result)
             end
 
             it 'rejects an unknown type before sending it' do
               expect {
-                browsing_context.create(type: 'unknown')
+                browsing_context.create(type: :unknown)
               }.to raise_error(ArgumentError, /type must be one of/)
             end
           end
 
           it 'closes a window' do
-            window1 = browsing_context.create(type: 'tab').context
-            window2 = browsing_context.create(type: 'tab').context
+            window1 = browsing_context.create(type: :tab).context
+            window2 = browsing_context.create(type: :tab).context
 
             browsing_context.close(context: window2)
 
@@ -116,7 +123,7 @@ module Selenium
           it 'activates a browser context',
              pending_if: {browser: %i[safari safari_preview], reason: 'Safari does not focus the activated context'} do
             window = driver.window_handle
-            browsing_context.create(type: 'tab')
+            browsing_context.create(type: :tab)
 
             expect(driver.execute_script('return document.hasFocus();')).to be_falsey
             browsing_context.activate(context: window)

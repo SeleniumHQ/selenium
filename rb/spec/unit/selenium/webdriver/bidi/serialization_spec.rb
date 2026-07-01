@@ -77,7 +77,7 @@ module Selenium
               Network::Cookie.new(
                 name: 'sid', value: Network::StringValue.new(value: 'YQ=='),
                 domain: 'example.com', path: '/', size: 3,
-                http_only: false, secure: true, same_site: 'none'
+                http_only: false, secure: true, same_site: :none
               )
             end
 
@@ -169,16 +169,16 @@ module Selenium
             end
 
             it 'rejects a field that does not belong to the selected variant' do
-              expect { Network::ContinueWithAuthParameters.build(request: 'r', action: 'default', credentials: 'x') }
+              expect { Network::ContinueWithAuthParameters.build(request: 'r', action: :default, credentials: 'x') }
                 .to raise_error(ArgumentError, /invalid combination/)
             end
 
             it 'dispatches a discriminated union by its value, falling back to the default variant' do
               provide = Network::ContinueWithAuthParameters.build(
-                request: 'r', action: 'provideCredentials',
+                request: 'r', action: :provide_credentials,
                 credentials: Network::AuthCredentials.new(username: 'u', password: 'p')
               )
-              default = Network::ContinueWithAuthParameters.build(request: 'r', action: 'default')
+              default = Network::ContinueWithAuthParameters.build(request: 'r', action: :default)
 
               expect(provide).to be_a(Network::ContinueWithAuthParameters::Credentials)
               expect(provide.as_json).to include('action' => 'provideCredentials',
@@ -191,7 +191,7 @@ module Selenium
 
           describe 'value-object enum validation' do
             it 'rejects an out-of-set enum value at construction, so an invalid object cannot exist' do
-              expect { Network::Cookie.new(name: 'c', same_site: 'sideways') }
+              expect { Network::Cookie.new(name: 'c', same_site: :sideways) }
                 .to raise_error(ArgumentError, /Cookie#same_site must be one of/)
             end
 
@@ -210,6 +210,35 @@ module Selenium
 
               expect(entry).to be_a(Log::ConsoleLogEntry)
               expect(entry.level).to eq('futureLevel')
+            end
+          end
+
+          describe 'enum symbol coercion' do
+            it 'takes an idiomatic symbol and serializes the wire token (kebab included)' do
+              params = Bluetooth::SimulateAdapterParameters.new(context: 'c', state: :powered_off)
+
+              expect(params.state).to eq(:powered_off)
+              expect(params.as_json).to include('state' => 'powered-off')
+            end
+
+            it 'deserializes a wire token back into its symbol' do
+              parsed = Bluetooth::SimulateAdapterParameters.from_json('context' => 'c', 'state' => 'powered-off')
+
+              expect(parsed.state).to eq(:powered_off)
+            end
+
+            it 'leaves an unrecognized inbound token as-is (forward-compatible)' do
+              parsed = Bluetooth::SimulateAdapterParameters.from_json('context' => 'c', 'state' => 'powered-sideways')
+
+              expect(parsed.state).to eq('powered-sideways')
+            end
+
+            it 'coerces each element of a list-valued enum' do
+              params = Network::AddInterceptParameters.new(phases: %i[before_request_sent auth_required])
+
+              expect(params.as_json).to include('phases' => %w[beforeRequestSent authRequired])
+              expect(Network::AddInterceptParameters.from_json(params.as_json).phases)
+                .to eq(%i[before_request_sent auth_required])
             end
           end
         end

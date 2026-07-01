@@ -94,7 +94,7 @@ module Selenium
             attr_reader default: untyped
             attr_reader file: untyped
             attr_reader prompt: untyped
-            def self.new: (?alert: String?, ?before_unload: String?, ?confirm: String?, ?default: String?, ?file: String?, ?prompt: String?) -> instance
+            def self.new: (?alert: Symbol?, ?before_unload: Symbol?, ?confirm: Symbol?, ?default: Symbol?, ?file: Symbol?, ?prompt: Symbol?) -> instance
           end
 
           class SubscribeParameters < ::Selenium::WebDriver::BiDi::Serialization::Record

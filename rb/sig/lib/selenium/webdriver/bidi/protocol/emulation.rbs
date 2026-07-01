@@ -30,10 +30,10 @@ module Selenium
           SCREEN_ORIENTATION_TYPE: Hash[Symbol, String]
 
           class SetForcedColorsModeThemeOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader theme: String?
+            attr_reader theme: Symbol?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
-            def self.new: (theme: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (theme: Symbol?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
           end
 
           class SetGeolocationOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Union
@@ -100,9 +100,9 @@ module Selenium
           end
 
           class ScreenOrientation < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader natural: String
-            attr_reader type: String
-            def self.new: (natural: String, type: String) -> instance
+            attr_reader natural: Symbol
+            attr_reader type: Symbol
+            def self.new: (natural: Symbol, type: Symbol) -> instance
           end
 
           class SetScreenOrientationOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -147,7 +147,7 @@ module Selenium
             def self.new: (max_touch_points: Integer?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
           end
 
-          def set_forced_colors_mode_theme_override: (theme: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
+          def set_forced_colors_mode_theme_override: (theme: Symbol?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
           def set_geolocation_override: (?contexts: Array[String]?, ?user_contexts: Array[String]?, ?coordinates: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationCoordinates?, ?error: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationPositionError?) -> untyped
           def set_locale_override: (locale: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
           def set_network_conditions: (network_conditions: ::Selenium::WebDriver::BiDi::Protocol::Emulation::NetworkConditionsOffline?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped

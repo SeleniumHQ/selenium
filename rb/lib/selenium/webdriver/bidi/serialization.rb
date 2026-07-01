@@ -33,20 +33,38 @@ module Selenium
         def UNSET.inspect = 'UNSET'
         UNSET.freeze
 
-        # Validates an outbound enum argument so a bad value fails locally with a clear
-        # error instead of a round-trip; inbound payloads are trusted and not checked.
-        # +allowed+ is an enum hash (values are the wire strings) or a plain list of wire
-        # values — the latter for a union discriminator whose allowed set spans variants.
+        # Validates an outbound enum argument: +value+ is a symbol (or list of symbols) that
+        # must be a key of the enum hash (+{symbol => wire_token}+), so a bad value fails
+        # locally with a clear error instead of a round-trip. Inbound payloads are trusted
+        # and not checked.
         #
         # @api private
-        def self.validate!(name, value, allowed)
+        def self.validate!(name, value, enum)
           return if UNSET.equal?(value) || value.nil?
 
-          values = allowed.is_a?(::Hash) ? allowed.values : allowed
-          invalid = Array(value).reject { |element| values.include?(element) }
+          invalid = Array(value).reject { |element| enum.key?(element) }
           return if invalid.empty?
 
-          raise ::ArgumentError, "#{name} must be one of #{values.inspect}, got #{invalid.inspect}"
+          raise ::ArgumentError, "#{name} must be one of #{enum.keys.inspect}, got #{invalid.inspect}"
+        end
+
+        # Outbound: map a validated enum symbol (or list) to the wire token(s) to serialize.
+        #
+        # @api private
+        def self.to_wire(value, enum)
+          return value if UNSET.equal?(value) || value.nil?
+
+          value.is_a?(::Array) ? value.map { |element| enum.fetch(element, element) } : enum.fetch(value, value)
+        end
+
+        # Inbound: map a wire token (or list) back to its enum symbol. A token newer than
+        # our schema has no key, so it is returned unchanged and parsing stays lenient.
+        #
+        # @api private
+        def self.to_symbol(value, enum)
+          return value if value.nil?
+
+          value.is_a?(::Array) ? value.map { |element| enum.key(element) || element } : (enum.key(value) || value)
         end
       end
     end # BiDi

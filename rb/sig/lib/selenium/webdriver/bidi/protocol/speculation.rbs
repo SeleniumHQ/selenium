@@ -30,8 +30,8 @@ module Selenium
           class PrefetchStatusUpdatedParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader url: String
-            attr_reader status: String
-            def self.new: (context: String, url: String, status: String) -> instance
+            attr_reader status: Symbol
+            def self.new: (context: String, url: String, status: Symbol) -> instance
           end
 
           EVENT_TYPES: Hash[String, untyped]
