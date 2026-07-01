@@ -26,30 +26,40 @@ module Selenium
     class BiDi
       module Protocol
         describe 'generated command surface' do
-          # The generated domains get their transport from a bridge (never a raw Transport).
           let(:connection) { instance_double(WebDriver::WebSocketConnection) }
-          let(:bidi_bridge) { instance_double(Remote::BiDiBridge, transport: Transport.new(connection)) }
+          let(:transport) { Transport.new(connection) }
+
+          describe 'construction' do
+            it 'is driven by the transport it is given' do
+              expect(BrowsingContext.new(transport).instance_variable_get(:@transport)).to be(transport)
+            end
+
+            it 'raises without a driver or transport' do
+              expect { BrowsingContext.new(Object.new) }
+                .to raise_error(Error::WebDriverError, /Driver or Transport/)
+            end
+          end
 
           describe 'enum argument validation' do
             it 'raises on a value outside the allowed enum set, before any wire call' do
-              expect { BrowsingContext.new(bidi_bridge).navigate(context: 'c', url: 'x', wait: 'tomorrow') }
+              expect { BrowsingContext.new(transport).navigate(context: 'c', url: 'x', wait: 'tomorrow') }
                 .to raise_error(ArgumentError, /wait must be one of/)
             end
 
             it 'validates each element of a list-valued enum' do
-              expect { Network.new(bidi_bridge).add_data_collector(data_types: %w[bogus], max_encoded_data_size: 1) }
+              expect { Network.new(transport).add_data_collector(data_types: %w[bogus], max_encoded_data_size: 1) }
                 .to raise_error(ArgumentError, /dataTypes must be one of/)
             end
 
             it 'validates a union discriminator against the combined allowed set' do
-              expect { Network.new(bidi_bridge).continue_with_auth(request: 'r', action: 'bogus') }
+              expect { Network.new(transport).continue_with_auth(request: 'r', action: 'bogus') }
                 .to raise_error(ArgumentError, /action must be one of.*provideCredentials.*default.*cancel/)
             end
 
             it 'passes an allowed value through to the transport' do
               allow(connection).to receive(:send_cmd).and_return('result' => {'navigation' => 'n', 'url' => 'u'})
 
-              BrowsingContext.new(bidi_bridge).navigate(context: 'c', url: 'u', wait: 'complete')
+              BrowsingContext.new(transport).navigate(context: 'c', url: 'u', wait: 'complete')
 
               expect(connection).to have_received(:send_cmd)
             end
@@ -59,7 +69,7 @@ module Selenium
             it 'marshals params (dropping nils) and parses the typed result' do
               allow(connection).to receive(:send_cmd).and_return('result' => {'navigation' => 'n1', 'url' => 'https://x'})
 
-              result = BrowsingContext.new(bidi_bridge).navigate(context: 'c', url: 'https://x')
+              result = BrowsingContext.new(transport).navigate(context: 'c', url: 'https://x')
 
               expect(connection).to have_received(:send_cmd)
                 .with(method: 'browsingContext.navigate', params: {'context' => 'c', 'url' => 'https://x'})

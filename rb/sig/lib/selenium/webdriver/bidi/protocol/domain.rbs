@@ -23,7 +23,7 @@ module Selenium
         class Domain
           @transport: Transport
 
-          def initialize: (Driver | Remote::Bridge source) -> void
+          def initialize: (Driver | Transport source) -> void
 
           private
 
