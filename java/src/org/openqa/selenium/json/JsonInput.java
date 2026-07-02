@@ -252,7 +252,9 @@ public class JsonInput implements Closeable {
       builder.append((char) input.read());
       if (!isDigit(input.peek())) {
         throw new JsonException(
-            "Expected at least one digit after '.' but saw '" + (char) input.peek() + "'. "
+            "Expected at least one digit after '.' but saw '"
+                + (char) input.peek()
+                + "'. "
                 + input);
       }
       while (isDigit(input.peek())) {
@@ -269,7 +271,9 @@ public class JsonInput implements Closeable {
       }
       if (!isDigit(input.peek())) {
         throw new JsonException(
-            "Expected at least one digit in exponent but saw '" + (char) input.peek() + "'. "
+            "Expected at least one digit in exponent but saw '"
+                + (char) input.peek()
+                + "'. "
                 + input);
       }
       while (isDigit(input.peek())) {
@@ -284,8 +288,7 @@ public class JsonInput implements Closeable {
       }
       double value = new BigDecimal(builder.toString()).doubleValue();
       if (Double.isInfinite(value) || Double.isNaN(value)) {
-        throw new JsonException(
-            "Number is out of range for a double: " + builder + ". " + input);
+        throw new JsonException("Number is out of range for a double: " + builder + ". " + input);
       }
       return value;
     } catch (NumberFormatException e) {

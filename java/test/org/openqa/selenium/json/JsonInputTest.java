@@ -332,7 +332,7 @@ class JsonInputTest {
         new String[] {
           "+5", // leading plus not allowed
           "01", // leading zero not allowed
-          "007",
+          "007", // leading zero not allowed
           ".5", // no digit before decimal
           "5.", // no digit after decimal
           "1e", // exponent without digits
