@@ -120,7 +120,7 @@ def get_remote_connection(
         from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
 
         handler = ChromeRemoteConnection
-    elif browser_name == "MicrosoftEdge":
+    elif browser_name in ("MicrosoftEdge", "webview2"):
         from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
 
         handler = EdgeRemoteConnection
@@ -128,7 +128,7 @@ def get_remote_connection(
         from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
 
         handler = FirefoxRemoteConnection
-    elif browser_name == "Safari":
+    elif browser_name in ("safari", "Safari Technology Preview"):
         from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 
         handler = SafariRemoteConnection

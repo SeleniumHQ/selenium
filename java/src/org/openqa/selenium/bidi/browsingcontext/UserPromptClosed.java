@@ -19,8 +19,6 @@ package org.openqa.selenium.bidi.browsingcontext;
 
 import java.util.Optional;
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 
 @Beta
 public class UserPromptClosed {
@@ -29,44 +27,11 @@ public class UserPromptClosed {
   private final boolean accepted;
   private final Optional<String> userText;
 
-  private UserPromptClosed(String browsingContextId, boolean accepted, Optional<String> userText) {
-    this.browsingContextId = browsingContextId;
+  // Constructor parameter names are used as JSON field names.
+  private UserPromptClosed(String context, boolean accepted, Optional<String> userText) {
+    this.browsingContextId = context;
     this.accepted = accepted;
     this.userText = userText;
-  }
-
-  public static UserPromptClosed fromJson(JsonInput input) {
-    String browsingContextId = null;
-    Boolean accepted = null;
-    Optional<String> userText = Optional.empty();
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "context":
-          browsingContextId = input.read(String.class);
-          break;
-
-        case "accepted":
-          accepted = input.read(boolean.class);
-          break;
-
-        case "userText":
-          userText = Optional.ofNullable(input.read(String.class));
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-
-    input.endObject();
-
-    return new UserPromptClosed(
-        Require.nonNull("browsingContext", browsingContextId),
-        Require.nonNull("accepted", accepted),
-        userText);
   }
 
   public String getBrowsingContextId() {

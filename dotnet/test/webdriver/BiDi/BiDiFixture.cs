@@ -31,7 +31,7 @@ public abstract class BiDiTestFixture
     protected IBiDi bidi;
     protected BiDiBrowsingContext context;
 
-    protected UrlBuilder UrlBuilder { get; } = EnvironmentManager.Instance.UrlBuilder;
+    protected UrlBuilder Urls { get; } = EnvironmentManager.Instance.WebServer.Urls;
 
     [SetUp]
     public async Task BiDiSetUp()

@@ -319,9 +319,9 @@ module Selenium
 
       attr_reader :bridge
 
-      def create_bridge(caps:, url:, http_client: nil)
+      def create_bridge(caps:, http_client:)
         klass = caps['webSocketUrl'] ? Remote::BiDiBridge : Remote::Bridge
-        klass.new(http_client: http_client, url: url).tap do |bridge|
+        klass.new(http_client: http_client).tap do |bridge|
           bridge.create_session(caps)
         end
       end

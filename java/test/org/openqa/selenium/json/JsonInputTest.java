@@ -292,6 +292,24 @@ class JsonInputTest {
   }
 
   @Test
+  void shouldReadU_FFFF_AsALiteralCharacterAndNotEndOfInput() {
+    // U+FFFF is a valid Unicode code unit that historically collided with the in-band EOF
+    // sentinel and was mis-reported as an unterminated string. Build the strings from
+    // char values rather than embedding literal U+FFFF so the test is independent of the
+    // source file's byte encoding.
+    char nonChar = (char) 0xFFFF;
+    String literalPayload = "a" + nonChar + "b";
+
+    try (JsonInput input = newInput("\"" + literalPayload + "\"")) {
+      assertThat(input.nextString()).isEqualTo(literalPayload);
+    }
+
+    try (JsonInput input = newInput("\"\\uFFFF\"")) {
+      assertThat(input.nextString()).isEqualTo(String.valueOf(nonChar));
+    }
+  }
+
+  @Test
   void nullInputsShouldCoerceAsNullValues() throws IOException {
     try (InputStream is = new ByteArrayInputStream(new byte[0]);
         Reader reader = new InputStreamReader(is, UTF_8);

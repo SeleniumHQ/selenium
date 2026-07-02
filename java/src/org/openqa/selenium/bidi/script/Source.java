@@ -18,43 +18,16 @@ package org.openqa.selenium.bidi.script;
 
 import java.util.Optional;
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 
 @Beta
 public class Source {
   private final String realm;
   private final Optional<String> browsingContext;
 
-  private Source(String realm, Optional<String> browsingContext) {
+  // Constructor parameter names are used as JSON field names.
+  private Source(String realm, Optional<String> context) {
     this.realm = realm;
-    this.browsingContext = browsingContext;
-  }
-
-  public static Source fromJson(JsonInput input) {
-    String realm = null;
-    Optional<String> browsingContext = Optional.empty();
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "realm":
-          realm = input.read(String.class);
-          break;
-
-        case "context":
-          browsingContext = Optional.ofNullable(input.read(String.class));
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-
-    input.endObject();
-
-    return new Source(Require.nonNull("realm", realm), browsingContext);
+    this.browsingContext = context;
   }
 
   public String getRealm() {

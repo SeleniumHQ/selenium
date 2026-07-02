@@ -33,7 +33,7 @@ public class RemoteSessionEventTests : DriverTestFixture
         RemoteWebDriver remoteDriver = new ChromeRemoteWebDriver();
         try
         {
-            remoteDriver.Url = simpleTestPage;
+            remoteDriver.Url = Urls.SimpleTestPage;
 
             var payload = new Dictionary<string, object>
             {
@@ -61,7 +61,7 @@ public class RemoteSessionEventTests : DriverTestFixture
         RemoteWebDriver remoteDriver = new ChromeRemoteWebDriver();
         try
         {
-            remoteDriver.Url = simpleTestPage;
+            remoteDriver.Url = Urls.SimpleTestPage;
 
             var result = remoteDriver.FireSessionEvent("log:collect");
 

@@ -43,6 +43,12 @@ import org.openqa.selenium.internal.Require;
  *         <li>Classes that declare a {@code fromJson(JsonInput)} static method.<br>
  *             <b>NOTE</b>: Objects deserialized via a {@code fromJson} static method can be
  *             immutable.
+ *         <li>Classes that declare a constructor whose parameter names are available at runtime.
+ *             <br>
+ *             <b>NOTE</b>: Constructor parameter names are only available if they are present in
+ *             the class file, such as when the class is compiled with {@code javac -parameters}.
+ *             Constructor parameter names must match the corresponding JSON field names. Parameters
+ *             of type {@link java.util.Optional Optional} are not required.
  *         <li>Classes that declare setter methods adhering to the <a
  *             href="https://docs.oracle.com/javase/tutorial/javabeans/writing/index.html">JavaBean</a>
  *             specification.<br>
@@ -67,12 +73,13 @@ import org.openqa.selenium.internal.Require;
  *       Float}, {@link java.lang.Integer Integer}, {@link java.lang.Long Long}, {@link
  *       java.lang.Short Short}
  *   <li><b>Collection Types</b>:<br>
- *       {@link java.util.List List}, {@link java.util.Set Set}
+ *       {@link java.util.Collection Collection}, {@link java.util.List List}, {@link java.util.Set
+ *       Set}
  *   <li><b>Standard Java Types</b>:<br>
  *       {@link java.util.Map Map}, {@link java.lang.Boolean Boolean}, {@link java.lang.String
  *       String}, {@link java.lang.Enum Enum}, {@link java.net.URI URI}, {@link java.net.URL URL},
- *       {@link java.util.UUID UUID}, {@link java.time.Instant Instant}, {@link java.lang.Object
- *       Object}
+ *       {@link java.util.UUID UUID}, {@link java.time.Instant Instant}, {@link java.util.Optional
+ *       Optional}, {@link java.lang.Object Object}
  * </ul>
  *
  * You can serialize objects for which no explicit coercer has been specified, and the <b>Json</b>
@@ -84,8 +91,8 @@ import org.openqa.selenium.internal.Require;
  * <p>You can deserialize objects for which no explicit handling has been defined. Note that the
  * data type of the result will be {@code Map<String,?>}, which means that you'll need to perform
  * type checking and casting every time you extract an entry value from the result. For this reason,
- * it's best to declare a type-specific {@code fromJson()} method in every type you need to
- * deserialize.
+ * it's best to declare either a type-specific {@code fromJson()} method or a constructor with
+ * runtime-visible parameter names in every type you need to deserialize.
  *
  * @see JsonTypeCoercer
  * @see JsonInput

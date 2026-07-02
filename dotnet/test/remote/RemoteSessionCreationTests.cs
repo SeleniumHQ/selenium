@@ -32,7 +32,7 @@ public class RemoteSessionCreationTests : DriverTestFixture
     public void CreateChromeRemoteSession()
     {
         IWebDriver chrome = new ChromeRemoteWebDriver();
-        chrome.Url = xhtmlTestPage;
+        chrome.Url = Urls.XhtmlTestPage;
         try
         {
             Assert.That(chrome.Title, Is.EqualTo("XHTML Test Page"));
@@ -47,7 +47,7 @@ public class RemoteSessionCreationTests : DriverTestFixture
     public void CreateFirefoxRemoteSession()
     {
         IWebDriver firefox = new FirefoxRemoteWebDriver();
-        firefox.Url = xhtmlTestPage;
+        firefox.Url = Urls.XhtmlTestPage;
         try
         {
             Assert.That(firefox.Title, Is.EqualTo("XHTML Test Page"));
@@ -62,7 +62,7 @@ public class RemoteSessionCreationTests : DriverTestFixture
     public void CreateEdgeRemoteSession()
     {
         IWebDriver edge = new EdgeRemoteWebDriver();
-        edge.Url = xhtmlTestPage;
+        edge.Url = Urls.XhtmlTestPage;
         try
         {
             Assert.That(edge.Title, Is.EqualTo("XHTML Test Page"));

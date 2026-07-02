@@ -514,6 +514,7 @@ pub trait SeleniumManager {
         }
         if !download_browser && !self.is_electron() {
             let major_browser_version = self.get_major_browser_version();
+            let original_browser_path = self.get_browser_path().to_string();
             match self.discover_browser_version()? {
                 Some(discovered_version) => {
                     if !self.is_safari() {
@@ -526,6 +527,17 @@ pub trait SeleniumManager {
                     if self.is_browser_version_specific()
                         && !self.get_browser_version().eq(&discovered_version)
                     {
+                        if !original_browser_path.is_empty() {
+                            self.set_fallback_driver_from_cache(false);
+                            return Err(anyhow!(format!(
+                                "The browser at {} has version {} but {} {} was requested; \
+                                 remove --browser-path to allow a browser download",
+                                original_browser_path,
+                                discovered_version,
+                                self.get_browser_name(),
+                                self.get_browser_version(),
+                            )));
+                        }
                         download_browser = true;
                     } else {
                         let discovered_major_browser_version = self
@@ -570,6 +582,17 @@ pub trait SeleniumManager {
                                 discovered_major_browser_version,
                                 major_browser_version,
                             ));
+                            if !original_browser_path.is_empty() {
+                                self.set_fallback_driver_from_cache(false);
+                                return Err(anyhow!(format!(
+                                    "The browser at {} has version {} but {} {} was requested; \
+                                     remove --browser-path to allow a browser download",
+                                    original_browser_path,
+                                    discovered_version,
+                                    self.get_browser_name(),
+                                    self.get_browser_version(),
+                                )));
+                            }
                             download_browser = true;
                         } else {
                             self.set_browser_version(discovered_version);

@@ -19,8 +19,6 @@ package org.openqa.selenium.bidi.network;
 
 import java.util.Map;
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 
 /**
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#type-network-Header">BiDi spec</a>
@@ -33,29 +31,6 @@ public class Header {
   public Header(String name, BytesValue value) {
     this.name = name;
     this.value = value;
-  }
-
-  public static Header fromJson(JsonInput input) {
-    String name = null;
-    BytesValue value = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "name":
-          name = input.read(String.class);
-          break;
-        case "value":
-          value = input.read(BytesValue.class);
-          break;
-        default:
-          input.skipValue();
-      }
-    }
-
-    input.endObject();
-
-    return new Header(Require.nonNull("name", name), Require.nonNull("value", value));
   }
 
   public String getName() {

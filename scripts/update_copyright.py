@@ -121,13 +121,28 @@ def update_files(file_pattern, exclusions, comment_characters="//", prefix=None)
 
 if __name__ == "__main__":
     update_files(f"{ROOT}/javascript/**/*.js", JS_EXCLUSIONS)
+    update_files(f"{ROOT}/javascript/**/*.mjs", JS_EXCLUSIONS)
+    update_files(f"{ROOT}/javascript/**/*.cjs", JS_EXCLUSIONS)
     update_files(f"{ROOT}/javascript/**/*.tsx", [])
+    update_files(f"{ROOT}/javascript/**/*.ts", [f"{ROOT}/javascript/**/*.d.ts"])
     update_files(f"{ROOT}/py/**/*.py", PY_EXCLUSIONS, comment_characters="#")
+    update_files(f"{ROOT}/py/**/*.pyi", PY_EXCLUSIONS, comment_characters="#")
     update_files(
         f"{ROOT}/rb/**/*.rb",
         [],
         comment_characters="#",
         prefix=["# frozen_string_literal: true\n", "\n"],
+    )
+    update_files(
+        f"{ROOT}/rb/**/*.rb.erb",
+        [],
+        comment_characters="#",
+        prefix=["# frozen_string_literal: true\n", "\n"],
+    )
+    update_files(
+        f"{ROOT}/rb/**/*.rbs",
+        [f"{ROOT}/rb/sig/gems/**/*.rbs"],
+        comment_characters="#",
     )
     update_files(f"{ROOT}/java/**/*.java", [])
     update_files(f"{ROOT}/rust/**/*.rs", [])

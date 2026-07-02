@@ -51,7 +51,7 @@ public class BeforeRequestSent extends BaseParameters {
         JsonInput baseParamsInput = JSON.newInput(baseParameterReader);
         JsonInput initiatorInput = JSON.newInput(initiatorReader)) {
       return new BeforeRequestSent(
-          BaseParameters.fromJson(baseParamsInput), Initiator.fromJson(initiatorInput));
+          BaseParameters.fromJson(baseParamsInput), initiatorInput.readNonNull(Initiator.class));
     }
   }
 

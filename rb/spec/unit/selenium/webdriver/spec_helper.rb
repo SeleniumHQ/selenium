@@ -36,10 +36,11 @@ module Selenium
   module WebDriver
     module UnitSpecHelper
       def with_env(hash)
+        original = hash.keys.to_h { |k| [k.to_s, ENV.fetch(k.to_s, nil)] }
         hash.each { |k, v| ENV[k.to_s] = v.to_s }
         yield
       ensure
-        hash.each_key { |k| ENV.delete(k) }
+        original&.each { |k, v| v.nil? ? ENV.delete(k) : ENV[k] = v }
       end
     end
   end
