@@ -361,8 +361,7 @@ public class JsonInput implements Closeable {
 
     if (input.peek() == ',') {
       if (!seenElement) {
-        throw new JsonException(
-            "Unexpected ',' before first element of container. " + input);
+        throw new JsonException("Unexpected ',' before first element of container. " + input);
       }
       input.read();
       skipWhitespace(input);
@@ -376,8 +375,7 @@ public class JsonInput implements Closeable {
       return false;
     }
     if (seenElement) {
-      throw new JsonException(
-          "Expected ',' or end of container but saw " + type + ". " + input);
+      throw new JsonException("Expected ',' or end of container but saw " + type + ". " + input);
     }
     return true;
   }
