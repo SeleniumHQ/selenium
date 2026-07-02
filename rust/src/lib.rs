@@ -568,6 +568,9 @@ pub trait SeleniumManager {
                                         discovered_major_browser_version,
                                     ));
                                     download_browser = true;
+                                    if self.is_avoid_browser_download() {
+                                        self.set_browser_version(discovered_major_browser_version);
+                                    }
                                 }
                             } else {
                                 self.set_browser_version(discovered_version);
