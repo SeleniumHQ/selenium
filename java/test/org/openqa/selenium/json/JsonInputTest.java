@@ -292,6 +292,40 @@ class JsonInputTest {
   }
 
   @Test
+  void shouldReadU_FFFF_AsALiteralCharacterAndNotEndOfInput() {
+    // U+FFFF is a valid Unicode code unit that historically collided with the in-band EOF
+    // sentinel and was mis-reported as an unterminated string. Build the strings from
+    // char values rather than embedding literal U+FFFF so the test is independent of the
+    // source file's byte encoding.
+    char nonChar = (char) 0xFFFF;
+    String literalPayload = "a" + nonChar + "b";
+
+    try (JsonInput input = newInput("\"" + literalPayload + "\"")) {
+      assertThat(input.nextString()).isEqualTo(literalPayload);
+    }
+
+    try (JsonInput input = newInput("\"\\uFFFF\"")) {
+      assertThat(input.nextString()).isEqualTo(String.valueOf(nonChar));
+    }
+  }
+
+  @Test
+  void shouldRejectUnescapedControlCharactersInStrings() {
+    // RFC 8259 §7: characters U+0000..U+001F MUST be escaped in JSON strings.
+    // A literal newline / tab / etc. inside quotes is not valid JSON.
+    try (JsonInput input = newInput("\"a\nb\"")) {
+      assertThatExceptionOfType(JsonException.class)
+          .isThrownBy(input::nextString)
+          .withMessageStartingWith("Illegal unescaped control character");
+    }
+
+    // Escaped equivalents are still fine.
+    try (JsonInput input = newInput("\"a\\nb\"")) {
+      assertThat(input.nextString()).isEqualTo("a\nb");
+    }
+  }
+
+  @Test
   void nullInputsShouldCoerceAsNullValues() throws IOException {
     try (InputStream is = new ByteArrayInputStream(new byte[0]);
         Reader reader = new InputStreamReader(is, UTF_8);

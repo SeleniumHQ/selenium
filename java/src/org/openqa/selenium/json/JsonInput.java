@@ -165,8 +165,8 @@ public class JsonInput implements Closeable {
         return JsonType.END;
 
       default:
-        char c = input.read();
-        throw new JsonException("Unable to determine type from: " + c + ". " + input);
+        int c = input.read();
+        throw new JsonException("Unable to determine type from: " + (char) c + ". " + input);
     }
   }
 
@@ -194,10 +194,10 @@ public class JsonInput implements Closeable {
 
     String name = readString();
     skipWhitespace(input);
-    char read = input.read();
+    int read = input.read();
     if (read != ':') {
       throw new JsonException(
-          "Unable to read name. Expected colon separator, but saw '" + read + "'");
+          "Unable to read name. Expected colon separator, but saw '" + (char) read + "'");
     }
     return name;
   }
@@ -241,13 +241,13 @@ public class JsonInput implements Closeable {
         case '7':
         case '8':
         case '9':
-          builder.append(input.read());
+          builder.append((char) input.read());
           break;
         case '.':
         case 'e':
         case 'E':
           mightBeDecimal = true;
-          builder.append(input.read());
+          builder.append((char) input.read());
           break;
         default:
           read = false;
@@ -552,11 +552,11 @@ public class JsonInput implements Closeable {
 
     int toCompareLength = toCompare.length();
     for (int i = 0; i < toCompareLength; i++) {
-      char read = input.read();
+      int read = input.read();
       if (read != toCompare.charAt(i)) {
         throw new JsonException(
             String.format(
-                "Unable to read %s. Saw %s at position %d. %s", toCompare, read, i, input));
+                "Unable to read %s. Saw %s at position %d. %s", toCompare, (char) read, i, input));
       }
     }
 
@@ -574,9 +574,8 @@ public class JsonInput implements Closeable {
     input.read(); // Skip leading quote
 
     StringBuilder builder = new StringBuilder();
-    char c;
     while (true) {
-      c = input.read();
+      int c = input.read();
       switch (c) {
         case Input.EOF:
           throw new JsonException("Unterminated string: " + builder + ". " + input);
@@ -586,7 +585,13 @@ public class JsonInput implements Closeable {
           readEscape(builder);
           break;
         default:
-          builder.append(c);
+          // RFC 8259 §7: characters U+0000..U+001F MUST be escaped.
+          if (c < 0x20) {
+            throw new JsonException(
+                String.format(
+                    "Illegal unescaped control character U+%04X in string. %s", c, input));
+          }
+          builder.append((char) c);
       }
     }
   }
@@ -601,7 +606,7 @@ public class JsonInput implements Closeable {
    */
   // FIXME: This function doesn't appear to support UTF-8 or UTF-32.
   private void readEscape(StringBuilder builder) {
-    char read = input.read();
+    int read = input.read();
 
     // List from: https://tools.ietf.org/html/rfc7159.html#section-7
     switch (read) {
@@ -629,10 +634,10 @@ public class JsonInput implements Closeable {
         int result = 0;
         int multiplier = 4096; // (16 * 16 * 16) as we start from the thousands and work to units.
         for (int i = 0; i < 4; i++) {
-          char c = input.read();
+          int c = input.read();
           int digit = Character.digit(c, 16);
           if (digit == -1) {
-            throw new JsonException(c + " is not a hexadecimal digit. " + input);
+            throw new JsonException((char) c + " is not a hexadecimal digit. " + input);
           }
           result += digit * multiplier;
           multiplier /= 16;
@@ -643,11 +648,11 @@ public class JsonInput implements Closeable {
       case '/':
       case '\\':
       case '"':
-        builder.append(read);
+        builder.append((char) read);
         break;
 
       default:
-        throw new JsonException("Unexpected escape code: " + read + ". " + input);
+        throw new JsonException("Unexpected escape code: " + (char) read + ". " + input);
     }
   }
 
