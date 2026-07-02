@@ -9,7 +9,7 @@ Releasing Selenium Manager (SM) independently of the bindings means a binding an
 invokes can differ in version. This record settles what that commits us to. A decision belongs
 here only if it either cannot change after 1.0 without a breaking change — the forward-compatibility
 behavior and every committed default — or is an obligation the independent release itself creates.
-Bugs and additive enhancements (new browsers, telemetry fixes, warning wording) are out of scope.
+Bugs and additive enhancements (new browsers, warning wording) are out of scope.
 
 ## Decision
 
@@ -30,7 +30,7 @@ skew. How an older SM treats an input it does not recognize depends on the input
 - *Unknown value of a switch with no default* → error, naming the value and telling the user to
   update SM (e.g. `Selenium Manager 1.2 does not support browser 'chrome-for-testing'`). There is
   nothing to fall back to; for `--browser` these are distinct browsers where substituting one would
-  be the wrong result. Erroring is safe because such values are only ever opt-in.
+  be the wrong result. Erroring is safe because such values are only ever requested explicitly.
 - New switches must be optional — an older binding will omit them.
 - Nothing in the contract — switches, values, output fields — is removed or renamed without a
   deprecation cycle.
@@ -46,11 +46,9 @@ skew. How an older SM treats an input it does not recognize depends on the input
 
 **Telemetry.**
 
-- Data is collected by default and can be disabled. It is anonymous and holds no PII, but SM makes a
-  best effort to inform users: run from an interactive session it prompts on first use and stores the
-  result; run non-interactively it emits a clear `WARN` with what data is sent and how to disable it.
 - The binding must pass in the Selenium version and language (name and version).
 - SM must pass in the SM version.
+- Each time SM sends data, it logs what was sent and how to disable it.
 
 ## Considered options
 
@@ -74,10 +72,6 @@ skew. How an older SM treats an input it does not recognize depends on the input
 - **A mismatched `PATH` driver.**
   - Use it with a warning — usually still fails at session start.
   - Do not use it, fetch a matching one — **selected**.
-- **Telemetry consent.**
-  - Silent opt-out everywhere — weak for a released tool.
-  - Opt-in everywhere — the binding path collects nothing.
-  - Opt-out with a notice when bundled, opt-in when standalone — **selected**.
 
 ## Consequences
 
