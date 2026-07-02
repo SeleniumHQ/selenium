@@ -385,6 +385,51 @@ class JsonInputTest {
   }
 
   @Test
+  void shouldAcceptTrailingCommaInArray() {
+    try (JsonInput input = newInput("[1,2,3,]")) {
+      input.beginArray();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(2L);
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(3L);
+      assertThat(input.hasNext()).isFalse();
+      input.endArray();
+    }
+  }
+
+  @Test
+  void shouldAcceptTrailingCommaInObject() {
+    try (JsonInput input = newInput("{\"a\":1,}")) {
+      input.beginObject();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextName()).isEqualTo("a");
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThat(input.hasNext()).isFalse();
+      input.endObject();
+    }
+  }
+
+  @Test
+  void shouldRejectMissingCommaBetweenArrayElements() {
+    try (JsonInput input = newInput("[1 2]")) {
+      input.beginArray();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThatExceptionOfType(JsonException.class).isThrownBy(input::hasNext);
+    }
+  }
+
+  @Test
+  void shouldRejectLeadingCommaInArray() {
+    try (JsonInput input = newInput("[,1]")) {
+      input.beginArray();
+      assertThatExceptionOfType(JsonException.class).isThrownBy(input::hasNext);
+    }
+  }
+
+  @Test
   void nullInputsShouldCoerceAsNullValues() throws IOException {
     try (InputStream is = new ByteArrayInputStream(new byte[0]);
         Reader reader = new InputStreamReader(is, UTF_8);
