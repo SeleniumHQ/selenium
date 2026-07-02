@@ -292,6 +292,19 @@ class JsonInputTest {
   }
 
   @Test
+  void shouldReadU_FFFF_AsALiteralCharacterAndNotEndOfInput() {
+    // U+FFFF is a valid (non-)character; historically it collided with an in-band EOF sentinel
+    // and was mis-reported as an unterminated string.
+    try (JsonInput input = newInput("\"a￿b\"")) {
+      assertThat(input.nextString()).isEqualTo("a￿b");
+    }
+
+    try (JsonInput input = newInput("\"\\uFFFF\"")) {
+      assertThat(input.nextString()).isEqualTo("￿");
+    }
+  }
+
+  @Test
   void nullInputsShouldCoerceAsNullValues() throws IOException {
     try (InputStream is = new ByteArrayInputStream(new byte[0]);
         Reader reader = new InputStreamReader(is, UTF_8);
