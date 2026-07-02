@@ -56,7 +56,11 @@ def resolve_commit(branch):
 
 
 def list_cddl_files(commit):
-    r = http.request("GET", f"https://api.github.com/repos/{REPO}/contents/{CDDL_PATH}?ref={commit}", headers=API_HEADERS)
+    r = http.request(
+        "GET",
+        f"https://api.github.com/repos/{REPO}/contents/{CDDL_PATH}?ref={commit}",
+        headers=API_HEADERS,
+    )
     if r.status != 200:
         raise RuntimeError(f"Failed to list {CDDL_PATH} at {commit}: HTTP {r.status}")
     entries = json.loads(r.data)
