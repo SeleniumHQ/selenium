@@ -585,6 +585,12 @@ public class JsonInput implements Closeable {
           readEscape(builder);
           break;
         default:
+          // RFC 8259 §7: characters U+0000..U+001F MUST be escaped.
+          if (c < 0x20) {
+            throw new JsonException(
+                String.format(
+                    "Illegal unescaped control character U+%04X in string. %s", c, input));
+          }
           builder.append((char) c);
       }
     }
