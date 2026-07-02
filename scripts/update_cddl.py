@@ -101,8 +101,12 @@ def update_pin(commit, entries):
     content = BZL_FILE.read_text()
     before = existing_repo_names(content)
 
-    content = re.sub(r'_COMMIT = "[0-9a-f]+"', f'_COMMIT = "{commit}"', content)
-    content = re.sub(r"_CDDL_FILES = \[.*?\n\]", render_cddl_files(entries), content, flags=re.S)
+    content, n = re.subn(r'_COMMIT = "[0-9a-f]+"', f'_COMMIT = "{commit}"', content)
+    if n != 1:
+        raise RuntimeError(f"Expected exactly one _COMMIT assignment in {BZL_FILE.name}, found {n}")
+    content, n = re.subn(r"_CDDL_FILES = \[.*?\n\]", lambda _: render_cddl_files(entries), content, flags=re.S)
+    if n != 1:
+        raise RuntimeError(f"Expected exactly one _CDDL_FILES block in {BZL_FILE.name}, found {n}")
 
     BZL_FILE.write_text(content)
 
