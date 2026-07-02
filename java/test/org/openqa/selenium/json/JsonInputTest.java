@@ -374,6 +374,17 @@ class JsonInputTest {
   }
 
   @Test
+  void shouldReportEndOfInputAsEofNotAsAUnicodeReplacement() {
+    // If the number ends prematurely, the diagnostic should say "<EOF>" rather than "'￿'"
+    // (which is a valid literal character elsewhere).
+    try (JsonInput input = newInput("5.")) {
+      assertThatExceptionOfType(JsonException.class)
+          .isThrownBy(input::nextNumber)
+          .withMessageContaining("<EOF>");
+    }
+  }
+
+  @Test
   void nullInputsShouldCoerceAsNullValues() throws IOException {
     try (InputStream is = new ByteArrayInputStream(new byte[0]);
         Reader reader = new InputStreamReader(is, UTF_8);

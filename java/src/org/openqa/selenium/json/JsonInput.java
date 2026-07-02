@@ -243,7 +243,7 @@ public class JsonInput implements Closeable {
         builder.append((char) input.read());
       }
     } else {
-      throw new JsonException("Expected digit but saw '" + (char) first + "'. " + input);
+      throw new JsonException("Expected digit but saw " + describeChar(first) + ". " + input);
     }
 
     // Optional fractional part: '.' 1*DIGIT
@@ -252,9 +252,9 @@ public class JsonInput implements Closeable {
       builder.append((char) input.read());
       if (!isDigit(input.peek())) {
         throw new JsonException(
-            "Expected at least one digit after '.' but saw '"
-                + (char) input.peek()
-                + "'. "
+            "Expected at least one digit after '.' but saw "
+                + describeChar(input.peek())
+                + ". "
                 + input);
       }
       while (isDigit(input.peek())) {
@@ -271,9 +271,9 @@ public class JsonInput implements Closeable {
       }
       if (!isDigit(input.peek())) {
         throw new JsonException(
-            "Expected at least one digit in exponent but saw '"
-                + (char) input.peek()
-                + "'. "
+            "Expected at least one digit in exponent but saw "
+                + describeChar(input.peek())
+                + ". "
                 + input);
       }
       while (isDigit(input.peek())) {
@@ -298,6 +298,10 @@ public class JsonInput implements Closeable {
 
   private static boolean isDigit(int c) {
     return c >= '0' && c <= '9';
+  }
+
+  private static String describeChar(int c) {
+    return c == Input.EOF ? "<EOF>" : "'" + (char) c + "'";
   }
 
   /**
