@@ -1,7 +1,7 @@
-# Selenium Manager ships as an official, independently released tool
+# 17741. Selenium Manager ships as an official, independently released tool
 
 - Status: Proposed
-- Discussion: _PR pending_
+- Discussion: https://github.com/SeleniumHQ/selenium/pull/17741
 
 ## Context
 
