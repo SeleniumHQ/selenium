@@ -364,6 +364,9 @@ public class JsonInput implements Closeable {
         throw new JsonException("Unexpected ',' before first element of container. " + input);
       }
       input.read();
+      // We've moved past the separator, so we're once again expecting an element rather than
+      // another comma. Clear the flag so a repeat hasNext() before reading is a no-op.
+      clearSeenElement();
       skipWhitespace(input);
       JsonType afterComma = peek();
       // Trailing comma leniency: '[1,]' and '{"a":1,}' are accepted.
@@ -605,6 +608,13 @@ public class JsonInput implements Closeable {
     if (!containerHasElement.isEmpty()) {
       containerHasElement.removeFirst();
       containerHasElement.addFirst(true);
+    }
+  }
+
+  private void clearSeenElement() {
+    if (!containerHasElement.isEmpty()) {
+      containerHasElement.removeFirst();
+      containerHasElement.addFirst(false);
     }
   }
 
