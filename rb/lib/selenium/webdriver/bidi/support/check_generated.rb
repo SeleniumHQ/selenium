@@ -24,9 +24,8 @@ module BiDiGenerate
   # Verifies the checked-in protocol .rb match what the generator would produce from the
   # current schema — catching a hand-edit or a forgotten regeneration. Re-renders each module
   # in memory (no file writes) and compares. The .rbs are covered by Steep.
-  def self.check!(schema_path)
-    schema_path = File.join(Dir.pwd, schema_path) unless File.exist?(schema_path)
-    modules = build_ir(Schema.new(JSON.parse(File.read(schema_path))))
+  def self.check!(schema_rootpath)
+    modules = build_ir(Schema.new(JSON.parse(File.read(schema_path(schema_rootpath)))))
     protocol_dir = File.expand_path('../protocol', __dir__)
     template = File.join(__dir__, 'templates', 'module.rb.erb')
 
@@ -39,6 +38,14 @@ module BiDiGenerate
     warn "Generated BiDi protocol code is stale or hand-edited: #{stale.map { |m| "#{m.filename}.rb" }.sort.join(', ')}"
     warn 'Regenerate with: bazel run //rb/lib/selenium/webdriver:bidi-generate'
     exit 1
+  end
+
+  # $(rootpath) is relative to the runfiles root; __dir__ anchors us there, so it resolves the
+  # same way locally and on RBE (an execpath would not).
+  def self.schema_path(rootpath)
+    root = __dir__.delete_suffix('/rb/lib/selenium/webdriver/bidi/support')
+    [File.join(root, rootpath), rootpath].find { |p| File.exist?(p) } ||
+      raise("BiDi schema not found (looked for #{rootpath})")
   end
 end
 

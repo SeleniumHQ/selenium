@@ -48,7 +48,7 @@ rb_test(
     name = "verify-bidi-generated",
     size = "small",
     srcs = ["bidi/support/check_generated.rb"],
-    args = ["$(location //javascript/selenium-webdriver:create-bidi-src_schema)"],
+    args = ["$(rootpath //javascript/selenium-webdriver:create-bidi-src_schema)"],
     data = [
         "bidi/support/bidi_generate.rb",
         "bidi/support/templates/module.rb.erb",
