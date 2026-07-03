@@ -30,7 +30,7 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           InstallParameters = Serialization::Record.define(
-            extension_data: {json_key: 'extensionData', ref: 'WebExtension::ExtensionData'}
+            extension_data: {wire_key: 'extensionData', ref: 'WebExtension::ExtensionData'}
           )
 
           # @api private

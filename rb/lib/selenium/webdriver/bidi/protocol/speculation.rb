@@ -43,7 +43,7 @@ module Selenium
           PrefetchStatusUpdatedParameters = Serialization::Record.define(
             context: 'context',
             url: 'url',
-            status: {json_key: 'status', enum: 'Speculation::PRELOADING_STATUS'}
+            status: {wire_key: 'status', enum: 'Speculation::PRELOADING_STATUS'}
           )
 
           EVENT_TYPES = {

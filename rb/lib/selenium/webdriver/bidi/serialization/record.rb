@@ -24,12 +24,12 @@ module Selenium
         # Immutable value type for the generated protocol classes. +Record.define(spec)+
         # bakes each field's wire facts and returns a +::Data+ subclass with serialization.
         #
-        #   Cookie = Record.define(name: 'name', value: {json_key: 'value', ref: 'Network::BytesValue'})
+        #   Cookie = Record.define(name: 'name', value: {wire_key: 'value', ref: 'Network::BytesValue'})
         #
         # @api private
         class Record < ::Data
           # Named Field, not Member, to avoid colliding with +::Data#members+.
-          Field = ::Data.define(:name, :json_key, :nullable, :ref, :list, :fixed, :enum, :required)
+          Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required)
 
           def self.define(**spec)
             extensible = spec.delete(:extensible) || false
@@ -55,8 +55,8 @@ module Selenium
           end
 
           def self.field(name, meta)
-            meta = {json_key: meta} if meta.is_a?(::String)
-            Field.new(name: name.to_sym, json_key: meta.fetch(:json_key, name.to_s),
+            meta = {wire_key: meta} if meta.is_a?(::String)
+            Field.new(name: name.to_sym, wire_key: meta.fetch(:wire_key, name.to_s),
                       nullable: meta[:nullable] || false, ref: meta[:ref],
                       list: meta[:list] || false, fixed: meta.fetch(:fixed, UNSET), enum: meta[:enum],
                       required: meta.fetch(:required, true))
@@ -122,7 +122,7 @@ module Selenium
 
             def wire_value(field, json_payload)
               return field.fixed if fixed?(field)
-              return read(field, json_payload[field.json_key]) if json_payload.key?(field.json_key)
+              return read(field, json_payload[field.wire_key]) if json_payload.key?(field.wire_key)
               return UNSET unless field.required
 
               raise Error::WebDriverError, "#{name}##{field.name} is required but was missing from the response"
@@ -163,7 +163,7 @@ module Selenium
             end
 
             def extra(json_payload)
-              known = (@json_keys ||= fields.map(&:json_key))
+              known = (@wire_keys ||= fields.map(&:wire_key))
               json_payload.except(*known)
             end
           end
@@ -188,7 +188,7 @@ module Selenium
                 next if value.nil? && !f.nullable
 
                 value = Serialization.to_wire(value, Protocol.const_get(f.enum)) if f.enum
-                payload[f.json_key] = Serializable.as_json(value)
+                payload[f.wire_key] = Serializable.as_json(value)
               end
               payload.merge!(extensions) if self.class.extensible? && !extensions.empty?
               payload

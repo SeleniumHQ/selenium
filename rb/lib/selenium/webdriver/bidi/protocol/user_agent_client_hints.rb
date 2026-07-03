@@ -30,21 +30,21 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ClientHintsMetadata = Serialization::Record.define(
-            brands: {json_key: 'brands', required: false, ref: 'UserAgentClientHints::BrandVersion', list: true},
+            brands: {wire_key: 'brands', required: false, ref: 'UserAgentClientHints::BrandVersion', list: true},
             full_version_list: {
-              json_key: 'fullVersionList',
+              wire_key: 'fullVersionList',
               required: false,
               ref: 'UserAgentClientHints::BrandVersion',
               list: true
             },
-            platform: {json_key: 'platform', required: false},
-            platform_version: {json_key: 'platformVersion', required: false},
-            architecture: {json_key: 'architecture', required: false},
-            model: {json_key: 'model', required: false},
-            mobile: {json_key: 'mobile', required: false},
-            bitness: {json_key: 'bitness', required: false},
-            wow64: {json_key: 'wow64', required: false},
-            form_factors: {json_key: 'formFactors', required: false, list: true}
+            platform: {wire_key: 'platform', required: false},
+            platform_version: {wire_key: 'platformVersion', required: false},
+            architecture: {wire_key: 'architecture', required: false},
+            model: {wire_key: 'model', required: false},
+            mobile: {wire_key: 'mobile', required: false},
+            bitness: {wire_key: 'bitness', required: false},
+            wow64: {wire_key: 'wow64', required: false},
+            form_factors: {wire_key: 'formFactors', required: false, list: true}
           )
 
           # @api private
@@ -54,9 +54,9 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetClientHintsOverrideCommandParams = Serialization::Record.define(
-            client_hints: {json_key: 'clientHints', nullable: true, ref: 'UserAgentClientHints::ClientHintsMetadata'},
-            contexts: {json_key: 'contexts', required: false, list: true},
-            user_contexts: {json_key: 'userContexts', required: false, list: true}
+            client_hints: {wire_key: 'clientHints', nullable: true, ref: 'UserAgentClientHints::ClientHintsMetadata'},
+            contexts: {wire_key: 'contexts', required: false, list: true},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
           # @api private

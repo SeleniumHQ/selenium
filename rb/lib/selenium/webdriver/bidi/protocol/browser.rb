@@ -46,7 +46,7 @@ module Selenium
             active: 'active',
             client_window: 'clientWindow',
             height: 'height',
-            state: {json_key: 'state', enum: 'Browser::CLIENT_WINDOW_INFO_STATE'},
+            state: {wire_key: 'state', enum: 'Browser::CLIENT_WINDOW_INFO_STATE'},
             width: 'width',
             x: 'x',
             y: 'y'
@@ -59,10 +59,10 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CreateUserContextParameters = Serialization::Record.define(
-            accept_insecure_certs: {json_key: 'acceptInsecureCerts', required: false},
-            proxy: {json_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
+            accept_insecure_certs: {wire_key: 'acceptInsecureCerts', required: false},
+            proxy: {wire_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
             unhandled_prompt_behavior: {
-              json_key: 'unhandledPromptBehavior',
+              wire_key: 'unhandledPromptBehavior',
               required: false,
               ref: 'Session::UserPromptHandler'
             }
@@ -71,13 +71,13 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           GetClientWindowsResult = Serialization::Record.define(
-            client_windows: {json_key: 'clientWindows', ref: 'Browser::ClientWindowInfo', list: true}
+            client_windows: {wire_key: 'clientWindows', ref: 'Browser::ClientWindowInfo', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           GetUserContextsResult = Serialization::Record.define(
-            user_contexts: {json_key: 'userContexts', ref: 'Browser::UserContextInfo', list: true}
+            user_contexts: {wire_key: 'userContexts', ref: 'Browser::UserContextInfo', list: true}
           )
 
           # @api private
@@ -97,7 +97,7 @@ module Selenium
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
             ClientWindowNamedState = Serialization::Record.define(
               client_window: 'clientWindow',
-              state: {json_key: 'state', enum: 'Browser::CLIENT_WINDOW_NAMED_STATE_STATE'}
+              state: {wire_key: 'state', enum: 'Browser::CLIENT_WINDOW_NAMED_STATE_STATE'}
             )
 
             # @api private
@@ -105,18 +105,18 @@ module Selenium
             ClientWindowRectState = Serialization::Record.define(
               state: {fixed: 'normal'},
               client_window: 'clientWindow',
-              width: {json_key: 'width', required: false},
-              height: {json_key: 'height', required: false},
-              x: {json_key: 'x', required: false},
-              y: {json_key: 'y', required: false}
+              width: {wire_key: 'width', required: false},
+              height: {wire_key: 'height', required: false},
+              x: {wire_key: 'x', required: false},
+              y: {wire_key: 'y', required: false}
             )
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetDownloadBehaviorParameters = Serialization::Record.define(
-            download_behavior: {json_key: 'downloadBehavior', nullable: true, ref: 'Browser::DownloadBehavior'},
-            user_contexts: {json_key: 'userContexts', required: false, list: true}
+            download_behavior: {wire_key: 'downloadBehavior', nullable: true, ref: 'Browser::DownloadBehavior'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
           # @api private

@@ -41,14 +41,14 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ElementOrigin = Serialization::Record.define(
             type: {fixed: 'element'},
-            element: {json_key: 'element', ref: 'Script::SharedReference'}
+            element: {wire_key: 'element', ref: 'Script::SharedReference'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PerformActionsParameters = Serialization::Record.define(
             context: 'context',
-            actions: {json_key: 'actions', ref: 'Input::SourceActions', list: true}
+            actions: {wire_key: 'actions', ref: 'Input::SourceActions', list: true}
           )
 
           # @api private
@@ -68,7 +68,7 @@ module Selenium
           NoneSourceActions = Serialization::Record.define(
             type: {fixed: 'none'},
             id: 'id',
-            actions: {json_key: 'actions', ref: 'Input::PauseAction', list: true}
+            actions: {wire_key: 'actions', ref: 'Input::PauseAction', list: true}
           )
 
           # @api private
@@ -76,7 +76,7 @@ module Selenium
           KeySourceActions = Serialization::Record.define(
             type: {fixed: 'key'},
             id: 'id',
-            actions: {json_key: 'actions', ref: 'Input::KeySourceAction', list: true}
+            actions: {wire_key: 'actions', ref: 'Input::KeySourceAction', list: true}
           )
 
           # @api private
@@ -95,14 +95,14 @@ module Selenium
           PointerSourceActions = Serialization::Record.define(
             type: {fixed: 'pointer'},
             id: 'id',
-            parameters: {json_key: 'parameters', required: false, ref: 'Input::PointerParameters'},
-            actions: {json_key: 'actions', ref: 'Input::PointerSourceAction', list: true}
+            parameters: {wire_key: 'parameters', required: false, ref: 'Input::PointerParameters'},
+            actions: {wire_key: 'actions', ref: 'Input::PointerSourceAction', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PointerParameters = Serialization::Record.define(
-            pointer_type: {json_key: 'pointerType', required: false, enum: 'Input::POINTER_TYPE'}
+            pointer_type: {wire_key: 'pointerType', required: false, enum: 'Input::POINTER_TYPE'}
           )
 
           # @api private
@@ -127,7 +127,7 @@ module Selenium
           WheelSourceActions = Serialization::Record.define(
             type: {fixed: 'wheel'},
             id: 'id',
-            actions: {json_key: 'actions', ref: 'Input::WheelSourceAction', list: true}
+            actions: {wire_key: 'actions', ref: 'Input::WheelSourceAction', list: true}
           )
 
           # @api private
@@ -144,7 +144,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PauseAction = Serialization::Record.define(
             type: {fixed: 'pause'},
-            duration: {json_key: 'duration', required: false}
+            duration: {wire_key: 'duration', required: false}
           )
 
           # @api private
@@ -164,13 +164,13 @@ module Selenium
           PointerDownAction = Serialization::Record.define(
             type: {fixed: 'pointerDown'},
             button: 'button',
-            width: {json_key: 'width', required: false},
-            height: {json_key: 'height', required: false},
-            pressure: {json_key: 'pressure', required: false},
-            tangential_pressure: {json_key: 'tangentialPressure', required: false},
-            twist: {json_key: 'twist', required: false},
-            altitude_angle: {json_key: 'altitudeAngle', required: false},
-            azimuth_angle: {json_key: 'azimuthAngle', required: false}
+            width: {wire_key: 'width', required: false},
+            height: {wire_key: 'height', required: false},
+            pressure: {wire_key: 'pressure', required: false},
+            tangential_pressure: {wire_key: 'tangentialPressure', required: false},
+            twist: {wire_key: 'twist', required: false},
+            altitude_angle: {wire_key: 'altitudeAngle', required: false},
+            azimuth_angle: {wire_key: 'azimuthAngle', required: false}
           )
 
           # @api private
@@ -179,15 +179,15 @@ module Selenium
             type: {fixed: 'pointerMove'},
             x: 'x',
             y: 'y',
-            duration: {json_key: 'duration', required: false},
-            origin: {json_key: 'origin', required: false, ref: 'Input::Origin'},
-            width: {json_key: 'width', required: false},
-            height: {json_key: 'height', required: false},
-            pressure: {json_key: 'pressure', required: false},
-            tangential_pressure: {json_key: 'tangentialPressure', required: false},
-            twist: {json_key: 'twist', required: false},
-            altitude_angle: {json_key: 'altitudeAngle', required: false},
-            azimuth_angle: {json_key: 'azimuthAngle', required: false}
+            duration: {wire_key: 'duration', required: false},
+            origin: {wire_key: 'origin', required: false, ref: 'Input::Origin'},
+            width: {wire_key: 'width', required: false},
+            height: {wire_key: 'height', required: false},
+            pressure: {wire_key: 'pressure', required: false},
+            tangential_pressure: {wire_key: 'tangentialPressure', required: false},
+            twist: {wire_key: 'twist', required: false},
+            altitude_angle: {wire_key: 'altitudeAngle', required: false},
+            azimuth_angle: {wire_key: 'azimuthAngle', required: false}
           )
 
           # @api private
@@ -198,20 +198,20 @@ module Selenium
             y: 'y',
             delta_x: 'deltaX',
             delta_y: 'deltaY',
-            duration: {json_key: 'duration', required: false},
-            origin: {json_key: 'origin', required: false, ref: 'Input::Origin'}
+            duration: {wire_key: 'duration', required: false},
+            origin: {wire_key: 'origin', required: false, ref: 'Input::Origin'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PointerCommonProperties = Serialization::Record.define(
-            width: {json_key: 'width', required: false},
-            height: {json_key: 'height', required: false},
-            pressure: {json_key: 'pressure', required: false},
-            tangential_pressure: {json_key: 'tangentialPressure', required: false},
-            twist: {json_key: 'twist', required: false},
-            altitude_angle: {json_key: 'altitudeAngle', required: false},
-            azimuth_angle: {json_key: 'azimuthAngle', required: false}
+            width: {wire_key: 'width', required: false},
+            height: {wire_key: 'height', required: false},
+            pressure: {wire_key: 'pressure', required: false},
+            tangential_pressure: {wire_key: 'tangentialPressure', required: false},
+            twist: {wire_key: 'twist', required: false},
+            altitude_angle: {wire_key: 'altitudeAngle', required: false},
+            azimuth_angle: {wire_key: 'azimuthAngle', required: false}
           )
 
           # @api private
@@ -231,16 +231,16 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetFilesParameters = Serialization::Record.define(
             context: 'context',
-            element: {json_key: 'element', ref: 'Script::SharedReference'},
-            files: {json_key: 'files', list: true}
+            element: {wire_key: 'element', ref: 'Script::SharedReference'},
+            files: {wire_key: 'files', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           FileDialogInfo = Serialization::Record.define(
             context: 'context',
-            user_context: {json_key: 'userContext', required: false},
-            element: {json_key: 'element', required: false, ref: 'Script::SharedReference'},
+            user_context: {wire_key: 'userContext', required: false},
+            element: {wire_key: 'element', required: false, ref: 'Script::SharedReference'},
             multiple: 'multiple'
           )
 

@@ -35,8 +35,8 @@ module Selenium
           class << self
             # values maps each variant's discriminator symbol to its wire token, so an
             # inbound payload tag (a wire string) can be matched to the symbol-keyed table.
-            def discriminator(json_key, values = {})
-              @discriminator = json_key
+            def discriminator(wire_key, values = {})
+              @discriminator = wire_key
               @discriminator_values = values
             end
 

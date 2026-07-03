@@ -91,7 +91,7 @@ module Selenium
         end
 
         class Union
-          def self.discriminator: (String json_key, ?Hash[Symbol, String] values) -> void
+          def self.discriminator: (String wire_key, ?Hash[Symbol, String] values) -> void
 
           def self.variants: (Hash[untyped, String] table) -> Hash[untyped, String]
 

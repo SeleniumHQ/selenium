@@ -30,23 +30,23 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PartitionKey = Serialization::Record.define(
-            user_context: {json_key: 'userContext', required: false},
-            source_origin: {json_key: 'sourceOrigin', required: false},
+            user_context: {wire_key: 'userContext', required: false},
+            source_origin: {wire_key: 'sourceOrigin', required: false},
             extensible: true
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CookieFilter = Serialization::Record.define(
-            name: {json_key: 'name', required: false},
-            value: {json_key: 'value', required: false, ref: 'Network::BytesValue'},
-            domain: {json_key: 'domain', required: false},
-            path: {json_key: 'path', required: false},
-            size: {json_key: 'size', required: false},
-            http_only: {json_key: 'httpOnly', required: false},
-            secure: {json_key: 'secure', required: false},
-            same_site: {json_key: 'sameSite', required: false, enum: 'Network::SAME_SITE'},
-            expiry: {json_key: 'expiry', required: false},
+            name: {wire_key: 'name', required: false},
+            value: {wire_key: 'value', required: false, ref: 'Network::BytesValue'},
+            domain: {wire_key: 'domain', required: false},
+            path: {wire_key: 'path', required: false},
+            size: {wire_key: 'size', required: false},
+            http_only: {wire_key: 'httpOnly', required: false},
+            secure: {wire_key: 'secure', required: false},
+            same_site: {wire_key: 'sameSite', required: false, enum: 'Network::SAME_SITE'},
+            expiry: {wire_key: 'expiry', required: false},
             extensible: true
           )
 
@@ -61,8 +61,8 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           StorageKeyPartitionDescriptor = Serialization::Record.define(
             type: {fixed: 'storageKey'},
-            user_context: {json_key: 'userContext', required: false},
-            source_origin: {json_key: 'sourceOrigin', required: false},
+            user_context: {wire_key: 'userContext', required: false},
+            source_origin: {wire_key: 'sourceOrigin', required: false},
             extensible: true
           )
 
@@ -79,55 +79,55 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           GetCookiesParameters = Serialization::Record.define(
-            filter: {json_key: 'filter', required: false, ref: 'Storage::CookieFilter'},
-            partition: {json_key: 'partition', required: false, ref: 'Storage::PartitionDescriptor'}
+            filter: {wire_key: 'filter', required: false, ref: 'Storage::CookieFilter'},
+            partition: {wire_key: 'partition', required: false, ref: 'Storage::PartitionDescriptor'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           GetCookiesResult = Serialization::Record.define(
-            cookies: {json_key: 'cookies', ref: 'Network::Cookie', list: true},
-            partition_key: {json_key: 'partitionKey', ref: 'Storage::PartitionKey'}
+            cookies: {wire_key: 'cookies', ref: 'Network::Cookie', list: true},
+            partition_key: {wire_key: 'partitionKey', ref: 'Storage::PartitionKey'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PartialCookie = Serialization::Record.define(
             name: 'name',
-            value: {json_key: 'value', ref: 'Network::BytesValue'},
+            value: {wire_key: 'value', ref: 'Network::BytesValue'},
             domain: 'domain',
-            path: {json_key: 'path', required: false},
-            http_only: {json_key: 'httpOnly', required: false},
-            secure: {json_key: 'secure', required: false},
-            same_site: {json_key: 'sameSite', required: false, enum: 'Network::SAME_SITE'},
-            expiry: {json_key: 'expiry', required: false},
+            path: {wire_key: 'path', required: false},
+            http_only: {wire_key: 'httpOnly', required: false},
+            secure: {wire_key: 'secure', required: false},
+            same_site: {wire_key: 'sameSite', required: false, enum: 'Network::SAME_SITE'},
+            expiry: {wire_key: 'expiry', required: false},
             extensible: true
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetCookieParameters = Serialization::Record.define(
-            cookie: {json_key: 'cookie', ref: 'Storage::PartialCookie'},
-            partition: {json_key: 'partition', required: false, ref: 'Storage::PartitionDescriptor'}
+            cookie: {wire_key: 'cookie', ref: 'Storage::PartialCookie'},
+            partition: {wire_key: 'partition', required: false, ref: 'Storage::PartitionDescriptor'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetCookieResult = Serialization::Record.define(
-            partition_key: {json_key: 'partitionKey', ref: 'Storage::PartitionKey'}
+            partition_key: {wire_key: 'partitionKey', ref: 'Storage::PartitionKey'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           DeleteCookiesParameters = Serialization::Record.define(
-            filter: {json_key: 'filter', required: false, ref: 'Storage::CookieFilter'},
-            partition: {json_key: 'partition', required: false, ref: 'Storage::PartitionDescriptor'}
+            filter: {wire_key: 'filter', required: false, ref: 'Storage::CookieFilter'},
+            partition: {wire_key: 'partition', required: false, ref: 'Storage::PartitionDescriptor'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           DeleteCookiesResult = Serialization::Record.define(
-            partition_key: {json_key: 'partitionKey', ref: 'Storage::PartitionKey'}
+            partition_key: {wire_key: 'partitionKey', ref: 'Storage::PartitionKey'}
           )
 
           # @api private

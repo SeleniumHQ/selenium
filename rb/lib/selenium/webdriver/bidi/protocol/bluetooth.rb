@@ -85,28 +85,28 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CharacteristicProperties = Serialization::Record.define(
-            broadcast: {json_key: 'broadcast', required: false},
-            read: {json_key: 'read', required: false},
-            write_without_response: {json_key: 'writeWithoutResponse', required: false},
-            write: {json_key: 'write', required: false},
-            notify: {json_key: 'notify', required: false},
-            indicate: {json_key: 'indicate', required: false},
-            authenticated_signed_writes: {json_key: 'authenticatedSignedWrites', required: false},
-            extended_properties: {json_key: 'extendedProperties', required: false}
+            broadcast: {wire_key: 'broadcast', required: false},
+            read: {wire_key: 'read', required: false},
+            write_without_response: {wire_key: 'writeWithoutResponse', required: false},
+            write: {wire_key: 'write', required: false},
+            notify: {wire_key: 'notify', required: false},
+            indicate: {wire_key: 'indicate', required: false},
+            authenticated_signed_writes: {wire_key: 'authenticatedSignedWrites', required: false},
+            extended_properties: {wire_key: 'extendedProperties', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          RequestDeviceInfo = Serialization::Record.define(id: 'id', name: {json_key: 'name', nullable: true})
+          RequestDeviceInfo = Serialization::Record.define(id: 'id', name: {wire_key: 'name', nullable: true})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ScanRecord = Serialization::Record.define(
-            name: {json_key: 'name', required: false},
-            uuids: {json_key: 'uuids', required: false, list: true},
-            appearance: {json_key: 'appearance', required: false},
+            name: {wire_key: 'name', required: false},
+            uuids: {wire_key: 'uuids', required: false, list: true},
+            appearance: {wire_key: 'appearance', required: false},
             manufacturer_data: {
-              json_key: 'manufacturerData',
+              wire_key: 'manufacturerData',
               required: false,
               ref: 'Bluetooth::BluetoothManufacturerData',
               list: true
@@ -144,8 +144,8 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SimulateAdapterParameters = Serialization::Record.define(
             context: 'context',
-            le_supported: {json_key: 'leSupported', required: false},
-            state: {json_key: 'state', enum: 'Bluetooth::SIMULATE_ADAPTER_PARAMETERS_STATE'}
+            le_supported: {wire_key: 'leSupported', required: false},
+            state: {wire_key: 'state', enum: 'Bluetooth::SIMULATE_ADAPTER_PARAMETERS_STATE'}
           )
 
           # @api private
@@ -158,15 +158,15 @@ module Selenium
             context: 'context',
             address: 'address',
             name: 'name',
-            manufacturer_data: {json_key: 'manufacturerData', ref: 'Bluetooth::BluetoothManufacturerData', list: true},
-            known_service_uuids: {json_key: 'knownServiceUuids', list: true}
+            manufacturer_data: {wire_key: 'manufacturerData', ref: 'Bluetooth::BluetoothManufacturerData', list: true},
+            known_service_uuids: {wire_key: 'knownServiceUuids', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SimulateAdvertisementParameters = Serialization::Record.define(
             context: 'context',
-            scan_entry: {json_key: 'scanEntry', ref: 'Bluetooth::SimulateAdvertisementScanEntryParameters'}
+            scan_entry: {wire_key: 'scanEntry', ref: 'Bluetooth::SimulateAdvertisementScanEntryParameters'}
           )
 
           # @api private
@@ -174,7 +174,7 @@ module Selenium
           SimulateAdvertisementScanEntryParameters = Serialization::Record.define(
             device_address: 'deviceAddress',
             rssi: 'rssi',
-            scan_record: {json_key: 'scanRecord', ref: 'Bluetooth::ScanRecord'}
+            scan_record: {wire_key: 'scanRecord', ref: 'Bluetooth::ScanRecord'}
           )
 
           # @api private
@@ -195,7 +195,7 @@ module Selenium
             context: 'context',
             address: 'address',
             uuid: 'uuid',
-            type: {json_key: 'type', enum: 'Bluetooth::SIMULATE_SERVICE_PARAMETERS_TYPE'}
+            type: {wire_key: 'type', enum: 'Bluetooth::SIMULATE_SERVICE_PARAMETERS_TYPE'}
           )
 
           # @api private
@@ -206,11 +206,11 @@ module Selenium
             service_uuid: 'serviceUuid',
             characteristic_uuid: 'characteristicUuid',
             characteristic_properties: {
-              json_key: 'characteristicProperties',
+              wire_key: 'characteristicProperties',
               required: false,
               ref: 'Bluetooth::CharacteristicProperties'
             },
-            type: {json_key: 'type', enum: 'Bluetooth::SIMULATE_CHARACTERISTIC_PARAMETERS_TYPE'}
+            type: {wire_key: 'type', enum: 'Bluetooth::SIMULATE_CHARACTERISTIC_PARAMETERS_TYPE'}
           )
 
           # @api private
@@ -220,9 +220,9 @@ module Selenium
             address: 'address',
             service_uuid: 'serviceUuid',
             characteristic_uuid: 'characteristicUuid',
-            type: {json_key: 'type', enum: 'Bluetooth::SIMULATE_CHARACTERISTIC_RESPONSE_PARAMETERS_TYPE'},
+            type: {wire_key: 'type', enum: 'Bluetooth::SIMULATE_CHARACTERISTIC_RESPONSE_PARAMETERS_TYPE'},
             code: 'code',
-            data: {json_key: 'data', required: false, list: true}
+            data: {wire_key: 'data', required: false, list: true}
           )
 
           # @api private
@@ -233,7 +233,7 @@ module Selenium
             service_uuid: 'serviceUuid',
             characteristic_uuid: 'characteristicUuid',
             descriptor_uuid: 'descriptorUuid',
-            type: {json_key: 'type', enum: 'Bluetooth::SIMULATE_DESCRIPTOR_PARAMETERS_TYPE'}
+            type: {wire_key: 'type', enum: 'Bluetooth::SIMULATE_DESCRIPTOR_PARAMETERS_TYPE'}
           )
 
           # @api private
@@ -244,9 +244,9 @@ module Selenium
             service_uuid: 'serviceUuid',
             characteristic_uuid: 'characteristicUuid',
             descriptor_uuid: 'descriptorUuid',
-            type: {json_key: 'type', enum: 'Bluetooth::SIMULATE_DESCRIPTOR_RESPONSE_PARAMETERS_TYPE'},
+            type: {wire_key: 'type', enum: 'Bluetooth::SIMULATE_DESCRIPTOR_RESPONSE_PARAMETERS_TYPE'},
             code: 'code',
-            data: {json_key: 'data', required: false, list: true}
+            data: {wire_key: 'data', required: false, list: true}
           )
 
           # @api private
@@ -254,7 +254,7 @@ module Selenium
           RequestDevicePromptUpdatedParameters = Serialization::Record.define(
             context: 'context',
             prompt: 'prompt',
-            devices: {json_key: 'devices', ref: 'Bluetooth::RequestDeviceInfo', list: true}
+            devices: {wire_key: 'devices', ref: 'Bluetooth::RequestDeviceInfo', list: true}
           )
 
           # @api private
@@ -268,8 +268,8 @@ module Selenium
             address: 'address',
             service_uuid: 'serviceUuid',
             characteristic_uuid: 'characteristicUuid',
-            type: {json_key: 'type', enum: 'Bluetooth::CHARACTERISTIC_EVENT_GENERATED_PARAMETERS_TYPE'},
-            data: {json_key: 'data', required: false, list: true}
+            type: {wire_key: 'type', enum: 'Bluetooth::CHARACTERISTIC_EVENT_GENERATED_PARAMETERS_TYPE'},
+            data: {wire_key: 'data', required: false, list: true}
           )
 
           # @api private
@@ -280,8 +280,8 @@ module Selenium
             service_uuid: 'serviceUuid',
             characteristic_uuid: 'characteristicUuid',
             descriptor_uuid: 'descriptorUuid',
-            type: {json_key: 'type', enum: 'Bluetooth::DESCRIPTOR_EVENT_GENERATED_PARAMETERS_TYPE'},
-            data: {json_key: 'data', required: false, list: true}
+            type: {wire_key: 'type', enum: 'Bluetooth::DESCRIPTOR_EVENT_GENERATED_PARAMETERS_TYPE'},
+            data: {wire_key: 'data', required: false, list: true}
           )
 
           EVENT_TYPES = {

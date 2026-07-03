@@ -52,21 +52,21 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           BaseLogEntry = Serialization::Record.define(
-            level: {json_key: 'level', enum: 'Log::LEVEL'},
-            source: {json_key: 'source', ref: 'Script::Source'},
-            text: {json_key: 'text', nullable: true},
+            level: {wire_key: 'level', enum: 'Log::LEVEL'},
+            source: {wire_key: 'source', ref: 'Script::Source'},
+            text: {wire_key: 'text', nullable: true},
             timestamp: 'timestamp',
-            stack_trace: {json_key: 'stackTrace', required: false, ref: 'Script::StackTrace'}
+            stack_trace: {wire_key: 'stackTrace', required: false, ref: 'Script::StackTrace'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           GenericLogEntry = Serialization::Record.define(
-            level: {json_key: 'level', enum: 'Log::LEVEL'},
-            source: {json_key: 'source', ref: 'Script::Source'},
-            text: {json_key: 'text', nullable: true},
+            level: {wire_key: 'level', enum: 'Log::LEVEL'},
+            source: {wire_key: 'source', ref: 'Script::Source'},
+            text: {wire_key: 'text', nullable: true},
             timestamp: 'timestamp',
-            stack_trace: {json_key: 'stackTrace', required: false, ref: 'Script::StackTrace'},
+            stack_trace: {wire_key: 'stackTrace', required: false, ref: 'Script::StackTrace'},
             type: 'type'
           )
 
@@ -74,24 +74,24 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ConsoleLogEntry = Serialization::Record.define(
             type: {fixed: 'console'},
-            level: {json_key: 'level', enum: 'Log::LEVEL'},
-            source: {json_key: 'source', ref: 'Script::Source'},
-            text: {json_key: 'text', nullable: true},
+            level: {wire_key: 'level', enum: 'Log::LEVEL'},
+            source: {wire_key: 'source', ref: 'Script::Source'},
+            text: {wire_key: 'text', nullable: true},
             timestamp: 'timestamp',
-            stack_trace: {json_key: 'stackTrace', required: false, ref: 'Script::StackTrace'},
+            stack_trace: {wire_key: 'stackTrace', required: false, ref: 'Script::StackTrace'},
             method_: 'method',
-            args: {json_key: 'args', ref: 'Script::RemoteValue', list: true}
+            args: {wire_key: 'args', ref: 'Script::RemoteValue', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           JavascriptLogEntry = Serialization::Record.define(
             type: {fixed: 'javascript'},
-            level: {json_key: 'level', enum: 'Log::LEVEL'},
-            source: {json_key: 'source', ref: 'Script::Source'},
-            text: {json_key: 'text', nullable: true},
+            level: {wire_key: 'level', enum: 'Log::LEVEL'},
+            source: {wire_key: 'source', ref: 'Script::Source'},
+            text: {wire_key: 'text', nullable: true},
             timestamp: 'timestamp',
-            stack_trace: {json_key: 'stackTrace', required: false, ref: 'Script::StackTrace'}
+            stack_trace: {wire_key: 'stackTrace', required: false, ref: 'Script::StackTrace'}
           )
 
           EVENT_TYPES = {

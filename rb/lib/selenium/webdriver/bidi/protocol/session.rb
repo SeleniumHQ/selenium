@@ -36,20 +36,20 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CapabilitiesRequest = Serialization::Record.define(
-            always_match: {json_key: 'alwaysMatch', required: false, ref: 'Session::CapabilityRequest'},
-            first_match: {json_key: 'firstMatch', required: false, ref: 'Session::CapabilityRequest', list: true}
+            always_match: {wire_key: 'alwaysMatch', required: false, ref: 'Session::CapabilityRequest'},
+            first_match: {wire_key: 'firstMatch', required: false, ref: 'Session::CapabilityRequest', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CapabilityRequest = Serialization::Record.define(
-            accept_insecure_certs: {json_key: 'acceptInsecureCerts', required: false},
-            browser_name: {json_key: 'browserName', required: false},
-            browser_version: {json_key: 'browserVersion', required: false},
-            platform_name: {json_key: 'platformName', required: false},
-            proxy: {json_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
+            accept_insecure_certs: {wire_key: 'acceptInsecureCerts', required: false},
+            browser_name: {wire_key: 'browserName', required: false},
+            browser_version: {wire_key: 'browserVersion', required: false},
+            platform_name: {wire_key: 'platformName', required: false},
+            proxy: {wire_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
             unhandled_prompt_behavior: {
-              json_key: 'unhandledPromptBehavior',
+              wire_key: 'unhandledPromptBehavior',
               required: false,
               ref: 'Session::UserPromptHandler'
             },
@@ -78,26 +78,26 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           AutodetectProxyConfiguration = Serialization::Record.define(
-            proxy_type: {json_key: 'proxyType', fixed: 'autodetect'},
+            proxy_type: {wire_key: 'proxyType', fixed: 'autodetect'},
             extensible: true
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           DirectProxyConfiguration = Serialization::Record.define(
-            proxy_type: {json_key: 'proxyType', fixed: 'direct'},
+            proxy_type: {wire_key: 'proxyType', fixed: 'direct'},
             extensible: true
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ManualProxyConfiguration = Serialization::Record.define(
-            proxy_type: {json_key: 'proxyType', fixed: 'manual'},
-            http_proxy: {json_key: 'httpProxy', required: false},
-            ssl_proxy: {json_key: 'sslProxy', required: false},
+            proxy_type: {wire_key: 'proxyType', fixed: 'manual'},
+            http_proxy: {wire_key: 'httpProxy', required: false},
+            ssl_proxy: {wire_key: 'sslProxy', required: false},
             socks_proxy: 'socksProxy',
             socks_version: 'socksVersion',
-            no_proxy: {json_key: 'noProxy', required: false, list: true},
+            no_proxy: {wire_key: 'noProxy', required: false, list: true},
             extensible: true
           )
 
@@ -111,7 +111,7 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PacProxyConfiguration = Serialization::Record.define(
-            proxy_type: {json_key: 'proxyType', fixed: 'pac'},
+            proxy_type: {wire_key: 'proxyType', fixed: 'pac'},
             proxy_autoconfig_url: 'proxyAutoconfigUrl',
             extensible: true
           )
@@ -119,36 +119,36 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SystemProxyConfiguration = Serialization::Record.define(
-            proxy_type: {json_key: 'proxyType', fixed: 'system'},
+            proxy_type: {wire_key: 'proxyType', fixed: 'system'},
             extensible: true
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           UserPromptHandler = Serialization::Record.define(
-            alert: {json_key: 'alert', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
-            before_unload: {json_key: 'beforeUnload', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
-            confirm: {json_key: 'confirm', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
-            default: {json_key: 'default', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
-            file: {json_key: 'file', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
-            prompt: {json_key: 'prompt', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'}
+            alert: {wire_key: 'alert', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
+            before_unload: {wire_key: 'beforeUnload', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
+            confirm: {wire_key: 'confirm', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
+            default: {wire_key: 'default', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
+            file: {wire_key: 'file', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
+            prompt: {wire_key: 'prompt', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SubscribeParameters = Serialization::Record.define(
-            events: {json_key: 'events', list: true},
-            contexts: {json_key: 'contexts', required: false, list: true},
-            user_contexts: {json_key: 'userContexts', required: false, list: true}
+            events: {wire_key: 'events', list: true},
+            contexts: {wire_key: 'contexts', required: false, list: true},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          UnsubscribeByIDRequest = Serialization::Record.define(subscriptions: {json_key: 'subscriptions', list: true})
+          UnsubscribeByIDRequest = Serialization::Record.define(subscriptions: {wire_key: 'subscriptions', list: true})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          UnsubscribeByAttributesRequest = Serialization::Record.define(events: {json_key: 'events', list: true})
+          UnsubscribeByAttributesRequest = Serialization::Record.define(events: {wire_key: 'events', list: true})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -157,14 +157,14 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           NewParameters = Serialization::Record.define(
-            capabilities: {json_key: 'capabilities', ref: 'Session::CapabilitiesRequest'}
+            capabilities: {wire_key: 'capabilities', ref: 'Session::CapabilitiesRequest'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           NewResult = Serialization::Record.define(
             session_id: 'sessionId',
-            capabilities: {json_key: 'capabilities', ref: 'Session::NewResult::Capabilities'}
+            capabilities: {wire_key: 'capabilities', ref: 'Session::NewResult::Capabilities'}
           )
 
           # @api private
@@ -176,13 +176,13 @@ module Selenium
             platform_name: 'platformName',
             set_window_rect: 'setWindowRect',
             user_agent: 'userAgent',
-            proxy: {json_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
+            proxy: {wire_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
             unhandled_prompt_behavior: {
-              json_key: 'unhandledPromptBehavior',
+              wire_key: 'unhandledPromptBehavior',
               required: false,
               ref: 'Session::UserPromptHandler'
             },
-            web_socket_url: {json_key: 'webSocketUrl', required: false},
+            web_socket_url: {wire_key: 'webSocketUrl', required: false},
             extensible: true
           )
 

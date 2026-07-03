@@ -47,9 +47,9 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetForcedColorsModeThemeOverrideParameters = Serialization::Record.define(
-            theme: {json_key: 'theme', nullable: true, enum: 'Emulation::FORCED_COLORS_MODE_THEME'},
-            contexts: {json_key: 'contexts', required: false, list: true},
-            user_contexts: {json_key: 'userContexts', required: false, list: true}
+            theme: {wire_key: 'theme', nullable: true, enum: 'Emulation::FORCED_COLORS_MODE_THEME'},
+            contexts: {wire_key: 'contexts', required: false, list: true},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
@@ -63,17 +63,17 @@ module Selenium
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
             Coordinates = Serialization::Record.define(
-              contexts: {json_key: 'contexts', required: false, list: true},
-              user_contexts: {json_key: 'userContexts', required: false, list: true},
-              coordinates: {json_key: 'coordinates', nullable: true, ref: 'Emulation::GeolocationCoordinates'}
+              contexts: {wire_key: 'contexts', required: false, list: true},
+              user_contexts: {wire_key: 'userContexts', required: false, list: true},
+              coordinates: {wire_key: 'coordinates', nullable: true, ref: 'Emulation::GeolocationCoordinates'}
             )
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
             Error = Serialization::Record.define(
-              contexts: {json_key: 'contexts', required: false, list: true},
-              user_contexts: {json_key: 'userContexts', required: false, list: true},
-              error: {json_key: 'error', ref: 'Emulation::GeolocationPositionError'}
+              contexts: {wire_key: 'contexts', required: false, list: true},
+              user_contexts: {wire_key: 'userContexts', required: false, list: true},
+              error: {wire_key: 'error', ref: 'Emulation::GeolocationPositionError'}
             )
           end
 
@@ -82,11 +82,11 @@ module Selenium
           GeolocationCoordinates = Serialization::Record.define(
             latitude: 'latitude',
             longitude: 'longitude',
-            accuracy: {json_key: 'accuracy', required: false},
-            altitude: {json_key: 'altitude', required: false, nullable: true},
-            altitude_accuracy: {json_key: 'altitudeAccuracy', required: false, nullable: true},
-            heading: {json_key: 'heading', required: false, nullable: true},
-            speed: {json_key: 'speed', required: false, nullable: true}
+            accuracy: {wire_key: 'accuracy', required: false},
+            altitude: {wire_key: 'altitude', required: false, nullable: true},
+            altitude_accuracy: {wire_key: 'altitudeAccuracy', required: false, nullable: true},
+            heading: {wire_key: 'heading', required: false, nullable: true},
+            speed: {wire_key: 'speed', required: false, nullable: true}
           )
 
           # @api private
@@ -96,21 +96,21 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetLocaleOverrideParameters = Serialization::Record.define(
-            locale: {json_key: 'locale', nullable: true},
-            contexts: {json_key: 'contexts', required: false, list: true},
-            user_contexts: {json_key: 'userContexts', required: false, list: true}
+            locale: {wire_key: 'locale', nullable: true},
+            contexts: {wire_key: 'contexts', required: false, list: true},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetNetworkConditionsParameters = Serialization::Record.define(
             network_conditions: {
-              json_key: 'networkConditions',
+              wire_key: 'networkConditions',
               nullable: true,
               ref: 'Emulation::NetworkConditionsOffline'
             },
-            contexts: {json_key: 'contexts', required: false, list: true},
-            user_contexts: {json_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
@@ -124,64 +124,64 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetScreenSettingsOverrideParameters = Serialization::Record.define(
-            screen_area: {json_key: 'screenArea', nullable: true, ref: 'Emulation::ScreenArea'},
-            contexts: {json_key: 'contexts', required: false, list: true},
-            user_contexts: {json_key: 'userContexts', required: false, list: true}
+            screen_area: {wire_key: 'screenArea', nullable: true, ref: 'Emulation::ScreenArea'},
+            contexts: {wire_key: 'contexts', required: false, list: true},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ScreenOrientation = Serialization::Record.define(
-            natural: {json_key: 'natural', enum: 'Emulation::SCREEN_ORIENTATION_NATURAL'},
-            type: {json_key: 'type', enum: 'Emulation::SCREEN_ORIENTATION_TYPE'}
+            natural: {wire_key: 'natural', enum: 'Emulation::SCREEN_ORIENTATION_NATURAL'},
+            type: {wire_key: 'type', enum: 'Emulation::SCREEN_ORIENTATION_TYPE'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetScreenOrientationOverrideParameters = Serialization::Record.define(
-            screen_orientation: {json_key: 'screenOrientation', nullable: true, ref: 'Emulation::ScreenOrientation'},
-            contexts: {json_key: 'contexts', required: false, list: true},
-            user_contexts: {json_key: 'userContexts', required: false, list: true}
+            screen_orientation: {wire_key: 'screenOrientation', nullable: true, ref: 'Emulation::ScreenOrientation'},
+            contexts: {wire_key: 'contexts', required: false, list: true},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetUserAgentOverrideParameters = Serialization::Record.define(
-            user_agent: {json_key: 'userAgent', nullable: true},
-            contexts: {json_key: 'contexts', required: false, list: true},
-            user_contexts: {json_key: 'userContexts', required: false, list: true}
+            user_agent: {wire_key: 'userAgent', nullable: true},
+            contexts: {wire_key: 'contexts', required: false, list: true},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetScriptingEnabledParameters = Serialization::Record.define(
-            enabled: {json_key: 'enabled', nullable: true},
-            contexts: {json_key: 'contexts', required: false, list: true},
-            user_contexts: {json_key: 'userContexts', required: false, list: true}
+            enabled: {wire_key: 'enabled', nullable: true},
+            contexts: {wire_key: 'contexts', required: false, list: true},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetScrollbarTypeOverrideParameters = Serialization::Record.define(
-            scrollbar_type: {json_key: 'scrollbarType', nullable: true},
-            contexts: {json_key: 'contexts', required: false, list: true},
-            user_contexts: {json_key: 'userContexts', required: false, list: true}
+            scrollbar_type: {wire_key: 'scrollbarType', nullable: true},
+            contexts: {wire_key: 'contexts', required: false, list: true},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetTimezoneOverrideParameters = Serialization::Record.define(
-            timezone: {json_key: 'timezone', nullable: true},
-            contexts: {json_key: 'contexts', required: false, list: true},
-            user_contexts: {json_key: 'userContexts', required: false, list: true}
+            timezone: {wire_key: 'timezone', nullable: true},
+            contexts: {wire_key: 'contexts', required: false, list: true},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetTouchOverrideParameters = Serialization::Record.define(
-            max_touch_points: {json_key: 'maxTouchPoints', nullable: true},
-            contexts: {json_key: 'contexts', required: false, list: true},
-            user_contexts: {json_key: 'userContexts', required: false, list: true}
+            max_touch_points: {wire_key: 'maxTouchPoints', nullable: true},
+            contexts: {wire_key: 'contexts', required: false, list: true},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
           # @api private

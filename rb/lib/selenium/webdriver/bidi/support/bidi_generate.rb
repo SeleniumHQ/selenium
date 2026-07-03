@@ -233,11 +233,11 @@ module BiDiGenerate
   Enum = Struct.new(:constant_name, :pairs, keyword_init: true)
 
   # ref is the Protocol-relative class path for a nested structured field (nil
-  # for a scalar/opaque field); list wraps it in an array. json_key is the exact
+  # for a scalar/opaque field); list wraps it in an array. wire_key is the exact
   # JSON payload key (the schema's `wire` name, baked verbatim).
-  FieldIR = Struct.new(:ruby_name, :json_key, :required, :nullable, :ref, :list, :enum, :rbs, keyword_init: true) do
+  FieldIR = Struct.new(:ruby_name, :wire_key, :required, :nullable, :ref, :list, :enum, :rbs, keyword_init: true) do
     # A `Serialization::Record.define` spec entry: `name: 'jsonKey'` shorthand, or
-    # `name: {json_key:, …}` when the field carries JSON facts beyond its name.
+    # `name: {wire_key:, …}` when the field carries JSON facts beyond its name.
     # enum carries the allowed-values constant path, validated at construction.
     def spec_entry(indent = 0)
       meta = []
@@ -246,9 +246,9 @@ module BiDiGenerate
       meta << "ref: '#{ref}'" if ref
       meta << 'list: true' if list
       meta << "enum: '#{enum}'" if enum
-      return "#{ruby_name}: '#{json_key}'" if meta.empty?
+      return "#{ruby_name}: '#{wire_key}'" if meta.empty?
 
-      meta.unshift("json_key: '#{json_key}'")
+      meta.unshift("wire_key: '#{wire_key}'")
       BiDiGenerate.wrap_call("#{ruby_name}: ", meta, indent, open: '{', close: '}')
     end
 
@@ -297,7 +297,7 @@ module BiDiGenerate
       if discriminator[:wire] == discriminator[:ruby_name].to_s
         "#{discriminator[:ruby_name]}: {fixed: #{literal}}"
       else
-        "#{discriminator[:ruby_name]}: {json_key: '#{discriminator[:wire]}', fixed: #{literal}}"
+        "#{discriminator[:ruby_name]}: {wire_key: '#{discriminator[:wire]}', fixed: #{literal}}"
       end
     end
 
@@ -617,7 +617,7 @@ module BiDiGenerate
     def field_ir(field)
       resolved = resolve(field['type'])
       ruby_name = BiDiGenerate.safe_field_name(BiDiGenerate.camel_to_snake(field['name']))
-      FieldIR.new(ruby_name: ruby_name, json_key: field['wire'],
+      FieldIR.new(ruby_name: ruby_name, wire_key: field['wire'],
                   required: field['required'], nullable: resolved[:nullable],
                   ref: resolved[:ref], list: resolved[:list], enum: enum_const(field['type']),
                   rbs: resolved[:rbs])
