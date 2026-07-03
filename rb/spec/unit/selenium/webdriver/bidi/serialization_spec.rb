@@ -211,6 +211,11 @@ module Selenium
                 .to raise_error(ArgumentError, /phases expected a list/)
             end
 
+            it 'rejects a non-Array enumerable for a scalar enum instead of coercing it' do
+              expect { Network::Cookie.new(name: 'c', same_site: Set[:none]) }
+                .to raise_error(ArgumentError, /same_site must be one of/)
+            end
+
             it 'raises on an inbound enum value outside our schema' do
               expect { Log::ConsoleLogEntry.from_json('type' => 'console', 'level' => 'futureLevel') }
                 .to raise_error(Error::WebDriverError, /level received an unknown value.*futureLevel/)

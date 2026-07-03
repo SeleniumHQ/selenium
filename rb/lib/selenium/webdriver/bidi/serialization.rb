@@ -42,7 +42,8 @@ module Selenium
         def self.validate!(name, value, enum)
           return if UNSET.equal?(value) || value.nil?
 
-          invalid = Array(value).reject { |element| enum.key?(element) }
+          elements = value.is_a?(::Array) ? value : [value]
+          invalid = elements.reject { |element| enum.key?(element) }
           return if invalid.empty?
 
           raise ::ArgumentError, "#{name} must be one of #{enum.keys.inspect}, got #{invalid.inspect}"

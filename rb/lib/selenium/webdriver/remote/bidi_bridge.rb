@@ -17,6 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/bidi'
 require 'selenium/webdriver/bidi/transport'
 
 module Selenium
