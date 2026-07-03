@@ -18,7 +18,7 @@ standalone as well as bundled. Bindings ship and default to a known-good SM, but
 point at a different binary, so a binding and the SM it runs may differ in version.
 
 **Output.** The default follows standard CLI convention — result on stdout, logs on stderr — so
-`$(selenium-manager …)` captures only the result. Bindings set `--output` explicitly and are
+`$(selenium-manager …)` captures only the result. Bindings request output explicitly and are
 unaffected, so only the standalone audience is impacted.
 
 **Forward compatibility.** Neither the bindings nor the binary may fail solely because of version
@@ -56,9 +56,9 @@ skew. How an older SM treats an input it does not recognize depends on the input
   - Stay in Beta — contract stays mutable.
   - Drop the label but keep versioning coupled to the bindings — empty releases, no standalone use.
   - Independently versioned, standalone-released — **selected**.
-- **Default `--output`.**
-  - Keep `logger` — log lines on stdout pollute `$(selenium-manager …)`.
-  - `mixed` — result on stdout, logs on stderr; bindings set it explicitly, so are unaffected — **selected**.
+- **Default output.**
+  - Keep logs on stdout — pollutes `$(selenium-manager …)`.
+  - Follow standard CLI convention: result on stdout, diagnostics on stderr — **selected**.
 - **Unknown switch, or unknown value of a switch with a default.**
   - Error — turns expected skew into a broken session.
   - Warn and ignore the switch, or use the default value — **selected**.
