@@ -310,6 +310,22 @@ class JsonInputTest {
   }
 
   @Test
+  void shouldRejectUnescapedControlCharactersInStrings() {
+    // RFC 8259 §7: characters U+0000..U+001F MUST be escaped in JSON strings.
+    // A literal newline / tab / etc. inside quotes is not valid JSON.
+    try (JsonInput input = newInput("\"a\nb\"")) {
+      assertThatExceptionOfType(JsonException.class)
+          .isThrownBy(input::nextString)
+          .withMessageStartingWith("Illegal unescaped control character");
+    }
+
+    // Escaped equivalents are still fine.
+    try (JsonInput input = newInput("\"a\\nb\"")) {
+      assertThat(input.nextString()).isEqualTo("a\nb");
+    }
+  }
+
+  @Test
   void nullInputsShouldCoerceAsNullValues() throws IOException {
     try (InputStream is = new ByteArrayInputStream(new byte[0]);
         Reader reader = new InputStreamReader(is, UTF_8);
