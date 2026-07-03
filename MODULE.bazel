@@ -76,7 +76,7 @@ linter.configure(
 linter.register(name = "rust-rustfmt")
 
 node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node")
-node.toolchain(node_version = "24.18.0")
+node.toolchain(node_version = "22.22.0")
 
 pnpm = use_extension(
     "@aspect_rules_js//npm:extensions.bzl",
