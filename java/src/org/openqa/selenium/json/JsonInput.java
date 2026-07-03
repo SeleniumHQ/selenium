@@ -133,7 +133,6 @@ public class JsonInput implements Closeable {
         return JsonType.NULL;
 
       case '-':
-      case '+':
       case '0':
       case '1':
       case '2':
@@ -223,50 +222,86 @@ public class JsonInput implements Closeable {
    */
   public Number nextNumber() {
     expect(JsonType.NUMBER);
-    boolean mightBeDecimal = false;
     StringBuilder builder = new StringBuilder();
-    // We know it's safe to use a do/while loop since the first character was a number
-    boolean read = true;
-    do {
-      switch (input.peek()) {
-        case '-':
-        case '+':
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-          builder.append((char) input.read());
-          break;
-        case '.':
-        case 'e':
-        case 'E':
-          mightBeDecimal = true;
-          builder.append((char) input.read());
-          break;
-        default:
-          read = false;
+    boolean isDecimal = false;
+
+    // Optional leading minus. (Per RFC 8259 §6, a leading '+' is not allowed.)
+    if (input.peek() == '-') {
+      builder.append((char) input.read());
+    }
+
+    // Integer part: either "0" or [1-9] [0-9]*.
+    int first = input.peek();
+    if (first == '0') {
+      builder.append((char) input.read());
+      // Leading zeros ("00", "01", ...) are not allowed.
+      if (isDigit(input.peek())) {
+        throw new JsonException("Leading zeros are not permitted in JSON numbers. " + input);
       }
-    } while (read);
+    } else if (first >= '1' && first <= '9') {
+      while (isDigit(input.peek())) {
+        builder.append((char) input.read());
+      }
+    } else {
+      throw new JsonException("Expected digit but saw " + describeChar(first) + ". " + input);
+    }
+
+    // Optional fractional part: '.' 1*DIGIT
+    if (input.peek() == '.') {
+      isDecimal = true;
+      builder.append((char) input.read());
+      if (!isDigit(input.peek())) {
+        throw new JsonException(
+            "Expected at least one digit after '.' but saw "
+                + describeChar(input.peek())
+                + ". "
+                + input);
+      }
+      while (isDigit(input.peek())) {
+        builder.append((char) input.read());
+      }
+    }
+
+    // Optional exponent part: ('e' | 'E') ('+' | '-')? 1*DIGIT
+    if (input.peek() == 'e' || input.peek() == 'E') {
+      isDecimal = true;
+      builder.append((char) input.read());
+      if (input.peek() == '+' || input.peek() == '-') {
+        builder.append((char) input.read());
+      }
+      if (!isDigit(input.peek())) {
+        throw new JsonException(
+            "Expected at least one digit in exponent but saw "
+                + describeChar(input.peek())
+                + ". "
+                + input);
+      }
+      while (isDigit(input.peek())) {
+        builder.append((char) input.read());
+      }
+    }
 
     try {
-      // The JSON Schema does state the decimal point should not be used distinguish between
-      // integers and floating point values.
-      // Therefore, using a Long is only a fast path here, but we should not rely on the `double`
-      // value below is a real floating point.
-      if (!mightBeDecimal) {
+      // Fast path for integers: Long-valued when no fraction/exponent was present.
+      if (!isDecimal) {
         return Long.valueOf(builder.toString());
       }
-
-      return new BigDecimal(builder.toString()).doubleValue();
+      double value = new BigDecimal(builder.toString()).doubleValue();
+      if (Double.isInfinite(value) || Double.isNaN(value)) {
+        throw new JsonException("Number is out of range for a double: " + builder + ". " + input);
+      }
+      return value;
     } catch (NumberFormatException e) {
       throw new JsonException("Unable to parse to a number: " + builder + ". " + input, e);
     }
+  }
+
+  private static boolean isDigit(int c) {
+    return c >= '0' && c <= '9';
+  }
+
+  private static String describeChar(int c) {
+    return c == Input.EOF ? "<EOF>" : "'" + (char) c + "'";
   }
 
   /**
