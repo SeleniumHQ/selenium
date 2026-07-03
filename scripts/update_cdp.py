@@ -207,7 +207,12 @@ def update_js(chrome_milestone):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--chrome_channel", default="Stable", help="Set the Chrome channel (use Beta for early stable)")
+    parser.add_argument(
+        "--chrome_channel",
+        default="Stable",
+        choices=["Stable", "Beta", "Dev", "Canary"],
+        help="Set the Chrome channel (use Beta for early stable)",
+    )
     args = parser.parse_args()
 
     chrome_milestone = latest_for_channel(args.chrome_channel)

@@ -20,10 +20,13 @@ def calculate_hash(url):
     print(f"Calculate hash for {url}", file=sys.stderr)
     h = hashlib.sha256()
     r = http.request("GET", url, preload_content=False)
-    if r.status != 200:
-        raise ValueError(f"Download unavailable (HTTP {r.status}): {url}")
-    for b in iter(lambda: r.read(4096), b""):
-        h.update(b)
+    try:
+        if r.status != 200:
+            raise ValueError(f"Download unavailable (HTTP {r.status}): {url}")
+        for b in iter(lambda: r.read(4096), b""):
+            h.update(b)
+    finally:
+        r.release_conn()
     return h.hexdigest()
 
 
