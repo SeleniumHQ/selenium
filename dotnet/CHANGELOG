@@ -1,3 +1,9 @@
+v4.46.0
+======
+* Support CDP versions: v147, v148, v149
+* Thread safe product info determination (#17684)
+* [bidi] Split event stream backed subscription and enumeration (#17705)
+
 v4.45.0
 ======
 * Support CDP versions: v147, v148, v149

@@ -1,3 +1,17 @@
+v4.46.0
+======
+* Support CDP versions: v147, v148, v149
+* Mark all current BiDi related classes beta (#17690)
+* Treat prefix literally in UrlTemplate.match(url, prefix) (#17713)
+* show browser version and available CDP versions (#17708)
+* Make Either.stream() and iterator() empty for a left value (#17714)
+* Handle system proxy setting for arguments passed to selenium manager (#17402)
+* fix comparator of Docker versions (#17723)
+* [grid] Fix classpath packaging Redis-backed for SessionQueue (#17706)
+* [json] Allow constructor args to be used when coercing from json (#17733)
+* Fix JSON parser EOF sentinel collision with U+FFFF (#17737)
+* Reject unescaped control characters in JSON strings (#17740)
+
 v4.45.0
 ======
 * Support CDP versions: v147, v148, v149

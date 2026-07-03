@@ -1,3 +1,9 @@
+4.46.0 (2026-07-03)
+=========================
+* Support CDP versions: v147, v148, v149
+* trim whitespace around NO_PROXY entries (#17565)
+* add ClientConfig for HTTP client customization (#17699)
+
 4.45.0 (2026-06-15)
 =========================
 * Support CDP versions: v147, v148, v149

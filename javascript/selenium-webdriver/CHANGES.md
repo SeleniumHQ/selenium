@@ -1,3 +1,8 @@
+## 4.46.0
+
+- Support CDP versions: v147, v148, v149
+- Add binding-neutral BiDi schema with cddl2ts-gated fidelity (#17700)
+
 ## 4.45.0
 
 - Support CDP versions: v147, v148, v149
