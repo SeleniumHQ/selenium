@@ -98,10 +98,21 @@ module Selenium
               fields.each do |f|
                 value = attributes[f.name]
                 raise ::ArgumentError, "#{name}##{f.name} cannot be nil" if value.nil? && !f.nullable
-                next unless f.enum
+                next if value.nil? || UNSET.equal?(value)
 
-                Serialization.validate!("#{name}##{f.name}", value, Protocol.const_get(f.enum))
+                check_outbound_shape(f, value)
+                Serialization.validate!("#{name}##{f.name}", value, Protocol.const_get(f.enum)) if f.enum
               end
+            end
+
+            # Outbound mirror of check_shape: a list-typed arg must be an array, a scalar-shaped one
+            # (enum or ref, not a list) must not — a local ArgumentError, not a wire round-trip.
+            def check_outbound_shape(field, value)
+              return if field.list == value.is_a?(::Array)
+              return unless field.list || field.enum || field.ref
+
+              kind = field.list ? 'a list' : 'a single value'
+              raise ::ArgumentError, "#{name}##{field.name} expected #{kind}, got #{value.inspect}"
             end
 
             def fixed?(field)

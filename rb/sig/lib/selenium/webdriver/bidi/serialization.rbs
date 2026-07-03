@@ -60,6 +60,8 @@ module Selenium
 
             def validate_values: (Hash[Symbol, untyped] attributes) -> void
 
+            def check_outbound_shape: (untyped field, untyped value) -> void
+
             def fixed?: (untyped field) -> bool
 
             def wire_value: (untyped field, Hash[untyped, untyped] json_payload) -> untyped

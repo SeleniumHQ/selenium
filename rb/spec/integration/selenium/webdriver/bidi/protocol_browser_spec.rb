@@ -29,7 +29,7 @@ module Selenium
 
           let(:browser) { described_class.new(driver) }
 
-          it 'creates an user context',
+          it 'creates a user context',
              pending_if: {browser: %i[safari safari_preview],
                           reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
             user_context = browser.create_user_context
@@ -46,7 +46,9 @@ module Selenium
             expect(all_ids).to include(created)
           end
 
-          it 'removes an user context' do
+          it 'removes a user context',
+             pending_if: {browser: %i[safari safari_preview],
+                          reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
             to_remove = browser.create_user_context.user_context
             browser.remove_user_context(user_context: to_remove)
             remaining = browser.get_user_contexts.user_contexts.map(&:user_context)

@@ -206,6 +206,11 @@ module Selenium
                 .to raise_error(ArgumentError, /context cannot be nil/)
             end
 
+            it 'rejects a scalar passed for a list-typed field at construction' do
+              expect { Network::AddInterceptParameters.new(phases: :before_request_sent) }
+                .to raise_error(ArgumentError, /phases expected a list/)
+            end
+
             it 'raises on an inbound enum value outside our schema' do
               expect { Log::ConsoleLogEntry.from_json('type' => 'console', 'level' => 'futureLevel') }
                 .to raise_error(Error::WebDriverError, /level received an unknown value.*futureLevel/)
