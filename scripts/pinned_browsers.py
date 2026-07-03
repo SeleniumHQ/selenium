@@ -20,28 +20,29 @@ def calculate_hash(url):
     print(f"Calculate hash for {url}", file=sys.stderr)
     h = hashlib.sha256()
     r = http.request("GET", url, preload_content=False)
+    if r.status != 200:
+        raise ValueError(f"Download unavailable (HTTP {r.status}): {url}")
     for b in iter(lambda: r.read(4096), b""):
         h.update(b)
     return h.hexdigest()
 
 
-def get_chrome_info_for_channel(channel):
-    r = http.request(
-        "GET",
-        f"https://chromiumdash.appspot.com/fetch_releases?channel={channel}&num=1&platform=Mac,Linux",
-    )
-    all_versions = json.loads(r.data)
-    # use the same milestone for all chrome releases, so pick the lowest
-    milestones = [version["milestone"] for version in all_versions if version["milestone"]]
-    if not milestones:
-        raise ValueError(f"No Chrome versions with milestones found for channel '{channel}'")
-    milestone = min(milestones)
-    r = http.request(
-        "GET",
-        "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json",
-    )
-    versions = json.loads(r.data)["versions"]
+def latest_for_channel(channel):
+    """Newest Chrome-for-Testing version entry (version + downloads) for a channel.
 
+    Uses Chrome-for-Testing's channel designation, which tracks the latest milestone and is
+    unaffected by N-1 security respins.
+    """
+    url = "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json"
+    r = http.request("GET", url)
+    if r.status != 200:
+        raise ValueError(f"Fetch failed (HTTP {r.status}): {url}")
+    milestone = json.loads(r.data)["channels"][channel]["version"].split(".")[0]
+    url = "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json"
+    r = http.request("GET", url)
+    if r.status != 200:
+        raise ValueError(f"Fetch failed (HTTP {r.status}): {url}")
+    versions = json.loads(r.data)["versions"]
     return sorted(
         filter(lambda v: v["version"].split(".")[0] == str(milestone), versions),
         key=lambda v: parse(v["version"]),
@@ -51,6 +52,8 @@ def get_chrome_info_for_channel(channel):
 def chromedriver(selected_version, workspace_prefix=""):
     content = ""
 
+    if "chromedriver" not in selected_version["downloads"]:
+        raise ValueError(f"No chromedriver published for Chrome {selected_version['version']}")
     drivers = selected_version["downloads"]["chromedriver"]
 
     url = next((d["url"] for d in drivers if d["platform"] == "linux64"), None)
@@ -551,12 +554,12 @@ def pin_browsers():
     content = content + edge_and_edgedriver()
 
     # Stable Chrome
-    stable_chrome_info = get_chrome_info_for_channel(channel="Stable")
+    stable_chrome_info = latest_for_channel("Stable")
     content = content + chrome(stable_chrome_info, workspace_prefix="")
     content = content + chromedriver(stable_chrome_info, workspace_prefix="")
 
     # Beta Chrome
-    beta_chrome_info = get_chrome_info_for_channel(channel="Beta")
+    beta_chrome_info = latest_for_channel("Beta")
     content = content + chrome(beta_chrome_info, workspace_prefix="beta_")
     content = content + chromedriver(beta_chrome_info, workspace_prefix="beta_")
 

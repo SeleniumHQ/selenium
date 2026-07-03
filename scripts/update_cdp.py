@@ -14,33 +14,22 @@ http = urllib3.PoolManager()
 root_dir = Path(os.path.realpath(__file__)).parent.parent
 
 
-def get_chrome_milestone():
-    """Get the Chrome milestone from the channel.
+def latest_for_channel(channel):
+    """Newest Chrome-for-Testing version entry for a channel.
 
-    This is the same method from pinned_browser. Use --chrome_channel=Beta if
-    using early stable release.
+    Uses Chrome-for-Testing's channel designation, which tracks the latest milestone and is
+    unaffected by N-1 security respins.
     """
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--chrome_channel", default="Stable", help="Set the Chrome channel")
-    args = parser.parse_args()
-    channel = args.chrome_channel
-
-    r = http.request(
-        "GET",
-        f"https://chromiumdash.appspot.com/fetch_releases?channel={channel}&num=1&platform=Mac,Linux",
-    )
-    all_versions = json.loads(r.data)
-    # use the same milestone for all Chrome releases, so pick the lowest
-    milestones = [version["milestone"] for version in all_versions if version["milestone"]]
-    if not milestones:
-        raise ValueError(f"No Chrome versions with milestones found for channel '{channel}'")
-    milestone = min(milestones)
-    r = http.request(
-        "GET",
-        "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json",
-    )
+    url = "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json"
+    r = http.request("GET", url)
+    if r.status != 200:
+        raise ValueError(f"Fetch failed (HTTP {r.status}): {url}")
+    milestone = json.loads(r.data)["channels"][channel]["version"].split(".")[0]
+    url = "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json"
+    r = http.request("GET", url)
+    if r.status != 200:
+        raise ValueError(f"Fetch failed (HTTP {r.status}): {url}")
     versions = json.loads(r.data)["versions"]
-
     return sorted(
         filter(lambda v: v["version"].split(".")[0] == str(milestone), versions),
         key=lambda v: parse(v["version"]),
@@ -49,6 +38,8 @@ def get_chrome_milestone():
 
 def fetch_and_save(url, file_path):
     response = http.request("GET", url)
+    if response.status != 200:
+        raise ValueError(f"Fetch failed (HTTP {response.status}): {url}")
     with open(file_path, "wb") as file:
         file.write(response.data)
 
@@ -79,6 +70,8 @@ def flatten_browser_pdl(file_path, chrome_version):
     for domain_file in includes:
         url = base_url + domain_file
         response = http.request("GET", url)
+        if response.status != 200:
+            raise ValueError(f"Fetch failed (HTTP {response.status}): {url}")
         concatenated += response.data.decode("utf-8") + "\n"
     # Overwrite the file with version block + concatenated domains
     with open(file_path, "w") as file:
@@ -213,7 +206,11 @@ def update_js(chrome_milestone):
 
 
 if __name__ == "__main__":
-    chrome_milestone = get_chrome_milestone()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--chrome_channel", default="Stable", help="Set the Chrome channel (use Beta for early stable)")
+    args = parser.parse_args()
+
+    chrome_milestone = latest_for_channel(args.chrome_channel)
     add_pdls(chrome_milestone)
     update_java(chrome_milestone)
     update_dotnet(chrome_milestone)
