@@ -25,6 +25,15 @@ module Selenium
     class BiDi
       module Protocol
         describe 'serialization runtime' do
+          # Complete, valid Cookie attributes, so a test can isolate one field (override it or add a
+          # stray key) without tripping the required-presence check on the others.
+          def valid_cookie_attrs
+            {
+              name: 'sid', value: Network::StringValue.new(value: 'YQ=='),
+              domain: 'example.com', path: '/', size: 3, http_only: false, secure: true, same_site: :none
+            }
+          end
+
           describe 'a record with a baked discriminator' do
             it 'round-trips through the wire' do
               locator = BrowsingContext::CssLocator.new(value: '.foo')
@@ -33,8 +42,9 @@ module Selenium
               expect(BrowsingContext::CssLocator.from_json(locator.as_json)).to eq(locator)
             end
 
-            it 'forces the discriminator and omits an unset field (outbound stays lenient on required)' do
-              expect(BrowsingContext::CssLocator.new.as_json).to eq('type' => 'css')
+            it 'rejects a required field omitted at construction' do
+              expect { BrowsingContext::CssLocator.new }
+                .to raise_error(ArgumentError, /CssLocator#value is required/)
             end
           end
 
@@ -74,13 +84,7 @@ module Selenium
           end
 
           describe 'nested structured fields' do
-            let(:cookie) do
-              Network::Cookie.new(
-                name: 'sid', value: Network::StringValue.new(value: 'YQ=='),
-                domain: 'example.com', path: '/', size: 3,
-                http_only: false, secure: true, same_site: :none
-              )
-            end
+            let(:cookie) { Network::Cookie.new(**valid_cookie_attrs) }
 
             it 'serializes a nested value object into its wire hash' do
               expect(cookie.as_json).to include('value' => {'type' => 'string', 'value' => 'YQ=='})
@@ -174,6 +178,13 @@ module Selenium
                 .to raise_error(ArgumentError, /invalid combination/)
             end
 
+            # The command signature marks credentials optional (required in only one variant), so
+            # Ruby's keyword check can't catch this; the chosen variant's Record does.
+            it 'rejects a union variant built without a field that variant requires' do
+              expect { Network::ContinueWithAuthParameters.build(request: 'r', action: :provide_credentials) }
+                .to raise_error(ArgumentError, /credentials is required/)
+            end
+
             it 'dispatches a discriminated union by its value, falling back to the default variant' do
               provide = Network::ContinueWithAuthParameters.build(
                 request: 'r', action: :provide_credentials,
@@ -192,12 +203,12 @@ module Selenium
 
           describe 'value-object enum validation' do
             it 'rejects an out-of-set enum value at construction, so an invalid object cannot exist' do
-              expect { Network::Cookie.new(name: 'c', same_site: :sideways) }
+              expect { Network::Cookie.new(**valid_cookie_attrs, same_site: :sideways) }
                 .to raise_error(ArgumentError, /Cookie#same_site must be one of/)
             end
 
             it 'rejects an unknown keyword at construction' do
-              expect { Network::Cookie.new(name: 'c', bogus: 'x') }
+              expect { Network::Cookie.new(**valid_cookie_attrs, bogus: 'x') }
                 .to raise_error(ArgumentError, /unknown keyword: :bogus/)
             end
 
@@ -212,7 +223,7 @@ module Selenium
             end
 
             it 'rejects a non-Array enumerable for a scalar enum instead of coercing it' do
-              expect { Network::Cookie.new(name: 'c', same_site: Set[:none]) }
+              expect { Network::Cookie.new(**valid_cookie_attrs, same_site: Set[:none]) }
                 .to raise_error(ArgumentError, /same_site must be one of/)
             end
 
@@ -253,13 +264,7 @@ module Selenium
           describe 'inbound shape validation' do
             # A complete Cookie wire payload, so a shape test can corrupt one field without
             # tripping the required-presence check on the others.
-            let(:cookie_wire) do
-              Network::Cookie.new(
-                name: 'sid', value: Network::StringValue.new(value: 'YQ=='),
-                domain: 'example.com', path: '/', size: 3,
-                http_only: false, secure: true, same_site: :none
-              ).as_json
-            end
+            let(:cookie_wire) { Network::Cookie.new(**valid_cookie_attrs).as_json }
 
             it 'raises when a required field is missing from the response' do
               expect { Network::Cookie.from_json('name' => 'sid') }

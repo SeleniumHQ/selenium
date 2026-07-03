@@ -90,14 +90,15 @@ module Selenium
 
             private
 
-            # Checks each field's value: a non-nullable field cannot be nil (nil is neither a
-            # value nor the UNSET omit-sentinel, so it would be silently dropped on the wire), and
-            # an enum field must be in its allowed set. The enum constant is resolved lazily so a
-            # cross-domain enum need not be loaded first. Outbound only (from +new+); inbound enum
-            # tokens are mapped-and-checked separately in +read+.
+            # Checks each field's value: a required field cannot be omitted (UNSET), a non-nullable
+            # field cannot be nil (nil is neither a value nor the UNSET omit-sentinel, so it would be
+            # silently dropped on the wire), and an enum field must be in its allowed set. The enum
+            # constant is resolved lazily so a cross-domain enum need not be loaded first. Outbound
+            # only (from +new+); inbound presence/enum are checked separately in +wire_value+/+read+.
             def validate_values(attributes)
               fields.each do |f|
                 value = attributes[f.name]
+                raise ::ArgumentError, "#{name}##{f.name} is required" if UNSET.equal?(value) && f.required
                 raise ::ArgumentError, "#{name}##{f.name} cannot be nil" if value.nil? && !f.nullable
                 next if value.nil? || UNSET.equal?(value)
 
