@@ -16,4 +16,4 @@
 # under the License.
 
 
-__version__ = "4.46.0.202606161656"
+__version__ = "4.46.0"
