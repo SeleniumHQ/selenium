@@ -402,13 +402,13 @@ public class JsonInput implements Closeable {
    */
   public void endArray() {
     expect(JsonType.END_COLLECTION);
-    Container expectation = stack.removeFirst();
-    containerHasElement.removeFirst();
-    if (expectation != Container.COLLECTION) {
+    if (stack.peekFirst() != Container.COLLECTION) {
       // The only other thing we could be closing is a map
       throw new JsonException(
           "Attempt to close a JSON List, but a JSON Object was expected. " + input);
     }
+    stack.removeFirst();
+    containerHasElement.removeFirst();
     input.read();
   }
 
@@ -431,12 +431,11 @@ public class JsonInput implements Closeable {
    */
   public void endObject() {
     expect(JsonType.END_MAP);
-    Container expectation = stack.removeFirst();
-    containerHasElement.removeFirst();
-    if (expectation != Container.MAP_NAME) {
-      // The only other thing we could be closing is a map
+    if (stack.peekFirst() != Container.MAP_NAME) {
       throw new JsonException("Attempt to close a JSON Map, but not ready to. " + input);
     }
+    stack.removeFirst();
+    containerHasElement.removeFirst();
     input.read();
   }
 
