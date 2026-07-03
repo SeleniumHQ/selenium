@@ -36,7 +36,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.BiDiSessionStatus;
-import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.browsingcontext.NavigationResult;
 import org.openqa.selenium.bidi.log.ConsoleLogEntry;
@@ -96,11 +95,10 @@ class RemoteWebDriverBiDiTest extends JupiterTestBase {
   @Test
   @NoDriverBeforeTest
   void ensureBiDiSessionCreation() {
-    try (BiDi biDi = ((HasBiDi) localDriver).getBiDi()) {
-      BiDiSessionStatus status = biDi.getBidiSessionStatus();
-      assertThat(status).isNotNull();
-      assertThat(status.getMessage()).isNotEmpty();
-    }
+    BiDi biDi = BiDi.from(localDriver);
+    BiDiSessionStatus status = biDi.getBidiSessionStatus();
+    assertThat(status).isNotNull();
+    assertThat(status.getMessage()).isNotEmpty();
   }
 
   @Test

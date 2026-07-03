@@ -26,7 +26,7 @@ class BiDiSessionTest extends JupiterTestBase {
 
   @Test
   void shouldBeAbleToCreateABiDiSession() {
-    BiDi biDi = ((HasBiDi) driver).getBiDi();
+    BiDi biDi = BiDi.from(driver);
 
     BiDiSessionStatus status = biDi.getBidiSessionStatus();
     assertThat(status).isNotNull();

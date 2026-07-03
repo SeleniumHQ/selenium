@@ -29,6 +29,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 
@@ -39,6 +40,16 @@ public class BiDi implements Closeable {
   private final Duration timeout;
   private final Connection connection;
   private final Map<Event<?>, List<Long>> contextListenerIds = new ConcurrentHashMap<>();
+
+  public static BiDi from(WebDriver driver) {
+    Require.nonNull("WebDriver", driver);
+    if (!(driver instanceof HasBiDi)) {
+      throw new BiDiException("WebDriver does not support BiDi protocol");
+    }
+    return ((HasBiDi) driver)
+        .maybeGetBiDi()
+        .orElseThrow(() -> new BiDiException("Unable to create a BiDi connection"));
+  }
 
   /**
    * @deprecated Use constructor with timeout parameter: {@link #BiDi(Connection, Duration)}

@@ -31,7 +31,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.bidi.BiDi;
-import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.log.ConsoleLogEntry;
 import org.openqa.selenium.bidi.log.JavascriptLogEntry;
 import org.openqa.selenium.bidi.module.LogInspector;
@@ -56,7 +55,7 @@ class RemoteScript implements Script {
 
   public RemoteScript(WebDriver driver) {
     this.driver = driver;
-    this.biDi = ((HasBiDi) driver).getBiDi();
+    this.biDi = BiDi.from(driver);
     this.logInspector = new LogInspector(driver);
     this.script = new org.openqa.selenium.bidi.module.Script(driver);
   }

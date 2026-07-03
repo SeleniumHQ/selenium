@@ -177,7 +177,7 @@ class FirefoxDriverConcurrentTest extends JupiterTestBase {
 
     try {
       driver1 = new WebDriverBuilder().get(options1);
-      BiDi biDi1 = ((FirefoxDriver) driver1).getBiDi();
+      BiDi biDi1 = BiDi.from(driver1);
       assertThat(biDi1).isNotNull();
 
       // Extract the BiDi websocket URL and port for the first instance
@@ -186,7 +186,7 @@ class FirefoxDriverConcurrentTest extends JupiterTestBase {
       String port1 = webSocketUrl1.replaceAll("^ws://[^:]+:(\\d+)/.*$", "$1");
 
       driver2 = new WebDriverBuilder().get(options2);
-      BiDi biDi2 = ((FirefoxDriver) driver2).getBiDi();
+      BiDi biDi2 = BiDi.from(driver2);
       assertThat(biDi2).isNotNull();
 
       // Extract the BiDi websocket URL and port for the second instance

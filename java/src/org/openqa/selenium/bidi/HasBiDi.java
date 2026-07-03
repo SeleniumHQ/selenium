@@ -19,9 +19,15 @@ package org.openqa.selenium.bidi;
 
 import java.util.Optional;
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.WebDriver;
 
 @Beta
 public interface HasBiDi {
+
+  /**
+   * @deprecated Use {@link BiDi#from(WebDriver)} instead.
+   */
+  @Deprecated(since = "4.24", forRemoval = true)
   default BiDi getBiDi() {
     return maybeGetBiDi()
         .orElseThrow(() -> new BiDiException("Unable to create a BiDi connection"));

@@ -38,8 +38,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WindowType;
+import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.BiDiException;
-import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -222,7 +222,7 @@ class NetworkCommandsTest extends JupiterTestBase {
 
       assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("authorized");
 
-      ((HasBiDi) driver).getBiDi().removeListener(callbackId);
+      BiDi.from(driver).removeListener(callbackId);
     }
   }
 

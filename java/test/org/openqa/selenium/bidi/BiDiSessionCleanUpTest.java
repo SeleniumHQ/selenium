@@ -35,7 +35,7 @@ final class BiDiSessionCleanUpTest extends JupiterTestBase {
   void shouldNotCloseBiDiSessionIfOneWindowIsClosed() {
     localDriver = new WebDriverBuilder().get();
     assumeThat(localDriver).isInstanceOf(HasBiDi.class);
-    BiDi biDi = ((HasBiDi) localDriver).getBiDi();
+    BiDi biDi = BiDi.from(localDriver);
 
     BiDiSessionStatus status = biDi.getBidiSessionStatus();
     assertThat(status).isNotNull();
@@ -59,7 +59,7 @@ final class BiDiSessionCleanUpTest extends JupiterTestBase {
   void shouldCloseBiDiSessionIfLastWindowIsClosed() {
     localDriver = new WebDriverBuilder().get();
     assumeThat(localDriver).isInstanceOf(HasBiDi.class);
-    BiDi biDi = ((HasBiDi) localDriver).getBiDi();
+    BiDi biDi = BiDi.from(localDriver);
 
     BiDiSessionStatus status = biDi.getBidiSessionStatus();
     assertThat(status).isNotNull();
