@@ -86,7 +86,7 @@ module Selenium
             original_opener: {json_key: 'originalOpener', nullable: true},
             url: 'url',
             user_context: 'userContext',
-            parent: {json_key: 'parent', nullable: true}
+            parent: {json_key: 'parent', required: false, nullable: true}
           )
 
           # @api private
@@ -117,7 +117,10 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          AccessibilityLocator::Value = Serialization::Record.define(name: 'name', role: 'role')
+          AccessibilityLocator::Value = Serialization::Record.define(
+            name: {json_key: 'name', required: false},
+            role: {json_key: 'role', required: false}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -139,9 +142,9 @@ module Selenium
           InnerTextLocator = Serialization::Record.define(
             type: {fixed: 'innerText'},
             value: 'value',
-            ignore_case: 'ignoreCase',
-            match_type: {json_key: 'matchType', enum: 'BrowsingContext::INNER_TEXT_LOCATOR_MATCH_TYPE'},
-            max_depth: 'maxDepth'
+            ignore_case: {json_key: 'ignoreCase', required: false},
+            match_type: {json_key: 'matchType', required: false, enum: 'BrowsingContext::INNER_TEXT_LOCATOR_MATCH_TYPE'},
+            max_depth: {json_key: 'maxDepth', required: false}
           )
 
           # @api private
@@ -155,7 +158,7 @@ module Selenium
             navigation: {json_key: 'navigation', nullable: true},
             timestamp: 'timestamp',
             url: 'url',
-            user_context: 'userContext'
+            user_context: {json_key: 'userContext', required: false}
           )
 
           # @api private
@@ -165,7 +168,7 @@ module Selenium
             navigation: {json_key: 'navigation', nullable: true},
             timestamp: 'timestamp',
             url: 'url',
-            user_context: 'userContext'
+            user_context: {json_key: 'userContext', required: false}
           )
 
           # @api private
@@ -176,14 +179,14 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CaptureScreenshotParameters = Serialization::Record.define(
             context: 'context',
-            origin: {json_key: 'origin', enum: 'BrowsingContext::CAPTURE_SCREENSHOT_PARAMETERS_ORIGIN'},
-            format: {json_key: 'format', ref: 'BrowsingContext::ImageFormat'},
-            clip: {json_key: 'clip', ref: 'BrowsingContext::ClipRectangle'}
+            origin: {json_key: 'origin', required: false, enum: 'BrowsingContext::CAPTURE_SCREENSHOT_PARAMETERS_ORIGIN'},
+            format: {json_key: 'format', required: false, ref: 'BrowsingContext::ImageFormat'},
+            clip: {json_key: 'clip', required: false, ref: 'BrowsingContext::ClipRectangle'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ImageFormat = Serialization::Record.define(type: 'type', quality: 'quality')
+          ImageFormat = Serialization::Record.define(type: 'type', quality: {json_key: 'quality', required: false})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -218,24 +221,33 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          CloseParameters = Serialization::Record.define(context: 'context', prompt_unload: 'promptUnload')
+          CloseParameters = Serialization::Record.define(
+            context: 'context',
+            prompt_unload: {json_key: 'promptUnload', required: false}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CreateParameters = Serialization::Record.define(
             type: {json_key: 'type', enum: 'BrowsingContext::CREATE_TYPE'},
-            reference_context: 'referenceContext',
-            background: 'background',
-            user_context: 'userContext'
+            reference_context: {json_key: 'referenceContext', required: false},
+            background: {json_key: 'background', required: false},
+            user_context: {json_key: 'userContext', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          CreateResult = Serialization::Record.define(context: 'context', user_context: 'userContext')
+          CreateResult = Serialization::Record.define(
+            context: 'context',
+            user_context: {json_key: 'userContext', required: false}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          GetTreeParameters = Serialization::Record.define(max_depth: 'maxDepth', root: 'root')
+          GetTreeParameters = Serialization::Record.define(
+            max_depth: {json_key: 'maxDepth', required: false},
+            root: {json_key: 'root', required: false}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -247,8 +259,8 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           HandleUserPromptParameters = Serialization::Record.define(
             context: 'context',
-            accept: 'accept',
-            user_text: 'userText'
+            accept: {json_key: 'accept', required: false},
+            user_text: {json_key: 'userText', required: false}
           )
 
           # @api private
@@ -256,9 +268,13 @@ module Selenium
           LocateNodesParameters = Serialization::Record.define(
             context: 'context',
             locator: {json_key: 'locator', ref: 'BrowsingContext::Locator'},
-            max_node_count: 'maxNodeCount',
-            serialization_options: {json_key: 'serializationOptions', ref: 'Script::SerializationOptions'},
-            start_nodes: {json_key: 'startNodes', ref: 'Script::SharedReference', list: true}
+            max_node_count: {json_key: 'maxNodeCount', required: false},
+            serialization_options: {
+              json_key: 'serializationOptions',
+              required: false,
+              ref: 'Script::SerializationOptions'
+            },
+            start_nodes: {json_key: 'startNodes', required: false, ref: 'Script::SharedReference', list: true}
           )
 
           # @api private
@@ -272,7 +288,7 @@ module Selenium
           NavigateParameters = Serialization::Record.define(
             context: 'context',
             url: 'url',
-            wait: {json_key: 'wait', enum: 'BrowsingContext::READINESS_STATE'}
+            wait: {json_key: 'wait', required: false, enum: 'BrowsingContext::READINESS_STATE'}
           )
 
           # @api private
@@ -286,27 +302,34 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PrintParameters = Serialization::Record.define(
             context: 'context',
-            background: 'background',
-            margin: {json_key: 'margin', ref: 'BrowsingContext::PrintMarginParameters'},
-            orientation: {json_key: 'orientation', enum: 'BrowsingContext::PRINT_PARAMETERS_ORIENTATION'},
-            page: {json_key: 'page', ref: 'BrowsingContext::PrintPageParameters'},
-            page_ranges: {json_key: 'pageRanges', list: true},
-            scale: 'scale',
-            shrink_to_fit: 'shrinkToFit'
+            background: {json_key: 'background', required: false},
+            margin: {json_key: 'margin', required: false, ref: 'BrowsingContext::PrintMarginParameters'},
+            orientation: {
+              json_key: 'orientation',
+              required: false,
+              enum: 'BrowsingContext::PRINT_PARAMETERS_ORIENTATION'
+            },
+            page: {json_key: 'page', required: false, ref: 'BrowsingContext::PrintPageParameters'},
+            page_ranges: {json_key: 'pageRanges', required: false, list: true},
+            scale: {json_key: 'scale', required: false},
+            shrink_to_fit: {json_key: 'shrinkToFit', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PrintMarginParameters = Serialization::Record.define(
-            bottom: 'bottom',
-            left: 'left',
-            right: 'right',
-            top: 'top'
+            bottom: {json_key: 'bottom', required: false},
+            left: {json_key: 'left', required: false},
+            right: {json_key: 'right', required: false},
+            top: {json_key: 'top', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          PrintPageParameters = Serialization::Record.define(height: 'height', width: 'width')
+          PrintPageParameters = Serialization::Record.define(
+            height: {json_key: 'height', required: false},
+            width: {json_key: 'width', required: false}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -316,25 +339,25 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ReloadParameters = Serialization::Record.define(
             context: 'context',
-            ignore_cache: 'ignoreCache',
-            wait: {json_key: 'wait', enum: 'BrowsingContext::READINESS_STATE'}
+            ignore_cache: {json_key: 'ignoreCache', required: false},
+            wait: {json_key: 'wait', required: false, enum: 'BrowsingContext::READINESS_STATE'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetBypassCSPParameters = Serialization::Record.define(
             bypass: {json_key: 'bypass', nullable: true},
-            contexts: {json_key: 'contexts', list: true},
-            user_contexts: {json_key: 'userContexts', list: true}
+            contexts: {json_key: 'contexts', required: false, list: true},
+            user_contexts: {json_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetViewportParameters = Serialization::Record.define(
-            context: 'context',
-            viewport: {json_key: 'viewport', nullable: true, ref: 'BrowsingContext::Viewport'},
-            device_pixel_ratio: {json_key: 'devicePixelRatio', nullable: true},
-            user_contexts: {json_key: 'userContexts', list: true}
+            context: {json_key: 'context', required: false},
+            viewport: {json_key: 'viewport', required: false, nullable: true, ref: 'BrowsingContext::Viewport'},
+            device_pixel_ratio: {json_key: 'devicePixelRatio', required: false, nullable: true},
+            user_contexts: {json_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
@@ -351,7 +374,7 @@ module Selenium
             context: 'context',
             timestamp: 'timestamp',
             url: 'url',
-            user_context: 'userContext'
+            user_context: {json_key: 'userContext', required: false}
           )
 
           # @api private
@@ -362,7 +385,7 @@ module Selenium
             navigation: {json_key: 'navigation', nullable: true},
             timestamp: 'timestamp',
             url: 'url',
-            user_context: 'userContext'
+            user_context: {json_key: 'userContext', required: false}
           )
 
           # @api private
@@ -382,7 +405,7 @@ module Selenium
               navigation: {json_key: 'navigation', nullable: true},
               timestamp: 'timestamp',
               url: 'url',
-              user_context: 'userContext'
+              user_context: {json_key: 'userContext', required: false}
             )
 
             # @api private
@@ -394,7 +417,7 @@ module Selenium
               navigation: {json_key: 'navigation', nullable: true},
               timestamp: 'timestamp',
               url: 'url',
-              user_context: 'userContext'
+              user_context: {json_key: 'userContext', required: false}
             )
           end
 
@@ -404,8 +427,8 @@ module Selenium
             context: 'context',
             accepted: 'accepted',
             type: {json_key: 'type', enum: 'BrowsingContext::USER_PROMPT_TYPE'},
-            user_context: 'userContext',
-            user_text: 'userText'
+            user_context: {json_key: 'userContext', required: false},
+            user_text: {json_key: 'userText', required: false}
           )
 
           # @api private
@@ -415,8 +438,8 @@ module Selenium
             handler: {json_key: 'handler', enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
             message: 'message',
             type: {json_key: 'type', enum: 'BrowsingContext::USER_PROMPT_TYPE'},
-            user_context: 'userContext',
-            default_value: 'defaultValue'
+            user_context: {json_key: 'userContext', required: false},
+            default_value: {json_key: 'defaultValue', required: false}
           )
 
           EVENT_TYPES = {

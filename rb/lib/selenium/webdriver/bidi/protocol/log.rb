@@ -56,7 +56,7 @@ module Selenium
             source: {json_key: 'source', ref: 'Script::Source'},
             text: {json_key: 'text', nullable: true},
             timestamp: 'timestamp',
-            stack_trace: {json_key: 'stackTrace', ref: 'Script::StackTrace'}
+            stack_trace: {json_key: 'stackTrace', required: false, ref: 'Script::StackTrace'}
           )
 
           # @api private
@@ -66,7 +66,7 @@ module Selenium
             source: {json_key: 'source', ref: 'Script::Source'},
             text: {json_key: 'text', nullable: true},
             timestamp: 'timestamp',
-            stack_trace: {json_key: 'stackTrace', ref: 'Script::StackTrace'},
+            stack_trace: {json_key: 'stackTrace', required: false, ref: 'Script::StackTrace'},
             type: 'type'
           )
 
@@ -78,7 +78,7 @@ module Selenium
             source: {json_key: 'source', ref: 'Script::Source'},
             text: {json_key: 'text', nullable: true},
             timestamp: 'timestamp',
-            stack_trace: {json_key: 'stackTrace', ref: 'Script::StackTrace'},
+            stack_trace: {json_key: 'stackTrace', required: false, ref: 'Script::StackTrace'},
             method_: 'method',
             args: {json_key: 'args', ref: 'Script::RemoteValue', list: true}
           )
@@ -91,7 +91,7 @@ module Selenium
             source: {json_key: 'source', ref: 'Script::Source'},
             text: {json_key: 'text', nullable: true},
             timestamp: 'timestamp',
-            stack_trace: {json_key: 'stackTrace', ref: 'Script::StackTrace'}
+            stack_trace: {json_key: 'stackTrace', required: false, ref: 'Script::StackTrace'}
           )
 
           EVENT_TYPES = {

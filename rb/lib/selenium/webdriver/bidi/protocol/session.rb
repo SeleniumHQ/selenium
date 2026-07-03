@@ -36,19 +36,23 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CapabilitiesRequest = Serialization::Record.define(
-            always_match: {json_key: 'alwaysMatch', ref: 'Session::CapabilityRequest'},
-            first_match: {json_key: 'firstMatch', ref: 'Session::CapabilityRequest', list: true}
+            always_match: {json_key: 'alwaysMatch', required: false, ref: 'Session::CapabilityRequest'},
+            first_match: {json_key: 'firstMatch', required: false, ref: 'Session::CapabilityRequest', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CapabilityRequest = Serialization::Record.define(
-            accept_insecure_certs: 'acceptInsecureCerts',
-            browser_name: 'browserName',
-            browser_version: 'browserVersion',
-            platform_name: 'platformName',
-            proxy: {json_key: 'proxy', ref: 'Session::ProxyConfiguration'},
-            unhandled_prompt_behavior: {json_key: 'unhandledPromptBehavior', ref: 'Session::UserPromptHandler'},
+            accept_insecure_certs: {json_key: 'acceptInsecureCerts', required: false},
+            browser_name: {json_key: 'browserName', required: false},
+            browser_version: {json_key: 'browserVersion', required: false},
+            platform_name: {json_key: 'platformName', required: false},
+            proxy: {json_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
+            unhandled_prompt_behavior: {
+              json_key: 'unhandledPromptBehavior',
+              required: false,
+              ref: 'Session::UserPromptHandler'
+            },
             extensible: true
           )
 
@@ -89,11 +93,11 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ManualProxyConfiguration = Serialization::Record.define(
             proxy_type: {json_key: 'proxyType', fixed: 'manual'},
-            http_proxy: 'httpProxy',
-            ssl_proxy: 'sslProxy',
+            http_proxy: {json_key: 'httpProxy', required: false},
+            ssl_proxy: {json_key: 'sslProxy', required: false},
             socks_proxy: 'socksProxy',
             socks_version: 'socksVersion',
-            no_proxy: {json_key: 'noProxy', list: true},
+            no_proxy: {json_key: 'noProxy', required: false, list: true},
             extensible: true
           )
 
@@ -122,20 +126,20 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           UserPromptHandler = Serialization::Record.define(
-            alert: {json_key: 'alert', enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
-            before_unload: {json_key: 'beforeUnload', enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
-            confirm: {json_key: 'confirm', enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
-            default: {json_key: 'default', enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
-            file: {json_key: 'file', enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
-            prompt: {json_key: 'prompt', enum: 'Session::USER_PROMPT_HANDLER_TYPE'}
+            alert: {json_key: 'alert', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
+            before_unload: {json_key: 'beforeUnload', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
+            confirm: {json_key: 'confirm', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
+            default: {json_key: 'default', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
+            file: {json_key: 'file', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
+            prompt: {json_key: 'prompt', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SubscribeParameters = Serialization::Record.define(
             events: {json_key: 'events', list: true},
-            contexts: {json_key: 'contexts', list: true},
-            user_contexts: {json_key: 'userContexts', list: true}
+            contexts: {json_key: 'contexts', required: false, list: true},
+            user_contexts: {json_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
@@ -172,9 +176,13 @@ module Selenium
             platform_name: 'platformName',
             set_window_rect: 'setWindowRect',
             user_agent: 'userAgent',
-            proxy: {json_key: 'proxy', ref: 'Session::ProxyConfiguration'},
-            unhandled_prompt_behavior: {json_key: 'unhandledPromptBehavior', ref: 'Session::UserPromptHandler'},
-            web_socket_url: 'webSocketUrl',
+            proxy: {json_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
+            unhandled_prompt_behavior: {
+              json_key: 'unhandledPromptBehavior',
+              required: false,
+              ref: 'Session::UserPromptHandler'
+            },
+            web_socket_url: {json_key: 'webSocketUrl', required: false},
             extensible: true
           )
 

@@ -95,8 +95,8 @@ module Selenium
             redirect_count: 'redirectCount',
             request: {json_key: 'request', ref: 'Network::RequestData'},
             timestamp: 'timestamp',
-            user_context: {json_key: 'userContext', nullable: true},
-            intercepts: {json_key: 'intercepts', list: true}
+            user_context: {json_key: 'userContext', required: false, nullable: true},
+            intercepts: {json_key: 'intercepts', required: false, list: true}
           )
 
           # @api private
@@ -128,7 +128,7 @@ module Selenium
             http_only: 'httpOnly',
             secure: 'secure',
             same_site: {json_key: 'sameSite', enum: 'Network::SAME_SITE'},
-            expiry: 'expiry',
+            expiry: {json_key: 'expiry', required: false},
             extensible: true
           )
 
@@ -164,11 +164,11 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           Initiator = Serialization::Record.define(
-            column_number: 'columnNumber',
-            line_number: 'lineNumber',
-            request: 'request',
-            stack_trace: {json_key: 'stackTrace', ref: 'Script::StackTrace'},
-            type: {json_key: 'type', enum: 'Network::INITIATOR_TYPE'}
+            column_number: {json_key: 'columnNumber', required: false},
+            line_number: {json_key: 'lineNumber', required: false},
+            request: {json_key: 'request', required: false},
+            stack_trace: {json_key: 'stackTrace', required: false, ref: 'Script::StackTrace'},
+            type: {json_key: 'type', required: false, enum: 'Network::INITIATOR_TYPE'}
           )
 
           # @api private
@@ -204,7 +204,7 @@ module Selenium
             headers_size: {json_key: 'headersSize', nullable: true},
             body_size: {json_key: 'bodySize', nullable: true},
             content: {json_key: 'content', ref: 'Network::ResponseContent'},
-            auth_challenges: {json_key: 'authChallenges', ref: 'Network::AuthChallenge', list: true}
+            auth_challenges: {json_key: 'authChallenges', required: false, ref: 'Network::AuthChallenge', list: true}
           )
 
           # @api private
@@ -212,13 +212,13 @@ module Selenium
           SetCookieHeader = Serialization::Record.define(
             name: 'name',
             value: {json_key: 'value', ref: 'Network::BytesValue'},
-            domain: 'domain',
-            http_only: 'httpOnly',
-            expiry: 'expiry',
-            max_age: 'maxAge',
-            path: 'path',
-            same_site: {json_key: 'sameSite', enum: 'Network::SAME_SITE'},
-            secure: 'secure'
+            domain: {json_key: 'domain', required: false},
+            http_only: {json_key: 'httpOnly', required: false},
+            expiry: {json_key: 'expiry', required: false},
+            max_age: {json_key: 'maxAge', required: false},
+            path: {json_key: 'path', required: false},
+            same_site: {json_key: 'sameSite', required: false, enum: 'Network::SAME_SITE'},
+            secure: {json_key: 'secure', required: false}
           )
 
           # @api private
@@ -235,11 +235,11 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           UrlPatternPattern = Serialization::Record.define(
             type: {fixed: 'pattern'},
-            protocol: 'protocol',
-            hostname: 'hostname',
-            port: 'port',
-            pathname: 'pathname',
-            search: 'search'
+            protocol: {json_key: 'protocol', required: false},
+            hostname: {json_key: 'hostname', required: false},
+            port: {json_key: 'port', required: false},
+            pathname: {json_key: 'pathname', required: false},
+            search: {json_key: 'search', required: false}
           )
 
           # @api private
@@ -251,9 +251,9 @@ module Selenium
           AddDataCollectorParameters = Serialization::Record.define(
             data_types: {json_key: 'dataTypes', list: true, enum: 'Network::DATA_TYPE'},
             max_encoded_data_size: 'maxEncodedDataSize',
-            collector_type: {json_key: 'collectorType', enum: 'Network::COLLECTOR_TYPE'},
-            contexts: {json_key: 'contexts', list: true},
-            user_contexts: {json_key: 'userContexts', list: true}
+            collector_type: {json_key: 'collectorType', required: false, enum: 'Network::COLLECTOR_TYPE'},
+            contexts: {json_key: 'contexts', required: false, list: true},
+            user_contexts: {json_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
@@ -264,8 +264,8 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           AddInterceptParameters = Serialization::Record.define(
             phases: {json_key: 'phases', list: true, enum: 'Network::INTERCEPT_PHASE'},
-            contexts: {json_key: 'contexts', list: true},
-            url_patterns: {json_key: 'urlPatterns', ref: 'Network::UrlPattern', list: true}
+            contexts: {json_key: 'contexts', required: false, list: true},
+            url_patterns: {json_key: 'urlPatterns', required: false, ref: 'Network::UrlPattern', list: true}
           )
 
           # @api private
@@ -276,22 +276,22 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ContinueRequestParameters = Serialization::Record.define(
             request: 'request',
-            body: {json_key: 'body', ref: 'Network::BytesValue'},
-            cookies: {json_key: 'cookies', ref: 'Network::CookieHeader', list: true},
-            headers: {json_key: 'headers', ref: 'Network::Header', list: true},
-            method_: 'method',
-            url: 'url'
+            body: {json_key: 'body', required: false, ref: 'Network::BytesValue'},
+            cookies: {json_key: 'cookies', required: false, ref: 'Network::CookieHeader', list: true},
+            headers: {json_key: 'headers', required: false, ref: 'Network::Header', list: true},
+            method_: {json_key: 'method', required: false},
+            url: {json_key: 'url', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ContinueResponseParameters = Serialization::Record.define(
             request: 'request',
-            cookies: {json_key: 'cookies', ref: 'Network::SetCookieHeader', list: true},
-            credentials: {json_key: 'credentials', ref: 'Network::AuthCredentials'},
-            headers: {json_key: 'headers', ref: 'Network::Header', list: true},
-            reason_phrase: 'reasonPhrase',
-            status_code: 'statusCode'
+            cookies: {json_key: 'cookies', required: false, ref: 'Network::SetCookieHeader', list: true},
+            credentials: {json_key: 'credentials', required: false, ref: 'Network::AuthCredentials'},
+            headers: {json_key: 'headers', required: false, ref: 'Network::Header', list: true},
+            reason_phrase: {json_key: 'reasonPhrase', required: false},
+            status_code: {json_key: 'statusCode', required: false}
           )
 
           # @api private
@@ -335,8 +335,8 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           GetDataParameters = Serialization::Record.define(
             data_type: {json_key: 'dataType', enum: 'Network::DATA_TYPE'},
-            collector: 'collector',
-            disown: 'disown',
+            collector: {json_key: 'collector', required: false},
+            disown: {json_key: 'disown', required: false},
             request: 'request'
           )
 
@@ -348,11 +348,11 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ProvideResponseParameters = Serialization::Record.define(
             request: 'request',
-            body: {json_key: 'body', ref: 'Network::BytesValue'},
-            cookies: {json_key: 'cookies', ref: 'Network::SetCookieHeader', list: true},
-            headers: {json_key: 'headers', ref: 'Network::Header', list: true},
-            reason_phrase: 'reasonPhrase',
-            status_code: 'statusCode'
+            body: {json_key: 'body', required: false, ref: 'Network::BytesValue'},
+            cookies: {json_key: 'cookies', required: false, ref: 'Network::SetCookieHeader', list: true},
+            headers: {json_key: 'headers', required: false, ref: 'Network::Header', list: true},
+            reason_phrase: {json_key: 'reasonPhrase', required: false},
+            status_code: {json_key: 'statusCode', required: false}
           )
 
           # @api private
@@ -367,15 +367,15 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetCacheBehaviorParameters = Serialization::Record.define(
             cache_behavior: {json_key: 'cacheBehavior', enum: 'Network::SET_CACHE_BEHAVIOR_PARAMETERS_CACHE_BEHAVIOR'},
-            contexts: {json_key: 'contexts', list: true}
+            contexts: {json_key: 'contexts', required: false, list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetExtraHeadersParameters = Serialization::Record.define(
             headers: {json_key: 'headers', ref: 'Network::Header', list: true},
-            contexts: {json_key: 'contexts', list: true},
-            user_contexts: {json_key: 'userContexts', list: true}
+            contexts: {json_key: 'contexts', required: false, list: true},
+            user_contexts: {json_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
@@ -387,8 +387,8 @@ module Selenium
             redirect_count: 'redirectCount',
             request: {json_key: 'request', ref: 'Network::RequestData'},
             timestamp: 'timestamp',
-            user_context: {json_key: 'userContext', nullable: true},
-            intercepts: {json_key: 'intercepts', list: true},
+            user_context: {json_key: 'userContext', required: false, nullable: true},
+            intercepts: {json_key: 'intercepts', required: false, list: true},
             response: {json_key: 'response', ref: 'Network::ResponseData'}
           )
 
@@ -401,9 +401,9 @@ module Selenium
             redirect_count: 'redirectCount',
             request: {json_key: 'request', ref: 'Network::RequestData'},
             timestamp: 'timestamp',
-            user_context: {json_key: 'userContext', nullable: true},
-            intercepts: {json_key: 'intercepts', list: true},
-            initiator: {json_key: 'initiator', ref: 'Network::Initiator'}
+            user_context: {json_key: 'userContext', required: false, nullable: true},
+            intercepts: {json_key: 'intercepts', required: false, list: true},
+            initiator: {json_key: 'initiator', required: false, ref: 'Network::Initiator'}
           )
 
           # @api private
@@ -415,8 +415,8 @@ module Selenium
             redirect_count: 'redirectCount',
             request: {json_key: 'request', ref: 'Network::RequestData'},
             timestamp: 'timestamp',
-            user_context: {json_key: 'userContext', nullable: true},
-            intercepts: {json_key: 'intercepts', list: true},
+            user_context: {json_key: 'userContext', required: false, nullable: true},
+            intercepts: {json_key: 'intercepts', required: false, list: true},
             error_text: 'errorText'
           )
 
@@ -429,8 +429,8 @@ module Selenium
             redirect_count: 'redirectCount',
             request: {json_key: 'request', ref: 'Network::RequestData'},
             timestamp: 'timestamp',
-            user_context: {json_key: 'userContext', nullable: true},
-            intercepts: {json_key: 'intercepts', list: true},
+            user_context: {json_key: 'userContext', required: false, nullable: true},
+            intercepts: {json_key: 'intercepts', required: false, list: true},
             response: {json_key: 'response', ref: 'Network::ResponseData'}
           )
 
@@ -443,8 +443,8 @@ module Selenium
             redirect_count: 'redirectCount',
             request: {json_key: 'request', ref: 'Network::RequestData'},
             timestamp: 'timestamp',
-            user_context: {json_key: 'userContext', nullable: true},
-            intercepts: {json_key: 'intercepts', list: true},
+            user_context: {json_key: 'userContext', required: false, nullable: true},
+            intercepts: {json_key: 'intercepts', required: false, list: true},
             response: {json_key: 'response', ref: 'Network::ResponseData'}
           )
 

@@ -33,7 +33,7 @@ module Selenium
               expect(BrowsingContext::CssLocator.from_json(locator.as_json)).to eq(locator)
             end
 
-            it 'forces the discriminator and omits an unset field (required-enforcement is Phase 4)' do
+            it 'forces the discriminator and omits an unset field (outbound stays lenient on required)' do
               expect(BrowsingContext::CssLocator.new.as_json).to eq('type' => 'css')
             end
           end
@@ -251,8 +251,23 @@ module Selenium
           end
 
           describe 'inbound shape validation' do
+            # A complete Cookie wire payload, so a shape test can corrupt one field without
+            # tripping the required-presence check on the others.
+            let(:cookie_wire) do
+              Network::Cookie.new(
+                name: 'sid', value: Network::StringValue.new(value: 'YQ=='),
+                domain: 'example.com', path: '/', size: 3,
+                http_only: false, secure: true, same_site: :none
+              ).as_json
+            end
+
+            it 'raises when a required field is missing from the response' do
+              expect { Network::Cookie.from_json('name' => 'sid') }
+                .to raise_error(Error::WebDriverError, /Cookie#value is required but was missing/)
+            end
+
             it 'raises when a non-nullable field arrives as explicit null' do
-              expect { Network::Cookie.from_json('name' => nil) }
+              expect { Network::Cookie.from_json(cookie_wire.merge('name' => nil)) }
                 .to raise_error(Error::WebDriverError, /Cookie#name received null but is not nullable/)
             end
 
@@ -262,7 +277,7 @@ module Selenium
             end
 
             it 'raises when a scalar-typed field arrives as a list' do
-              expect { Network::Cookie.from_json('sameSite' => %w[none]) }
+              expect { Network::Cookie.from_json(cookie_wire.merge('sameSite' => %w[none])) }
                 .to raise_error(Error::WebDriverError, /same_site expected a single value/)
             end
           end

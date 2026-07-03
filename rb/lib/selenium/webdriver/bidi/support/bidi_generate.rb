@@ -239,15 +239,17 @@ module BiDiGenerate
     # A `Serialization::Record.define` spec entry: `name: 'jsonKey'` shorthand, or
     # `name: {json_key:, …}` when the field carries JSON facts beyond its name.
     # enum carries the allowed-values constant path, validated at construction.
-    def spec_entry
+    def spec_entry(indent = 0)
       meta = []
+      meta << 'required: false' unless required
       meta << 'nullable: true' if nullable
       meta << "ref: '#{ref}'" if ref
       meta << 'list: true' if list
       meta << "enum: '#{enum}'" if enum
       return "#{ruby_name}: '#{json_key}'" if meta.empty?
 
-      "#{ruby_name}: {json_key: '#{json_key}', #{meta.join(', ')}}"
+      meta.unshift("json_key: '#{json_key}'")
+      BiDiGenerate.wrap_call("#{ruby_name}: ", meta, indent, open: '{', close: '}')
     end
 
     # The `self.new` keyword for this field — a user-supplied input carrying the field's
@@ -274,19 +276,20 @@ module BiDiGenerate
 
     # Keyword arguments for `Serialization::Record.define(...)`: the fixed discriminator member
     # first, then the fields, then the extensible flag.
-    def define_entries
+    def define_entries(entry_indent)
       entries = []
       entries << discriminator_entry if discriminator
-      entries.concat(fields.map(&:spec_entry))
+      entries.concat(fields.map { |f| f.spec_entry(entry_indent) })
       entries << 'extensible: true' if extensible
       entries
     end
 
     # `Name = Serialization::Record.define(...)` as one line when it fits within the line limit at the
     # given indent, else wrapped one entry per line — so the emitted source stays inside
-    # RuboCop's length limit without a per-file exception.
+    # RuboCop's length limit without a per-file exception. Entries render at indent + 2, the
+    # indent a long field hash wraps itself against.
     def define_assignment(name, indent)
-      BiDiGenerate.wrap_call("#{name} = Serialization::Record.define", define_entries, indent)
+      BiDiGenerate.wrap_call("#{name} = Serialization::Record.define", define_entries(indent + 2), indent)
     end
 
     def discriminator_entry

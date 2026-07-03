@@ -95,14 +95,14 @@ module Selenium
           PointerSourceActions = Serialization::Record.define(
             type: {fixed: 'pointer'},
             id: 'id',
-            parameters: {json_key: 'parameters', ref: 'Input::PointerParameters'},
+            parameters: {json_key: 'parameters', required: false, ref: 'Input::PointerParameters'},
             actions: {json_key: 'actions', ref: 'Input::PointerSourceAction', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PointerParameters = Serialization::Record.define(
-            pointer_type: {json_key: 'pointerType', enum: 'Input::POINTER_TYPE'}
+            pointer_type: {json_key: 'pointerType', required: false, enum: 'Input::POINTER_TYPE'}
           )
 
           # @api private
@@ -142,7 +142,10 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          PauseAction = Serialization::Record.define(type: {fixed: 'pause'}, duration: 'duration')
+          PauseAction = Serialization::Record.define(
+            type: {fixed: 'pause'},
+            duration: {json_key: 'duration', required: false}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -161,13 +164,13 @@ module Selenium
           PointerDownAction = Serialization::Record.define(
             type: {fixed: 'pointerDown'},
             button: 'button',
-            width: 'width',
-            height: 'height',
-            pressure: 'pressure',
-            tangential_pressure: 'tangentialPressure',
-            twist: 'twist',
-            altitude_angle: 'altitudeAngle',
-            azimuth_angle: 'azimuthAngle'
+            width: {json_key: 'width', required: false},
+            height: {json_key: 'height', required: false},
+            pressure: {json_key: 'pressure', required: false},
+            tangential_pressure: {json_key: 'tangentialPressure', required: false},
+            twist: {json_key: 'twist', required: false},
+            altitude_angle: {json_key: 'altitudeAngle', required: false},
+            azimuth_angle: {json_key: 'azimuthAngle', required: false}
           )
 
           # @api private
@@ -176,15 +179,15 @@ module Selenium
             type: {fixed: 'pointerMove'},
             x: 'x',
             y: 'y',
-            duration: 'duration',
-            origin: {json_key: 'origin', ref: 'Input::Origin'},
-            width: 'width',
-            height: 'height',
-            pressure: 'pressure',
-            tangential_pressure: 'tangentialPressure',
-            twist: 'twist',
-            altitude_angle: 'altitudeAngle',
-            azimuth_angle: 'azimuthAngle'
+            duration: {json_key: 'duration', required: false},
+            origin: {json_key: 'origin', required: false, ref: 'Input::Origin'},
+            width: {json_key: 'width', required: false},
+            height: {json_key: 'height', required: false},
+            pressure: {json_key: 'pressure', required: false},
+            tangential_pressure: {json_key: 'tangentialPressure', required: false},
+            twist: {json_key: 'twist', required: false},
+            altitude_angle: {json_key: 'altitudeAngle', required: false},
+            azimuth_angle: {json_key: 'azimuthAngle', required: false}
           )
 
           # @api private
@@ -195,20 +198,20 @@ module Selenium
             y: 'y',
             delta_x: 'deltaX',
             delta_y: 'deltaY',
-            duration: 'duration',
-            origin: {json_key: 'origin', ref: 'Input::Origin'}
+            duration: {json_key: 'duration', required: false},
+            origin: {json_key: 'origin', required: false, ref: 'Input::Origin'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PointerCommonProperties = Serialization::Record.define(
-            width: 'width',
-            height: 'height',
-            pressure: 'pressure',
-            tangential_pressure: 'tangentialPressure',
-            twist: 'twist',
-            altitude_angle: 'altitudeAngle',
-            azimuth_angle: 'azimuthAngle'
+            width: {json_key: 'width', required: false},
+            height: {json_key: 'height', required: false},
+            pressure: {json_key: 'pressure', required: false},
+            tangential_pressure: {json_key: 'tangentialPressure', required: false},
+            twist: {json_key: 'twist', required: false},
+            altitude_angle: {json_key: 'altitudeAngle', required: false},
+            azimuth_angle: {json_key: 'azimuthAngle', required: false}
           )
 
           # @api private
@@ -236,8 +239,8 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           FileDialogInfo = Serialization::Record.define(
             context: 'context',
-            user_context: 'userContext',
-            element: {json_key: 'element', ref: 'Script::SharedReference'},
+            user_context: {json_key: 'userContext', required: false},
+            element: {json_key: 'element', required: false, ref: 'Script::SharedReference'},
             multiple: 'multiple'
           )
 

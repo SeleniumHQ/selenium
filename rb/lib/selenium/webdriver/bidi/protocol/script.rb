@@ -78,8 +78,12 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ChannelProperties = Serialization::Record.define(
             channel: 'channel',
-            serialization_options: {json_key: 'serializationOptions', ref: 'Script::SerializationOptions'},
-            ownership: {json_key: 'ownership', enum: 'Script::RESULT_OWNERSHIP'}
+            serialization_options: {
+              json_key: 'serializationOptions',
+              required: false,
+              ref: 'Script::SerializationOptions'
+            },
+            ownership: {json_key: 'ownership', required: false, enum: 'Script::RESULT_OWNERSHIP'}
           )
 
           # @api private
@@ -181,7 +185,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          RegExpValue = Serialization::Record.define(pattern: 'pattern', flags: 'flags')
+          RegExpValue = Serialization::Record.define(pattern: 'pattern', flags: {json_key: 'flags', required: false})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -278,8 +282,8 @@ module Selenium
             realm: 'realm',
             origin: 'origin',
             context: 'context',
-            user_context: 'userContext',
-            sandbox: 'sandbox'
+            user_context: {json_key: 'userContext', required: false},
+            sandbox: {json_key: 'sandbox', required: false}
           )
 
           # @api private
@@ -342,13 +346,17 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          SharedReference = Serialization::Record.define(shared_id: 'sharedId', handle: 'handle', extensible: true)
+          SharedReference = Serialization::Record.define(
+            shared_id: 'sharedId',
+            handle: {json_key: 'handle', required: false},
+            extensible: true
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           RemoteObjectReference = Serialization::Record.define(
             handle: 'handle',
-            shared_id: 'sharedId',
+            shared_id: {json_key: 'sharedId', required: false},
             extensible: true
           )
 
@@ -417,34 +425,34 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SymbolRemoteValue = Serialization::Record.define(
             type: {fixed: 'symbol'},
-            handle: 'handle',
-            internal_id: 'internalId'
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ArrayRemoteValue = Serialization::Record.define(
             type: {fixed: 'array'},
-            handle: 'handle',
-            internal_id: 'internalId',
-            value: {json_key: 'value', ref: 'Script::RemoteValue', list: true}
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false},
+            value: {json_key: 'value', required: false, ref: 'Script::RemoteValue', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ObjectRemoteValue = Serialization::Record.define(
             type: {fixed: 'object'},
-            handle: 'handle',
-            internal_id: 'internalId',
-            value: {json_key: 'value', ref: 'Script::RemoteValue', list: true}
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false},
+            value: {json_key: 'value', required: false, ref: 'Script::RemoteValue', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           FunctionRemoteValue = Serialization::Record.define(
             type: {fixed: 'function'},
-            handle: 'handle',
-            internal_id: 'internalId'
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false}
           )
 
           # @api private
@@ -452,8 +460,8 @@ module Selenium
           RegExpRemoteValue = Serialization::Record.define(
             type: {fixed: 'regexp'},
             value: {json_key: 'value', ref: 'Script::RegExpValue'},
-            handle: 'handle',
-            internal_id: 'internalId'
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false}
           )
 
           # @api private
@@ -461,118 +469,118 @@ module Selenium
           DateRemoteValue = Serialization::Record.define(
             type: {fixed: 'date'},
             value: 'value',
-            handle: 'handle',
-            internal_id: 'internalId'
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           MapRemoteValue = Serialization::Record.define(
             type: {fixed: 'map'},
-            handle: 'handle',
-            internal_id: 'internalId',
-            value: {json_key: 'value', ref: 'Script::RemoteValue', list: true}
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false},
+            value: {json_key: 'value', required: false, ref: 'Script::RemoteValue', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetRemoteValue = Serialization::Record.define(
             type: {fixed: 'set'},
-            handle: 'handle',
-            internal_id: 'internalId',
-            value: {json_key: 'value', ref: 'Script::RemoteValue', list: true}
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false},
+            value: {json_key: 'value', required: false, ref: 'Script::RemoteValue', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           WeakMapRemoteValue = Serialization::Record.define(
             type: {fixed: 'weakmap'},
-            handle: 'handle',
-            internal_id: 'internalId'
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           WeakSetRemoteValue = Serialization::Record.define(
             type: {fixed: 'weakset'},
-            handle: 'handle',
-            internal_id: 'internalId'
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           GeneratorRemoteValue = Serialization::Record.define(
             type: {fixed: 'generator'},
-            handle: 'handle',
-            internal_id: 'internalId'
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ErrorRemoteValue = Serialization::Record.define(
             type: {fixed: 'error'},
-            handle: 'handle',
-            internal_id: 'internalId'
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ProxyRemoteValue = Serialization::Record.define(
             type: {fixed: 'proxy'},
-            handle: 'handle',
-            internal_id: 'internalId'
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PromiseRemoteValue = Serialization::Record.define(
             type: {fixed: 'promise'},
-            handle: 'handle',
-            internal_id: 'internalId'
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           TypedArrayRemoteValue = Serialization::Record.define(
             type: {fixed: 'typedarray'},
-            handle: 'handle',
-            internal_id: 'internalId'
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ArrayBufferRemoteValue = Serialization::Record.define(
             type: {fixed: 'arraybuffer'},
-            handle: 'handle',
-            internal_id: 'internalId'
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           NodeListRemoteValue = Serialization::Record.define(
             type: {fixed: 'nodelist'},
-            handle: 'handle',
-            internal_id: 'internalId',
-            value: {json_key: 'value', ref: 'Script::RemoteValue', list: true}
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false},
+            value: {json_key: 'value', required: false, ref: 'Script::RemoteValue', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           HTMLCollectionRemoteValue = Serialization::Record.define(
             type: {fixed: 'htmlcollection'},
-            handle: 'handle',
-            internal_id: 'internalId',
-            value: {json_key: 'value', ref: 'Script::RemoteValue', list: true}
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false},
+            value: {json_key: 'value', required: false, ref: 'Script::RemoteValue', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           NodeRemoteValue = Serialization::Record.define(
             type: {fixed: 'node'},
-            shared_id: 'sharedId',
-            handle: 'handle',
-            internal_id: 'internalId',
-            value: {json_key: 'value', ref: 'Script::NodeProperties'}
+            shared_id: {json_key: 'sharedId', required: false},
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false},
+            value: {json_key: 'value', required: false, ref: 'Script::NodeProperties'}
           )
 
           # @api private
@@ -580,13 +588,13 @@ module Selenium
           NodeProperties = Serialization::Record.define(
             node_type: 'nodeType',
             child_node_count: 'childNodeCount',
-            attributes: 'attributes',
-            children: {json_key: 'children', ref: 'Script::NodeRemoteValue', list: true},
-            local_name: 'localName',
-            mode: {json_key: 'mode', enum: 'Script::NODE_PROPERTIES_MODE'},
-            namespace_uri: 'namespaceURI',
-            node_value: 'nodeValue',
-            shadow_root: {json_key: 'shadowRoot', nullable: true, ref: 'Script::NodeRemoteValue'}
+            attributes: {json_key: 'attributes', required: false},
+            children: {json_key: 'children', required: false, ref: 'Script::NodeRemoteValue', list: true},
+            local_name: {json_key: 'localName', required: false},
+            mode: {json_key: 'mode', required: false, enum: 'Script::NODE_PROPERTIES_MODE'},
+            namespace_uri: {json_key: 'namespaceURI', required: false},
+            node_value: {json_key: 'nodeValue', required: false},
+            shadow_root: {json_key: 'shadowRoot', required: false, nullable: true, ref: 'Script::NodeRemoteValue'}
           )
 
           # @api private
@@ -594,8 +602,8 @@ module Selenium
           WindowProxyRemoteValue = Serialization::Record.define(
             type: {fixed: 'window'},
             value: {json_key: 'value', ref: 'Script::WindowProxyProperties'},
-            handle: 'handle',
-            internal_id: 'internalId'
+            handle: {json_key: 'handle', required: false},
+            internal_id: {json_key: 'internalId', required: false}
           )
 
           # @api private
@@ -605,9 +613,13 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SerializationOptions = Serialization::Record.define(
-            max_dom_depth: {json_key: 'maxDomDepth', nullable: true},
-            max_object_depth: {json_key: 'maxObjectDepth', nullable: true},
-            include_shadow_tree: {json_key: 'includeShadowTree', enum: 'Script::SERIALIZATION_OPTIONS_INCLUDE_SHADOW_TREE'}
+            max_dom_depth: {json_key: 'maxDomDepth', required: false, nullable: true},
+            max_object_depth: {json_key: 'maxObjectDepth', required: false, nullable: true},
+            include_shadow_tree: {
+              json_key: 'includeShadowTree',
+              required: false,
+              enum: 'Script::SERIALIZATION_OPTIONS_INCLUDE_SHADOW_TREE'
+            }
           )
 
           # @api private
@@ -627,7 +639,11 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          Source = Serialization::Record.define(realm: 'realm', context: 'context', user_context: 'userContext')
+          Source = Serialization::Record.define(
+            realm: 'realm',
+            context: {json_key: 'context', required: false},
+            user_context: {json_key: 'userContext', required: false}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -635,7 +651,10 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ContextTarget = Serialization::Record.define(context: 'context', sandbox: 'sandbox')
+          ContextTarget = Serialization::Record.define(
+            context: 'context',
+            sandbox: {json_key: 'sandbox', required: false}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -650,10 +669,10 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           AddPreloadScriptParameters = Serialization::Record.define(
             function_declaration: 'functionDeclaration',
-            arguments: {json_key: 'arguments', ref: 'Script::ChannelValue', list: true},
-            contexts: {json_key: 'contexts', list: true},
-            user_contexts: {json_key: 'userContexts', list: true},
-            sandbox: 'sandbox'
+            arguments: {json_key: 'arguments', required: false, ref: 'Script::ChannelValue', list: true},
+            contexts: {json_key: 'contexts', required: false, list: true},
+            user_contexts: {json_key: 'userContexts', required: false, list: true},
+            sandbox: {json_key: 'sandbox', required: false}
           )
 
           # @api private
@@ -673,11 +692,15 @@ module Selenium
             function_declaration: 'functionDeclaration',
             await_promise: 'awaitPromise',
             target: {json_key: 'target', ref: 'Script::Target'},
-            arguments: {json_key: 'arguments', ref: 'Script::LocalValue', list: true},
-            result_ownership: {json_key: 'resultOwnership', enum: 'Script::RESULT_OWNERSHIP'},
-            serialization_options: {json_key: 'serializationOptions', ref: 'Script::SerializationOptions'},
-            this: {json_key: 'this', ref: 'Script::LocalValue'},
-            user_activation: 'userActivation'
+            arguments: {json_key: 'arguments', required: false, ref: 'Script::LocalValue', list: true},
+            result_ownership: {json_key: 'resultOwnership', required: false, enum: 'Script::RESULT_OWNERSHIP'},
+            serialization_options: {
+              json_key: 'serializationOptions',
+              required: false,
+              ref: 'Script::SerializationOptions'
+            },
+            this: {json_key: 'this', required: false, ref: 'Script::LocalValue'},
+            user_activation: {json_key: 'userActivation', required: false}
           )
 
           # @api private
@@ -686,16 +709,20 @@ module Selenium
             expression: 'expression',
             target: {json_key: 'target', ref: 'Script::Target'},
             await_promise: 'awaitPromise',
-            result_ownership: {json_key: 'resultOwnership', enum: 'Script::RESULT_OWNERSHIP'},
-            serialization_options: {json_key: 'serializationOptions', ref: 'Script::SerializationOptions'},
-            user_activation: 'userActivation'
+            result_ownership: {json_key: 'resultOwnership', required: false, enum: 'Script::RESULT_OWNERSHIP'},
+            serialization_options: {
+              json_key: 'serializationOptions',
+              required: false,
+              ref: 'Script::SerializationOptions'
+            },
+            user_activation: {json_key: 'userActivation', required: false}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           GetRealmsParameters = Serialization::Record.define(
-            context: 'context',
-            type: {json_key: 'type', enum: 'Script::REALM_TYPE'}
+            context: {json_key: 'context', required: false},
+            type: {json_key: 'type', required: false, enum: 'Script::REALM_TYPE'}
           )
 
           # @api private

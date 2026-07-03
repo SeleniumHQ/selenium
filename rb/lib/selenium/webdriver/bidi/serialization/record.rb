@@ -29,7 +29,7 @@ module Selenium
         # @api private
         class Record < ::Data
           # Named Field, not Member, to avoid colliding with +::Data#members+.
-          Field = ::Data.define(:name, :json_key, :nullable, :ref, :list, :fixed, :enum)
+          Field = ::Data.define(:name, :json_key, :nullable, :ref, :list, :fixed, :enum, :required)
 
           def self.define(**spec)
             extensible = spec.delete(:extensible) || false
@@ -58,7 +58,8 @@ module Selenium
             meta = {json_key: meta} if meta.is_a?(::String)
             Field.new(name: name.to_sym, json_key: meta.fetch(:json_key, name.to_s),
                       nullable: meta[:nullable] || false, ref: meta[:ref],
-                      list: meta[:list] || false, fixed: meta.fetch(:fixed, UNSET), enum: meta[:enum])
+                      list: meta[:list] || false, fixed: meta.fetch(:fixed, UNSET), enum: meta[:enum],
+                      required: meta.fetch(:required, true))
           end
           private_class_method :field
 
@@ -76,9 +77,9 @@ module Selenium
               construct(**attributes)
             end
 
-            # Inbound: builds from the wire. Enum tokens are mapped back to symbols and an
-            # unrecognized one raises (in +read+); required-presence isn't checked and extra keys
-            # are captured (extensible) or ignored (closed) — strict on values, lenient on keys.
+            # Inbound: builds from the wire. A missing required field raises (in +wire_value+),
+            # enum tokens are mapped back to symbols and an unrecognized one raises (in +read+), and
+            # extra keys are captured (extensible) or ignored (closed) — strict on shape, lenient on extras.
             def from_json(json_payload)
               attributes = fields.to_h do |f|
                 [f.name, wire_value(f, json_payload)]
@@ -121,9 +122,10 @@ module Selenium
 
             def wire_value(field, json_payload)
               return field.fixed if fixed?(field)
-              return UNSET unless json_payload.key?(field.json_key)
+              return read(field, json_payload[field.json_key]) if json_payload.key?(field.json_key)
+              return UNSET unless field.required
 
-              read(field, json_payload[field.json_key])
+              raise Error::WebDriverError, "#{name}##{field.name} is required but was missing from the response"
             end
 
             def read(field, raw)

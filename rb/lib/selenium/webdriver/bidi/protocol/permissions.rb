@@ -43,8 +43,8 @@ module Selenium
             descriptor: {json_key: 'descriptor', ref: 'Permissions::PermissionDescriptor'},
             state: {json_key: 'state', enum: 'Permissions::PERMISSION_STATE'},
             origin: 'origin',
-            embedded_origin: 'embeddedOrigin',
-            user_context: 'userContext'
+            embedded_origin: {json_key: 'embeddedOrigin', required: false},
+            user_context: {json_key: 'userContext', required: false}
           )
 
           # @api private

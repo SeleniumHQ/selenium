@@ -59,9 +59,13 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CreateUserContextParameters = Serialization::Record.define(
-            accept_insecure_certs: 'acceptInsecureCerts',
-            proxy: {json_key: 'proxy', ref: 'Session::ProxyConfiguration'},
-            unhandled_prompt_behavior: {json_key: 'unhandledPromptBehavior', ref: 'Session::UserPromptHandler'}
+            accept_insecure_certs: {json_key: 'acceptInsecureCerts', required: false},
+            proxy: {json_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
+            unhandled_prompt_behavior: {
+              json_key: 'unhandledPromptBehavior',
+              required: false,
+              ref: 'Session::UserPromptHandler'
+            }
           )
 
           # @api private
@@ -101,10 +105,10 @@ module Selenium
             ClientWindowRectState = Serialization::Record.define(
               state: {fixed: 'normal'},
               client_window: 'clientWindow',
-              width: 'width',
-              height: 'height',
-              x: 'x',
-              y: 'y'
+              width: {json_key: 'width', required: false},
+              height: {json_key: 'height', required: false},
+              x: {json_key: 'x', required: false},
+              y: {json_key: 'y', required: false}
             )
           end
 
@@ -112,7 +116,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetDownloadBehaviorParameters = Serialization::Record.define(
             download_behavior: {json_key: 'downloadBehavior', nullable: true, ref: 'Browser::DownloadBehavior'},
-            user_contexts: {json_key: 'userContexts', list: true}
+            user_contexts: {json_key: 'userContexts', required: false, list: true}
           )
 
           # @api private

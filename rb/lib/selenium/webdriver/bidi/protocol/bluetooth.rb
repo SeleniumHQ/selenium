@@ -85,14 +85,14 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CharacteristicProperties = Serialization::Record.define(
-            broadcast: 'broadcast',
-            read: 'read',
-            write_without_response: 'writeWithoutResponse',
-            write: 'write',
-            notify: 'notify',
-            indicate: 'indicate',
-            authenticated_signed_writes: 'authenticatedSignedWrites',
-            extended_properties: 'extendedProperties'
+            broadcast: {json_key: 'broadcast', required: false},
+            read: {json_key: 'read', required: false},
+            write_without_response: {json_key: 'writeWithoutResponse', required: false},
+            write: {json_key: 'write', required: false},
+            notify: {json_key: 'notify', required: false},
+            indicate: {json_key: 'indicate', required: false},
+            authenticated_signed_writes: {json_key: 'authenticatedSignedWrites', required: false},
+            extended_properties: {json_key: 'extendedProperties', required: false}
           )
 
           # @api private
@@ -102,10 +102,15 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ScanRecord = Serialization::Record.define(
-            name: 'name',
-            uuids: {json_key: 'uuids', list: true},
-            appearance: 'appearance',
-            manufacturer_data: {json_key: 'manufacturerData', ref: 'Bluetooth::BluetoothManufacturerData', list: true}
+            name: {json_key: 'name', required: false},
+            uuids: {json_key: 'uuids', required: false, list: true},
+            appearance: {json_key: 'appearance', required: false},
+            manufacturer_data: {
+              json_key: 'manufacturerData',
+              required: false,
+              ref: 'Bluetooth::BluetoothManufacturerData',
+              list: true
+            }
           )
 
           # @api private
@@ -139,7 +144,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SimulateAdapterParameters = Serialization::Record.define(
             context: 'context',
-            le_supported: 'leSupported',
+            le_supported: {json_key: 'leSupported', required: false},
             state: {json_key: 'state', enum: 'Bluetooth::SIMULATE_ADAPTER_PARAMETERS_STATE'}
           )
 
@@ -200,7 +205,11 @@ module Selenium
             address: 'address',
             service_uuid: 'serviceUuid',
             characteristic_uuid: 'characteristicUuid',
-            characteristic_properties: {json_key: 'characteristicProperties', ref: 'Bluetooth::CharacteristicProperties'},
+            characteristic_properties: {
+              json_key: 'characteristicProperties',
+              required: false,
+              ref: 'Bluetooth::CharacteristicProperties'
+            },
             type: {json_key: 'type', enum: 'Bluetooth::SIMULATE_CHARACTERISTIC_PARAMETERS_TYPE'}
           )
 
@@ -213,7 +222,7 @@ module Selenium
             characteristic_uuid: 'characteristicUuid',
             type: {json_key: 'type', enum: 'Bluetooth::SIMULATE_CHARACTERISTIC_RESPONSE_PARAMETERS_TYPE'},
             code: 'code',
-            data: {json_key: 'data', list: true}
+            data: {json_key: 'data', required: false, list: true}
           )
 
           # @api private
@@ -237,7 +246,7 @@ module Selenium
             descriptor_uuid: 'descriptorUuid',
             type: {json_key: 'type', enum: 'Bluetooth::SIMULATE_DESCRIPTOR_RESPONSE_PARAMETERS_TYPE'},
             code: 'code',
-            data: {json_key: 'data', list: true}
+            data: {json_key: 'data', required: false, list: true}
           )
 
           # @api private
@@ -260,7 +269,7 @@ module Selenium
             service_uuid: 'serviceUuid',
             characteristic_uuid: 'characteristicUuid',
             type: {json_key: 'type', enum: 'Bluetooth::CHARACTERISTIC_EVENT_GENERATED_PARAMETERS_TYPE'},
-            data: {json_key: 'data', list: true}
+            data: {json_key: 'data', required: false, list: true}
           )
 
           # @api private
@@ -272,7 +281,7 @@ module Selenium
             characteristic_uuid: 'characteristicUuid',
             descriptor_uuid: 'descriptorUuid',
             type: {json_key: 'type', enum: 'Bluetooth::DESCRIPTOR_EVENT_GENERATED_PARAMETERS_TYPE'},
-            data: {json_key: 'data', list: true}
+            data: {json_key: 'data', required: false, list: true}
           )
 
           EVENT_TYPES = {
