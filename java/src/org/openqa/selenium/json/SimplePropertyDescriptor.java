@@ -60,7 +60,23 @@ public class SimplePropertyDescriptor {
     return String.format("%s.%s", clazz.getSimpleName(), name);
   }
 
+  /**
+   * The descriptors depend only on the class, so compute them once per class rather than scanning
+   * the class's methods on every call.
+   */
+  private static final ClassValue<SimplePropertyDescriptor[]> DESCRIPTOR_CACHE =
+      new ClassValue<SimplePropertyDescriptor[]>() {
+        @Override
+        protected SimplePropertyDescriptor[] computeValue(Class<?> type) {
+          return computePropertyDescriptors(type);
+        }
+      };
+
   public static SimplePropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) {
+    return DESCRIPTOR_CACHE.get(clazz).clone();
+  }
+
+  private static SimplePropertyDescriptor[] computePropertyDescriptors(Class<?> clazz) {
     Map<String, SimplePropertyDescriptor> properties = new HashMap<>();
 
     properties.put("class", new SimplePropertyDescriptor(clazz, "class", GET_CLASS_NAME, null));

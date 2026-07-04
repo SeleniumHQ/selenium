@@ -28,6 +28,7 @@ import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -55,24 +56,16 @@ class InstanceCoercer extends TypeCoercer<Object> {
   @Override
   public BiFunction<JsonInput, PropertySetting, Object> apply(Type type) {
     Constructor<?> constructor = getConstructor(type);
+    // The writers depend only on the type and the property-setting strategy, so compute them
+    // once per strategy rather than reflecting over the type for every instance created.
+    Map<PropertySetting, Map<String, TypeAndWriter>> writersBySetting = new ConcurrentHashMap<>();
 
     return (jsonInput, setter) -> {
       try {
         Object instance = constructor.newInstance();
 
-        Map<String, TypeAndWriter> allWriters;
-        switch (setter) {
-          case BY_FIELD:
-            allWriters = getFieldWriters(constructor);
-            break;
-
-          case BY_NAME:
-            allWriters = getBeanWriters(constructor);
-            break;
-
-          default:
-            throw new JsonException("Cannot determine how to find fields: " + setter);
-        }
+        Map<String, TypeAndWriter> allWriters =
+            writersBySetting.computeIfAbsent(setter, key -> getWriters(constructor, key));
 
         jsonInput.beginObject();
 
@@ -96,6 +89,20 @@ class InstanceCoercer extends TypeCoercer<Object> {
         throw new JsonException(e);
       }
     };
+  }
+
+  private Map<String, TypeAndWriter> getWriters(
+      Constructor<?> constructor, PropertySetting setter) {
+    switch (setter) {
+      case BY_FIELD:
+        return getFieldWriters(constructor);
+
+      case BY_NAME:
+        return getBeanWriters(constructor);
+
+      default:
+        throw new JsonException("Cannot determine how to find fields: " + setter);
+    }
   }
 
   private Map<String, TypeAndWriter> getFieldWriters(Constructor<?> constructor) {

@@ -140,8 +140,12 @@ class JsonTypeCoercer {
   }
 
   <T> T coerce(JsonInput json, Type typeOfT, PropertySetting setter) {
-    BiFunction<JsonInput, PropertySetting, Object> coercer =
-        knownCoercers.computeIfAbsent(typeOfT, this::buildCoercer);
+    // Plain get first: this is almost always a hit, and avoids the capturing lambda that
+    // computeIfAbsent would allocate on every call.
+    BiFunction<JsonInput, PropertySetting, Object> coercer = knownCoercers.get(typeOfT);
+    if (coercer == null) {
+      coercer = knownCoercers.computeIfAbsent(typeOfT, this::buildCoercer);
+    }
 
     if (json.peek() == JsonType.NULL && !isOptional(typeOfT)) {
       @SuppressWarnings("unchecked")

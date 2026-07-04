@@ -24,10 +24,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
@@ -51,8 +51,10 @@ public class JsonInput implements Closeable {
   private final Deque<Container> stack = new ArrayDeque<>();
   // Parallel stack tracking whether the current container has seen at least
   // one element. Used by hasNext() to enforce comma separators between
-  // elements while remaining lenient about a single trailing comma.
-  private final Deque<Boolean> containerHasElement = new ArrayDeque<>();
+  // elements while remaining lenient about a single trailing comma. Kept as
+  // a plain array because it is touched for every element read.
+  private boolean[] containerHasElement = new boolean[16];
+  private int containerDepth;
 
   JsonInput(Reader source, JsonTypeCoercer coercer, PropertySetting setter) {
 
@@ -243,9 +245,7 @@ public class JsonInput implements Closeable {
         throw new JsonException("Leading zeros are not permitted in JSON numbers. " + input);
       }
     } else if (first >= '1' && first <= '9') {
-      while (isDigit(input.peek())) {
-        builder.append((char) input.read());
-      }
+      input.appendDigits(builder);
     } else {
       throw new JsonException("Expected digit but saw " + describeChar(first) + ". " + input);
     }
@@ -261,9 +261,7 @@ public class JsonInput implements Closeable {
                 + ". "
                 + input);
       }
-      while (isDigit(input.peek())) {
-        builder.append((char) input.read());
-      }
+      input.appendDigits(builder);
     }
 
     // Optional exponent part: ('e' | 'E') ('+' | '-')? 1*DIGIT
@@ -280,17 +278,23 @@ public class JsonInput implements Closeable {
                 + ". "
                 + input);
       }
-      while (isDigit(input.peek())) {
-        builder.append((char) input.read());
-      }
+      input.appendDigits(builder);
     }
 
     try {
       // Fast path for integers: Long-valued when no fraction/exponent was present.
       if (!isDecimal) {
+        // At most 18 digits (plus a sign) always fits in a long, so the allocation-free parse
+        // cannot overflow. Longer inputs take the String path, which reports overflow with the
+        // historical NumberFormatException message.
+        if (builder.length() <= (builder.charAt(0) == '-' ? 19 : 18)) {
+          return Long.parseLong(builder, 0, builder.length(), 10);
+        }
         return Long.valueOf(builder.toString());
       }
-      double value = new BigDecimal(builder.toString()).doubleValue();
+      // JSON's number grammar is a subset of what parseDouble accepts, and parseDouble is
+      // considerably cheaper than going through BigDecimal.
+      double value = Double.parseDouble(builder.toString());
       if (Double.isInfinite(value) || Double.isNaN(value)) {
         throw new JsonException("Number is out of range for a double: " + builder + ". " + input);
       }
@@ -357,7 +361,7 @@ public class JsonInput implements Closeable {
     }
 
     skipWhitespace(input);
-    boolean seenElement = Boolean.TRUE.equals(containerHasElement.peekFirst());
+    boolean seenElement = containerDepth > 0 && containerHasElement[containerDepth - 1];
 
     if (input.peek() == ',') {
       if (!seenElement) {
@@ -391,7 +395,7 @@ public class JsonInput implements Closeable {
   public void beginArray() {
     expect(JsonType.START_COLLECTION);
     stack.addFirst(Container.COLLECTION);
-    containerHasElement.addFirst(false);
+    pushContainer();
     input.read();
   }
 
@@ -408,7 +412,7 @@ public class JsonInput implements Closeable {
           "Attempt to close a JSON List, but a JSON Object was expected. " + input);
     }
     stack.removeFirst();
-    containerHasElement.removeFirst();
+    containerDepth--;
     input.read();
   }
 
@@ -420,7 +424,7 @@ public class JsonInput implements Closeable {
   public void beginObject() {
     expect(JsonType.START_MAP);
     stack.addFirst(Container.MAP_NAME);
-    containerHasElement.addFirst(false);
+    pushContainer();
     input.read();
   }
 
@@ -435,7 +439,7 @@ public class JsonInput implements Closeable {
       throw new JsonException("Attempt to close a JSON Map, but not ready to. " + input);
     }
     stack.removeFirst();
-    containerHasElement.removeFirst();
+    containerDepth--;
     input.read();
   }
 
@@ -603,17 +607,22 @@ public class JsonInput implements Closeable {
     }
   }
 
+  private void pushContainer() {
+    if (containerDepth == containerHasElement.length) {
+      containerHasElement = Arrays.copyOf(containerHasElement, containerDepth * 2);
+    }
+    containerHasElement[containerDepth++] = false;
+  }
+
   private void markElementRead() {
-    if (!containerHasElement.isEmpty()) {
-      containerHasElement.removeFirst();
-      containerHasElement.addFirst(true);
+    if (containerDepth > 0) {
+      containerHasElement[containerDepth - 1] = true;
     }
   }
 
   private void clearSeenElement() {
-    if (!containerHasElement.isEmpty()) {
-      containerHasElement.removeFirst();
-      containerHasElement.addFirst(false);
+    if (containerDepth > 0) {
+      containerHasElement[containerDepth - 1] = false;
     }
   }
 
@@ -653,25 +662,30 @@ public class JsonInput implements Closeable {
   private String readString() {
     input.read(); // Skip leading quote
 
+    // Fast path: an escape-free string that is fully buffered needs no intermediate copies.
+    String simple = input.readSimpleString();
+    if (simple != null) {
+      return simple;
+    }
+
     StringBuilder builder = new StringBuilder();
     while (true) {
-      int c = input.read();
+      int c = input.appendStringContent(builder);
       switch (c) {
         case Input.EOF:
           throw new JsonException("Unterminated string: " + builder + ". " + input);
         case '"': // terminate string
+          input.read();
           return builder.toString();
         case '\\': // quoted char
+          input.read();
           readEscape(builder);
           break;
         default:
           // RFC 8259 §7: characters U+0000..U+001F MUST be escaped.
-          if (c < 0x20) {
-            throw new JsonException(
-                String.format(
-                    "Illegal unescaped control character U+%04X in string. %s", c, input));
-          }
-          builder.append((char) c);
+          input.read();
+          throw new JsonException(
+              String.format("Illegal unescaped control character U+%04X in string. %s", c, input));
       }
     }
   }
@@ -743,7 +757,8 @@ public class JsonInput implements Closeable {
    * @throws UncheckedIOException if an I/O exception is encountered
    */
   private void skipWhitespace(Input input) {
-    while (input.peek() != Input.EOF && Character.isWhitespace(input.peek())) {
+    int c;
+    while ((c = input.peek()) != Input.EOF && Character.isWhitespace(c)) {
       input.read();
     }
   }

@@ -29,19 +29,15 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Deque;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LogLevelMapping;
@@ -53,6 +49,9 @@ import org.openqa.selenium.logging.LogLevelMapping;
 public class JsonOutput implements Closeable {
   private static final Logger LOG = Logger.getLogger(JsonOutput.class.getName());
   static final int MAX_DEPTH = 100;
+
+  /** Number of chars of escaped output to accumulate before flushing to the appendable. */
+  private static final int ESCAPE_BUFFER_SIZE = 4096;
 
   private static final Predicate<Class<?>> GSON_ELEMENT;
 
@@ -74,190 +73,200 @@ public class JsonOutput implements Closeable {
   // https://github.com/google/gson/issues/341 so we escape those as well.
   // It's legal to escape any character, so to be nice to HTML parsers,
   // we'll also escape "<" and "&"
-  private static final Map<Integer, String> ESCAPES;
+  private static final String[] ASCII_ESCAPES = buildAsciiEscapes();
 
-  static {
-    // increased initial capacity to avoid hash collisions, especially for the following ranges:
-    // '0' to '9', 'a' to 'z', 'A' to 'Z'
-    Map<Integer, String> builder = new LinkedHashMap<>(128);
+  private static String[] buildAsciiEscapes() {
+    String[] escapes = new String[128];
 
     for (int i = 0; i <= 0x1f; i++) {
       // We want nice looking escapes for these, which are called out
       // by json.org
-      if (!(i == '\b' || i == '\f' || i == '\n' || i == '\r' || i == '\t')) {
-        builder.put(i, String.format("\\u%04x", i));
-      }
+      escapes[i] = String.format("\\u%04x", i);
     }
 
-    builder.put((int) '"', "\\\"");
-    builder.put((int) '\\', "\\\\");
-    builder.put((int) '/', "\\u002f");
-    builder.put((int) '\b', "\\b");
-    builder.put((int) '\f', "\\f");
-    builder.put((int) '\n', "\\n");
-    builder.put((int) '\r', "\\r");
-    builder.put((int) '\t', "\\t");
+    escapes['"'] = "\\\"";
+    escapes['\\'] = "\\\\";
+    escapes['/'] = "\\u002f";
+    escapes['\b'] = "\\b";
+    escapes['\f'] = "\\f";
+    escapes['\n'] = "\\n";
+    escapes['\r'] = "\\r";
+    escapes['\t'] = "\\t";
 
-    builder.put((int) '\u2028', "\\u2028");
-    builder.put((int) '<', String.format("\\u%04x", (int) '<'));
-    builder.put((int) '&', String.format("\\u%04x", (int) '&'));
-    ESCAPES = Collections.unmodifiableMap(builder);
+    escapes['<'] = String.format("\\u%04x", (int) '<');
+    escapes['&'] = String.format("\\u%04x", (int) '&');
+
+    return escapes;
   }
 
-  private final Map<Predicate<Class<?>>, DepthAwareConsumer> converters;
+  /**
+   * The serialization strategy depends only on the class of the value being written, so resolve it
+   * once per class rather than probing (potentially with reflection) for every value written.
+   */
+  private static final ClassValue<DepthAwareConsumer> CONVERTERS =
+      new ClassValue<DepthAwareConsumer>() {
+        @Override
+        protected DepthAwareConsumer computeValue(Class<?> type) {
+          return resolveConverter(type);
+        }
+      };
+
+  // Note: the order of the checks matters, and mirrors the historical converter list.
+  private static DepthAwareConsumer resolveConverter(Class<?> cls) {
+    if (CharSequence.class.isAssignableFrom(cls)) {
+      return (out, obj, maxDepth, depthRemaining) -> out.writeString(obj);
+    }
+    if (Number.class.isAssignableFrom(cls)) {
+      return (out, obj, maxDepth, depthRemaining) -> out.append(obj.toString());
+    }
+    if (Boolean.class.isAssignableFrom(cls)) {
+      return (out, obj, maxDepth, depthRemaining) -> out.append((Boolean) obj ? "true" : "false");
+    }
+    if (Date.class.isAssignableFrom(cls)) {
+      return (out, obj, maxDepth, depthRemaining) ->
+          out.append(String.valueOf(MILLISECONDS.toSeconds(((Date) obj).getTime())));
+    }
+    if (Instant.class.isAssignableFrom(cls)) {
+      return (out, obj, maxDepth, depthRemaining) ->
+          out.writeString(DateTimeFormatter.ISO_INSTANT.format((Instant) obj));
+    }
+    if (Enum.class.isAssignableFrom(cls)) {
+      return (out, obj, maxDepth, depthRemaining) -> out.writeString(obj);
+    }
+    if (File.class.isAssignableFrom(cls)) {
+      return (out, obj, maxDepth, depthRemaining) -> out.append(((File) obj).getAbsolutePath());
+    }
+    if (URI.class.isAssignableFrom(cls)) {
+      return (out, obj, maxDepth, depthRemaining) -> out.writeString(obj.toString());
+    }
+    if (URL.class.isAssignableFrom(cls)) {
+      return (out, obj, maxDepth, depthRemaining) -> out.writeString(((URL) obj).toExternalForm());
+    }
+    if (UUID.class.isAssignableFrom(cls)) {
+      return (out, obj, maxDepth, depthRemaining) -> out.writeString(obj.toString());
+    }
+    if (Level.class.isAssignableFrom(cls)) {
+      return (out, obj, maxDepth, depthRemaining) ->
+          out.writeString(LogLevelMapping.getName((Level) obj));
+    }
+    if (GSON_ELEMENT.test(cls)) {
+      return (out, obj, maxDepth, depthRemaining) -> {
+        LOG.log(
+            Level.WARNING,
+            "Attempt to convert JsonElement from GSON. This functionality is deprecated. "
+                + "Diagnostic stacktrace follows",
+            new JsonException("Stack trace to determine cause of warning"));
+        out.append(obj.toString());
+      };
+    }
+
+    // Special handling of asMap and toJson
+    Method toJson = getMethod(cls, "toJson");
+    if (toJson != null) {
+      return (out, obj, maxDepth, depthRemaining) ->
+          out.convertUsingMethod(toJson, obj, maxDepth, depthRemaining);
+    }
+    Method asMap = getMethod(cls, "asMap");
+    if (asMap != null) {
+      return (out, obj, maxDepth, depthRemaining) ->
+          out.convertUsingMethod(asMap, obj, maxDepth, depthRemaining);
+    }
+    Method toMap = getMethod(cls, "toMap");
+    if (toMap != null) {
+      return (out, obj, maxDepth, depthRemaining) ->
+          out.convertUsingMethod(toMap, obj, maxDepth, depthRemaining);
+    }
+
+    // And then the collection types
+    if (Collection.class.isAssignableFrom(cls)) {
+      return (out, obj, maxDepth, depthRemaining) -> {
+        if (depthRemaining < 1) {
+          throw new JsonException(
+              "Reached the maximum depth of " + maxDepth + " while writing JSON");
+        }
+        out.beginArray();
+        for (Object o : (Collection<?>) obj) {
+          if (o instanceof Optional && ((Optional<?>) o).isEmpty()) {
+            continue;
+          }
+          out.write0(o, maxDepth, depthRemaining - 1);
+        }
+        out.endArray();
+      };
+    }
+
+    if (Map.class.isAssignableFrom(cls)) {
+      return (out, obj, maxDepth, depthRemaining) -> {
+        if (depthRemaining < 1) {
+          throw new JsonException(
+              "Reached the maximum depth of " + maxDepth + " while writing JSON");
+        }
+        out.beginObject();
+        ((Map<?, ?>) obj)
+            .forEach(
+                (key, value) -> {
+                  if (value instanceof Optional && ((Optional<?>) value).isEmpty()) {
+                    return;
+                  }
+                  out.name(String.valueOf(key)).write0(value, maxDepth, depthRemaining - 1);
+                });
+        out.endObject();
+      };
+    }
+
+    if (cls.isArray()) {
+      return (out, obj, maxDepth, depthRemaining) -> {
+        if (depthRemaining < 1) {
+          throw new JsonException(
+              "Reached the maximum depth of " + maxDepth + " while writing JSON");
+        }
+        out.beginArray();
+        for (Object o : (Object[]) obj) {
+          if (o instanceof Optional && ((Optional<?>) o).isEmpty()) {
+            continue;
+          }
+          out.write0(o, maxDepth, depthRemaining - 1);
+        }
+        out.endArray();
+      };
+    }
+
+    if (Optional.class.isAssignableFrom(cls)) {
+      return (out, obj, maxDepth, depthRemaining) -> {
+        Optional<?> optional = (Optional<?>) obj;
+        if (optional.isEmpty()) {
+          out.append("null");
+          return;
+        }
+
+        out.write0(optional.get(), maxDepth, depthRemaining);
+      };
+    }
+
+    // Finally, attempt to convert as an object
+    return (out, obj, maxDepth, depthRemaining) -> {
+      if (depthRemaining < 1) {
+        throw new JsonException("Reached the maximum depth of " + maxDepth + " while writing JSON");
+      }
+      out.mapObject(obj, maxDepth, depthRemaining - 1);
+    };
+  }
+
   private final Appendable appendable;
-  private final Consumer<String> appender;
   private final Deque<Node> stack;
   private String indent = "";
   private String lineSeparator = "\n";
   private String indentBy = "  ";
+  private String separator = ",\n";
+  private String objectStart = "{\n";
+  private String arrayStart = "[\n";
   private boolean writeClassName = true;
 
   JsonOutput(Appendable appendable) {
     this.appendable = Require.nonNull("Underlying appendable", appendable);
 
-    this.appender =
-        str -> {
-          try {
-            appendable.append(str);
-          } catch (IOException e) {
-            throw new JsonException("Unable to write to underlying appendable", e);
-          }
-        };
-
     this.stack = new ArrayDeque<>();
     this.stack.addFirst(new Root());
-
-    Map<Predicate<Class<?>>, DepthAwareConsumer> builder = new LinkedHashMap<>();
-    builder.put(
-        CharSequence.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append(asString(obj)));
-    builder.put(
-        Number.class::isAssignableFrom, (obj, maxDepth, depthRemaining) -> append(obj.toString()));
-    builder.put(
-        Boolean.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append((Boolean) obj ? "true" : "false"));
-    builder.put(
-        Date.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) ->
-            append(String.valueOf(MILLISECONDS.toSeconds(((Date) obj).getTime()))));
-    builder.put(
-        Instant.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) ->
-            append(asString(DateTimeFormatter.ISO_INSTANT.format((Instant) obj))));
-    builder.put(
-        Enum.class::isAssignableFrom, (obj, maxDepth, depthRemaining) -> append(asString(obj)));
-    builder.put(
-        File.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append(((File) obj).getAbsolutePath()));
-    builder.put(
-        URI.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append(asString((obj).toString())));
-    builder.put(
-        URL.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append(asString(((URL) obj).toExternalForm())));
-    builder.put(
-        UUID.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append(asString(obj.toString())));
-    builder.put(
-        Level.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append(asString(LogLevelMapping.getName((Level) obj))));
-    builder.put(
-        GSON_ELEMENT,
-        (obj, maxDepth, depthRemaining) -> {
-          LOG.log(
-              Level.WARNING,
-              "Attempt to convert JsonElement from GSON. This functionality is deprecated. "
-                  + "Diagnostic stacktrace follows",
-              new JsonException("Stack trace to determine cause of warning"));
-          append(obj.toString());
-        });
-    // Special handling of asMap and toJson
-    builder.put(
-        cls -> getMethod(cls, "toJson") != null,
-        (obj, maxDepth, depthRemaining) ->
-            convertUsingMethod("toJson", obj, maxDepth, depthRemaining));
-    builder.put(
-        cls -> getMethod(cls, "asMap") != null,
-        (obj, maxDepth, depthRemaining) ->
-            convertUsingMethod("asMap", obj, maxDepth, depthRemaining));
-    builder.put(
-        cls -> getMethod(cls, "toMap") != null,
-        (obj, maxDepth, depthRemaining) ->
-            convertUsingMethod("toMap", obj, maxDepth, depthRemaining));
-
-    // And then the collection types
-    builder.put(
-        Collection.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> {
-          if (depthRemaining < 1) {
-            throw new JsonException(
-                "Reached the maximum depth of " + maxDepth + " while writing JSON");
-          }
-          beginArray();
-          ((Collection<?>) obj)
-              .stream()
-                  .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
-                  .forEach(o -> write0(o, maxDepth, depthRemaining - 1));
-          endArray();
-        });
-
-    builder.put(
-        Map.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> {
-          if (depthRemaining < 1) {
-            throw new JsonException(
-                "Reached the maximum depth of " + maxDepth + " while writing JSON");
-          }
-          beginObject();
-          ((Map<?, ?>) obj)
-              .forEach(
-                  (key, value) -> {
-                    if (value instanceof Optional && ((Optional) value).isEmpty()) {
-                      return;
-                    }
-                    name(String.valueOf(key)).write0(value, maxDepth, depthRemaining - 1);
-                  });
-          endObject();
-        });
-    builder.put(
-        Class::isArray,
-        (obj, maxDepth, depthRemaining) -> {
-          if (depthRemaining < 1) {
-            throw new JsonException(
-                "Reached the maximum depth of " + maxDepth + " while writing JSON");
-          }
-          beginArray();
-          Stream.of((Object[]) obj)
-              .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
-              .forEach(o -> write0(o, maxDepth, depthRemaining - 1));
-          endArray();
-        });
-
-    builder.put(
-        Optional.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> {
-          Optional<?> optional = (Optional<?>) obj;
-          if (optional.isEmpty()) {
-            append("null");
-            return;
-          }
-
-          write0(optional.get(), maxDepth, depthRemaining);
-        });
-
-    // Finally, attempt to convert as an object
-    builder.put(
-        cls -> true,
-        (obj, maxDepth, depthRemaining) -> {
-          if (depthRemaining < 1) {
-            throw new JsonException(
-                "Reached the maximum depth of " + maxDepth + " while writing JSON");
-          }
-          mapObject(obj, maxDepth, depthRemaining - 1);
-        });
-
-    this.converters = Collections.unmodifiableMap(builder);
   }
 
   /**
@@ -271,6 +280,9 @@ public class JsonOutput implements Closeable {
   public JsonOutput setPrettyPrint(boolean enablePrettyPrinting) {
     this.lineSeparator = enablePrettyPrinting ? "\n" : "";
     this.indentBy = enablePrettyPrinting ? "  " : "";
+    this.separator = "," + lineSeparator;
+    this.objectStart = "{" + lineSeparator;
+    this.arrayStart = "[" + lineSeparator;
     return this;
   }
 
@@ -292,7 +304,7 @@ public class JsonOutput implements Closeable {
    * @return this {@link JsonOutput} object
    */
   public JsonOutput beginObject() {
-    stack.getFirst().write("{" + lineSeparator);
+    stack.getFirst().write(objectStart);
     indent += indentBy;
     stack.addFirst(new JsonObject());
     return this;
@@ -329,11 +341,13 @@ public class JsonOutput implements Closeable {
     stack.removeFirst();
     indent = indent.substring(0, indent.length() - indentBy.length());
 
-    if (topOfStack.isEmpty) {
-      appender.accept(indent + "}");
+    if (!topOfStack.isEmpty) {
+      rawAppend(lineSeparator);
+      rawAppend(indent);
     } else {
-      appender.accept(lineSeparator + indent + "}");
+      rawAppend(indent);
     }
+    rawAppend("}");
     return this;
   }
 
@@ -343,7 +357,7 @@ public class JsonOutput implements Closeable {
    * @return this {@link JsonOutput} object
    */
   public JsonOutput beginArray() {
-    append("[" + lineSeparator);
+    append(arrayStart);
     indent += indentBy;
     stack.addFirst(new JsonCollection());
     return this;
@@ -364,11 +378,13 @@ public class JsonOutput implements Closeable {
     stack.removeFirst();
     indent = indent.substring(0, indent.length() - indentBy.length());
 
-    if (topOfStack.isEmpty) {
-      appender.accept(indent + "]");
+    if (!topOfStack.isEmpty) {
+      rawAppend(lineSeparator);
+      rawAppend(indent);
     } else {
-      appender.accept(lineSeparator + indent + "]");
+      rawAppend(indent);
     }
+    rawAppend("]");
     return this;
   }
 
@@ -402,12 +418,7 @@ public class JsonOutput implements Closeable {
       append("null");
       return this;
     }
-    converters.entrySet().stream()
-        .filter(entry -> entry.getKey().test(input.getClass()))
-        .findFirst()
-        .map(Map.Entry::getValue)
-        .orElseThrow(() -> new JsonException("Unable to write " + input))
-        .consume(input, maxDepth, depthRemaining);
+    CONVERTERS.get(input.getClass()).consume(this, input, maxDepth, depthRemaining);
 
     return this;
   }
@@ -438,30 +449,88 @@ public class JsonOutput implements Closeable {
     return this;
   }
 
+  private void rawAppend(String text) {
+    if (text.isEmpty()) {
+      return;
+    }
+
+    try {
+      appendable.append(text);
+    } catch (IOException e) {
+      throw new JsonException("Unable to write to underlying appendable", e);
+    }
+  }
+
   /**
-   * Return a quoted JSON string representing the specified Java object.
+   * Write the specified Java object as a quoted JSON string, handling any bookkeeping required by
+   * the enclosing JSON container.
    *
    * @param obj Java object to be represented
-   * @return quoted JSON string
    */
-  private String asString(Object obj) {
-    StringBuilder toReturn = new StringBuilder("\"");
+  private void writeString(Object obj) {
+    String value = String.valueOf(obj);
+    stack.getFirst().beginValue(value);
+    writeEscaped(value);
+  }
 
-    String.valueOf(obj)
-        .chars()
-        .forEach(
-            i -> {
-              String escaped = ESCAPES.get(i);
-              if (escaped != null) {
-                toReturn.append(escaped);
-              } else {
-                toReturn.append((char) i);
-              }
-            });
+  /**
+   * Write a quoted JSON string directly to the underlying appendable, escaping as needed. Runs of
+   * characters that need no escaping are appended in bulk so no escaped copy of the value is ever
+   * materialized.
+   *
+   * @param value string to be written
+   */
+  private void writeEscaped(String value) {
+    try {
+      appendable.append('"');
 
-    toReturn.append('"');
+      int length = value.length();
+      int plainStart = 0;
+      // Escaped output is batched in here before being flushed to the appendable, so that a
+      // heavily escaped value doesn't degrade into per-character appendable calls. Bounded by
+      // the flush below, so no full escaped copy of the value is ever materialized.
+      StringBuilder buffered = null;
 
-    return toReturn.toString();
+      for (int i = 0; i < length; i++) {
+        char c = value.charAt(i);
+        String escape;
+        if (c < 128) {
+          escape = ASCII_ESCAPES[c];
+        } else if (c == '\u2028') {
+          escape = "\\u2028";
+        } else {
+          escape = null;
+        }
+
+        if (escape != null) {
+          if (buffered == null) {
+            buffered = new StringBuilder(Math.min(length + 16, ESCAPE_BUFFER_SIZE + 16));
+          }
+          buffered.append(value, plainStart, i).append(escape);
+          if (buffered.length() >= ESCAPE_BUFFER_SIZE) {
+            appendable.append(buffered);
+            buffered.setLength(0);
+          }
+          plainStart = i + 1;
+        }
+      }
+
+      if (buffered == null) {
+        // No escaping was needed; write the whole value through unmodified.
+        appendable.append(value);
+      } else {
+        if (buffered.length() > 0) {
+          appendable.append(buffered);
+        }
+        if (plainStart < length) {
+          appendable.append(value, plainStart, length);
+        }
+      }
+
+      appendable.append('"');
+    } catch (IOException e) {
+      throw new JsonException("Unable to write to underlying appendable", e);
+    }
   }
 
   /**
@@ -473,7 +542,7 @@ public class JsonOutput implements Closeable {
    * @return {@link Method} object with 'accessible' flag set
    * @throws JsonException if a security violation is encountered
    */
-  private @Nullable Method getMethod(Class<?> clazz, String methodName) {
+  private static @Nullable Method getMethod(Class<?> clazz, String methodName) {
     if (Object.class.equals(clazz)) {
       return null;
     }
@@ -493,27 +562,20 @@ public class JsonOutput implements Closeable {
   /**
    * Convert the specified Java object using the indicated zero-argument method of this object.
    *
-   * @param methodName method name
+   * @param method zero-argument method that produces the serializable form of the object
    * @param toConvert Java object to be converted
    * @param maxDepth maximum depth of nested object traversal
    * @param depthRemaining allowed traversal depth remaining
    * @return this {@link JsonOutput} object
    * @throws JsonException
    *     <ul>
-   *       <li>if the specified method isn't found
-   *       <li>if a security violation is encountered
    *       <li>if a reflective operation fails
    *       <li>if maximum traversal depth is exceeded
    *     </ul>
    */
   private JsonOutput convertUsingMethod(
-      String methodName, Object toConvert, int maxDepth, int depthRemaining) {
+      Method method, Object toConvert, int maxDepth, int depthRemaining) {
     try {
-      Method method = getMethod(toConvert.getClass(), methodName);
-      if (method == null) {
-        throw new JsonException(
-            String.format("Unable to read object %s using method %s", toConvert, methodName));
-      }
       Object value = method.invoke(toConvert);
 
       return write0(value, maxDepth, depthRemaining);
@@ -566,22 +628,31 @@ public class JsonOutput implements Closeable {
     protected boolean isEmpty = true;
 
     /**
-     * Write the specified text to the appender of this JSON output object.<br>
-     * <b>NOTE</b>: If prior text has been written to this container, the new text is prefixed with
-     * a comma and the defined line separator (either {@literal <newline>} or empty string) to
-     * delimit a new object property or array item.
+     * Perform the bookkeeping needed before a new value is written to this container.<br>
+     * <b>NOTE</b>: If prior text has been written to this container, a comma and the defined line
+     * separator (either {@literal <newline>} or empty string) are emitted to delimit a new object
+     * property or array item.
+     *
+     * @param value the value about to be written, used only for error reporting
+     */
+    void beginValue(Object value) {
+      if (isEmpty) {
+        isEmpty = false;
+      } else {
+        rawAppend(separator);
+      }
+
+      rawAppend(indent);
+    }
+
+    /**
+     * Write the specified text to the appendable of this JSON output object.
      *
      * @param text text to be appended to the output
      */
     public void write(String text) {
-      if (isEmpty) {
-        isEmpty = false;
-      } else {
-        appender.accept("," + lineSeparator);
-      }
-
-      appender.accept(indent);
-      appender.accept(text);
+      beginValue(text);
+      rawAppend(text);
     }
   }
 
@@ -589,18 +660,17 @@ public class JsonOutput implements Closeable {
   private class Root extends Node {
 
     /**
-     * Write the specified text to the appender of this JSON output object.
+     * {@inheritDoc}
      *
-     * @param text text to be appended to the output
      * @throws JsonException if this {@link JsonOutput} has already been used.
      */
     @Override
-    public void write(String text) {
+    void beginValue(Object value) {
       if (!isEmpty) {
         throw new JsonException("Only allowed to write one value to a json stream");
       }
 
-      super.write(text);
+      super.beginValue(value);
     }
   }
 
@@ -612,7 +682,7 @@ public class JsonOutput implements Closeable {
     private boolean isNameNext = true;
 
     /**
-     * Writes the name of a JSON property followed by a colon to the appender of this JSON output
+     * Writes the name of a JSON property followed by a colon to the appendable of this JSON output
      * object.
      *
      * @param name JSON object property name
@@ -623,24 +693,22 @@ public class JsonOutput implements Closeable {
         throw new JsonException("Unexpected attempt to set name of json object: " + name);
       }
       isNameNext = false;
-      super.write(asString(name));
-      appender.accept(": ");
+      super.beginValue(name);
+      writeEscaped(name);
+      rawAppend(": ");
     }
 
     /**
-     * Write the value of a JSON property to the appender of this JSON output object.
+     * {@inheritDoc}
      *
-     * @param text JSON object property value
      * @throws JsonException if not expecting a JSON property value
      */
     @Override
-    public void write(String text) {
+    void beginValue(Object value) {
       if (isNameNext) {
-        throw new JsonException("Unexpected attempt to write value before name: " + text);
+        throw new JsonException("Unexpected attempt to write value before name: " + value);
       }
       isNameNext = true;
-
-      appender.accept(text);
     }
   }
 
@@ -651,13 +719,14 @@ public class JsonOutput implements Closeable {
   private interface DepthAwareConsumer {
 
     /**
-     * Consume the specified Java object, emitting its JSON representation to the appender of this
-     * {@link JsonOutput}.
+     * Consume the specified Java object, emitting its JSON representation to the appendable of the
+     * supplied {@link JsonOutput}.
      *
+     * @param out {@link JsonOutput} to write to
      * @param object Java object to be serialized
      * @param maxDepth maximum depth of nested object traversal
      * @param depthRemaining allowed traversal depth remaining
      */
-    void consume(Object object, int maxDepth, int depthRemaining);
+    void consume(JsonOutput out, Object object, int maxDepth, int depthRemaining);
   }
 }
