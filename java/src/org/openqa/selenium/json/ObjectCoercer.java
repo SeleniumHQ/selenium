@@ -36,6 +36,11 @@ class ObjectCoercer extends TypeCoercer<Object> {
   }
 
   @Override
+  boolean handlesNull() {
+    return true;
+  }
+
+  @Override
   public BiFunction<JsonInput, PropertySetting, Object> apply(Type type) {
     // Resolve the possible target coercers once rather than paying a cache lookup per value.
     BiFunction<JsonInput, PropertySetting, Object> booleanCoercer =
@@ -49,6 +54,9 @@ class ObjectCoercer extends TypeCoercer<Object> {
 
     return (jsonInput, setting) -> {
       switch (jsonInput.peek()) {
+        case NULL:
+          return jsonInput.nextNull();
+
         case BOOLEAN:
           return booleanCoercer.apply(jsonInput, setting);
 

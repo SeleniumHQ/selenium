@@ -204,20 +204,17 @@ class JsonTypeCoercer {
    * @return {@link BiFunction} object to deserialize the specified Java type
    */
   private BiFunction<JsonInput, PropertySetting, Object> buildCoercer(Type type) {
-    BiFunction<JsonInput, PropertySetting, Object> inner =
+    TypeCoercer<?> matched =
         coercers.stream()
             .filter(coercer -> coercer.test(narrow(type)))
             .findFirst()
-            .map(
-                coercer -> {
-                  @SuppressWarnings("unchecked")
-                  BiFunction<JsonInput, PropertySetting, Object> funct =
-                      (BiFunction<JsonInput, PropertySetting, Object>) coercer.apply(type);
-                  return funct;
-                })
             .orElseThrow(() -> new JsonException("Unable to find type coercer for " + type));
 
-    if (isOptional(type)) {
+    @SuppressWarnings("unchecked")
+    BiFunction<JsonInput, PropertySetting, Object> inner =
+        (BiFunction<JsonInput, PropertySetting, Object>) matched.apply(type);
+
+    if (matched.handlesNull() || isOptional(type)) {
       return inner;
     }
 

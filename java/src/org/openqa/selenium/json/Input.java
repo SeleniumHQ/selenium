@@ -74,6 +74,10 @@ class Input {
    *     input is exhausted
    */
   public int peek() {
+    int next = position + 1;
+    if (next < filled) {
+      return buffer[next];
+    }
     return fill() ? buffer[position + 1] : EOF;
   }
 
@@ -84,6 +88,11 @@ class Input {
    *     input is exhausted
    */
   public int read() {
+    int next = position + 1;
+    if (next < filled) {
+      position = next;
+      return buffer[next];
+    }
     return fill() ? buffer[++position] : EOF;
   }
 
@@ -151,13 +160,25 @@ class Input {
     while (fill()) {
       int start = position + 1;
       for (int i = start; i < filled; i++) {
-        if (!Character.isWhitespace(buffer[i])) {
+        if (!isWhitespace(buffer[i])) {
           position = i - 1;
           return;
         }
       }
       position = filled - 1;
     }
+  }
+
+  /**
+   * Test for whitespace, checking the JSON whitespace characters (RFC 8259 §2) directly before
+   * consulting {@link Character#isWhitespace}, whose table lookups are measurably slower and which
+   * is retained only to stay lenient about exotic whitespace between tokens.
+   */
+  private static boolean isWhitespace(char c) {
+    if (c == ' ' || c == '\n' || c == '\t' || c == '\r') {
+      return true;
+    }
+    return Character.isWhitespace(c);
   }
 
   /**
