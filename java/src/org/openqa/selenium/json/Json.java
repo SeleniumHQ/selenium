@@ -18,7 +18,6 @@
 package org.openqa.selenium.json;
 
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -175,8 +174,13 @@ public class Json {
    * @throws JsonException if an I/O exception is encountered
    */
   public <T> T toType(String source, Type typeOfT, PropertySetting setter) {
-    try (StringReader reader = new StringReader(source)) {
-      return toType(reader, typeOfT, setter);
+    Require.nonNull("Mechanism for setting properties", setter);
+
+    // Read the string directly rather than through a StringReader: string-backed input skips the
+    // Reader indirection and the large read buffer, which dominate the cost of parsing the small
+    // payloads typical of WebDriver commands and responses.
+    try (JsonInput json = new JsonInput(source, fromJson, PropertySetting.BY_NAME)) {
+      return fromJson.coerce(json, typeOfT, setter);
     } catch (JsonException e) {
       throw new JsonException("Unable to parse: " + abbreviate(source), e);
     }

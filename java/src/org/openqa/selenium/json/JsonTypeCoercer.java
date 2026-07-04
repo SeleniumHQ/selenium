@@ -48,6 +48,31 @@ class JsonTypeCoercer {
 
   private final Set<TypeCoercer<?>> additionalCoercers;
   private final Set<TypeCoercer<?>> coercers;
+
+  /**
+   * Cache of resolved coercion functions for plain {@link Class} keys, which are the overwhelmingly
+   * common case. A {@link ClassValue} stores each entry on the class itself, so classes (and their
+   * class loaders) remain eligible for garbage collection — important for callers that deserialize
+   * into dynamically generated classes, since {@link Json} shares a single coercer for the life of
+   * the JVM.
+   */
+  private final ClassValue<BiFunction<JsonInput, PropertySetting, Object>> classCoercers =
+      new ClassValue<BiFunction<JsonInput, PropertySetting, Object>>() {
+        @Override
+        protected BiFunction<JsonInput, PropertySetting, Object> computeValue(Class<?> type) {
+          return buildCoercer(type);
+        }
+      };
+
+  /**
+   * Cache of resolved coercion functions for parameterized types passed directly to {@link #coerce}
+   * — in practice, the handful of {@link TypeToken} constants in the codebase. Unlike {@link
+   * #classCoercers}, entries here live as long as this coercer does, so the map is capped: if a
+   * caller funnels many distinct types through it (say, types built around generated classes), it
+   * is cleared rather than allowed to pin those classes forever.
+   */
+  private static final int MAX_CACHED_GENERIC_TYPES = 256;
+
   private final Map<Type, BiFunction<JsonInput, PropertySetting, Object>> knownCoercers =
       new ConcurrentHashMap<>();
 
@@ -154,10 +179,17 @@ class JsonTypeCoercer {
    * @return {@link BiFunction} object to deserialize the specified Java type
    */
   BiFunction<JsonInput, PropertySetting, Object> resolve(Type type) {
+    if (type instanceof Class) {
+      return classCoercers.get((Class<?>) type);
+    }
+
     // Plain get first: this is almost always a hit, and avoids the capturing lambda that
     // computeIfAbsent would allocate on every call.
     BiFunction<JsonInput, PropertySetting, Object> coercer = knownCoercers.get(type);
     if (coercer == null) {
+      if (knownCoercers.size() >= MAX_CACHED_GENERIC_TYPES) {
+        knownCoercers.clear();
+      }
       coercer = knownCoercers.computeIfAbsent(type, this::buildCoercer);
     }
     return coercer;
@@ -189,7 +221,15 @@ class JsonTypeCoercer {
     public Object apply(JsonInput json, PropertySetting setter) {
       BiFunction<JsonInput, PropertySetting, Object> resolved = delegate;
       if (resolved == null) {
-        resolved = delegate = coercer.resolve(type);
+        if (type instanceof Class) {
+          resolved = coercer.resolve(type);
+        } else {
+          // Memoize here rather than in the shared map: this LazyCoercer is reachable only from
+          // the coercion function for its owning type, so a parameterized type mentioning a
+          // generated class dies with that class instead of being pinned by the cache.
+          resolved = coercer.buildCoercer(type);
+        }
+        delegate = resolved;
       }
       return resolved.apply(json, setter);
     }

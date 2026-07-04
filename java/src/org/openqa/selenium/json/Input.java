@@ -44,7 +44,7 @@ class Input {
   /** the number of chars to remember, safe to set to 0 */
   private static final int MEMORY_SIZE = 128;
 
-  private final Reader source;
+  private final @Nullable Reader source;
 
   /** a buffer used to minimize read calls and to keep the chars to remember */
   private final char[] buffer;
@@ -64,6 +64,23 @@ class Input {
     this.source = Require.nonNull("Source", source);
     this.buffer = new char[BUFFER_SIZE + MEMORY_SIZE];
     this.filled = 0;
+    this.position = -1;
+  }
+
+  /**
+   * Initialize a new instance of the {@link Input} class that reads directly from a string.
+   *
+   * <p>The entire input is buffered up front, sized exactly to the source. This avoids the large
+   * read buffer and per-chunk {@link Reader} calls of the streaming constructor, which dominate the
+   * cost of parsing the small payloads typical of WebDriver commands and responses.
+   *
+   * @param source string that supplies the input to be processed
+   */
+  public Input(String source) {
+    Require.nonNull("Source", source);
+    this.source = null;
+    this.buffer = source.toCharArray();
+    this.filled = buffer.length;
     this.position = -1;
   }
 
@@ -250,6 +267,11 @@ class Input {
    * @throws UncheckedIOException if an I/O exception is encountered
    */
   private boolean fill() {
+    if (source == null) {
+      // String-backed input is fully buffered on construction.
+      return filled > position + 1;
+    }
+
     // do we need to fill the buffer?
     while (filled == position + 1) {
       try {

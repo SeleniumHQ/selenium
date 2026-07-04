@@ -37,10 +37,13 @@ import org.openqa.selenium.internal.Require;
 /**
  * The <b>JsonInput</b> class defines the operations used to deserialize JSON strings into Java
  * objects.
+ *
+ * <p>Instances of this class are not thread-safe: each instance wraps a single character stream and
+ * must be confined to one thread.
  */
 public class JsonInput implements Closeable {
 
-  private final Reader source;
+  private final @Nullable Reader source;
   private boolean readPerformed = false;
   private JsonTypeCoercer coercer;
   private PropertySetting setter;
@@ -62,6 +65,14 @@ public class JsonInput implements Closeable {
     this.source = Require.nonNull("Source", source);
     this.coercer = Require.nonNull("Coercer", coercer);
     this.input = new Input(source);
+    this.setter = Require.nonNull("Setter", setter);
+  }
+
+  JsonInput(String source, JsonTypeCoercer coercer, PropertySetting setter) {
+
+    this.source = null;
+    this.coercer = Require.nonNull("Coercer", coercer);
+    this.input = new Input(Require.nonNull("Source", source));
     this.setter = Require.nonNull("Setter", setter);
   }
 
@@ -96,13 +107,11 @@ public class JsonInput implements Closeable {
    * @throws JsonException if this {@code JsonInput} has already begun processing its input
    */
   public JsonInput addCoercers(Iterable<TypeCoercer<?>> coercers) {
-    synchronized (this) {
-      if (readPerformed) {
-        throw new JsonException("JsonInput has already been used and may not be modified");
-      }
-
-      this.coercer = new JsonTypeCoercer(coercer, coercers);
+    if (readPerformed) {
+      throw new JsonException("JsonInput has already been used and may not be modified");
     }
+
+    this.coercer = new JsonTypeCoercer(coercer, coercers);
 
     return this;
   }
@@ -114,6 +123,10 @@ public class JsonInput implements Closeable {
    */
   @Override
   public void close() {
+    if (source == null) {
+      return;
+    }
+
     try {
       source.close();
     } catch (IOException e) {
