@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
@@ -55,6 +56,8 @@ public class JsonInput implements Closeable {
   // a plain array because it is touched for every element read.
   private boolean[] containerHasElement = new boolean[16];
   private int containerDepth;
+  // Memoized type of the pending token; cleared whenever the token is consumed.
+  private @Nullable JsonType peekedType;
 
   JsonInput(Reader source, JsonTypeCoercer coercer, PropertySetting setter) {
 
@@ -128,15 +131,24 @@ public class JsonInput implements Closeable {
    * @throws UncheckedIOException if an I/O exception is encountered
    */
   public JsonType peek() {
+    // A single token is typically peeked at several times on its way through the coercers, so
+    // the computed type is memoized until the token is consumed.
+    JsonType type = peekedType;
+    if (type != null) {
+      return type;
+    }
+
     skipWhitespace(input);
 
     switch (input.peek()) {
       case 'f':
       case 't':
-        return JsonType.BOOLEAN;
+        type = JsonType.BOOLEAN;
+        break;
 
       case 'n':
-        return JsonType.NULL;
+        type = JsonType.NULL;
+        break;
 
       case '-':
       case '0':
@@ -149,30 +161,40 @@ public class JsonInput implements Closeable {
       case '7':
       case '8':
       case '9':
-        return JsonType.NUMBER;
+        type = JsonType.NUMBER;
+        break;
 
       case '"':
-        return isReadingName() ? JsonType.NAME : JsonType.STRING;
+        type = isReadingName() ? JsonType.NAME : JsonType.STRING;
+        break;
 
       case '{':
-        return JsonType.START_MAP;
+        type = JsonType.START_MAP;
+        break;
 
       case '}':
-        return JsonType.END_MAP;
+        type = JsonType.END_MAP;
+        break;
 
       case '[':
-        return JsonType.START_COLLECTION;
+        type = JsonType.START_COLLECTION;
+        break;
 
       case ']':
-        return JsonType.END_COLLECTION;
+        type = JsonType.END_COLLECTION;
+        break;
 
       case Input.EOF:
-        return JsonType.END;
+        type = JsonType.END;
+        break;
 
       default:
         int c = input.read();
         throw new JsonException("Unable to determine type from: " + (char) c + ". " + input);
     }
+
+    peekedType = type;
+    return type;
   }
 
   /**
@@ -368,6 +390,7 @@ public class JsonInput implements Closeable {
         throw new JsonException("Unexpected ',' before first element of container. " + input);
       }
       input.read();
+      peekedType = null;
       // We've moved past the separator, so we're once again expecting an element rather than
       // another comma. Clear the flag so a repeat hasNext() before reading is a no-op.
       clearSeenElement();
@@ -544,12 +567,14 @@ public class JsonInput implements Closeable {
    * @throws JsonException if coercion of the next element to the specified type fails
    * @throws UncheckedIOException if an I/O exception is encountered
    */
+  @SuppressWarnings("unchecked")
   public <T> List<T> readArray(Type type) {
     List<T> toReturn = new ArrayList<>();
+    BiFunction<JsonInput, PropertySetting, Object> elementCoercer = coercer.resolve(type);
 
     beginArray();
     while (hasNext()) {
-      toReturn.add(coercer.coerce(this, type, setter));
+      toReturn.add((T) elementCoercer.apply(this, setter));
     }
     endArray();
 
@@ -577,6 +602,9 @@ public class JsonInput implements Closeable {
       throw new JsonException(
           "Expected to read a " + type + " but instead have: " + peek() + ". " + input);
     }
+
+    // The pending token is about to be consumed, so the memoized type is no longer valid.
+    peekedType = null;
 
     // Special map handling. Woo!
     Container top = stack.peekFirst();
@@ -757,10 +785,7 @@ public class JsonInput implements Closeable {
    * @throws UncheckedIOException if an I/O exception is encountered
    */
   private void skipWhitespace(Input input) {
-    int c;
-    while ((c = input.peek()) != Input.EOF && Character.isWhitespace(c)) {
-      input.read();
-    }
+    input.skipWhitespace();
   }
 
   /** Used to track the current container processing state. */

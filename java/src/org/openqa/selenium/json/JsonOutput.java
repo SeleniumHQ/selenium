@@ -418,7 +418,19 @@ public class JsonOutput implements Closeable {
       append("null");
       return this;
     }
-    CONVERTERS.get(input.getClass()).consume(this, input, maxDepth, depthRemaining);
+
+    // Fast paths for the classes that dominate real payloads, mirroring the corresponding
+    // converters and skipping the per-class strategy lookup.
+    Class<?> cls = input.getClass();
+    if (cls == String.class) {
+      writeString(input);
+    } else if (cls == Long.class || cls == Integer.class || cls == Double.class) {
+      append(input.toString());
+    } else if (cls == Boolean.class) {
+      append((Boolean) input ? "true" : "false");
+    } else {
+      CONVERTERS.get(cls).consume(this, input, maxDepth, depthRemaining);
+    }
 
     return this;
   }

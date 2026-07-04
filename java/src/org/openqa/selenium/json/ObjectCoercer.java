@@ -37,37 +37,38 @@ class ObjectCoercer extends TypeCoercer<Object> {
 
   @Override
   public BiFunction<JsonInput, PropertySetting, Object> apply(Type type) {
-    return (jsonInput, setting) -> {
-      Type target;
+    // Resolve the possible target coercers once rather than paying a cache lookup per value.
+    BiFunction<JsonInput, PropertySetting, Object> booleanCoercer =
+        coercer.lazyResolve(Boolean.class);
+    BiFunction<JsonInput, PropertySetting, Object> stringCoercer =
+        coercer.lazyResolve(String.class);
+    BiFunction<JsonInput, PropertySetting, Object> numberCoercer =
+        coercer.lazyResolve(Number.class);
+    BiFunction<JsonInput, PropertySetting, Object> listCoercer = coercer.lazyResolve(List.class);
+    BiFunction<JsonInput, PropertySetting, Object> mapCoercer = coercer.lazyResolve(Json.MAP_TYPE);
 
+    return (jsonInput, setting) -> {
       switch (jsonInput.peek()) {
         case BOOLEAN:
-          target = Boolean.class;
-          break;
+          return booleanCoercer.apply(jsonInput, setting);
 
         case NAME:
         case STRING:
-          target = String.class;
-          break;
+          return stringCoercer.apply(jsonInput, setting);
 
         case NUMBER:
-          target = Number.class;
-          break;
+          return numberCoercer.apply(jsonInput, setting);
 
         case START_COLLECTION:
-          target = List.class;
-          break;
+          return listCoercer.apply(jsonInput, setting);
 
         case START_MAP:
-          target = Json.MAP_TYPE;
-          break;
+          return mapCoercer.apply(jsonInput, setting);
 
         default:
           throw new JsonException(
               "Object coercer cannot determine proper type: " + jsonInput.peek());
       }
-
-      return coercer.coerce(jsonInput, target, setting);
     };
   }
 }

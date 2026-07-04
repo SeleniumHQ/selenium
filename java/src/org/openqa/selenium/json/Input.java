@@ -145,6 +145,22 @@ class Input {
   }
 
   /**
+   * Consume whitespace characters in bulk, leaving the first non-whitespace character unconsumed.
+   */
+  public void skipWhitespace() {
+    while (fill()) {
+      int start = position + 1;
+      for (int i = start; i < filled; i++) {
+        if (!Character.isWhitespace(buffer[i])) {
+          position = i - 1;
+          return;
+        }
+      }
+      position = filled - 1;
+    }
+  }
+
+  /**
    * Consume ASCII digits, appending them to the supplied builder in bulk. Stops before the first
    * non-digit character, which is left unconsumed.
    *

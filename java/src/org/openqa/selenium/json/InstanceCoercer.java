@@ -19,6 +19,11 @@ package org.openqa.selenium.json;
 
 import static java.util.stream.Collectors.toMap;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaMetafactory;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -33,6 +38,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 class InstanceCoercer extends TypeCoercer<Object> {
@@ -78,7 +84,7 @@ class InstanceCoercer extends TypeCoercer<Object> {
             continue;
           }
 
-          Object value = coercer.coerce(jsonInput, writer.type, setter);
+          Object value = writer.coercion.apply(jsonInput, setter);
           writer.writer.accept(instance, value);
         }
 
@@ -93,16 +99,23 @@ class InstanceCoercer extends TypeCoercer<Object> {
 
   private Map<String, TypeAndWriter> getWriters(
       Constructor<?> constructor, PropertySetting setter) {
+    Map<String, TypeAndWriter> writers;
     switch (setter) {
       case BY_FIELD:
-        return getFieldWriters(constructor);
+        writers = getFieldWriters(constructor);
+        break;
 
       case BY_NAME:
-        return getBeanWriters(constructor);
+        writers = getBeanWriters(constructor);
+        break;
 
       default:
         throw new JsonException("Cannot determine how to find fields: " + setter);
     }
+
+    // Resolve the property coercers once per type rather than per value read.
+    writers.values().forEach(writer -> writer.coercion = coercer.lazyResolve(writer.type));
+    return writers;
   }
 
   private Map<String, TypeAndWriter> getFieldWriters(Constructor<?> constructor) {
@@ -176,6 +189,7 @@ class InstanceCoercer extends TypeCoercer<Object> {
   private static class TypeAndWriter {
     private final Type type;
     private final BiConsumer<Object, Object> writer;
+    private BiFunction<JsonInput, PropertySetting, Object> coercion;
 
     TypeAndWriter(Type type, BiConsumer<Object, Object> writer) {
       this.type = type;
@@ -236,18 +250,52 @@ class InstanceCoercer extends TypeCoercer<Object> {
   private static class SimplePropertyWriter implements BiConsumer<Object, Object> {
     private final SimplePropertyDescriptor desc;
     private final Method method;
+    private final @Nullable BiConsumer<Object, Object> compiled;
 
     SimplePropertyWriter(SimplePropertyDescriptor desc, Method method) {
       this.desc = desc;
       this.method = method;
+      this.compiled = compileSetter(method);
+    }
+
+    /**
+     * Compile the setter to a direct call via {@link LambdaMetafactory}, which is considerably
+     * faster than reflective invocation. Returns {@code null} for anything that cannot be compiled
+     * (inaccessible types and the like), in which case {@link Method#invoke} is used, deferring
+     * accessibility problems to invocation time just as reflective calls always have.
+     */
+    private static @Nullable BiConsumer<Object, Object> compileSetter(Method method) {
+      try {
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        MethodHandle handle = lookup.unreflect(method);
+        CallSite site =
+            LambdaMetafactory.metafactory(
+                lookup,
+                "accept",
+                MethodType.methodType(BiConsumer.class),
+                MethodType.methodType(void.class, Object.class, Object.class),
+                handle,
+                handle.type().changeReturnType(void.class));
+        @SuppressWarnings("unchecked")
+        BiConsumer<Object, Object> setter =
+            (BiConsumer<Object, Object>) site.getTarget().invokeExact();
+        return setter;
+      } catch (Throwable t) {
+        return null;
+      }
     }
 
     @Override
     public void accept(Object instance, Object value) {
-      method.setAccessible(true);
       try {
+        if (compiled != null) {
+          compiled.accept(instance, value);
+          return;
+        }
+
+        method.setAccessible(true);
         method.invoke(instance, value);
-      } catch (ReflectiveOperationException e) {
+      } catch (Exception e) {
         throw new JsonException(
             String.format(
                 "Cannot call method %s.%s(%s)",

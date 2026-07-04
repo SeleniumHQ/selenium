@@ -39,7 +39,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.internal.Require;
 
 /**
  * The <b>JsonTypeCoercer</b> class manages a collection of type coercers, providing a single source
@@ -140,45 +139,94 @@ class JsonTypeCoercer {
   }
 
   <T> T coerce(JsonInput json, Type typeOfT, PropertySetting setter) {
-    // Plain get first: this is almost always a hit, and avoids the capturing lambda that
-    // computeIfAbsent would allocate on every call.
-    BiFunction<JsonInput, PropertySetting, Object> coercer = knownCoercers.get(typeOfT);
-    if (coercer == null) {
-      coercer = knownCoercers.computeIfAbsent(typeOfT, this::buildCoercer);
-    }
-
-    if (json.peek() == JsonType.NULL && !isOptional(typeOfT)) {
-      @SuppressWarnings("unchecked")
-      T next = (T) json.nextNull();
-      return next;
-    }
-
-    // We need to keep null checkers happy, apparently.
     @SuppressWarnings("unchecked")
-    T result = (T) Require.nonNull("Coercer", coercer).apply(json, setter);
+    T result = (T) resolve(typeOfT).apply(json, setter);
 
     return result;
   }
 
   /**
+   * Resolve the coercion function for the specified type, caching the result. Callers that coerce
+   * many values of the same type (containers, in particular) should resolve once and reuse the
+   * returned function rather than paying a cache lookup per element.
+   *
+   * @param type data type for deserialization (class or {@link TypeToken})
+   * @return {@link BiFunction} object to deserialize the specified Java type
+   */
+  BiFunction<JsonInput, PropertySetting, Object> resolve(Type type) {
+    // Plain get first: this is almost always a hit, and avoids the capturing lambda that
+    // computeIfAbsent would allocate on every call.
+    BiFunction<JsonInput, PropertySetting, Object> coercer = knownCoercers.get(type);
+    if (coercer == null) {
+      coercer = knownCoercers.computeIfAbsent(type, this::buildCoercer);
+    }
+    return coercer;
+  }
+
+  /**
+   * Return a function that resolves the coercer for the specified type on first use. Unlike {@link
+   * #resolve}, this is safe to call from within a {@link TypeCoercer#apply} implementation, where
+   * an eager resolution would recursively update the coercer cache mid-computation.
+   *
+   * @param type data type for deserialization (class or {@link TypeToken})
+   * @return {@link BiFunction} object to deserialize the specified Java type
+   */
+  BiFunction<JsonInput, PropertySetting, Object> lazyResolve(Type type) {
+    return new LazyCoercer(this, type);
+  }
+
+  private static class LazyCoercer implements BiFunction<JsonInput, PropertySetting, Object> {
+    private final JsonTypeCoercer coercer;
+    private final Type type;
+    private volatile BiFunction<JsonInput, PropertySetting, Object> delegate;
+
+    LazyCoercer(JsonTypeCoercer coercer, Type type) {
+      this.coercer = coercer;
+      this.type = type;
+    }
+
+    @Override
+    public Object apply(JsonInput json, PropertySetting setter) {
+      BiFunction<JsonInput, PropertySetting, Object> resolved = delegate;
+      if (resolved == null) {
+        resolved = delegate = coercer.resolve(type);
+      }
+      return resolved.apply(json, setter);
+    }
+  }
+
+  /**
    * Extract the coercer that supports the specified type from the collection managed by this {@code
-   * JsonTypeCoercer}, returning a coercion function for the client to use.
+   * JsonTypeCoercer}, returning a coercion function for the client to use. The returned function
+   * takes care of JSON null handling, so it can be invoked directly.
    *
    * @param type data type for deserialization (class or {@link TypeToken})
    * @return {@link BiFunction} object to deserialize the specified Java type
    */
   private BiFunction<JsonInput, PropertySetting, Object> buildCoercer(Type type) {
-    return coercers.stream()
-        .filter(coercer -> coercer.test(narrow(type)))
-        .findFirst()
-        .map(
-            coercer -> {
-              @SuppressWarnings("unchecked")
-              BiFunction<JsonInput, PropertySetting, Object> funct =
-                  (BiFunction<JsonInput, PropertySetting, Object>) coercer.apply(type);
-              return funct;
-            })
-        .orElseThrow(() -> new JsonException("Unable to find type coercer for " + type));
+    BiFunction<JsonInput, PropertySetting, Object> inner =
+        coercers.stream()
+            .filter(coercer -> coercer.test(narrow(type)))
+            .findFirst()
+            .map(
+                coercer -> {
+                  @SuppressWarnings("unchecked")
+                  BiFunction<JsonInput, PropertySetting, Object> funct =
+                      (BiFunction<JsonInput, PropertySetting, Object>) coercer.apply(type);
+                  return funct;
+                })
+            .orElseThrow(() -> new JsonException("Unable to find type coercer for " + type));
+
+    if (isOptional(type)) {
+      return inner;
+    }
+
+    return (json, setter) -> {
+      if (json.peek() == JsonType.NULL) {
+        return json.nextNull();
+      }
+      return inner.apply(json, setter);
+    };
   }
 
   private boolean isOptional(Type type) {
