@@ -138,11 +138,11 @@ importers:
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.5.0(supports-color@10.2.2))
       cddl:
-        specifier: ^0.20.1
-        version: 0.20.1
+        specifier: ^0.21.0
+        version: 0.21.0
       cddl2ts:
-        specifier: ^0.9.1
-        version: 0.9.1
+        specifier: ^0.10.0
+        version: 0.10.0
       clean-jsdoc-theme:
         specifier: ^4.3.2
         version: 4.3.2(jsdoc@4.0.5)
@@ -1427,12 +1427,12 @@ packages:
     resolution: {integrity: sha512-prMTQVpcns/tzFgFVkVp6ak6RykZyWb3gu8ckUpd6YkTlacOd3DXGJjIpD4Q6zJirizvaiAjSSHlOsA+6sNh2A==}
     engines: {node: '>= 10'}
 
-  cddl2ts@0.9.1:
-    resolution: {integrity: sha512-kF8Axg7HOGS/Os5YojTl51GKXC4DTHt/PaqvV9Naj1QHUABpZV2fVtAvo2dHoZU4ubNbv8aeOOksTOQmIKgfGA==}
+  cddl2ts@0.10.0:
+    resolution: {integrity: sha512-YLLcOy+KeaOoVz62gR3009Ce30UM71R9zIverx+7vN3j9kjTLF6dsI2cYPfCNeHhd9/b/9HBYqxadU9u8bSFbA==}
     hasBin: true
 
-  cddl@0.20.1:
-    resolution: {integrity: sha512-aCMHKxLmRDvGcji3tWfXYUW22eK9F+Xrn+a822BvitCeICWyCIrOWZMjNmedRkQLiwdpaZv+wnZ3bfpI9jbKIQ==}
+  cddl@0.21.0:
+    resolution: {integrity: sha512-/2lnDcCA/7DRDChH2szAW4tKzZeqYFQKhw2nGqi6WqBr7N9mx2yObATLnc01pqG9pXJrw3auT1X5O58azNBTMQ==}
     hasBin: true
 
   chalk@4.1.2:
@@ -5629,15 +5629,15 @@ snapshots:
     dependencies:
       lodash: 4.18.1
 
-  cddl2ts@0.9.1:
+  cddl2ts@0.10.0:
     dependencies:
       '@babel/parser': 7.29.7
       camelcase: 9.0.0
-      cddl: 0.20.1
+      cddl: 0.21.0
       recast: 0.23.11
       yargs: 18.0.0
 
-  cddl@0.20.1:
+  cddl@0.21.0:
     dependencies:
       camelcase: 9.0.0
       yargs: 18.0.0
