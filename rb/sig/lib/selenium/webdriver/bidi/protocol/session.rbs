@@ -28,7 +28,7 @@ module Selenium
           class CapabilitiesRequest < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader always_match: untyped
             attr_reader first_match: untyped
-            def self.new: (?always_match: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequest?, ?first_match: Array[::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequest]?) -> instance
+            def self.new: (?always_match: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequest, ?first_match: Array[::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequest]) -> instance
           end
 
           class CapabilityRequest < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -39,7 +39,7 @@ module Selenium
             attr_reader proxy: untyped
             attr_reader unhandled_prompt_behavior: untyped
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (?accept_insecure_certs: bool?, ?browser_name: String?, ?browser_version: String?, ?platform_name: String?, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration?, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler?, ?extensions: untyped) -> instance
+            def self.new: (?accept_insecure_certs: bool, ?browser_name: String, ?browser_version: String, ?platform_name: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?extensions: untyped) -> instance
           end
 
           class ProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Union
@@ -65,7 +65,7 @@ module Selenium
             attr_reader socks_version: Integer
             attr_reader no_proxy: untyped
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (?proxy_type: untyped, ?http_proxy: String?, ?ssl_proxy: String?, socks_proxy: String, socks_version: Integer, ?no_proxy: Array[String]?, ?extensions: untyped) -> instance
+            def self.new: (?proxy_type: untyped, ?http_proxy: String, ?ssl_proxy: String, socks_proxy: String, socks_version: Integer, ?no_proxy: Array[String], ?extensions: untyped) -> instance
           end
 
           class SocksProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -94,14 +94,14 @@ module Selenium
             attr_reader default: untyped
             attr_reader file: untyped
             attr_reader prompt: untyped
-            def self.new: (?alert: Symbol?, ?before_unload: Symbol?, ?confirm: Symbol?, ?default: Symbol?, ?file: Symbol?, ?prompt: Symbol?) -> instance
+            def self.new: (?alert: Symbol, ?before_unload: Symbol, ?confirm: Symbol, ?default: Symbol, ?file: Symbol, ?prompt: Symbol) -> instance
           end
 
           class SubscribeParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader events: Array[String]
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
-            def self.new: (events: Array[String], ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (events: Array[String], ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
           class UnsubscribeByIDRequest < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -141,7 +141,7 @@ module Selenium
               attr_reader unhandled_prompt_behavior: untyped
               attr_reader web_socket_url: untyped
               attr_reader extensions: Hash[String, untyped]
-              def self.new: (accept_insecure_certs: bool, browser_name: String, browser_version: String, platform_name: String, set_window_rect: bool, user_agent: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration?, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler?, ?web_socket_url: String?, ?extensions: untyped) -> instance
+              def self.new: (accept_insecure_certs: bool, browser_name: String, browser_version: String, platform_name: String, set_window_rect: bool, user_agent: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?web_socket_url: String, ?extensions: untyped) -> instance
             end
           end
 
@@ -156,8 +156,8 @@ module Selenium
           def end_: () -> untyped
           def new: (capabilities: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilitiesRequest) -> ::Selenium::WebDriver::BiDi::Protocol::Session::NewResult
           def status: () -> ::Selenium::WebDriver::BiDi::Protocol::Session::StatusResult
-          def subscribe: (events: Array[String], ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> ::Selenium::WebDriver::BiDi::Protocol::Session::SubscribeResult
-          def unsubscribe: (?events: Array[String]?, ?subscriptions: Array[String]?) -> untyped
+          def subscribe: (events: Array[String], ?contexts: Array[String], ?user_contexts: Array[String]) -> ::Selenium::WebDriver::BiDi::Protocol::Session::SubscribeResult
+          def unsubscribe: (?events: Array[String], ?subscriptions: Array[String]) -> untyped
         end
       end
     end

@@ -35,8 +35,8 @@ module Selenium
 
         # Validates an outbound enum argument: +value+ is a symbol (or list of symbols) that
         # must be a key of the enum hash (+{symbol => wire_token}+), so a bad value fails
-        # locally with a clear error instead of a round-trip. Inbound payloads are trusted
-        # and not checked.
+        # locally with a clear error instead of a round-trip. Outbound only; inbound wire
+        # tokens are mapped and checked separately in +to_symbol+.
         #
         # @api private
         def self.validate!(name, value, enum)

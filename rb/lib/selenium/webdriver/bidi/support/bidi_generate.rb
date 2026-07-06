@@ -113,9 +113,9 @@ module BiDiGenerate
     camel_to_snake(camel).upcase
   end
 
-  # Makes an RBS type admit nil, idempotently (an already-nilable or opaque type is
-  # left as-is). Used both for nullable fields and for optional params, where passing
-  # nil is the runtime equivalent of omitting the argument.
+  # Makes an RBS type admit nil, idempotently (an already-nilable or opaque type is left
+  # as-is). Applied to a field whose schema type is nullable, so its value type allows nil;
+  # keyword-optionality is expressed separately by the `?` prefix (see rbs_part / rbs_arg).
   def self.rbs_nilable(type)
     return type if type == 'untyped' || type == 'nil' || type.end_with?('?')
 
@@ -159,12 +159,12 @@ module BiDiGenerate
       BiDiGenerate.wrap_call('Serialization.validate!', ["'#{wire_name}'", ruby_name, enum], indent)
     end
 
-    # An RBS keyword parameter carrying the param's value type. A required param is its
-    # bare type; an optional one is prefixed `?` and admits nil, since passing nil is the
-    # runtime equivalent of omitting it (a non-nullable field's nil is dropped on the wire).
+    # An RBS keyword parameter carrying the param's value type. The `?` prefix marks the
+    # keyword omittable; the value type already carries the schema's nullability, so nil is
+    # admitted only for a nullable field (a non-nullable one rejects nil at construction).
     def rbs_part
       type = rbs || 'untyped'
-      required ? "#{ruby_name}: #{type}" : "?#{ruby_name}: #{BiDiGenerate.rbs_nilable(type)}"
+      required ? "#{ruby_name}: #{type}" : "?#{ruby_name}: #{type}"
     end
   end
 
@@ -253,10 +253,10 @@ module BiDiGenerate
     end
 
     # The `self.new` keyword for this field — a user-supplied input carrying the field's
-    # value type. An optional field is prefixed `?` and admits nil (nil omits it, same as
-    # the command-param path); a required field is its bare type.
+    # value type. The `?` prefix marks the field omittable; its value type already carries
+    # the schema's nullability, so nil is admitted only for a nullable field.
     def rbs_arg
-      required ? "#{ruby_name}: #{rbs}" : "?#{ruby_name}: #{BiDiGenerate.rbs_nilable(rbs)}"
+      required ? "#{ruby_name}: #{rbs}" : "?#{ruby_name}: #{rbs}"
     end
 
     # The `attr_reader` type. A present value is `rbs`; an omitted optional reads back

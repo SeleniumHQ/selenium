@@ -33,7 +33,7 @@ module Selenium
             attr_reader theme: Symbol?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
-            def self.new: (theme: Symbol?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (theme: Symbol?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
           class SetGeolocationOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Union
@@ -41,13 +41,13 @@ module Selenium
               attr_reader contexts: untyped
               attr_reader user_contexts: untyped
               attr_reader coordinates: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationCoordinates?
-              def self.new: (?contexts: Array[String]?, ?user_contexts: Array[String]?, coordinates: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationCoordinates?) -> instance
+              def self.new: (?contexts: Array[String], ?user_contexts: Array[String], coordinates: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationCoordinates?) -> instance
             end
             class Error < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader contexts: untyped
               attr_reader user_contexts: untyped
               attr_reader error: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationPositionError
-              def self.new: (?contexts: Array[String]?, ?user_contexts: Array[String]?, error: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationPositionError) -> instance
+              def self.new: (?contexts: Array[String], ?user_contexts: Array[String], error: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationPositionError) -> instance
             end
           end
 
@@ -59,7 +59,7 @@ module Selenium
             attr_reader altitude_accuracy: untyped
             attr_reader heading: untyped
             attr_reader speed: untyped
-            def self.new: (latitude: Integer, longitude: Integer, ?accuracy: Numeric?, ?altitude: Numeric?, ?altitude_accuracy: Numeric?, ?heading: Integer?, ?speed: Numeric?) -> instance
+            def self.new: (latitude: Integer, longitude: Integer, ?accuracy: Numeric, ?altitude: Numeric?, ?altitude_accuracy: Numeric?, ?heading: Integer?, ?speed: Numeric?) -> instance
           end
 
           class GeolocationPositionError < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -71,14 +71,14 @@ module Selenium
             attr_reader locale: String?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
-            def self.new: (locale: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (locale: String?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
           class SetNetworkConditionsParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader network_conditions: ::Selenium::WebDriver::BiDi::Protocol::Emulation::NetworkConditionsOffline?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
-            def self.new: (network_conditions: ::Selenium::WebDriver::BiDi::Protocol::Emulation::NetworkConditionsOffline?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (network_conditions: ::Selenium::WebDriver::BiDi::Protocol::Emulation::NetworkConditionsOffline?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
           class NetworkConditionsOffline < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -96,7 +96,7 @@ module Selenium
             attr_reader screen_area: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenArea?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
-            def self.new: (screen_area: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenArea?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (screen_area: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenArea?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
           class ScreenOrientation < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -109,55 +109,55 @@ module Selenium
             attr_reader screen_orientation: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenOrientation?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
-            def self.new: (screen_orientation: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenOrientation?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (screen_orientation: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenOrientation?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
           class SetUserAgentOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader user_agent: String?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
-            def self.new: (user_agent: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (user_agent: String?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
           class SetScriptingEnabledParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader enabled: bool?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
-            def self.new: (enabled: bool?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (enabled: bool?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
           class SetScrollbarTypeOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader scrollbar_type: untyped
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
-            def self.new: (scrollbar_type: untyped, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (scrollbar_type: untyped, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
           class SetTimezoneOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader timezone: String?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
-            def self.new: (timezone: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (timezone: String?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
           class SetTouchOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader max_touch_points: Integer?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
-            def self.new: (max_touch_points: Integer?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (max_touch_points: Integer?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
-          def set_forced_colors_mode_theme_override: (theme: Symbol?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
-          def set_geolocation_override: (?contexts: Array[String]?, ?user_contexts: Array[String]?, ?coordinates: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationCoordinates?, ?error: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationPositionError?) -> untyped
-          def set_locale_override: (locale: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
-          def set_network_conditions: (network_conditions: ::Selenium::WebDriver::BiDi::Protocol::Emulation::NetworkConditionsOffline?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
-          def set_screen_orientation_override: (screen_orientation: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenOrientation?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
-          def set_screen_settings_override: (screen_area: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenArea?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
-          def set_scripting_enabled: (enabled: bool?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
-          def set_scrollbar_type_override: (scrollbar_type: untyped, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
-          def set_timezone_override: (timezone: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
-          def set_touch_override: (max_touch_points: Integer?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
-          def set_user_agent_override: (user_agent: String?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
+          def set_forced_colors_mode_theme_override: (theme: Symbol?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
+          def set_geolocation_override: (?contexts: Array[String], ?user_contexts: Array[String], ?coordinates: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationCoordinates?, ?error: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationPositionError) -> untyped
+          def set_locale_override: (locale: String?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
+          def set_network_conditions: (network_conditions: ::Selenium::WebDriver::BiDi::Protocol::Emulation::NetworkConditionsOffline?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
+          def set_screen_orientation_override: (screen_orientation: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenOrientation?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
+          def set_screen_settings_override: (screen_area: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenArea?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
+          def set_scripting_enabled: (enabled: bool?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
+          def set_scrollbar_type_override: (scrollbar_type: untyped, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
+          def set_timezone_override: (timezone: String?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
+          def set_touch_override: (max_touch_points: Integer?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
+          def set_user_agent_override: (user_agent: String?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
         end
       end
     end

@@ -34,7 +34,7 @@ module Selenium
             attr_reader bitness: untyped
             attr_reader wow64: untyped
             attr_reader form_factors: untyped
-            def self.new: (?brands: Array[::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::BrandVersion]?, ?full_version_list: Array[::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::BrandVersion]?, ?platform: String?, ?platform_version: String?, ?architecture: String?, ?model: String?, ?mobile: bool?, ?bitness: String?, ?wow64: bool?, ?form_factors: Array[String]?) -> instance
+            def self.new: (?brands: Array[::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::BrandVersion], ?full_version_list: Array[::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::BrandVersion], ?platform: String, ?platform_version: String, ?architecture: String, ?model: String, ?mobile: bool, ?bitness: String, ?wow64: bool, ?form_factors: Array[String]) -> instance
           end
 
           class BrandVersion < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -47,10 +47,10 @@ module Selenium
             attr_reader client_hints: ::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::ClientHintsMetadata?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
-            def self.new: (client_hints: ::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::ClientHintsMetadata?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (client_hints: ::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::ClientHintsMetadata?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
-          def set_client_hints_override: (client_hints: ::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::ClientHintsMetadata?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
+          def set_client_hints_override: (client_hints: ::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::ClientHintsMetadata?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
         end
       end
     end

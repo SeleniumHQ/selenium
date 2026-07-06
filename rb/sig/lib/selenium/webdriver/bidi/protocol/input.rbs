@@ -64,12 +64,12 @@ module Selenium
             attr_reader id: String
             attr_reader parameters: untyped
             attr_reader actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::PointerSourceAction]
-            def self.new: (?type: untyped, id: String, ?parameters: ::Selenium::WebDriver::BiDi::Protocol::Input::PointerParameters?, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::PointerSourceAction]) -> instance
+            def self.new: (?type: untyped, id: String, ?parameters: ::Selenium::WebDriver::BiDi::Protocol::Input::PointerParameters, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::PointerSourceAction]) -> instance
           end
 
           class PointerParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader pointer_type: untyped
-            def self.new: (?pointer_type: Symbol?) -> instance
+            def self.new: (?pointer_type: Symbol) -> instance
           end
 
           class PointerSourceAction < ::Selenium::WebDriver::BiDi::Serialization::Union
@@ -88,7 +88,7 @@ module Selenium
           class PauseAction < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: untyped
             attr_reader duration: untyped
-            def self.new: (?type: untyped, ?duration: Integer?) -> instance
+            def self.new: (?type: untyped, ?duration: Integer) -> instance
           end
 
           class KeyDownAction < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -119,7 +119,7 @@ module Selenium
             attr_reader twist: untyped
             attr_reader altitude_angle: untyped
             attr_reader azimuth_angle: untyped
-            def self.new: (?type: untyped, button: Integer, ?width: Integer?, ?height: Integer?, ?pressure: Integer?, ?tangential_pressure: Integer?, ?twist: Integer?, ?altitude_angle: Numeric?, ?azimuth_angle: Numeric?) -> instance
+            def self.new: (?type: untyped, button: Integer, ?width: Integer, ?height: Integer, ?pressure: Integer, ?tangential_pressure: Integer, ?twist: Integer, ?altitude_angle: Numeric, ?azimuth_angle: Numeric) -> instance
           end
 
           class PointerMoveAction < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -135,7 +135,7 @@ module Selenium
             attr_reader twist: untyped
             attr_reader altitude_angle: untyped
             attr_reader azimuth_angle: untyped
-            def self.new: (?type: untyped, x: Numeric, y: Numeric, ?duration: Integer?, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::Origin?, ?width: Integer?, ?height: Integer?, ?pressure: Integer?, ?tangential_pressure: Integer?, ?twist: Integer?, ?altitude_angle: Numeric?, ?azimuth_angle: Numeric?) -> instance
+            def self.new: (?type: untyped, x: Numeric, y: Numeric, ?duration: Integer, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::Origin, ?width: Integer, ?height: Integer, ?pressure: Integer, ?tangential_pressure: Integer, ?twist: Integer, ?altitude_angle: Numeric, ?azimuth_angle: Numeric) -> instance
           end
 
           class WheelScrollAction < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -146,7 +146,7 @@ module Selenium
             attr_reader delta_y: Integer
             attr_reader duration: untyped
             attr_reader origin: untyped
-            def self.new: (?type: untyped, x: Integer, y: Integer, delta_x: Integer, delta_y: Integer, ?duration: Integer?, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::Origin?) -> instance
+            def self.new: (?type: untyped, x: Integer, y: Integer, delta_x: Integer, delta_y: Integer, ?duration: Integer, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::Origin) -> instance
           end
 
           class PointerCommonProperties < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -157,7 +157,7 @@ module Selenium
             attr_reader twist: untyped
             attr_reader altitude_angle: untyped
             attr_reader azimuth_angle: untyped
-            def self.new: (?width: Integer?, ?height: Integer?, ?pressure: Integer?, ?tangential_pressure: Integer?, ?twist: Integer?, ?altitude_angle: Numeric?, ?azimuth_angle: Numeric?) -> instance
+            def self.new: (?width: Integer, ?height: Integer, ?pressure: Integer, ?tangential_pressure: Integer, ?twist: Integer, ?altitude_angle: Numeric, ?azimuth_angle: Numeric) -> instance
           end
 
           class Origin < ::Selenium::WebDriver::BiDi::Serialization::Union
@@ -180,7 +180,7 @@ module Selenium
             attr_reader user_context: untyped
             attr_reader element: untyped
             attr_reader multiple: bool
-            def self.new: (context: String, ?user_context: String?, ?element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference?, multiple: bool) -> instance
+            def self.new: (context: String, ?user_context: String, ?element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference, multiple: bool) -> instance
           end
 
           EVENT_TYPES: Hash[String, untyped]

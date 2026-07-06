@@ -59,7 +59,7 @@ module Selenium
             class Value < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader name: untyped
               attr_reader role: untyped
-              def self.new: (?name: String?, ?role: String?) -> instance
+              def self.new: (?name: String, ?role: String) -> instance
             end
           end
 
@@ -86,7 +86,7 @@ module Selenium
             attr_reader ignore_case: untyped
             attr_reader match_type: untyped
             attr_reader max_depth: untyped
-            def self.new: (?type: untyped, value: String, ?ignore_case: bool?, ?match_type: Symbol?, ?max_depth: Integer?) -> instance
+            def self.new: (?type: untyped, value: String, ?ignore_case: bool, ?match_type: Symbol, ?max_depth: Integer) -> instance
           end
 
           class XPathLocator < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -101,7 +101,7 @@ module Selenium
             attr_reader timestamp: Integer
             attr_reader url: String
             attr_reader user_context: untyped
-            def self.new: (context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String?) -> instance
+            def self.new: (context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String) -> instance
           end
 
           class NavigationInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -110,7 +110,7 @@ module Selenium
             attr_reader timestamp: Integer
             attr_reader url: String
             attr_reader user_context: untyped
-            def self.new: (context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String?) -> instance
+            def self.new: (context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String) -> instance
           end
 
           class ActivateParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -123,13 +123,13 @@ module Selenium
             attr_reader origin: untyped
             attr_reader format: untyped
             attr_reader clip: untyped
-            def self.new: (context: String, ?origin: Symbol?, ?format: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ImageFormat?, ?clip: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ClipRectangle?) -> instance
+            def self.new: (context: String, ?origin: Symbol, ?format: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ImageFormat, ?clip: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ClipRectangle) -> instance
           end
 
           class ImageFormat < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: String
             attr_reader quality: untyped
-            def self.new: (type: String, ?quality: Integer?) -> instance
+            def self.new: (type: String, ?quality: Integer) -> instance
           end
 
           class ClipRectangle < ::Selenium::WebDriver::BiDi::Serialization::Union
@@ -158,7 +158,7 @@ module Selenium
           class CloseParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader prompt_unload: untyped
-            def self.new: (context: String, ?prompt_unload: bool?) -> instance
+            def self.new: (context: String, ?prompt_unload: bool) -> instance
           end
 
           class CreateParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -166,19 +166,19 @@ module Selenium
             attr_reader reference_context: untyped
             attr_reader background: untyped
             attr_reader user_context: untyped
-            def self.new: (type: Symbol, ?reference_context: String?, ?background: bool?, ?user_context: String?) -> instance
+            def self.new: (type: Symbol, ?reference_context: String, ?background: bool, ?user_context: String) -> instance
           end
 
           class CreateResult < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
             attr_reader user_context: untyped
-            def self.new: (context: String, ?user_context: String?) -> instance
+            def self.new: (context: String, ?user_context: String) -> instance
           end
 
           class GetTreeParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader max_depth: untyped
             attr_reader root: untyped
-            def self.new: (?max_depth: Integer?, ?root: String?) -> instance
+            def self.new: (?max_depth: Integer, ?root: String) -> instance
           end
 
           class GetTreeResult < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -190,7 +190,7 @@ module Selenium
             attr_reader context: String
             attr_reader accept: untyped
             attr_reader user_text: untyped
-            def self.new: (context: String, ?accept: bool?, ?user_text: String?) -> instance
+            def self.new: (context: String, ?accept: bool, ?user_text: String) -> instance
           end
 
           class LocateNodesParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -199,7 +199,7 @@ module Selenium
             attr_reader max_node_count: untyped
             attr_reader serialization_options: untyped
             attr_reader start_nodes: untyped
-            def self.new: (context: String, locator: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Locator, ?max_node_count: Integer?, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions?, ?start_nodes: Array[::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference]?) -> instance
+            def self.new: (context: String, locator: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Locator, ?max_node_count: Integer, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions, ?start_nodes: Array[::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference]) -> instance
           end
 
           class LocateNodesResult < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -211,7 +211,7 @@ module Selenium
             attr_reader context: String
             attr_reader url: String
             attr_reader wait: untyped
-            def self.new: (context: String, url: String, ?wait: Symbol?) -> instance
+            def self.new: (context: String, url: String, ?wait: Symbol) -> instance
           end
 
           class NavigateResult < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -229,7 +229,7 @@ module Selenium
             attr_reader page_ranges: untyped
             attr_reader scale: untyped
             attr_reader shrink_to_fit: untyped
-            def self.new: (context: String, ?background: bool?, ?margin: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintMarginParameters?, ?orientation: Symbol?, ?page: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintPageParameters?, ?page_ranges: Array[untyped]?, ?scale: Numeric?, ?shrink_to_fit: bool?) -> instance
+            def self.new: (context: String, ?background: bool, ?margin: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintMarginParameters, ?orientation: Symbol, ?page: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintPageParameters, ?page_ranges: Array[untyped], ?scale: Numeric, ?shrink_to_fit: bool) -> instance
           end
 
           class PrintMarginParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -237,13 +237,13 @@ module Selenium
             attr_reader left: untyped
             attr_reader right: untyped
             attr_reader top: untyped
-            def self.new: (?bottom: Numeric?, ?left: Numeric?, ?right: Numeric?, ?top: Numeric?) -> instance
+            def self.new: (?bottom: Numeric, ?left: Numeric, ?right: Numeric, ?top: Numeric) -> instance
           end
 
           class PrintPageParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader height: untyped
             attr_reader width: untyped
-            def self.new: (?height: Numeric?, ?width: Numeric?) -> instance
+            def self.new: (?height: Numeric, ?width: Numeric) -> instance
           end
 
           class PrintResult < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -255,14 +255,14 @@ module Selenium
             attr_reader context: String
             attr_reader ignore_cache: untyped
             attr_reader wait: untyped
-            def self.new: (context: String, ?ignore_cache: bool?, ?wait: Symbol?) -> instance
+            def self.new: (context: String, ?ignore_cache: bool, ?wait: Symbol) -> instance
           end
 
           class SetBypassCSPParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader bypass: bool?
             attr_reader contexts: untyped
             attr_reader user_contexts: untyped
-            def self.new: (bypass: bool?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (bypass: bool?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
           class SetViewportParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -270,7 +270,7 @@ module Selenium
             attr_reader viewport: untyped
             attr_reader device_pixel_ratio: untyped
             attr_reader user_contexts: untyped
-            def self.new: (?context: String?, ?viewport: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Viewport?, ?device_pixel_ratio: Numeric?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (?context: String, ?viewport: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Viewport?, ?device_pixel_ratio: Numeric?, ?user_contexts: Array[String]) -> instance
           end
 
           class Viewport < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -290,7 +290,7 @@ module Selenium
             attr_reader timestamp: Integer
             attr_reader url: String
             attr_reader user_context: untyped
-            def self.new: (context: String, timestamp: Integer, url: String, ?user_context: String?) -> instance
+            def self.new: (context: String, timestamp: Integer, url: String, ?user_context: String) -> instance
           end
 
           class DownloadWillBeginParams < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -300,7 +300,7 @@ module Selenium
             attr_reader timestamp: Integer
             attr_reader url: String
             attr_reader user_context: untyped
-            def self.new: (suggested_filename: String, context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String?) -> instance
+            def self.new: (suggested_filename: String, context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String) -> instance
           end
 
           class DownloadEndParams < ::Selenium::WebDriver::BiDi::Serialization::Union
@@ -311,7 +311,7 @@ module Selenium
               attr_reader timestamp: Integer
               attr_reader url: String
               attr_reader user_context: untyped
-              def self.new: (?status: untyped, context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String?) -> instance
+              def self.new: (?status: untyped, context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String) -> instance
             end
             class CompleteParams < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader status: untyped
@@ -321,7 +321,7 @@ module Selenium
               attr_reader timestamp: Integer
               attr_reader url: String
               attr_reader user_context: untyped
-              def self.new: (?status: untyped, filepath: String?, context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String?) -> instance
+              def self.new: (?status: untyped, filepath: String?, context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String) -> instance
             end
           end
 
@@ -331,7 +331,7 @@ module Selenium
             attr_reader type: Symbol
             attr_reader user_context: untyped
             attr_reader user_text: untyped
-            def self.new: (context: String, accepted: bool, type: Symbol, ?user_context: String?, ?user_text: String?) -> instance
+            def self.new: (context: String, accepted: bool, type: Symbol, ?user_context: String, ?user_text: String) -> instance
           end
 
           class UserPromptOpenedParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -341,23 +341,23 @@ module Selenium
             attr_reader type: Symbol
             attr_reader user_context: untyped
             attr_reader default_value: untyped
-            def self.new: (context: String, handler: Symbol, message: String, type: Symbol, ?user_context: String?, ?default_value: String?) -> instance
+            def self.new: (context: String, handler: Symbol, message: String, type: Symbol, ?user_context: String, ?default_value: String) -> instance
           end
 
           EVENT_TYPES: Hash[String, untyped]
 
           def activate: (context: String) -> untyped
-          def capture_screenshot: (context: String, ?origin: Symbol?, ?format: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ImageFormat?, ?clip: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ClipRectangle?) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CaptureScreenshotResult
-          def close: (context: String, ?prompt_unload: bool?) -> untyped
-          def create: (type: Symbol, ?reference_context: String?, ?background: bool?, ?user_context: String?) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CreateResult
-          def get_tree: (?max_depth: Integer?, ?root: String?) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::GetTreeResult
-          def handle_user_prompt: (context: String, ?accept: bool?, ?user_text: String?) -> untyped
-          def locate_nodes: (context: String, locator: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Locator, ?max_node_count: Integer?, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions?, ?start_nodes: Array[::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference]?) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::LocateNodesResult
-          def navigate: (context: String, url: String, ?wait: Symbol?) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::NavigateResult
-          def print: (context: String, ?background: bool?, ?margin: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintMarginParameters?, ?orientation: Symbol?, ?page: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintPageParameters?, ?page_ranges: Array[untyped]?, ?scale: Numeric?, ?shrink_to_fit: bool?) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintResult
-          def reload: (context: String, ?ignore_cache: bool?, ?wait: Symbol?) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::NavigateResult
-          def set_bypass_csp: (bypass: bool?, ?contexts: Array[String]?, ?user_contexts: Array[String]?) -> untyped
-          def set_viewport: (?context: String?, ?viewport: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Viewport?, ?device_pixel_ratio: Numeric?, ?user_contexts: Array[String]?) -> untyped
+          def capture_screenshot: (context: String, ?origin: Symbol, ?format: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ImageFormat, ?clip: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ClipRectangle) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CaptureScreenshotResult
+          def close: (context: String, ?prompt_unload: bool) -> untyped
+          def create: (type: Symbol, ?reference_context: String, ?background: bool, ?user_context: String) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CreateResult
+          def get_tree: (?max_depth: Integer, ?root: String) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::GetTreeResult
+          def handle_user_prompt: (context: String, ?accept: bool, ?user_text: String) -> untyped
+          def locate_nodes: (context: String, locator: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Locator, ?max_node_count: Integer, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions, ?start_nodes: Array[::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference]) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::LocateNodesResult
+          def navigate: (context: String, url: String, ?wait: Symbol) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::NavigateResult
+          def print: (context: String, ?background: bool, ?margin: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintMarginParameters, ?orientation: Symbol, ?page: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintPageParameters, ?page_ranges: Array[untyped], ?scale: Numeric, ?shrink_to_fit: bool) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintResult
+          def reload: (context: String, ?ignore_cache: bool, ?wait: Symbol) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::NavigateResult
+          def set_bypass_csp: (bypass: bool?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
+          def set_viewport: (?context: String, ?viewport: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Viewport?, ?device_pixel_ratio: Numeric?, ?user_contexts: Array[String]) -> untyped
           def traverse_history: (context: String, delta: Integer) -> untyped
         end
       end

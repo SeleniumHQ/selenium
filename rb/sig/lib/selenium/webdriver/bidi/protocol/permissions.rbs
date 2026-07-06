@@ -36,10 +36,10 @@ module Selenium
             attr_reader origin: String
             attr_reader embedded_origin: untyped
             attr_reader user_context: untyped
-            def self.new: (descriptor: ::Selenium::WebDriver::BiDi::Protocol::Permissions::PermissionDescriptor, state: Symbol, origin: String, ?embedded_origin: String?, ?user_context: String?) -> instance
+            def self.new: (descriptor: ::Selenium::WebDriver::BiDi::Protocol::Permissions::PermissionDescriptor, state: Symbol, origin: String, ?embedded_origin: String, ?user_context: String) -> instance
           end
 
-          def set_permission: (descriptor: ::Selenium::WebDriver::BiDi::Protocol::Permissions::PermissionDescriptor, state: Symbol, origin: String, ?embedded_origin: String?, ?user_context: String?) -> untyped
+          def set_permission: (descriptor: ::Selenium::WebDriver::BiDi::Protocol::Permissions::PermissionDescriptor, state: Symbol, origin: String, ?embedded_origin: String, ?user_context: String) -> untyped
         end
       end
     end

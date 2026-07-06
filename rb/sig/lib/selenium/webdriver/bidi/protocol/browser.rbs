@@ -47,7 +47,7 @@ module Selenium
             attr_reader accept_insecure_certs: untyped
             attr_reader proxy: untyped
             attr_reader unhandled_prompt_behavior: untyped
-            def self.new: (?accept_insecure_certs: bool?, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration?, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler?) -> instance
+            def self.new: (?accept_insecure_certs: bool, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler) -> instance
           end
 
           class GetClientWindowsResult < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -78,14 +78,14 @@ module Selenium
               attr_reader height: untyped
               attr_reader x: untyped
               attr_reader y: untyped
-              def self.new: (?state: untyped, client_window: String, ?width: Integer?, ?height: Integer?, ?x: Integer?, ?y: Integer?) -> instance
+              def self.new: (?state: untyped, client_window: String, ?width: Integer, ?height: Integer, ?x: Integer, ?y: Integer) -> instance
             end
           end
 
           class SetDownloadBehaviorParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader download_behavior: ::Selenium::WebDriver::BiDi::Protocol::Browser::DownloadBehavior?
             attr_reader user_contexts: untyped
-            def self.new: (download_behavior: ::Selenium::WebDriver::BiDi::Protocol::Browser::DownloadBehavior?, ?user_contexts: Array[String]?) -> instance
+            def self.new: (download_behavior: ::Selenium::WebDriver::BiDi::Protocol::Browser::DownloadBehavior?, ?user_contexts: Array[String]) -> instance
           end
 
           class DownloadBehavior < ::Selenium::WebDriver::BiDi::Serialization::Union
@@ -101,12 +101,12 @@ module Selenium
           end
 
           def close: () -> untyped
-          def create_user_context: (?accept_insecure_certs: bool?, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration?, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler?) -> ::Selenium::WebDriver::BiDi::Protocol::Browser::UserContextInfo
+          def create_user_context: (?accept_insecure_certs: bool, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler) -> ::Selenium::WebDriver::BiDi::Protocol::Browser::UserContextInfo
           def get_client_windows: () -> ::Selenium::WebDriver::BiDi::Protocol::Browser::GetClientWindowsResult
           def get_user_contexts: () -> ::Selenium::WebDriver::BiDi::Protocol::Browser::GetUserContextsResult
           def remove_user_context: (user_context: String) -> untyped
-          def set_client_window_state: (client_window: String, state: Symbol, ?width: Integer?, ?height: Integer?, ?x: Integer?, ?y: Integer?) -> ::Selenium::WebDriver::BiDi::Protocol::Browser::ClientWindowInfo
-          def set_download_behavior: (download_behavior: ::Selenium::WebDriver::BiDi::Protocol::Browser::DownloadBehavior?, ?user_contexts: Array[String]?) -> untyped
+          def set_client_window_state: (client_window: String, state: Symbol, ?width: Integer, ?height: Integer, ?x: Integer, ?y: Integer) -> ::Selenium::WebDriver::BiDi::Protocol::Browser::ClientWindowInfo
+          def set_download_behavior: (download_behavior: ::Selenium::WebDriver::BiDi::Protocol::Browser::DownloadBehavior?, ?user_contexts: Array[String]) -> untyped
         end
       end
     end
