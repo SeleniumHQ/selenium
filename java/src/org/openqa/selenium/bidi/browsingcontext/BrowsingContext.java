@@ -202,6 +202,13 @@ public class BrowsingContext {
             RELOAD, Map.of(CONTEXT, id, "wait", readinessState.toString()), navigationInfoMapper));
   }
 
+  public NavigationResult reload(ReadinessState readinessState, Duration timeout) {
+    return this.bidi.send(
+        new Command<>(
+            RELOAD, Map.of(CONTEXT, id, "wait", readinessState.toString()), navigationInfoMapper),
+        timeout);
+  }
+
   // Yet to be implemented by browser vendors
   private NavigationResult reload(boolean ignoreCache, ReadinessState readinessState) {
     return this.bidi.send(

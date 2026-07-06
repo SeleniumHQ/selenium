@@ -28,6 +28,7 @@ import com.google.common.net.MediaType;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -43,6 +44,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,6 +68,7 @@ import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Pdf;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
@@ -72,12 +76,18 @@ import org.openqa.selenium.PrintsPage;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.UnhandledAlertException;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.HasBiDi;
+import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
+import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
+import org.openqa.selenium.bidi.browsingcontext.UserPromptOpened;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.federatedcredentialmanagement.FederatedCredentialManagementDialog;
@@ -87,6 +97,8 @@ import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -137,6 +149,25 @@ public class RemoteWebDriver
   private JsonToWebElementConverter converter = new JsonToWebElementConverter(this);
 
   private final Logs remoteLogs = new RemoteLogs(executeMethod);
+
+  // Cached page-load timeout used by BiDi navigation. Null until set by the user via
+  // pageLoadTimeout() or lazily populated from the session's GET_TIMEOUTS response.
+  // volatile is required for the outer unsynchronized read in getPageLoadDuration().
+  private volatile @Nullable Duration biDiPageLoadTimeout = null;
+
+  // State for the single session-scoped browsingContext.userPromptOpened listener used by
+  // navigateViaBiDi. The listener is installed once (lazily) and gated on
+  // biDiNavigatingContextId so it has no effect outside of an active navigation.
+  //
+  // Ordering guarantee: biDiAcceptPrompt, biDiNotifyOnPrompt, and biDiHandledPrompt are always
+  // written before biDiNavigatingContextId (a volatile write). The listener's volatile read of
+  // biDiNavigatingContextId therefore establishes happens-before with those writes.
+  private final AtomicBoolean biDiPromptListenerInstalled = new AtomicBoolean(false);
+  private volatile @Nullable String biDiNavigatingContextId = null;
+  private volatile boolean biDiAcceptPrompt = false;
+  private volatile boolean biDiNotifyOnPrompt = false;
+  private final AtomicReference<@Nullable UserPromptOpened> biDiHandledPrompt =
+      new AtomicReference<>(null);
 
   @Nullable private Script remoteScript;
 
@@ -338,7 +369,157 @@ public class RemoteWebDriver
 
   @Override
   public void get(String url) {
-    execute(DriverCommand.GET(url));
+    if (isBiDiEnabled()) {
+      String contextId = getWindowHandle();
+      ReadinessState readiness = getReadinessState();
+      Duration timeout = getPageLoadDuration();
+      navigateViaBiDi(
+          contextId,
+          () -> new BrowsingContext(this, contextId).navigate(url, readiness, timeout));
+    } else {
+      execute(DriverCommand.GET(url));
+    }
+  }
+
+  // BiDi is active when the driver implements HasBiDi and the session returned a WebSocket URL
+  // (a String), not just the boolean request capability that was sent at session creation.
+  private boolean isBiDiEnabled() {
+    return this instanceof HasBiDi
+        && getCapabilities().getCapability("webSocketUrl") instanceof String;
+  }
+
+  private ReadinessState getReadinessState() {
+    Object raw = getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY);
+    // The capability may be a PageLoadStrategy enum (set locally) or a String (deserialized from
+    // JSON), so normalise to the enum via toString() before comparing.
+    PageLoadStrategy strategy =
+        raw instanceof PageLoadStrategy
+            ? (PageLoadStrategy) raw
+            : PageLoadStrategy.fromString(raw == null ? null : raw.toString());
+    if (PageLoadStrategy.EAGER.equals(strategy)) {
+      return ReadinessState.INTERACTIVE;
+    } else if (PageLoadStrategy.NONE.equals(strategy)) {
+      return ReadinessState.NONE;
+    }
+    return ReadinessState.COMPLETE;
+  }
+
+  // Returns the effective page load timeout for BiDi navigation commands. The value is cached so
+  // repeated navigations don't incur an extra HTTP round-trip to GET_TIMEOUTS.
+  private Duration getPageLoadDuration() {
+    Duration cached = biDiPageLoadTimeout;
+    if (cached == null) {
+      synchronized (this) {
+        cached = biDiPageLoadTimeout;
+        if (cached == null) {
+          cached = manage().timeouts().getPageLoadTimeout();
+          biDiPageLoadTimeout = cached;
+        }
+      }
+    }
+    return cached;
+  }
+
+  private static final Json BIDI_JSON = new Json();
+
+  // Shared event definition for browsingContext.userPromptOpened used during navigation.
+  private static final Event<UserPromptOpened> USER_PROMPT_OPENED_EVENT =
+      new Event<>(
+          "browsingContext.userPromptOpened",
+          params -> {
+            try (StringReader reader = new StringReader(BIDI_JSON.toJson(params));
+                JsonInput input = BIDI_JSON.newInput(reader)) {
+              return input.readNonNull(UserPromptOpened.class);
+            }
+          });
+
+  private UnexpectedAlertBehaviour getUnhandledPromptBehaviour() {
+    Object raw = getCapabilities().getCapability(CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR);
+    if (raw instanceof UnexpectedAlertBehaviour) {
+      return (UnexpectedAlertBehaviour) raw;
+    }
+    if (raw instanceof String) {
+      return UnexpectedAlertBehaviour.fromString((String) raw);
+    }
+    // W3C WebDriver spec default is "dismiss and notify"
+    return UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
+  }
+
+  // Installs a single session-scoped browsingContext.userPromptOpened listener the first time a
+  // non-IGNORE navigation runs. A session-level subscribe is sent only once; subsequent
+  // navigations reuse it. The listener is gated on biDiNavigatingContextId so it has no
+  // effect outside of an active navigateViaBiDi call.
+  private void ensureBiDiPromptListener() {
+    if (!biDiPromptListenerInstalled.compareAndSet(false, true)) {
+      return;
+    }
+    try {
+      ((HasBiDi) this)
+          .getBiDi()
+          .addListener(
+              USER_PROMPT_OPENED_EVENT,
+              prompt -> {
+                String contextId = biDiNavigatingContextId;
+                if (contextId == null || !contextId.equals(prompt.getBrowsingContextId())) {
+                  return;
+                }
+                LOG.fine(
+                    () ->
+                        String.format(
+                            "Handling %s user prompt during BiDi navigation (%s)",
+                            prompt.getType(), biDiAcceptPrompt ? "accept" : "dismiss"));
+                if (biDiNotifyOnPrompt) {
+                  biDiHandledPrompt.compareAndSet(null, prompt);
+                }
+                new BrowsingContext(this, contextId).handleUserPrompt(biDiAcceptPrompt);
+              });
+    } catch (RuntimeException e) {
+      // Reset the flag so the next navigation can retry the subscription.
+      biDiPromptListenerInstalled.set(false);
+      throw e;
+    }
+  }
+
+  // Wraps a BiDi navigation call with prompt handling that replicates, for BiDi, the automatic
+  // unhandledPromptBehavior that classic WebDriver delegates to the browser.
+  //
+  // A single session-level listener is installed once and gated on biDiNavigatingContextId,
+  // so it only fires during an active navigation and never interferes with post-navigation alerts.
+  // For *_AND_NOTIFY policies, the first handled prompt is rethrown as UnhandledAlertException
+  // after navigation succeeds. Navigation exceptions take precedence.
+  private void navigateViaBiDi(String contextId, Runnable navigation) {
+    UnexpectedAlertBehaviour behaviour = getUnhandledPromptBehaviour();
+    if (behaviour == UnexpectedAlertBehaviour.IGNORE) {
+      navigation.run();
+      return;
+    }
+    ensureBiDiPromptListener();
+    boolean accept =
+        behaviour == UnexpectedAlertBehaviour.ACCEPT
+            || behaviour == UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY;
+    boolean notify =
+        behaviour == UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY
+            || behaviour == UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
+    // Write accept/notify/handledPrompt before setting the gate (biDiNavigatingContextId) so
+    // the listener's volatile read of the gate establishes happens-before with these writes.
+    biDiAcceptPrompt = accept;
+    biDiNotifyOnPrompt = notify;
+    biDiHandledPrompt.set(null);
+    biDiNavigatingContextId = contextId;
+    try {
+      navigation.run();
+    } finally {
+      biDiNavigatingContextId = null;
+    }
+    // Navigation succeeded; notify the caller that a prompt was auto-handled.
+    if (notify) {
+      UserPromptOpened prompt = biDiHandledPrompt.get();
+      if (prompt != null) {
+        throw new UnhandledAlertException(
+            "Modal dialog auto-" + (accept ? "accepted" : "dismissed") + " during navigation",
+            prompt.getMessage());
+      }
+    }
   }
 
   @Override
@@ -1108,6 +1289,11 @@ public class RemoteWebDriver
       @Override
       public Timeouts pageLoadTimeout(Duration duration) {
         execute(DriverCommand.SET_PAGE_LOAD_TIMEOUT(duration));
+        // Synchronized so this write cannot be overwritten by the lazy-init path in
+        // getPageLoadDuration() if both are called concurrently on different threads.
+        synchronized (RemoteWebDriver.this) {
+          biDiPageLoadTimeout = duration;
+        }
         return this;
       }
 
@@ -1178,12 +1364,24 @@ public class RemoteWebDriver
 
     @Override
     public void back() {
-      execute(DriverCommand.GO_BACK);
+      if (isBiDiEnabled()) {
+        String contextId = getWindowHandle();
+        navigateViaBiDi(
+            contextId, () -> new BrowsingContext(RemoteWebDriver.this, contextId).back());
+      } else {
+        execute(DriverCommand.GO_BACK);
+      }
     }
 
     @Override
     public void forward() {
-      execute(DriverCommand.GO_FORWARD);
+      if (isBiDiEnabled()) {
+        String contextId = getWindowHandle();
+        navigateViaBiDi(
+            contextId, () -> new BrowsingContext(RemoteWebDriver.this, contextId).forward());
+      } else {
+        execute(DriverCommand.GO_FORWARD);
+      }
     }
 
     @Override
@@ -1198,7 +1396,18 @@ public class RemoteWebDriver
 
     @Override
     public void refresh() {
-      execute(DriverCommand.REFRESH);
+      if (isBiDiEnabled()) {
+        String contextId = getWindowHandle();
+        ReadinessState readiness = getReadinessState();
+        Duration timeout = getPageLoadDuration();
+        navigateViaBiDi(
+            contextId,
+            () ->
+                new BrowsingContext(RemoteWebDriver.this, contextId)
+                    .reload(readiness, timeout));
+      } else {
+        execute(DriverCommand.REFRESH);
+      }
     }
   }
 
