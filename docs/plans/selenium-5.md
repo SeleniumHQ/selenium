@@ -35,9 +35,10 @@ authentication.
 The cross-binding API for pinned scripts (pin / unpin / execute) and for console-message,
 JavaScript-error, and DOM-mutation handlers.
 
-### Selenium Manager finalized API — _ADR pending_
+### Selenium Manager released API — _ADR pending_
 
-A finalized, documented API the bindings invoke, versioned independently of the client.
+Formalize the interface and behaviors required to drop the Beta label and release independently of
+the bindings.
 
 ## Out of scope
 
