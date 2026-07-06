@@ -226,7 +226,7 @@ describe('unionSelector', () => {
       union('x.Value', ['x.Prim', 'x.Date', 'x.Reference']),
       union('x.Prim', ['x.StringValue', 'x.NullValue']),
       recAst('x.StringValue', 'string'),
-      { ...recAst('x.NullValue', null), Properties: [field('type', ['null'])] },
+      recAst('x.NullValue', 'null'),
       recAst('x.Date', 'date'),
       group('x.Reference', [field('refId', ['text'])]),
     ]
@@ -234,8 +234,8 @@ describe('unionSelector', () => {
     const sel = s.types['x.Value'].selector
     assert.equal(sel.by, 'type')
     assert.equal(sel.default, 'x.Reference')
-    // A sole bareword `null` field is the quoted string tag "null", not the JSON
-    // null type, so NullValue dispatches on the string "null" (not JSON null).
+    // NullValue's `type` is the string literal "null" (its discriminator tag), so it
+    // dispatches on the string "null" — not the JSON null type.
     assert.deepEqual(s.types['x.NullValue'].fields[0].type, { const: 'null' })
     assert.deepEqual(
       new Map(sel.variants.map((v) => [JSON.stringify(v.value), v.ref])),
