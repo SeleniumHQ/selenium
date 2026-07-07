@@ -235,7 +235,8 @@ module BiDiGenerate
   # ref is the Protocol-relative class path for a nested structured field (nil
   # for a scalar/opaque field); list wraps it in an array. wire_key is the exact
   # JSON payload key (the schema's `wire` name, baked verbatim).
-  FieldIR = Struct.new(:ruby_name, :wire_key, :required, :nullable, :ref, :list, :enum, :rbs, keyword_init: true) do
+  FieldIR = Struct.new(:ruby_name, :wire_key, :required, :nullable, :ref, :list, :enum, :primitive, :rbs,
+                       keyword_init: true) do
     # A `Serialization::Record.define` spec entry: `name: 'jsonKey'` shorthand, or
     # `name: {wire_key:, …}` when the field carries JSON facts beyond its name.
     # enum carries the allowed-values constant path, validated at construction.
@@ -246,6 +247,7 @@ module BiDiGenerate
       meta << "ref: '#{ref}'" if ref
       meta << 'list: true' if list
       meta << "enum: '#{enum}'" if enum
+      meta << "primitive: '#{primitive}'" if primitive
       return "#{ruby_name}: '#{wire_key}'" if meta.empty?
 
       meta.unshift("wire_key: '#{wire_key}'")
@@ -525,7 +527,8 @@ module BiDiGenerate
       end
       return resolve_union(node, nullable) if node.key?('union')
 
-      {ref: nil, list: false, nullable: nullable, rbs: nilable(scalar_rbs(node), nullable)}
+      {ref: nil, list: false, nullable: nullable, primitive: checkable_primitive(node),
+       rbs: nilable(scalar_rbs(node), nullable)}
     end
 
     # An inline union of one union-typed arm plus scalars (e.g. a MappingRemoteValue entry,
@@ -620,7 +623,7 @@ module BiDiGenerate
       FieldIR.new(ruby_name: ruby_name, wire_key: field['wire'],
                   required: field['required'], nullable: resolved[:nullable],
                   ref: resolved[:ref], list: resolved[:list], enum: enum_const(field['type']),
-                  rbs: resolved[:rbs])
+                  primitive: resolved[:primitive], rbs: resolved[:rbs])
     end
 
     def union_class(name)
@@ -709,6 +712,15 @@ module BiDiGenerate
       'string' => 'String', 'number' => 'Numeric', 'integer' => 'Integer',
       'boolean' => 'bool', 'null' => 'nil', 'unknown' => 'untyped'
     }.freeze
+
+    # Scalar primitives worth an inbound type-shape check; `null`/`unknown` are opaque, so
+    # an unmarked field is left unchecked (lenient default — a missed check fails open,
+    # whereas a wrong strict default would reject valid data).
+    CHECKABLE_PRIMITIVES = %w[string number integer boolean].freeze
+
+    def checkable_primitive(node)
+      node['primitive'] if node.key?('primitive') && CHECKABLE_PRIMITIVES.include?(node['primitive'])
+    end
 
     # The leaf of +resolve+: the bare scalar type, before any nullable wrap. An alias's
     # own nullable is intentionally left off — only the referencing node's is applied.

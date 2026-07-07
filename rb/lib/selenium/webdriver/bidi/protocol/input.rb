@@ -67,7 +67,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           NoneSourceActions = Serialization::Record.define(
             type: {fixed: 'none'},
-            id: 'id',
+            id: {wire_key: 'id', primitive: 'string'},
             actions: {wire_key: 'actions', ref: 'Input::PauseAction', list: true}
           )
 
@@ -75,7 +75,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           KeySourceActions = Serialization::Record.define(
             type: {fixed: 'key'},
-            id: 'id',
+            id: {wire_key: 'id', primitive: 'string'},
             actions: {wire_key: 'actions', ref: 'Input::KeySourceAction', list: true}
           )
 
@@ -94,7 +94,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PointerSourceActions = Serialization::Record.define(
             type: {fixed: 'pointer'},
-            id: 'id',
+            id: {wire_key: 'id', primitive: 'string'},
             parameters: {wire_key: 'parameters', required: false, ref: 'Input::PointerParameters'},
             actions: {wire_key: 'actions', ref: 'Input::PointerSourceAction', list: true}
           )
@@ -126,7 +126,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           WheelSourceActions = Serialization::Record.define(
             type: {fixed: 'wheel'},
-            id: 'id',
+            id: {wire_key: 'id', primitive: 'string'},
             actions: {wire_key: 'actions', ref: 'Input::WheelSourceAction', list: true}
           )
 
@@ -149,11 +149,17 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          KeyDownAction = Serialization::Record.define(type: {fixed: 'keyDown'}, value: 'value')
+          KeyDownAction = Serialization::Record.define(
+            type: {fixed: 'keyDown'},
+            value: {wire_key: 'value', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          KeyUpAction = Serialization::Record.define(type: {fixed: 'keyUp'}, value: 'value')
+          KeyUpAction = Serialization::Record.define(
+            type: {fixed: 'keyUp'},
+            value: {wire_key: 'value', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -166,28 +172,28 @@ module Selenium
             button: 'button',
             width: {wire_key: 'width', required: false},
             height: {wire_key: 'height', required: false},
-            pressure: {wire_key: 'pressure', required: false},
-            tangential_pressure: {wire_key: 'tangentialPressure', required: false},
-            twist: {wire_key: 'twist', required: false},
-            altitude_angle: {wire_key: 'altitudeAngle', required: false},
-            azimuth_angle: {wire_key: 'azimuthAngle', required: false}
+            pressure: {wire_key: 'pressure', required: false, primitive: 'integer'},
+            tangential_pressure: {wire_key: 'tangentialPressure', required: false, primitive: 'integer'},
+            twist: {wire_key: 'twist', required: false, primitive: 'integer'},
+            altitude_angle: {wire_key: 'altitudeAngle', required: false, primitive: 'number'},
+            azimuth_angle: {wire_key: 'azimuthAngle', required: false, primitive: 'number'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PointerMoveAction = Serialization::Record.define(
             type: {fixed: 'pointerMove'},
-            x: 'x',
-            y: 'y',
+            x: {wire_key: 'x', primitive: 'number'},
+            y: {wire_key: 'y', primitive: 'number'},
             duration: {wire_key: 'duration', required: false},
             origin: {wire_key: 'origin', required: false, ref: 'Input::Origin'},
             width: {wire_key: 'width', required: false},
             height: {wire_key: 'height', required: false},
-            pressure: {wire_key: 'pressure', required: false},
-            tangential_pressure: {wire_key: 'tangentialPressure', required: false},
-            twist: {wire_key: 'twist', required: false},
-            altitude_angle: {wire_key: 'altitudeAngle', required: false},
-            azimuth_angle: {wire_key: 'azimuthAngle', required: false}
+            pressure: {wire_key: 'pressure', required: false, primitive: 'integer'},
+            tangential_pressure: {wire_key: 'tangentialPressure', required: false, primitive: 'integer'},
+            twist: {wire_key: 'twist', required: false, primitive: 'integer'},
+            altitude_angle: {wire_key: 'altitudeAngle', required: false, primitive: 'number'},
+            azimuth_angle: {wire_key: 'azimuthAngle', required: false, primitive: 'number'}
           )
 
           # @api private
@@ -207,11 +213,11 @@ module Selenium
           PointerCommonProperties = Serialization::Record.define(
             width: {wire_key: 'width', required: false},
             height: {wire_key: 'height', required: false},
-            pressure: {wire_key: 'pressure', required: false},
-            tangential_pressure: {wire_key: 'tangentialPressure', required: false},
-            twist: {wire_key: 'twist', required: false},
-            altitude_angle: {wire_key: 'altitudeAngle', required: false},
-            azimuth_angle: {wire_key: 'azimuthAngle', required: false}
+            pressure: {wire_key: 'pressure', required: false, primitive: 'integer'},
+            tangential_pressure: {wire_key: 'tangentialPressure', required: false, primitive: 'integer'},
+            twist: {wire_key: 'twist', required: false, primitive: 'integer'},
+            altitude_angle: {wire_key: 'altitudeAngle', required: false, primitive: 'number'},
+            azimuth_angle: {wire_key: 'azimuthAngle', required: false, primitive: 'number'}
           )
 
           # @api private
@@ -241,7 +247,7 @@ module Selenium
             context: 'context',
             user_context: {wire_key: 'userContext', required: false},
             element: {wire_key: 'element', required: false, ref: 'Script::SharedReference'},
-            multiple: 'multiple'
+            multiple: {wire_key: 'multiple', primitive: 'boolean'}
           )
 
           EVENT_TYPES = {

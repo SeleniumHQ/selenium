@@ -37,19 +37,22 @@ module Selenium
               ref: 'UserAgentClientHints::BrandVersion',
               list: true
             },
-            platform: {wire_key: 'platform', required: false},
-            platform_version: {wire_key: 'platformVersion', required: false},
-            architecture: {wire_key: 'architecture', required: false},
-            model: {wire_key: 'model', required: false},
-            mobile: {wire_key: 'mobile', required: false},
-            bitness: {wire_key: 'bitness', required: false},
-            wow64: {wire_key: 'wow64', required: false},
+            platform: {wire_key: 'platform', required: false, primitive: 'string'},
+            platform_version: {wire_key: 'platformVersion', required: false, primitive: 'string'},
+            architecture: {wire_key: 'architecture', required: false, primitive: 'string'},
+            model: {wire_key: 'model', required: false, primitive: 'string'},
+            mobile: {wire_key: 'mobile', required: false, primitive: 'boolean'},
+            bitness: {wire_key: 'bitness', required: false, primitive: 'string'},
+            wow64: {wire_key: 'wow64', required: false, primitive: 'boolean'},
             form_factors: {wire_key: 'formFactors', required: false, list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          BrandVersion = Serialization::Record.define(brand: 'brand', version: 'version')
+          BrandVersion = Serialization::Record.define(
+            brand: {wire_key: 'brand', primitive: 'string'},
+            version: {wire_key: 'version', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/

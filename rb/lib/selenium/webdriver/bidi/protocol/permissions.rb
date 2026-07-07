@@ -35,16 +35,16 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          PermissionDescriptor = Serialization::Record.define(name: 'name')
+          PermissionDescriptor = Serialization::Record.define(name: {wire_key: 'name', primitive: 'string'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetPermissionParameters = Serialization::Record.define(
             descriptor: {wire_key: 'descriptor', ref: 'Permissions::PermissionDescriptor'},
             state: {wire_key: 'state', enum: 'Permissions::PERMISSION_STATE'},
-            origin: 'origin',
-            embedded_origin: {wire_key: 'embeddedOrigin', required: false},
-            user_context: {wire_key: 'userContext', required: false}
+            origin: {wire_key: 'origin', primitive: 'string'},
+            embedded_origin: {wire_key: 'embeddedOrigin', required: false, primitive: 'string'},
+            user_context: {wire_key: 'userContext', required: false, primitive: 'string'}
           )
 
           # @api private

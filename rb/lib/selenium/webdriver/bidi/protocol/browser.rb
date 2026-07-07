@@ -43,7 +43,7 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ClientWindowInfo = Serialization::Record.define(
-            active: 'active',
+            active: {wire_key: 'active', primitive: 'boolean'},
             client_window: 'clientWindow',
             height: 'height',
             state: {wire_key: 'state', enum: 'Browser::CLIENT_WINDOW_INFO_STATE'},
@@ -59,7 +59,7 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CreateUserContextParameters = Serialization::Record.define(
-            accept_insecure_certs: {wire_key: 'acceptInsecureCerts', required: false},
+            accept_insecure_certs: {wire_key: 'acceptInsecureCerts', required: false, primitive: 'boolean'},
             proxy: {wire_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
             unhandled_prompt_behavior: {
               wire_key: 'unhandledPromptBehavior',
@@ -130,7 +130,10 @@ module Selenium
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-            Allowed = Serialization::Record.define(type: {fixed: 'allowed'}, destination_folder: 'destinationFolder')
+            Allowed = Serialization::Record.define(
+              type: {fixed: 'allowed'},
+              destination_folder: {wire_key: 'destinationFolder', primitive: 'string'}
+            )
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/

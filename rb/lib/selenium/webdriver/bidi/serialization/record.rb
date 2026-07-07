@@ -29,7 +29,7 @@ module Selenium
         # @api private
         class Record < ::Data
           # Named Field, not Member, to avoid colliding with +::Data#members+.
-          Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required)
+          Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required, :primitive)
 
           def self.define(**spec)
             extensible = spec.delete(:extensible) || false
@@ -59,7 +59,7 @@ module Selenium
             Field.new(name: name.to_sym, wire_key: meta.fetch(:wire_key, name.to_s),
                       nullable: meta[:nullable] || false, ref: meta[:ref],
                       list: meta[:list] || false, fixed: meta.fetch(:fixed, UNSET), enum: meta[:enum],
-                      required: meta.fetch(:required, true))
+                      required: meta.fetch(:required, true), primitive: meta[:primitive])
           end
           private_class_method :field
 
@@ -141,7 +141,11 @@ module Selenium
               end
               check_shape(field, raw)
               return Serialization.to_symbol("#{name}##{field.name}", raw, enum_hash(field)) if field.enum
-              return raw if field.ref.nil?
+
+              if field.ref.nil?
+                check_primitive(field, raw) unless field.list
+                return raw
+              end
 
               klass = (@refs ||= {})[field.name] ||= Protocol.const_get(field.ref)
               field.list ? read_list(raw, klass) : klass.from_json(raw)
@@ -155,6 +159,21 @@ module Selenium
 
               raise Error::WebDriverError,
                     "#{name}##{field.name} expected #{field.list ? 'a list' : 'a single value'}, got #{raw.inspect}"
+            end
+
+            # Ruby classes a checkable primitive admits; `integer` collapses to Numeric so a
+            # JSON float for an int-typed field isn't a false mismatch (a string-vs-number gap is
+            # the real "wrong shape"). A field with no primitive descriptor is left unchecked.
+            PRIMITIVE_TYPES = {
+              'string' => [::String], 'boolean' => [::TrueClass, ::FalseClass],
+              'number' => [::Numeric], 'integer' => [::Numeric]
+            }.freeze
+
+            def check_primitive(field, raw)
+              expected = PRIMITIVE_TYPES[field.primitive]
+              return if expected.nil? || expected.any? { |type| raw.is_a?(type) }
+
+              raise Error::WebDriverError, "#{name}##{field.name} expected #{field.primitive}, got #{raw.inspect}"
             end
 
             def enum_hash(field)

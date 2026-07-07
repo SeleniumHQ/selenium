@@ -46,15 +46,24 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ExtensionPath = Serialization::Record.define(type: {fixed: 'path'}, path: 'path')
+          ExtensionPath = Serialization::Record.define(
+            type: {fixed: 'path'},
+            path: {wire_key: 'path', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ExtensionArchivePath = Serialization::Record.define(type: {fixed: 'archivePath'}, path: 'path')
+          ExtensionArchivePath = Serialization::Record.define(
+            type: {fixed: 'archivePath'},
+            path: {wire_key: 'path', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ExtensionBase64Encoded = Serialization::Record.define(type: {fixed: 'base64'}, value: 'value')
+          ExtensionBase64Encoded = Serialization::Record.define(
+            type: {fixed: 'base64'},
+            value: {wire_key: 'value', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/

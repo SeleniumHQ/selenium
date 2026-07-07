@@ -80,13 +80,13 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           GeolocationCoordinates = Serialization::Record.define(
-            latitude: 'latitude',
-            longitude: 'longitude',
-            accuracy: {wire_key: 'accuracy', required: false},
-            altitude: {wire_key: 'altitude', required: false, nullable: true},
-            altitude_accuracy: {wire_key: 'altitudeAccuracy', required: false, nullable: true},
-            heading: {wire_key: 'heading', required: false, nullable: true},
-            speed: {wire_key: 'speed', required: false, nullable: true}
+            latitude: {wire_key: 'latitude', primitive: 'integer'},
+            longitude: {wire_key: 'longitude', primitive: 'integer'},
+            accuracy: {wire_key: 'accuracy', required: false, primitive: 'number'},
+            altitude: {wire_key: 'altitude', required: false, nullable: true, primitive: 'number'},
+            altitude_accuracy: {wire_key: 'altitudeAccuracy', required: false, nullable: true, primitive: 'number'},
+            heading: {wire_key: 'heading', required: false, nullable: true, primitive: 'integer'},
+            speed: {wire_key: 'speed', required: false, nullable: true, primitive: 'number'}
           )
 
           # @api private
@@ -96,7 +96,7 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetLocaleOverrideParameters = Serialization::Record.define(
-            locale: {wire_key: 'locale', nullable: true},
+            locale: {wire_key: 'locale', nullable: true, primitive: 'string'},
             contexts: {wire_key: 'contexts', required: false, list: true},
             user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
@@ -147,7 +147,7 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetUserAgentOverrideParameters = Serialization::Record.define(
-            user_agent: {wire_key: 'userAgent', nullable: true},
+            user_agent: {wire_key: 'userAgent', nullable: true, primitive: 'string'},
             contexts: {wire_key: 'contexts', required: false, list: true},
             user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
@@ -171,7 +171,7 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetTimezoneOverrideParameters = Serialization::Record.define(
-            timezone: {wire_key: 'timezone', nullable: true},
+            timezone: {wire_key: 'timezone', nullable: true, primitive: 'string'},
             contexts: {wire_key: 'contexts', required: false, list: true},
             user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )

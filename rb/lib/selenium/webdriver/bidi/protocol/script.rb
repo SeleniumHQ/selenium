@@ -119,7 +119,7 @@ module Selenium
             exception: {wire_key: 'exception', ref: 'Script::RemoteValue'},
             line_number: 'lineNumber',
             stack_trace: {wire_key: 'stackTrace', ref: 'Script::StackTrace'},
-            text: 'text'
+            text: {wire_key: 'text', primitive: 'string'}
           )
 
           # @api private
@@ -167,7 +167,10 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          DateLocalValue = Serialization::Record.define(type: {fixed: 'date'}, value: 'value')
+          DateLocalValue = Serialization::Record.define(
+            type: {fixed: 'date'},
+            value: {wire_key: 'value', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -185,7 +188,10 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          RegExpValue = Serialization::Record.define(pattern: 'pattern', flags: {wire_key: 'flags', required: false})
+          RegExpValue = Serialization::Record.define(
+            pattern: {wire_key: 'pattern', primitive: 'string'},
+            flags: {wire_key: 'flags', required: false, primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -232,7 +238,10 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          StringValue = Serialization::Record.define(type: {fixed: 'string'}, value: 'value')
+          StringValue = Serialization::Record.define(
+            type: {fixed: 'string'},
+            value: {wire_key: 'value', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -240,11 +249,17 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          BooleanValue = Serialization::Record.define(type: {fixed: 'boolean'}, value: 'value')
+          BooleanValue = Serialization::Record.define(
+            type: {fixed: 'boolean'},
+            value: {wire_key: 'value', primitive: 'boolean'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          BigIntValue = Serialization::Record.define(type: {fixed: 'bigint'}, value: 'value')
+          BigIntValue = Serialization::Record.define(
+            type: {fixed: 'bigint'},
+            value: {wire_key: 'value', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -273,17 +288,20 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          BaseRealmInfo = Serialization::Record.define(realm: 'realm', origin: 'origin')
+          BaseRealmInfo = Serialization::Record.define(
+            realm: 'realm',
+            origin: {wire_key: 'origin', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           WindowRealmInfo = Serialization::Record.define(
             type: {fixed: 'window'},
             realm: 'realm',
-            origin: 'origin',
+            origin: {wire_key: 'origin', primitive: 'string'},
             context: 'context',
             user_context: {wire_key: 'userContext', required: false},
-            sandbox: {wire_key: 'sandbox', required: false}
+            sandbox: {wire_key: 'sandbox', required: false, primitive: 'string'}
           )
 
           # @api private
@@ -291,7 +309,7 @@ module Selenium
           DedicatedWorkerRealmInfo = Serialization::Record.define(
             type: {fixed: 'dedicated-worker'},
             realm: 'realm',
-            origin: 'origin',
+            origin: {wire_key: 'origin', primitive: 'string'},
             owners: {wire_key: 'owners', list: true}
           )
 
@@ -300,7 +318,7 @@ module Selenium
           SharedWorkerRealmInfo = Serialization::Record.define(
             type: {fixed: 'shared-worker'},
             realm: 'realm',
-            origin: 'origin'
+            origin: {wire_key: 'origin', primitive: 'string'}
           )
 
           # @api private
@@ -308,19 +326,23 @@ module Selenium
           ServiceWorkerRealmInfo = Serialization::Record.define(
             type: {fixed: 'service-worker'},
             realm: 'realm',
-            origin: 'origin'
+            origin: {wire_key: 'origin', primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          WorkerRealmInfo = Serialization::Record.define(type: {fixed: 'worker'}, realm: 'realm', origin: 'origin')
+          WorkerRealmInfo = Serialization::Record.define(
+            type: {fixed: 'worker'},
+            realm: 'realm',
+            origin: {wire_key: 'origin', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PaintWorkletRealmInfo = Serialization::Record.define(
             type: {fixed: 'paint-worklet'},
             realm: 'realm',
-            origin: 'origin'
+            origin: {wire_key: 'origin', primitive: 'string'}
           )
 
           # @api private
@@ -328,12 +350,16 @@ module Selenium
           AudioWorkletRealmInfo = Serialization::Record.define(
             type: {fixed: 'audio-worklet'},
             realm: 'realm',
-            origin: 'origin'
+            origin: {wire_key: 'origin', primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          WorkletRealmInfo = Serialization::Record.define(type: {fixed: 'worklet'}, realm: 'realm', origin: 'origin')
+          WorkletRealmInfo = Serialization::Record.define(
+            type: {fixed: 'worklet'},
+            realm: 'realm',
+            origin: {wire_key: 'origin', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -468,7 +494,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           DateRemoteValue = Serialization::Record.define(
             type: {fixed: 'date'},
-            value: 'value',
+            value: {wire_key: 'value', primitive: 'string'},
             handle: {wire_key: 'handle', required: false},
             internal_id: {wire_key: 'internalId', required: false}
           )
@@ -590,10 +616,10 @@ module Selenium
             child_node_count: 'childNodeCount',
             attributes: {wire_key: 'attributes', required: false},
             children: {wire_key: 'children', required: false, ref: 'Script::NodeRemoteValue', list: true},
-            local_name: {wire_key: 'localName', required: false},
+            local_name: {wire_key: 'localName', required: false, primitive: 'string'},
             mode: {wire_key: 'mode', required: false, enum: 'Script::NODE_PROPERTIES_MODE'},
-            namespace_uri: {wire_key: 'namespaceURI', required: false},
-            node_value: {wire_key: 'nodeValue', required: false},
+            namespace_uri: {wire_key: 'namespaceURI', required: false, primitive: 'string'},
+            node_value: {wire_key: 'nodeValue', required: false, primitive: 'string'},
             shadow_root: {wire_key: 'shadowRoot', required: false, nullable: true, ref: 'Script::NodeRemoteValue'}
           )
 
@@ -626,9 +652,9 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           StackFrame = Serialization::Record.define(
             column_number: 'columnNumber',
-            function_name: 'functionName',
+            function_name: {wire_key: 'functionName', primitive: 'string'},
             line_number: 'lineNumber',
-            url: 'url'
+            url: {wire_key: 'url', primitive: 'string'}
           )
 
           # @api private
@@ -653,7 +679,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ContextTarget = Serialization::Record.define(
             context: 'context',
-            sandbox: {wire_key: 'sandbox', required: false}
+            sandbox: {wire_key: 'sandbox', required: false, primitive: 'string'}
           )
 
           # @api private
@@ -668,11 +694,11 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           AddPreloadScriptParameters = Serialization::Record.define(
-            function_declaration: 'functionDeclaration',
+            function_declaration: {wire_key: 'functionDeclaration', primitive: 'string'},
             arguments: {wire_key: 'arguments', required: false, ref: 'Script::ChannelValue', list: true},
             contexts: {wire_key: 'contexts', required: false, list: true},
             user_contexts: {wire_key: 'userContexts', required: false, list: true},
-            sandbox: {wire_key: 'sandbox', required: false}
+            sandbox: {wire_key: 'sandbox', required: false, primitive: 'string'}
           )
 
           # @api private
@@ -689,8 +715,8 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CallFunctionParameters = Serialization::Record.define(
-            function_declaration: 'functionDeclaration',
-            await_promise: 'awaitPromise',
+            function_declaration: {wire_key: 'functionDeclaration', primitive: 'string'},
+            await_promise: {wire_key: 'awaitPromise', primitive: 'boolean'},
             target: {wire_key: 'target', ref: 'Script::Target'},
             arguments: {wire_key: 'arguments', required: false, ref: 'Script::LocalValue', list: true},
             result_ownership: {wire_key: 'resultOwnership', required: false, enum: 'Script::RESULT_OWNERSHIP'},
@@ -700,22 +726,22 @@ module Selenium
               ref: 'Script::SerializationOptions'
             },
             this: {wire_key: 'this', required: false, ref: 'Script::LocalValue'},
-            user_activation: {wire_key: 'userActivation', required: false}
+            user_activation: {wire_key: 'userActivation', required: false, primitive: 'boolean'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           EvaluateParameters = Serialization::Record.define(
-            expression: 'expression',
+            expression: {wire_key: 'expression', primitive: 'string'},
             target: {wire_key: 'target', ref: 'Script::Target'},
-            await_promise: 'awaitPromise',
+            await_promise: {wire_key: 'awaitPromise', primitive: 'boolean'},
             result_ownership: {wire_key: 'resultOwnership', required: false, enum: 'Script::RESULT_OWNERSHIP'},
             serialization_options: {
               wire_key: 'serializationOptions',
               required: false,
               ref: 'Script::SerializationOptions'
             },
-            user_activation: {wire_key: 'userActivation', required: false}
+            user_activation: {wire_key: 'userActivation', required: false, primitive: 'boolean'}
           )
 
           # @api private

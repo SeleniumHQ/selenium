@@ -290,6 +290,27 @@ module Selenium
               expect { Network::AuthCredentials.from_json('not-an-object') }
                 .to raise_error(Error::WebDriverError, /AuthCredentials expected an object/)
             end
+
+            it 'raises when a string-typed field arrives as a number' do
+              expect { Network::Cookie.from_json(cookie_wire.merge('name' => 123)) }
+                .to raise_error(Error::WebDriverError, /name expected string/)
+            end
+
+            it 'raises when a boolean-typed field arrives as a string' do
+              expect { Network::Cookie.from_json(cookie_wire.merge('secure' => 'yes')) }
+                .to raise_error(Error::WebDriverError, /secure expected boolean/)
+            end
+
+            it 'raises when a number-typed field arrives as a string' do
+              expect { Bluetooth::BluetoothManufacturerData.from_json('key' => 'nope', 'data' => 'x') }
+                .to raise_error(Error::WebDriverError, /key expected integer/)
+            end
+
+            it 'accepts a float for an integer-typed field (int-vs-float is not a wire-shape error)' do
+              parsed = Bluetooth::BluetoothManufacturerData.from_json('key' => 1.5, 'data' => 'x')
+
+              expect(parsed.key).to eq(1.5)
+            end
           end
         end
       end # Protocol

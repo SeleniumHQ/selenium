@@ -54,7 +54,7 @@ module Selenium
           BaseLogEntry = Serialization::Record.define(
             level: {wire_key: 'level', enum: 'Log::LEVEL'},
             source: {wire_key: 'source', ref: 'Script::Source'},
-            text: {wire_key: 'text', nullable: true},
+            text: {wire_key: 'text', nullable: true, primitive: 'string'},
             timestamp: 'timestamp',
             stack_trace: {wire_key: 'stackTrace', required: false, ref: 'Script::StackTrace'}
           )
@@ -64,10 +64,10 @@ module Selenium
           GenericLogEntry = Serialization::Record.define(
             level: {wire_key: 'level', enum: 'Log::LEVEL'},
             source: {wire_key: 'source', ref: 'Script::Source'},
-            text: {wire_key: 'text', nullable: true},
+            text: {wire_key: 'text', nullable: true, primitive: 'string'},
             timestamp: 'timestamp',
             stack_trace: {wire_key: 'stackTrace', required: false, ref: 'Script::StackTrace'},
-            type: 'type'
+            type: {wire_key: 'type', primitive: 'string'}
           )
 
           # @api private
@@ -76,10 +76,10 @@ module Selenium
             type: {fixed: 'console'},
             level: {wire_key: 'level', enum: 'Log::LEVEL'},
             source: {wire_key: 'source', ref: 'Script::Source'},
-            text: {wire_key: 'text', nullable: true},
+            text: {wire_key: 'text', nullable: true, primitive: 'string'},
             timestamp: 'timestamp',
             stack_trace: {wire_key: 'stackTrace', required: false, ref: 'Script::StackTrace'},
-            method_: 'method',
+            method_: {wire_key: 'method', primitive: 'string'},
             args: {wire_key: 'args', ref: 'Script::RemoteValue', list: true}
           )
 
@@ -89,7 +89,7 @@ module Selenium
             type: {fixed: 'javascript'},
             level: {wire_key: 'level', enum: 'Log::LEVEL'},
             source: {wire_key: 'source', ref: 'Script::Source'},
-            text: {wire_key: 'text', nullable: true},
+            text: {wire_key: 'text', nullable: true, primitive: 'string'},
             timestamp: 'timestamp',
             stack_trace: {wire_key: 'stackTrace', required: false, ref: 'Script::StackTrace'}
           )

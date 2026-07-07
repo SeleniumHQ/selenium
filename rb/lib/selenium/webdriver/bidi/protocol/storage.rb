@@ -30,21 +30,21 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PartitionKey = Serialization::Record.define(
-            user_context: {wire_key: 'userContext', required: false},
-            source_origin: {wire_key: 'sourceOrigin', required: false},
+            user_context: {wire_key: 'userContext', required: false, primitive: 'string'},
+            source_origin: {wire_key: 'sourceOrigin', required: false, primitive: 'string'},
             extensible: true
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CookieFilter = Serialization::Record.define(
-            name: {wire_key: 'name', required: false},
+            name: {wire_key: 'name', required: false, primitive: 'string'},
             value: {wire_key: 'value', required: false, ref: 'Network::BytesValue'},
-            domain: {wire_key: 'domain', required: false},
-            path: {wire_key: 'path', required: false},
+            domain: {wire_key: 'domain', required: false, primitive: 'string'},
+            path: {wire_key: 'path', required: false, primitive: 'string'},
             size: {wire_key: 'size', required: false},
-            http_only: {wire_key: 'httpOnly', required: false},
-            secure: {wire_key: 'secure', required: false},
+            http_only: {wire_key: 'httpOnly', required: false, primitive: 'boolean'},
+            secure: {wire_key: 'secure', required: false, primitive: 'boolean'},
             same_site: {wire_key: 'sameSite', required: false, enum: 'Network::SAME_SITE'},
             expiry: {wire_key: 'expiry', required: false},
             extensible: true
@@ -61,8 +61,8 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           StorageKeyPartitionDescriptor = Serialization::Record.define(
             type: {fixed: 'storageKey'},
-            user_context: {wire_key: 'userContext', required: false},
-            source_origin: {wire_key: 'sourceOrigin', required: false},
+            user_context: {wire_key: 'userContext', required: false, primitive: 'string'},
+            source_origin: {wire_key: 'sourceOrigin', required: false, primitive: 'string'},
             extensible: true
           )
 
@@ -93,12 +93,12 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PartialCookie = Serialization::Record.define(
-            name: 'name',
+            name: {wire_key: 'name', primitive: 'string'},
             value: {wire_key: 'value', ref: 'Network::BytesValue'},
-            domain: 'domain',
-            path: {wire_key: 'path', required: false},
-            http_only: {wire_key: 'httpOnly', required: false},
-            secure: {wire_key: 'secure', required: false},
+            domain: {wire_key: 'domain', primitive: 'string'},
+            path: {wire_key: 'path', required: false, primitive: 'string'},
+            http_only: {wire_key: 'httpOnly', required: false, primitive: 'boolean'},
+            secure: {wire_key: 'secure', required: false, primitive: 'boolean'},
             same_site: {wire_key: 'sameSite', required: false, enum: 'Network::SAME_SITE'},
             expiry: {wire_key: 'expiry', required: false},
             extensible: true

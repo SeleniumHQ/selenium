@@ -76,21 +76,24 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          AuthChallenge = Serialization::Record.define(scheme: 'scheme', realm: 'realm')
+          AuthChallenge = Serialization::Record.define(
+            scheme: {wire_key: 'scheme', primitive: 'string'},
+            realm: {wire_key: 'realm', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           AuthCredentials = Serialization::Record.define(
             type: {fixed: 'password'},
-            username: 'username',
-            password: 'password'
+            username: {wire_key: 'username', primitive: 'string'},
+            password: {wire_key: 'password', primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           BaseParameters = Serialization::Record.define(
             context: {wire_key: 'context', nullable: true},
-            is_blocked: 'isBlocked',
+            is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
             navigation: {wire_key: 'navigation', nullable: true},
             redirect_count: 'redirectCount',
             request: {wire_key: 'request', ref: 'Network::RequestData'},
@@ -111,22 +114,28 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          StringValue = Serialization::Record.define(type: {fixed: 'string'}, value: 'value')
+          StringValue = Serialization::Record.define(
+            type: {fixed: 'string'},
+            value: {wire_key: 'value', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          Base64Value = Serialization::Record.define(type: {fixed: 'base64'}, value: 'value')
+          Base64Value = Serialization::Record.define(
+            type: {fixed: 'base64'},
+            value: {wire_key: 'value', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           Cookie = Serialization::Record.define(
-            name: 'name',
+            name: {wire_key: 'name', primitive: 'string'},
             value: {wire_key: 'value', ref: 'Network::BytesValue'},
-            domain: 'domain',
-            path: 'path',
+            domain: {wire_key: 'domain', primitive: 'string'},
+            path: {wire_key: 'path', primitive: 'string'},
             size: 'size',
-            http_only: 'httpOnly',
-            secure: 'secure',
+            http_only: {wire_key: 'httpOnly', primitive: 'boolean'},
+            secure: {wire_key: 'secure', primitive: 'boolean'},
             same_site: {wire_key: 'sameSite', enum: 'Network::SAME_SITE'},
             expiry: {wire_key: 'expiry', required: false},
             extensible: true
@@ -135,31 +144,34 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CookieHeader = Serialization::Record.define(
-            name: 'name',
+            name: {wire_key: 'name', primitive: 'string'},
             value: {wire_key: 'value', ref: 'Network::BytesValue'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           FetchTimingInfo = Serialization::Record.define(
-            time_origin: 'timeOrigin',
-            request_time: 'requestTime',
-            redirect_start: 'redirectStart',
-            redirect_end: 'redirectEnd',
-            fetch_start: 'fetchStart',
-            dns_start: 'dnsStart',
-            dns_end: 'dnsEnd',
-            connect_start: 'connectStart',
-            connect_end: 'connectEnd',
-            tls_start: 'tlsStart',
-            request_start: 'requestStart',
-            response_start: 'responseStart',
-            response_end: 'responseEnd'
+            time_origin: {wire_key: 'timeOrigin', primitive: 'number'},
+            request_time: {wire_key: 'requestTime', primitive: 'number'},
+            redirect_start: {wire_key: 'redirectStart', primitive: 'number'},
+            redirect_end: {wire_key: 'redirectEnd', primitive: 'number'},
+            fetch_start: {wire_key: 'fetchStart', primitive: 'number'},
+            dns_start: {wire_key: 'dnsStart', primitive: 'number'},
+            dns_end: {wire_key: 'dnsEnd', primitive: 'number'},
+            connect_start: {wire_key: 'connectStart', primitive: 'number'},
+            connect_end: {wire_key: 'connectEnd', primitive: 'number'},
+            tls_start: {wire_key: 'tlsStart', primitive: 'number'},
+            request_start: {wire_key: 'requestStart', primitive: 'number'},
+            response_start: {wire_key: 'responseStart', primitive: 'number'},
+            response_end: {wire_key: 'responseEnd', primitive: 'number'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          Header = Serialization::Record.define(name: 'name', value: {wire_key: 'value', ref: 'Network::BytesValue'})
+          Header = Serialization::Record.define(
+            name: {wire_key: 'name', primitive: 'string'},
+            value: {wire_key: 'value', ref: 'Network::BytesValue'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -175,14 +187,14 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           RequestData = Serialization::Record.define(
             request: 'request',
-            url: 'url',
-            method_: 'method',
+            url: {wire_key: 'url', primitive: 'string'},
+            method_: {wire_key: 'method', primitive: 'string'},
             headers: {wire_key: 'headers', ref: 'Network::Header', list: true},
             cookies: {wire_key: 'cookies', ref: 'Network::Cookie', list: true},
             headers_size: 'headersSize',
             body_size: {wire_key: 'bodySize', nullable: true},
-            destination: 'destination',
-            initiator_type: {wire_key: 'initiatorType', nullable: true},
+            destination: {wire_key: 'destination', primitive: 'string'},
+            initiator_type: {wire_key: 'initiatorType', nullable: true, primitive: 'string'},
             timings: {wire_key: 'timings', ref: 'Network::FetchTimingInfo'}
           )
 
@@ -193,13 +205,13 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ResponseData = Serialization::Record.define(
-            url: 'url',
-            protocol: 'protocol',
+            url: {wire_key: 'url', primitive: 'string'},
+            protocol: {wire_key: 'protocol', primitive: 'string'},
             status: 'status',
-            status_text: 'statusText',
-            from_cache: 'fromCache',
+            status_text: {wire_key: 'statusText', primitive: 'string'},
+            from_cache: {wire_key: 'fromCache', primitive: 'boolean'},
             headers: {wire_key: 'headers', ref: 'Network::Header', list: true},
-            mime_type: 'mimeType',
+            mime_type: {wire_key: 'mimeType', primitive: 'string'},
             bytes_received: 'bytesReceived',
             headers_size: {wire_key: 'headersSize', nullable: true},
             body_size: {wire_key: 'bodySize', nullable: true},
@@ -210,15 +222,15 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetCookieHeader = Serialization::Record.define(
-            name: 'name',
+            name: {wire_key: 'name', primitive: 'string'},
             value: {wire_key: 'value', ref: 'Network::BytesValue'},
-            domain: {wire_key: 'domain', required: false},
-            http_only: {wire_key: 'httpOnly', required: false},
-            expiry: {wire_key: 'expiry', required: false},
+            domain: {wire_key: 'domain', required: false, primitive: 'string'},
+            http_only: {wire_key: 'httpOnly', required: false, primitive: 'boolean'},
+            expiry: {wire_key: 'expiry', required: false, primitive: 'string'},
             max_age: {wire_key: 'maxAge', required: false},
-            path: {wire_key: 'path', required: false},
+            path: {wire_key: 'path', required: false, primitive: 'string'},
             same_site: {wire_key: 'sameSite', required: false, enum: 'Network::SAME_SITE'},
-            secure: {wire_key: 'secure', required: false}
+            secure: {wire_key: 'secure', required: false, primitive: 'boolean'}
           )
 
           # @api private
@@ -235,16 +247,19 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           UrlPatternPattern = Serialization::Record.define(
             type: {fixed: 'pattern'},
-            protocol: {wire_key: 'protocol', required: false},
-            hostname: {wire_key: 'hostname', required: false},
-            port: {wire_key: 'port', required: false},
-            pathname: {wire_key: 'pathname', required: false},
-            search: {wire_key: 'search', required: false}
+            protocol: {wire_key: 'protocol', required: false, primitive: 'string'},
+            hostname: {wire_key: 'hostname', required: false, primitive: 'string'},
+            port: {wire_key: 'port', required: false, primitive: 'string'},
+            pathname: {wire_key: 'pathname', required: false, primitive: 'string'},
+            search: {wire_key: 'search', required: false, primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          UrlPatternString = Serialization::Record.define(type: {fixed: 'string'}, pattern: 'pattern')
+          UrlPatternString = Serialization::Record.define(
+            type: {fixed: 'string'},
+            pattern: {wire_key: 'pattern', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -279,8 +294,8 @@ module Selenium
             body: {wire_key: 'body', required: false, ref: 'Network::BytesValue'},
             cookies: {wire_key: 'cookies', required: false, ref: 'Network::CookieHeader', list: true},
             headers: {wire_key: 'headers', required: false, ref: 'Network::Header', list: true},
-            method_: {wire_key: 'method', required: false},
-            url: {wire_key: 'url', required: false}
+            method_: {wire_key: 'method', required: false, primitive: 'string'},
+            url: {wire_key: 'url', required: false, primitive: 'string'}
           )
 
           # @api private
@@ -290,7 +305,7 @@ module Selenium
             cookies: {wire_key: 'cookies', required: false, ref: 'Network::SetCookieHeader', list: true},
             credentials: {wire_key: 'credentials', required: false, ref: 'Network::AuthCredentials'},
             headers: {wire_key: 'headers', required: false, ref: 'Network::Header', list: true},
-            reason_phrase: {wire_key: 'reasonPhrase', required: false},
+            reason_phrase: {wire_key: 'reasonPhrase', required: false, primitive: 'string'},
             status_code: {wire_key: 'statusCode', required: false}
           )
 
@@ -336,7 +351,7 @@ module Selenium
           GetDataParameters = Serialization::Record.define(
             data_type: {wire_key: 'dataType', enum: 'Network::DATA_TYPE'},
             collector: {wire_key: 'collector', required: false},
-            disown: {wire_key: 'disown', required: false},
+            disown: {wire_key: 'disown', required: false, primitive: 'boolean'},
             request: 'request'
           )
 
@@ -351,7 +366,7 @@ module Selenium
             body: {wire_key: 'body', required: false, ref: 'Network::BytesValue'},
             cookies: {wire_key: 'cookies', required: false, ref: 'Network::SetCookieHeader', list: true},
             headers: {wire_key: 'headers', required: false, ref: 'Network::Header', list: true},
-            reason_phrase: {wire_key: 'reasonPhrase', required: false},
+            reason_phrase: {wire_key: 'reasonPhrase', required: false, primitive: 'string'},
             status_code: {wire_key: 'statusCode', required: false}
           )
 
@@ -382,7 +397,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           AuthRequiredParameters = Serialization::Record.define(
             context: {wire_key: 'context', nullable: true},
-            is_blocked: 'isBlocked',
+            is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
             navigation: {wire_key: 'navigation', nullable: true},
             redirect_count: 'redirectCount',
             request: {wire_key: 'request', ref: 'Network::RequestData'},
@@ -396,7 +411,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           BeforeRequestSentParameters = Serialization::Record.define(
             context: {wire_key: 'context', nullable: true},
-            is_blocked: 'isBlocked',
+            is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
             navigation: {wire_key: 'navigation', nullable: true},
             redirect_count: 'redirectCount',
             request: {wire_key: 'request', ref: 'Network::RequestData'},
@@ -410,21 +425,21 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           FetchErrorParameters = Serialization::Record.define(
             context: {wire_key: 'context', nullable: true},
-            is_blocked: 'isBlocked',
+            is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
             navigation: {wire_key: 'navigation', nullable: true},
             redirect_count: 'redirectCount',
             request: {wire_key: 'request', ref: 'Network::RequestData'},
             timestamp: 'timestamp',
             user_context: {wire_key: 'userContext', required: false, nullable: true},
             intercepts: {wire_key: 'intercepts', required: false, list: true},
-            error_text: 'errorText'
+            error_text: {wire_key: 'errorText', primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ResponseCompletedParameters = Serialization::Record.define(
             context: {wire_key: 'context', nullable: true},
-            is_blocked: 'isBlocked',
+            is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
             navigation: {wire_key: 'navigation', nullable: true},
             redirect_count: 'redirectCount',
             request: {wire_key: 'request', ref: 'Network::RequestData'},
@@ -438,7 +453,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ResponseStartedParameters = Serialization::Record.define(
             context: {wire_key: 'context', nullable: true},
-            is_blocked: 'isBlocked',
+            is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
             navigation: {wire_key: 'navigation', nullable: true},
             redirect_count: 'redirectCount',
             request: {wire_key: 'request', ref: 'Network::RequestData'},

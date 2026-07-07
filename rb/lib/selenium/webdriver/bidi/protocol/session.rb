@@ -43,10 +43,10 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           CapabilityRequest = Serialization::Record.define(
-            accept_insecure_certs: {wire_key: 'acceptInsecureCerts', required: false},
-            browser_name: {wire_key: 'browserName', required: false},
-            browser_version: {wire_key: 'browserVersion', required: false},
-            platform_name: {wire_key: 'platformName', required: false},
+            accept_insecure_certs: {wire_key: 'acceptInsecureCerts', required: false, primitive: 'boolean'},
+            browser_name: {wire_key: 'browserName', required: false, primitive: 'string'},
+            browser_version: {wire_key: 'browserVersion', required: false, primitive: 'string'},
+            platform_name: {wire_key: 'platformName', required: false, primitive: 'string'},
             proxy: {wire_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
             unhandled_prompt_behavior: {
               wire_key: 'unhandledPromptBehavior',
@@ -93,10 +93,10 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           ManualProxyConfiguration = Serialization::Record.define(
             proxy_type: {wire_key: 'proxyType', fixed: 'manual'},
-            http_proxy: {wire_key: 'httpProxy', required: false},
-            ssl_proxy: {wire_key: 'sslProxy', required: false},
-            socks_proxy: 'socksProxy',
-            socks_version: 'socksVersion',
+            http_proxy: {wire_key: 'httpProxy', required: false, primitive: 'string'},
+            ssl_proxy: {wire_key: 'sslProxy', required: false, primitive: 'string'},
+            socks_proxy: {wire_key: 'socksProxy', primitive: 'string'},
+            socks_version: {wire_key: 'socksVersion', primitive: 'integer'},
             no_proxy: {wire_key: 'noProxy', required: false, list: true},
             extensible: true
           )
@@ -104,15 +104,15 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SocksProxyConfiguration = Serialization::Record.define(
-            socks_proxy: 'socksProxy',
-            socks_version: 'socksVersion'
+            socks_proxy: {wire_key: 'socksProxy', primitive: 'string'},
+            socks_version: {wire_key: 'socksVersion', primitive: 'integer'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PacProxyConfiguration = Serialization::Record.define(
             proxy_type: {wire_key: 'proxyType', fixed: 'pac'},
-            proxy_autoconfig_url: 'proxyAutoconfigUrl',
+            proxy_autoconfig_url: {wire_key: 'proxyAutoconfigUrl', primitive: 'string'},
             extensible: true
           )
 
@@ -152,7 +152,10 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          StatusResult = Serialization::Record.define(ready: 'ready', message: 'message')
+          StatusResult = Serialization::Record.define(
+            ready: {wire_key: 'ready', primitive: 'boolean'},
+            message: {wire_key: 'message', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -163,26 +166,26 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           NewResult = Serialization::Record.define(
-            session_id: 'sessionId',
+            session_id: {wire_key: 'sessionId', primitive: 'string'},
             capabilities: {wire_key: 'capabilities', ref: 'Session::NewResult::Capabilities'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           NewResult::Capabilities = Serialization::Record.define(
-            accept_insecure_certs: 'acceptInsecureCerts',
-            browser_name: 'browserName',
-            browser_version: 'browserVersion',
-            platform_name: 'platformName',
-            set_window_rect: 'setWindowRect',
-            user_agent: 'userAgent',
+            accept_insecure_certs: {wire_key: 'acceptInsecureCerts', primitive: 'boolean'},
+            browser_name: {wire_key: 'browserName', primitive: 'string'},
+            browser_version: {wire_key: 'browserVersion', primitive: 'string'},
+            platform_name: {wire_key: 'platformName', primitive: 'string'},
+            set_window_rect: {wire_key: 'setWindowRect', primitive: 'boolean'},
+            user_agent: {wire_key: 'userAgent', primitive: 'string'},
             proxy: {wire_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
             unhandled_prompt_behavior: {
               wire_key: 'unhandledPromptBehavior',
               required: false,
               ref: 'Session::UserPromptHandler'
             },
-            web_socket_url: {wire_key: 'webSocketUrl', required: false},
+            web_socket_url: {wire_key: 'webSocketUrl', required: false, primitive: 'string'},
             extensible: true
           )
 
