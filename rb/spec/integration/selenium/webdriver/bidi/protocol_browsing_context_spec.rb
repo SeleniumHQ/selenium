@@ -84,7 +84,7 @@ module Selenium
             expect(driver.execute_script('return [window.innerWidth, window.innerHeight]')).to eq([800, 600])
           end
 
-          it 'accepts users prompts without text',
+          it 'accepts user prompts without text',
              pending_if: {browser: %i[edge chrome],
                           reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
             driver.navigate.to url_for('alerts.html')
@@ -96,7 +96,7 @@ module Selenium
             expect(driver.title).to eq('Testing Alerts')
           end
 
-          it 'accepts users prompts with text',
+          it 'accepts user prompts with text',
              pending_if: {browser: %i[edge chrome],
                           reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
             driver.navigate.to url_for('alerts.html')
@@ -108,7 +108,7 @@ module Selenium
             expect(driver.title).to eq('Testing Alerts')
           end
 
-          it 'rejects users prompts',
+          it 'rejects user prompts',
              pending_if: {browser: %i[edge chrome],
                           reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
             driver.navigate.to url_for('alerts.html')
