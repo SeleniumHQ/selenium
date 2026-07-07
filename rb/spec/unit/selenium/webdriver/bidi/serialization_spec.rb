@@ -301,15 +301,20 @@ module Selenium
                 .to raise_error(Error::WebDriverError, /secure expected boolean/)
             end
 
-            it 'raises when a number-typed field arrives as a string' do
+            it 'raises when an integer-typed field arrives as a string' do
               expect { Bluetooth::BluetoothManufacturerData.from_json('key' => 'nope', 'data' => 'x') }
                 .to raise_error(Error::WebDriverError, /key expected integer/)
             end
 
-            it 'accepts a float for an integer-typed field (int-vs-float is not a wire-shape error)' do
-              parsed = Bluetooth::BluetoothManufacturerData.from_json('key' => 1.5, 'data' => 'x')
+            it 'raises when an integer-typed field arrives as a non-integer float' do
+              expect { Bluetooth::BluetoothManufacturerData.from_json('key' => 1.5, 'data' => 'x') }
+                .to raise_error(Error::WebDriverError, /key expected integer/)
+            end
 
-              expect(parsed.key).to eq(1.5)
+            it 'accepts an integer for an integer-typed field' do
+              parsed = Bluetooth::BluetoothManufacturerData.from_json('key' => 5, 'data' => 'x')
+
+              expect(parsed.key).to eq(5)
             end
           end
         end

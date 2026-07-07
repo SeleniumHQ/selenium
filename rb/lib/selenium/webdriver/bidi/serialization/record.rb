@@ -161,12 +161,13 @@ module Selenium
                     "#{name}##{field.name} expected #{field.list ? 'a list' : 'a single value'}, got #{raw.inspect}"
             end
 
-            # Ruby classes a checkable primitive admits; `integer` collapses to Numeric so a
-            # JSON float for an int-typed field isn't a false mismatch (a string-vs-number gap is
-            # the real "wrong shape"). A field with no primitive descriptor is left unchecked.
+            # Ruby classes a checkable primitive admits. `number` is any Numeric (JSON has one
+            # number type); `integer` requires an Integer — a browser emits `5`, not `5.0`, for an
+            # integer (JS has no int/float split), so this rarely false-positives yet still rejects
+            # a genuine non-integer like 1.5. A field with no primitive descriptor is left unchecked.
             PRIMITIVE_TYPES = {
               'string' => [::String], 'boolean' => [::TrueClass, ::FalseClass],
-              'number' => [::Numeric], 'integer' => [::Numeric]
+              'number' => [::Numeric], 'integer' => [::Integer]
             }.freeze
 
             def check_primitive(field, raw)
