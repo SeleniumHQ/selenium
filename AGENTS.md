@@ -25,7 +25,7 @@ The repository README is aimed at contributors; end-user docs live elsewhere.
 ## Execution model
 - Use `bazel query` to explore build graph before reading files
 - Attempt to execute Bazel commands directly. If prevented due to network/toolchain restrictions within the sandbox, fall back to suggesting copy/paste commands for the user on a separate line.
-- Use `--output_base=.local/bazel-out` when the default output directory is restricted or when working in a git worktree, to keep build output isolated per worktree
+- When the default output directory is restricted or when working in a git worktree, isolate build output with `--output_base=.local/bazel-out`. It is a startup flag, so it goes *before* the command: `bazel --output_base=.local/bazel-out build //...` (not after `build`/`test`/`query`).
 
 ## Repo layout
 Bindings (see `AGENTS.md` in each directory for language-specific details):
