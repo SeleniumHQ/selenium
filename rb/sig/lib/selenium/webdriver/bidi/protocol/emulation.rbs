@@ -63,8 +63,8 @@ module Selenium
           end
 
           class GeolocationPositionError < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
-            def self.new: (?type: untyped) -> instance
+            attr_reader type: String
+            def self.new: (?type: String) -> instance
           end
 
           class SetLocaleOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -82,8 +82,8 @@ module Selenium
           end
 
           class NetworkConditionsOffline < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
-            def self.new: (?type: untyped) -> instance
+            attr_reader type: String
+            def self.new: (?type: String) -> instance
           end
 
           class ScreenArea < ::Selenium::WebDriver::BiDi::Serialization::Record

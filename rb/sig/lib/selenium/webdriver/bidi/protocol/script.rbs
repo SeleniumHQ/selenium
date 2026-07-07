@@ -36,9 +36,9 @@ module Selenium
           SERIALIZATION_OPTIONS_INCLUDE_SHADOW_TREE: Hash[Symbol, String]
 
           class ChannelValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: ::Selenium::WebDriver::BiDi::Protocol::Script::ChannelProperties
-            def self.new: (?type: untyped, value: ::Selenium::WebDriver::BiDi::Protocol::Script::ChannelProperties) -> instance
+            def self.new: (?type: String, value: ::Selenium::WebDriver::BiDi::Protocol::Script::ChannelProperties) -> instance
           end
 
           class ChannelProperties < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -52,17 +52,17 @@ module Selenium
           end
 
           class EvaluateResultSuccess < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader result: ::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue
             attr_reader realm: String
-            def self.new: (?type: untyped, result: ::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue, realm: String) -> instance
+            def self.new: (?type: String, result: ::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue, realm: String) -> instance
           end
 
           class EvaluateResultException < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader exception_details: ::Selenium::WebDriver::BiDi::Protocol::Script::ExceptionDetails
             attr_reader realm: String
-            def self.new: (?type: untyped, exception_details: ::Selenium::WebDriver::BiDi::Protocol::Script::ExceptionDetails, realm: String) -> instance
+            def self.new: (?type: String, exception_details: ::Selenium::WebDriver::BiDi::Protocol::Script::ExceptionDetails, realm: String) -> instance
           end
 
           class ExceptionDetails < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -78,27 +78,27 @@ module Selenium
           end
 
           class ArrayLocalValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: Array[::Selenium::WebDriver::BiDi::Protocol::Script::LocalValue]
-            def self.new: (?type: untyped, value: Array[::Selenium::WebDriver::BiDi::Protocol::Script::LocalValue]) -> instance
+            def self.new: (?type: String, value: Array[::Selenium::WebDriver::BiDi::Protocol::Script::LocalValue]) -> instance
           end
 
           class DateLocalValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: String
-            def self.new: (?type: untyped, value: String) -> instance
+            def self.new: (?type: String, value: String) -> instance
           end
 
           class MapLocalValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: Array[Array[untyped]]
-            def self.new: (?type: untyped, value: Array[Array[untyped]]) -> instance
+            def self.new: (?type: String, value: Array[Array[untyped]]) -> instance
           end
 
           class ObjectLocalValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: Array[Array[untyped]]
-            def self.new: (?type: untyped, value: Array[Array[untyped]]) -> instance
+            def self.new: (?type: String, value: Array[Array[untyped]]) -> instance
           end
 
           class RegExpValue < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -108,52 +108,52 @@ module Selenium
           end
 
           class RegExpLocalValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: ::Selenium::WebDriver::BiDi::Protocol::Script::RegExpValue
-            def self.new: (?type: untyped, value: ::Selenium::WebDriver::BiDi::Protocol::Script::RegExpValue) -> instance
+            def self.new: (?type: String, value: ::Selenium::WebDriver::BiDi::Protocol::Script::RegExpValue) -> instance
           end
 
           class SetLocalValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: Array[::Selenium::WebDriver::BiDi::Protocol::Script::LocalValue]
-            def self.new: (?type: untyped, value: Array[::Selenium::WebDriver::BiDi::Protocol::Script::LocalValue]) -> instance
+            def self.new: (?type: String, value: Array[::Selenium::WebDriver::BiDi::Protocol::Script::LocalValue]) -> instance
           end
 
           class PrimitiveProtocolValue < ::Selenium::WebDriver::BiDi::Serialization::Union
           end
 
           class UndefinedValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
-            def self.new: (?type: untyped) -> instance
+            attr_reader type: String
+            def self.new: (?type: String) -> instance
           end
 
           class NullValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
-            def self.new: (?type: untyped) -> instance
+            attr_reader type: String
+            def self.new: (?type: String) -> instance
           end
 
           class StringValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: String
-            def self.new: (?type: untyped, value: String) -> instance
+            def self.new: (?type: String, value: String) -> instance
           end
 
           class NumberValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: untyped
-            def self.new: (?type: untyped, value: untyped) -> instance
+            def self.new: (?type: String, value: untyped) -> instance
           end
 
           class BooleanValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: bool
-            def self.new: (?type: untyped, value: bool) -> instance
+            def self.new: (?type: String, value: bool) -> instance
           end
 
           class BigIntValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: String
-            def self.new: (?type: untyped, value: String) -> instance
+            def self.new: (?type: String, value: String) -> instance
           end
 
           class RealmInfo < ::Selenium::WebDriver::BiDi::Serialization::Union
@@ -166,63 +166,63 @@ module Selenium
           end
 
           class WindowRealmInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader realm: String
             attr_reader origin: String
             attr_reader context: String
             attr_reader user_context: untyped
             attr_reader sandbox: untyped
-            def self.new: (?type: untyped, realm: String, origin: String, context: String, ?user_context: String, ?sandbox: String) -> instance
+            def self.new: (?type: String, realm: String, origin: String, context: String, ?user_context: String, ?sandbox: String) -> instance
           end
 
           class DedicatedWorkerRealmInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader realm: String
             attr_reader origin: String
             attr_reader owners: Array[String]
-            def self.new: (?type: untyped, realm: String, origin: String, owners: Array[String]) -> instance
+            def self.new: (?type: String, realm: String, origin: String, owners: Array[String]) -> instance
           end
 
           class SharedWorkerRealmInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader realm: String
             attr_reader origin: String
-            def self.new: (?type: untyped, realm: String, origin: String) -> instance
+            def self.new: (?type: String, realm: String, origin: String) -> instance
           end
 
           class ServiceWorkerRealmInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader realm: String
             attr_reader origin: String
-            def self.new: (?type: untyped, realm: String, origin: String) -> instance
+            def self.new: (?type: String, realm: String, origin: String) -> instance
           end
 
           class WorkerRealmInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader realm: String
             attr_reader origin: String
-            def self.new: (?type: untyped, realm: String, origin: String) -> instance
+            def self.new: (?type: String, realm: String, origin: String) -> instance
           end
 
           class PaintWorkletRealmInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader realm: String
             attr_reader origin: String
-            def self.new: (?type: untyped, realm: String, origin: String) -> instance
+            def self.new: (?type: String, realm: String, origin: String) -> instance
           end
 
           class AudioWorkletRealmInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader realm: String
             attr_reader origin: String
-            def self.new: (?type: untyped, realm: String, origin: String) -> instance
+            def self.new: (?type: String, realm: String, origin: String) -> instance
           end
 
           class WorkletRealmInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader realm: String
             attr_reader origin: String
-            def self.new: (?type: untyped, realm: String, origin: String) -> instance
+            def self.new: (?type: String, realm: String, origin: String) -> instance
           end
 
           class RemoteReference < ::Selenium::WebDriver::BiDi::Serialization::Union
@@ -246,146 +246,146 @@ module Selenium
           end
 
           class SymbolRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String) -> instance
           end
 
           class ArrayRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
             attr_reader value: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String, ?value: Array[::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue]) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String, ?value: Array[::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue]) -> instance
           end
 
           class ObjectRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
             attr_reader value: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String, ?value: Array[Array[untyped]]) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String, ?value: Array[Array[untyped]]) -> instance
           end
 
           class FunctionRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String) -> instance
           end
 
           class RegExpRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: ::Selenium::WebDriver::BiDi::Protocol::Script::RegExpValue
             attr_reader handle: untyped
             attr_reader internal_id: untyped
-            def self.new: (?type: untyped, value: ::Selenium::WebDriver::BiDi::Protocol::Script::RegExpValue, ?handle: String, ?internal_id: String) -> instance
+            def self.new: (?type: String, value: ::Selenium::WebDriver::BiDi::Protocol::Script::RegExpValue, ?handle: String, ?internal_id: String) -> instance
           end
 
           class DateRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
-            def self.new: (?type: untyped, value: String, ?handle: String, ?internal_id: String) -> instance
+            def self.new: (?type: String, value: String, ?handle: String, ?internal_id: String) -> instance
           end
 
           class MapRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
             attr_reader value: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String, ?value: Array[Array[untyped]]) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String, ?value: Array[Array[untyped]]) -> instance
           end
 
           class SetRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
             attr_reader value: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String, ?value: Array[::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue]) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String, ?value: Array[::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue]) -> instance
           end
 
           class WeakMapRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String) -> instance
           end
 
           class WeakSetRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String) -> instance
           end
 
           class GeneratorRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String) -> instance
           end
 
           class ErrorRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String) -> instance
           end
 
           class ProxyRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String) -> instance
           end
 
           class PromiseRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String) -> instance
           end
 
           class TypedArrayRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String) -> instance
           end
 
           class ArrayBufferRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String) -> instance
           end
 
           class NodeListRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
             attr_reader value: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String, ?value: Array[::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue]) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String, ?value: Array[::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue]) -> instance
           end
 
           class HTMLCollectionRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader handle: untyped
             attr_reader internal_id: untyped
             attr_reader value: untyped
-            def self.new: (?type: untyped, ?handle: String, ?internal_id: String, ?value: Array[::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue]) -> instance
+            def self.new: (?type: String, ?handle: String, ?internal_id: String, ?value: Array[::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue]) -> instance
           end
 
           class NodeRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader shared_id: untyped
             attr_reader handle: untyped
             attr_reader internal_id: untyped
             attr_reader value: untyped
-            def self.new: (?type: untyped, ?shared_id: String, ?handle: String, ?internal_id: String, ?value: ::Selenium::WebDriver::BiDi::Protocol::Script::NodeProperties) -> instance
+            def self.new: (?type: String, ?shared_id: String, ?handle: String, ?internal_id: String, ?value: ::Selenium::WebDriver::BiDi::Protocol::Script::NodeProperties) -> instance
           end
 
           class NodeProperties < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -402,11 +402,11 @@ module Selenium
           end
 
           class WindowProxyRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: ::Selenium::WebDriver::BiDi::Protocol::Script::WindowProxyProperties
             attr_reader handle: untyped
             attr_reader internal_id: untyped
-            def self.new: (?type: untyped, value: ::Selenium::WebDriver::BiDi::Protocol::Script::WindowProxyProperties, ?handle: String, ?internal_id: String) -> instance
+            def self.new: (?type: String, value: ::Selenium::WebDriver::BiDi::Protocol::Script::WindowProxyProperties, ?handle: String, ?internal_id: String) -> instance
           end
 
           class WindowProxyProperties < ::Selenium::WebDriver::BiDi::Serialization::Record

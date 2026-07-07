@@ -50,7 +50,7 @@ module Selenium
           end
 
           class ConsoleLogEntry < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader level: Symbol
             attr_reader source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source
             attr_reader text: String?
@@ -58,17 +58,17 @@ module Selenium
             attr_reader stack_trace: untyped
             attr_reader method_: String
             attr_reader args: Array[::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue]
-            def self.new: (?type: untyped, level: Symbol, source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source, text: String?, timestamp: Integer, ?stack_trace: ::Selenium::WebDriver::BiDi::Protocol::Script::StackTrace, method_: String, args: Array[::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue]) -> instance
+            def self.new: (?type: String, level: Symbol, source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source, text: String?, timestamp: Integer, ?stack_trace: ::Selenium::WebDriver::BiDi::Protocol::Script::StackTrace, method_: String, args: Array[::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue]) -> instance
           end
 
           class JavascriptLogEntry < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader level: Symbol
             attr_reader source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source
             attr_reader text: String?
             attr_reader timestamp: Integer
             attr_reader stack_trace: untyped
-            def self.new: (?type: untyped, level: Symbol, source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source, text: String?, timestamp: Integer, ?stack_trace: ::Selenium::WebDriver::BiDi::Protocol::Script::StackTrace) -> instance
+            def self.new: (?type: String, level: Symbol, source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source, text: String?, timestamp: Integer, ?stack_trace: ::Selenium::WebDriver::BiDi::Protocol::Script::StackTrace) -> instance
           end
 
           EVENT_TYPES: Hash[String, untyped]

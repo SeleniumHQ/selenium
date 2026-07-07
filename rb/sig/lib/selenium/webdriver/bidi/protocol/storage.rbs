@@ -45,17 +45,17 @@ module Selenium
           end
 
           class BrowsingContextPartitionDescriptor < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader context: String
-            def self.new: (?type: untyped, context: String) -> instance
+            def self.new: (?type: String, context: String) -> instance
           end
 
           class StorageKeyPartitionDescriptor < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader user_context: untyped
             attr_reader source_origin: untyped
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (?type: untyped, ?user_context: String, ?source_origin: String, ?extensions: untyped) -> instance
+            def self.new: (?type: String, ?user_context: String, ?source_origin: String, ?extensions: untyped) -> instance
           end
 
           class PartitionDescriptor < ::Selenium::WebDriver::BiDi::Serialization::Union

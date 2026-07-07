@@ -303,12 +303,12 @@ module BiDiGenerate
       end
     end
 
-    # Every Data member gets a typed `attr_reader`: the baked discriminator (untyped),
-    # each field (typed when required; UNSET-bearing optionals stay untyped), then the
-    # extensible passthrough.
+    # Every Data member gets a typed `attr_reader`: the baked discriminator (typed to its
+    # const), each field (typed when required; UNSET-bearing optionals stay untyped), then
+    # the extensible passthrough.
     def rbs_readers
       readers = []
-      readers << "#{discriminator[:ruby_name]}: untyped" if discriminator
+      readers << "#{discriminator[:ruby_name]}: #{discriminator[:rbs]}" if discriminator
       readers.concat(fields.map(&:rbs_reader))
       readers << 'extensions: Hash[String, untyped]' if extensible
       readers
@@ -317,10 +317,11 @@ module BiDiGenerate
     # The keyword arguments `self.new` accepts: each constructable field with its value
     # type, plus the optional extensions bag. The fixed discriminator is baked, so its
     # value is ignored — but the lenient `**kwargs` constructor still accepts it (and a
-    # command method passes it through), so it is advertised as an optional keyword.
+    # command method passes it through), so it is advertised as an optional keyword typed
+    # to its const.
     def rbs_new_args
       parts = []
-      parts << "?#{discriminator[:ruby_name]}: untyped" if discriminator
+      parts << "?#{discriminator[:ruby_name]}: #{discriminator[:rbs]}" if discriminator
       parts.concat(fields.map(&:rbs_arg))
       parts << '?extensions: untyped' if extensible
       parts.join(', ')
@@ -601,7 +602,8 @@ module BiDiGenerate
     def record_class(name, type)
       const = type['fields'].find { |f| baked_discriminator?(f) }
       discriminator = const && {ruby_name: BiDiGenerate.safe_field_name(BiDiGenerate.camel_to_snake(const['name'])),
-                                wire: const['wire'], value: const['type']['const']}
+                                wire: const['wire'], value: const['type']['const'],
+                                rbs: rbs_const(const['type']['const'])}
       fields = type['fields'].reject { |f| baked_discriminator?(f) }.map { |f| field_ir(f) }
       TypeClass.new(ruby_name: BiDiGenerate.type_class_name(name), fields: fields,
                     discriminator: discriminator, extensible: type['extensible'] ? true : false,

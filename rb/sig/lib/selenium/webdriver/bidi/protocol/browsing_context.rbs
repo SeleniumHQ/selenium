@@ -52,9 +52,9 @@ module Selenium
           end
 
           class AccessibilityLocator < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::AccessibilityLocator::Value
-            def self.new: (?type: untyped, value: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::AccessibilityLocator::Value) -> instance
+            def self.new: (?type: String, value: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::AccessibilityLocator::Value) -> instance
 
             class Value < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader name: untyped
@@ -64,15 +64,15 @@ module Selenium
           end
 
           class CssLocator < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: String
-            def self.new: (?type: untyped, value: String) -> instance
+            def self.new: (?type: String, value: String) -> instance
           end
 
           class ContextLocator < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ContextLocator::Value
-            def self.new: (?type: untyped, value: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ContextLocator::Value) -> instance
+            def self.new: (?type: String, value: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ContextLocator::Value) -> instance
 
             class Value < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader context: String
@@ -81,18 +81,18 @@ module Selenium
           end
 
           class InnerTextLocator < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: String
             attr_reader ignore_case: untyped
             attr_reader match_type: untyped
             attr_reader max_depth: untyped
-            def self.new: (?type: untyped, value: String, ?ignore_case: bool, ?match_type: Symbol, ?max_depth: Integer) -> instance
+            def self.new: (?type: String, value: String, ?ignore_case: bool, ?match_type: Symbol, ?max_depth: Integer) -> instance
           end
 
           class XPathLocator < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: String
-            def self.new: (?type: untyped, value: String) -> instance
+            def self.new: (?type: String, value: String) -> instance
           end
 
           class BaseNavigationInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -136,18 +136,18 @@ module Selenium
           end
 
           class ElementClipRectangle < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference
-            def self.new: (?type: untyped, element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference) -> instance
+            def self.new: (?type: String, element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference) -> instance
           end
 
           class BoxClipRectangle < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader x: Numeric
             attr_reader y: Numeric
             attr_reader width: Numeric
             attr_reader height: Numeric
-            def self.new: (?type: untyped, x: Numeric, y: Numeric, width: Numeric, height: Numeric) -> instance
+            def self.new: (?type: String, x: Numeric, y: Numeric, width: Numeric, height: Numeric) -> instance
           end
 
           class CaptureScreenshotResult < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -305,23 +305,23 @@ module Selenium
 
           class DownloadEndParams < ::Selenium::WebDriver::BiDi::Serialization::Union
             class CanceledParams < ::Selenium::WebDriver::BiDi::Serialization::Record
-              attr_reader status: untyped
+              attr_reader status: String
               attr_reader context: String
               attr_reader navigation: String?
               attr_reader timestamp: Integer
               attr_reader url: String
               attr_reader user_context: untyped
-              def self.new: (?status: untyped, context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String) -> instance
+              def self.new: (?status: String, context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String) -> instance
             end
             class CompleteParams < ::Selenium::WebDriver::BiDi::Serialization::Record
-              attr_reader status: untyped
+              attr_reader status: String
               attr_reader filepath: String?
               attr_reader context: String
               attr_reader navigation: String?
               attr_reader timestamp: Integer
               attr_reader url: String
               attr_reader user_context: untyped
-              def self.new: (?status: untyped, filepath: String?, context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String) -> instance
+              def self.new: (?status: String, filepath: String?, context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String) -> instance
             end
           end
 

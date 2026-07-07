@@ -46,10 +46,10 @@ module Selenium
           end
 
           class AuthCredentials < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader username: String
             attr_reader password: String
-            def self.new: (?type: untyped, username: String, password: String) -> instance
+            def self.new: (?type: String, username: String, password: String) -> instance
           end
 
           class BaseParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -68,15 +68,15 @@ module Selenium
           end
 
           class StringValue < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: String
-            def self.new: (?type: untyped, value: String) -> instance
+            def self.new: (?type: String, value: String) -> instance
           end
 
           class Base64Value < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: String
-            def self.new: (?type: untyped, value: String) -> instance
+            def self.new: (?type: String, value: String) -> instance
           end
 
           class Cookie < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -183,19 +183,19 @@ module Selenium
           end
 
           class UrlPatternPattern < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader protocol: untyped
             attr_reader hostname: untyped
             attr_reader port: untyped
             attr_reader pathname: untyped
             attr_reader search: untyped
-            def self.new: (?type: untyped, ?protocol: String, ?hostname: String, ?port: String, ?pathname: String, ?search: String) -> instance
+            def self.new: (?type: String, ?protocol: String, ?hostname: String, ?port: String, ?pathname: String, ?search: String) -> instance
           end
 
           class UrlPatternString < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader pattern: String
-            def self.new: (?type: untyped, pattern: String) -> instance
+            def self.new: (?type: String, pattern: String) -> instance
           end
 
           class AddDataCollectorParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -246,10 +246,10 @@ module Selenium
 
           class ContinueWithAuthParameters < ::Selenium::WebDriver::BiDi::Serialization::Union
             class Credentials < ::Selenium::WebDriver::BiDi::Serialization::Record
-              attr_reader action: untyped
+              attr_reader action: String
               attr_reader request: String
               attr_reader credentials: ::Selenium::WebDriver::BiDi::Protocol::Network::AuthCredentials
-              def self.new: (?action: untyped, request: String, credentials: ::Selenium::WebDriver::BiDi::Protocol::Network::AuthCredentials) -> instance
+              def self.new: (?action: String, request: String, credentials: ::Selenium::WebDriver::BiDi::Protocol::Network::AuthCredentials) -> instance
             end
             class NoCredentials < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader request: String

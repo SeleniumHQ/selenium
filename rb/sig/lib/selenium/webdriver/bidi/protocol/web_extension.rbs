@@ -32,21 +32,21 @@ module Selenium
           end
 
           class ExtensionPath < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader path: String
-            def self.new: (?type: untyped, path: String) -> instance
+            def self.new: (?type: String, path: String) -> instance
           end
 
           class ExtensionArchivePath < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader path: String
-            def self.new: (?type: untyped, path: String) -> instance
+            def self.new: (?type: String, path: String) -> instance
           end
 
           class ExtensionBase64Encoded < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader type: untyped
+            attr_reader type: String
             attr_reader value: String
-            def self.new: (?type: untyped, value: String) -> instance
+            def self.new: (?type: String, value: String) -> instance
           end
 
           class InstallResult < ::Selenium::WebDriver::BiDi::Serialization::Record

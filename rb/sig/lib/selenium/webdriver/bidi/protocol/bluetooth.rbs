@@ -75,17 +75,17 @@ module Selenium
 
           class HandleRequestDevicePromptParameters < ::Selenium::WebDriver::BiDi::Serialization::Union
             class AcceptParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
-              attr_reader accept: untyped
+              attr_reader accept: bool
               attr_reader context: String
               attr_reader prompt: String
               attr_reader device: String
-              def self.new: (?accept: untyped, context: String, prompt: String, device: String) -> instance
+              def self.new: (?accept: bool, context: String, prompt: String, device: String) -> instance
             end
             class CancelParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
-              attr_reader accept: untyped
+              attr_reader accept: bool
               attr_reader context: String
               attr_reader prompt: String
-              def self.new: (?accept: untyped, context: String, prompt: String) -> instance
+              def self.new: (?accept: bool, context: String, prompt: String) -> instance
             end
           end
 

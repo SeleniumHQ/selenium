@@ -72,13 +72,13 @@ module Selenium
               def self.new: (client_window: String, state: Symbol) -> instance
             end
             class ClientWindowRectState < ::Selenium::WebDriver::BiDi::Serialization::Record
-              attr_reader state: untyped
+              attr_reader state: String
               attr_reader client_window: String
               attr_reader width: untyped
               attr_reader height: untyped
               attr_reader x: untyped
               attr_reader y: untyped
-              def self.new: (?state: untyped, client_window: String, ?width: Integer, ?height: Integer, ?x: Integer, ?y: Integer) -> instance
+              def self.new: (?state: String, client_window: String, ?width: Integer, ?height: Integer, ?x: Integer, ?y: Integer) -> instance
             end
           end
 
@@ -90,13 +90,13 @@ module Selenium
 
           class DownloadBehavior < ::Selenium::WebDriver::BiDi::Serialization::Union
             class Allowed < ::Selenium::WebDriver::BiDi::Serialization::Record
-              attr_reader type: untyped
+              attr_reader type: String
               attr_reader destination_folder: String
-              def self.new: (?type: untyped, destination_folder: String) -> instance
+              def self.new: (?type: String, destination_folder: String) -> instance
             end
             class Denied < ::Selenium::WebDriver::BiDi::Serialization::Record
-              attr_reader type: untyped
-              def self.new: (?type: untyped) -> instance
+              attr_reader type: String
+              def self.new: (?type: String) -> instance
             end
           end
 
