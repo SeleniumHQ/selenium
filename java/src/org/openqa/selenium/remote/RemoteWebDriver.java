@@ -436,9 +436,7 @@ public class RemoteWebDriver
     Object rawUrl = this.capabilities.getCapability("webSocketUrl");
     if (!(rawUrl instanceof String)
         || (!((String) rawUrl).startsWith("ws://") && !((String) rawUrl).startsWith("wss://"))) {
-      LOG.warning(
-          "BiDi was requested but the remote end did not return a valid webSocketUrl."
-              + " BiDi connection will not be established.");
+      LOG.warning("BiDi was requested but the remote end did not return a valid webSocketUrl.");
       return Optional.empty();
     }
     String webSocketUrl = (String) rawUrl;
@@ -447,13 +445,21 @@ public class RemoteWebDriver
       HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
       ClientConfig wsConfig = this.clientConfig.baseUri(wsUri);
       HttpClient wsClient = clientFactory.createClient(wsConfig);
-      Connection biDiConnection = new Connection(wsClient, wsUri.toString());
-      return Optional.of(new BiDi(biDiConnection, wsConfig.wsTimeout()));
+      try {
+        Connection biDiConnection = new Connection(wsClient, wsUri.toString());
+        return Optional.of(new BiDi(biDiConnection, wsConfig.wsTimeout()));
+      } catch (RuntimeException e) {
+        wsClient.close();
+        LOG.log(
+            Level.WARNING,
+            "BiDi was requested but the WebSocket connection could not be established.",
+            e);
+        return Optional.empty();
+      }
     } catch (URISyntaxException e) {
       LOG.log(
           Level.WARNING,
-          "BiDi was requested but the remote end returned an invalid webSocketUrl."
-              + " BiDi connection will not be established.",
+          "BiDi was requested but the remote end returned an invalid webSocketUrl.",
           e);
       return Optional.empty();
     }
