@@ -710,14 +710,17 @@ module BiDiGenerate
       resolve(node)[:rbs]
     end
 
+    # Every primitive the projector can emit maps to an RBS type. `unknown` is intentionally
+    # absent — the projector rejects it (an unhandled CDDL construct fails the build), so it
+    # never reaches here; any other unlisted primitive fails generation at scalar_rbs rather
+    # than slipping through as untyped.
     PRIMITIVE_RBS = {
-      'string' => 'String', 'number' => 'Numeric', 'integer' => 'Integer',
-      'boolean' => 'bool', 'null' => 'nil', 'unknown' => 'untyped'
+      'string' => 'String', 'number' => 'Numeric', 'integer' => 'Integer', 'boolean' => 'bool', 'null' => 'nil'
     }.freeze
 
-    # Scalar primitives worth an inbound type-shape check; `null`/`unknown` are opaque, so
-    # an unmarked field is left unchecked (lenient default — a missed check fails open,
-    # whereas a wrong strict default would reject valid data).
+    # The scalar primitives that carry an inbound type-check. A field with no primitive (a ref,
+    # const, or opaque value) gets no descriptor and is left unchecked — lenient, so a missed
+    # check fails open rather than a wrong strict default rejecting valid data.
     CHECKABLE_PRIMITIVES = %w[string number integer boolean].freeze
 
     def checkable_primitive(node)
@@ -727,7 +730,7 @@ module BiDiGenerate
     # The leaf of +resolve+: the bare scalar type, before any nullable wrap. An alias's
     # own nullable is intentionally left off — only the referencing node's is applied.
     def scalar_rbs(node)
-      return PRIMITIVE_RBS.fetch(node['primitive'], 'untyped') if node.key?('primitive')
+      return PRIMITIVE_RBS.fetch(node['primitive']) if node.key?('primitive')
       return rbs_const(node['const']) if node.key?('const')
 
       'untyped'
