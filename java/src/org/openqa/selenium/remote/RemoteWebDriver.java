@@ -80,7 +80,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDi;
-import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.Connection;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.devtools.DevTools;
@@ -437,9 +436,8 @@ public class RemoteWebDriver
     Object rawUrl = this.capabilities.getCapability("webSocketUrl");
     if (!(rawUrl instanceof String)
         || (!((String) rawUrl).startsWith("ws://") && !((String) rawUrl).startsWith("wss://"))) {
-      throw new BiDiException(
-          "Check if this browser version supports BiDi and if the"
-              + " 'webSocketUrl: true' capability is set.");
+      LOG.warning("BiDi was requested but the remote end did not return a valid webSocketUrl.");
+      return Optional.empty();
     }
     String webSocketUrl = (String) rawUrl;
     try {
@@ -450,10 +448,10 @@ public class RemoteWebDriver
       Connection biDiConnection = new Connection(wsClient, wsUri.toString());
       return Optional.of(new BiDi(biDiConnection, wsConfig.wsTimeout()));
     } catch (URISyntaxException e) {
-      throw new BiDiException(
-          "Check if this browser version supports BiDi and if the"
-              + " 'webSocketUrl: true' capability is set.",
-          e);
+      LOG.warning(
+          "BiDi was requested but the remote end returned an invalid webSocketUrl: "
+              + webSocketUrl);
+      return Optional.empty();
     }
   }
 
