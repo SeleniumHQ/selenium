@@ -40,11 +40,14 @@ module BiDiGenerate
     exit 1
   end
 
-  # $(rootpath) is relative to the runfiles root; __dir__ anchors us there, so it resolves the
-  # same way locally and on RBE (an execpath would not).
+  # $(rootpath) is relative to the runfiles root; __dir__ anchors us there so it resolves the
+  # same way locally and on RBE (an execpath would not). This file lives at
+  # rb/lib/selenium/webdriver/bidi/support, so expand six levels up to the root — File.expand_path
+  # is separator-agnostic, unlike stripping a "/"-spelled suffix (which would miss on Windows).
+  # The cwd-relative rootpath fallback matches how spec_support's `rlocation` resolves.
   def self.schema_path(rootpath)
-    root = __dir__.delete_suffix('/rb/lib/selenium/webdriver/bidi/support')
-    [File.join(root, rootpath), rootpath].find { |p| File.exist?(p) } ||
+    runfiles_root = File.expand_path('../../../../../..', __dir__)
+    [File.join(runfiles_root, rootpath), rootpath].find { |p| File.exist?(p) } ||
       raise("BiDi schema not found (looked for #{rootpath})")
   end
 end
