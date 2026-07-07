@@ -148,7 +148,7 @@ dotnet-bin
 .metadata/
 .npmrc
 
-/.local/*
+**/.local/*
 !/.local/README.md
 
 # Security
