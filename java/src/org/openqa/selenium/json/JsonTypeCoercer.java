@@ -37,6 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.internal.Require;
@@ -113,11 +114,8 @@ class JsonTypeCoercer {
             (caps) -> ((k, v) -> caps.setCapability((String) k, v))));
 
     // Container types
-    //noinspection unchecked
     builder.add(new CollectionCoercer<>(List.class, this, ArrayList::new, (list) -> list::add));
-    //noinspection unchecked
     builder.add(new CollectionCoercer<>(Set.class, this, HashSet::new, (set) -> set::add));
-    //noinspection unchecked
     builder.add(
         new CollectionCoercer<>(
             Collection.class, this, ArrayList::new, (collection) -> collection::add));
@@ -139,7 +137,7 @@ class JsonTypeCoercer {
     this.coercers = Collections.unmodifiableSet(builder);
   }
 
-  <T> T coerce(JsonInput json, Type typeOfT, PropertySetting setter) {
+  @Nullable <T> T coerce(JsonInput json, Type typeOfT, PropertySetting setter) {
     BiFunction<JsonInput, PropertySetting, Object> coercer =
         knownCoercers.computeIfAbsent(typeOfT, this::buildCoercer);
 

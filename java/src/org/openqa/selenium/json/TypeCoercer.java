@@ -21,13 +21,14 @@ import java.lang.reflect.Type;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import org.jspecify.annotations.Nullable;
 
 public abstract class TypeCoercer<T>
-    implements Predicate<Class<?>>, Function<Type, BiFunction<JsonInput, PropertySetting, T>> {
+    implements Predicate<Class<?>>, Function<Type, BiFunction<JsonInput, PropertySetting, @Nullable T>> {
 
   @Override
   public abstract boolean test(Class<?> aClass);
 
   @Override
-  public abstract BiFunction<JsonInput, PropertySetting, T> apply(Type type);
+  public abstract BiFunction<JsonInput, PropertySetting, @Nullable T> apply(Type type);
 }

@@ -228,6 +228,7 @@ class ConstructorCoercer extends TypeCoercer<Object> {
     return indexes;
   }
 
+  @Nullable
   private Object coerceValue(Object value, Type type, PropertySetting setting) {
     StringWriter rawJson = new StringWriter();
     try (JsonOutput output = new JsonOutput(rawJson)) {
