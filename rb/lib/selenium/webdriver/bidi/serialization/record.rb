@@ -81,6 +81,10 @@ module Selenium
             # enum tokens are mapped back to symbols and an unrecognized one raises (in +read+), and
             # extra keys are captured (extensible) or ignored (closed) — strict on shape, lenient on extras.
             def from_json(json_payload)
+              unless json_payload.is_a?(::Hash)
+                raise Error::WebDriverError, "#{name} expected an object on the wire, got #{json_payload.inspect}"
+              end
+
               attributes = fields.to_h do |f|
                 [f.name, wire_value(f, json_payload)]
               end

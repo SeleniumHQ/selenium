@@ -285,6 +285,11 @@ module Selenium
               expect { Network::Cookie.from_json(cookie_wire.merge('sameSite' => %w[none])) }
                 .to raise_error(Error::WebDriverError, /same_site expected a single value/)
             end
+
+            it 'raises when an object-typed record arrives as a scalar' do
+              expect { Network::AuthCredentials.from_json('not-an-object') }
+                .to raise_error(Error::WebDriverError, /AuthCredentials expected an object/)
+            end
           end
         end
       end # Protocol
