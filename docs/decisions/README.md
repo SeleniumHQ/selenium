@@ -1,7 +1,7 @@
 # Design Decisions
 
 This directory is the log of design decisions that apply across the Selenium project —
-one file per decision, numbered in the order they were proposed.
+one file per decision, numbered by the pull request that proposes it.
 
 Selenium ships the same API in multiple languages. Decisions about user-visible behavior,
 API shape, and cross-binding semantics need to be made once, recorded, and implemented
@@ -25,11 +25,29 @@ question comes up in review, the answer should be a link to a file here.
 
 When in doubt, ask whether the question is likely to be raised again. If it is, record the decision.
 
+## Scope: what belongs in one record
+
+A record captures one coherent decision — which usually means a cluster of related sub-choices
+that share the same context and rationale and are settled as a unit. Bundling those is correct,
+not a flaw: a record on how clicks behave can settle scrolling, hit-testing, and pointer movement
+together because they are one design with one rationale.
+
+The test for splitting is **not** "could this part be adopted on its own?" — almost any part can.
+Split only when a sub-choice has its own rationale that stands without the others, would be debated
+and decided separately, or could later be reversed without disturbing the rest. If splitting would
+force a reader to open several records to understand any one of them, they belong in the same record.
+
 ## Process
 
-1. **Propose.** Anyone may propose: copy [0000-template.md](0000-template.md) to `NNNN-short-title.md` using the
-   next unused number, fill it in, and open a PR with `Status: Proposed`. Keep it to about a
-   page — if the debate already happened in an issue, the record can be short and link to it.
+1. **Propose.** Anyone may propose: copy [0000-template.md](0000-template.md) to `short-title.md`,
+   fill it in with `Status: Proposed`, and open a PR. Once GitHub assigns the PR number, rename the
+   file to `NNNN-short-title.md` using that number, before merge. Keep it to about a page — if the
+   debate already happened in an issue, the record can be short and link to it.
+
+   Open the PR with the ADR pull-request template by appending `?expand=1&template=adr.md` to the
+   compare URL — GitHub has no picker for PR templates, so this query parameter is the only way to
+   select it (e.g. `https://github.com/SeleniumHQ/selenium/compare/trunk...your-branch?expand=1&template=adr.md`).
+   Keep the PR body to review logistics; the decision and rationale belong in the record, not the PR.
 2. **Discuss.** The PR thread is the discussion record. Decisions that need synchronous
    discussion are raised at a TLC meeting; the outcome goes back into the PR. Disagreement
    about the considered options is resolved by revising the document during review, so the
@@ -40,8 +58,11 @@ When in doubt, ask whether the question is likely to be raised again. If it is, 
    merging constitutes acceptance. Proposals the TLC considers and declines are merged as
    `Rejected`; proposals withdrawn or abandoned before TLC consideration are closed and the
    number lapses.
-4. **Implement.** Each binding tracks its convergence in the decision's binding-status table.
-   Updating that table (and only that table) doesn't require TLC review.
+4. **Implement.** When a record is accepted, open an ADR tracking issue (use the
+   [ADR Implementation Tracking](https://github.com/SeleniumHQ/selenium/issues/new?template=adr-tracking.yml) issue template) — one
+   checkbox per binding, linking each implementing PR as it lands — and link the issue from the
+   record's PR. Tracking lives in the issue, not the committed record, so the immutable file doesn't
+   churn as bindings converge; updating the issue needs no TLC review.
 
 ## Approval
 
@@ -62,10 +83,11 @@ When in doubt, ask whether the question is likely to be raised again. If it is, 
 
 - **A decision must stand alone.** A reader gets the decision, the rationale, and the rejected
   alternatives without following any links; linked material is background, not required reading.
-- **Accepted decisions are immutable**, except for the status line and the binding-status
-  table. Changing a decision means a new record that supersedes the old one — update the old
-  record's status to `Superseded by [NNNN](...)`.
-- **Numbers are stable once merged.** They get cited in reviews and issues. If two open PRs
-  claim the same number, the later one renames before merge. Gaps in numbering are acceptable.
+- **A record fixes the decision and its rationale, not the implementation.** It says what every
+  binding must do and why; how each binding builds it lives in the adopting PRs and code.
+- **Accepted decisions are immutable**, except for the status line. Changing a decision means a
+  new record that supersedes the old one — update the old record's status to `Superseded by [NNNN](...)`.
+- **The number is the proposal's PR number.** It gets cited in reviews and issues and links
+  straight to the discussion. Gaps in numbering are expected.
 - **Durable supporting material goes in the record itself** (an Appendix section at the end).
   Ephemeral evidence and debate stay in the PR thread.
