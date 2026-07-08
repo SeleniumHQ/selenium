@@ -14,19 +14,28 @@ http = urllib3.PoolManager()
 root_dir = Path(os.path.realpath(__file__)).parent.parent
 
 
-def latest_for_channel(channel):
-    """Newest Chrome-for-Testing version entry for a channel.
+def get_chrome_milestone():
+    """Get the Chrome milestone from the channel.
 
-    Uses Chrome-for-Testing's channel designation, which tracks the latest milestone and is
-    unaffected by N-1 security respins.
+    This is the same method from pinned_browser. Use --chrome_channel=Beta if
+    using early stable release.
     """
-    r = http.request("GET", "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--chrome_channel", default="Stable", help="Set the Chrome channel")
+    args = parser.parse_args()
+    channel = args.chrome_channel
+
+    r = http.request(
+        "GET",
+        "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json",
+    )
     milestone = json.loads(r.data)["channels"][channel]["version"].split(".")[0]
     r = http.request(
         "GET",
         "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json",
     )
     versions = json.loads(r.data)["versions"]
+
     return sorted(
         filter(lambda v: v["version"].split(".")[0] == str(milestone), versions),
         key=lambda v: parse(v["version"]),
@@ -203,11 +212,7 @@ def update_js(chrome_milestone):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--chrome_channel", default="Stable", help="Set the Chrome channel (use Beta for early stable)")
-    args = parser.parse_args()
-
-    chrome_milestone = latest_for_channel(args.chrome_channel)
+    chrome_milestone = get_chrome_milestone()
     add_pdls(chrome_milestone)
     update_java(chrome_milestone)
     update_dotnet(chrome_milestone)

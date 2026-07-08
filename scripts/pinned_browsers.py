@@ -27,19 +27,18 @@ def calculate_hash(url):
     return h.hexdigest()
 
 
-def latest_for_channel(channel):
-    """Newest Chrome-for-Testing version entry (version + downloads) for a channel.
-
-    Uses Chrome-for-Testing's channel designation, which tracks the latest milestone and is
-    unaffected by N-1 security respins.
-    """
-    r = http.request("GET", "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json")
+def get_chrome_info_for_channel(channel):
+    r = http.request(
+        "GET",
+        "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json",
+    )
     milestone = json.loads(r.data)["channels"][channel]["version"].split(".")[0]
     r = http.request(
         "GET",
         "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json",
     )
     versions = json.loads(r.data)["versions"]
+
     return sorted(
         filter(lambda v: v["version"].split(".")[0] == str(milestone), versions),
         key=lambda v: parse(v["version"]),
@@ -549,12 +548,12 @@ def pin_browsers():
     content = content + edge_and_edgedriver()
 
     # Stable Chrome
-    stable_chrome_info = latest_for_channel("Stable")
+    stable_chrome_info = get_chrome_info_for_channel(channel="Stable")
     content = content + chrome(stable_chrome_info, workspace_prefix="")
     content = content + chromedriver(stable_chrome_info, workspace_prefix="")
 
     # Beta Chrome
-    beta_chrome_info = latest_for_channel("Beta")
+    beta_chrome_info = get_chrome_info_for_channel(channel="Beta")
     content = content + chrome(beta_chrome_info, workspace_prefix="beta_")
     content = content + chromedriver(beta_chrome_info, workspace_prefix="beta_")
 
