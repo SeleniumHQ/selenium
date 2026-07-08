@@ -19,27 +19,17 @@
 module Selenium
   module WebDriver
     class BiDi
-      @ws: WebSocketConnection
+      module Protocol
+        class Domain
+          @transport: Transport
 
-      @session: Session
+          def initialize: (Driver | Transport source) -> void
 
-      attr_reader ws: WebSocketConnection
+          private
 
-      def initialize: (url: String) -> void
-
-      def add_callback: (String | Symbol event) { () -> void } -> Integer
-
-      def close: () -> nil
-
-      def callbacks: () -> Hash[untyped, untyped]
-
-      def remove_callback: (String event, Integer id) -> Error::WebDriverError?
-
-      def session: () -> Session
-
-      def send_cmd: (String method, **untyped params) -> untyped
-
-      def error_message: (Hash[String,String] message) -> String
+          def execute: (cmd: String, ?params: untyped, ?result: untyped) -> untyped
+        end
+      end
     end
   end
 end

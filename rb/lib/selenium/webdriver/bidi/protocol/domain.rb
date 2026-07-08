@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,31 +17,24 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 module Selenium
   module WebDriver
     class BiDi
-      @ws: WebSocketConnection
+      module Protocol
+        # @api private
+        class Domain
+          def initialize(source)
+            @transport = source.is_a?(Driver) ? source.send(:bridge).transport : source
+            raise(Error::WebDriverError, 'a Driver or Transport is required') unless @transport.is_a?(Transport)
+          end
 
-      @session: Session
+          private
 
-      attr_reader ws: WebSocketConnection
-
-      def initialize: (url: String) -> void
-
-      def add_callback: (String | Symbol event) { () -> void } -> Integer
-
-      def close: () -> nil
-
-      def callbacks: () -> Hash[untyped, untyped]
-
-      def remove_callback: (String event, Integer id) -> Error::WebDriverError?
-
-      def session: () -> Session
-
-      def send_cmd: (String method, **untyped params) -> untyped
-
-      def error_message: (Hash[String,String] message) -> String
+          def execute(cmd:, params: nil, result: nil)
+            @transport.execute(cmd: cmd, params: params, result: result)
+          end
+        end
+      end
     end
   end
 end

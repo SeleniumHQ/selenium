@@ -1,0 +1,121 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+
+module Selenium
+  module WebDriver
+    class BiDi
+      module Serialization
+        UNSET: untyped
+
+        def self.validate!: (String name, untyped value, untyped enum) -> void
+
+        def self.to_wire: (untyped value, untyped enum) -> untyped
+
+        def self.to_symbol: (String name, untyped value, untyped enum) -> untyped
+
+        class Record < ::Data
+          def self.define: (**untyped spec) -> singleton(Record)
+
+          def self.field: (Symbol name, untyped meta) -> untyped
+
+          def self.fields: () -> Array[untyped]
+
+          def self.extensible?: () -> bool
+
+          def self.from_json: (untyped json_payload) -> instance
+
+          def as_json: (*untyped) -> Hash[String, untyped]
+
+          interface _Constructor
+            def fields: () -> Array[untyped]
+
+            def extensible?: () -> bool
+
+            def construct: (**untyped attributes) -> untyped
+
+            def name: () -> String?
+          end
+
+          module Deserializer : _Constructor
+            def new: (**untyped kwargs) -> untyped
+
+            def from_json: (untyped json_payload) -> untyped
+
+            private
+
+            def validate_values: (Hash[Symbol, untyped] attributes) -> void
+
+            def check_outbound_shape: (untyped field, untyped value) -> void
+
+            def fixed?: (untyped field) -> bool
+
+            def wire_value: (untyped field, Hash[untyped, untyped] json_payload) -> untyped
+
+            def read: (untyped field, untyped raw) -> untyped
+
+            def check_shape: (untyped field, untyped raw) -> void
+
+            def check_primitive: (untyped field, untyped raw) -> void
+
+            def enum_hash: (untyped field) -> untyped
+
+            def read_list: (untyped raw, untyped klass) -> untyped
+
+            def extra: (Hash[untyped, untyped] json_payload) -> Hash[untyped, untyped]
+          end
+
+          interface _Serializable
+            def extensions: () -> Hash[String, untyped]
+
+            def class: () -> _Constructor
+          end
+
+          module Serializable : _Serializable
+            def self.as_json: (untyped value) -> untyped
+
+            def as_json: (*untyped) -> Hash[String, untyped]
+          end
+        end
+
+        class Union
+          def self.discriminator: (String wire_key, ?Hash[Symbol, String] values) -> void
+
+          def self.variants: (Hash[untyped, String] table) -> Hash[untyped, String]
+
+          def self.presence: (Hash[String, Array[String]] rules) -> Hash[String, Array[String]]
+
+          def self.fallback: (String path) -> String
+
+          def self.from_json: (untyped json_payload) -> untyped
+
+          def self.build: (**untyped kwargs) -> untyped
+
+          private
+
+          def self.select: (Hash[untyped, untyped] json_payload) -> untyped
+
+          def self.outbound_variant: (Hash[untyped, untyped] kwargs) -> untyped
+
+          def self.variant_for: (untyped tag) { (untyped) -> untyped } -> untyped
+
+          def self.payload_tag: (Hash[untyped, untyped] json_payload) -> untyped
+        end
+      end
+    end
+  end
+end

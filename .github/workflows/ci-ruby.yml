@@ -48,7 +48,7 @@ jobs:
         bazel test
         --keep_going
         --test_size_filters small
-        //rb/spec/...
+        //rb/...
 
   smoke:
     name: ${{ matrix.os }}-smoke
