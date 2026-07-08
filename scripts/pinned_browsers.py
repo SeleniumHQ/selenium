@@ -20,13 +20,10 @@ def calculate_hash(url):
     print(f"Calculate hash for {url}", file=sys.stderr)
     h = hashlib.sha256()
     r = http.request("GET", url, preload_content=False)
-    try:
-        if r.status != 200:
-            raise ValueError(f"Download unavailable (HTTP {r.status}): {url}")
-        for b in iter(lambda: r.read(4096), b""):
-            h.update(b)
-    finally:
-        r.release_conn()
+    if r.status != 200:
+        raise ValueError(f"Download unavailable (HTTP {r.status}): {url}")
+    for b in iter(lambda: r.read(4096), b""):
+        h.update(b)
     return h.hexdigest()
 
 
@@ -36,15 +33,9 @@ def latest_for_channel(channel):
     Uses Chrome-for-Testing's channel designation, which tracks the latest milestone and is
     unaffected by N-1 security respins.
     """
-    url = "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json"
-    r = http.request("GET", url)
-    if r.status != 200:
-        raise ValueError(f"Fetch failed (HTTP {r.status}): {url}")
+    r = http.request("GET", "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json")
     milestone = json.loads(r.data)["channels"][channel]["version"].split(".")[0]
-    url = "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json"
-    r = http.request("GET", url)
-    if r.status != 200:
-        raise ValueError(f"Fetch failed (HTTP {r.status}): {url}")
+    r = http.request("GET", "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json")
     versions = json.loads(r.data)["versions"]
     return sorted(
         filter(lambda v: v["version"].split(".")[0] == str(milestone), versions),
@@ -55,8 +46,6 @@ def latest_for_channel(channel):
 def chromedriver(selected_version, workspace_prefix=""):
     content = ""
 
-    if "chromedriver" not in selected_version["downloads"]:
-        raise ValueError(f"No chromedriver published for Chrome {selected_version['version']}")
     drivers = selected_version["downloads"]["chromedriver"]
 
     url = next((d["url"] for d in drivers if d["platform"] == "linux64"), None)

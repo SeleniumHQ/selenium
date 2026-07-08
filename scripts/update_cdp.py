@@ -20,15 +20,9 @@ def latest_for_channel(channel):
     Uses Chrome-for-Testing's channel designation, which tracks the latest milestone and is
     unaffected by N-1 security respins.
     """
-    url = "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json"
-    r = http.request("GET", url)
-    if r.status != 200:
-        raise ValueError(f"Fetch failed (HTTP {r.status}): {url}")
+    r = http.request("GET", "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json")
     milestone = json.loads(r.data)["channels"][channel]["version"].split(".")[0]
-    url = "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json"
-    r = http.request("GET", url)
-    if r.status != 200:
-        raise ValueError(f"Fetch failed (HTTP {r.status}): {url}")
+    r = http.request("GET", "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json")
     versions = json.loads(r.data)["versions"]
     return sorted(
         filter(lambda v: v["version"].split(".")[0] == str(milestone), versions),
