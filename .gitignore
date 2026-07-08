@@ -148,8 +148,8 @@ dotnet-bin
 .metadata/
 .npmrc
 
-/.local/*
-!/.local/.gitkeep
+**/.local/*
+!/.local/README.md
 
 # Security
 .env
@@ -162,6 +162,9 @@ dotnet-bin
 /.cline
 /.windsurf
 /.zencoder
+AGENTS.local.md
+CLAUDE.local.md
+GEMINI.local.md
 
 # Common per-tool config/rules files people accidentally add
 /.cursorignore
