@@ -269,6 +269,31 @@ fn get_env_name(suffix: &str) -> String {
     concat(ENV_PREFIX, suffix_uppercase.as_str())
 }
 
+#[cfg(test)]
+mod env_name_tests {
+    use super::*;
+
+    #[test]
+    fn get_env_name_simple_key() {
+        assert_eq!(get_env_name("browser"), "SE_BROWSER");
+    }
+
+    #[test]
+    fn get_env_name_dashes_become_underscores() {
+        assert_eq!(get_env_name("browser-version"), "SE_BROWSER_VERSION");
+    }
+
+    #[test]
+    fn get_env_name_mixed_case_uppercased() {
+        assert_eq!(get_env_name("Cache-Path"), "SE_CACHE_PATH");
+    }
+
+    #[test]
+    fn get_env_name_empty_suffix() {
+        assert_eq!(get_env_name(""), "SE_");
+    }
+}
+
 fn get_config() -> Result<Table, Error> {
     let cache_path = read_cache_path();
     let config_path = Path::new(&cache_path).to_path_buf().join(CONFIG_FILE);
