@@ -181,6 +181,14 @@ pub fn create_browser_metadata(
     }
 }
 
+pub fn should_cache_driver_version(
+    driver_ttl: u64,
+    major_browser_version: &str,
+    driver_version: &str,
+) -> bool {
+    driver_ttl > 0 && !major_browser_version.is_empty() && !driver_version.is_empty()
+}
+
 pub fn create_driver_metadata(
     major_browser_version: &str,
     driver_name: &str,

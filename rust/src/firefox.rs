@@ -21,7 +21,8 @@ use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_content_from_link, read_redirect_from_link};
 use crate::files::{BrowserPath, compose_driver_path_in_cache};
 use crate::metadata::{
-    create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
+    create_driver_metadata, get_driver_version_from_metadata, get_metadata,
+    should_cache_driver_version, write_metadata,
 };
 use crate::{
     BETA, DASH_VERSION, DEV, ESR, LATEST_RELEASE, Logger, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, STABLE,
@@ -296,7 +297,7 @@ impl SeleniumManager for FirefoxManager {
                 };
 
                 let driver_ttl = self.get_ttl();
-                if driver_ttl > 0 && !major_browser_version.is_empty() && !driver_version.is_empty()
+                if should_cache_driver_version(driver_ttl, major_browser_version, &driver_version)
                 {
                     metadata.drivers.push(create_driver_metadata(
                         major_browser_version,

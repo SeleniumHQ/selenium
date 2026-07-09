@@ -17,7 +17,8 @@
 use selenium_manager::files::{collect_files_from_cache, find_latest_from_cache};
 use selenium_manager::get_manager_by_browser;
 use selenium_manager::metadata::{
-    create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata, Metadata,
+    create_driver_metadata, get_driver_version_from_metadata, get_metadata,
+    should_cache_driver_version, write_metadata, Metadata,
 };
 use selenium_manager::SeleniumManager;
 
@@ -292,7 +293,7 @@ fn empty_driver_version_is_not_cached_in_metadata() {
 
     let driver_version = "";
 
-    if driver_ttl > 0 && !major_browser_version.is_empty() && !driver_version.is_empty() {
+    if should_cache_driver_version(driver_ttl, major_browser_version, driver_version) {
         metadata.drivers.push(create_driver_metadata(
             major_browser_version,
             driver_name,
@@ -311,6 +312,6 @@ fn empty_driver_version_is_not_cached_in_metadata() {
 
     assert!(
         result.is_none(),
-        "empty driver_version must not be cached in metadata — this test fails if the !driver_version.is_empty() guard is removed"
+        "empty driver_version must not be cached in metadata — this test fails if the !driver_version.is_empty() guard is removed from should_cache_driver_version()"
     );
 }
