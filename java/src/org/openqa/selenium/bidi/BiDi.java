@@ -26,11 +26,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
-import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 
-@Beta
 public class BiDi implements Closeable {
   private static final Logger LOG = Logger.getLogger(BiDi.class.getName());
 
@@ -166,5 +164,9 @@ public class BiDi implements Closeable {
 
   public BiDiSessionStatus getBidiSessionStatus() {
     return send(new Command<>("session.status", emptyMap(), BiDiSessionStatus.class));
+  }
+
+  public Handle asHandle() {
+    return new Handle(this);
   }
 }
