@@ -157,7 +157,7 @@ fn get_major_version_errors_on_empty() {
 }
 
 #[test]
-fn get_major_version_errors_on_garbage() {
+fn get_major_version_returns_first_component_for_non_numeric() {
     let manager = get_manager_by_browser("chrome".to_string()).unwrap();
     let result = manager.get_major_version("not-a-version");
     assert_eq!(result.unwrap(), "not-a-version");

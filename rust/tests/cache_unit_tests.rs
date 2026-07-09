@@ -24,26 +24,23 @@ use std::path::PathBuf;
 use tempfile::tempdir;
 use walkdir::WalkDir;
 
-fn platform_label() -> (&'static str, &'static str, &'static str) {
-    if cfg!(windows) {
-        ("win64", "windows", ".exe")
-    } else if cfg!(target_os = "macos") {
-        ("mac-x64", "macos", "")
-    } else {
-        ("linux64", "linux", "")
-    }
-}
-
 fn create_driver_in_cache(
     cache: &PathBuf,
     driver_name: &str,
     version: &str,
 ) {
-    let (platform, os_dir, ext) = platform_label();
+    let manager = get_manager_by_browser("chrome".to_string()).unwrap();
+    let platform = manager.get_platform_label().to_string();
+    let os = manager.get_os().to_string();
+    let ext = if selenium_manager::config::OS::WINDOWS.is(&os) {
+        ".exe"
+    } else {
+        ""
+    };
     let dir = cache
         .join(driver_name)
-        .join(os_dir)
-        .join(platform)
+        .join(os)
+        .join(&platform)
         .join(version);
     fs::create_dir_all(&dir).unwrap();
     fs::write(
