@@ -188,8 +188,8 @@ pub enum ARCH {
 impl ARCH {
     pub fn to_str_vector(&self) -> Vec<&str> {
         match self {
-            ARCH::X32 => vec![ARCH_X86, "i386", "x32"],
-            ARCH::X64 => vec![ARCH_X64, "amd64", "x64", "i686", "ia64"],
+            ARCH::X32 => vec![ARCH_X86, "i386", "x32", "i686"],
+            ARCH::X64 => vec![ARCH_X64, "amd64", "x64", "ia64"],
             ARCH::ARM64 => vec![ARCH_ARM64, "aarch64", "arm"],
             ARCH::ARMV7 => vec![ARCH_ARM7L, "armv7l"],
         }

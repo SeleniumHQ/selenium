@@ -16,6 +16,9 @@
 
 use selenium_manager::files::{collect_files_from_cache, find_latest_from_cache};
 use selenium_manager::get_manager_by_browser;
+use selenium_manager::metadata::{
+    create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata, Metadata,
+};
 use selenium_manager::SeleniumManager;
 
 use rstest::rstest;
@@ -268,4 +271,46 @@ fn find_best_driver_from_cache_returns_none_when_cache_empty() {
 
     let result = manager.find_best_driver_from_cache().unwrap();
     assert!(result.is_none());
+}
+
+#[test]
+fn empty_driver_version_is_not_cached_in_metadata() {
+    let tmp = tempdir().unwrap();
+    let cache = tmp.path().to_path_buf();
+    let log = selenium_manager::logger::Logger::default();
+
+    let mut metadata = Metadata {
+        browsers: Vec::new(),
+        drivers: Vec::new(),
+        stats: Vec::new(),
+        cached_assets: Vec::new(),
+    };
+
+    let major_browser_version = "120";
+    let driver_name = "edgedriver";
+    let driver_ttl = 3600;
+
+    let driver_version = "";
+
+    if driver_ttl > 0 && !major_browser_version.is_empty() && !driver_version.is_empty() {
+        metadata.drivers.push(create_driver_metadata(
+            major_browser_version,
+            driver_name,
+            driver_version,
+            driver_ttl,
+        ));
+        write_metadata(&metadata, &log, Some(cache.clone()));
+    }
+
+    let read_back = get_metadata(&log, &Some(cache.clone()));
+    let result = get_driver_version_from_metadata(
+        &read_back.drivers,
+        driver_name,
+        major_browser_version,
+    );
+
+    assert!(
+        result.is_none(),
+        "empty driver_version must not be cached in metadata — this test fails if the !driver_version.is_empty() guard is removed"
+    );
 }
