@@ -108,7 +108,7 @@ rules_ts_ext = use_extension(
     dev_dependency = True,
 )
 rules_ts_ext.deps(
-    ts_version = "4.9.5",
+    ts_version = "5.8.3",
 )
 use_repo(rules_ts_ext, "npm_typescript")
 
