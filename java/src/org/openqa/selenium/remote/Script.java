@@ -26,17 +26,59 @@ import org.openqa.selenium.bidi.script.RemoteValue;
 @Beta
 public interface Script {
 
+  /**
+   * @deprecated Subscription ids are now represented as {@link String}. Use {@link
+   *     #addConsoleMessageListener(Consumer)} instead.
+   */
+  @Deprecated(since = "4.46", forRemoval = true)
   long addConsoleMessageHandler(Consumer<ConsoleLogEntry> consumer);
 
+  /**
+   * @deprecated Subscription ids are now represented as {@link String}. Use {@link
+   *     #removeConsoleMessageListener(String)} instead.
+   */
+  @Deprecated(since = "4.46", forRemoval = true)
   void removeConsoleMessageHandler(long id);
 
+  String addConsoleMessageListener(Consumer<ConsoleLogEntry> consumer);
+
+  void removeConsoleMessageListener(String id);
+
+  /**
+   * @deprecated Subscription ids are now represented as {@link String}. Use {@link
+   *     #addJavaScriptErrorListener(Consumer)} instead.
+   */
+  @Deprecated(since = "4.46", forRemoval = true)
   long addJavaScriptErrorHandler(Consumer<JavascriptLogEntry> consumer);
 
+  /**
+   * @deprecated Subscription ids are now represented as {@link String}. Use {@link
+   *     #removeJavaScriptErrorListener(String)} instead.
+   */
+  @Deprecated(since = "4.46", forRemoval = true)
   void removeJavaScriptErrorHandler(long id);
 
+  String addJavaScriptErrorListener(Consumer<JavascriptLogEntry> consumer);
+
+  void removeJavaScriptErrorListener(String id);
+
+  /**
+   * @deprecated Subscription ids are now represented as {@link String}. Use {@link
+   *     #addDomMutationListener(Consumer)} instead.
+   */
+  @Deprecated(since = "4.46", forRemoval = true)
   long addDomMutationHandler(Consumer<DomMutation> event);
 
+  /**
+   * @deprecated Subscription ids are now represented as {@link String}. Use {@link
+   *     #removeDomMutationListener(String)} instead.
+   */
+  @Deprecated(since = "4.46", forRemoval = true)
   void removeDomMutationHandler(long id);
+
+  String addDomMutationListener(Consumer<DomMutation> event);
+
+  void removeDomMutationListener(String id);
 
   String pin(String script);
 
