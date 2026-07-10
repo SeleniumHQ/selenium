@@ -121,7 +121,12 @@ public class BiDi implements Closeable {
   // user contexts, so there is no need to separately track how a listener was subscribed.
   private String subscribe(Map<String, Object> params) {
     Map<String, Object> result = send(new Command<>("session.subscribe", params, Map.class));
-    return (String) result.get("subscription");
+    Object subscriptionId = result.get("subscription");
+    if (!(subscriptionId instanceof String) || ((String) subscriptionId).isEmpty()) {
+      throw new BiDiException(
+          "session.subscribe did not return a valid subscription id: " + result);
+    }
+    return (String) subscriptionId;
   }
 
   public <X> void clearListener(Set<String> browsingContextIds, Event<X> event) {
@@ -147,8 +152,12 @@ public class BiDi implements Closeable {
   public void removeListener(String id) {
     Require.nonNull("Listener id", id);
 
-    send(new Command<>("session.unsubscribe", Map.of("subscriptions", List.of(id))));
-    connection.removeListener(id);
+    // The browser throws an error if we try to unsubscribe a subscription id that was not
+    // subscribed in the first place
+    if (connection.isSubscribed(id)) {
+      send(new Command<>("session.unsubscribe", Map.of("subscriptions", List.of(id))));
+      connection.removeListener(id);
+    }
   }
 
   public void clearListeners() {

@@ -24,8 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -56,11 +54,6 @@ class RemoteScript implements Script {
 
   private final WebDriver driver;
 
-  // Deprecated long-based handler ids are synthesized here and mapped to the real BiDi
-  // subscription id, so the legacy API keeps working without BiDi needing to know about longs.
-  private final AtomicLong nextLegacyId = new AtomicLong(1);
-  private final Map<Long, String> legacySubscriptionIds = new ConcurrentHashMap<>();
-
   public RemoteScript(WebDriver driver) {
     this.driver = driver;
     this.biDi = ((HasBiDi) driver).getBiDi();
@@ -69,57 +62,27 @@ class RemoteScript implements Script {
   }
 
   @Override
-  @Deprecated
-  public long addConsoleMessageHandler(Consumer<ConsoleLogEntry> consumer) {
-    return trackLegacyId(addConsoleMessageListener(consumer));
-  }
-
-  @Override
-  @Deprecated
-  public void removeConsoleMessageHandler(long id) {
-    removeConsoleMessageListener(resolveLegacyId(id));
-  }
-
-  @Override
-  public String addConsoleMessageListener(Consumer<ConsoleLogEntry> consumer) {
+  public String addConsoleMessageHandler(Consumer<ConsoleLogEntry> consumer) {
     return this.logInspector.onConsoleEntry(consumer);
   }
 
   @Override
-  public void removeConsoleMessageListener(String id) {
+  public void removeConsoleMessageHandler(String id) {
     this.biDi.removeListener(id);
   }
 
   @Override
-  @Deprecated
-  public long addJavaScriptErrorHandler(Consumer<JavascriptLogEntry> consumer) {
-    return trackLegacyId(addJavaScriptErrorListener(consumer));
-  }
-
-  @Override
-  @Deprecated
-  public void removeJavaScriptErrorHandler(long id) {
-    removeJavaScriptErrorListener(resolveLegacyId(id));
-  }
-
-  @Override
-  public String addJavaScriptErrorListener(Consumer<JavascriptLogEntry> consumer) {
+  public String addJavaScriptErrorHandler(Consumer<JavascriptLogEntry> consumer) {
     return this.logInspector.onJavaScriptException(consumer);
   }
 
   @Override
-  public void removeJavaScriptErrorListener(String id) {
+  public void removeJavaScriptErrorHandler(String id) {
     this.biDi.removeListener(id);
   }
 
   @Override
-  @Deprecated
-  public long addDomMutationHandler(Consumer<DomMutation> consumer) {
-    return trackLegacyId(addDomMutationListener(consumer));
-  }
-
-  @Override
-  public String addDomMutationListener(Consumer<DomMutation> consumer) {
+  public String addDomMutationHandler(Consumer<DomMutation> consumer) {
     String scriptValue =
         Read.resourceAsString(getClass(), "/org/openqa/selenium/remote/bidi-mutation-listener.js");
 
@@ -153,28 +116,8 @@ class RemoteScript implements Script {
   }
 
   @Override
-  @Deprecated
-  public void removeDomMutationHandler(long id) {
-    removeDomMutationListener(resolveLegacyId(id));
-  }
-
-  @Override
-  public void removeDomMutationListener(String id) {
+  public void removeDomMutationHandler(String id) {
     this.biDi.removeListener(id);
-  }
-
-  private long trackLegacyId(String subscriptionId) {
-    long id = nextLegacyId.getAndIncrement();
-    legacySubscriptionIds.put(id, subscriptionId);
-    return id;
-  }
-
-  private String resolveLegacyId(long id) {
-    String subscriptionId = legacySubscriptionIds.remove(id);
-    if (subscriptionId == null) {
-      throw new WebDriverException("No listener registered with id " + id);
-    }
-    return subscriptionId;
   }
 
   @Override
