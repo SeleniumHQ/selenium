@@ -598,6 +598,11 @@ module Selenium
           raise(WebDriver::Error::WebDriverError, msg)
         end
 
+        def transport
+          msg = 'BiDi must be enabled by setting #web_socket_url to true in options class'
+          raise(WebDriver::Error::WebDriverError, msg)
+        end
+
         def command_list
           COMMANDS
         end

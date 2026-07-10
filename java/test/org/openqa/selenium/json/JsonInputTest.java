@@ -385,6 +385,119 @@ class JsonInputTest {
   }
 
   @Test
+  void shouldAcceptTrailingCommaInArray() {
+    try (JsonInput input = newInput("[1,2,3,]")) {
+      input.beginArray();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(2L);
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(3L);
+      assertThat(input.hasNext()).isFalse();
+      input.endArray();
+    }
+  }
+
+  @Test
+  void shouldAcceptTrailingCommaInObject() {
+    try (JsonInput input = newInput("{\"a\":1,}")) {
+      input.beginObject();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextName()).isEqualTo("a");
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThat(input.hasNext()).isFalse();
+      input.endObject();
+    }
+  }
+
+  @Test
+  void shouldRejectMissingCommaBetweenArrayElements() {
+    try (JsonInput input = newInput("[1 2]")) {
+      input.beginArray();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThatExceptionOfType(JsonException.class).isThrownBy(input::hasNext);
+    }
+  }
+
+  @Test
+  void shouldRejectLeadingCommaInArray() {
+    try (JsonInput input = newInput("[,1]")) {
+      input.beginArray();
+      assertThatExceptionOfType(JsonException.class).isThrownBy(input::hasNext);
+    }
+  }
+
+  @Test
+  void shouldRejectMissingCommaBetweenObjectEntries() {
+    try (JsonInput input = newInput("{\"a\":1 \"b\":2}")) {
+      input.beginObject();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextName()).isEqualTo("a");
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThatExceptionOfType(JsonException.class).isThrownBy(input::hasNext);
+    }
+  }
+
+  @Test
+  void shouldRejectLeadingCommaInObject() {
+    try (JsonInput input = newInput("{,\"a\":1}")) {
+      input.beginObject();
+      assertThatExceptionOfType(JsonException.class).isThrownBy(input::hasNext);
+    }
+  }
+
+  @Test
+  void mismatchedCloseLeavesParserStateIntact() {
+    // endObject() while inside an array must fail without popping the container stack,
+    // so the parser still knows it is inside the array afterwards.
+    try (JsonInput input = newInput("[1}")) {
+      input.beginArray();
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThatExceptionOfType(JsonException.class)
+          .isThrownBy(input::endObject)
+          .withMessageStartingWith("Attempt to close a JSON Map");
+      // Before the fix this threw "not in a container type" because the array's
+      // stack entry had already been popped.
+      assertThat(input.hasNext()).isFalse();
+    }
+  }
+
+  @Test
+  void hasNextIsIdempotentBetweenElementsInArray() {
+    // Iterator-style probing (peek/hasNext repeatedly before reading) must not falsely fail
+    // once hasNext() has already consumed the comma before the next element.
+    try (JsonInput input = newInput("[1,2]")) {
+      input.beginArray();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(2L);
+      assertThat(input.hasNext()).isFalse();
+      assertThat(input.hasNext()).isFalse();
+      input.endArray();
+    }
+  }
+
+  @Test
+  void hasNextIsIdempotentBetweenEntriesInObject() {
+    try (JsonInput input = newInput("{\"a\":1,\"b\":2}")) {
+      input.beginObject();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextName()).isEqualTo("a");
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextName()).isEqualTo("b");
+      assertThat(input.nextNumber()).isEqualTo(2L);
+      assertThat(input.hasNext()).isFalse();
+      input.endObject();
+    }
+  }
+
+  @Test
   void nullInputsShouldCoerceAsNullValues() throws IOException {
     try (InputStream is = new ByteArrayInputStream(new byte[0]);
         Reader reader = new InputStreamReader(is, UTF_8);

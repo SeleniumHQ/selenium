@@ -24,6 +24,8 @@ module Selenium
 
         attr_reader bidi: BiDi
 
+        attr_reader transport: BiDi::Transport
+
         def create_session: (untyped capabilities) -> void
 
         def get: (String url) -> void

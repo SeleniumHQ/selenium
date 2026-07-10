@@ -1,6 +1,8 @@
 load(
     "@rules_ruby//ruby:defs.bzl",
+    "rb_binary",
     "rb_library",
+    "rb_test",
 )
 
 package(default_visibility = ["//rb:__subpackages__"])
@@ -22,6 +24,40 @@ rb_library(
         "bidi.rb",
     ]),
     deps = [":common"],
+)
+
+rb_binary(
+    name = "bidi-generate",
+    srcs = ["bidi/support/bidi_generate.rb"],
+    args = [
+        "$(location //javascript/selenium-webdriver:create-bidi-src_schema)",
+        "rb/lib/selenium/webdriver/bidi/protocol",
+    ],
+    data = [
+        "bidi/support/templates/module.rb.erb",
+        "bidi/support/templates/module.rbs.erb",
+        "//javascript/selenium-webdriver:create-bidi-src_schema",
+    ],
+    main = "bidi/support/bidi_generate.rb",
+)
+
+# Fails if a checked-in protocol .rb was hand-edited or left stale after a generator/schema
+# change. Re-renders each module in memory and compares (see check_generated.rb). Fix with
+# `bazel run //rb/lib/selenium/webdriver:bidi-generate`.
+rb_test(
+    name = "verify-bidi-generated",
+    size = "small",
+    srcs = ["bidi/support/check_generated.rb"],
+    args = ["$(rootpath //javascript/selenium-webdriver:create-bidi-src_schema)"],
+    data = [
+        "bidi/support/bidi_generate.rb",
+        "bidi/support/templates/module.rb.erb",
+        "//javascript/selenium-webdriver:create-bidi-src_schema",
+    ] + glob(
+        ["bidi/protocol/*.rb"],
+        exclude = ["bidi/protocol/domain.rb"],
+    ),
+    main = "bidi/support/check_generated.rb",
 )
 
 rb_library(

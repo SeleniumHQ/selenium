@@ -49,6 +49,10 @@ public class JsonInput implements Closeable {
   // Used when reading maps and collections so that we handle de-nesting and
   // figuring out whether we're expecting a NAME properly.
   private final Deque<Container> stack = new ArrayDeque<>();
+  // Parallel stack tracking whether the current container has seen at least
+  // one element. Used by hasNext() to enforce comma separators between
+  // elements while remaining lenient about a single trailing comma.
+  private final Deque<Boolean> containerHasElement = new ArrayDeque<>();
 
   JsonInput(Reader source, JsonTypeCoercer coercer, PropertySetting setter) {
 
@@ -353,13 +357,30 @@ public class JsonInput implements Closeable {
     }
 
     skipWhitespace(input);
+    boolean seenElement = Boolean.TRUE.equals(containerHasElement.peekFirst());
+
     if (input.peek() == ',') {
+      if (!seenElement) {
+        throw new JsonException("Unexpected ',' before first element of container. " + input);
+      }
       input.read();
-      return true;
+      // We've moved past the separator, so we're once again expecting an element rather than
+      // another comma. Clear the flag so a repeat hasNext() before reading is a no-op.
+      clearSeenElement();
+      skipWhitespace(input);
+      JsonType afterComma = peek();
+      // Trailing comma leniency: '[1,]' and '{"a":1,}' are accepted.
+      return afterComma != JsonType.END_COLLECTION && afterComma != JsonType.END_MAP;
     }
 
     JsonType type = peek();
-    return type != JsonType.END_COLLECTION && type != JsonType.END_MAP;
+    if (type == JsonType.END_COLLECTION || type == JsonType.END_MAP) {
+      return false;
+    }
+    if (seenElement) {
+      throw new JsonException("Expected ',' or end of container but saw " + type + ". " + input);
+    }
+    return true;
   }
 
   /**
@@ -370,6 +391,7 @@ public class JsonInput implements Closeable {
   public void beginArray() {
     expect(JsonType.START_COLLECTION);
     stack.addFirst(Container.COLLECTION);
+    containerHasElement.addFirst(false);
     input.read();
   }
 
@@ -380,12 +402,13 @@ public class JsonInput implements Closeable {
    */
   public void endArray() {
     expect(JsonType.END_COLLECTION);
-    Container expectation = stack.removeFirst();
-    if (expectation != Container.COLLECTION) {
+    if (stack.peekFirst() != Container.COLLECTION) {
       // The only other thing we could be closing is a map
       throw new JsonException(
           "Attempt to close a JSON List, but a JSON Object was expected. " + input);
     }
+    stack.removeFirst();
+    containerHasElement.removeFirst();
     input.read();
   }
 
@@ -397,6 +420,7 @@ public class JsonInput implements Closeable {
   public void beginObject() {
     expect(JsonType.START_MAP);
     stack.addFirst(Container.MAP_NAME);
+    containerHasElement.addFirst(false);
     input.read();
   }
 
@@ -407,11 +431,11 @@ public class JsonInput implements Closeable {
    */
   public void endObject() {
     expect(JsonType.END_MAP);
-    Container expectation = stack.removeFirst();
-    if (expectation != Container.MAP_NAME) {
-      // The only other thing we could be closing is a map
+    if (stack.peekFirst() != Container.MAP_NAME) {
       throw new JsonException("Attempt to close a JSON Map, but not ready to. " + input);
     }
+    stack.removeFirst();
+    containerHasElement.removeFirst();
     input.read();
   }
 
@@ -565,10 +589,31 @@ public class JsonInput implements Closeable {
       return; // End of Name handling
     }
 
-    // Handle the case where we're reading a value
+    // Handle the case where we're reading a value.
+    if (type == JsonType.END_COLLECTION || type == JsonType.END_MAP) {
+      // Closing the container - don't treat as a new element in it.
+      return;
+    }
     if (top == Container.MAP_VALUE) {
       stack.removeFirst();
       stack.addFirst(Container.MAP_NAME);
+      markElementRead();
+    } else if (top == Container.COLLECTION) {
+      markElementRead();
+    }
+  }
+
+  private void markElementRead() {
+    if (!containerHasElement.isEmpty()) {
+      containerHasElement.removeFirst();
+      containerHasElement.addFirst(true);
+    }
+  }
+
+  private void clearSeenElement() {
+    if (!containerHasElement.isEmpty()) {
+      containerHasElement.removeFirst();
+      containerHasElement.addFirst(false);
     }
   }
 

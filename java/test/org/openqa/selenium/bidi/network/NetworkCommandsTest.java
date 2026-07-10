@@ -206,14 +206,14 @@ class NetworkCommandsTest extends JupiterTestBase {
     try (Network network = new Network(driver)) {
       network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
 
-      long callbackId =
+      String callbackId =
           network.onAuthRequired(
               responseDetails ->
                   network.continueWithAuth(
                       responseDetails.getRequest().getRequestId(),
                       new UsernameAndPassword("test", "test")));
 
-      assertThat(callbackId).isGreaterThan(0);
+      assertThat(callbackId).isNotBlank();
 
       page = appServer.whereIs("basicAuth");
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());

@@ -29,6 +29,8 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,6 +44,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
@@ -77,6 +80,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.Connection;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
@@ -106,6 +110,7 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 @Augmentable
 public class RemoteWebDriver
     implements WebDriver,
+        HasBiDi,
         JavascriptExecutor,
         HasCapabilities,
         HasDownloads,
@@ -141,6 +146,8 @@ public class RemoteWebDriver
   @Nullable private Script remoteScript;
 
   @Nullable private Network remoteNetwork;
+
+  private Optional<BiDi> biDi = Optional.empty();
 
   // For cglib
   @SuppressWarnings("DataFlowIssue")
@@ -283,6 +290,9 @@ public class RemoteWebDriver
 
       this.capabilities = returnedCapabilities;
       sessionId = new SessionId(response.getSessionId());
+      if (Boolean.TRUE.equals(capabilities.getCapability("webSocketUrl"))) {
+        this.biDi = createBiDi();
+      }
     } catch (Exception e) {
       // If session creation fails, stop the driver service to prevent zombie processes
       if (executor instanceof DriverCommandExecutor) {
@@ -422,6 +432,49 @@ public class RemoteWebDriver
     return (String) execute(DriverCommand.GET_PAGE_SOURCE).getValue();
   }
 
+  private Optional<BiDi> createBiDi() {
+    Object rawUrl = this.capabilities.getCapability("webSocketUrl");
+    if (!(rawUrl instanceof String)) {
+      return Optional.empty();
+    }
+    String webSocketUrl = ((String) rawUrl).trim();
+    URI wsUri;
+    try {
+      wsUri = new URI(webSocketUrl);
+    } catch (URISyntaxException e) {
+      LOG.log(
+          Level.WARNING,
+          "BiDi was requested but the remote end returned an invalid webSocketUrl.",
+          e);
+      return Optional.empty();
+    }
+    String scheme = wsUri.getScheme();
+    if (scheme == null || (!scheme.equalsIgnoreCase("ws") && !scheme.equalsIgnoreCase("wss"))) {
+      LOG.warning("BiDi was requested but the remote end did not return a valid webSocketUrl.");
+      return Optional.empty();
+    }
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+    ClientConfig wsConfig = this.clientConfig.baseUri(wsUri);
+    HttpClient wsClient = clientFactory.createClient(wsConfig);
+    try {
+      Connection biDiConnection = new Connection(wsClient, wsUri.toString());
+      return Optional.of(new BiDi(biDiConnection, wsConfig.wsTimeout()));
+    } catch (RuntimeException e) {
+      wsClient.close();
+      LOG.log(
+          Level.WARNING,
+          "BiDi was requested but the WebSocket connection could not be established.",
+          e);
+      return Optional.empty();
+    }
+  }
+
+  @Deprecated(since = "4.46", forRemoval = true)
+  @Override
+  public Optional<BiDi> maybeGetBiDi() {
+    return biDi;
+  }
+
   // Misc
 
   @Override
@@ -447,11 +500,11 @@ public class RemoteWebDriver
     Object value = response.getValue();
     List<String> windowHandles = (ArrayList<String>) value;
 
-    if (windowHandles.isEmpty() && this instanceof HasBiDi) {
+    if (windowHandles.isEmpty()) {
       // If no top-level browsing contexts are open after calling close, it indicates that the
       // WebDriver session is closed.
       // If the WebDriver session is closed, the BiDi session also needs to be closed.
-      ((HasBiDi) this).maybeGetBiDi().ifPresent(BiDi::close);
+      biDi.ifPresent(BiDi::close);
     }
   }
 
@@ -467,9 +520,7 @@ public class RemoteWebDriver
         ((HasDevTools) this).maybeGetDevTools().ifPresent(DevTools::close);
       }
 
-      if (this instanceof HasBiDi) {
-        ((HasBiDi) this).maybeGetBiDi().ifPresent(BiDi::close);
-      }
+      biDi.ifPresent(BiDi::close);
 
       execute(DriverCommand.QUIT);
     } finally {
