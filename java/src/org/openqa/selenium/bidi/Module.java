@@ -49,7 +49,7 @@ public abstract class Module {
     return handle.subscribe(event, handler);
   }
 
-  protected final void unsubscribe(long id) {
-    handle.unsubscribe(id);
+  protected final <X> void unsubscribe(Event<X> event) {
+    handle.unsubscribe(event);
   }
 }

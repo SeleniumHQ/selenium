@@ -43,7 +43,10 @@ public class Handle {
     return bidi.addListener(event, handler);
   }
 
-  void unsubscribe(long id) {
-    bidi.removeListener(id);
+  // TODO: This clears every listener for the event, not just the one added by subscribe() above,
+  // since BiDi.removeListener(long) does not send session.unsubscribe on the wire.
+  // Revisit once per-subscription unsubscribe is wired up correctly.
+  <X> void unsubscribe(Event<X> event) {
+    bidi.clearListener(event);
   }
 }
