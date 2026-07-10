@@ -18,6 +18,7 @@
 package org.openqa.selenium.bidi;
 
 import java.util.function.Consumer;
+import org.openqa.selenium.Beta;
 
 /**
  * An opaque handle to the active BiDi connection, used by {@link Module} subclasses to send
@@ -27,6 +28,7 @@ import java.util.function.Consumer;
  * reference cannot invoke it, only pass it to module constructors inside this package. Create an
  * instance via {@link BiDi#asHandle()}.
  */
+@Beta
 public class Handle {
 
   private final BiDi bidi;
