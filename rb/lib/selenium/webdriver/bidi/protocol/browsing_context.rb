@@ -375,6 +375,41 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          StartScreencastParameters = Serialization::Record.define(
+            context: 'context',
+            mime_type: {wire_key: 'mimeType', required: false, primitive: 'string'},
+            video: {wire_key: 'video', required: false, ref: 'BrowsingContext::MediaTrackConstraints'},
+            audio: {wire_key: 'audio', required: false, primitive: 'boolean'}
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          MediaTrackConstraints = Serialization::Record.define(
+            width: {wire_key: 'width', required: false},
+            height: {wire_key: 'height', required: false},
+            frame_rate: {wire_key: 'frameRate', required: false}
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          StartScreencastResult = Serialization::Record.define(
+            screencast: 'screencast',
+            path: {wire_key: 'path', primitive: 'string'}
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          StopScreencastParameters = Serialization::Record.define(screencast: 'screencast')
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          StopScreencastResult = Serialization::Record.define(
+            path: {wire_key: 'path', primitive: 'string'},
+            error: {wire_key: 'error', required: false, primitive: 'string'}
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           TraverseHistoryParameters = Serialization::Record.define(context: 'context', delta: 'delta')
 
           # @api private
@@ -389,6 +424,7 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           DownloadWillBeginParams = Serialization::Record.define(
+            download: 'download',
             suggested_filename: {wire_key: 'suggestedFilename', primitive: 'string'},
             context: 'context',
             navigation: {wire_key: 'navigation', nullable: true},
@@ -410,6 +446,7 @@ module Selenium
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
             CanceledParams = Serialization::Record.define(
               status: {fixed: 'canceled'},
+              download: 'download',
               context: 'context',
               navigation: {wire_key: 'navigation', nullable: true},
               timestamp: 'timestamp',
@@ -421,6 +458,7 @@ module Selenium
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
             CompleteParams = Serialization::Record.define(
               status: {fixed: 'complete'},
+              download: 'download',
               filepath: {wire_key: 'filepath', nullable: true, primitive: 'string'},
               context: 'context',
               navigation: {wire_key: 'navigation', nullable: true},
@@ -614,6 +652,33 @@ module Selenium
               user_contexts: user_contexts
             )
             execute(cmd: 'browsingContext.setViewport', params: params)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          def start_screencast(
+            context:,
+            mime_type: Serialization::UNSET,
+            video: Serialization::UNSET,
+            audio: Serialization::UNSET
+          )
+            params = StartScreencastParameters.new(context: context, mime_type: mime_type, video: video, audio: audio)
+            execute(
+              cmd: 'browsingContext.startScreencast',
+              params: params,
+              result: BrowsingContext::StartScreencastResult
+            )
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          def stop_screencast(screencast:)
+            params = StopScreencastParameters.new(screencast: screencast)
+            execute(
+              cmd: 'browsingContext.stopScreencast',
+              params: params,
+              result: BrowsingContext::StopScreencastResult
+            )
           end
 
           # @api private
