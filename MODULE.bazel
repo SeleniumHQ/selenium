@@ -451,6 +451,7 @@ webref_cddl_extension = use_extension("//common:webref_cddl.bzl", "webref_cddl_e
 use_repo(
     webref_cddl_extension,
     "at_driver_all_cddl",
+    "digital_credentials_all_cddl",
     "permissions_all_cddl",
     "prefetch_all_cddl",
     "ua_client_hints_all_cddl",
