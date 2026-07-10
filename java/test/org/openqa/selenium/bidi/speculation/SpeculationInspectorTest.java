@@ -345,7 +345,7 @@ class SpeculationInspectorTest extends JupiterTestBase {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
 
-    long subscriptionId =
+    String subscriptionId =
         speculationInspector.onPrefetchStatusUpdated(
             event -> {
               events.add(event);
