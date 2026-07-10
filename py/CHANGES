@@ -1,3 +1,9 @@
+Selenium 4.46.0
+* Support CDP versions: v148, v149, v150
+* [build] add copyright headers to rbs, pyi, ts, mjs, and erb files (#17720)
+* Route Safari, STP and WebView2 to their handlers (#17728)
+* Fix example WebDriverWait import in docstring (#17735)
+
 Selenium 4.45.0
 * Support CDP versions: v147, v148, v149
 * Allow MAX_WS_MESSAGE_SIZE to be configurable (#17581)

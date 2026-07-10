@@ -1,3 +1,10 @@
+4.46.0 (2026-07-10)
+=========================
+* Support CDP versions: v148, v149, v150
+* trim whitespace around NO_PROXY entries (#17565)
+* add ClientConfig for HTTP client customization (#17699)
+* generate the BiDi protocol layer from the shared binding-neutral schema (#17731)
+
 4.45.0 (2026-06-15)
 =========================
 * Support CDP versions: v147, v148, v149
