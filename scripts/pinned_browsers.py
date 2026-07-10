@@ -20,6 +20,8 @@ def calculate_hash(url):
     print(f"Calculate hash for {url}", file=sys.stderr)
     h = hashlib.sha256()
     r = http.request("GET", url, preload_content=False)
+    if r.status != 200:
+        raise ValueError(f"Download unavailable (HTTP {r.status}): {url}")
     for b in iter(lambda: r.read(4096), b""):
         h.update(b)
     return h.hexdigest()
@@ -28,14 +30,9 @@ def calculate_hash(url):
 def get_chrome_info_for_channel(channel):
     r = http.request(
         "GET",
-        f"https://chromiumdash.appspot.com/fetch_releases?channel={channel}&num=1&platform=Mac,Linux",
+        "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json",
     )
-    all_versions = json.loads(r.data)
-    # use the same milestone for all chrome releases, so pick the lowest
-    milestones = [version["milestone"] for version in all_versions if version["milestone"]]
-    if not milestones:
-        raise ValueError(f"No Chrome versions with milestones found for channel '{channel}'")
-    milestone = min(milestones)
+    milestone = json.loads(r.data)["channels"][channel]["version"].split(".")[0]
     r = http.request(
         "GET",
         "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json",
