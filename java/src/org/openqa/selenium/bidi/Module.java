@@ -45,11 +45,11 @@ public abstract class Module {
     return handle.send(command);
   }
 
-  protected final <X> long subscribe(Event<X> event, Consumer<X> handler) {
+  protected final <X> String subscribe(Event<X> event, Consumer<X> handler) {
     return handle.subscribe(event, handler);
   }
 
-  protected final <X> void unsubscribe(Event<X> event) {
-    handle.unsubscribe(event);
+  protected final void unsubscribe(String subscriptionId) {
+    handle.unsubscribe(subscriptionId);
   }
 }
