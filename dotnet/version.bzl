@@ -4,7 +4,7 @@ SE_VERSION = "4.46.0"
 
 SUPPORTED_DEVTOOLS_VERSIONS = [
     "v149",
-    "v147",
+    "v150",
     "v148",
 ]
 

@@ -313,6 +313,40 @@ experimental domain Accessibility
       # Updated node data.
       array of AXNode nodes
 
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# A domain for ad-related metrics and data.
+experimental domain Ads
+  depends on Network
+  depends on Page
+  depends on Runtime
+
+  # Ad metrics for a page.
+  type AdMetrics extends object
+    properties
+      # The viewport ad density by area, represented as a percentage (an integer
+      # between 0 and 100).
+      integer viewportAdDensityByArea
+      # The time-weighted average of the viewport ad density by area, measured
+      # across the duration of the page.
+      number averageViewportAdDensityByArea
+      # The number of ads currently visible within the viewport.
+      integer viewportAdCount
+      # The time-weighted average of the viewport ad count, measured across the
+      # duration of the page.
+      number averageViewportAdCount
+      # The total ad CPU usage, in milliseconds.
+      number totalAdCpuTime
+      # The total ad network bytes.
+      number totalAdNetworkBytes
+
+  # Retrieves ad metrics for the current page.
+  command getAdMetrics
+    returns
+      AdMetrics metrics
+
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -827,6 +861,7 @@ experimental domain Audits
       WriteErrorNonSecureContext
       WriteErrorNonStringIdField
       WriteErrorNonStringInMatchDestList
+      WriteErrorInvalidMatchDestList
       WriteErrorNonStringMatchField
       WriteErrorNonTokenTypeField
       WriteErrorRequestAborted
@@ -857,6 +892,10 @@ experimental domain Audits
       ValidationFailedInvalidLength
       ValidationFailedSignatureMismatch
       ValidationFailedIntegrityMismatch
+      SignatureBaseUnknownDerivedComponent
+      SignatureBaseMissingHeader
+      SignatureBaseInvalidUnencodedDigest
+      SignatureBaseUnsupportedComponent
 
   type UnencodedDigestError extends string
     enum
@@ -936,10 +975,15 @@ experimental domain Audits
       FormInputHasWrongButWellIntendedAutocompleteValueError
       ResponseWasBlockedByORB
       NavigationEntryMarkedSkippable
+      BackUINavigationWouldSkipAd
       AutofillAndManualTextPolicyControlledFeaturesInfo
       AutofillPolicyControlledFeatureInfo
       ManualTextPolicyControlledFeatureInfo
       FormModelContextParameterMissingTitleAndDescription
+      FormModelContextMissingToolName
+      FormModelContextMissingToolDescription
+      FormModelContextRequiredParameterMissingName
+      FormModelContextParameterMissingName
 
   # Depending on the concrete errorType, different properties are set.
   type GenericIssueDetails extends object
@@ -1061,6 +1105,72 @@ experimental domain Audits
       InvalidConfigOrWellKnown
       InvalidAccountsResponse
       NoReturningUserFromFetchedAccounts
+
+  type EmailVerificationRequestIssueDetails extends object
+    properties
+      EmailVerificationRequestIssueReason emailVerificationRequestIssueReason
+
+  # Represents the failure reason when an email verification request fails.
+  # Should be updated alongside EmailVerificationRequestResult in
+  # third_party/blink/public/mojom/devtools/inspector_issue.mojom.
+  type EmailVerificationRequestIssueReason extends string
+    enum
+      InvalidEmail
+      DnsFetchFailed
+      DnsInvalidRecord
+      WellKnownHttpNotFound
+      WellKnownNoResponse
+      WellKnownInvalidResponse
+      WellKnownListEmpty
+      WellKnownInvalidContentType
+      WellKnownMissingIssuanceEndpoint
+      WellKnownIssuanceEndpointCrossOrigin
+      WellKnownUnsupportedSigningAlgorithm
+      TokenHttpNotFound
+      TokenNoResponse
+      TokenInvalidResponse
+      TokenInvalidContentType
+      TokenMalformedSdJwt
+      TokenInvalidSdJwt
+      KeyBindingSigningFailed
+      RpOriginIsOpaque
+      WellKnownMissingAccountsEndpoint
+      UserLoggedOut
+      WellKnownAccountsEndpointCrossOrigin
+      AccountsHttpNotFound
+      AccountsNoResponse
+      AccountsInvalidResponse
+      AccountsInvalidContentType
+      AccountsEmptyList
+      EmailVerificationWellKnownHttpNotFound
+      EmailVerificationWellKnownNoResponse
+      EmailVerificationWellKnownInvalidResponse
+      EmailVerificationWellKnownInvalidContentType
+      JwksHttpNotFound
+      JwksInvalidResponse
+      TokenVerificationSdJwtUnsupportedHeaderAlg
+      TokenVerificationSdJwtMissingIss
+      TokenVerificationSdJwtMissingIat
+      TokenVerificationSdJwtMissingCnf
+      TokenVerificationSdJwtMissingEmail
+      TokenVerificationSdJwtInvalidIssuedAt
+      TokenVerificationSdJwtInvalidIssuer
+      TokenVerificationSdJwtJwksMissingKeys
+      TokenVerificationSdJwtSignatureFailed
+      TokenVerificationSdJwtInvalidEmailVerified
+      TokenVerificationSdJwtInvalidEmail
+      TokenVerificationSdJwtInvalidHolderKey
+      TokenVerificationKbInvalidTyp
+      TokenVerificationKbMissingAud
+      TokenVerificationKbMissingNonce
+      TokenVerificationKbMissingIat
+      TokenVerificationKbMissingSdHash
+      TokenVerificationKbInvalidIssuedAt
+      TokenVerificationKbInvalidAudience
+      TokenVerificationKbInvalidNonce
+      TokenVerificationKbInvalidSdHash
+      TokenVerificationKbMissingCnf
+      TokenVerificationKbSignatureFailed
 
   # This issue tracks client hints related issues. It's used to deprecate old
   # features, encourage the use of new ones, and provide general guidance.
@@ -1199,30 +1309,6 @@ experimental domain Audits
       # Used for messages about activation disabled reason
       optional string disableReason
 
-  # Metadata about the ad script that was on the stack that caused the current
-  # script in the `AdAncestry` to be considered ad related.
-  type AdScriptIdentifier extends object
-    properties
-      # The script's v8 identifier.
-      Runtime.ScriptId scriptId
-      # v8's debugging id for the v8::Context.
-      Runtime.UniqueDebuggerId debuggerId
-      # The script's url (or generated name based on id if inline script).
-      string name
-
-  # Providence about how an ad script was determined to be such. It is an ad
-  # because its url matched a filterlist rule, or because some other ad script
-  # was on the stack when this script was loaded.
-  type AdAncestry extends object
-    properties
-      # The ad-script in the stack when the offending script was loaded. This is
-      # recursive down to the root script that was tagged due to the filterlist
-      # rule.
-      array of AdScriptIdentifier adAncestryChain
-      # The filterlist rule that caused the root (last) script in
-      # `adAncestry` to be ad-tagged.
-      optional string rootScriptFilterlistRule
-
   # The issue warns about blocked calls to privacy sensitive APIs via the
   # Selective Permissions Intervention.
   type SelectivePermissionsInterventionIssueDetails extends object
@@ -1230,7 +1316,7 @@ experimental domain Audits
       # Which API was intervened on.
       string apiName
       # Why the ad script using the API is considered an ad.
-      AdAncestry adAncestry
+      Network.AdAncestry adAncestry
       # The stack trace at the time of the intervention.
       optional Runtime.StackTrace stackTrace
 
@@ -1269,6 +1355,7 @@ experimental domain Audits
       PermissionElementIssue
       PerformanceIssue
       SelectivePermissionsInterventionIssue
+      EmailVerificationRequestIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -1304,6 +1391,7 @@ experimental domain Audits
       optional PermissionElementIssueDetails permissionElementIssueDetails
       optional PerformanceIssueDetails performanceIssueDetails
       optional SelectivePermissionsInterventionIssueDetails selectivePermissionsInterventionIssueDetails
+      optional EmailVerificationRequestIssueDetails emailVerificationRequestIssueDetails
 
   # A unique id for a DevTools inspector issue. Allows other entities (e.g.
   # exceptions, CDP message, console messages, etc.) to reference an issue.
@@ -2468,7 +2556,10 @@ experimental domain CSS
   experimental type CSSContainerQuery extends object
     properties
       # Container query text.
-      string text
+      # Contains the query part without the container name for a single query.
+      # Deprecated in favor of conditionText which contains the full prelude
+      # after @container.
+      deprecated string text
       # The associated rule header range in the enclosing stylesheet (if
       # available).
       optional SourceRange range
@@ -2484,6 +2575,8 @@ experimental domain CSS
       optional boolean queriesScrollState
       # true if the query contains anchored() queries.
       optional boolean queriesAnchored
+      # CSSContainerRule.conditionText
+      string conditionText
 
   # CSS Supports at-rule descriptor.
   experimental type CSSSupports extends object
@@ -2653,6 +2746,7 @@ experimental domain CSS
         font-face
         font-feature-values
         font-palette-values
+        counter-style
       # Subsection of font-feature-values, if this is a subsection.
       optional enum subsection
         # LINT.IfChange(FontVariantAlternatesFeatureType)
@@ -2732,6 +2826,8 @@ experimental domain CSS
       array of CSSFunctionParameter parameters
       # Function body.
       array of CSSFunctionNode children
+      # The BackendNodeId of the DOM node that constitutes the origin tree scope of this rule.
+      experimental optional DOM.BackendNodeId originTreeScopeNodeId
 
   # CSS keyframe rule representation.
   type CSSKeyframeRule extends object
@@ -3054,7 +3150,17 @@ experimental domain CSS
       CSSMedia media
 
   # Modifies the expression of a container query.
-  experimental command setContainerQueryText
+  # Deprecated. Use setContainerQueryConditionText instead.
+  experimental deprecated command setContainerQueryText
+    parameters
+      DOM.StyleSheetId styleSheetId
+      SourceRange range
+      string text
+    returns
+      # The resulting CSS container query rule after modification.
+      CSSContainerQuery containerQuery
+
+  experimental command setContainerQueryConditionText
     parameters
       DOM.StyleSheetId styleSheetId
       SourceRange range
@@ -3369,6 +3475,27 @@ experimental domain Cast
     parameters
       string issueMessage
 
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# This domain exposes the current state of the CrashReportContext API.
+experimental domain CrashReportContext
+  depends on Page
+
+  # Key-value pair in CrashReportContext.
+  type CrashReportContextEntry extends object
+    properties
+      string key
+      string value
+      # The ID of the frame where the key-value pair was set.
+      Page.FrameId frameId
+
+  # Returns all entries in the CrashReportContext across all frames in the page.
+  command getEntries
+    returns
+      array of CrashReportContextEntry entries
+
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -3384,6 +3511,7 @@ experimental domain Cast
 # corresponding document elements as their child nodes.
 domain DOM
   depends on Runtime
+  depends on Network
 
   # Unique DOM node identifier.
   type NodeId extends integer
@@ -3412,8 +3540,9 @@ domain DOM
       checkmark
       before
       after
+      expand-icon
       picker-icon
-      interest-hint
+      interest-button
       marker
       backdrop
       column
@@ -3554,7 +3683,7 @@ domain DOM
       experimental optional boolean isScrollable
       experimental optional boolean affectedByStartingStyles
       experimental optional array of StyleSheetId adoptedStyleSheets
-      experimental optional boolean isAdRelated
+      experimental optional Network.AdProvenance adProvenance
 
   # A structure to hold the top-level node of a detached tree and an array of its retained descendants.
   type DetachedElementInfo extends object
@@ -4289,8 +4418,8 @@ domain DOM
     parameters
       # The id of the node.
       DOM.NodeId nodeId
-      # If the node is ad related.
-      boolean isAdRelated
+      # The provenance of the ad related node, if it is ad related.
+      optional Network.AdProvenance adProvenance
 
   # Fired when a node's starting styles changes.
   experimental event affectedByStartingStylesFlagUpdated
@@ -5358,7 +5487,6 @@ domain Emulation
       PressureSource source
       optional PressureMetadata metadata
 
-  # TODO: OBSOLETE: To remove when setPressureDataOverride is merged.
   # Provides a given pressure state that will be processed and eventually be
   # delivered to PressureObserver users. |source| must have been previously
   # overridden by setPressureSourceOverrideEnabled.
@@ -5366,15 +5494,6 @@ domain Emulation
     parameters
       PressureSource source
       PressureState state
-
-  # Provides a given pressure data set that will be processed and eventually be
-  # delivered to PressureObserver users. |source| must have been previously
-  # overridden by setPressureSourceOverrideEnabled.
-  experimental command setPressureDataOverride
-    parameters
-      PressureSource source
-      PressureState state
-      optional number ownContributionEstimate
 
   # Overrides the Idle state.
   command setIdleOverride
@@ -5634,8 +5753,6 @@ experimental domain Extensions
       managed
 
   # Runs an extension default action.
-  # Available if the client is connected using the --remote-debugging-pipe
-  # flag and the --enable-unsafe-extension-debugging flag is set.
   command triggerAction
     parameters
       # Extension id.
@@ -5645,9 +5762,7 @@ experimental domain Extensions
 
   # Installs an unpacked extension from the filesystem similar to
   # --load-extension CLI flags. Returns extension ID once the extension
-  # has been installed. Available if the client is connected using the
-  # --remote-debugging-pipe flag and the --enable-unsafe-extension-debugging
-  # flag is set.
+  # has been installed.
   command loadUnpacked
     parameters
       # Absolute file path.
@@ -5673,15 +5788,11 @@ experimental domain Extensions
       boolean enabled
 
   # Gets a list of all unpacked extensions.
-  # Available if the client is connected using the --remote-debugging-pipe flag
-  # and the --enable-unsafe-extension-debugging flag is set.
   command getExtensions
     returns
       array of ExtensionInfo extensions
 
   # Uninstalls an unpacked extension (others not supported) from the profile.
-  # Available if the client is connected using the --remote-debugging-pipe flag
-  # and the --enable-unsafe-extension-debugging.
   command uninstall
     parameters
       # Extension id.
@@ -8373,6 +8484,8 @@ domain Network
       optional integer packetQueueLength
       # WebRTC packetReordering feature.
       optional boolean packetReordering
+      # True to emulate internet disconnection.
+      optional boolean offline
 
   # Activates emulation of network conditions. This command is deprecated in favor of the emulateNetworkConditionsByRule
   # and overrideNetworkState commands, which can be used together to the same effect.
@@ -8400,8 +8513,11 @@ domain Network
   # explicitly modify `navigator` behavior.
   experimental command emulateNetworkConditionsByRule
     parameters
-      # True to emulate internet disconnection.
-      boolean offline
+      # True to emulate internet disconnection. Deprecated, use the offline property in matchedNetworkConditions
+      # or emulateOfflineServiceWorker instead.
+      deprecated optional boolean offline
+      # True to emulate offline service worker.
+      optional boolean emulateOfflineServiceWorker
       # Configure conditions for matching requests. If multiple entries match a request, the first entry wins.  Global
       # conditions can be configured by leaving the urlPattern for the conditions empty. These global conditions are
       # also applied for throttling of p2p connections.
@@ -9115,6 +9231,45 @@ domain Network
       IPAddressSpace initiatorIPAddressSpace
       LocalNetworkAccessRequestPolicy localNetworkAccessRequestPolicy
 
+  # Identifies the script on the stack that caused a resource or element to be
+  # labeled as an ad. For resources, this indicates the context that triggered
+  # the fetch. For elements, this indicates the context that caused the element
+  # to be appended to the DOM.
+  experimental type AdScriptIdentifier extends object
+    properties
+      # The script's V8 identifier.
+      Runtime.ScriptId scriptId
+      # V8's debugging ID for the v8::Context.
+      Runtime.UniqueDebuggerId debuggerId
+      # The script's url (or generated name based on id if inline script).
+      string name
+
+  # Encapsulates the script ancestry and the root script filter list rule that
+  # caused the resource or element to be labeled as an ad.
+  experimental type AdAncestry extends object
+    properties
+      # A chain of `AdScriptIdentifier`s representing the ancestry of an ad
+      # script that led to the creation of a resource or element. The chain is
+      # ordered from the script itself (lowest level) up to its root ancestor
+      # that was flagged by a filter list.
+      array of AdScriptIdentifier ancestryChain
+      # The filter list rule that caused the root (last) script in
+      # `ancestryChain` to be tagged as an ad.
+      optional string rootScriptFilterlistRule
+
+  # Represents the provenance of an ad resource or element. Only one of
+  # `filterlistRule` or `adScriptAncestry` can be set. If `filterlistRule`
+  # is provided, the resource URL directly matches a filter list rule. If
+  # `adScriptAncestry` is provided, an ad script initiated the resource fetch or
+  # appended the element to the DOM. If neither is provided, the entity is
+  # known to be an ad, but provenance tracking information is unavailable.
+  experimental type AdProvenance extends object
+    properties
+      # The filterlist rule that matched, if any.
+      optional string filterlistRule
+      # The script ancestry that created the ad, if any.
+      optional AdAncestry adScriptAncestry
+
   # Fired when additional information about a requestWillBeSent event is available from the
   # network stack. Not every requestWillBeSent event will have an additional
   # requestWillBeSentExtraInfo fired for it, and there is no guarantee whether requestWillBeSent
@@ -9434,6 +9589,7 @@ domain Network
       Success
       KeyError
       SigningError
+      TransientSigningError
       ServerRequestedTermination
       InvalidSessionId
       InvalidChallenge
@@ -9499,6 +9655,7 @@ domain Network
       InvalidFederatedSessionProviderFailedToRestoreKey
       FailedToUnwrapKey
       SessionDeletedDuringRefresh
+      CrossOriginRegistrationSiteNotIncluded
 
   # Details about a failed device bound session network request.
   experimental type DeviceBoundSessionFailedRequest extends object
@@ -9538,6 +9695,8 @@ domain Network
         RefreshQuotaExceeded
         FatalError
         SigningQuotaExceeded
+        RefreshedAsWaiter
+        TransientSigningError
       # If there was a fetch attempt, the result of that.
       optional DeviceBoundSessionFetchResult fetchResult
       # The session display if there was a newly created session. This is populated
@@ -9562,6 +9721,7 @@ domain Network
         ServerRequested
         InvalidSessionParams
         RefreshFatalError
+        DevTools
 
   # Session event details specific to challenges.
   experimental type ChallengeEventDetails extends object
@@ -9605,6 +9765,11 @@ domain Network
     parameters
       # Whether to enable or disable events.
       boolean enable
+
+  # Deletes a device bound session.
+  experimental command deleteDeviceBoundSession
+    parameters
+      DeviceBoundSessionKey key
 
   # Fetches the schemeful site for a specific origin.
   experimental command fetchSchemefulSite
@@ -9654,12 +9819,6 @@ domain Network
     parameters
       # Whether 3pc restriction is enabled.
       boolean enableThirdPartyCookieRestriction
-
-      # Whether 3pc grace period exception should be enabled; false by default.
-      boolean disableThirdPartyCookieMetadata
-
-      # Whether 3pc heuristics exceptions should be enabled; false by default.
-      boolean disableThirdPartyCookieHeuristics
 
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
@@ -10366,31 +10525,6 @@ domain Page
       AdFrameType adFrameType
       optional array of AdFrameExplanation explanations
 
-  # Identifies the script which caused a script or frame to be labelled as an
-  # ad.
-  experimental type AdScriptId extends object
-    properties
-      # Script Id of the script which caused a script or frame to be labelled as
-      # an ad.
-      Runtime.ScriptId scriptId
-      # Id of scriptId's debugger.
-      Runtime.UniqueDebuggerId debuggerId
-
-  # Encapsulates the script ancestry and the root script filterlist rule that
-  # caused the frame to be labelled as an ad. Only created when `ancestryChain`
-  # is not empty.
-  experimental type AdScriptAncestry extends object
-    properties
-      # A chain of `AdScriptId`s representing the ancestry of an ad script that
-      # led to the creation of a frame. The chain is ordered from the script
-      # itself (lower level) up to its root ancestor that was flagged by
-      # filterlist.
-      array of AdScriptId ancestryChain
-      # The filterlist rule that caused the root (last) script in
-      # `ancestryChain` to be ad-tagged. Only populated if the rule is
-      # available.
-      optional string rootScriptFilterlistRule
-
   # Indicates whether the frame is a secure context and why it is the case.
   experimental type SecureContextType extends string
     enum
@@ -10478,7 +10612,6 @@ domain Page
       encrypted-media
       execution-while-out-of-viewport
       execution-while-not-rendered
-      fenced-unpartitioned-storage-read
       focus-without-user-activation
       fullscreen
       frobulate
@@ -10524,6 +10657,7 @@ domain Page
       sub-apps
       summarizer
       sync-xhr
+      tools
       translator
       unload
       usb
@@ -11173,7 +11307,7 @@ domain Page
       # chain is ordered from the most immediate script (in the frame creation
       # stack) to more distant ancestors (that created the immediately preceding
       # script). Only sent if frame is labelled as an ad and ids are available.
-      optional AdScriptAncestry adScriptAncestry
+      optional Network.AdAncestry adScriptAncestry
 
   # Returns present frame tree structure.
   command getFrameTree
@@ -11974,6 +12108,7 @@ domain Page
       EmbedderExtensionMessaging
       EmbedderExtensionMessagingForOpenPort
       EmbedderExtensionSentMessageToCachedFrame
+      EmbedderExtensionFrame
       RequestedByWebViewClient
       PostMessageByWebViewClient
       CacheControlNoStoreDeviceBoundSessionTerminated
@@ -12321,6 +12456,7 @@ experimental domain Preload
       Network.LoaderId loaderId
       SpeculationAction action
       string url
+      optional boolean formSubmission
       optional SpeculationTargetHint targetHint
 
   # Lists sources for a preloading attempt, specifically the ids of rule sets
@@ -12433,6 +12569,8 @@ experimental domain Preload
       PrerenderFailedDuringPrefetch
       BrowsingDataRemoved
       PrerenderHostReused
+      FormSubmitWhenPrerendering
+      CrossDocumentRestart
 
   # Fired when a preload enabled state is updated.
   event preloadEnabledStateUpdated
@@ -12499,6 +12637,7 @@ experimental domain Preload
       # The prefetch finished successfully but was never used.
       PrefetchSuccessfulButNotUsed
       PrefetchNotUsedProbeFailed
+      PrefetchCancelledOnUserNavigation
 
   # Fired when a prefetch attempt is updated.
   event prefetchStatusUpdated
@@ -12905,7 +13044,6 @@ experimental domain SmartCardEmulation
       shutdown
 
       # Maps to SCARD_E_UNKNOWN_CARD.
-      # TODO(crbug.com/472114998): Rename Mojo's kUnknownError to kUnknownCard to match.
       unknown-card
 
       # Error code that is not mapped in this enum.
@@ -13870,284 +14008,6 @@ experimental domain Storage
     parameters
       string bucketId
 
-  # https://wicg.github.io/attribution-reporting-api/
-  experimental command setAttributionReportingLocalTestingMode
-    parameters
-      # If enabled, noise is suppressed and reports are sent immediately.
-      boolean enabled
-
-  # Enables/disables issuing of Attribution Reporting events.
-  experimental command setAttributionReportingTracking
-    parameters
-      boolean enable
-
-  # Sends all pending Attribution Reports immediately, regardless of their
-  # scheduled report time.
-  experimental command sendPendingAttributionReports
-    returns
-      # The number of reports that were sent.
-      integer numSent
-
-  experimental type AttributionReportingSourceType extends string
-    enum
-      navigation
-      event
-
-  experimental type UnsignedInt64AsBase10 extends string
-  experimental type UnsignedInt128AsBase16 extends string
-  experimental type SignedInt64AsBase10 extends string
-
-  experimental type AttributionReportingFilterDataEntry extends object
-    properties
-      string key
-      array of string values
-
-  experimental type AttributionReportingFilterConfig extends object
-    properties
-      array of AttributionReportingFilterDataEntry filterValues
-      # duration in seconds
-      optional integer lookbackWindow
-
-  experimental type AttributionReportingFilterPair extends object
-    properties
-      array of AttributionReportingFilterConfig filters
-      array of AttributionReportingFilterConfig notFilters
-
-  experimental type AttributionReportingAggregationKeysEntry extends object
-    properties
-      string key
-      UnsignedInt128AsBase16 value
-
-  experimental type AttributionReportingEventReportWindows extends object
-    properties
-      # duration in seconds
-      integer start
-      # duration in seconds
-      array of integer ends
-
-  experimental type AttributionReportingTriggerDataMatching extends string
-    enum
-      exact
-      modulus
-
-  experimental type AttributionReportingAggregatableDebugReportingData extends object
-    properties
-      UnsignedInt128AsBase16 keyPiece
-      # number instead of integer because not all uint32 can be represented by
-      # int
-      number value
-      array of string types
-
-  experimental type AttributionReportingAggregatableDebugReportingConfig extends object
-    properties
-      # number instead of integer because not all uint32 can be represented by
-      # int, only present for source registrations
-      optional number budget
-      UnsignedInt128AsBase16 keyPiece
-      array of AttributionReportingAggregatableDebugReportingData debugData
-      optional string aggregationCoordinatorOrigin
-
-  experimental type AttributionScopesData extends object
-    properties
-      array of string values
-      # number instead of integer because not all uint32 can be represented by
-      # int
-      number limit
-      number maxEventStates
-
-  experimental type AttributionReportingNamedBudgetDef extends object
-    properties
-      string name
-      integer budget
-
-  experimental type AttributionReportingSourceRegistration extends object
-    properties
-      Network.TimeSinceEpoch time
-      # duration in seconds
-      integer expiry
-      # number instead of integer because not all uint32 can be represented by
-      # int
-      array of number triggerData
-      AttributionReportingEventReportWindows eventReportWindows
-      # duration in seconds
-      integer aggregatableReportWindow
-      AttributionReportingSourceType type
-      string sourceOrigin
-      string reportingOrigin
-      array of string destinationSites
-      UnsignedInt64AsBase10 eventId
-      SignedInt64AsBase10 priority
-      array of AttributionReportingFilterDataEntry filterData
-      array of AttributionReportingAggregationKeysEntry aggregationKeys
-      optional UnsignedInt64AsBase10 debugKey
-      AttributionReportingTriggerDataMatching triggerDataMatching
-      SignedInt64AsBase10 destinationLimitPriority
-      AttributionReportingAggregatableDebugReportingConfig aggregatableDebugReportingConfig
-      optional AttributionScopesData scopesData
-      integer maxEventLevelReports
-      array of AttributionReportingNamedBudgetDef namedBudgets
-      boolean debugReporting
-      number eventLevelEpsilon
-
-  experimental type AttributionReportingSourceRegistrationResult extends string
-    enum
-      success
-      internalError
-      insufficientSourceCapacity
-      insufficientUniqueDestinationCapacity
-      excessiveReportingOrigins
-      prohibitedByBrowserPolicy
-      successNoised
-      destinationReportingLimitReached
-      destinationGlobalLimitReached
-      destinationBothLimitsReached
-      reportingOriginsPerSiteLimitReached
-      exceedsMaxChannelCapacity
-      exceedsMaxScopesChannelCapacity
-      exceedsMaxTriggerStateCardinality
-      exceedsMaxEventStatesLimit
-      destinationPerDayReportingLimitReached
-
-  experimental event attributionReportingSourceRegistered
-    parameters
-      AttributionReportingSourceRegistration registration
-      AttributionReportingSourceRegistrationResult result
-
-  experimental type AttributionReportingSourceRegistrationTimeConfig extends string
-    enum
-      include
-      exclude
-
-  experimental type AttributionReportingAggregatableValueDictEntry extends object
-    properties
-      string key
-      # number instead of integer because not all uint32 can be represented by
-      # int
-      number value
-      UnsignedInt64AsBase10 filteringId
-
-
-  experimental type AttributionReportingAggregatableValueEntry extends object
-    properties
-      array of AttributionReportingAggregatableValueDictEntry values
-      AttributionReportingFilterPair filters
-
-  experimental type AttributionReportingEventTriggerData extends object
-    properties
-      UnsignedInt64AsBase10 data
-      SignedInt64AsBase10 priority
-      optional UnsignedInt64AsBase10 dedupKey
-      AttributionReportingFilterPair filters
-
-  experimental type AttributionReportingAggregatableTriggerData extends object
-    properties
-      UnsignedInt128AsBase16 keyPiece
-      array of string sourceKeys
-      AttributionReportingFilterPair filters
-
-  experimental type AttributionReportingAggregatableDedupKey extends object
-    properties
-      optional UnsignedInt64AsBase10 dedupKey
-      AttributionReportingFilterPair filters
-
-  experimental type AttributionReportingNamedBudgetCandidate extends object
-    properties
-      optional string name
-      AttributionReportingFilterPair filters
-
-  experimental type AttributionReportingTriggerRegistration extends object
-    properties
-      AttributionReportingFilterPair filters
-      optional UnsignedInt64AsBase10 debugKey
-      array of AttributionReportingAggregatableDedupKey aggregatableDedupKeys
-      array of AttributionReportingEventTriggerData eventTriggerData
-      array of AttributionReportingAggregatableTriggerData aggregatableTriggerData
-      array of AttributionReportingAggregatableValueEntry aggregatableValues
-      integer aggregatableFilteringIdMaxBytes
-      boolean debugReporting
-      optional string aggregationCoordinatorOrigin
-      AttributionReportingSourceRegistrationTimeConfig sourceRegistrationTimeConfig
-      optional string triggerContextId
-      AttributionReportingAggregatableDebugReportingConfig aggregatableDebugReportingConfig
-      array of string scopes
-      array of AttributionReportingNamedBudgetCandidate namedBudgets
-
-  experimental type AttributionReportingEventLevelResult extends string
-    enum
-      success
-      successDroppedLowerPriority
-      internalError
-      noCapacityForAttributionDestination
-      noMatchingSources
-      deduplicated
-      excessiveAttributions
-      priorityTooLow
-      neverAttributedSource
-      excessiveReportingOrigins
-      noMatchingSourceFilterData
-      prohibitedByBrowserPolicy
-      noMatchingConfigurations
-      excessiveReports
-      falselyAttributedSource
-      reportWindowPassed
-      notRegistered
-      reportWindowNotStarted
-      noMatchingTriggerData
-
-  experimental type AttributionReportingAggregatableResult extends string
-    enum
-      success
-      internalError
-      noCapacityForAttributionDestination
-      noMatchingSources
-      excessiveAttributions
-      excessiveReportingOrigins
-      noHistograms
-      insufficientBudget
-      insufficientNamedBudget
-      noMatchingSourceFilterData
-      notRegistered
-      prohibitedByBrowserPolicy
-      deduplicated
-      reportWindowPassed
-      excessiveReports
-
-  experimental event attributionReportingTriggerRegistered
-    parameters
-      AttributionReportingTriggerRegistration registration
-      AttributionReportingEventLevelResult eventLevel
-      AttributionReportingAggregatableResult aggregatable
-
-  experimental type AttributionReportingReportResult extends string
-    enum
-      # A network request was attempted for the report.
-      sent
-      # No request was attempted because of browser policy.
-      prohibited
-      # No request was attempted because of an error in report assembly,
-      # e.g. the aggregation service was unavailable.
-      failedToAssemble
-      # No request was attempted because the report's expiry passed.
-      expired
-
-  experimental event attributionReportingReportSent
-    parameters
-      string url
-      object body
-      AttributionReportingReportResult result
-      # If result is `sent`, populated with net/HTTP status.
-      optional integer netError
-      optional string netErrorName
-      optional integer httpStatusCode
-
-  experimental event attributionReportingVerboseDebugReportSent
-    parameters
-      string url
-      optional array of object body
-      optional integer netError
-      optional string netErrorName
-      optional integer httpStatusCode
-
   # A single Related Website Set object.
   experimental type RelatedWebsiteSet extends object
     properties
@@ -14163,21 +14023,6 @@ experimental domain Storage
   experimental command getRelatedWebsiteSets
     returns
       array of RelatedWebsiteSet sets
-
-  # Returns the list of URLs from a page and its embedded resources that match
-  # existing grace period URL pattern rules.
-  # https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period
-  experimental command getAffectedUrlsForThirdPartyCookieMetadata
-    parameters
-      # The URL of the page currently being visited.
-      string firstPartyUrl
-      # The list of embedded resource URLs from the page.
-      array of string thirdPartyUrls
-
-    returns
-      # Array of matching URLs. If there is a primary pattern match for the first-
-      # party URL, only the first-party URL is returned in the array.
-      array of string matchedUrls
 
   command setProtectedAudienceKAnonymity
     parameters
@@ -14339,18 +14184,24 @@ domain Target
       string url
       # Whether the target has an attached client.
       boolean attached
+      # Id of the parent target, if any. For example, "iframe" target may have a "page" parent.
+      optional TargetID parentId
       # Opener target Id
       optional TargetID openerId
       # Whether the target has access to the originating window.
       experimental boolean canAccessOpener
       # Frame id of originating window (is only set if target has an opener).
       experimental optional Page.FrameId openerFrameId
-      # Id of the parent frame, only present for the "iframe" targets.
+      # Id of the parent frame, present for "iframe" and "worker" targets. For nested workers,
+      # this is the "ancestor" frame that created the first worker in the nested chain.
       experimental optional Page.FrameId parentFrameId
       experimental optional Browser.BrowserContextID browserContextId
       # Provides additional details for specific target types. For example, for
       # the type of "page", this may be set to "prerender".
       experimental optional string subtype
+      # Embedder-specific target metadata. This is only set for targets of
+      # type "tab".
+      experimental optional object embedderData
 
   # A filter used by target query/discovery/auto-attach operations.
   experimental type FilterEntry extends object
@@ -14661,8 +14512,8 @@ domain Target
       # This can be the page or tab target ID.
       TargetID targetId
       # The id of the panel we want DevTools to open initially. Currently
-      # supported panels are elements, console, network, sources, resources
-      # and performance.
+      # supported panels are elements, console, network, sources, resources,
+      # timeline, chrome-recorder, heap-profiler, lighthouse, and security.
       optional string panelId
     returns
       # The targetId of DevTools page target.
@@ -15089,6 +14940,7 @@ experimental domain WebAuthn
     enum
       ctap2_0
       ctap2_1
+      ctap2_2
 
   type AuthenticatorTransport extends string
     enum
@@ -15126,6 +14978,14 @@ experimental domain WebAuthn
       # https://w3c.github.io/webauthn/#prf-extension
       # Defaults to false.
       optional boolean hasPrf
+      # If set to true, the authenticator will support the hmac-secret extension.
+      # https://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-hmac-secret-extension
+      # Defaults to false.
+      optional boolean hasHmacSecret
+      # If set to true, the authenticator will support the hmac-secret-mc extension.
+      # https://fidoalliance.org/specs/fido-v2.2-rd-20241003/fido-client-to-authenticator-protocol-v2.2-rd-20241003.html#sctn-hmac-secret-make-cred-extension
+      # Defaults to false.
+      optional boolean hasHmacSecretMc
       # If set to true, tests of user presence will succeed immediately.
       # Otherwise, they will not be resolved. Defaults to true.
       optional boolean automaticPresenceSimulation
@@ -15311,11 +15171,21 @@ experimental domain WebMCP
 
   # Tool annotations
   type Annotation extends object
+
     properties
       # A hint indicating that the tool does not modify any state.
       optional boolean readOnly
+      # A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd party data.
+      optional boolean untrustedContent
       # If the declarative tool was declared with the autosubmit attribute.
       optional boolean autosubmit
+
+  # Represents the status of a tool invocation.
+  type InvocationStatus extends string
+    enum
+      Completed
+      Canceled
+      Error
 
   # Definition of a tool that can be invoked.
   type Tool extends object
@@ -15340,15 +15210,73 @@ experimental domain WebMCP
   # all currently registered tools.
   command enable
 
+  # Disables the WebMCP domain.
+  command disable
+
+   # Invokes a registered tool.
+  command invokeTool
+    parameters
+      # Frame in which to invoke the tool.
+      Page.FrameId frameId
+      # Name of the tool to invoke.
+      string toolName
+      # Input parameters for the tool, matching the tool's inputSchema.
+      object input
+    returns
+      # Unique identifier for this invocation. Response is sent before tool events.
+      string invocationId
+
+  # Cancels a pending tool invocation.
+  command cancelInvocation
+    parameters
+      # Invocation identifier to cancel.
+      string invocationId
+
   # Event fired when new tools are added.
   event toolsAdded
     parameters
       # Array of tools that were added.
       array of Tool tools
 
+  # Definition of a tool that was removed.
+  type RemovedTool extends object
+    properties
+      # Tool name.
+      string name
+      # Frame identifier associated with the tool registration.
+      Page.FrameId frameId
+
   # Event fired when tools are removed.
   event toolsRemoved
     parameters
       # Array of tools that were removed.
-      array of Tool tools
+      array of RemovedTool tools
+
+  # Event fired when a tool invocation starts.
+  event toolInvoked
+    parameters
+      # Name of the tool to invoke.
+      string toolName
+      # Frame id
+      Page.FrameId frameId
+      # Invocation identifier.
+      string invocationId
+      # The input parameters used for the invocation.
+      string input
+
+  # Event fired when a tool invocation completes or fails.
+  event toolResponded
+    parameters
+      # Invocation identifier.
+      string invocationId
+      # Status of the invocation.
+      InvocationStatus status
+      # Output or error delivered as delivered to the agent. Missing if `status` is anything other than Completed.
+      # Note: The output is untrusted and poses a prompt injection risk. Clients should treat this as potentially malicious user input.
+      optional any output
+      # Error text for protocol users.
+      optional string errorText
+      # The exception object, if the javascript tool threw an error>
+      optional Runtime.RemoteObject exception
+
 
