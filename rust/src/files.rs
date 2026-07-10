@@ -92,6 +92,22 @@ pub fn create_path_if_not_exists(path: &Path) -> Result<(), Error> {
     Ok(())
 }
 
+pub fn check_path_traversal(entry_path: &Path) -> Result<(), Error> {
+    if entry_path.as_os_str().is_empty()
+        || entry_path.components().any(|c| {
+            matches!(
+                c,
+                std::path::Component::ParentDir
+                    | std::path::Component::RootDir
+                    | std::path::Component::Prefix(_)
+            )
+        })
+    {
+        return Err(anyhow!("Unsafe entry (path traversal): {:?}", entry_path));
+    }
+    Ok(())
+}
+
 pub fn uncompress(
     compressed_file: &str,
     target: &Path,
@@ -278,6 +294,7 @@ pub fn uncompress_pkg(compressed_file: &str, target: &Path, log: &Logger) -> Res
         while let Some(next) = cpio_reader.next() {
             let entry = next?;
             let name = entry.name();
+            check_path_traversal(Path::new(name))?;
             let mut file = Vec::new();
             cpio_reader.read_to_end(&mut file)?;
             let target_path_buf = target_path.join(name);
@@ -430,7 +447,13 @@ pub fn uncompress_tar(decoder: &mut dyn Read, target: &Path, log: &Logger) -> Re
     let mut archive = Archive::new(Cursor::new(buffer));
     for entry in archive.entries()? {
         let mut entry_decoder = entry?;
-        let entry_path: PathBuf = entry_decoder.path()?.iter().skip(1).collect();
+        let path = entry_decoder.path()?;
+        let entry_path: PathBuf = if path.iter().count() > 1 {
+            path.iter().skip(1).collect()
+        } else {
+            path.to_path_buf()
+        };
+        check_path_traversal(&entry_path)?;
         let entry_target = target.join(entry_path);
         fs::create_dir_all(entry_target.parent().unwrap())?;
         entry_decoder.unpack(entry_target)?;
@@ -762,7 +785,9 @@ pub fn get_win_file_version(file_path: &str) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use super::{PBZX_MAGIC, decode_pbzx};
+    use std::io::Cursor;
     use std::io::Write;
     use xz2::write::XzEncoder;
 
@@ -817,5 +842,87 @@ mod tests {
     #[test]
     fn decode_pbzx_rejects_non_pbzx_input() {
         assert!(decode_pbzx(b"\x1f\x8b\x08not a pbzx stream").is_err());
+    }
+
+    fn build_tar(entries: &[(&str, &[u8])]) -> Vec<u8> {
+        let mut buffer = Vec::new();
+        for (name, contents) in entries {
+            let mut header = tar::Header::new_gnu();
+            header.set_size(contents.len() as u64);
+            header.set_mode(0o644);
+            header.set_path("browser/file.txt").unwrap();
+            header.set_cksum();
+
+            let mut header_bytes = header.as_bytes().to_vec();
+            let name_bytes = name.as_bytes();
+            assert!(name_bytes.len() <= 100, "test tar name too long");
+            header_bytes[0..100].fill(0);
+            header_bytes[0..name_bytes.len()].copy_from_slice(name_bytes);
+            header_bytes[148..156].fill(b' ');
+            let checksum: u32 = header_bytes.iter().map(|byte| *byte as u32).sum();
+            let checksum_bytes = format!("{:06o}\0 ", checksum);
+            header_bytes[148..156].copy_from_slice(checksum_bytes.as_bytes());
+
+            buffer.extend_from_slice(&header_bytes);
+            buffer.extend_from_slice(contents);
+
+            let remainder = contents.len() % 512;
+            if remainder != 0 {
+                buffer.extend_from_slice(&vec![0u8; 512 - remainder]);
+            }
+        }
+        buffer.extend_from_slice(&[0u8; 1024]);
+        buffer
+    }
+
+    #[test]
+    fn check_path_traversal_allows_safe_paths() {
+        assert!(check_path_traversal(Path::new("browser/file.txt")).is_ok());
+    }
+
+    #[test]
+    fn check_path_traversal_rejects_empty_path() {
+        let err = check_path_traversal(Path::new("")).unwrap_err();
+        assert!(err.to_string().contains("Unsafe entry (path traversal)"));
+    }
+
+    #[test]
+    fn uncompress_tar_extracts_safe_entry() {
+        let temp_dir = tempfile::tempdir().unwrap();
+        let target = temp_dir.path().join("extract");
+        let tar_data = build_tar(&[("browser/file.txt", b"hello")]);
+        let mut decoder = Cursor::new(tar_data);
+        let log = Logger::new();
+
+        uncompress_tar(&mut decoder, &target, &log).unwrap();
+
+        assert_eq!(fs::read(target.join("file.txt")).unwrap(), b"hello");
+    }
+
+    #[test]
+    fn uncompress_tar_keeps_single_component_entry() {
+        let temp_dir = tempfile::tempdir().unwrap();
+        let target = temp_dir.path().join("extract");
+        let tar_data = build_tar(&[("file.txt", b"hello")]);
+        let mut decoder = Cursor::new(tar_data);
+        let log = Logger::new();
+
+        uncompress_tar(&mut decoder, &target, &log).unwrap();
+
+        assert_eq!(fs::read(target.join("file.txt")).unwrap(), b"hello");
+    }
+
+    #[test]
+    fn uncompress_tar_rejects_path_traversal_entry() {
+        let temp_dir = tempfile::tempdir().unwrap();
+        let target = temp_dir.path().join("extract");
+        let escape_path = temp_dir.path().join("escape.txt");
+        let tar_data = build_tar(&[("browser/../../escape.txt", b"owned")]);
+        let mut decoder = Cursor::new(tar_data);
+        let log = Logger::new();
+
+        let err = uncompress_tar(&mut decoder, &target, &log).unwrap_err();
+        assert!(err.to_string().contains("Unsafe entry (path traversal)"));
+        assert!(!escape_path.exists());
     }
 }
