@@ -62,27 +62,27 @@ class RemoteScript implements Script {
   }
 
   @Override
-  public long addConsoleMessageHandler(Consumer<ConsoleLogEntry> consumer) {
+  public String addConsoleMessageHandler(Consumer<ConsoleLogEntry> consumer) {
     return this.logInspector.onConsoleEntry(consumer);
   }
 
   @Override
-  public void removeConsoleMessageHandler(long id) {
+  public void removeConsoleMessageHandler(String id) {
     this.biDi.removeListener(id);
   }
 
   @Override
-  public long addJavaScriptErrorHandler(Consumer<JavascriptLogEntry> consumer) {
+  public String addJavaScriptErrorHandler(Consumer<JavascriptLogEntry> consumer) {
     return this.logInspector.onJavaScriptException(consumer);
   }
 
   @Override
-  public void removeJavaScriptErrorHandler(long id) {
+  public void removeJavaScriptErrorHandler(String id) {
     this.biDi.removeListener(id);
   }
 
   @Override
-  public long addDomMutationHandler(Consumer<DomMutation> consumer) {
+  public String addDomMutationHandler(Consumer<DomMutation> consumer) {
     String scriptValue =
         Read.resourceAsString(getClass(), "/org/openqa/selenium/remote/bidi-mutation-listener.js");
 
@@ -116,7 +116,7 @@ class RemoteScript implements Script {
   }
 
   @Override
-  public void removeDomMutationHandler(long id) {
+  public void removeDomMutationHandler(String id) {
     this.biDi.removeListener(id);
   }
 
