@@ -1,3 +1,10 @@
+## 4.46.0
+
+- Support CDP versions: v148, v149, v150
+- Add binding-neutral BiDi schema with cddl2ts-gated fidelity (#17700)
+- Update cddl to 0.21.0 to fix quoted reserved-word parsing in BiDi codegen (#17752)
+- Add guidance for testing conventions in each language (#16734)
+
 ## 4.45.0
 
 - Support CDP versions: v147, v148, v149
