@@ -144,6 +144,33 @@
 </li>
 
     
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#transport-instance_method" title="#transport (instance method)">#<strong>transport</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute transport.</p></div></span>
+  
+</li>
+
+    
   </ul>
 
 
@@ -380,15 +407,56 @@
       <pre class="lines">
 
 
-24
-25
-26</pre>
+27
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_bidi'>bidi</span>
   <span class='ivar'>@bidi</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id="transport-instance_method">
+  
+    #<strong>transport</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute transport.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+27
+28
+29</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 27</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_transport'>transport</span>
+  <span class='ivar'>@transport</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -417,12 +485,12 @@
       <pre class="lines">
 
 
-56
-57
-58</pre>
+61
+62
+63</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 61</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:close_window</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_handles'>handles</span><span class='op'>|</span> <span class='id identifier rubyid_bidi'>bidi</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span> <span class='kw'>if</span> <span class='id identifier rubyid_handles'>handles</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='rbrace'>}</span>
@@ -447,19 +515,23 @@
       <pre class="lines">
 
 
-26
-27
-28
 29
-30</pre>
+30
+31
+32
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_session'>create_session</span><span class='lparen'>(</span><span class='id identifier rubyid_capabilities'>capabilities</span><span class='rparen'>)</span>
   <span class='kw'>super</span>
   <span class='id identifier rubyid_socket_url'>socket_url</span> <span class='op'>=</span> <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='symbol'>:web_socket_url</span><span class='rbracket'>]</span>
   <span class='ivar'>@bidi</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../BiDi.html" title="Selenium::WebDriver::BiDi (class)">BiDi</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../BiDi.html#initialize-instance_method" title="Selenium::WebDriver::BiDi#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>url:</span> <span class='id identifier rubyid_socket_url'>socket_url</span><span class='rparen'>)</span>
+  <span class='comment'># Share the BiDi object&#39;s socket until the bridge owns the connection directly.
+</span>  <span class='ivar'>@transport</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../BiDi.html" title="Selenium::WebDriver::BiDi (class)">BiDi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../BiDi/Transport.html" title="Selenium::WebDriver::BiDi::Transport (class)">Transport</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../BiDi/Transport.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Transport#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@bidi</span><span class='period'>.</span><span class='id identifier rubyid_ws'>ws</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -481,12 +553,12 @@
       <pre class="lines">
 
 
-32
-33
-34</pre>
+37
+38
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_browsing_context'>browsing_context</span><span class='period'>.</span><span class='id identifier rubyid_navigate'>navigate</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
@@ -511,12 +583,12 @@
       <pre class="lines">
 
 
-36
-37
-38</pre>
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_go_back'>go_back</span>
   <span class='id identifier rubyid_browsing_context'>browsing_context</span><span class='period'>.</span><span class='id identifier rubyid_traverse_history'>traverse_history</span><span class='lparen'>(</span><span class='op'>-</span><span class='int'>1</span><span class='rparen'>)</span>
@@ -541,12 +613,12 @@
       <pre class="lines">
 
 
-40
-41
-42</pre>
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 40</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_go_forward'>go_forward</span>
   <span class='id identifier rubyid_browsing_context'>browsing_context</span><span class='period'>.</span><span class='id identifier rubyid_traverse_history'>traverse_history</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span>
@@ -571,16 +643,16 @@
       <pre class="lines">
 
 
-48
-49
-50
-51
-52
 53
-54</pre>
+54
+55
+56
+57
+58
+59</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='id identifier rubyid_bidi'>bidi</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span>
@@ -609,12 +681,12 @@
       <pre class="lines">
 
 
-44
-45
-46</pre>
+49
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 49</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_refresh'>refresh</span>
   <span class='id identifier rubyid_browsing_context'>browsing_context</span><span class='period'>.</span><span class='id identifier rubyid_reload'>reload</span>
@@ -629,7 +701,7 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Jun 16 14:07:43 2026 by
+  Generated on Sat Jul 11 00:50:22 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.44 (ruby-3.3.11).
 </div>

@@ -97,7 +97,7 @@
   <dl>
     <dt>Defined in:</dt>
     <dd>rb/lib/selenium/webdriver/bidi.rb<span class="defines">,<br>
-  rb/lib/selenium/webdriver/bidi/struct.rb,<br> rb/lib/selenium/webdriver/bidi/browser.rb,<br> rb/lib/selenium/webdriver/bidi/network.rb,<br> rb/lib/selenium/webdriver/bidi/session.rb,<br> rb/lib/selenium/webdriver/bidi/log_handler.rb,<br> rb/lib/selenium/webdriver/bidi/network/cookies.rb,<br> rb/lib/selenium/webdriver/bidi/network/headers.rb,<br> rb/lib/selenium/webdriver/bidi/browsing_context.rb,<br> rb/lib/selenium/webdriver/bidi/network/credentials.rb,<br> rb/lib/selenium/webdriver/bidi/network/url_pattern.rb,<br> rb/lib/selenium/webdriver/bidi/network/intercepted_auth.rb,<br> rb/lib/selenium/webdriver/bidi/network/intercepted_item.rb,<br> rb/lib/selenium/webdriver/bidi/network/intercepted_request.rb,<br> rb/lib/selenium/webdriver/bidi/network/intercepted_response.rb</span>
+  rb/lib/selenium/webdriver/bidi/struct.rb,<br> rb/lib/selenium/webdriver/bidi/browser.rb,<br> rb/lib/selenium/webdriver/bidi/network.rb,<br> rb/lib/selenium/webdriver/bidi/session.rb,<br> rb/lib/selenium/webdriver/bidi/transport.rb,<br> rb/lib/selenium/webdriver/bidi/log_handler.rb,<br> rb/lib/selenium/webdriver/bidi/protocol/log.rb,<br> rb/lib/selenium/webdriver/bidi/serialization.rb,<br> rb/lib/selenium/webdriver/bidi/protocol/input.rb,<br> rb/lib/selenium/webdriver/bidi/network/cookies.rb,<br> rb/lib/selenium/webdriver/bidi/network/headers.rb,<br> rb/lib/selenium/webdriver/bidi/protocol/domain.rb,<br> rb/lib/selenium/webdriver/bidi/protocol/script.rb,<br> rb/lib/selenium/webdriver/bidi/browsing_context.rb,<br> rb/lib/selenium/webdriver/bidi/protocol/browser.rb,<br> rb/lib/selenium/webdriver/bidi/protocol/network.rb,<br> rb/lib/selenium/webdriver/bidi/protocol/session.rb,<br> rb/lib/selenium/webdriver/bidi/protocol/storage.rb,<br> rb/lib/selenium/webdriver/bidi/protocol/bluetooth.rb,<br> rb/lib/selenium/webdriver/bidi/protocol/emulation.rb,<br> rb/lib/selenium/webdriver/bidi/network/credentials.rb,<br> rb/lib/selenium/webdriver/bidi/network/url_pattern.rb,<br> rb/lib/selenium/webdriver/bidi/serialization/union.rb,<br> rb/lib/selenium/webdriver/bidi/protocol/permissions.rb,<br> rb/lib/selenium/webdriver/bidi/protocol/speculation.rb,<br> rb/lib/selenium/webdriver/bidi/serialization/record.rb,<br> rb/lib/selenium/webdriver/bidi/protocol/web_extension.rb,<br> rb/lib/selenium/webdriver/bidi/network/intercepted_auth.rb,<br> rb/lib/selenium/webdriver/bidi/network/intercepted_item.rb,<br> rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb,<br> rb/lib/selenium/webdriver/bidi/network/intercepted_request.rb,<br> rb/lib/selenium/webdriver/bidi/network/intercepted_response.rb,<br> rb/lib/selenium/webdriver/bidi/protocol/user_agent_client_hints.rb</span>
 
 </dd>
   </dl>
@@ -108,17 +108,49 @@
 <p class="children">
   
     
-      <strong class="modules">Modules:</strong> <span class='object_link'><a href="BiDi/UrlPattern.html" title="Selenium::WebDriver::BiDi::UrlPattern (module)">UrlPattern</a></span>
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="BiDi/Protocol.html" title="Selenium::WebDriver::BiDi::Protocol (module)">Protocol</a></span>, <span class='object_link'><a href="BiDi/Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span>, <span class='object_link'><a href="BiDi/UrlPattern.html" title="Selenium::WebDriver::BiDi::UrlPattern (module)">UrlPattern</a></span>
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="BiDi/Browser.html" title="Selenium::WebDriver::BiDi::Browser (class)">Browser</a></span>, <span class='object_link'><a href="BiDi/BrowsingContext.html" title="Selenium::WebDriver::BiDi::BrowsingContext (class)">BrowsingContext</a></span>, <span class='object_link'><a href="BiDi/Cookies.html" title="Selenium::WebDriver::BiDi::Cookies (class)">Cookies</a></span>, <span class='object_link'><a href="BiDi/Credentials.html" title="Selenium::WebDriver::BiDi::Credentials (class)">Credentials</a></span>, <span class='object_link'><a href="BiDi/Headers.html" title="Selenium::WebDriver::BiDi::Headers (class)">Headers</a></span>, <span class='object_link'><a href="BiDi/InterceptedAuth.html" title="Selenium::WebDriver::BiDi::InterceptedAuth (class)">InterceptedAuth</a></span>, <span class='object_link'><a href="BiDi/InterceptedItem.html" title="Selenium::WebDriver::BiDi::InterceptedItem (class)">InterceptedItem</a></span>, <span class='object_link'><a href="BiDi/InterceptedRequest.html" title="Selenium::WebDriver::BiDi::InterceptedRequest (class)">InterceptedRequest</a></span>, <span class='object_link'><a href="BiDi/InterceptedResponse.html" title="Selenium::WebDriver::BiDi::InterceptedResponse (class)">InterceptedResponse</a></span>, <span class='object_link'><a href="BiDi/LogHandler.html" title="Selenium::WebDriver::BiDi::LogHandler (class)">LogHandler</a></span>, <span class='object_link'><a href="BiDi/Network.html" title="Selenium::WebDriver::BiDi::Network (class)">Network</a></span>, <span class='object_link'><a href="BiDi/Session.html" title="Selenium::WebDriver::BiDi::Session (class)">Session</a></span>, <span class='object_link'><a href="BiDi/Struct.html" title="Selenium::WebDriver::BiDi::Struct (class)">Struct</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="BiDi/Browser.html" title="Selenium::WebDriver::BiDi::Browser (class)">Browser</a></span>, <span class='object_link'><a href="BiDi/BrowsingContext.html" title="Selenium::WebDriver::BiDi::BrowsingContext (class)">BrowsingContext</a></span>, <span class='object_link'><a href="BiDi/Cookies.html" title="Selenium::WebDriver::BiDi::Cookies (class)">Cookies</a></span>, <span class='object_link'><a href="BiDi/Credentials.html" title="Selenium::WebDriver::BiDi::Credentials (class)">Credentials</a></span>, <span class='object_link'><a href="BiDi/Headers.html" title="Selenium::WebDriver::BiDi::Headers (class)">Headers</a></span>, <span class='object_link'><a href="BiDi/InterceptedAuth.html" title="Selenium::WebDriver::BiDi::InterceptedAuth (class)">InterceptedAuth</a></span>, <span class='object_link'><a href="BiDi/InterceptedItem.html" title="Selenium::WebDriver::BiDi::InterceptedItem (class)">InterceptedItem</a></span>, <span class='object_link'><a href="BiDi/InterceptedRequest.html" title="Selenium::WebDriver::BiDi::InterceptedRequest (class)">InterceptedRequest</a></span>, <span class='object_link'><a href="BiDi/InterceptedResponse.html" title="Selenium::WebDriver::BiDi::InterceptedResponse (class)">InterceptedResponse</a></span>, <span class='object_link'><a href="BiDi/LogHandler.html" title="Selenium::WebDriver::BiDi::LogHandler (class)">LogHandler</a></span>, <span class='object_link'><a href="BiDi/Network.html" title="Selenium::WebDriver::BiDi::Network (class)">Network</a></span>, <span class='object_link'><a href="BiDi/Session.html" title="Selenium::WebDriver::BiDi::Session (class)">Session</a></span>, <span class='object_link'><a href="BiDi/Struct.html" title="Selenium::WebDriver::BiDi::Struct (class)">Struct</a></span>, <span class='object_link'><a href="BiDi/Transport.html" title="Selenium::WebDriver::BiDi::Transport (class)">Transport</a></span>
     
   
 </p>
 
 
 
+
+  <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#ws-instance_method" title="#ws (instance method)">#<strong>ws</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+    
+  </ul>
 
 
 
@@ -357,6 +389,56 @@
   
 </div>
 
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id=""></span>
+      <div class="method_details first">
+  <h3 class="signature first" id="ws-instance_method">
+  
+    #<strong>ws</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+39
+40
+41</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 39</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_ws'>ws</span>
+  <span class='ivar'>@ws</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
@@ -377,12 +459,12 @@
       <pre class="lines">
 
 
-46
-47
-48</pre>
+49
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 49</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_callback'>add_callback</span><span class='lparen'>(</span><span class='id identifier rubyid_event'>event</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='ivar'>@ws</span><span class='period'>.</span><span class='id identifier rubyid_add_callback'>add_callback</span><span class='lparen'>(</span><span class='id identifier rubyid_event'>event</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
@@ -407,12 +489,12 @@
       <pre class="lines">
 
 
-42
-43
-44</pre>
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_callbacks'>callbacks</span>
   <span class='ivar'>@ws</span><span class='period'>.</span><span class='id identifier rubyid_callbacks'>callbacks</span>
@@ -437,12 +519,12 @@
       <pre class="lines">
 
 
-38
-39
-40</pre>
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span>
   <span class='ivar'>@ws</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span>
@@ -467,12 +549,12 @@
       <pre class="lines">
 
 
-66
-67
-68</pre>
+69
+70
+71</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 69</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_error_message'>error_message</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_message'>message</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>error</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_message'>message</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>message</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_content'>\n</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_message'>message</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>stacktrace</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -497,12 +579,12 @@
       <pre class="lines">
 
 
-50
-51
-52</pre>
+53
+54
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_callback'>remove_callback</span><span class='lparen'>(</span><span class='id identifier rubyid_event'>event</span><span class='comma'>,</span> <span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='ivar'>@ws</span><span class='period'>.</span><span class='id identifier rubyid_remove_callback'>remove_callback</span><span class='lparen'>(</span><span class='id identifier rubyid_event'>event</span><span class='comma'>,</span> <span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
@@ -549,16 +631,16 @@
       <pre class="lines">
 
 
-58
-59
-60
 61
 62
 63
-64</pre>
+64
+65
+66
+67</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 61</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='id identifier rubyid_method'>method</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>method:</span> <span class='id identifier rubyid_method'>method</span><span class='comma'>,</span> <span class='label'>params:</span> <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='rbrace'>}</span>
@@ -587,12 +669,12 @@
       <pre class="lines">
 
 
-54
-55
-56</pre>
+57
+58
+59</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 57</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_session'>session</span>
   <span class='ivar'>@session</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="BiDi/Session.html" title="Selenium::WebDriver::BiDi::Session (class)">Session</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="BiDi/Session.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Session#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
@@ -607,7 +689,7 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Jun 16 14:07:41 2026 by
+  Generated on Sat Jul 11 00:50:20 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.44 (ruby-3.3.11).
 </div>
