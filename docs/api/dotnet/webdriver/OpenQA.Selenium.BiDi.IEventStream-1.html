@@ -101,7 +101,7 @@ Interface IEventStream&lt;TEventArgs&gt;  <a class="header-action link-secondary
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public interface IEventStream&lt;out TEventArgs&gt; : IAsyncEnumerable&lt;TEventArgs&gt;, IAsyncDisposable where TEventArgs : EventArgs</code></pre>
+    <pre><code class="lang-csharp hljs">public interface IEventStream&lt;out TEventArgs&gt; : IAsyncDisposable where TEventArgs : EventArgs</code></pre>
   </div>
 
 
@@ -119,12 +119,49 @@ Interface IEventStream&lt;TEventArgs&gt;  <a class="header-action link-secondary
     <dt>Inherited Members</dt>
     <dd>
     <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1.getasyncenumerator">IAsyncEnumerable&lt;TEventArgs&gt;.GetAsyncEnumerator(CancellationToken)</a>
-    </div>
-    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iasyncdisposable.disposeasync">IAsyncDisposable.DisposeAsync()</a>
     </div>
   </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="OpenQA_Selenium_BiDi_IEventStream_1_ReadAllAsync_" data-uid="OpenQA.Selenium.BiDi.IEventStream`1.ReadAllAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_IEventStream_1_ReadAllAsync_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.IEventStream`1.ReadAllAsync(System.Threading.CancellationToken)">
+  ReadAllAsync(CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/IEventStream.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IAsyncEnumerable&lt;out TEventArgs&gt; ReadAllAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;TEventArgs&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
 
 
 
