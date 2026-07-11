@@ -145,6 +145,45 @@ task :grid do |_task, arguments|
   Bazel.execute('build', arguments.to_a, '//java/src/org/openqa/selenium/grid:executable-grid')
 end
 
+# Exclude JUnit runtime jars because IDEs bundle their own; keep librunfiles.jar for the Runfiles API.
+JAVA_LIBS_STARLARK = <<~STARLARK.gsub(/\s+/, ' ').strip
+  "\\n".join([
+    f.path
+    for f in target.files.to_list()
+    if f.path.endswith(".jar")
+       and (f.path.startswith("external/") or "/genfiles/" in f.path or f.path.endswith("librunfiles.jar") or ("/devtools/v" in f.path and f.path.endswith("-project.jar")))
+       and (not "junit-jupiter-engine" in f.path)
+       and (not "junit-platform-engine" in f.path)
+       and (not "junit-platform-launcher" in f.path)
+       and (not "junit-platform-reporting" in f.path)
+  ])
+STARLARK
+
+desc 'Copy Bazel-built dependency jars to ./java-libs for local development'
+task :local_dev do
+  Bazel.execute('build', [], '//java/test/...')
+
+  execroot = nil
+  Bazel.execute('info', [], 'execution_root') { |out| execroot = out.strip }
+
+  jars = []
+  Bazel.execute('cquery', ['--output=starlark', "--starlark:expr=#{JAVA_LIBS_STARLARK}"],
+                'deps(kind("java_test", //java/test/...))') do |out|
+    jars = out.lines.map(&:strip).reject(&:empty?).uniq
+  end
+
+  lib = File.join(Dir.pwd, 'java-libs')
+  sources = File.join(lib, 'sources')
+  FileUtils.rm_rf(lib)
+  FileUtils.mkdir_p(sources)
+
+  jars.each do |rel|
+    base = File.basename(rel)
+    dir = base.end_with?('-sources.jar', '-src.jar') ? sources : lib
+    FileUtils.cp(File.join(execroot, rel), File.join(dir, base))
+  end
+end
+
 desc 'Package Java bindings and grid into releasable packages and stage for release'
 task :package do |_task, arguments|
   args = arguments.to_a.empty? ? ['--config=release'] : arguments.to_a
