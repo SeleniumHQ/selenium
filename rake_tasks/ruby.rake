@@ -189,6 +189,8 @@ end
 
 desc 'Sync gem checksums from Gemfile.lock to MODULE.bazel (use force to re-download all)'
 task :pin, [:force] do |_task, arguments|
+  Bazel.execute('run', [], '//rb:bundle-update')
+
   gemfile_lock = 'rb/Gemfile.lock'
   module_bazel = 'MODULE.bazel'
   force = arguments[:force] == 'force'
