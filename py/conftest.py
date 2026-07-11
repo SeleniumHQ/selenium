@@ -25,6 +25,7 @@ import threading
 import time
 import types
 from dataclasses import dataclass
+from importlib.metadata import version
 from pathlib import Path
 
 import pytest
@@ -173,6 +174,12 @@ def pytest_addoption(parser):
         action="store_true",
         dest="remote",
         help="Run tests against a remote Grid server",
+    )
+    parser.addoption(
+        "--version",
+        action="version",
+        version=f"selenium {version("selenium")}",
+        help="Displays the version of selenium installed"
     )
 
 
