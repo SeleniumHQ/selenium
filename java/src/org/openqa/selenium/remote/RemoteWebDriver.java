@@ -1316,17 +1316,11 @@ public class RemoteWebDriver
 
     @Override
     public WebDriver newWindow(WindowType typeHint) {
-      String original = getWindowHandle();
-      try {
-        Response response = execute(DriverCommand.SWITCH_TO_NEW_WINDOW(typeHint));
-        String newWindowHandle =
-            ((Map<String, Object>) response.getValue()).get("handle").toString();
-        switchTo().window(newWindowHandle);
-        return RemoteWebDriver.this;
-      } catch (WebDriverException ex) {
-        switchTo().window(original);
-        throw ex;
-      }
+      Response response = execute(DriverCommand.SWITCH_TO_NEW_WINDOW(typeHint));
+      String newWindowHandle =
+          ((Map<String, Object>) response.getValue()).get("handle").toString();
+      switchTo().window(newWindowHandle);
+      return RemoteWebDriver.this;
     }
 
     @Override

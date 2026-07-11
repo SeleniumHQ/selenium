@@ -338,11 +338,21 @@ class WindowSwitchingTest extends JupiterTestBase {
 
   @NoDriverAfterTest(failedOnly = true)
   @Test
+  public void canOpenANewTab() {
+    assertCanOpenANewWindow(WindowType.TAB);
+  }
+
+  @NoDriverAfterTest(failedOnly = true)
+  @Test
   public void canOpenANewWindow() {
+    assertCanOpenANewWindow(WindowType.WINDOW);
+  }
+
+  private void assertCanOpenANewWindow(WindowType windowType) {
     driver.get(pages.xhtmlTestPage);
 
     String mainWindow = driver.getWindowHandle();
-    driver.switchTo().newWindow(WindowType.TAB);
+    driver.switchTo().newWindow(windowType);
 
     assertThat(driver.getWindowHandles()).hasSize(2);
 
@@ -352,5 +362,28 @@ class WindowSwitchingTest extends JupiterTestBase {
 
     driver.close();
     driver.switchTo().window(mainWindow);
+  }
+
+  @NoDriverAfterTest(failedOnly = true)
+  @Test
+  void canOpenANewWindowAfterClosingCurrentWindow() {
+    driver.get(pages.xhtmlTestPage);
+
+    String mainWindow = driver.getWindowHandle();
+    driver.switchTo().newWindow(WindowType.WINDOW);
+    String closedWindow = driver.getWindowHandle();
+    driver.close();
+
+    driver.switchTo().newWindow(WindowType.WINDOW);
+
+    String newWindow = driver.getWindowHandle();
+    assertThat(newWindow).isNotEqualTo(mainWindow).isNotEqualTo(closedWindow);
+    assertThat(driver.getWindowHandles()).containsExactlyInAnyOrder(mainWindow, newWindow);
+
+    driver.get(pages.xhtmlTestPage);
+    assertThat(driver.getTitle()).isEqualTo("XHTML Test Page");
+
+    driver.switchTo().window(mainWindow);
+    assertThat(driver.getWindowHandle()).isEqualTo(mainWindow);
   }
 }
