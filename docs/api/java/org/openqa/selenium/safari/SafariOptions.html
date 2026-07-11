@@ -67,6 +67,7 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list">
 <li><a href="#fromCapabilities(org.openqa.selenium.Capabilities)" tabindex="0">fromCapabilities(Capabilities)</a></li>
 <li><a href="#merge(org.openqa.selenium.Capabilities)" tabindex="0">merge(Capabilities)</a></li>
+<li><a href="#enableBiDi()" tabindex="0">enableBiDi()</a></li>
 <li><a href="#getAutomaticInspection()" tabindex="0">getAutomaticInspection()</a></li>
 <li><a href="#setAutomaticInspection(boolean)" tabindex="0">setAutomaticInspection(boolean)</a></li>
 <li><a href="#getAutomaticProfiling()" tabindex="0">getAutomaticProfiling()</a></li>
@@ -153,46 +154,51 @@ RemoteWebDriver driver = new RemoteWebDriver(
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#fromCapabilities(org.openqa.selenium.Capabilities)" class="member-name-link">fromCapabilities</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#enableBiDi()" class="member-name-link">enableBiDi</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Enables the WebDriver BiDi protocol.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#fromCapabilities(org.openqa.selenium.Capabilities)" class="member-name-link">fromCapabilities</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Construct a <a href="SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a> instance from given capabilities.</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAutomaticInspection()" class="member-name-link">getAutomaticInspection</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAutomaticInspection()" class="member-name-link">getAutomaticInspection</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAutomaticProfiling()" class="member-name-link">getAutomaticProfiling</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getExtraCapability(java.lang.String)" class="member-name-link">getExtraCapability</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;capabilityName)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getExtraCapabilityNames()" class="member-name-link">getExtraCapabilityNames</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAutomaticProfiling()" class="member-name-link">getAutomaticProfiling</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUseTechnologyPreview()" class="member-name-link">getUseTechnologyPreview</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getExtraCapability(java.lang.String)" class="member-name-link">getExtraCapability</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;capabilityName)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getExtraCapabilityNames()" class="member-name-link">getExtraCapabilityNames</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUseTechnologyPreview()" class="member-name-link">getUseTechnologyPreview</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#merge(org.openqa.selenium.Capabilities)" class="member-name-link">merge</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#merge(org.openqa.selenium.Capabilities)" class="member-name-link">merge</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAutomaticInspection(boolean)" class="member-name-link">setAutomaticInspection</a><wbr>(boolean&nbsp;automaticInspection)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAutomaticInspection(boolean)" class="member-name-link">setAutomaticInspection</a><wbr>(boolean&nbsp;automaticInspection)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Instruct the SafariDriver to enable the Automatic Inspection if true, otherwise disable the
 automatic inspection.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAutomaticProfiling(boolean)" class="member-name-link">setAutomaticProfiling</a><wbr>(boolean&nbsp;automaticProfiling)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAutomaticProfiling(boolean)" class="member-name-link">setAutomaticProfiling</a><wbr>(boolean&nbsp;automaticProfiling)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Instruct the SafariDriver to enable the Automatic profiling if true, otherwise disable the
 automatic profiling.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setUseTechnologyPreview(boolean)" class="member-name-link">setUseTechnologyPreview</a><wbr>(boolean&nbsp;useTechnologyPreview)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setUseTechnologyPreview(boolean)" class="member-name-link">setUseTechnologyPreview</a><wbr>(boolean&nbsp;useTechnologyPreview)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Instruct the SafariDriver to use the Safari Technology Preview if true, otherwise use the
 release version of Safari.</div>
 </div>
@@ -276,6 +282,20 @@ release version of Safari.</div>
 <dd><code><a href="../Capabilities.html#merge(org.openqa.selenium.Capabilities)">merge</a></code>&nbsp;in interface&nbsp;<code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
 <dt>Overrides:</dt>
 <dd><code><a href="../MutableCapabilities.html#merge(org.openqa.selenium.Capabilities)">merge</a></code>&nbsp;in class&nbsp;<code><a href="../MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="enableBiDi()">
+<h3>enableBiDi</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></span>&nbsp;<span class="element-name">enableBiDi</span>()</div>
+<div class="block">Enables the WebDriver BiDi protocol. BiDi support in Safari is experimental and requires Safari
+Technology Preview; see <a href="#setUseTechnologyPreview(boolean)"><code>setUseTechnologyPreview(boolean)</code></a>.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>this <a href="SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a> instance for chaining</dd>
 </dl>
 </div>
 </section>

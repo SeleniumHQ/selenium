@@ -66,9 +66,10 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list">
 <li><a href="#send(org.openqa.selenium.bidi.Command)" tabindex="0">send(Command)</a></li>
 <li><a href="#sendAndWait(org.openqa.selenium.bidi.Command,java.time.Duration)" tabindex="0">sendAndWait(Command, Duration)</a></li>
-<li><a href="#addListener(org.openqa.selenium.bidi.Event,java.util.function.Consumer)" tabindex="0">addListener(Event, Consumer)</a></li>
+<li><a href="#addListener(java.lang.String,org.openqa.selenium.bidi.Event,java.util.function.Consumer)" tabindex="0">addListener(String, Event, Consumer)</a></li>
 <li><a href="#clearListener(org.openqa.selenium.bidi.Event)" tabindex="0">clearListener(Event)</a></li>
-<li><a href="#removeListener(long)" tabindex="0">removeListener(long)</a></li>
+<li><a href="#removeListener(java.lang.String)" tabindex="0">removeListener(String)</a></li>
+<li><a href="#isSubscribed(java.lang.String)" tabindex="0">isSubscribed(String)</a></li>
 <li><a href="#isEventSubscribed(org.openqa.selenium.bidi.Event)" tabindex="0">isEventSubscribed(Event)</a></li>
 <li><a href="#clearListeners()" tabindex="0">clearListeners()</a></li>
 <li><a href="#close()" tabindex="0">close()</a></li>
@@ -91,7 +92,8 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <div class="horizontal-scroll">
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">Connection</span>
+<div class="type-signature"><span class="annotations"><a href="../Beta.html" title="annotation interface in org.openqa.selenium">@Beta</a>
+</span><span class="modifiers">public class </span><span class="element-name type-name-label">Connection</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Closeable.html" title="class or interface in java.io" class="external-link">Closeable</a></span></div>
 </div>
@@ -123,8 +125,9 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;long</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addListener(org.openqa.selenium.bidi.Event,java.util.function.Consumer)" class="member-name-link">addListener</a><wbr>(<a href="Event.html" title="class in org.openqa.selenium.bidi">Event</a>&lt;X&gt;&nbsp;event,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addListener(java.lang.String,org.openqa.selenium.bidi.Event,java.util.function.Consumer)" class="member-name-link">addListener</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;subscriptionId,
+ <a href="Event.html" title="class in org.openqa.selenium.bidi">Event</a>&lt;X&gt;&nbsp;event,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;X&gt;&nbsp;handler)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;void</code></div>
@@ -139,16 +142,19 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;boolean</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isEventSubscribed(org.openqa.selenium.bidi.Event)" class="member-name-link">isEventSubscribed</a><wbr>(<a href="Event.html" title="class in org.openqa.selenium.bidi">Event</a>&lt;X&gt;&nbsp;event)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeListener(long)" class="member-name-link">removeListener</a><wbr>(long&nbsp;id)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isSubscribed(java.lang.String)" class="member-name-link">isSubscribed</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/CompletableFuture.html" title="class or interface in java.util.concurrent" class="external-link">CompletableFuture</a><wbr>&lt;@Nullable X&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#send(org.openqa.selenium.bidi.Command)" class="member-name-link">send</a><wbr>(<a href="Command.html" title="class in org.openqa.selenium.bidi">Command</a>&lt;X&gt;&nbsp;command)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeListener(java.lang.String)" class="member-name-link">removeListener</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;X</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendAndWait(org.openqa.selenium.bidi.Command,java.time.Duration)" class="member-name-link">sendAndWait</a><wbr>(<a href="Command.html" title="class in org.openqa.selenium.bidi">Command</a>&lt;X&gt;&nbsp;command,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/CompletableFuture.html" title="class or interface in java.util.concurrent" class="external-link">CompletableFuture</a><wbr>&lt;@Nullable X&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#send(org.openqa.selenium.bidi.Command)" class="member-name-link">send</a><wbr>(<a href="Command.html" title="class in org.openqa.selenium.bidi">Command</a>&lt;X&gt;&nbsp;command)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;X</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendAndWait(org.openqa.selenium.bidi.Command,java.time.Duration)" class="member-name-link">sendAndWait</a><wbr>(<a href="Command.html" title="class in org.openqa.selenium.bidi">Command</a>&lt;X&gt;&nbsp;command,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -201,10 +207,11 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 </section>
 </li>
 <li>
-<section class="detail" id="addListener(org.openqa.selenium.bidi.Event,java.util.function.Consumer)">
+<section class="detail" id="addListener(java.lang.String,org.openqa.selenium.bidi.Event,java.util.function.Consumer)">
 <h3>addListener</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;X&gt;</span>&nbsp;<span class="return-type">long</span>&nbsp;<span class="element-name">addListener</span><wbr><span class="parameters">(<a href="Event.html" title="class in org.openqa.selenium.bidi">Event</a>&lt;X&gt;&nbsp;event,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;X&gt;</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addListener</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;subscriptionId,
+ <a href="Event.html" title="class in org.openqa.selenium.bidi">Event</a>&lt;X&gt;&nbsp;event,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;X&gt;&nbsp;handler)</span></div>
 </div>
 </section>
@@ -218,10 +225,18 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 </section>
 </li>
 <li>
-<section class="detail" id="removeListener(long)">
+<section class="detail" id="removeListener(java.lang.String)">
 <h3>removeListener</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">removeListener</span><wbr><span class="parameters">(long&nbsp;id)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">removeListener</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="isSubscribed(java.lang.String)">
+<h3>isSubscribed</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isSubscribed</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</span></div>
 </div>
 </section>
 </li>

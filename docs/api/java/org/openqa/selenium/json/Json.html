@@ -111,6 +111,12 @@ These features include:
         <li>Classes that declare a <code>fromJson(JsonInput)</code> static method.<br>
             <b>NOTE</b>: Objects deserialized via a <code>fromJson</code> static method can be
             immutable.
+        <li>Classes that declare a constructor whose parameter names are available at runtime.
+            <br>
+            <b>NOTE</b>: Constructor parameter names are only available if they are present in
+            the class file, such as when the class is compiled with <code>javac -parameters</code>.
+            Constructor parameter names must match the corresponding JSON field names. Parameters
+            of type <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link"><code>Optional</code></a> are not required.
         <li>Classes that declare setter methods adhering to the <a href="https://docs.oracle.com/javase/tutorial/javabeans/writing/index.html">JavaBean</a>
             specification.<br>
             <b>NOTE</b>: Deserialized <code>JavaBean</code> objects are mutable, which may be
@@ -132,10 +138,10 @@ The standard types supported by built-in processing:
   <li><b>Numeric Types</b>:<br>
       <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Byte.html" title="class or interface in java.lang" class="external-link"><code>Byte</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link"><code>Double</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Float.html" title="class or interface in java.lang" class="external-link"><code>Float</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link"><code>Integer</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link"><code>Long</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Short.html" title="class or interface in java.lang" class="external-link"><code>Short</code></a>
   <li><b>Collection Types</b>:<br>
-      <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link"><code>List</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link"><code>Set</code></a>
+      <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link"><code>Collection</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link"><code>List</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link"><code>Set</code></a>
   <li><b>Standard Java Types</b>:<br>
       <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link"><code>Map</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link"><code>Boolean</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link"><code>String</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Enum.html" title="class or interface in java.lang" class="external-link"><code>Enum</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link"><code>URI</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URL.html" title="class or interface in java.net" class="external-link"><code>URL</code></a>,
-      <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link"><code>UUID</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link"><code>Instant</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link"><code>Object</code></a>
+      <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link"><code>UUID</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link"><code>Instant</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link"><code>Optional</code></a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link"><code>Object</code></a>
 </ul>
 
 You can serialize objects for which no explicit coercer has been specified, and the <b>Json</b>
@@ -147,8 +153,8 @@ that should be omitted from the JSON output.
 <p>You can deserialize objects for which no explicit handling has been defined. Note that the
 data type of the result will be <code>Map&lt;String,?&gt;</code>, which means that you'll need to perform
 type checking and casting every time you extract an entry value from the result. For this reason,
-it's best to declare a type-specific <code>fromJson()</code> method in every type you need to
-deserialize.</div>
+it's best to declare either a type-specific <code>fromJson()</code> method or a constructor with
+runtime-visible parameter names in every type you need to deserialize.</div>
 <dl class="notes">
 <dt>See Also:</dt>
 <dd>

@@ -59,11 +59,11 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#addConsoleMessageHandler(java.util.function.Consumer)" tabindex="0">addConsoleMessageHandler(Consumer)</a></li>
-<li><a href="#removeConsoleMessageHandler(long)" tabindex="0">removeConsoleMessageHandler(long)</a></li>
+<li><a href="#removeConsoleMessageHandler(java.lang.String)" tabindex="0">removeConsoleMessageHandler(String)</a></li>
 <li><a href="#addJavaScriptErrorHandler(java.util.function.Consumer)" tabindex="0">addJavaScriptErrorHandler(Consumer)</a></li>
-<li><a href="#removeJavaScriptErrorHandler(long)" tabindex="0">removeJavaScriptErrorHandler(long)</a></li>
+<li><a href="#removeJavaScriptErrorHandler(java.lang.String)" tabindex="0">removeJavaScriptErrorHandler(String)</a></li>
 <li><a href="#addDomMutationHandler(java.util.function.Consumer)" tabindex="0">addDomMutationHandler(Consumer)</a></li>
-<li><a href="#removeDomMutationHandler(long)" tabindex="0">removeDomMutationHandler(long)</a></li>
+<li><a href="#removeDomMutationHandler(java.lang.String)" tabindex="0">removeDomMutationHandler(String)</a></li>
 <li><a href="#pin(java.lang.String)" tabindex="0">pin(String)</a></li>
 <li><a href="#unpin(java.lang.String)" tabindex="0">unpin(String)</a></li>
 <li><a href="#execute(java.lang.String,java.lang.Object...)" tabindex="0">execute(String, Object...)</a></li>
@@ -96,13 +96,13 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>long</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#addConsoleMessageHandler(java.util.function.Consumer)" class="member-name-link">addConsoleMessageHandler</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../bidi/log/ConsoleLogEntry.html" title="class in org.openqa.selenium.bidi.log">ConsoleLogEntry</a>&gt;&nbsp;consumer)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>long</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#addDomMutationHandler(java.util.function.Consumer)" class="member-name-link">addDomMutationHandler</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="DomMutation.html" title="class in org.openqa.selenium.remote">DomMutation</a>&gt;&nbsp;event)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>long</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#addJavaScriptErrorHandler(java.util.function.Consumer)" class="member-name-link">addJavaScriptErrorHandler</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../bidi/log/JavascriptLogEntry.html" title="class in org.openqa.selenium.bidi.log">JavascriptLogEntry</a>&gt;&nbsp;consumer)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="../bidi/script/RemoteValue.html" title="class in org.openqa.selenium.bidi.script">RemoteValue</a></code></div>
@@ -113,13 +113,13 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#pin(java.lang.String)" class="member-name-link">pin</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#removeConsoleMessageHandler(long)" class="member-name-link">removeConsoleMessageHandler</a><wbr>(long&nbsp;id)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#removeConsoleMessageHandler(java.lang.String)" class="member-name-link">removeConsoleMessageHandler</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#removeDomMutationHandler(long)" class="member-name-link">removeDomMutationHandler</a><wbr>(long&nbsp;id)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#removeDomMutationHandler(java.lang.String)" class="member-name-link">removeDomMutationHandler</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#removeJavaScriptErrorHandler(long)" class="member-name-link">removeJavaScriptErrorHandler</a><wbr>(long&nbsp;id)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#removeJavaScriptErrorHandler(java.lang.String)" class="member-name-link">removeJavaScriptErrorHandler</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#unpin(java.lang.String)" class="member-name-link">unpin</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</code></div>
@@ -142,15 +142,15 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="addConsoleMessageHandler(java.util.function.Consumer)">
 <h3>addConsoleMessageHandler</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="return-type">long</span>&nbsp;<span class="element-name">addConsoleMessageHandler</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../bidi/log/ConsoleLogEntry.html" title="class in org.openqa.selenium.bidi.log">ConsoleLogEntry</a>&gt;&nbsp;consumer)</span></div>
+<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">addConsoleMessageHandler</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../bidi/log/ConsoleLogEntry.html" title="class in org.openqa.selenium.bidi.log">ConsoleLogEntry</a>&gt;&nbsp;consumer)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="removeConsoleMessageHandler(long)">
+<section class="detail" id="removeConsoleMessageHandler(java.lang.String)">
 <h3>removeConsoleMessageHandler</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">removeConsoleMessageHandler</span><wbr><span class="parameters">(long&nbsp;id)</span></div>
+<div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">removeConsoleMessageHandler</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</span></div>
 </div>
 </section>
 </li>
@@ -158,15 +158,15 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="addJavaScriptErrorHandler(java.util.function.Consumer)">
 <h3>addJavaScriptErrorHandler</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="return-type">long</span>&nbsp;<span class="element-name">addJavaScriptErrorHandler</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../bidi/log/JavascriptLogEntry.html" title="class in org.openqa.selenium.bidi.log">JavascriptLogEntry</a>&gt;&nbsp;consumer)</span></div>
+<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">addJavaScriptErrorHandler</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../bidi/log/JavascriptLogEntry.html" title="class in org.openqa.selenium.bidi.log">JavascriptLogEntry</a>&gt;&nbsp;consumer)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="removeJavaScriptErrorHandler(long)">
+<section class="detail" id="removeJavaScriptErrorHandler(java.lang.String)">
 <h3>removeJavaScriptErrorHandler</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">removeJavaScriptErrorHandler</span><wbr><span class="parameters">(long&nbsp;id)</span></div>
+<div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">removeJavaScriptErrorHandler</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</span></div>
 </div>
 </section>
 </li>
@@ -174,15 +174,15 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="addDomMutationHandler(java.util.function.Consumer)">
 <h3>addDomMutationHandler</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="return-type">long</span>&nbsp;<span class="element-name">addDomMutationHandler</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="DomMutation.html" title="class in org.openqa.selenium.remote">DomMutation</a>&gt;&nbsp;event)</span></div>
+<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">addDomMutationHandler</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="DomMutation.html" title="class in org.openqa.selenium.remote">DomMutation</a>&gt;&nbsp;event)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="removeDomMutationHandler(long)">
+<section class="detail" id="removeDomMutationHandler(java.lang.String)">
 <h3>removeDomMutationHandler</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">removeDomMutationHandler</span><wbr><span class="parameters">(long&nbsp;id)</span></div>
+<div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">removeDomMutationHandler</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</span></div>
 </div>
 </section>
 </li>

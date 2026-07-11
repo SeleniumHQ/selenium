@@ -70,6 +70,24 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Use constructor with timeout parameter: <a href="org/openqa/selenium/bidi/BiDi.html#%3Cinit%3E(org.openqa.selenium.bidi.Connection,java.time.Duration)"><code>BiDi(Connection, Duration)</code></a></div>
 </div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/bidi/HasBiDi.html#getBiDi()">org.openqa.selenium.bidi.HasBiDi.getBiDi()</a></div>
+<div class="col-last odd-row-color">
+<div class="block">BiDi is an internal implementation detail. Direct access to the BiDi object from
+    drivers will be removed in a future release.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/bidi/HasBiDi.html#maybeGetBiDi()">org.openqa.selenium.bidi.HasBiDi.maybeGetBiDi()</a></div>
+<div class="col-last even-row-color">
+<div class="block">BiDi is an internal implementation detail. Direct access to the BiDi object from
+    drivers will be removed in a future release.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/devtools/noop/NoOpCdpInfo.html#%3Cinit%3E()">org.openqa.selenium.devtools.noop.NoOpCdpInfo()</a></div>
+<div class="col-last odd-row-color">
+<div class="block">use <a href="org/openqa/selenium/devtools/noop/NoOpCdpInfo.html#%3Cinit%3E(java.lang.String,java.util.Collection)"><code>NoOpCdpInfo(String, Collection)</code></a> instead</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/devtools/noop/NoOpDomains.html#%3Cinit%3E()">org.openqa.selenium.devtools.noop.NoOpDomains()</a></div>
+<div class="col-last even-row-color">
+<div class="block">Use <a href="org/openqa/selenium/devtools/noop/NoOpDomains.html#%3Cinit%3E(java.lang.String,java.util.Collection)"><code>NoOpDomains(String, Collection)</code></a> instead.</div>
+</div>
 <div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/json/JsonInput.html#nextInstant()">org.openqa.selenium.json.JsonInput.nextInstant()</a></div>
 <div class="col-last odd-row-color">
 <div class="block">Instant is not a basic JSON type, use the <a href="org/openqa/selenium/json/InstantCoercer.html" title="class in org.openqa.selenium.json"><code>InstantCoercer</code></a> instead.</div>
@@ -82,6 +100,8 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="block">use JdkHttpClient#httpClient() instead.</div>
 </div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#maybeGetBiDi()">org.openqa.selenium.remote.RemoteWebDriver.maybeGetBiDi()</a></div>
+<div class="col-last even-row-color"></div>
 </div>
 </div>
 </li>
@@ -189,6 +209,16 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Method</div>
 <div class="table-header col-last">Description</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/bidi/HasBiDi.html#getBiDi()">org.openqa.selenium.bidi.HasBiDi.getBiDi()</a></div>
+<div class="col-last even-row-color">
+<div class="block">BiDi is an internal implementation detail. Direct access to the BiDi object from
+    drivers will be removed in a future release.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/bidi/HasBiDi.html#maybeGetBiDi()">org.openqa.selenium.bidi.HasBiDi.maybeGetBiDi()</a></div>
+<div class="col-last odd-row-color">
+<div class="block">BiDi is an internal implementation detail. Direct access to the BiDi object from
+    drivers will be removed in a future release.</div>
+</div>
 <div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/devtools/CdpEndpointFinder.html#getHttpClient(org.openqa.selenium.remote.http.HttpClient.Factory,java.net.URI)">org.openqa.selenium.devtools.CdpEndpointFinder.getHttpClient<wbr>(HttpClient.Factory, URI)</a></div>
 <div class="col-last even-row-color">
 <div class="block">Use <a href="org/openqa/selenium/devtools/CdpEndpointFinder.html#getHttpClient(org.openqa.selenium.remote.http.HttpClient.Factory,java.net.URI,org.openqa.selenium.remote.http.ClientConfig)"><code>CdpEndpointFinder.getHttpClient(HttpClient.Factory, URI, ClientConfig)</code></a> instead</div>
@@ -257,18 +287,20 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Use method <a href="org/openqa/selenium/remote/RemoteWebDriver.html#getDownloadedFiles()"><code>RemoteWebDriver.getDownloadedFiles()</code></a> instead</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/Response.html#getStatus()">org.openqa.selenium.remote.Response.getStatus()</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#maybeGetBiDi()">org.openqa.selenium.remote.RemoteWebDriver.maybeGetBiDi()</a></div>
+<div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/Response.html#getStatus()">org.openqa.selenium.remote.Response.getStatus()</a></div>
+<div class="col-last even-row-color">
 <div class="block">The integer status is a JSON Wire Protocol artifact; use <a href="org/openqa/selenium/remote/Response.html#getState()"><code>Response.getState()</code></a> (the
     W3C state) instead. Removal is tracked by <a href="https://github.com/SeleniumHQ/selenium/issues/17638">#17638</a>.</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/Response.html#setStatus(java.lang.Integer)">org.openqa.selenium.remote.Response.setStatus<wbr>(Integer)</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/Response.html#setStatus(java.lang.Integer)">org.openqa.selenium.remote.Response.setStatus<wbr>(Integer)</a></div>
+<div class="col-last odd-row-color">
 <div class="block">The integer status is a JSON Wire Protocol artifact; use <a href="org/openqa/selenium/remote/Response.html#setState(java.lang.String)"><code>Response.setState(String)</code></a>
     (the W3C state) instead. Removal is tracked by <a href="https://github.com/SeleniumHQ/selenium/issues/17638">#17638</a>.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)">org.openqa.selenium.remote.WebDriverInfo.createDriver<wbr>(Capabilities)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)">org.openqa.selenium.remote.WebDriverInfo.createDriver<wbr>(Capabilities)</a></div>
+<div class="col-last even-row-color">
 <div class="block">use <a href="org/openqa/selenium/remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)"><code>WebDriverInfo.createDriver(Capabilities, ClientConfig)</code></a> instead</div>
 </div>
 </div>
@@ -294,6 +326,14 @@ loadScripts(document, 'script');</script>
 <div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/devtools/Connection.html#%3Cinit%3E(org.openqa.selenium.remote.http.HttpClient,java.lang.String)">org.openqa.selenium.devtools.Connection<wbr>(HttpClient, String)</a></div>
 <div class="col-last even-row-color">
 <div class="block">Use constructor with <a href="org/openqa/selenium/remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http"><code>ClientConfig</code></a> parameter</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/devtools/noop/NoOpCdpInfo.html#%3Cinit%3E()">org.openqa.selenium.devtools.noop.NoOpCdpInfo()</a></div>
+<div class="col-last odd-row-color">
+<div class="block">use <a href="org/openqa/selenium/devtools/noop/NoOpCdpInfo.html#%3Cinit%3E(java.lang.String,java.util.Collection)"><code>NoOpCdpInfo(String, Collection)</code></a> instead</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/devtools/noop/NoOpDomains.html#%3Cinit%3E()">org.openqa.selenium.devtools.noop.NoOpDomains()</a></div>
+<div class="col-last even-row-color">
+<div class="block">Use <a href="org/openqa/selenium/devtools/noop/NoOpDomains.html#%3Cinit%3E(java.lang.String,java.util.Collection)"><code>NoOpDomains(String, Collection)</code></a> instead.</div>
 </div>
 </div>
 </div>

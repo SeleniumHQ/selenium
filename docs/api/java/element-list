@@ -70,6 +70,7 @@ org.openqa.selenium.grid.sessionqueue
 org.openqa.selenium.grid.sessionqueue.config
 org.openqa.selenium.grid.sessionqueue.httpd
 org.openqa.selenium.grid.sessionqueue.local
+org.openqa.selenium.grid.sessionqueue.redis
 org.openqa.selenium.grid.sessionqueue.remote
 org.openqa.selenium.grid.web
 org.openqa.selenium.ie

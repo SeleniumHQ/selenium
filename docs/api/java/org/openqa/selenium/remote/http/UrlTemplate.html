@@ -134,7 +134,9 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="UrlTemplate.Match.html" title="class in org.openqa.selenium.remote.http">UrlTemplate.Match</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#match(java.lang.String,java.lang.String)" class="member-name-link">match</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;matchAgainst,
  @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;prefix)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Matches a URL against this template after stripping a leading prefix.</div>
+</div>
 </div>
 </div>
 </div>
@@ -186,10 +188,16 @@ loadScripts(document, 'script');</script>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="UrlTemplate.Match.html" title="class in org.openqa.selenium.remote.http">UrlTemplate.Match</a></span>&nbsp;<span class="element-name">match</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;matchAgainst,
  @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;prefix)</span></div>
+<div class="block">Matches a URL against this template after stripping a leading prefix.
+
+<p>The <code>prefix</code> is treated literally (not as a regex) and stripped from the start of
+<code>matchAgainst</code> before matching, unless it is empty or <code>"/"</code>.</div>
 <dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>matchAgainst</code> - the URL (or path) to match against this template</dd>
+<dd><code>prefix</code> - a literal prefix to strip from <code>matchAgainst</code> before matching</dd>
 <dt>Returns:</dt>
-<dd>A <a href="UrlTemplate.Match.html" title="class in org.openqa.selenium.remote.http"><code>UrlTemplate.Match</code></a> with all parameters filled if successful, null otherwise. Remove
-    subPath from matchAgainst before matching.</dd>
+<dd>a <a href="UrlTemplate.Match.html" title="class in org.openqa.selenium.remote.http"><code>UrlTemplate.Match</code></a> with all parameters filled if successful, <code>null</code> otherwise</dd>
 </dl>
 </div>
 </section>

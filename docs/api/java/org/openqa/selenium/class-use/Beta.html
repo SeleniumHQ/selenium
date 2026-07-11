@@ -61,6 +61,30 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><a href="#org.openqa.selenium">org.openqa.selenium</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.bidi">org.openqa.selenium.bidi</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.bidi.browser">org.openqa.selenium.bidi.browser</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.bidi.browsingcontext">org.openqa.selenium.bidi.browsingcontext</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.bidi.emulation">org.openqa.selenium.bidi.emulation</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.bidi.log">org.openqa.selenium.bidi.log</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.bidi.module">org.openqa.selenium.bidi.module</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.bidi.network">org.openqa.selenium.bidi.network</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.bidi.permissions">org.openqa.selenium.bidi.permissions</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.bidi.script">org.openqa.selenium.bidi.script</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.bidi.speculation">org.openqa.selenium.bidi.speculation</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.bidi.storage">org.openqa.selenium.bidi.storage</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.bidi.webextension">org.openqa.selenium.bidi.webextension</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><a href="#org.openqa.selenium.chrome">org.openqa.selenium.chrome</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><a href="#org.openqa.selenium.chromium">org.openqa.selenium.chromium</a></div>
@@ -125,6 +149,571 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="block">Gets the <a href="../logging/Logs.html" title="interface in org.openqa.selenium.logging"><code>Logs</code></a> interface used to fetch different types of logs.</div>
 </div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi">
+<h2>Uses of <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a> in <a href="../bidi/package-summary.html">org.openqa.selenium.bidi</a></h2>
+<div class="caption"><span>Classes in <a href="../bidi/package-summary.html">org.openqa.selenium.bidi</a> with annotations of type <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/BiDi.html" class="type-name-link" title="class in org.openqa.selenium.bidi">BiDi</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/BiDiException.html" class="type-name-link" title="class in org.openqa.selenium.bidi">BiDiException</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/BiDiProvider.html" class="type-name-link" title="class in org.openqa.selenium.bidi">BiDiProvider</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/BiDiSessionStatus.html" class="type-name-link" title="class in org.openqa.selenium.bidi">BiDiSessionStatus</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/Command.html" class="type-name-link" title="class in org.openqa.selenium.bidi">Command</a>&lt;X&gt;</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/Connection.html" class="type-name-link" title="class in org.openqa.selenium.bidi">Connection</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/ConverterFunctions.html" class="type-name-link" title="class in org.openqa.selenium.bidi">ConverterFunctions</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/Event.html" class="type-name-link" title="class in org.openqa.selenium.bidi">Event</a>&lt;X&gt;</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>interface&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/HasBiDi.html" class="type-name-link" title="interface in org.openqa.selenium.bidi">HasBiDi</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.browser">
+<h2>Uses of <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a> in <a href="../bidi/browser/package-summary.html">org.openqa.selenium.bidi.browser</a></h2>
+<div class="caption"><span>Classes in <a href="../bidi/browser/package-summary.html">org.openqa.selenium.bidi.browser</a> with annotations of type <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/browser/ClientWindow.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browser">ClientWindow</a></code></div>
+<div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Not used.</div>
+</div>
+</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/browser/ClientWindowInfo.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browser">ClientWindowInfo</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>enum&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/browser/ClientWindowState.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.browser">ClientWindowState</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/browser/DownloadBehavior.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browser">DownloadBehavior</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/browser/SetDownloadBehaviorParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browser">SetDownloadBehaviorParameters</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.browsingcontext">
+<h2>Uses of <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a> in <a href="../bidi/browsingcontext/package-summary.html">org.openqa.selenium.bidi.browsingcontext</a></h2>
+<div class="caption"><span>Classes in <a href="../bidi/browsingcontext/package-summary.html">org.openqa.selenium.bidi.browsingcontext</a> with annotations of type <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/browsingcontext/BoxClipRectangle.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">BoxClipRectangle</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/browsingcontext/BrowsingContext.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">BrowsingContext</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/browsingcontext/BrowsingContextInfo.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">BrowsingContextInfo</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/browsingcontext/CaptureScreenshotParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">CaptureScreenshotParameters</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/browsingcontext/ClipRectangle.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">ClipRectangle</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/browsingcontext/CreateContextParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">CreateContextParameters</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/browsingcontext/DownloadCanceled.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">DownloadCanceled</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/browsingcontext/DownloadCompleted.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">DownloadCompleted</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/browsingcontext/DownloadEnded.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">DownloadEnded</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/browsingcontext/DownloadInfo.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">DownloadInfo</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/browsingcontext/ElementClipRectangle.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">ElementClipRectangle</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/browsingcontext/HistoryUpdated.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">HistoryUpdated</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/browsingcontext/ImageFormat.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">ImageFormat</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/browsingcontext/LocateNodeParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">LocateNodeParameters</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/browsingcontext/Locator.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">Locator</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/browsingcontext/NavigationInfo.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">NavigationInfo</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/browsingcontext/NavigationResult.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">NavigationResult</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>enum&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/browsingcontext/ReadinessState.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.browsingcontext">ReadinessState</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/browsingcontext/UserPromptClosed.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">UserPromptClosed</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/browsingcontext/UserPromptOpened.html" class="type-name-link" title="class in org.openqa.selenium.bidi.browsingcontext">UserPromptOpened</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>enum&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/browsingcontext/UserPromptType.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.browsingcontext">UserPromptType</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.emulation">
+<h2>Uses of <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a> in <a href="../bidi/emulation/package-summary.html">org.openqa.selenium.bidi.emulation</a></h2>
+<div class="caption"><span>Classes in <a href="../bidi/emulation/package-summary.html">org.openqa.selenium.bidi.emulation</a> with annotations of type <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/emulation/AbstractOverrideParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.emulation">AbstractOverrideParameters</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/emulation/Emulation.html" class="type-name-link" title="class in org.openqa.selenium.bidi.emulation">Emulation</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/emulation/GeolocationCoordinates.html" class="type-name-link" title="class in org.openqa.selenium.bidi.emulation">GeolocationCoordinates</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/emulation/GeolocationPositionError.html" class="type-name-link" title="class in org.openqa.selenium.bidi.emulation">GeolocationPositionError</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>interface&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/emulation/OverrideParameters.html" class="type-name-link" title="interface in org.openqa.selenium.bidi.emulation">OverrideParameters</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/emulation/ScreenArea.html" class="type-name-link" title="class in org.openqa.selenium.bidi.emulation">ScreenArea</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/emulation/ScreenOrientation.html" class="type-name-link" title="class in org.openqa.selenium.bidi.emulation">ScreenOrientation</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>enum&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/emulation/ScreenOrientationNatural.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.emulation">ScreenOrientationNatural</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>enum&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/emulation/ScreenOrientationType.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.emulation">ScreenOrientationType</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/emulation/SetGeolocationOverrideParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.emulation">SetGeolocationOverrideParameters</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/emulation/SetNetworkConditionsParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.emulation">SetNetworkConditionsParameters</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/emulation/SetScreenOrientationOverrideParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.emulation">SetScreenOrientationOverrideParameters</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/emulation/SetScreenSettingsOverrideParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.emulation">SetScreenSettingsOverrideParameters</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/emulation/SetScriptingEnabledParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.emulation">SetScriptingEnabledParameters</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/emulation/SetTimezoneOverrideParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.emulation">SetTimezoneOverrideParameters</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/emulation/SetUserAgentOverrideParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.emulation">SetUserAgentOverrideParameters</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.log">
+<h2>Uses of <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a> in <a href="../bidi/log/package-summary.html">org.openqa.selenium.bidi.log</a></h2>
+<div class="caption"><span>Classes in <a href="../bidi/log/package-summary.html">org.openqa.selenium.bidi.log</a> with annotations of type <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/log/BaseLogEntry.html" class="type-name-link" title="class in org.openqa.selenium.bidi.log">BaseLogEntry</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/log/ConsoleLogEntry.html" class="type-name-link" title="class in org.openqa.selenium.bidi.log">ConsoleLogEntry</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/log/FilterBy.html" class="type-name-link" title="class in org.openqa.selenium.bidi.log">FilterBy</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/log/GenericLogEntry.html" class="type-name-link" title="class in org.openqa.selenium.bidi.log">GenericLogEntry</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/log/JavascriptLogEntry.html" class="type-name-link" title="class in org.openqa.selenium.bidi.log">JavascriptLogEntry</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/log/Log.html" class="type-name-link" title="class in org.openqa.selenium.bidi.log">Log</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/log/LogEntry.html" class="type-name-link" title="class in org.openqa.selenium.bidi.log">LogEntry</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>enum&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/log/LogLevel.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.log">LogLevel</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/log/StackFrame.html" class="type-name-link" title="class in org.openqa.selenium.bidi.log">StackFrame</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/log/StackTrace.html" class="type-name-link" title="class in org.openqa.selenium.bidi.log">StackTrace</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.module">
+<h2>Uses of <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a> in <a href="../bidi/module/package-summary.html">org.openqa.selenium.bidi.module</a></h2>
+<div class="caption"><span>Classes in <a href="../bidi/module/package-summary.html">org.openqa.selenium.bidi.module</a> with annotations of type <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/module/Browser.html" class="type-name-link" title="class in org.openqa.selenium.bidi.module">Browser</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/module/BrowsingContextInspector.html" class="type-name-link" title="class in org.openqa.selenium.bidi.module">BrowsingContextInspector</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/module/Input.html" class="type-name-link" title="class in org.openqa.selenium.bidi.module">Input</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/module/LogInspector.html" class="type-name-link" title="class in org.openqa.selenium.bidi.module">LogInspector</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/module/Network.html" class="type-name-link" title="class in org.openqa.selenium.bidi.module">Network</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/module/Permission.html" class="type-name-link" title="class in org.openqa.selenium.bidi.module">Permission</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/module/Script.html" class="type-name-link" title="class in org.openqa.selenium.bidi.module">Script</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/module/SpeculationInspector.html" class="type-name-link" title="class in org.openqa.selenium.bidi.module">SpeculationInspector</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/module/Storage.html" class="type-name-link" title="class in org.openqa.selenium.bidi.module">Storage</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.network">
+<h2>Uses of <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a> in <a href="../bidi/network/package-summary.html">org.openqa.selenium.bidi.network</a></h2>
+<div class="caption"><span>Classes in <a href="../bidi/network/package-summary.html">org.openqa.selenium.bidi.network</a> with annotations of type <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/network/AddInterceptParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">AddInterceptParameters</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/network/AuthChallenge.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">AuthChallenge</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/network/BaseParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">BaseParameters</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/network/BeforeRequestSent.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">BeforeRequestSent</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/network/BytesValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">BytesValue</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>enum&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/network/CacheBehavior.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.network">CacheBehavior</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/network/ContinueRequestParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">ContinueRequestParameters</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/network/ContinueResponseParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">ContinueResponseParameters</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/network/Cookie.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">Cookie</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/network/FetchError.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">FetchError</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/network/FetchTimingInfo.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">FetchTimingInfo</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/network/Header.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">Header</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/network/Initiator.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">Initiator</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>enum&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/network/InterceptPhase.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.network">InterceptPhase</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/network/ProvideResponseParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">ProvideResponseParameters</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/network/RequestData.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">RequestData</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/network/ResponseData.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">ResponseData</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/network/ResponseDetails.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">ResponseDetails</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/network/SetCookieHeader.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">SetCookieHeader</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/network/UrlPattern.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">UrlPattern</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.permissions">
+<h2>Uses of <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a> in <a href="../bidi/permissions/package-summary.html">org.openqa.selenium.bidi.permissions</a></h2>
+<div class="caption"><span>Classes in <a href="../bidi/permissions/package-summary.html">org.openqa.selenium.bidi.permissions</a> with annotations of type <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>enum&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/permissions/PermissionState.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.permissions">PermissionState</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.script">
+<h2>Uses of <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a> in <a href="../bidi/script/package-summary.html">org.openqa.selenium.bidi.script</a></h2>
+<div class="caption"><span>Classes in <a href="../bidi/script/package-summary.html">org.openqa.selenium.bidi.script</a> with annotations of type <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/ArrayLocalValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">ArrayLocalValue</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/CallFunctionParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">CallFunctionParameters</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/ChannelValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">ChannelValue</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/ContextTarget.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">ContextTarget</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/DateLocalValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">DateLocalValue</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/EvaluateParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">EvaluateParameters</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>interface&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/EvaluateResult.html" class="type-name-link" title="interface in org.openqa.selenium.bidi.script">EvaluateResult</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/EvaluateResultExceptionValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">EvaluateResultExceptionValue</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/EvaluateResultSuccess.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">EvaluateResultSuccess</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/ExceptionDetails.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">ExceptionDetails</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/LocalValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">LocalValue</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/MapLocalValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">MapLocalValue</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/Message.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">Message</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/NodeProperties.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">NodeProperties</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/ObjectLocalValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">ObjectLocalValue</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/PrimitiveProtocolValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">PrimitiveProtocolValue</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>enum&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/PrimitiveType.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.script">PrimitiveType</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/RealmInfo.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">RealmInfo</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/RealmTarget.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">RealmTarget</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>enum&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/RealmType.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.script">RealmType</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/RegExpValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">RegExpValue</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/RemoteReference.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">RemoteReference</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/RemoteValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">RemoteValue</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>enum&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/ResultOwnership.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.script">ResultOwnership</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/SerializationOptions.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">SerializationOptions</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/SetLocalValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">SetLocalValue</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/Source.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">Source</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/StackFrame.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">StackFrame</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/StackTrace.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">StackTrace</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/Target.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">Target</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/script/WindowProxyProperties.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">WindowProxyProperties</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/script/WindowRealmInfo.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">WindowRealmInfo</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.speculation">
+<h2>Uses of <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a> in <a href="../bidi/speculation/package-summary.html">org.openqa.selenium.bidi.speculation</a></h2>
+<div class="caption"><span>Classes in <a href="../bidi/speculation/package-summary.html">org.openqa.selenium.bidi.speculation</a> with annotations of type <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/speculation/PrefetchStatusUpdatedParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.speculation">PrefetchStatusUpdatedParameters</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>enum&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/speculation/PreloadingStatus.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.speculation">PreloadingStatus</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/speculation/Speculation.html" class="type-name-link" title="class in org.openqa.selenium.bidi.speculation">Speculation</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.storage">
+<h2>Uses of <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a> in <a href="../bidi/storage/package-summary.html">org.openqa.selenium.bidi.storage</a></h2>
+<div class="caption"><span>Classes in <a href="../bidi/storage/package-summary.html">org.openqa.selenium.bidi.storage</a> with annotations of type <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/storage/BrowsingContextPartitionDescriptor.html" class="type-name-link" title="class in org.openqa.selenium.bidi.storage">BrowsingContextPartitionDescriptor</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/storage/CookieFilter.html" class="type-name-link" title="class in org.openqa.selenium.bidi.storage">CookieFilter</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/storage/DeleteCookiesParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.storage">DeleteCookiesParameters</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/storage/GetCookiesParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.storage">GetCookiesParameters</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/storage/GetCookiesResult.html" class="type-name-link" title="class in org.openqa.selenium.bidi.storage">GetCookiesResult</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/storage/PartialCookie.html" class="type-name-link" title="class in org.openqa.selenium.bidi.storage">PartialCookie</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/storage/PartitionDescriptor.html" class="type-name-link" title="class in org.openqa.selenium.bidi.storage">PartitionDescriptor</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/storage/PartitionKey.html" class="type-name-link" title="class in org.openqa.selenium.bidi.storage">PartitionKey</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/storage/SetCookieParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.storage">SetCookieParameters</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/storage/StorageKeyPartitionDescriptor.html" class="type-name-link" title="class in org.openqa.selenium.bidi.storage">StorageKeyPartitionDescriptor</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.webextension">
+<h2>Uses of <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a> in <a href="../bidi/webextension/package-summary.html">org.openqa.selenium.bidi.webextension</a></h2>
+<div class="caption"><span>Classes in <a href="../bidi/webextension/package-summary.html">org.openqa.selenium.bidi.webextension</a> with annotations of type <a href="../Beta.html" title="annotation interface in org.openqa.selenium">Beta</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/webextension/ExtensionArchivePath.html" class="type-name-link" title="class in org.openqa.selenium.bidi.webextension">ExtensionArchivePath</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/webextension/ExtensionBase64Encoded.html" class="type-name-link" title="class in org.openqa.selenium.bidi.webextension">ExtensionBase64Encoded</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>interface&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/webextension/ExtensionData.html" class="type-name-link" title="interface in org.openqa.selenium.bidi.webextension">ExtensionData</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/webextension/ExtensionPath.html" class="type-name-link" title="class in org.openqa.selenium.bidi.webextension">ExtensionPath</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/webextension/InstallExtensionParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.webextension">InstallExtensionParameters</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../bidi/webextension/UninstallExtensionParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.webextension">UninstallExtensionParameters</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../bidi/webextension/WebExtension.html" class="type-name-link" title="class in org.openqa.selenium.bidi.webextension">WebExtension</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

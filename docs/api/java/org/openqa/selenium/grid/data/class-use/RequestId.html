@@ -65,8 +65,10 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.sessionqueue.local">org.openqa.selenium.grid.sessionqueue.local</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.sessionqueue.remote">org.openqa.selenium.grid.sessionqueue.remote</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.sessionqueue.redis">org.openqa.selenium.grid.sessionqueue.redis</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.sessionqueue.remote">org.openqa.selenium.grid.sessionqueue.remote</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -120,7 +122,7 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../SessionRequestCapability.html#%3Cinit%3E(org.openqa.selenium.grid.data.RequestId,java.util.Set)" class="member-name-link">SessionRequestCapability</a><wbr>(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;desiredCapabilities)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;capabilities)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -159,6 +161,26 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&gt;</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">LocalNewSessionQueue.</span><code><a href="../../sessionqueue/local/LocalNewSessionQueue.html#remove(org.openqa.selenium.grid.data.RequestId)" class="member-name-link">remove</a><wbr>(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.grid.sessionqueue.redis">
+<h2>Uses of <a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a> in <a href="../../sessionqueue/redis/package-summary.html">org.openqa.selenium.grid.sessionqueue.redis</a></h2>
+<div class="caption"><span>Methods in <a href="../../sessionqueue/redis/package-summary.html">org.openqa.selenium.grid.sessionqueue.redis</a> with parameters of type <a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>boolean</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">RedisBackedNewSessionQueue.</span><code><a href="../../sessionqueue/redis/RedisBackedNewSessionQueue.html#complete(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.internal.Either)" class="member-name-link">complete</a><wbr>(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId,
+ <a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>, <a href="../CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;&nbsp;result)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns true if the session is still valid (not timed out and not canceled)</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">RedisBackedNewSessionQueue.</span><code><a href="../../sessionqueue/redis/RedisBackedNewSessionQueue.html#remove(org.openqa.selenium.grid.data.RequestId)" class="member-name-link">remove</a><wbr>(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>

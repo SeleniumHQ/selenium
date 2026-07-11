@@ -67,7 +67,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#onPrefetchStatusUpdated(java.util.function.Consumer)" tabindex="0">onPrefetchStatusUpdated(Consumer)</a></li>
-<li><a href="#removeListener(long)" tabindex="0">removeListener(long)</a></li>
+<li><a href="#removeListener(java.lang.String)" tabindex="0">removeListener(String)</a></li>
 <li><a href="#clearListener(java.lang.String)" tabindex="0">clearListener(String)</a></li>
 <li><a href="#clearListeners(java.util.Set)" tabindex="0">clearListeners(Set)</a></li>
 <li><a href="#close()" tabindex="0">close()</a></li>
@@ -90,7 +90,8 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <div class="horizontal-scroll">
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">SpeculationInspector</span>
+<div class="type-signature"><span class="annotations"><a href="../../Beta.html" title="annotation interface in org.openqa.selenium">@Beta</a>
+</span><span class="modifiers">public class </span><span class="element-name type-name-label">SpeculationInspector</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AutoCloseable.html" title="class or interface in java.lang" class="external-link">AutoCloseable</a></span></div>
 </div>
@@ -136,11 +137,11 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#close()" class="member-name-link">close</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>long</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onPrefetchStatusUpdated(java.util.function.Consumer)" class="member-name-link">onPrefetchStatusUpdated</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../speculation/PrefetchStatusUpdatedParameters.html" title="class in org.openqa.selenium.bidi.speculation">PrefetchStatusUpdatedParameters</a>&gt;&nbsp;consumer)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeListener(long)" class="member-name-link">removeListener</a><wbr>(long&nbsp;subscriptionId)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeListener(java.lang.String)" class="member-name-link">removeListener</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;subscriptionId)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
@@ -197,15 +198,15 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <section class="detail" id="onPrefetchStatusUpdated(java.util.function.Consumer)">
 <h3>onPrefetchStatusUpdated</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">long</span>&nbsp;<span class="element-name">onPrefetchStatusUpdated</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../speculation/PrefetchStatusUpdatedParameters.html" title="class in org.openqa.selenium.bidi.speculation">PrefetchStatusUpdatedParameters</a>&gt;&nbsp;consumer)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">onPrefetchStatusUpdated</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../speculation/PrefetchStatusUpdatedParameters.html" title="class in org.openqa.selenium.bidi.speculation">PrefetchStatusUpdatedParameters</a>&gt;&nbsp;consumer)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="removeListener(long)">
+<section class="detail" id="removeListener(java.lang.String)">
 <h3>removeListener</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">removeListener</span><wbr><span class="parameters">(long&nbsp;subscriptionId)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">removeListener</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;subscriptionId)</span></div>
 </div>
 </section>
 </li>

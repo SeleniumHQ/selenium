@@ -107,20 +107,22 @@ calls to Create Session to a <a href="../../../grid/node/Node.html" title="class
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.sessionqueue.local">org.openqa.selenium.grid.sessionqueue.local</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.sessionqueue.remote">org.openqa.selenium.grid.sessionqueue.remote</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.sessionqueue.redis">org.openqa.selenium.grid.sessionqueue.redis</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.web">org.openqa.selenium.grid.web</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.sessionqueue.remote">org.openqa.selenium.grid.sessionqueue.remote</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.netty.server">org.openqa.selenium.netty.server</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.web">org.openqa.selenium.grid.web</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.remote">org.openqa.selenium.remote</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.netty.server">org.openqa.selenium.netty.server</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.remote.http">org.openqa.selenium.remote.http</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.remote">org.openqa.selenium.remote</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.remote.http.jdk">org.openqa.selenium.remote.http.jdk</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.remote.http">org.openqa.selenium.remote.http</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.remote.tracing">org.openqa.selenium.remote.tracing</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.remote.http.jdk">org.openqa.selenium.remote.http.jdk</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.remote.tracing">org.openqa.selenium.remote.tracing</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -524,6 +526,22 @@ running.</div>
 <div class="col-second even-row-color"><code><a href="../../../grid/sessionqueue/local/LocalNewSessionQueue.html" class="type-name-link" title="class in org.openqa.selenium.grid.sessionqueue.local">LocalNewSessionQueue</a></code></div>
 <div class="col-last even-row-color">
 <div class="block">An in-memory implementation of the list of new session requests.</div>
+</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.grid.sessionqueue.redis">
+<h2>Uses of <a href="../HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a> in <a href="../../../grid/sessionqueue/redis/package-summary.html">org.openqa.selenium.grid.sessionqueue.redis</a></h2>
+<div class="caption"><span>Classes in <a href="../../../grid/sessionqueue/redis/package-summary.html">org.openqa.selenium.grid.sessionqueue.redis</a> that implement <a href="../HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../../../grid/sessionqueue/redis/RedisBackedNewSessionQueue.html" class="type-name-link" title="class in org.openqa.selenium.grid.sessionqueue.redis">RedisBackedNewSessionQueue</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Stateless, horizontally-scalable implementation of <a href="../../../grid/sessionqueue/NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue"><code>NewSessionQueue</code></a> backed by Redis.</div>
 </div>
 </div>
 </section>
