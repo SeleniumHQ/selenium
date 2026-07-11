@@ -178,7 +178,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--version",
         action="version",
-        version=f"selenium {version("selenium")}",
+        version=f"selenium {version('selenium')}",
         help="Displays the version of selenium installed"
     )
 
