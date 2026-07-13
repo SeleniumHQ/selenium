@@ -8,8 +8,8 @@ rb_library(
 )
 
 rb_library(
-    name = "bundle_update",
-    srcs = ["bundle_update.rb"],
+    name = "bundle",
+    srcs = ["bundle.rb"],
 )
 
 rb_library(
