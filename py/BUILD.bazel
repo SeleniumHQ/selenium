@@ -1450,7 +1450,7 @@ py_console_script_binary(
     script = "sphinx-build",
     deps = [
         ":selenium",
-        requirement("sphinx-material"),
+        requirement("pydata_sphinx_theme"),
     ],
 )
 
