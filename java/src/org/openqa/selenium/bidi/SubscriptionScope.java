@@ -26,6 +26,12 @@ import org.openqa.selenium.internal.Require;
 /**
  * Where a subscription applies: globally, or scoped to browsing contexts and/or user contexts. Part
  * of the transport layer, not generated — the remote end decides which combinations are valid.
+ *
+ * <p>This class is intentionally limited to the scope of a subscription, not the full set of
+ * subscribe parameters.
+ *
+ * @see <a href="https://www.w3.org/TR/webdriver-bidi/#type-session-SubscriptionParameters">
+ *     session.SubscriptionParameters</a>
  */
 @Beta
 public final class SubscriptionScope {
@@ -33,13 +39,25 @@ public final class SubscriptionScope {
   private Set<String> contexts = Set.of();
   private Set<String> userContexts = Set.of();
 
+  /**
+   * Scopes the subscription to the given browsing contexts.
+   *
+   * @param contexts the browsing context ids to scope the subscription to
+   * @return this scope, for chaining
+   */
   public SubscriptionScope contexts(Set<String> contexts) {
-    this.contexts = Require.nonNull("Browsing context ids", contexts);
+    this.contexts = Set.copyOf(Require.nonNull("Browsing context ids", contexts));
     return this;
   }
 
+  /**
+   * Scopes the subscription to the given user contexts.
+   *
+   * @param userContexts the user context ids to scope the subscription to
+   * @return this scope, for chaining
+   */
   public SubscriptionScope userContexts(Set<String> userContexts) {
-    this.userContexts = Require.nonNull("User context ids", userContexts);
+    this.userContexts = Set.copyOf(Require.nonNull("User context ids", userContexts));
     return this;
   }
 
