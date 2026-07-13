@@ -163,13 +163,14 @@ desc 'Copy Bazel-built dependency jars to ./java-libs for local development'
 task :local_dev do
   Bazel.execute('build', [], '//java/test/...')
 
+  # Bazel.execute merges stdout/stderr, so ignore INFO/progress lines and keep only real paths.
   execroot = nil
-  Bazel.execute('info', [], 'execution_root') { |out| execroot = out.strip }
+  Bazel.execute('info', [], 'execution_root') { |out| execroot = out.lines.map(&:strip).grep(%r{/execroot/}).last }
 
   jars = []
   Bazel.execute('cquery', ['--output=starlark', "--starlark:expr=#{JAVA_LIBS_STARLARK}"],
                 'deps(kind("java_test", //java/test/...))') do |out|
-    jars = out.lines.map(&:strip).reject(&:empty?).uniq
+    jars = out.lines.map(&:strip).select { |line| line.end_with?('.jar') }.uniq
   end
 
   lib = File.join(Dir.pwd, 'java-libs')
@@ -180,7 +181,9 @@ task :local_dev do
   jars.each do |rel|
     base = File.basename(rel)
     dir = base.end_with?('-sources.jar', '-src.jar') ? sources : lib
-    FileUtils.cp(File.join(execroot, rel), File.join(dir, base))
+    dest = File.join(dir, base)
+    warn "warning: overwriting #{base} (duplicate basename)" if File.exist?(dest)
+    FileUtils.cp(File.join(execroot, rel), dest)
   end
 end
 
