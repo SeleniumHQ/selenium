@@ -49,6 +49,11 @@ public abstract class Module {
     return handle.subscribe(event, handler);
   }
 
+  protected final <X> String subscribe(
+      Event<X> event, Consumer<X> handler, SubscriptionScope scope) {
+    return handle.subscribe(event, handler, scope);
+  }
+
   protected final void unsubscribe(String subscriptionId) {
     handle.unsubscribe(subscriptionId);
   }
