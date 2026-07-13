@@ -21,11 +21,13 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
 
+/**
+ * A lightweight descriptor representing a bean property (getter, setter, or boolean prefix property)
+ * used for JSON serialization and deserialization coercion.
+ */
 public class SimplePropertyDescriptor {
 
   private static final ClassValue<SimplePropertyDescriptor[]> DESCRIPTORS = new ClassValue<>() {
@@ -69,6 +71,12 @@ public class SimplePropertyDescriptor {
     return String.format("%s.%s", clazz.getSimpleName(), name);
   }
 
+  /**
+   * Retrieves the cached simple property descriptors for the specified class.
+   *
+   * @param clazz the target class to inspect
+   * @return a cloned array of {@link SimplePropertyDescriptor}s representing the class's properties
+   */
   public static SimplePropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) {
     return DESCRIPTORS.get(clazz).clone();
   }
