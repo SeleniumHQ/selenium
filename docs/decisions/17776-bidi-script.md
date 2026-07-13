@@ -72,7 +72,7 @@ driver.script().removePreload(loaded);
 4. **Console messages and JavaScript errors are separate handlers**, even though one `log` event
    feeds both — a console subscriber receives console output, not the page's uncaught errors.
    **DOM-mutation handlers select which changes to observe** — attribute, child-list,
-   character-data, or any combination.
+   character-data, or any combination; with none named, all are observed.
 
 ```ruby
 driver.script.add_console_message_handler { |m| log(m.text) }
@@ -101,7 +101,8 @@ driver.script().removeConsoleMessageHandler(handler);
 6. **Each event carries a shaped payload — not the raw protocol entry.** It includes an explicit
    source location and stack trace: console message (level, text, type, arguments, source, stack
    trace), JavaScript error (message, source, stack trace), DOM mutation (target element, mutation
-   kind, attribute name with old and new value, added and removed nodes).
+   kind, and the fields for that kind — an attribute name with its old and new value, the old and new
+   character data, or the added and removed nodes).
 
 ```ruby
 driver.script.add_console_message_handler { |m| log(m.level, m.text, m.source.url, m.stacktrace) }
