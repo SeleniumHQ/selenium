@@ -54,9 +54,9 @@ driver.script().execute(pinned);
 driver.script().unpin(pinned);
 ```
 
-3. **`preload(source)` registers a script to run automatically** — before page scripts, on the
-   current page and every navigation. It returns a handle that `remove_preload` discards; a preload
-   script runs only on its own, never by handle.
+3. **`preload(source)` registers a script to run automatically** — before the page's own scripts on
+   every navigation, and immediately when registered on the current page. It returns a handle that
+   `remove_preload` discards; a preload script runs only on its own, never by handle.
 
 ```ruby
 loaded = driver.script.preload("window.__inject = true")
@@ -70,8 +70,9 @@ driver.script().removePreload(loaded);
 **Subscribing to events**
 
 4. **Console messages and JavaScript errors are separate handlers**, even though one `log` event
-   feeds both, so a console subscriber does not also receive stack traces. **DOM-mutation handlers
-   select which changes to observe** — attribute, child-list, character-data, or any combination.
+   feeds both — a console subscriber receives console output, not the page's uncaught errors.
+   **DOM-mutation handlers select which changes to observe** — attribute, child-list,
+   character-data, or any combination.
 
 ```ruby
 driver.script.add_console_message_handler { |m| log(m.text) }
@@ -98,9 +99,9 @@ driver.script().removeConsoleMessageHandler(handler);
 ```
 
 6. **Each event carries a shaped payload — not the raw protocol entry.** It includes an explicit
-   source location and stack trace: console message (level, text, type, arguments, source, stack),
-   JavaScript error (message, source, stack), DOM mutation (target element, mutation kind, attribute
-   name with old and new value, added and removed nodes).
+   source location and stack trace: console message (level, text, type, arguments, source, stack
+   trace), JavaScript error (message, source, stack trace), DOM mutation (target element, mutation
+   kind, attribute name with old and new value, added and removed nodes).
 
 ```ruby
 driver.script.add_console_message_handler { |m| log(m.level, m.text, m.source.url, m.stacktrace) }
