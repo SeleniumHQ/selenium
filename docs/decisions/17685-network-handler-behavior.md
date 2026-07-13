@@ -55,19 +55,19 @@ network.clearRequestHandlers();
 ```
 
 2. **A handler is scoped by an optional list of URL patterns given as structured objects.** Each
-   pattern is an object of URL components — protocol, host, port, path, query — each optional: a
-   component that is set matches exactly, one left unset matches any value. A handler matches a
-   request against any pattern in its list; with no list it matches every request. A pattern is an
-   object, not a URL or glob string.
+   pattern is an object of URL components — protocol, hostname, port, pathname, search — each
+   optional: a component that is set matches exactly, one left unset matches any value. A handler
+   matches a request against any pattern in its list; with no list it matches every request. A pattern
+   is an object, not a URL or glob string.
 
 ```ruby
 # One or more component objects; a request matches any of them
-network.add_request_handler(url_patterns: [{host: "api.example.com"}, {host: "cdn.example.com"}]) { |r| r.fail }
+network.add_request_handler(url_patterns: [{hostname: "api.example.com"}, {hostname: "cdn.example.com"}]) { |r| r.fail }
 ```
 
 ```java
 network.addRequestHandler(
-    List.of(UrlPattern.host("api.example.com"), UrlPattern.host("cdn.example.com")),
+    List.of(new UrlPattern().hostname("api.example.com"), new UrlPattern().hostname("cdn.example.com")),
     r -> r.fail());
 ```
 
@@ -78,12 +78,12 @@ network.addRequestHandler(
 ```ruby
 # Credentials computed in the callable, or supplied statically
 network.add_authentication_handler { |e| e.authenticate(vault.credentials_for(e.url)) }
-network.add_authentication_handler(username: "user", password: "pass", url_patterns: [{host: "secure.example.com"}])
+network.add_authentication_handler(username: "user", password: "pass", url_patterns: [{hostname: "secure.example.com"}])
 ```
 
 ```java
 network.addAuthenticationHandler(e -> e.authenticate(vault.credentialsFor(e.url())));
-network.addAuthenticationHandler("user", "pass", List.of(UrlPattern.host("secure.example.com")));
+network.addAuthenticationHandler("user", "pass", List.of(new UrlPattern().hostname("secure.example.com")));
 ```
 
 4. **A request or response handler observes or intercepts, and the event object enforces which.**
