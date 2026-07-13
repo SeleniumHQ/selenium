@@ -80,7 +80,9 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.Connection;
+import org.openqa.selenium.bidi.Handle;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
@@ -473,6 +475,22 @@ public class RemoteWebDriver
   @Override
   public Optional<BiDi> maybeGetBiDi() {
     return biDi;
+  }
+
+  // Calls maybeGetBiDi() rather than reading the private field directly so that subclasses
+  // that override maybeGetBiDi() (e.g. AppiumDriver) are not broken before they migrate to
+  // overriding getHandle(). Remove the @SuppressWarnings and switch to the field once
+  // maybeGetBiDi() is deleted.
+  @SuppressWarnings("deprecation")
+  @Override
+  public Handle getHandle() {
+    return maybeGetBiDi()
+        .map(BiDi::asHandle)
+        .orElseThrow(
+            () ->
+                new BiDiException(
+                    "Check if this browser version supports BiDi and if the"
+                        + " 'webSocketUrl: true' capability is set."));
   }
 
   // Misc

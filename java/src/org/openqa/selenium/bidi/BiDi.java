@@ -167,4 +167,8 @@ public class BiDi implements Closeable {
   public BiDiSessionStatus getBidiSessionStatus() {
     return send(new Command<>("session.status", emptyMap(), BiDiSessionStatus.class));
   }
+
+  public Handle asHandle() {
+    return new Handle(this);
+  }
 }
