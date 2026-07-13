@@ -21,10 +21,15 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
 
 public class SimplePropertyDescriptor {
+
+  private static final ConcurrentMap<Class<?>, SimplePropertyDescriptor[]> DESCRIPTOR_CACHE =
+      new ConcurrentHashMap<>();
 
   private static final Function<Object, @Nullable Object> GET_CLASS_NAME = new GetClassName();
   private final Class<?> clazz;
@@ -61,6 +66,10 @@ public class SimplePropertyDescriptor {
   }
 
   public static SimplePropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) {
+    return DESCRIPTOR_CACHE.computeIfAbsent(clazz, SimplePropertyDescriptor::getPropertyDescriptorsUncached);
+  }
+
+  private static SimplePropertyDescriptor[] getPropertyDescriptorsUncached(Class<?> clazz) {
     Map<String, SimplePropertyDescriptor> properties = new HashMap<>();
 
     properties.put("class", new SimplePropertyDescriptor(clazz, "class", GET_CLASS_NAME, null));
