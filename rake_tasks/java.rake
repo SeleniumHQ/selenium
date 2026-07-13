@@ -161,14 +161,16 @@ STARLARK
 
 desc 'Copy Bazel-built dependency jars to ./java-libs for local development'
 task :local_dev do
-  Bazel.execute('build', [], '//java/test/...')
+  # pin_browsers defaults to true and would download pinned browsers/drivers this task doesn't need.
+  Bazel.execute('build', ['--pin_browsers=false'], '//java/test/...')
 
   # Bazel.execute merges stdout/stderr, so ignore INFO/progress lines and keep only real paths.
   execroot = nil
-  Bazel.execute('info', [], 'execution_root') { |out| execroot = out.lines.map(&:strip).grep(%r{/execroot/}).last }
+  Bazel.execute('info', [], 'execution_root') { |out| execroot = out.lines.map(&:strip).grep(%r{[\\/]execroot[\\/]}).last }
+  raise 'Could not determine Bazel execution_root' unless execroot
 
   jars = []
-  Bazel.execute('cquery', ['--output=starlark', "--starlark:expr=#{JAVA_LIBS_STARLARK}"],
+  Bazel.execute('cquery', ['--pin_browsers=false', '--output=starlark', "--starlark:expr=#{JAVA_LIBS_STARLARK}"],
                 'deps(kind("java_test", //java/test/...))') do |out|
     jars = out.lines.map(&:strip).select { |line| line.end_with?('.jar') }.uniq
   end
