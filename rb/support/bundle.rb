@@ -35,5 +35,7 @@ ENV["BUNDLE_DISABLE_SHARED_GEMS"] ||= "1"
 
 FileUtils.mkdir_p(ENV["BUNDLE_PATH"])
 
+# The bundle subcommand (e.g. "lock" or "update") and any flags are supplied by
+# the caller so a single script backs both //rb:bundle-lock and //rb:bundle-update.
 ruby = RbConfig.ruby
-exec ruby, "-S", "bundle", "update", *ARGV
+exec ruby, "-S", "bundle", *ARGV

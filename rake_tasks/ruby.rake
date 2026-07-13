@@ -187,8 +187,10 @@ task :lint do |_task, arguments|
   )
 end
 
-desc 'Sync gem checksums from Gemfile.lock to MODULE.bazel (use force to re-download all)'
+desc 'Reconcile Gemfile.lock and sync gem checksums to MODULE.bazel (use force to re-download all)'
 task :pin, [:force] do |_task, arguments|
+  Bazel.execute('run', [], '//rb:bundle-lock')
+
   gemfile_lock = 'rb/Gemfile.lock'
   module_bazel = 'MODULE.bazel'
   force = arguments[:force] == 'force'
