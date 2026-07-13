@@ -20,6 +20,7 @@ package org.openqa.selenium.bidi.network;
 import java.util.ArrayList;
 import java.util.List;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
@@ -27,6 +28,7 @@ import org.openqa.selenium.json.TypeToken;
 /**
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#type-network-RequestData">BiDi spec</a>
  */
+@Beta
 public class RequestData {
   private final String requestId;
   private final String url;

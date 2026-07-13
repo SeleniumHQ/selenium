@@ -19,6 +19,6 @@
 
 module Selenium
   module DevTools
-    VERSION = '0.148.0'
+    VERSION = '0.150.0'
   end # DevTools
 end # Selenium

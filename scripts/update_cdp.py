@@ -27,14 +27,9 @@ def get_chrome_milestone():
 
     r = http.request(
         "GET",
-        f"https://chromiumdash.appspot.com/fetch_releases?channel={channel}&num=1&platform=Mac,Linux",
+        "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json",
     )
-    all_versions = json.loads(r.data)
-    # use the same milestone for all Chrome releases, so pick the lowest
-    milestones = [version["milestone"] for version in all_versions if version["milestone"]]
-    if not milestones:
-        raise ValueError(f"No Chrome versions with milestones found for channel '{channel}'")
-    milestone = min(milestones)
+    milestone = json.loads(r.data)["channels"][channel]["version"].split(".")[0]
     r = http.request(
         "GET",
         "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json",
@@ -49,6 +44,8 @@ def get_chrome_milestone():
 
 def fetch_and_save(url, file_path):
     response = http.request("GET", url)
+    if response.status != 200:
+        raise ValueError(f"Fetch failed (HTTP {response.status}): {url}")
     with open(file_path, "wb") as file:
         file.write(response.data)
 
@@ -79,6 +76,8 @@ def flatten_browser_pdl(file_path, chrome_version):
     for domain_file in includes:
         url = base_url + domain_file
         response = http.request("GET", url)
+        if response.status != 200:
+            raise ValueError(f"Fetch failed (HTTP {response.status}): {url}")
         concatenated += response.data.decode("utf-8") + "\n"
     # Overwrite the file with version block + concatenated domains
     with open(file_path, "w") as file:

@@ -1,10 +1,10 @@
 # BUILD FILE SYNTAX: STARLARK
 
-SE_VERSION = "4.45.0-nightly202605121853"
+SE_VERSION = "4.47.0-nightly202607110055"
 
 SUPPORTED_DEVTOOLS_VERSIONS = [
-    "v146",
-    "v147",
+    "v149",
+    "v150",
     "v148",
 ]
 

@@ -132,7 +132,7 @@ module Selenium
 
             expect {
               driver.new(url: 'http://example.com:4321')
-            }.to raise_error(ArgumentError, "Can't initialize Selenium::WebDriver::Edge::Driver with :url")
+            }.to raise_error(ArgumentError, /Can't set the server URL for/)
 
             expect(described_class).not_to have_received(:new)
           end

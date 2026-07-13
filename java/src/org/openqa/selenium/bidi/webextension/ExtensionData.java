@@ -18,7 +18,9 @@
 package org.openqa.selenium.bidi.webextension;
 
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
+@Beta
 public interface ExtensionData {
   Map<String, Object> toMap();
 }

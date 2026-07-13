@@ -157,7 +157,7 @@ module Selenium
         end
       end
 
-      describe '#double_click' do
+      describe '#double_click', skip_if: {browser: %i[safari safari_preview]} do
         # https://issues.chromium.org/issues/400087471
         before { reset_driver! if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome }
 
@@ -378,7 +378,7 @@ module Selenium
           }.to raise_error(Error::MoveTargetOutOfBoundsError)
         end
 
-        it 'scrolls by given amount with offset' do
+        it 'scrolls by given amount with offset', flaky: {browser: %i[safari safari_preview], ci: :github} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame.html')
           scroll_origin = WheelActions::ScrollOrigin.viewport(10, 10)
 

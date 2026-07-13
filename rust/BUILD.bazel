@@ -71,6 +71,12 @@ filegroup(
     ],
 )
 
+alias(
+    name = "rust",
+    actual = ":selenium_manager",
+    visibility = ["//visibility:public"],
+)
+
 rust_binary(
     # Yes, this name is very similar to the library. Note the dash
     # instead of an underscore
@@ -78,7 +84,13 @@ rust_binary(
     srcs = ["src/main.rs"],
     aliases = aliases(),
     edition = "2024",
-    version = "0.4.44",
+    # clap's `#[clap(about)]` derives the CLI description from
+    # CARGO_PKG_DESCRIPTION. Cargo sets this from Cargo.toml automatically, but
+    # the Bazel build must supply it explicitly. Keep in sync with rust/Cargo.toml.
+    rustc_env = {
+        "CARGO_PKG_DESCRIPTION": "Selenium Manager is a CLI tool that automatically manages the browser/driver resources required by Selenium.",
+    },
+    version = "0.4.47-nightly",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium_manager",

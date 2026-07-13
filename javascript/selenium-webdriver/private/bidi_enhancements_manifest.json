@@ -1,0 +1,123 @@
+{
+  "browser": {
+    "excludeTypes": [],
+    "excludeMethods": [],
+    "extraMethods": {},
+    "extraTypes": "/** @deprecated Use {@link Browser.create} instead — will be removed in a future major version. */\nexport async function getBrowserInstance(driver: unknown): Promise<Browser> {\n  return Browser.create(driver)\n}\n"
+  },
+  "browsingContext": {
+    "excludeTypes": [],
+    "excludeMethods": [],
+    "extraMethods": {
+      "back": "  async back(context: BrowsingContextBrowsingContext): Promise<void> {\n    await this.traverseHistory({ context, delta: -1 })\n  }",
+      "forward": "  async forward(context: BrowsingContextBrowsingContext): Promise<void> {\n    await this.traverseHistory({ context, delta: 1 })\n  }",
+      "getTopLevelContexts": "  async getTopLevelContexts(): Promise<BrowsingContextGetTreeResult> {\n    return this.getTree({})\n  }",
+      "printPage": "  async printPage(params: BrowsingContextPrintParameters): Promise<BrowsingContextPrintResult> {\n    return this.print(params)\n  }"
+    },
+    "extraTypes": "/** @deprecated Use {@link BrowsingContext.create} instead — will be removed in a future major version. */\nexport async function getBrowsingContextInstance(driver: unknown): Promise<BrowsingContext> {\n  return BrowsingContext.create(driver)\n}\n"
+  },
+  "emulation": {
+    "excludeTypes": [],
+    "excludeMethods": [],
+    "extraMethods": {},
+    "extraTypes": ""
+  },
+  "input": {
+    "excludeTypes": [],
+    "excludeMethods": [],
+    "extraMethods": {
+      "perform": "  /** @deprecated Use {@link performActions} instead — will be removed in a future major version. */\n  async perform(browsingContextId: string, actions: InputSourceActions[]): Promise<void> {\n    await this.performActions({ context: browsingContextId, actions })\n  }",
+      "release": "  /** @deprecated Use {@link releaseActions} instead — will be removed in a future major version. */\n  async release(browsingContextId: string): Promise<void> {\n    await this.releaseActions({ context: browsingContextId })\n  }"
+    },
+    "extraTypes": "/** @deprecated Use {@link Input.create} instead — will be removed in a future major version. */\nexport async function getInputInstance(driver: unknown): Promise<Input> {\n  return Input.create(driver)\n}\n"
+  },
+  "log": {
+    "excludeTypes": [],
+    "excludeMethods": [],
+    "extraMethods": {
+      "onConsoleEntry": "  async onConsoleEntry(callback: (params: LogEntry) => void): Promise<void> {\n    await this.onEntryAdded((entry) => {\n      if (entry.type === 'console') callback(entry)\n    })\n  }",
+      "onJavascriptLog": "  async onJavascriptLog(callback: (params: LogEntry) => void): Promise<void> {\n    await this.onEntryAdded((entry) => {\n      if (entry.type === 'javascript') callback(entry)\n    })\n  }",
+      "onJavascriptException": "  async onJavascriptException(callback: (params: LogEntry) => void): Promise<void> {\n    await this.onEntryAdded((entry) => {\n      if (entry.type === 'javascript' && entry.level === 'error') callback(entry)\n    })\n  }",
+      "onLog": "  async onLog(callback: (params: LogEntry) => void): Promise<void> {\n    await this.onEntryAdded(callback)\n  }"
+    },
+    "extraTypes": "/** @deprecated Use {@link Log.create} instead — will be removed in a future major version. */\nexport async function getLogInspectorInstance(driver: unknown): Promise<Log> {\n  return Log.create(driver)\n}\n"
+  },
+  "network": {
+    "excludeTypes": [],
+    "excludeMethods": [],
+    "extraMethods": {
+      "cancelAuth": "  async cancelAuth(requestId: NetworkRequest): Promise<void> {\n    await this.continueWithAuth({ request: requestId, action: 'cancel' } as NetworkContinueWithAuthParameters)\n  }",
+      "continueWithAuthNoCredentials": "  async continueWithAuthNoCredentials(requestId: NetworkRequest): Promise<void> {\n    await this.continueWithAuth({ request: requestId, action: 'default' } as NetworkContinueWithAuthParameters)\n  }",
+      "continueWithAuth": "  async continueWithAuth(params: NetworkContinueWithAuthParameters): Promise<void>\n  /** @deprecated Pass a NetworkContinueWithAuthParameters object instead — will be removed in a future major version. */\n  async continueWithAuth(requestId: NetworkRequest, username: string, password: string): Promise<void>\n  async continueWithAuth(\n    paramsOrRequestId: NetworkContinueWithAuthParameters | NetworkRequest,\n    username?: string,\n    password?: string,\n  ): Promise<void> {\n    let params: NetworkContinueWithAuthParameters\n    if (typeof paramsOrRequestId === 'string') {\n      if (username === undefined || password === undefined) {\n        throw new Error('username and password are required when calling continueWithAuth with a request id')\n      }\n      params = {\n        request: paramsOrRequestId,\n        action: 'provideCredentials',\n        credentials: { type: 'password', username, password },\n      } as NetworkContinueWithAuthParameters\n    } else {\n      params = paramsOrRequestId as NetworkContinueWithAuthParameters\n    }\n    const response = await this.bidi.send({\n      method: 'network.continueWithAuth',\n      params: params as unknown as Record<string, unknown>,\n    }) as Record<string, unknown>\n    if (response['type'] === 'error') {\n      throw new Error(`${response['error']}: ${response['message']}`)\n    }\n  }",
+      "beforeRequestSent": "  /** @deprecated Use {@link onBeforeRequestSent} instead — will be removed in a future major version. */\n  async beforeRequestSent(callback: (params: NetworkBeforeRequestSentParameters) => void): Promise<void> {\n    await this.onBeforeRequestSent(callback)\n  }",
+      "authRequired": "  /** @deprecated Use {@link onAuthRequired} instead — will be removed in a future major version. */\n  async authRequired(callback: (params: NetworkAuthRequiredParameters) => void): Promise<void> {\n    await this.onAuthRequired(callback)\n  }",
+      "fetchError": "  /** @deprecated Use {@link onFetchError} instead — will be removed in a future major version. */\n  async fetchError(callback: (params: NetworkFetchErrorParameters) => void): Promise<void> {\n    await this.onFetchError(callback)\n  }",
+      "responseCompleted": "  /** @deprecated Use {@link onResponseCompleted} instead — will be removed in a future major version. */\n  async responseCompleted(callback: (params: NetworkResponseCompletedParameters) => void): Promise<void> {\n    await this.onResponseCompleted(callback)\n  }",
+      "responseStarted": "  /** @deprecated Use {@link onResponseStarted} instead — will be removed in a future major version. */\n  async responseStarted(callback: (params: NetworkResponseStartedParameters) => void): Promise<void> {\n    await this.onResponseStarted(callback)\n  }"
+    },
+    "extraTypes": "/** @deprecated Use {@link Network.create} instead — will be removed in a future major version. */\nexport async function getNetworkInstance(driver: unknown): Promise<Network> {\n  return Network.create(driver)\n}\n"
+  },
+  "permissions": {
+    "excludeTypes": [],
+    "excludeMethods": [],
+    "extraMethods": {},
+    "extraTypes": ""
+  },
+  "script": {
+    "excludeTypes": [],
+    "excludeMethods": [],
+    "extraMethods": {
+      "getAllRealms": "  async getAllRealms(): Promise<ScriptGetRealmsResult> {\n    return this.getRealms({})\n  }",
+      "getRealmsByType": "  async getRealmsByType(type: ScriptRealmType): Promise<ScriptGetRealmsResult> {\n    return this.getRealms({ type })\n  }",
+      "getRealmsInBrowsingContext": "  async getRealmsInBrowsingContext(context: BrowsingContextBrowsingContext): Promise<ScriptGetRealmsResult> {\n    return this.getRealms({ context })\n  }",
+      "getRealmsInBrowsingContextByType": "  async getRealmsInBrowsingContextByType(context: BrowsingContextBrowsingContext, type: ScriptRealmType): Promise<ScriptGetRealmsResult> {\n    return this.getRealms({ context, type })\n  }",
+      "callFunctionInRealm": "  async callFunctionInRealm(realmId: ScriptRealm, functionDeclaration: string, awaitPromise: boolean, args?: ScriptLocalValue[], resultOwnership?: ScriptResultOwnership, serializationOptions?: ScriptSerializationOptions, userActivation?: boolean): Promise<ScriptEvaluateResult> {\n    return this.callFunction({ functionDeclaration, awaitPromise, target: { realm: realmId }, arguments: args, resultOwnership, serializationOptions, userActivation })\n  }",
+      "callFunctionInBrowsingContext": "  async callFunctionInBrowsingContext(browsingContextId: BrowsingContextBrowsingContext, functionDeclaration: string, awaitPromise: boolean, args?: ScriptLocalValue[], sandbox?: string, resultOwnership?: ScriptResultOwnership, serializationOptions?: ScriptSerializationOptions, userActivation?: boolean): Promise<ScriptEvaluateResult> {\n    return this.callFunction({ functionDeclaration, awaitPromise, target: { context: browsingContextId, sandbox }, arguments: args, resultOwnership, serializationOptions, userActivation })\n  }",
+      "evaluateFunctionInRealm": "  async evaluateFunctionInRealm(realmId: ScriptRealm, expression: string, awaitPromise: boolean, resultOwnership?: ScriptResultOwnership, serializationOptions?: ScriptSerializationOptions, userActivation?: boolean): Promise<ScriptEvaluateResult> {\n    return this.evaluate({ expression, awaitPromise, target: { realm: realmId }, resultOwnership, serializationOptions, userActivation })\n  }",
+      "evaluateFunctionInBrowsingContext": "  async evaluateFunctionInBrowsingContext(browsingContextId: BrowsingContextBrowsingContext, expression: string, awaitPromise: boolean, sandbox?: string, resultOwnership?: ScriptResultOwnership, serializationOptions?: ScriptSerializationOptions, userActivation?: boolean): Promise<ScriptEvaluateResult> {\n    return this.evaluate({ expression, awaitPromise, target: { context: browsingContextId, sandbox }, resultOwnership, serializationOptions, userActivation })\n  }",
+      "disownRealmScript": "  async disownRealmScript(realmId: ScriptRealm, handles: ScriptHandle[]): Promise<void> {\n    await this.disown({ handles, target: { realm: realmId } })\n  }",
+      "disownBrowsingContextScript": "  async disownBrowsingContextScript(browsingContextId: BrowsingContextBrowsingContext, handles: ScriptHandle[], sandbox?: string): Promise<void> {\n    await this.disown({ handles, target: { context: browsingContextId, sandbox } })\n  }"
+    },
+    "extraTypes": "/** @deprecated Use {@link Script.create} instead — will be removed in a future major version. */\nexport async function getScriptManagerInstance(driver: unknown): Promise<Script> {\n  return Script.create(driver)\n}\n"
+  },
+  "session": {
+    "excludeTypes": [],
+    "excludeMethods": [],
+    "extraMethods": {},
+    "extraTypes": ""
+  },
+  "speculation": {
+    "excludeTypes": [],
+    "excludeMethods": [],
+    "extraMethods": {},
+    "extraTypes": ""
+  },
+  "storage": {
+    "excludeTypes": [],
+    "excludeMethods": [],
+    "extraMethods": {},
+    "extraTypes": "/** @deprecated Use {@link Storage.create} instead — will be removed in a future major version. */\nexport async function getStorageInstance(driver: unknown): Promise<Storage> {\n  return Storage.create(driver)\n}\n"
+  },
+  "userAgentClientHints": {
+    "excludeTypes": [],
+    "excludeMethods": [],
+    "extraMethods": {},
+    "extraTypes": ""
+  },
+  "webExtension": {
+    "excludeTypes": [],
+    "excludeMethods": [],
+    "extraMethods": {},
+    "extraTypes": ""
+  },
+  "bluetooth": {
+    "excludeTypes": [],
+    "excludeMethods": [],
+    "extraMethods": {},
+    "extraTypes": ""
+  },
+  "common": {
+    "excludeTypes": [],
+    "extraTypes": ""
+  }
+}

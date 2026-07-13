@@ -44,6 +44,8 @@ Metrics/ClassLength:
   Exclude:
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
+    - 'lib/selenium/webdriver/bidi/support/bidi_generate.rb'
+    - 'lib/selenium/webdriver/bidi/protocol/**/*'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/CyclomaticComplexity:
@@ -64,6 +66,7 @@ Metrics/ModuleLength:
   Max: 110
   Exclude:
     - 'lib/selenium/webdriver/common/platform.rb'
+    - 'lib/selenium/webdriver/bidi/support/bidi_generate.rb'
     - 'spec/**/*'
 
 Metrics/PerceivedComplexity:
@@ -71,8 +74,15 @@ Metrics/PerceivedComplexity:
   Exclude:
     - '../rake_tasks/**/*'
 
+Metrics/ParameterLists:
+  CountKeywordArgs: false
+
 Naming/BlockForwarding:
   EnforcedStyle: explicit
+
+Naming/AccessorMethodName:
+  Exclude:
+    - 'lib/selenium/webdriver/bidi/protocol/**/*'
 
 Naming/FileName:
   Exclude:

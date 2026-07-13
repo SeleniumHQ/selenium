@@ -81,6 +81,12 @@ task :release_update do |_task, _arguments|
   Rake::Task[:update_multitool].invoke
 end
 
+desc 'Update pinned CDDL spec files from w3c/webref'
+task :update_cddl do |_task, _arguments|
+  puts 'Updating pinned CDDL spec references'
+  Bazel.execute('run', [], '//scripts:update_cddl')
+end
+
 desc 'Update Chrome DevTools support'
 task :update_cdp, [:channel] do |_task, arguments|
   chrome_channel = arguments[:channel] || 'stable'
@@ -112,6 +118,7 @@ task :release_updates, [:tag, :channel] do |_task, arguments|
   if parsed[:patch].zero?
     Rake::Task['update_browsers'].invoke(arguments[:channel])
     Rake::Task['update_cdp'].invoke(arguments[:channel])
+    Rake::Task['update_cddl'].invoke
     Rake::Task['update_manager'].invoke
     Rake::Task['update_multitool'].invoke
     Rake::Task['authors'].invoke

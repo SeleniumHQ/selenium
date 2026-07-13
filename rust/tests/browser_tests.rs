@@ -20,6 +20,8 @@ use crate::common::{assert_output, get_selenium_manager, get_stdout};
 use exitcode::DATAERR;
 use rstest::rstest;
 use std::env::consts::OS;
+#[cfg(unix)]
+use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
 
 mod common;
@@ -159,4 +161,76 @@ fn invalid_browser_path_test() {
     .assert()
     .code(DATAERR)
     .failure();
+}
+
+#[cfg(unix)]
+fn create_fake_browser(version: &str) -> std::path::PathBuf {
+    let tmp = std::env::temp_dir().join(format!("fake-chrome-{}", version.replace('.', "-")));
+    let script = format!("#!/bin/sh\necho 'Google Chrome {}'\n", version);
+    std::fs::write(&tmp, script).expect("Unable to write fake browser script");
+    std::fs::set_permissions(&tmp, std::fs::Permissions::from_mode(0o755))
+        .expect("Unable to set executable bit");
+    tmp
+}
+
+#[test]
+#[cfg(unix)]
+fn browser_path_version_mismatch_test() {
+    let fake_browser = create_fake_browser("131.0.6778.264");
+    let mut cmd = get_selenium_manager();
+    let stdout = cmd
+        .args([
+            "--browser",
+            "chrome",
+            "--browser-path",
+            fake_browser.to_str().unwrap(),
+            "--browser-version",
+            "999.0.0.0",
+            "--debug",
+        ])
+        .assert()
+        .get_output()
+        .stdout
+        .clone();
+    let stdout_str = std::str::from_utf8(&stdout).unwrap();
+    // The mismatch is always reported, either as ERROR (no cached driver) or WARN (fallback used)
+    assert!(
+        stdout_str.contains("131.0.6778.264"),
+        "Should mention detected version"
+    );
+    assert!(
+        stdout_str.contains("999.0.0.0"),
+        "Should mention requested version"
+    );
+}
+
+#[test]
+#[cfg(unix)]
+fn browser_path_major_version_mismatch_test() {
+    let fake_browser = create_fake_browser("131.0.6778.264");
+    let mut cmd = get_selenium_manager();
+    let stdout = cmd
+        .args([
+            "--browser",
+            "chrome",
+            "--browser-path",
+            fake_browser.to_str().unwrap(),
+            "--browser-version",
+            "999",
+            "--debug",
+        ])
+        .assert()
+        .get_output()
+        .stdout
+        .clone();
+    let stdout_str = std::str::from_utf8(&stdout).unwrap();
+    // Major-only version mismatch must also be reported
+    assert!(
+        stdout_str.contains("131.0.6778.264"),
+        "Should mention detected version"
+    );
+    assert!(
+        stdout_str.contains("999"),
+        "Should mention requested version"
+    );
 }

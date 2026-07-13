@@ -29,6 +29,14 @@ py_binary(
 )
 
 py_binary(
+    name = "update_cddl",
+    srcs = ["update_cddl.py"],
+    deps = [
+        requirement("urllib3"),
+    ],
+)
+
+py_binary(
     name = "update_copyright",
     srcs = ["update_copyright.py"],
 )

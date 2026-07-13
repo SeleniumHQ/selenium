@@ -17,11 +17,14 @@
 
 package org.openqa.selenium.bidi.permissions;
 
+import org.openqa.selenium.Beta;
+
 /**
  * @see <a
  *     href="https://www.w3.org/TR/permissions/#webdriver-bidi-type-permissions-PermissionState">BiDi
  *     spec</a>
  */
+@Beta
 public enum PermissionState {
   GRANTED("granted"),
   DENIED("denied"),

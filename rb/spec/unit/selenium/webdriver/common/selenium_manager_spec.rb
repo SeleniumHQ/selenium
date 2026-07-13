@@ -31,7 +31,7 @@ module Selenium
           allow(Platform).to receive(:assert_executable).with('/path/to/selenium-manager').and_return(true)
           allow(ENV).to receive(:fetch).with('SE_MANAGER_PATH', nil).and_return('/path/to/selenium-manager')
 
-          expect(described_class.send(:binary)).to match(%r{/path/to/selenium-manager})
+          expect(described_class.send(:binary)).to include('/path/to/selenium-manager')
         end
 
         it 'detects Windows' do

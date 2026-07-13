@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-using CurrentCdpVersion = OpenQA.Selenium.DevTools.V148;
+using CurrentCdpVersion = OpenQA.Selenium.DevTools.V150;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 
@@ -34,10 +34,10 @@ public class DevToolsTabsTests : DevToolsTestFixture
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Console.Enable();
-        var oldWindowHandle = driver.CurrentWindowHandle;
-        driver.SwitchTo().NewWindow(WindowType.Tab);
-        driver.SwitchTo().Window(oldWindowHandle);
-        driver.Close();
+        var oldWindowHandle = Driver.CurrentWindowHandle;
+        Driver.SwitchTo().NewWindow(WindowType.Tab);
+        Driver.SwitchTo().Window(oldWindowHandle);
+        Driver.Close();
         Assert.That(
             async () =>
             {

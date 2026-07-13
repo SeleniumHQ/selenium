@@ -114,6 +114,9 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
   @Nullable private final MBean jmxBean;
 
+  // Flipped on close() so the readiness probe reports not-ready while the instance drains.
+  private volatile boolean shuttingDown = false;
+
   public LocalNewSessionQueue(
       Tracer tracer,
       SlotMatcher slotMatcher,
@@ -500,11 +503,14 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
   @Override
   public boolean isReady() {
-    return true;
+    // Report not-ready once a shutdown begins so traffic is routed away while the instance drains.
+    return !shuttingDown;
   }
 
   @Override
   public void close() {
+    shuttingDown = true;
+
     shutdownGracefully(NAME, service);
 
     if (jmxBean != null) {

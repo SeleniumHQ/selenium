@@ -120,7 +120,7 @@ def get_remote_connection(
         from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
 
         handler = ChromeRemoteConnection
-    elif browser_name == "MicrosoftEdge":
+    elif browser_name in ("MicrosoftEdge", "webview2"):
         from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
 
         handler = EdgeRemoteConnection
@@ -128,7 +128,7 @@ def get_remote_connection(
         from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
 
         handler = FirefoxRemoteConnection
-    elif browser_name == "Safari":
+    elif browser_name in ("safari", "Safari Technology Preview"):
         from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 
         handler = SafariRemoteConnection
@@ -637,6 +637,11 @@ class WebDriver(BaseWebDriver):
     def quit(self) -> None:
         """Quits the driver and closes every associated window."""
         try:
+            # Close the BiDi/CDP websocket before deleting the session so the
+            # close is initiated from our side.
+            if self._websocket_connection is not None:
+                self._websocket_connection.close()
+                self._websocket_connection = None
             self.execute(Command.QUIT)
         finally:
             if self._request is not None:

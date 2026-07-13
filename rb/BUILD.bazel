@@ -178,15 +178,30 @@ rb_binary(
 )
 
 rb_binary(
-    name = "bundle-update",
+    name = "bundle-lock",
     args = [
-        "rb/support/bundle_update.rb",
+        "rb/support/bundle.rb",
+        "lock",
     ],
     data = [
         "Gemfile",
     ],
     deps = [
-        "//rb/support:bundle_update",
+        "//rb/support:bundle",
+    ],
+)
+
+rb_binary(
+    name = "bundle-update",
+    args = [
+        "rb/support/bundle.rb",
+        "update",
+    ],
+    data = [
+        "Gemfile",
+    ],
+    deps = [
+        "//rb/support:bundle",
     ],
 )
 

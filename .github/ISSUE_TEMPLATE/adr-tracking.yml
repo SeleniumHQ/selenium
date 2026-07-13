@@ -1,0 +1,43 @@
+name: 📋 ADR Implementation Tracking
+description: Track per-binding convergence on an accepted design decision record (ADR)
+title: "[📋 ADR]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Open this issue when a design decision record is **Accepted**. It tracks each binding's
+        progress toward implementing the decision so the committed record stays immutable.
+        Link it from the record's PR. See [docs/decisions/README.md](https://github.com/SeleniumHQ/selenium/blob/trunk/docs/decisions/README.md).
+
+  - type: input
+    id: record
+    attributes:
+      label: Decision record
+      description: Link to the accepted record and its PR (the record number is the PR number).
+      placeholder: "docs/decisions/NNNN-title.md (#NNNN)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: bindings
+    attributes:
+      label: Binding implementation
+      description: |
+        Replace each placeholder with the implementing PR and check the box when it merges.
+        Mark a binding `n/a` with a note if the decision does not apply to it.
+      value: |
+        - [ ] Java — _PR_
+        - [ ] Python — _PR_
+        - [ ] Ruby — _PR_
+        - [ ] .NET — _PR_
+        - [ ] JavaScript — _PR_
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Anything blocking convergence, or per-binding caveats discovered during implementation.
+    validations:
+      required: false

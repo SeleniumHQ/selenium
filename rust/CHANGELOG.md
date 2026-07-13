@@ -1,3 +1,20 @@
+0.4.46
+======
+* [build] Automated Browser Version Update (#17687)
+* Support pbzx-compressed macOS .pkg payloads (#17691)
+* Use PKG again for Firefox macOS downloads (#17702)
+* [selenium-manager]: do not ignore browser path when version is specified (#17659)
+* Support multiple names for Firefox binary in Linux (#17695)
+* Prevent path traversal in tar and pkg extraction (#17668). Reported by @Encrypter-404
+
+0.4.45
+======
+* update reqwest to 0.13 (#17488)
+* Change command execution to argv (#17576)
+* Improve SM error messages when browser/driver version not found (#17584)
+* Switch reqwest TLS backend from aws-lc-rs to ring (#17589)
+* [SM] Automatically prune cache entries older than 30 days (#17585)
+
 0.4.44
 ======
 * Initial Creation of the Selenium CLI Tool (#17327)

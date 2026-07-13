@@ -35,6 +35,23 @@ end
 desc 'Build, package, and push nupkg files to NuGet'
 task :release do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
+
+  unless nightly
+    already_published = begin
+      Rake::Task['dotnet:verify'].invoke
+      true
+    rescue StandardError
+      false
+    ensure
+      Rake::Task['dotnet:verify'].reenable
+    end
+
+    if already_published
+      puts '.NET packages already published — skipping release.'
+      next
+    end
+  end
+
   Rake::Task['dotnet:check_credentials'].invoke(*arguments.to_a)
 
   if nightly

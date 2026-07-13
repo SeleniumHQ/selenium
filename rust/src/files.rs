@@ -20,7 +20,7 @@ use crate::config::OS::WINDOWS;
 use crate::{Command, Logger, MACOS, format_one_arg, run_shell_command};
 use anyhow::Error;
 use anyhow::anyhow;
-use apple_flat_package::PkgReader;
+use apple_flat_package::{ComponentPackageReader, PkgReader};
 use bzip2::read::BzDecoder;
 use directories::BaseDirs;
 use flate2::read::GzDecoder;
@@ -88,6 +88,22 @@ pub fn create_parent_path_if_not_exists(path: &Path) -> Result<(), Error> {
 pub fn create_path_if_not_exists(path: &Path) -> Result<(), Error> {
     if !path.exists() {
         fs::create_dir_all(path)?;
+    }
+    Ok(())
+}
+
+pub fn check_path_traversal(entry_path: &Path) -> Result<(), Error> {
+    if entry_path.as_os_str().is_empty()
+        || entry_path.components().any(|c| {
+            matches!(
+                c,
+                std::path::Component::ParentDir
+                    | std::path::Component::RootDir
+                    | std::path::Component::Prefix(_)
+            )
+        })
+    {
+        return Err(anyhow!("Unsafe entry (path traversal): {:?}", entry_path));
     }
     Ok(())
 }
@@ -206,15 +222,79 @@ pub fn move_folder_content(source: &str, target: &Path, log: &Logger) -> Result<
     Ok(())
 }
 
+const PBZX_MAGIC: [u8; 4] = *b"pbzx";
+const XZ_MAGIC: [u8; 6] = [0xfd, 0x37, 0x7a, 0x58, 0x5a, 0x00];
+
+/// Decode a `pbzx` stream into the raw cpio archive it wraps.
+///
+/// `pbzx` is Apple's block-based container used for newer `.pkg` Payloads. It
+/// consists of a `pbzx` magic, an 8-byte flags field, then a sequence of chunks
+/// each prefixed by its big-endian decompressed and compressed sizes. A chunk is
+/// xz-compressed unless its bytes are stored verbatim.
+fn decode_pbzx(data: &[u8]) -> Result<Vec<u8>, Error> {
+    let mut cursor = Cursor::new(data);
+    let mut magic = [0u8; 4];
+    cursor.read_exact(&mut magic)?;
+    if magic != PBZX_MAGIC {
+        return Err(anyhow!("Payload is not a pbzx stream"));
+    }
+    // The 8-byte flags field is not needed to walk the chunks.
+    cursor.read_exact(&mut [0u8; 8])?;
+
+    let mut output = Vec::new();
+    let mut sizes = [0u8; 8];
+    loop {
+        match cursor.read_exact(&mut sizes) {
+            Ok(()) => {}
+            Err(err) if err.kind() == io::ErrorKind::UnexpectedEof => break,
+            Err(err) => return Err(err.into()),
+        }
+        // Decompressed size is recorded but not required to read the chunk.
+        cursor.read_exact(&mut sizes)?;
+        let compressed_size = u64::from_be_bytes(sizes) as usize;
+        let mut chunk = vec![0u8; compressed_size];
+        cursor.read_exact(&mut chunk)?;
+
+        if chunk.len() >= XZ_MAGIC.len() && chunk[..XZ_MAGIC.len()] == XZ_MAGIC {
+            XzDecoder::new(&chunk[..]).read_to_end(&mut output)?;
+        } else {
+            output.extend_from_slice(&chunk);
+        }
+    }
+    Ok(output)
+}
+
 pub fn uncompress_pkg(compressed_file: &str, target: &Path, log: &Logger) -> Result<(), Error> {
     let target_path = Path::new(target);
-    let mut reader = PkgReader::new(File::open(compressed_file)?)?;
-    let packages = reader.component_packages()?;
-    let package = packages.first().ok_or(anyhow!("Unable to extract PKG"))?;
+    let mut xar = PkgReader::new(File::open(compressed_file)?)?.into_inner();
+
+    let payload_path = xar
+        .files()?
+        .into_iter()
+        .map(|(name, _)| name)
+        .find(|name| name == "Payload" || name.ends_with("/Payload"))
+        .ok_or(anyhow!("Unable to extract PKG: no Payload found"))?;
+    let payload = xar
+        .get_file_data_from_path(&payload_path)?
+        .ok_or(anyhow!("Unable to extract PKG: empty Payload"))?;
+
+    // Newer macOS packages (e.g. Firefox beta) wrap the cpio Payload in the pbzx
+    // format, which apple-flat-package cannot decode. Unwrap pbzx to the raw cpio
+    // stream; gzip and uncompressed payloads are handled by payload_reader as-is.
+    let payload = if payload.len() >= PBZX_MAGIC.len() && payload[..PBZX_MAGIC.len()] == PBZX_MAGIC
+    {
+        log.trace("Decoding pbzx-compressed Payload".to_string());
+        decode_pbzx(&payload)?
+    } else {
+        payload
+    };
+
+    let package = ComponentPackageReader::from_file_data(None, None, Some(payload), None)?;
     if let Some(mut cpio_reader) = package.payload_reader()? {
         while let Some(next) = cpio_reader.next() {
             let entry = next?;
             let name = entry.name();
+            check_path_traversal(Path::new(name))?;
             let mut file = Vec::new();
             cpio_reader.read_to_end(&mut file)?;
             let target_path_buf = target_path.join(name);
@@ -367,7 +447,13 @@ pub fn uncompress_tar(decoder: &mut dyn Read, target: &Path, log: &Logger) -> Re
     let mut archive = Archive::new(Cursor::new(buffer));
     for entry in archive.entries()? {
         let mut entry_decoder = entry?;
-        let entry_path: PathBuf = entry_decoder.path()?.iter().skip(1).collect();
+        let path = entry_decoder.path()?;
+        let entry_path: PathBuf = if path.iter().count() > 1 {
+            path.iter().skip(1).collect()
+        } else {
+            path.to_path_buf()
+        };
+        check_path_traversal(&entry_path)?;
         let entry_target = target.join(entry_path);
         fs::create_dir_all(entry_target.parent().unwrap())?;
         entry_decoder.unpack(entry_target)?;
@@ -694,5 +780,149 @@ pub fn get_win_file_version(file_path: &str) -> Option<String> {
         let product_version = String::from_utf16_lossy(product_version_slice);
 
         Some(product_version.trim_end_matches('\0').to_string())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use super::{PBZX_MAGIC, decode_pbzx};
+    use std::io::Cursor;
+    use std::io::Write;
+    use xz2::write::XzEncoder;
+
+    fn xz_compress(data: &[u8]) -> Vec<u8> {
+        let mut encoder = XzEncoder::new(Vec::new(), 6);
+        encoder.write_all(data).unwrap();
+        encoder.finish().unwrap()
+    }
+
+    fn build_pbzx(chunks: &[&[u8]]) -> Vec<u8> {
+        let mut out = Vec::new();
+        out.extend_from_slice(&PBZX_MAGIC);
+        out.extend_from_slice(&0x0100_0000u64.to_be_bytes()); // flags
+        for chunk in chunks {
+            // Decompressed size is informational for our decoder; the chunk
+            // length and content (xz magic or not) drive decoding.
+            out.extend_from_slice(&(chunk.len() as u64).to_be_bytes());
+            out.extend_from_slice(&(chunk.len() as u64).to_be_bytes());
+            out.extend_from_slice(chunk);
+        }
+        out
+    }
+
+    #[test]
+    fn decode_pbzx_reads_stored_chunk() {
+        let payload = b"raw cpio bytes that are not xz compressed";
+        let pbzx = build_pbzx(&[payload]);
+
+        assert_eq!(decode_pbzx(&pbzx).unwrap(), payload);
+    }
+
+    #[test]
+    fn decode_pbzx_decompresses_xz_chunk() {
+        let original = b"070707cpio-like payload contents repeated repeated repeated";
+        let compressed = xz_compress(original);
+        let pbzx = build_pbzx(&[&compressed]);
+
+        assert_eq!(decode_pbzx(&pbzx).unwrap(), original);
+    }
+
+    #[test]
+    fn decode_pbzx_concatenates_multiple_chunks() {
+        let first = b"first-chunk-stored".to_vec();
+        let second = xz_compress(b"second-chunk-xz-compressed");
+        let pbzx = build_pbzx(&[&first, &second]);
+
+        let mut expected = first.clone();
+        expected.extend_from_slice(b"second-chunk-xz-compressed");
+        assert_eq!(decode_pbzx(&pbzx).unwrap(), expected);
+    }
+
+    #[test]
+    fn decode_pbzx_rejects_non_pbzx_input() {
+        assert!(decode_pbzx(b"\x1f\x8b\x08not a pbzx stream").is_err());
+    }
+
+    fn build_tar(entries: &[(&str, &[u8])]) -> Vec<u8> {
+        let mut buffer = Vec::new();
+        for (name, contents) in entries {
+            let mut header = tar::Header::new_gnu();
+            header.set_size(contents.len() as u64);
+            header.set_mode(0o644);
+            header.set_path("browser/file.txt").unwrap();
+            header.set_cksum();
+
+            let mut header_bytes = header.as_bytes().to_vec();
+            let name_bytes = name.as_bytes();
+            assert!(name_bytes.len() <= 100, "test tar name too long");
+            header_bytes[0..100].fill(0);
+            header_bytes[0..name_bytes.len()].copy_from_slice(name_bytes);
+            header_bytes[148..156].fill(b' ');
+            let checksum: u32 = header_bytes.iter().map(|byte| *byte as u32).sum();
+            let checksum_bytes = format!("{:06o}\0 ", checksum);
+            header_bytes[148..156].copy_from_slice(checksum_bytes.as_bytes());
+
+            buffer.extend_from_slice(&header_bytes);
+            buffer.extend_from_slice(contents);
+
+            let remainder = contents.len() % 512;
+            if remainder != 0 {
+                buffer.extend_from_slice(&vec![0u8; 512 - remainder]);
+            }
+        }
+        buffer.extend_from_slice(&[0u8; 1024]);
+        buffer
+    }
+
+    #[test]
+    fn check_path_traversal_allows_safe_paths() {
+        assert!(check_path_traversal(Path::new("browser/file.txt")).is_ok());
+    }
+
+    #[test]
+    fn check_path_traversal_rejects_empty_path() {
+        let err = check_path_traversal(Path::new("")).unwrap_err();
+        assert!(err.to_string().contains("Unsafe entry (path traversal)"));
+    }
+
+    #[test]
+    fn uncompress_tar_extracts_safe_entry() {
+        let temp_dir = tempfile::tempdir().unwrap();
+        let target = temp_dir.path().join("extract");
+        let tar_data = build_tar(&[("browser/file.txt", b"hello")]);
+        let mut decoder = Cursor::new(tar_data);
+        let log = Logger::new();
+
+        uncompress_tar(&mut decoder, &target, &log).unwrap();
+
+        assert_eq!(fs::read(target.join("file.txt")).unwrap(), b"hello");
+    }
+
+    #[test]
+    fn uncompress_tar_keeps_single_component_entry() {
+        let temp_dir = tempfile::tempdir().unwrap();
+        let target = temp_dir.path().join("extract");
+        let tar_data = build_tar(&[("file.txt", b"hello")]);
+        let mut decoder = Cursor::new(tar_data);
+        let log = Logger::new();
+
+        uncompress_tar(&mut decoder, &target, &log).unwrap();
+
+        assert_eq!(fs::read(target.join("file.txt")).unwrap(), b"hello");
+    }
+
+    #[test]
+    fn uncompress_tar_rejects_path_traversal_entry() {
+        let temp_dir = tempfile::tempdir().unwrap();
+        let target = temp_dir.path().join("extract");
+        let escape_path = temp_dir.path().join("escape.txt");
+        let tar_data = build_tar(&[("browser/../../escape.txt", b"owned")]);
+        let mut decoder = Cursor::new(tar_data);
+        let log = Logger::new();
+
+        let err = uncompress_tar(&mut decoder, &target, &log).unwrap_err();
+        assert!(err.to_string().contains("Unsafe entry (path traversal)"));
+        assert!(!escape_path.exists());
     }
 }

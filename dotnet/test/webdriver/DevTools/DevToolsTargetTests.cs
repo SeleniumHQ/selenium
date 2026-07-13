@@ -17,15 +17,14 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
-using CurrentCdpVersion = OpenQA.Selenium.DevTools.V148;
+using CurrentCdpVersion = OpenQA.Selenium.DevTools.V150;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 
 [TestFixture]
 public class DevToolsTargetTests : DevToolsTestFixture
 {
-    private const int id = 148;
+    private const int id = 150;
 
     [Test]
     [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
@@ -35,7 +34,7 @@ public class DevToolsTargetTests : DevToolsTestFixture
     public async Task GetTargetActivateAndAttach()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("devToolsConsoleTest.html");
+        Driver.Url = Urls.WhereIs("devToolsConsoleTest.html");
         var response = await domains.Target.GetTargets(new CurrentCdpVersion.Target.GetTargetsCommandSettings());
         CurrentCdpVersion.Target.TargetInfo[] allTargets = response.TargetInfos;
         foreach (CurrentCdpVersion.Target.TargetInfo targetInfo in allTargets)
@@ -70,7 +69,7 @@ public class DevToolsTargetTests : DevToolsTestFixture
         CurrentCdpVersion.Target.TargetInfo[] allTargets = null;
         string sessionId = null;
         CurrentCdpVersion.Target.TargetInfo targetInfo = null;
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("devToolsConsoleTest.html");
+        Driver.Url = Urls.WhereIs("devToolsConsoleTest.html");
         ManualResetEventSlim sync = new ManualResetEventSlim(false);
         domains.Target.ReceivedMessageFromTarget += (sender, e) =>
         {
@@ -137,7 +136,7 @@ public class DevToolsTargetTests : DevToolsTestFixture
 
         var response = await domains.Target.CreateTarget(new CurrentCdpVersion.Target.CreateTargetCommandSettings()
         {
-            Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("devToolsConsoleTest.html"),
+            Url = Urls.WhereIs("devToolsConsoleTest.html"),
             NewWindow = true,
             Background = false
         });

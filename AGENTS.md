@@ -2,11 +2,16 @@
 Guidance for AI agents working in the Selenium monorepo.
 Language-specific details live in respective subdirectories.
 -->
-See @.local/AGENTS.md for additional guidance
+## Overview
 
 Selenium is a Bazel-built monorepo implementing the W3C WebDriver (and related) protocols,
 shipping multiple language bindings plus Grid and Selenium Manager.
 The repository README is aimed at contributors; end-user docs live elsewhere.
+
+### Local contributor customization
+- The `.local/` directory is available for customization, generated artifacts, scratch work, and temporary files. It is ignored by Git except for `.local/README.md`.
+- A contributor may create `.local/AGENTS.md` for personal repo-specific instructions and preferences. Before beginning any task, check whether `.local/AGENTS.md` exists; if it exists, read it with your file-reading tool and apply it as the contributor's local instruction overlay.
+- If `.local/agent/skills/` exists, inspect its `*/SKILL.md` files and treat them as additional user-defined skills.
 
 ## Invariants (don't violate unless explicitly asked)
 - Maintain API/ABI compatibility - users upgrade by changing only version number
@@ -20,6 +25,8 @@ The repository README is aimed at contributors; end-user docs live elsewhere.
 ## Execution model
 - Use `bazel query` to explore build graph before reading files
 - Attempt to execute Bazel commands directly. If prevented due to network/toolchain restrictions within the sandbox, fall back to suggesting copy/paste commands for the user on a separate line.
+- When the default output directory is restricted or when working in a git worktree, isolate build output with `--output_base`. It is a startup flag, so it goes *before* the command, and anchor it to the worktree root so it resolves the same from any directory: `bazel --output_base="$(git rev-parse --show-toplevel)/.local/bazel-out" build //...` (not after `build`/`test`/`query`).
+
 ## Repo layout
 Bindings (see `AGENTS.md` in each directory for language-specific details):
 - Java: `java/`
@@ -36,10 +43,6 @@ Shared/high-risk areas:
 - `scripts/`, `rake_tasks/`, `.github/`, `Rakefile` (tooling/build)
 - `third_party/` treat as read-only
 - `bazel-*/` treat as generated output
-
-### Agent workspace
-The `.local/` directory (gitignored) is available for generated artifacts or temporary files:
-- Use `--output_base=.local/bazel-out` if bazel output directory restricted
 
 ## Cross-binding consistency checks
 When changing user-visible behavior, compare with at least one other binding:
@@ -85,3 +88,6 @@ See language-specific AGENTS.md for applicable deprecation usage
 ## After making code changes
 - Call out any high risk areas touched
 - Note cross-binding impact and any follow-up issues needed
+
+## Reviewing pull requests
+See `.github/pr_review.md` for agentic review priorities and scope.

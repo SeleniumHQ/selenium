@@ -130,7 +130,19 @@ impl SeleniumManager for FirefoxManager {
     }
 
     fn get_browser_names_in_path(&self) -> Vec<&str> {
-        vec![self.get_browser_name()]
+        let browser_version = self.get_browser_version();
+        let mut browser_names = vec![];
+        if self.is_beta(browser_version) {
+            browser_names.push("firefox-beta");
+        } else if self.is_dev(browser_version) {
+            browser_names.push("firefox-devedition");
+        } else if self.is_nightly(browser_version) {
+            browser_names.push("firefox-trunk");
+        } else if self.is_esr(browser_version) {
+            browser_names.push("firefox-esr");
+        }
+        browser_names.push(self.get_browser_name());
+        browser_names
     }
 
     fn get_http_client(&self) -> &Client {

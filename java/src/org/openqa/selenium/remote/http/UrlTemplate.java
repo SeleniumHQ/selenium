@@ -141,15 +141,21 @@ public class UrlTemplate {
   }
 
   /**
-   * @return A {@link Match} with all parameters filled if successful, null otherwise. Remove
-   *     subPath from matchAgainst before matching.
+   * Matches a URL against this template after stripping a leading prefix.
+   *
+   * <p>The {@code prefix} is treated literally (not as a regex) and stripped from the start of
+   * {@code matchAgainst} before matching, unless it is empty or {@code "/"}.
+   *
+   * @param matchAgainst the URL (or path) to match against this template
+   * @param prefix a literal prefix to strip from {@code matchAgainst} before matching
+   * @return a {@link Match} with all parameters filled if successful, {@code null} otherwise
    */
   public UrlTemplate.@Nullable Match match(@Nullable String matchAgainst, @Nullable String prefix) {
     if (matchAgainst == null || prefix == null) {
       return null;
     }
     if (!prefix.isEmpty() && !prefix.equals("/")) {
-      matchAgainst = matchAgainst.replaceFirst(prefix, "");
+      matchAgainst = matchAgainst.replaceFirst(Pattern.quote(prefix), "");
     }
     return match(matchAgainst);
   }
