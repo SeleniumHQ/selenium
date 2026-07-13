@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -193,6 +194,31 @@ class ConstructorCoercerTest {
   }
 
   @Test
+  void requiredButNullableConstructorParameterAcceptsNull() {
+    String raw = "{\"value\": \"time\", \"nullableValue\": null}";
+
+    ConstructorWithRequiredNullableValue bean =
+        new Json().toType(raw, ConstructorWithRequiredNullableValue.class);
+
+    assertThat(bean.value).isEqualTo("time");
+    assertThat(bean.nullableValue).isNull();
+  }
+
+  @Test
+  void requiredButNullableConstructorParameterMustStillBePresent() {
+    String raw = "{\"value\": \"time\"}";
+
+    assertThatExceptionOfType(JsonException.class)
+        .isThrownBy(() -> new Json().toType(raw, ConstructorWithRequiredNullableValue.class))
+        .withMessage("Unable to parse: " + raw)
+        .havingCause()
+        .isInstanceOf(JsonException.class)
+        .withMessageStartingWith(
+            "Missing JSON value for constructor parameter %s.nullableValue",
+            ConstructorWithRequiredNullableValue.class.getName());
+  }
+
+  @Test
   void fromJsonTakesPrecedenceOverNamedConstructors() {
     String raw = "{\"value\": \"constructor\"}";
 
@@ -215,6 +241,17 @@ class ConstructorCoercerTest {
 
     public String getValue() {
       return value;
+    }
+  }
+
+  public static class ConstructorWithRequiredNullableValue {
+
+    private final String value;
+    private final @Nullable String nullableValue;
+
+    public ConstructorWithRequiredNullableValue(String value, @Nullable String nullableValue) {
+      this.value = value;
+      this.nullableValue = nullableValue;
     }
   }
 
