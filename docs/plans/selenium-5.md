@@ -52,7 +52,7 @@ Routing every classic command through BiDi.
 
 What it means to support a remote end that does not implement every BiDi feature — choosing the
 BiDi or Classic path per session (not every command can switch mid-session), for older browsers or
-drivers with incomplete BiDi. Part of the Classic-migration ADR.
+drivers with incomplete BiDi. Part of the classic-over-BiDi migration.
 
 ### DevTools deprecation
 
