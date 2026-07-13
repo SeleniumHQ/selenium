@@ -28,8 +28,12 @@ import org.jspecify.annotations.Nullable;
 
 public class SimplePropertyDescriptor {
 
-  private static final ConcurrentMap<Class<?>, SimplePropertyDescriptor[]> DESCRIPTOR_CACHE =
-      new ConcurrentHashMap<>();
+  private static final ClassValue<SimplePropertyDescriptor[]> DESCRIPTORS = new ClassValue<>() {
+    @Override
+    protected SimplePropertyDescriptor[] computeValue(Class<?> type) {
+      return getPropertyDescriptorsUncached(type);
+    }
+  };
 
   private static final Function<Object, @Nullable Object> GET_CLASS_NAME = new GetClassName();
   private final Class<?> clazz;
@@ -66,7 +70,7 @@ public class SimplePropertyDescriptor {
   }
 
   public static SimplePropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) {
-    return DESCRIPTOR_CACHE.computeIfAbsent(clazz, SimplePropertyDescriptor::getPropertyDescriptorsUncached);
+    return DESCRIPTORS.get(clazz).clone();
   }
 
   private static SimplePropertyDescriptor[] getPropertyDescriptorsUncached(Class<?> clazz) {
@@ -107,21 +111,19 @@ public class SimplePropertyDescriptor {
       if (readMethod != null) {
         final Method finalReadMethod = readMethod;
 
-        read =
-            obj -> {
-              try {
-                finalReadMethod.setAccessible(true);
-                return finalReadMethod.invoke(obj);
-              } catch (ReflectiveOperationException e) {
-                throw new JsonException(e);
-              }
-            };
+        read = obj -> {
+          try {
+            finalReadMethod.setAccessible(true);
+            return finalReadMethod.invoke(obj);
+          } catch (ReflectiveOperationException e) {
+            throw new JsonException(e);
+          }
+        };
       }
 
       if (propertyName != null && (readMethod != null || writeMethod != null)) {
-        SimplePropertyDescriptor descriptor =
-            properties.getOrDefault(
-                propertyName, new SimplePropertyDescriptor(clazz, propertyName, null, null));
+        SimplePropertyDescriptor descriptor = properties.getOrDefault(
+            propertyName, new SimplePropertyDescriptor(clazz, propertyName, null, null));
 
         properties.put(
             propertyName,
