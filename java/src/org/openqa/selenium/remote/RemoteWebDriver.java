@@ -292,9 +292,7 @@ public class RemoteWebDriver
 
       this.capabilities = returnedCapabilities;
       sessionId = new SessionId(response.getSessionId());
-      if (Boolean.TRUE.equals(this.capabilities.getCapability("webSocketUrl"))) {
-        this.biDi = createBiDi();
-      }
+      this.biDi = createBiDi();
     } catch (Exception e) {
       // If session creation fails, stop the driver service to prevent zombie processes
       if (executor instanceof DriverCommandExecutor) {
