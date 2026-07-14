@@ -57,4 +57,15 @@ public class ConverterFunctions {
       return Require.nonNull("Field '" + keyName + "'", JSON.convert(value, typeOfX));
     };
   }
+
+  /**
+   * Returns a function that deserializes a {@code Map<String, Object>} event payload (or a nested
+   * union variant, already parsed into a map) into an instance of {@code type} via {@link
+   * Json#convert(Object, Type)} — the same single-round-trip primitive {@link #map(String, Type)}
+   * uses, rather than a second hand-rolled {@code toJson}/{@code JsonInput} pair.
+   */
+  public static <T> Function<Map<String, Object>, T> fromMap(Class<T> type) {
+    Require.nonNull("Type", type);
+    return map -> Require.nonNull("Value", JSON.convert(map, type));
+  }
 }
