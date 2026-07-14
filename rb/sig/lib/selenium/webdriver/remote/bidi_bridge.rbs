@@ -42,6 +42,8 @@ module Selenium
 
         private
 
+        def validated_socket_url: () -> String
+
         def browsing_context: () -> BiDi::BrowsingContext
       end
     end

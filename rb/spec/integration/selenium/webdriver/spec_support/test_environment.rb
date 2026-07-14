@@ -375,9 +375,10 @@ module Selenium
           WebDriver::Options.ie(**opts)
         end
 
-        def safari_preview_options(**)
+        def safari_preview_options(**opts)
           WebDriver::Safari.technology_preview!
-          WebDriver::Options.safari(**)
+          opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
+          WebDriver::Options.safari(**opts)
         end
 
         def random_port

@@ -17,5 +17,5 @@ rb_integration_test(
     name = "service",
     srcs = ["service_spec.rb"],
     browsers = ["edge"],
-    no_grid = True,
+    grid = False,
 )
