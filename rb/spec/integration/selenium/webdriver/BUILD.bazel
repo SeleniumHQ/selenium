@@ -1,5 +1,5 @@
 load("@rules_ruby//ruby:defs.bzl", "rb_library")
-load("//rb/spec:tests.bzl", "DEFAULT_BROWSERS", "rb_integration_test")
+load("//rb/spec:tests.bzl", "rb_integration_test")
 
 rb_library(
     name = "spec_helper",
@@ -66,8 +66,7 @@ _NO_GRID = ["driver_finder_spec.rb"]
     rb_integration_test(
         name = f[:-8],
         srcs = [f],
-        browsers = DEFAULT_BROWSERS,
-        no_grid = True,
+        grid = False,
         tags = ["se-manager"],
         deps = [
             "//rb/lib/selenium/webdriver:common",
@@ -92,7 +91,7 @@ _NO_GRID = ["driver_finder_spec.rb"]
     rb_integration_test(
         name = f[:-8],
         srcs = [f],
-        tags = ["bidi"],
+        bidi = True,
         deps = [
             "//rb/lib/selenium/webdriver:bidi",
         ],
@@ -104,7 +103,8 @@ _NO_GRID = ["driver_finder_spec.rb"]
     rb_integration_test(
         name = f[:-8],
         srcs = [f],
-        bidi_only = True,
+        bidi = True,
+        classic = False,
         deps = [
             "//rb/lib/selenium/webdriver:bidi",
         ],

@@ -39,6 +39,8 @@ module Selenium
 
       def status: () -> Hash[untyped, untyped]
 
+      def bidi: () -> BiDi
+
       def navigate: () -> Navigation
 
       def switch_to: () -> TargetLocator

@@ -28,10 +28,15 @@ module Selenium
 
         def create_session(capabilities)
           super
-          socket_url = @capabilities[:web_socket_url]
-          @bidi = Selenium::WebDriver::BiDi.new(url: socket_url)
-          # Share the BiDi object's socket until the bridge owns the connection directly.
-          @transport = BiDi::Transport.new(@bidi.ws)
+
+          begin
+            @bidi = Selenium::WebDriver::BiDi.new(url: validated_socket_url)
+            # Share the BiDi object's socket until the bridge owns the connection directly.
+            @transport = BiDi::Transport.new(@bidi.ws)
+          rescue StandardError
+            quit
+            raise
+          end
         end
 
         def get(url)
@@ -51,7 +56,7 @@ module Selenium
         end
 
         def quit
-          bidi.close
+          bidi&.close
         rescue *QUIT_ERRORS
           nil
         ensure
@@ -63,6 +68,14 @@ module Selenium
         end
 
         private
+
+        def validated_socket_url
+          url = @capabilities[:web_socket_url]
+          return url if url.is_a?(String) && url.start_with?('ws://', 'wss://')
+
+          raise Error::WebDriverError,
+                "BiDi was enabled, but the remote end did not return a valid webSocketUrl: #{url.inspect}."
+        end
 
         def browsing_context
           @browsing_context ||= WebDriver::BiDi::BrowsingContext.new(self)

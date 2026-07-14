@@ -29,7 +29,6 @@ module Selenium
         EXTENSIONS = [DriverExtensions::HasAddons,
                       DriverExtensions::FullPageScreenshot,
                       DriverExtensions::HasContext,
-                      DriverExtensions::HasBiDi,
                       DriverExtensions::HasLogEvents,
                       DriverExtensions::HasNetworkInterception,
                       DriverExtensions::PrintsPage].freeze

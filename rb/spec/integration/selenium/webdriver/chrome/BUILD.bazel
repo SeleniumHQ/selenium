@@ -23,5 +23,5 @@ rb_integration_test(
         "chrome",
         "chrome-beta",
     ],
-    no_grid = True,
+    grid = False,
 )

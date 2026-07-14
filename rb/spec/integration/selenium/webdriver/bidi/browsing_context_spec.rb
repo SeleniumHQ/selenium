@@ -46,7 +46,8 @@ module Selenium
             expect(driver.window_handles).to include(id)
           end
 
-          it 'errors on unknown type', pending_if: {browser: :firefox, reason: "Doesn't return the expected error"} do
+          it 'errors on unknown type',
+             pending_if: {browser: %i[firefox safari safari_preview], reason: "Doesn't return the expected error"} do
             msg = /invalid argument: Invalid enum value. Expected 'tab' | 'window', received 'unknown'/
             expect {
               described_class.new(bridge).create(type: :unknown)
@@ -123,7 +124,8 @@ module Selenium
           expect(driver.title).to eq('Testing Alerts')
         end
 
-        it 'activates a browser context' do
+        it 'activates a browser context',
+           pending_if: {browser: %i[safari safari_preview], reason: 'Safari does not focus the activated context'} do
           browsing_context = described_class.new(bridge)
           browsing_context.create
 
