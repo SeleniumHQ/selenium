@@ -292,7 +292,7 @@ public class RemoteWebDriver
 
       this.capabilities = returnedCapabilities;
       sessionId = new SessionId(response.getSessionId());
-      if (Boolean.TRUE.equals(capabilities.getCapability("webSocketUrl"))) {
+      if (Boolean.TRUE.equals(this.capabilities.getCapability("webSocketUrl"))) {
         this.biDi = createBiDi();
       }
     } catch (Exception e) {
