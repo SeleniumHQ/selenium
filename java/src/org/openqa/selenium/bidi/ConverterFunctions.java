@@ -17,18 +17,38 @@
 
 package org.openqa.selenium.bidi;
 
+import java.io.StringReader;
 import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
 @Beta
 public class ConverterFunctions {
 
+  private static final Json JSON = new Json();
+
   private ConverterFunctions() {
     throw new IllegalStateException("Utility class");
+  }
+
+  /**
+   * Returns a function that deserializes a {@code Map<String, Object>} event payload into an
+   * instance of {@code type} via the Selenium JSON library (ConstructorCoercer).
+   */
+  public static <T> Function<Map<String, Object>, T> fromMap(Class<T> type) {
+    Require.nonNull("Type", type);
+    return map -> {
+      String json = JSON.toJson(map);
+      try (StringReader reader = new StringReader(json);
+          JsonInput input = JSON.newInput(reader)) {
+        return input.readNonNull(type);
+      }
+    };
   }
 
   public static <X> Function<JsonInput, @Nullable X> map(final String keyName, Type typeOfX) {
