@@ -32,7 +32,8 @@ fi
 if [[ "$RUN_CMD" == *"/ci-build.sh"* ]]; then
   base_cmd="bazel test --config=rbe-ci --build_tests_only --keep_going"
 else
-  base_cmd=$(echo "$RUN_CMD" | sed 's| //[^ ]*||g')
+  # Strip the targets (literal `//...` or a trailing `$(...)` query) to get the base command.
+  base_cmd=$(echo "$RUN_CMD" | sed -E 's| \$\(.*$||; s| //[^ ]*||g')
 fi
 targets=$(tr '\n' ' ' < build/failures/_run1.txt)
 echo "Rerunning tests: $base_cmd --test_env=SE_DEBUG=true --flaky_test_attempts=1 $targets"
