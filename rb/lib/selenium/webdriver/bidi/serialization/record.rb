@@ -192,14 +192,18 @@ module Selenium
               (@enums ||= {})[field.name] ||= Protocol.const_get(field.enum)
             end
 
-            # Parses each element, recursing into nested lists (e.g. a map's [key, value] pairs)
-            # so their entries become typed too. At a `scalar` position (an inline union with a
-            # scalar arm), a non-object leaf passes through — validated against the arm's
-            # primitive — rather than being handed to the object_only union ref; this is how a
-            # map's bare-string keys survive while a wrong-typed key is still rejected.
+            # Parses each element, recursing into nested lists. A `scalar` field is a map encoded
+            # as `[key, value]` pairs: only the key is `Ref / text`, so scalar tolerance applies
+            # to the key alone (a bare-string key passes through, validated against the arm's
+            # primitive; an object key deserializes). The value is the object-only Ref and always
+            # deserializes, so a bare scalar there is still rejected — object_only holds at the
+            # value position, not just the key.
             def read_list(field, raw, klass)
               raw.map do |element|
-                if element.is_a?(::Array)
+                if field.scalar && element.is_a?(::Array) && element.size == 2
+                  key, value = element
+                  [read_map_key(field, key, klass), klass.from_json(value)]
+                elsif element.is_a?(::Array)
                   read_list(field, element, klass)
                 elsif field.scalar && !element.is_a?(::Hash)
                   scalar_value(field, element)
@@ -207,6 +211,12 @@ module Selenium
                   klass.from_json(element)
                 end
               end
+            end
+
+            # A map key is `Ref / text`: an object key deserializes into the Ref, a bare-scalar
+            # key passes through once validated against the arm's primitive.
+            def read_map_key(field, key, klass)
+              key.is_a?(::Hash) ? klass.from_json(key) : scalar_value(field, key)
             end
 
             # A bare scalar at a scalar-tolerant union position must match one of the union's

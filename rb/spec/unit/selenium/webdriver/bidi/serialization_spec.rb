@@ -158,11 +158,20 @@ module Selenium
 
             # A scalar-tolerant position still validates the scalar arm's type: the map entry is
             # `RemoteValue / text`, so a non-string bare value is a wire error, not passed through.
-            it 'rejects a wrong-typed scalar at a map position instead of passing it through' do
+            it 'rejects a wrong-typed scalar at a map key position instead of passing it through' do
               wire = {'type' => 'object', 'value' => [[42, {'type' => 'number', 'value' => 2}]]}
 
               expect { Script::ObjectRemoteValue.from_json(wire) }
                 .to raise_error(Error::WebDriverError, /value expected string, got 42/)
+            end
+
+            # Scalar tolerance is the key's alone: the value is the object-only RemoteValue union,
+            # so a bare-scalar value is rejected rather than passed through — object_only holds here.
+            it 'rejects a bare-scalar map value against the object-only value union' do
+              wire = {'type' => 'object', 'value' => [['k', 'bare string, not an object']]}
+
+              expect { Script::ObjectRemoteValue.from_json(wire) }
+                .to raise_error(Error::WebDriverError, /expected an object on the wire/)
             end
           end
 
