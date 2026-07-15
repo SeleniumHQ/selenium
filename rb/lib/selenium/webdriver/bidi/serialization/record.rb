@@ -29,7 +29,7 @@ module Selenium
         # @api private
         class Record < ::Data
           # Named Field, not Member, to avoid colliding with +::Data#members+.
-          Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required, :primitive)
+          Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required, :primitive, :scalar)
 
           def self.define(**spec)
             extensible = spec.delete(:extensible) || false
@@ -59,7 +59,8 @@ module Selenium
             Field.new(name: name.to_sym, wire_key: meta.fetch(:wire_key, name.to_s),
                       nullable: meta[:nullable] || false, ref: meta[:ref],
                       list: meta[:list] || false, fixed: meta.fetch(:fixed, UNSET), enum: meta[:enum],
-                      required: meta.fetch(:required, true), primitive: meta[:primitive])
+                      required: meta.fetch(:required, true), primitive: meta[:primitive],
+                      scalar: meta[:scalar])
           end
           private_class_method :field
 
@@ -147,8 +148,18 @@ module Selenium
                 return raw
               end
 
+              read_ref(field, raw)
+            end
+
+            # Reads a ref-typed value into its class. A `scalar` position is an inline union with
+            # a scalar arm collapsed onto its union ref (a map's string keys): a non-object leaf
+            # passes through instead of being handed to the object_only union, but only when it
+            # matches the arm's primitive (+scalar+ carries it). A list recurses per element.
+            def read_ref(field, raw)
               klass = (@refs ||= {})[field.name] ||= Protocol.const_get(field.ref)
-              field.list ? read_list(raw, klass) : klass.from_json(raw)
+              return read_list(field, raw, klass) if field.list
+
+              field.scalar && !raw.is_a?(::Hash) ? scalar_value(field, raw) : klass.from_json(raw)
             end
 
             # A declared list must arrive as an array; a scalar-shaped field (enum or ref, not a
@@ -182,9 +193,33 @@ module Selenium
             end
 
             # Parses each element, recursing into nested lists (e.g. a map's [key, value] pairs)
-            # so their entries become typed too.
-            def read_list(raw, klass)
-              raw.map { |element| element.is_a?(::Array) ? read_list(element, klass) : klass.from_json(element) }
+            # so their entries become typed too. At a `scalar` position (an inline union with a
+            # scalar arm), a non-object leaf passes through — validated against the arm's
+            # primitive — rather than being handed to the object_only union ref; this is how a
+            # map's bare-string keys survive while a wrong-typed key is still rejected.
+            def read_list(field, raw, klass)
+              raw.map do |element|
+                if element.is_a?(::Array)
+                  read_list(field, element, klass)
+                elsif field.scalar && !element.is_a?(::Hash)
+                  scalar_value(field, element)
+                else
+                  klass.from_json(element)
+                end
+              end
+            end
+
+            # A bare scalar at a scalar-tolerant union position must match one of the union's
+            # scalar-arm primitives (+scalar+ is a primitive name or an array of them); a
+            # wrong-typed scalar (a number where a string is expected) is a wire error, not
+            # something to pass through. An unrecognized primitive (none in PRIMITIVE_TYPES) is
+            # left unchecked, matching the lenient default elsewhere.
+            def scalar_value(field, value)
+              expected = Array(field.scalar).flat_map { |primitive| PRIMITIVE_TYPES[primitive] || [] }
+              return value if expected.empty? || expected.any? { |type| value.is_a?(type) }
+
+              raise Error::WebDriverError,
+                    "#{name}##{field.name} expected #{Array(field.scalar).join(' or ')}, got #{value.inspect}"
             end
 
             def extra(json_payload)

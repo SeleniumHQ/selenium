@@ -45,6 +45,7 @@ module Selenium
               base64: 'WebExtension::ExtensionBase64Encoded',
               path: 'WebExtension::ExtensionPath'
             )
+            object_only
           end
 
           # @api private
@@ -74,12 +75,12 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallresult
-          InstallResult = Serialization::Record.define(extension: 'extension')
+          InstallResult = Serialization::Record.define(extension: {wire_key: 'extension', primitive: 'string'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensionuninstallparameters
-          UninstallParameters = Serialization::Record.define(extension: 'extension')
+          UninstallParameters = Serialization::Record.define(extension: {wire_key: 'extension', primitive: 'string'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/

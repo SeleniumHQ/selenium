@@ -44,10 +44,19 @@ module Selenium
             def presence(rules) = @presence = rules
             def fallback(path) = @fallback = path
 
-            # A non-Hash payload is a bare scalar arm (e.g. input.Origin's "viewport") with
-            # no object to dispatch on, so it is returned unchanged.
+            # Declared (via the schema's `objectOnly` signal) on a union whose every arm is an
+            # object, so a non-Hash payload is a schema violation rather than a scalar arm.
+            def object_only = @object_only = true
+
+            # A non-Hash payload is a bare scalar arm (e.g. input.Origin's "viewport") with no
+            # object to dispatch on, so it is returned unchanged — unless every arm is an object
+            # (object_only), where a non-Hash cannot match any variant and is a wire error.
             def from_json(json_payload)
-              return json_payload unless json_payload.is_a?(::Hash)
+              unless json_payload.is_a?(::Hash)
+                return json_payload unless @object_only
+
+                raise Error::WebDriverError, "#{name} expected an object on the wire, got #{json_payload.inspect}"
+              end
 
               variant = select(json_payload)
               unless variant

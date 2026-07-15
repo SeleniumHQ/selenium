@@ -26,8 +26,7 @@ module Selenium
           class PartitionKey < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader user_context: untyped
             attr_reader source_origin: untyped
-            attr_reader extensions: Hash[String, untyped]
-            def self.new: (?user_context: String, ?source_origin: String, ?extensions: untyped) -> instance
+            def self.new: (?user_context: String, ?source_origin: String) -> instance
           end
 
           class CookieFilter < ::Selenium::WebDriver::BiDi::Serialization::Record

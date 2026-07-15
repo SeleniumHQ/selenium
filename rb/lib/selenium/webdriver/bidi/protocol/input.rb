@@ -51,7 +51,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputperformactionsparameters
           PerformActionsParameters = Serialization::Record.define(
-            context: 'context',
+            context: {wire_key: 'context', primitive: 'string'},
             actions: {wire_key: 'actions', ref: 'Input::SourceActions', list: true}
           )
 
@@ -66,6 +66,7 @@ module Selenium
               pointer: 'Input::PointerSourceActions',
               wheel: 'Input::WheelSourceActions'
             )
+            object_only
           end
 
           # @api private
@@ -96,6 +97,7 @@ module Selenium
               key_down: 'Input::KeyDownAction',
               key_up: 'Input::KeyUpAction'
             )
+            object_only
           end
 
           # @api private
@@ -131,6 +133,7 @@ module Selenium
               pointer_up: 'Input::PointerUpAction',
               pointer_move: 'Input::PointerMoveAction'
             )
+            object_only
           end
 
           # @api private
@@ -151,6 +154,7 @@ module Selenium
               pause: 'Input::PauseAction',
               scroll: 'Input::WheelScrollAction'
             )
+            object_only
           end
 
           # @api private
@@ -158,7 +162,7 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpauseaction
           PauseAction = Serialization::Record.define(
             type: {fixed: 'pause'},
-            duration: {wire_key: 'duration', required: false}
+            duration: {wire_key: 'duration', required: false, primitive: 'integer'}
           )
 
           # @api private
@@ -180,16 +184,19 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpointerupaction
-          PointerUpAction = Serialization::Record.define(type: {fixed: 'pointerUp'}, button: 'button')
+          PointerUpAction = Serialization::Record.define(
+            type: {fixed: 'pointerUp'},
+            button: {wire_key: 'button', primitive: 'integer'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpointerdownaction
           PointerDownAction = Serialization::Record.define(
             type: {fixed: 'pointerDown'},
-            button: 'button',
-            width: {wire_key: 'width', required: false},
-            height: {wire_key: 'height', required: false},
+            button: {wire_key: 'button', primitive: 'integer'},
+            width: {wire_key: 'width', required: false, primitive: 'integer'},
+            height: {wire_key: 'height', required: false, primitive: 'integer'},
             pressure: {wire_key: 'pressure', required: false, primitive: 'integer'},
             tangential_pressure: {wire_key: 'tangentialPressure', required: false, primitive: 'integer'},
             twist: {wire_key: 'twist', required: false, primitive: 'integer'},
@@ -204,10 +211,10 @@ module Selenium
             type: {fixed: 'pointerMove'},
             x: {wire_key: 'x', primitive: 'number'},
             y: {wire_key: 'y', primitive: 'number'},
-            duration: {wire_key: 'duration', required: false},
+            duration: {wire_key: 'duration', required: false, primitive: 'integer'},
             origin: {wire_key: 'origin', required: false, ref: 'Input::Origin'},
-            width: {wire_key: 'width', required: false},
-            height: {wire_key: 'height', required: false},
+            width: {wire_key: 'width', required: false, primitive: 'integer'},
+            height: {wire_key: 'height', required: false, primitive: 'integer'},
             pressure: {wire_key: 'pressure', required: false, primitive: 'integer'},
             tangential_pressure: {wire_key: 'tangentialPressure', required: false, primitive: 'integer'},
             twist: {wire_key: 'twist', required: false, primitive: 'integer'},
@@ -220,11 +227,11 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputwheelscrollaction
           WheelScrollAction = Serialization::Record.define(
             type: {fixed: 'scroll'},
-            x: 'x',
-            y: 'y',
-            delta_x: 'deltaX',
-            delta_y: 'deltaY',
-            duration: {wire_key: 'duration', required: false},
+            x: {wire_key: 'x', primitive: 'integer'},
+            y: {wire_key: 'y', primitive: 'integer'},
+            delta_x: {wire_key: 'deltaX', primitive: 'integer'},
+            delta_y: {wire_key: 'deltaY', primitive: 'integer'},
+            duration: {wire_key: 'duration', required: false, primitive: 'integer'},
             origin: {wire_key: 'origin', required: false, ref: 'Input::Origin'}
           )
 
@@ -232,8 +239,8 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpointercommonproperties
           PointerCommonProperties = Serialization::Record.define(
-            width: {wire_key: 'width', required: false},
-            height: {wire_key: 'height', required: false},
+            width: {wire_key: 'width', required: false, primitive: 'integer'},
+            height: {wire_key: 'height', required: false, primitive: 'integer'},
             pressure: {wire_key: 'pressure', required: false, primitive: 'integer'},
             tangential_pressure: {wire_key: 'tangentialPressure', required: false, primitive: 'integer'},
             twist: {wire_key: 'twist', required: false, primitive: 'integer'},
@@ -254,13 +261,13 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputreleaseactionsparameters
-          ReleaseActionsParameters = Serialization::Record.define(context: 'context')
+          ReleaseActionsParameters = Serialization::Record.define(context: {wire_key: 'context', primitive: 'string'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputsetfilesparameters
           SetFilesParameters = Serialization::Record.define(
-            context: 'context',
+            context: {wire_key: 'context', primitive: 'string'},
             element: {wire_key: 'element', ref: 'Script::SharedReference'},
             files: {wire_key: 'files', list: true}
           )
@@ -269,8 +276,8 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputfiledialoginfo
           FileDialogInfo = Serialization::Record.define(
-            context: 'context',
-            user_context: {wire_key: 'userContext', required: false},
+            context: {wire_key: 'context', primitive: 'string'},
+            user_context: {wire_key: 'userContext', required: false, primitive: 'string'},
             element: {wire_key: 'element', required: false, ref: 'Script::SharedReference'},
             multiple: {wire_key: 'multiple', primitive: 'boolean'}
           )

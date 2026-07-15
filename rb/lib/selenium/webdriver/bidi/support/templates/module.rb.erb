@@ -67,6 +67,9 @@ module Selenium
 <%- if type.fallback_variant -%>
             fallback '<%= type.fallback_variant.ref %>'
 <%- end -%>
+<%- if type.object_only -%>
+            object_only
+<%- end -%>
 <%- type.nested_types.each do |nested| -%>
 
             # @api private

@@ -65,6 +65,7 @@ module Selenium
               'Emulation::SetGeolocationOverrideParameters::Coordinates' => ['coordinates'],
               'Emulation::SetGeolocationOverrideParameters::Error' => ['error']
             )
+            object_only
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -131,7 +132,10 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationscreenarea
-          ScreenArea = Serialization::Record.define(width: 'width', height: 'height')
+          ScreenArea = Serialization::Record.define(
+            width: {wire_key: 'width', primitive: 'integer'},
+            height: {wire_key: 'height', primitive: 'integer'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -181,7 +185,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetscrollbartypeoverrideparameters
           SetScrollbarTypeOverrideParameters = Serialization::Record.define(
-            scrollbar_type: {wire_key: 'scrollbarType', nullable: true},
+            scrollbar_type: {wire_key: 'scrollbarType', nullable: true, primitive: 'string'},
             contexts: {wire_key: 'contexts', required: false, list: true},
             user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
@@ -199,7 +203,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsettouchoverrideparameters
           SetTouchOverrideParameters = Serialization::Record.define(
-            max_touch_points: {wire_key: 'maxTouchPoints', nullable: true},
+            max_touch_points: {wire_key: 'maxTouchPoints', nullable: true, primitive: 'integer'},
             contexts: {wire_key: 'contexts', required: false, list: true},
             user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )

@@ -86,12 +86,12 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#type-browsingContext-Info
           Info = Serialization::Record.define(
             children: {wire_key: 'children', nullable: true, ref: 'BrowsingContext::Info', list: true},
-            client_window: 'clientWindow',
-            context: 'context',
-            original_opener: {wire_key: 'originalOpener', nullable: true},
+            client_window: {wire_key: 'clientWindow', primitive: 'string'},
+            context: {wire_key: 'context', primitive: 'string'},
+            original_opener: {wire_key: 'originalOpener', nullable: true, primitive: 'string'},
             url: {wire_key: 'url', primitive: 'string'},
-            user_context: 'userContext',
-            parent: {wire_key: 'parent', required: false, nullable: true}
+            user_context: {wire_key: 'userContext', primitive: 'string'},
+            parent: {wire_key: 'parent', required: false, nullable: true, primitive: 'string'}
           )
 
           # @api private
@@ -112,6 +112,7 @@ module Selenium
               inner_text: 'BrowsingContext::InnerTextLocator',
               xpath: 'BrowsingContext::XPathLocator'
             )
+            object_only
           end
 
           # @api private
@@ -147,7 +148,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ContextLocator::Value = Serialization::Record.define(context: 'context')
+          ContextLocator::Value = Serialization::Record.define(context: {wire_key: 'context', primitive: 'string'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -157,7 +158,7 @@ module Selenium
             value: {wire_key: 'value', primitive: 'string'},
             ignore_case: {wire_key: 'ignoreCase', required: false, primitive: 'boolean'},
             match_type: {wire_key: 'matchType', required: false, enum: 'BrowsingContext::INNER_TEXT_LOCATOR_MATCH_TYPE'},
-            max_depth: {wire_key: 'maxDepth', required: false}
+            max_depth: {wire_key: 'maxDepth', required: false, primitive: 'integer'}
           )
 
           # @api private
@@ -172,34 +173,34 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextbasenavigationinfo
           BaseNavigationInfo = Serialization::Record.define(
-            context: 'context',
-            navigation: {wire_key: 'navigation', nullable: true},
-            timestamp: 'timestamp',
+            context: {wire_key: 'context', primitive: 'string'},
+            navigation: {wire_key: 'navigation', nullable: true, primitive: 'string'},
+            timestamp: {wire_key: 'timestamp', primitive: 'integer'},
             url: {wire_key: 'url', primitive: 'string'},
-            user_context: {wire_key: 'userContext', required: false}
+            user_context: {wire_key: 'userContext', required: false, primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-browsingContext-NavigationInfo
           NavigationInfo = Serialization::Record.define(
-            context: 'context',
-            navigation: {wire_key: 'navigation', nullable: true},
-            timestamp: 'timestamp',
+            context: {wire_key: 'context', primitive: 'string'},
+            navigation: {wire_key: 'navigation', nullable: true, primitive: 'string'},
+            timestamp: {wire_key: 'timestamp', primitive: 'integer'},
             url: {wire_key: 'url', primitive: 'string'},
-            user_context: {wire_key: 'userContext', required: false}
+            user_context: {wire_key: 'userContext', required: false, primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextactivateparameters
-          ActivateParameters = Serialization::Record.define(context: 'context')
+          ActivateParameters = Serialization::Record.define(context: {wire_key: 'context', primitive: 'string'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcapturescreenshotparameters
           CaptureScreenshotParameters = Serialization::Record.define(
-            context: 'context',
+            context: {wire_key: 'context', primitive: 'string'},
             origin: {wire_key: 'origin', required: false, enum: 'BrowsingContext::CAPTURE_SCREENSHOT_PARAMETERS_ORIGIN'},
             format: {wire_key: 'format', required: false, ref: 'BrowsingContext::ImageFormat'},
             clip: {wire_key: 'clip', required: false, ref: 'BrowsingContext::ClipRectangle'}
@@ -222,6 +223,7 @@ module Selenium
               box: 'BrowsingContext::BoxClipRectangle',
               element: 'BrowsingContext::ElementClipRectangle'
             )
+            object_only
           end
 
           # @api private
@@ -252,7 +254,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcloseparameters
           CloseParameters = Serialization::Record.define(
-            context: 'context',
+            context: {wire_key: 'context', primitive: 'string'},
             prompt_unload: {wire_key: 'promptUnload', required: false, primitive: 'boolean'}
           )
 
@@ -261,25 +263,25 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcreateparameters
           CreateParameters = Serialization::Record.define(
             type: {wire_key: 'type', enum: 'BrowsingContext::CREATE_TYPE'},
-            reference_context: {wire_key: 'referenceContext', required: false},
+            reference_context: {wire_key: 'referenceContext', required: false, primitive: 'string'},
             background: {wire_key: 'background', required: false, primitive: 'boolean'},
-            user_context: {wire_key: 'userContext', required: false}
+            user_context: {wire_key: 'userContext', required: false, primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcreateresult
           CreateResult = Serialization::Record.define(
-            context: 'context',
-            user_context: {wire_key: 'userContext', required: false}
+            context: {wire_key: 'context', primitive: 'string'},
+            user_context: {wire_key: 'userContext', required: false, primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextgettreeparameters
           GetTreeParameters = Serialization::Record.define(
-            max_depth: {wire_key: 'maxDepth', required: false},
-            root: {wire_key: 'root', required: false}
+            max_depth: {wire_key: 'maxDepth', required: false, primitive: 'integer'},
+            root: {wire_key: 'root', required: false, primitive: 'string'}
           )
 
           # @api private
@@ -293,7 +295,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontexthandleuserpromptparameters
           HandleUserPromptParameters = Serialization::Record.define(
-            context: 'context',
+            context: {wire_key: 'context', primitive: 'string'},
             accept: {wire_key: 'accept', required: false, primitive: 'boolean'},
             user_text: {wire_key: 'userText', required: false, primitive: 'string'}
           )
@@ -302,9 +304,9 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextlocatenodesparameters
           LocateNodesParameters = Serialization::Record.define(
-            context: 'context',
+            context: {wire_key: 'context', primitive: 'string'},
             locator: {wire_key: 'locator', ref: 'BrowsingContext::Locator'},
-            max_node_count: {wire_key: 'maxNodeCount', required: false},
+            max_node_count: {wire_key: 'maxNodeCount', required: false, primitive: 'integer'},
             serialization_options: {
               wire_key: 'serializationOptions',
               required: false,
@@ -324,7 +326,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextnavigateparameters
           NavigateParameters = Serialization::Record.define(
-            context: 'context',
+            context: {wire_key: 'context', primitive: 'string'},
             url: {wire_key: 'url', primitive: 'string'},
             wait: {wire_key: 'wait', required: false, enum: 'BrowsingContext::READINESS_STATE'}
           )
@@ -333,7 +335,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextnavigateresult
           NavigateResult = Serialization::Record.define(
-            navigation: {wire_key: 'navigation', nullable: true},
+            navigation: {wire_key: 'navigation', nullable: true, primitive: 'string'},
             url: {wire_key: 'url', primitive: 'string'}
           )
 
@@ -341,7 +343,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextprintparameters
           PrintParameters = Serialization::Record.define(
-            context: 'context',
+            context: {wire_key: 'context', primitive: 'string'},
             background: {wire_key: 'background', required: false, primitive: 'boolean'},
             margin: {wire_key: 'margin', required: false, ref: 'BrowsingContext::PrintMarginParameters'},
             orientation: {
@@ -382,7 +384,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextreloadparameters
           ReloadParameters = Serialization::Record.define(
-            context: 'context',
+            context: {wire_key: 'context', primitive: 'string'},
             ignore_cache: {wire_key: 'ignoreCache', required: false, primitive: 'boolean'},
             wait: {wire_key: 'wait', required: false, enum: 'BrowsingContext::READINESS_STATE'}
           )
@@ -400,7 +402,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextsetviewportparameters
           SetViewportParameters = Serialization::Record.define(
-            context: {wire_key: 'context', required: false},
+            context: {wire_key: 'context', required: false, primitive: 'string'},
             viewport: {wire_key: 'viewport', required: false, nullable: true, ref: 'BrowsingContext::Viewport'},
             device_pixel_ratio: {wire_key: 'devicePixelRatio', required: false, nullable: true, primitive: 'number'},
             user_contexts: {wire_key: 'userContexts', required: false, list: true}
@@ -409,13 +411,16 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextviewport
-          Viewport = Serialization::Record.define(width: 'width', height: 'height')
+          Viewport = Serialization::Record.define(
+            width: {wire_key: 'width', primitive: 'integer'},
+            height: {wire_key: 'height', primitive: 'integer'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstartscreencastparameters
           StartScreencastParameters = Serialization::Record.define(
-            context: 'context',
+            context: {wire_key: 'context', primitive: 'string'},
             mime_type: {wire_key: 'mimeType', required: false, primitive: 'string'},
             video: {wire_key: 'video', required: false, ref: 'BrowsingContext::MediaTrackConstraints'},
             audio: {wire_key: 'audio', required: false, primitive: 'boolean'}
@@ -425,23 +430,25 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextmediatrackconstraints
           MediaTrackConstraints = Serialization::Record.define(
-            width: {wire_key: 'width', required: false},
-            height: {wire_key: 'height', required: false},
-            frame_rate: {wire_key: 'frameRate', required: false}
+            width: {wire_key: 'width', required: false, primitive: 'integer'},
+            height: {wire_key: 'height', required: false, primitive: 'integer'},
+            frame_rate: {wire_key: 'frameRate', required: false, primitive: 'integer'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstartscreencastresult
           StartScreencastResult = Serialization::Record.define(
-            screencast: 'screencast',
+            screencast: {wire_key: 'screencast', primitive: 'string'},
             path: {wire_key: 'path', primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstopscreencastparameters
-          StopScreencastParameters = Serialization::Record.define(screencast: 'screencast')
+          StopScreencastParameters = Serialization::Record.define(
+            screencast: {wire_key: 'screencast', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -454,29 +461,32 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontexttraversehistoryparameters
-          TraverseHistoryParameters = Serialization::Record.define(context: 'context', delta: 'delta')
+          TraverseHistoryParameters = Serialization::Record.define(
+            context: {wire_key: 'context', primitive: 'string'},
+            delta: {wire_key: 'delta', primitive: 'integer'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontexthistoryupdatedparameters
           HistoryUpdatedParameters = Serialization::Record.define(
-            context: 'context',
-            timestamp: 'timestamp',
+            context: {wire_key: 'context', primitive: 'string'},
+            timestamp: {wire_key: 'timestamp', primitive: 'integer'},
             url: {wire_key: 'url', primitive: 'string'},
-            user_context: {wire_key: 'userContext', required: false}
+            user_context: {wire_key: 'userContext', required: false, primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextdownloadwillbeginparams
           DownloadWillBeginParams = Serialization::Record.define(
-            download: 'download',
+            download: {wire_key: 'download', primitive: 'string'},
             suggested_filename: {wire_key: 'suggestedFilename', primitive: 'string'},
-            context: 'context',
-            navigation: {wire_key: 'navigation', nullable: true},
-            timestamp: 'timestamp',
+            context: {wire_key: 'context', primitive: 'string'},
+            navigation: {wire_key: 'navigation', nullable: true, primitive: 'string'},
+            timestamp: {wire_key: 'timestamp', primitive: 'integer'},
             url: {wire_key: 'url', primitive: 'string'},
-            user_context: {wire_key: 'userContext', required: false}
+            user_context: {wire_key: 'userContext', required: false, primitive: 'string'}
           )
 
           # @api private
@@ -488,30 +498,31 @@ module Selenium
               canceled: 'BrowsingContext::DownloadEndParams::CanceledParams',
               complete: 'BrowsingContext::DownloadEndParams::CompleteParams'
             )
+            object_only
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
             CanceledParams = Serialization::Record.define(
               status: {fixed: 'canceled'},
-              download: 'download',
-              context: 'context',
-              navigation: {wire_key: 'navigation', nullable: true},
-              timestamp: 'timestamp',
+              download: {wire_key: 'download', primitive: 'string'},
+              context: {wire_key: 'context', primitive: 'string'},
+              navigation: {wire_key: 'navigation', nullable: true, primitive: 'string'},
+              timestamp: {wire_key: 'timestamp', primitive: 'integer'},
               url: {wire_key: 'url', primitive: 'string'},
-              user_context: {wire_key: 'userContext', required: false}
+              user_context: {wire_key: 'userContext', required: false, primitive: 'string'}
             )
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
             CompleteParams = Serialization::Record.define(
               status: {fixed: 'complete'},
-              download: 'download',
+              download: {wire_key: 'download', primitive: 'string'},
               filepath: {wire_key: 'filepath', nullable: true, primitive: 'string'},
-              context: 'context',
-              navigation: {wire_key: 'navigation', nullable: true},
-              timestamp: 'timestamp',
+              context: {wire_key: 'context', primitive: 'string'},
+              navigation: {wire_key: 'navigation', nullable: true, primitive: 'string'},
+              timestamp: {wire_key: 'timestamp', primitive: 'integer'},
               url: {wire_key: 'url', primitive: 'string'},
-              user_context: {wire_key: 'userContext', required: false}
+              user_context: {wire_key: 'userContext', required: false, primitive: 'string'}
             )
           end
 
@@ -519,10 +530,10 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextuserpromptclosedparameters
           UserPromptClosedParameters = Serialization::Record.define(
-            context: 'context',
+            context: {wire_key: 'context', primitive: 'string'},
             accepted: {wire_key: 'accepted', primitive: 'boolean'},
             type: {wire_key: 'type', enum: 'BrowsingContext::USER_PROMPT_TYPE'},
-            user_context: {wire_key: 'userContext', required: false},
+            user_context: {wire_key: 'userContext', required: false, primitive: 'string'},
             user_text: {wire_key: 'userText', required: false, primitive: 'string'}
           )
 
@@ -530,11 +541,11 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextuserpromptopenedparameters
           UserPromptOpenedParameters = Serialization::Record.define(
-            context: 'context',
+            context: {wire_key: 'context', primitive: 'string'},
             handler: {wire_key: 'handler', enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
             message: {wire_key: 'message', primitive: 'string'},
             type: {wire_key: 'type', enum: 'BrowsingContext::USER_PROMPT_TYPE'},
-            user_context: {wire_key: 'userContext', required: false},
+            user_context: {wire_key: 'userContext', required: false, primitive: 'string'},
             default_value: {wire_key: 'defaultValue', required: false, primitive: 'string'}
           )
 

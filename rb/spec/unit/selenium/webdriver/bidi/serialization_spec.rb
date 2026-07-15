@@ -81,6 +81,25 @@ module Selenium
               expect { BrowsingContext::Locator.from_json(payload) }
                 .to raise_error(Error::WebDriverError, /variant not in this Selenium's BiDi schema/)
             end
+
+            it 'raises when an object-only union receives a bare scalar (no arm can match)' do
+              expect { Script::RemoteValue.from_json('not-an-object') }
+                .to raise_error(Error::WebDriverError, /RemoteValue expected an object/)
+            end
+
+            it 'passes a bare scalar through a union that has a scalar arm (input.Origin)' do
+              expect(Input::Origin.from_json('viewport')).to eq('viewport')
+            end
+
+            it 'keeps a map string key while typing its object value (object-only value union)' do
+              parsed = Script::ObjectRemoteValue.from_json(
+                'type' => 'object', 'value' => [['k', {'type' => 'number', 'value' => 2}]]
+              )
+              key, value = parsed.value.first
+
+              expect(key).to eq('k') # a bare-string key survives, not rejected by the object-only union
+              expect(value).to be_a(Script::NumberValue)
+            end
           end
 
           describe 'nested structured fields' do
@@ -124,6 +143,27 @@ module Selenium
               expect(value).to be_a(Script::NumberValue)
               expect(value.value).to eq(2)
             end
+
+            # The outbound mirror of the map-key case: a bare-string key serializes through the
+            # scalar-tolerant union untouched while its object value is typed, and round-trips back.
+            it 'serializes and round-trips a map LocalValue whose key is a bare string' do
+              obj = Script::ObjectLocalValue.new(value: [['k', Script::StringValue.new(value: 'x')]])
+
+              expect(obj.as_json).to eq(
+                'type' => 'object',
+                'value' => [['k', {'type' => 'string', 'value' => 'x'}]]
+              )
+              expect(Script::LocalValue.from_json(obj.as_json)).to eq(obj)
+            end
+
+            # A scalar-tolerant position still validates the scalar arm's type: the map entry is
+            # `RemoteValue / text`, so a non-string bare value is a wire error, not passed through.
+            it 'rejects a wrong-typed scalar at a map position instead of passing it through' do
+              wire = {'type' => 'object', 'value' => [[42, {'type' => 'number', 'value' => 2}]]}
+
+              expect { Script::ObjectRemoteValue.from_json(wire) }
+                .to raise_error(Error::WebDriverError, /value expected string, got 42/)
+            end
           end
 
           describe 'optional + nullable fields' do
@@ -150,6 +190,31 @@ module Selenium
               expect(parsed.shared_id).to eq('s1')
               expect(parsed.extensions).to eq('webdriverValue' => 42)
               expect(parsed.as_json).to eq('sharedId' => 's1', 'webdriverValue' => 42)
+            end
+
+            # A re-sendable type (reachable from a command's params, e.g. a cookie filter) keeps
+            # unknown properties so a received-then-resent payload round-trips them.
+            it 'preserves an unknown key on a re-sendable type across a receive/re-send round trip' do
+              parsed = Storage::CookieFilter.from_json('name' => 'sid', 'x-vendor' => 'keep-me')
+
+              expect(parsed.extensions).to eq('x-vendor' => 'keep-me')
+              expect(parsed.as_json).to eq('name' => 'sid', 'x-vendor' => 'keep-me')
+            end
+
+            # network.Cookie is extensible but received-only (not reachable from any command's
+            # params), so preserveExtras is false: unknown keys are ignored, not stored/echoed.
+            it 'drops an unknown key on an extensible-but-received-only type on re-serialize' do
+              wire = Network::Cookie.new(**valid_cookie_attrs).as_json.merge('x-vendor' => 'drop-me')
+              parsed = Network::Cookie.from_json(wire)
+
+              expect(parsed).not_to respond_to(:extensions)
+              expect(parsed.as_json).not_to include('x-vendor')
+            end
+
+            it 'ignores an unknown key without raising on a non-extensible type' do
+              wire = {'type' => 'password', 'username' => 'u', 'password' => 'p', 'x-vendor' => 'v'}
+
+              expect { Network::AuthCredentials.from_json(wire) }.not_to raise_error
             end
           end
 
@@ -315,6 +380,20 @@ module Selenium
               parsed = Bluetooth::BluetoothManufacturerData.from_json('key' => 5, 'data' => 'x')
 
               expect(parsed.key).to eq(5)
+            end
+
+            # Signal 3: an inline literal choice the projector now types as `string`
+            # (scrollbarType = "classic" / "overlay" / null), previously opaque.
+            it 'raises when an inline-enum scalar field arrives as the wrong primitive' do
+              expect { Emulation::SetScrollbarTypeOverrideParameters.from_json('scrollbarType' => 123) }
+                .to raise_error(Error::WebDriverError, /scrollbar_type expected string/)
+            end
+
+            # Signal 3: a scalar hidden behind an alias (size -> js-uint -> integer) now carries
+            # its leaf primitive, so a wrong-typed value is rejected instead of passing opaque.
+            it 'raises when an alias-typed integer field (js-uint) arrives as a string' do
+              expect { Network::Cookie.from_json(cookie_wire.merge('size' => 'big')) }
+                .to raise_error(Error::WebDriverError, /size expected integer/)
             end
           end
         end

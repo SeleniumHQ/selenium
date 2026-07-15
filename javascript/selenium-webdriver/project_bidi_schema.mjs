@@ -21,15 +21,15 @@
  * The normalizer has already removed the awkward CDDL shapes, so this is a
  * straight mapping into a small vocabulary:
  *
- *   type node:  { kind: 'record', fields: [field], map?, extensible?, specHref? }
+ *   type node:  { kind: 'record', fields: [field], map?, extensible?, preserveExtras?, specHref? }
  *             | { kind: 'enum',   values: [string], specHref? }
- *             | { kind: 'union',  variants: [ref], selector, specHref? }
+ *             | { kind: 'union',  variants: [ref], selector, objectOnly?, specHref? }
  *             | { kind: 'alias',  type, specHref? }
  *   selector:   { by, variants: [{ value, ref }], default? }   // discriminated
  *             | { ordered: [{ ref, requires: [key] }] }        // structural, spec order
  *             | { correlated: true }                           // resolved by request id, not the payload
  *   field:      { name, wire, required, type }
- *   type ref:   { primitive } | { const } | { ref } | { enum } | { list } | { map, extensible? } | { union }
+ *   type ref:   { primitive } | { const } | { ref } | { enum, primitive? } | { list } | { map, extensible? } | { union, scalar? }
  *               any ref may also carry `nullable: true` (a `/ null` alternative). On a
  *               record node, `map` is the value type of `* key => value` entries and
  *               `extensible: true` marks an open `* text => any` record.
@@ -42,6 +42,20 @@
  * has one, falling back to the webref CDDL production (`#cddl-type-…`) otherwise. It
  * points at the editor's draft, so for an older generated artifact the target drifts
  * from the pinned source; synthetic types (and anything neither source covers) omit it.
+ *
+ * Three derived signals let a binding validate the wire boundary without re-deriving
+ * anything itself:
+ *   `objectOnly: true`   — a union all of whose arms are object (record) types, so a
+ *                          non-object payload is a schema violation, not a scalar arm.
+ *   `preserveExtras: true` — an `extensible` type that can also be *sent* (reachable
+ *                          from a command's params), so unknown properties received on
+ *                          the wire must be stored and echoed back rather than dropped.
+ *   an inline `enum` ref carries the `primitive` its literals share, so even a scalar
+ *   the normalizer did not hoist to a named enum is typed rather than opaque.
+ *   `scalar` on an inline `union` ref marks a union with a bare-scalar arm (a map entry's
+ *   `RemoteValue / text`) and carries that arm's primitive: a binding collapsing it onto its
+ *   object_only ref arm passes a non-object payload (the string keys) through, but only when
+ *   it matches the primitive — a wrong-typed scalar is still rejected.
  *
  * Types the normalizer synthesized for anonymous CDDL constructs additionally
  * carry `{ synthetic: true, owner, label }`: `owner` is the type the construct
@@ -94,6 +108,49 @@ const isRef = (e) => e && typeof e === 'object' && e.Type === 'group' && typeof 
 const isNullAlt = (e) =>
   e === 'null' || (e && typeof e === 'object' && e.Type === 'group' && PRELUDE[e.Value] === 'null')
 
+// The primitive a set of literal values shares (all strings → string, etc.), or
+// undefined when they are mixed. Used to type an inline literal choice.
+function literalPrimitive(values) {
+  if (values.every((v) => typeof v === 'string')) return 'string'
+  if (values.every((v) => typeof v === 'boolean')) return 'boolean'
+  if (values.every((v) => Number.isInteger(v))) return 'integer'
+  if (values.every((v) => typeof v === 'number')) return 'number'
+  return undefined
+}
+
+// An inline literal choice (e.g. `("classic" / "overlay") / null`) the normalizer did
+// not hoist to a named enum. Carry the literals' shared primitive so the scalar is
+// typed rather than opaque — a binding can then reject a wrong-primitive wire value.
+function enumNode(entries) {
+  const values = entries.map((e) => e.Value)
+  const node = { enum: values }
+  const primitive = literalPrimitive(values)
+  if (primitive) node.primitive = primitive
+  return node
+}
+
+// The primitive a bare-scalar union arm accepts: a `{ primitive }` arm directly, or the
+// value type of a `{ const }` arm. Undefined for an object / list / ref arm.
+function scalarArmPrimitive(arm) {
+  if (arm.primitive !== undefined) return arm.primitive
+  if (arm.const !== undefined) return literalPrimitive([arm.const])
+  return undefined
+}
+
+// An inline union of projected arms. `scalar` marks a union that has a bare-scalar arm (a
+// primitive or a const) alongside object arms — e.g. a map entry's `RemoteValue / text` —
+// and carries that arm's primitive (or the array of primitives when the scalar arms differ).
+// A binding that collapses such a union onto its object (object_only) ref arm must still let
+// a non-object payload through here, but only when it matches this primitive — a wrong-typed
+// scalar is still a wire error. Derived once, in the schema, rather than re-detected per binding.
+function unionNode(arms) {
+  const node = { union: arms }
+  const primitives = [...new Set(arms.map(scalarArmPrimitive).filter((p) => p !== undefined))]
+  if (primitives.length === 1) node.scalar = primitives[0]
+  else if (primitives.length > 1) node.scalar = primitives
+  return node
+}
+
 function projectRef(type) {
   const all = typeList(type)
   // A missing type (undefined/empty input, e.g. a malformed array element or map
@@ -104,8 +161,8 @@ function projectRef(type) {
   const node =
     entries.length > 1
       ? entries.every(isLiteral)
-        ? { enum: entries.map((e) => e.Value) }
-        : { union: entries.map(projectEntry) }
+        ? enumNode(entries)
+        : unionNode(entries.map(projectEntry))
       : projectEntry(entries[0])
   if (entries.length < all.length) node.nullable = true // a `null` alternative means the value may be null
   return node
@@ -124,7 +181,7 @@ function projectEntry(e) {
     // An inline group that only wraps anonymous ref(s) — e.g. a union arm
     // `{ DateLocalValue }` — is that ref (or a union of them), not a record.
     const refs = unionMemberRefs(e)
-    if (refs) return refs.length === 1 ? { ref: refs[0] } : { union: refs.map((r) => ({ ref: r })) }
+    if (refs) return refs.length === 1 ? { ref: refs[0] } : unionNode(refs.map((r) => ({ ref: r })))
     return {
       record: e.Properties.flat()
         .filter((p) => p?.Name)
@@ -240,6 +297,66 @@ function unionLeaves(ref, types, seen = new Set()) {
   if (t.kind === 'union') return t.variants.flatMap((v) => unionLeaves(v, types, seen))
   if (t.kind === 'alias' && t.type?.ref) return unionLeaves(t.type.ref, types, seen)
   return []
+}
+
+// Whether a union variant is an object (record) type — following aliases and nested
+// unions to their leaves. An enum, or an alias to a primitive/list/map (or an inline
+// union arm with a scalar member), is not an object. `objectOnly` is true for a union
+// only when every variant is one, so a non-object payload is a schema violation there.
+function variantIsObject(ref, types, seen = new Set()) {
+  if (seen.has(ref)) return true // a cycle bottoms out in records; treat as object
+  seen.add(ref)
+  const t = types[ref]
+  if (!t) return false
+  if (t.kind === 'record') return true
+  if (t.kind === 'union') return t.variants.every((v) => variantIsObject(v, types, seen))
+  if (t.kind === 'alias') {
+    if (t.type?.ref) return variantIsObject(t.type.ref, types, seen)
+    if (t.type?.union) return t.type.union.every((a) => a.ref !== undefined && variantIsObject(a.ref, types, seen))
+    return false // alias to a primitive / list / map / const
+  }
+  return false // enum
+}
+
+// The type-name refs a projected ref node points at, recursing through list / map /
+// inline union / inline record. (checkSchema has an equivalent local walk for its own
+// referential checks; this module-level one feeds the reachability closure below.)
+function refNames(node) {
+  if (!node) return []
+  if (node.ref) return [node.ref]
+  if (node.list) return refNames(node.list)
+  if (node.map) return refNames(node.map)
+  if (node.union) return node.union.flatMap(refNames)
+  if (node.record) return node.record.flatMap((f) => refNames(f.type))
+  return []
+}
+
+// The type-name refs a type *node* (record / union / alias) points at: a record's
+// field and map value types, a union's variants, an alias's target.
+function typeRefNames(node) {
+  if (node.kind === 'record') {
+    const refs = node.fields.flatMap((f) => refNames(f.type))
+    if (node.map) refs.push(...refNames(node.map))
+    return refs
+  }
+  if (node.kind === 'union') return node.variants
+  if (node.kind === 'alias') return refNames(node.type)
+  return []
+}
+
+// The set of types that can be *sent*: reachable from some command's params, through
+// fields, lists, unions, maps, and nested records/aliases. Results and events are not
+// roots — a type reached only through them is received-only. `preserveExtras` gates the
+// extras store on this, so only a type you can hand back keeps unknown wire properties.
+function reSendableTypes(commands, types) {
+  const reachable = new Set()
+  const visit = (name) => {
+    if (!name || reachable.has(name) || !types[name]) return
+    reachable.add(name)
+    for (const r of typeRefNames(types[name])) visit(r)
+  }
+  for (const c of commands) if (c.params?.ref) visit(c.params.ref)
+  return reachable
 }
 
 // The constant value a record pins on wire key `k`, as `{ value }` (a string or
@@ -467,6 +584,11 @@ export function projectSchema(ast, model, links = {}) {
   // Override the result-grouping unions: they are dispatched by request id, so a
   // payload selector for them is meaningless (and would be empty/ambiguous).
   for (const name of correlatedUnions(types)) types[name].selector = { correlated: true }
+  // A first-class union whose every arm is an object rejects a non-object payload
+  // instead of passing it through. (An alias-union like input.Origin, which carries
+  // bare-string arms, is intentionally left unflagged so those arms still pass through.)
+  for (const node of Object.values(types))
+    if (node.kind === 'union' && node.variants.every((v) => variantIsObject(v, types))) node.objectOnly = true
 
   const commands = []
   const events = []
@@ -495,6 +617,13 @@ export function projectSchema(ast, model, links = {}) {
       events.push(ev)
     }
   }
+
+  // An extensible type keeps unknown wire properties only when it is also re-sendable
+  // (reachable from a command's params) — a type you receive and can hand back, so its
+  // extras must round-trip. A received-only extensible type drops them.
+  const reSendable = reSendableTypes(commands, types)
+  for (const [name, node] of Object.entries(types))
+    if (node.extensible && reSendable.has(name)) node.preserveExtras = true
 
   // Per-domain module links, for a binding that emits one class/namespace per domain.
   const domains = {}
