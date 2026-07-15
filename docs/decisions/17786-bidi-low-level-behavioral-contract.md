@@ -56,10 +56,12 @@ their *form* varies:
      *or* `null`, never only the literal. (A non-nullable constant is always the literal, so it can be a
      fixed value.)
 
-3. **Outbound is validated locally, before sending.** *(Decision.)* Enum membership, required-field
-   presence, and no unknown properties on closed types are checked before the message leaves, so a caller
-   mistake is a local error rather than a server round-trip. Passing an enum value the spec doesn't
-   define, for instance, raises locally instead of being sent for the remote end to reject. A static
+3. **Outbound is validated locally, before sending.** *(Decision.)* Enum and const-value membership,
+   required-field presence, and no unknown properties on closed types are checked before the message
+   leaves, so a caller mistake is a local error rather than a server round-trip. Passing an enum value the
+   spec doesn't define, for instance, raises locally instead of being sent for the remote end to reject —
+   as does a value neither the literal nor `null` for a nullable constant (a `true`/`null` field rejects
+   `false`; see item 2). A static
    binding gets the check from the type system; a dynamic one does it explicitly. (These classes carry
    only spec-modeled, validated commands; a higher layer needing a command the spec doesn't model would
    create its own separate implementation rather than route untyped data through a typed one.)
