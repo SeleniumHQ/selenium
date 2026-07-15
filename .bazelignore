@@ -9,7 +9,7 @@ dotnet/src/support/bin
 dotnet/src/support/obj
 dotnet/src/webdriver/bin
 dotnet/src/webdriver/obj
-java/build/production
+java/build
 java/client/build
 java/server/build
 javascript/atoms/node_modules
