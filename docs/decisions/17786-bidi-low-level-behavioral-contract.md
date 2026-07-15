@@ -8,15 +8,16 @@
 The WebDriver BiDi specification is defined in CDDL. Any client implementation has a low-level layer
 that turns typed calls into wire messages and wire messages back into typed objects. It sits above a
 transport (which sends commands and correlates responses) and below the orchestration and high-level
-API that program against it. *This record is about the low-level layer.*
+API that build on it. *This record is about the low-level layer.*
 
-Because these behaviors follow from the specification rather than from taste, they are identical for any
-conforming implementation, in any language — so one contract can state them for every binding at once.
+These behaviors are observable at the wire boundary, so bindings diverge on them without a shared
+reference. One contract can state them for every binding at once — the same behavior in any language.
 
 ## Decision
 
-**Any implementation of this layer must exhibit the behaviors below, each a consequence of conforming to
-the WebDriver BiDi specification.**
+**Any implementation of this layer must exhibit the behaviors below.** Some follow from conforming to the
+WebDriver BiDi specification; the rest are choices this record standardizes so bindings don't diverge —
+the next section marks which is which.
 
 An implementation must exhibit them at runtime, not merely declare them in its types or schema. A
 statically-typed deserializer will fill a correctly-typed object from malformed input — most often a null
