@@ -106,6 +106,8 @@ if changed_matches '^rb/|^rake_tasks/|^Rakefile'; then
     echo "    rubocop -a" >&2
     if [[ "$run_lint" == "true" ]]; then
         bazel run //rb:rubocop -- -a
+        echo "    steep check" >&2
+        bazel run //rb:steep
     else
         bazel run //rb:rubocop -- -a --fail-level F
     fi
