@@ -20,7 +20,9 @@ module Selenium
   module WebDriver
     module Remote
       class BiDiBridge < Bridge
-        @browsing_context: BiDi::BrowsingContext
+        READINESS_STATE: Hash[String, Symbol]
+
+        @browsing_context: BiDi::Protocol::BrowsingContext
 
         @connection: untyped
 
@@ -46,7 +48,9 @@ module Selenium
 
         def validated_socket_url: () -> String
 
-        def browsing_context: () -> BiDi::BrowsingContext
+        def browsing_context: () -> BiDi::Protocol::BrowsingContext
+
+        def readiness_state: () -> Symbol
       end
     end
   end
