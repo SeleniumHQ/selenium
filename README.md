@@ -162,7 +162,7 @@ On macOS/Linux, make a worktree self-cleaning by pointing its output base inside
 this to that worktree's `.bazelrc.local`:
 
 ```
-startup --output_base=.local/bazel-out
+startup --output_base=.local/output-base
 ```
 
 `.local/` is gitignored and excluded in `.bazelignore`, so removing the worktree removes its output
