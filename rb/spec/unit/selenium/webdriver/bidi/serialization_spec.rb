@@ -173,6 +173,15 @@ module Selenium
               expect { Script::ObjectRemoteValue.from_json(wire) }
                 .to raise_error(Error::WebDriverError, /expected an object on the wire/)
             end
+
+            # A map is `[key, value]` pairs; a malformed entry that is not a 2-item pair is a wire
+            # error, not something to pass through the scalar-tolerant path.
+            it 'rejects a malformed map entry that is not a [key, value] pair' do
+              wire = {'type' => 'object', 'value' => [['orphan-key']]}
+
+              expect { Script::ObjectRemoteValue.from_json(wire) }
+                .to raise_error(Error::WebDriverError, /expected a \[key, value\] pair/)
+            end
           end
 
           describe 'optional + nullable fields' do

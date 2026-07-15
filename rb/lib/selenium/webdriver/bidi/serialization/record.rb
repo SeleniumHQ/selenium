@@ -192,31 +192,35 @@ module Selenium
               (@enums ||= {})[field.name] ||= Protocol.const_get(field.enum)
             end
 
-            # Parses each element, recursing into nested lists. A `scalar` field is a map encoded
-            # as `[key, value]` pairs: only the key is `Ref / text`, so scalar tolerance applies
-            # to the key alone (a bare-string key passes through, validated against the arm's
-            # primitive; an object key deserializes). The value is the object-only Ref and always
-            # deserializes, so a bare scalar there is still rejected — object_only holds at the
-            # value position, not just the key.
+            # Parses each element. A `scalar` field is a map encoded as `[key, value]` pairs, so
+            # every element must be a 2-item pair — each is read as one, and a malformed entry is
+            # rejected. Non-scalar lists recurse into nested lists; other elements deserialize.
             def read_list(field, raw, klass)
               raw.map do |element|
-                if field.scalar && element.is_a?(::Array) && element.size == 2
-                  key, value = element
-                  [read_map_key(field, key, klass), klass.from_json(value)]
+                if field.scalar
+                  read_map_entry(field, element, klass)
                 elsif element.is_a?(::Array)
                   read_list(field, element, klass)
-                elsif field.scalar && !element.is_a?(::Hash)
-                  scalar_value(field, element)
                 else
                   klass.from_json(element)
                 end
               end
             end
 
-            # A map key is `Ref / text`: an object key deserializes into the Ref, a bare-scalar
-            # key passes through once validated against the arm's primitive.
-            def read_map_key(field, key, klass)
-              key.is_a?(::Hash) ? klass.from_json(key) : scalar_value(field, key)
+            # A map entry is a `[key, value]` pair. The key is `Ref / text` — an object key
+            # deserializes, a bare-string key passes through once validated against the arm's
+            # primitive. The value is the object-only Ref and always deserializes, so a bare scalar
+            # there is rejected (object_only holds at the value position). A non-pair element is a
+            # malformed entry and is rejected outright.
+            def read_map_entry(field, element, klass)
+              unless element.is_a?(::Array) && element.size == 2
+                raise Error::WebDriverError,
+                      "#{name}##{field.name} expected a [key, value] pair, got #{element.inspect}"
+              end
+
+              key, value = element
+              key = key.is_a?(::Hash) ? klass.from_json(key) : scalar_value(field, key)
+              [key, klass.from_json(value)]
             end
 
             # A bare scalar at a scalar-tolerant union position must match one of the union's

@@ -78,7 +78,7 @@ module Selenium
 
             def read_list: (untyped field, untyped raw, untyped klass) -> untyped
 
-            def read_map_key: (untyped field, untyped key, untyped klass) -> untyped
+            def read_map_entry: (untyped field, untyped element, untyped klass) -> untyped
 
             def scalar_value: (untyped field, untyped value) -> untyped
 
