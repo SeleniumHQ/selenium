@@ -1,7 +1,7 @@
-# NNNNN. Behavioral contract for the low-level WebDriver BiDi layer
+# 17786. Behavioral contract for the low-level WebDriver BiDi layer
 
 - Status: Proposed
-- Discussion: _PR pending_
+- Discussion: https://github.com/SeleniumHQ/selenium/pull/17786
 
 ## Context
 
