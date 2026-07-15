@@ -31,6 +31,7 @@ module Selenium
             prefetch_status_updated: 'speculation.prefetchStatusUpdated'
           }.freeze
 
+          # @see https://wicg.github.io/nav-speculation/prefetch.html#cddl-type-speculationpreloadingstatus
           PRELOADING_STATUS = {
             pending: 'pending',
             ready: 'ready',
@@ -40,6 +41,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://wicg.github.io/nav-speculation/prefetch.html#cddl-type-speculationprefetchstatusupdatedparameters
           PrefetchStatusUpdatedParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             url: {wire_key: 'url', primitive: 'string'},

@@ -29,6 +29,7 @@ module Selenium
         class UserAgentClientHints < Domain
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://wicg.github.io/ua-client-hints/#cddl-type-useragentclienthintsclienthintsmetadata
           ClientHintsMetadata = Serialization::Record.define(
             brands: {wire_key: 'brands', required: false, ref: 'UserAgentClientHints::BrandVersion', list: true},
             full_version_list: {
@@ -49,6 +50,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://wicg.github.io/ua-client-hints/#cddl-type-useragentclienthintsbrandversion
           BrandVersion = Serialization::Record.define(
             brand: {wire_key: 'brand', primitive: 'string'},
             version: {wire_key: 'version', primitive: 'string'}

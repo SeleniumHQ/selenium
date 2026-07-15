@@ -26,6 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+        # @see https://w3c.github.io/webdriver-bidi/#module-browser
         class Browser < Domain
           CLIENT_WINDOW_INFO_STATE = {
             fullscreen: 'fullscreen',
@@ -42,6 +43,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-browser-ClientWindowInfo
           ClientWindowInfo = Serialization::Record.define(
             active: {wire_key: 'active', primitive: 'boolean'},
             client_window: 'clientWindow',
@@ -54,10 +56,12 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-browser-UserContextInfo
           UserContextInfo = Serialization::Record.define(user_context: 'userContext')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsercreateusercontextparameters
           CreateUserContextParameters = Serialization::Record.define(
             accept_insecure_certs: {wire_key: 'acceptInsecureCerts', required: false, primitive: 'boolean'},
             proxy: {wire_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
@@ -70,22 +74,26 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsergetclientwindowsresult
           GetClientWindowsResult = Serialization::Record.define(
             client_windows: {wire_key: 'clientWindows', ref: 'Browser::ClientWindowInfo', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsergetusercontextsresult
           GetUserContextsResult = Serialization::Record.define(
             user_contexts: {wire_key: 'userContexts', ref: 'Browser::UserContextInfo', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browserremoveusercontextparameters
           RemoveUserContextParameters = Serialization::Record.define(user_context: 'userContext')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsersetclientwindowstateparameters
           class SetClientWindowStateParameters < Serialization::Union
             discriminator 'state', {normal: 'normal'}
             variants(
@@ -114,6 +122,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsersetdownloadbehaviorparameters
           SetDownloadBehaviorParameters = Serialization::Record.define(
             download_behavior: {wire_key: 'downloadBehavior', nullable: true, ref: 'Browser::DownloadBehavior'},
             user_contexts: {wire_key: 'userContexts', required: false, list: true}
@@ -121,6 +130,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browserdownloadbehavior
           class DownloadBehavior < Serialization::Union
             discriminator 'type', {allowed: 'allowed', denied: 'denied'}
             variants(
@@ -142,12 +152,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-browser-close
           def close
             execute(cmd: 'browser.close')
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-browser-createUserContext
           def create_user_context(
             accept_insecure_certs: Serialization::UNSET,
             proxy: Serialization::UNSET,
@@ -163,18 +175,21 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-browser-getClientWindows
           def get_client_windows
             execute(cmd: 'browser.getClientWindows', result: Browser::GetClientWindowsResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-browser-getUserContexts
           def get_user_contexts
             execute(cmd: 'browser.getUserContexts', result: Browser::GetUserContextsResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-browser-removeUserContext
           def remove_user_context(user_context:)
             params = RemoveUserContextParameters.new(user_context: user_context)
             execute(cmd: 'browser.removeUserContext', params: params)
@@ -182,6 +197,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-browser-setClientWindowState
           def set_client_window_state(
             client_window:,
             state:,
@@ -208,6 +224,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-browser-setDownloadBehavior
           def set_download_behavior(download_behavior:, user_contexts: Serialization::UNSET)
             params = SetDownloadBehaviorParameters.new(
               download_behavior: download_behavior,

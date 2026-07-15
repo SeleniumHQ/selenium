@@ -26,6 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+        # @see https://w3c.github.io/webdriver-bidi/#module-network
         class Network < Domain
           EVENTS = {
             auth_required: 'network.authRequired',
@@ -35,10 +36,12 @@ module Selenium
             response_started: 'network.responseStarted'
           }.freeze
 
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-CollectorType
           COLLECTOR_TYPE = {
             blob: 'blob'
           }.freeze
 
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networksamesite
           SAME_SITE = {
             strict: 'strict',
             lax: 'lax',
@@ -46,11 +49,13 @@ module Selenium
             default: 'default'
           }.freeze
 
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-dataType
           DATA_TYPE = {
             request: 'request',
             response: 'response'
           }.freeze
 
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkinterceptphase
           INTERCEPT_PHASE = {
             before_request_sent: 'beforeRequestSent',
             response_started: 'responseStarted',
@@ -76,6 +81,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-AuthChallenge
           AuthChallenge = Serialization::Record.define(
             scheme: {wire_key: 'scheme', primitive: 'string'},
             realm: {wire_key: 'realm', primitive: 'string'}
@@ -83,6 +89,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-AuthCredentials
           AuthCredentials = Serialization::Record.define(
             type: {fixed: 'password'},
             username: {wire_key: 'username', primitive: 'string'},
@@ -91,6 +98,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-BaseParameters
           BaseParameters = Serialization::Record.define(
             context: {wire_key: 'context', nullable: true},
             is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
@@ -104,6 +112,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-BytesValue
           class BytesValue < Serialization::Union
             discriminator 'type', {string: 'string', base64: 'base64'}
             variants(
@@ -114,6 +123,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkstringvalue
           StringValue = Serialization::Record.define(
             type: {fixed: 'string'},
             value: {wire_key: 'value', primitive: 'string'}
@@ -121,6 +131,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkbase64value
           Base64Value = Serialization::Record.define(
             type: {fixed: 'base64'},
             value: {wire_key: 'value', primitive: 'string'}
@@ -128,6 +139,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-Cookie
           Cookie = Serialization::Record.define(
             name: {wire_key: 'name', primitive: 'string'},
             value: {wire_key: 'value', ref: 'Network::BytesValue'},
@@ -143,6 +155,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-CookieHeader
           CookieHeader = Serialization::Record.define(
             name: {wire_key: 'name', primitive: 'string'},
             value: {wire_key: 'value', ref: 'Network::BytesValue'}
@@ -150,6 +163,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-FetchTimingInfo
           FetchTimingInfo = Serialization::Record.define(
             time_origin: {wire_key: 'timeOrigin', primitive: 'number'},
             request_time: {wire_key: 'requestTime', primitive: 'number'},
@@ -168,6 +182,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-Header
           Header = Serialization::Record.define(
             name: {wire_key: 'name', primitive: 'string'},
             value: {wire_key: 'value', ref: 'Network::BytesValue'}
@@ -175,6 +190,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-Initiator
           Initiator = Serialization::Record.define(
             column_number: {wire_key: 'columnNumber', required: false},
             line_number: {wire_key: 'lineNumber', required: false},
@@ -185,6 +201,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-RequestData
           RequestData = Serialization::Record.define(
             request: 'request',
             url: {wire_key: 'url', primitive: 'string'},
@@ -200,10 +217,12 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-ResponseContent
           ResponseContent = Serialization::Record.define(size: 'size')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-ResponseData
           ResponseData = Serialization::Record.define(
             url: {wire_key: 'url', primitive: 'string'},
             protocol: {wire_key: 'protocol', primitive: 'string'},
@@ -221,6 +240,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-SetCookieHeader
           SetCookieHeader = Serialization::Record.define(
             name: {wire_key: 'name', primitive: 'string'},
             value: {wire_key: 'value', ref: 'Network::BytesValue'},
@@ -235,6 +255,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-UrlPattern
           class UrlPattern < Serialization::Union
             discriminator 'type', {pattern: 'pattern', string: 'string'}
             variants(
@@ -245,6 +266,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkurlpatternpattern
           UrlPatternPattern = Serialization::Record.define(
             type: {fixed: 'pattern'},
             protocol: {wire_key: 'protocol', required: false, primitive: 'string'},
@@ -256,6 +278,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkurlpatternstring
           UrlPatternString = Serialization::Record.define(
             type: {fixed: 'string'},
             pattern: {wire_key: 'pattern', primitive: 'string'}
@@ -263,6 +286,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkadddatacollectorparameters
           AddDataCollectorParameters = Serialization::Record.define(
             data_types: {wire_key: 'dataTypes', list: true, enum: 'Network::DATA_TYPE'},
             max_encoded_data_size: 'maxEncodedDataSize',
@@ -273,10 +297,12 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkadddatacollectorresult
           AddDataCollectorResult = Serialization::Record.define(collector: 'collector')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkaddinterceptparameters
           AddInterceptParameters = Serialization::Record.define(
             phases: {wire_key: 'phases', list: true, enum: 'Network::INTERCEPT_PHASE'},
             contexts: {wire_key: 'contexts', required: false, list: true},
@@ -285,10 +311,12 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkaddinterceptresult
           AddInterceptResult = Serialization::Record.define(intercept: 'intercept')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkcontinuerequestparameters
           ContinueRequestParameters = Serialization::Record.define(
             request: 'request',
             body: {wire_key: 'body', required: false, ref: 'Network::BytesValue'},
@@ -300,6 +328,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkcontinueresponseparameters
           ContinueResponseParameters = Serialization::Record.define(
             request: 'request',
             cookies: {wire_key: 'cookies', required: false, ref: 'Network::SetCookieHeader', list: true},
@@ -311,6 +340,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkcontinuewithauthparameters
           class ContinueWithAuthParameters < Serialization::Union
             discriminator 'action', {provide_credentials: 'provideCredentials'}
             variants(
@@ -336,6 +366,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkdisowndataparameters
           DisownDataParameters = Serialization::Record.define(
             data_type: {wire_key: 'dataType', enum: 'Network::DATA_TYPE'},
             collector: 'collector',
@@ -344,10 +375,12 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkfailrequestparameters
           FailRequestParameters = Serialization::Record.define(request: 'request')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkgetdataparameters
           GetDataParameters = Serialization::Record.define(
             data_type: {wire_key: 'dataType', enum: 'Network::DATA_TYPE'},
             collector: {wire_key: 'collector', required: false},
@@ -357,10 +390,12 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkgetdataresult
           GetDataResult = Serialization::Record.define(bytes: {wire_key: 'bytes', ref: 'Network::BytesValue'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkprovideresponseparameters
           ProvideResponseParameters = Serialization::Record.define(
             request: 'request',
             body: {wire_key: 'body', required: false, ref: 'Network::BytesValue'},
@@ -372,14 +407,17 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkremovedatacollectorparameters
           RemoveDataCollectorParameters = Serialization::Record.define(collector: 'collector')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkremoveinterceptparameters
           RemoveInterceptParameters = Serialization::Record.define(intercept: 'intercept')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networksetcachebehaviorparameters
           SetCacheBehaviorParameters = Serialization::Record.define(
             cache_behavior: {wire_key: 'cacheBehavior', enum: 'Network::SET_CACHE_BEHAVIOR_PARAMETERS_CACHE_BEHAVIOR'},
             contexts: {wire_key: 'contexts', required: false, list: true}
@@ -387,6 +425,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networksetextraheadersparameters
           SetExtraHeadersParameters = Serialization::Record.define(
             headers: {wire_key: 'headers', ref: 'Network::Header', list: true},
             contexts: {wire_key: 'contexts', required: false, list: true},
@@ -395,6 +434,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkauthrequiredparameters
           AuthRequiredParameters = Serialization::Record.define(
             context: {wire_key: 'context', nullable: true},
             is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
@@ -409,6 +449,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkbeforerequestsentparameters
           BeforeRequestSentParameters = Serialization::Record.define(
             context: {wire_key: 'context', nullable: true},
             is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
@@ -423,6 +464,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkfetcherrorparameters
           FetchErrorParameters = Serialization::Record.define(
             context: {wire_key: 'context', nullable: true},
             is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
@@ -437,6 +479,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkresponsecompletedparameters
           ResponseCompletedParameters = Serialization::Record.define(
             context: {wire_key: 'context', nullable: true},
             is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
@@ -451,6 +494,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkresponsestartedparameters
           ResponseStartedParameters = Serialization::Record.define(
             context: {wire_key: 'context', nullable: true},
             is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
@@ -473,6 +517,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-network-addDataCollector
           def add_data_collector(
             data_types:,
             max_encoded_data_size:,
@@ -494,6 +539,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-network-addIntercept
           def add_intercept(phases:, contexts: Serialization::UNSET, url_patterns: Serialization::UNSET)
             Serialization.validate!('phases', phases, Network::INTERCEPT_PHASE)
             params = AddInterceptParameters.new(phases: phases, contexts: contexts, url_patterns: url_patterns)
@@ -502,6 +548,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-network-continueRequest
           def continue_request(
             request:,
             body: Serialization::UNSET,
@@ -523,6 +570,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-network-continueResponse
           def continue_response(
             request:,
             cookies: Serialization::UNSET,
@@ -544,6 +592,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-network-continueWithAuth
           def continue_with_auth(request:, action:, credentials: Serialization::UNSET)
             Serialization.validate!(
               'action',
@@ -556,6 +605,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-network-disownData
           def disown_data(data_type:, collector:, request:)
             Serialization.validate!('dataType', data_type, Network::DATA_TYPE)
             params = DisownDataParameters.new(data_type: data_type, collector: collector, request: request)
@@ -564,6 +614,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-network-failRequest
           def fail_request(request:)
             params = FailRequestParameters.new(request: request)
             execute(cmd: 'network.failRequest', params: params)
@@ -571,6 +622,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-network-getData
           def get_data(data_type:, request:, collector: Serialization::UNSET, disown: Serialization::UNSET)
             Serialization.validate!('dataType', data_type, Network::DATA_TYPE)
             params = GetDataParameters.new(data_type: data_type, collector: collector, disown: disown, request: request)
@@ -579,6 +631,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-network-provideResponse
           def provide_response(
             request:,
             body: Serialization::UNSET,
@@ -600,6 +653,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-network-removeDataCollector
           def remove_data_collector(collector:)
             params = RemoveDataCollectorParameters.new(collector: collector)
             execute(cmd: 'network.removeDataCollector', params: params)
@@ -607,6 +661,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-network-removeIntercept
           def remove_intercept(intercept:)
             params = RemoveInterceptParameters.new(intercept: intercept)
             execute(cmd: 'network.removeIntercept', params: params)
@@ -614,6 +669,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-network-setCacheBehavior
           def set_cache_behavior(cache_behavior:, contexts: Serialization::UNSET)
             Serialization.validate!(
               'cacheBehavior',
@@ -626,6 +682,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-network-setExtraHeaders
           def set_extra_headers(headers:, contexts: Serialization::UNSET, user_contexts: Serialization::UNSET)
             params = SetExtraHeadersParameters.new(headers: headers, contexts: contexts, user_contexts: user_contexts)
             execute(cmd: 'network.setExtraHeaders', params: params)

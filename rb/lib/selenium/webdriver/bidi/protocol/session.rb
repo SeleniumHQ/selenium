@@ -26,7 +26,9 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+        # @see https://w3c.github.io/webdriver-bidi/#module-session
         class Session < Domain
+          # @see https://w3c.github.io/webdriver-bidi/#type-session-UserPromptHandlerType
           USER_PROMPT_HANDLER_TYPE = {
             accept: 'accept',
             dismiss: 'dismiss',
@@ -35,6 +37,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-session-CapabilitiesRequest
           CapabilitiesRequest = Serialization::Record.define(
             always_match: {wire_key: 'alwaysMatch', required: false, ref: 'Session::CapabilityRequest'},
             first_match: {wire_key: 'firstMatch', required: false, ref: 'Session::CapabilityRequest', list: true}
@@ -42,6 +45,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-session-CapabilityRequest
           CapabilityRequest = Serialization::Record.define(
             accept_insecure_certs: {wire_key: 'acceptInsecureCerts', required: false, primitive: 'boolean'},
             browser_name: {wire_key: 'browserName', required: false, primitive: 'string'},
@@ -58,6 +62,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-session-ProxyConfiguration
           class ProxyConfiguration < Serialization::Union
             discriminator 'proxyType', {
               autodetect: 'autodetect',
@@ -77,6 +82,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionautodetectproxyconfiguration
           AutodetectProxyConfiguration = Serialization::Record.define(
             proxy_type: {wire_key: 'proxyType', fixed: 'autodetect'},
             extensible: true
@@ -84,6 +90,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessiondirectproxyconfiguration
           DirectProxyConfiguration = Serialization::Record.define(
             proxy_type: {wire_key: 'proxyType', fixed: 'direct'},
             extensible: true
@@ -91,6 +98,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionmanualproxyconfiguration
           ManualProxyConfiguration = Serialization::Record.define(
             proxy_type: {wire_key: 'proxyType', fixed: 'manual'},
             http_proxy: {wire_key: 'httpProxy', required: false, primitive: 'string'},
@@ -103,6 +111,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionsocksproxyconfiguration
           SocksProxyConfiguration = Serialization::Record.define(
             socks_proxy: {wire_key: 'socksProxy', primitive: 'string'},
             socks_version: {wire_key: 'socksVersion', primitive: 'integer'}
@@ -110,6 +119,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionpacproxyconfiguration
           PacProxyConfiguration = Serialization::Record.define(
             proxy_type: {wire_key: 'proxyType', fixed: 'pac'},
             proxy_autoconfig_url: {wire_key: 'proxyAutoconfigUrl', primitive: 'string'},
@@ -118,6 +128,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionsystemproxyconfiguration
           SystemProxyConfiguration = Serialization::Record.define(
             proxy_type: {wire_key: 'proxyType', fixed: 'system'},
             extensible: true
@@ -125,6 +136,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-session-UserPromptHandler
           UserPromptHandler = Serialization::Record.define(
             alert: {wire_key: 'alert', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
             before_unload: {wire_key: 'beforeUnload', required: false, enum: 'Session::USER_PROMPT_HANDLER_TYPE'},
@@ -136,6 +148,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionsubscribeparameters
           SubscribeParameters = Serialization::Record.define(
             events: {wire_key: 'events', list: true},
             contexts: {wire_key: 'contexts', required: false, list: true},
@@ -144,14 +157,17 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-session-UnsubscribeByIDRequest
           UnsubscribeByIDRequest = Serialization::Record.define(subscriptions: {wire_key: 'subscriptions', list: true})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-session-UnsubscribeByAttributesRequest
           UnsubscribeByAttributesRequest = Serialization::Record.define(events: {wire_key: 'events', list: true})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionstatusresult
           StatusResult = Serialization::Record.define(
             ready: {wire_key: 'ready', primitive: 'boolean'},
             message: {wire_key: 'message', primitive: 'string'}
@@ -159,12 +175,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionnewparameters
           NewParameters = Serialization::Record.define(
             capabilities: {wire_key: 'capabilities', ref: 'Session::CapabilitiesRequest'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionnewresult
           NewResult = Serialization::Record.define(
             session_id: {wire_key: 'sessionId', primitive: 'string'},
             capabilities: {wire_key: 'capabilities', ref: 'Session::NewResult::Capabilities'}
@@ -191,10 +209,12 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionsubscriberesult
           SubscribeResult = Serialization::Record.define(subscription: 'subscription')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionunsubscribeparameters
           class UnsubscribeParameters < Serialization::Union
             presence(
               'Session::UnsubscribeByAttributesRequest' => ['events'],
@@ -204,12 +224,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-session-end
           def end_
             execute(cmd: 'session.end')
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-session-new
           def new(capabilities:)
             params = NewParameters.new(capabilities: capabilities)
             execute(cmd: 'session.new', params: params, result: Session::NewResult)
@@ -217,12 +239,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-session-status
           def status
             execute(cmd: 'session.status', result: Session::StatusResult)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-session-subscribe
           def subscribe(events:, contexts: Serialization::UNSET, user_contexts: Serialization::UNSET)
             params = SubscribeParameters.new(events: events, contexts: contexts, user_contexts: user_contexts)
             execute(cmd: 'session.subscribe', params: params, result: Session::SubscribeResult)
@@ -230,6 +254,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-session-unsubscribe
           def unsubscribe(events: Serialization::UNSET, subscriptions: Serialization::UNSET)
             params = UnsubscribeParameters.build(events: events, subscriptions: subscriptions)
             execute(cmd: 'session.unsubscribe', params: params)

@@ -26,11 +26,13 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+        # @see https://w3c.github.io/webdriver-bidi/#module-log
         class Log < Domain
           EVENTS = {
             entry_added: 'log.entryAdded'
           }.freeze
 
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-loglevel
           LEVEL = {
             debug: 'debug',
             info: 'info',
@@ -40,6 +42,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-logentry
           class Entry < Serialization::Union
             discriminator 'type', {console: 'console', javascript: 'javascript'}
             variants(
@@ -51,6 +54,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-logbaselogentry
           BaseLogEntry = Serialization::Record.define(
             level: {wire_key: 'level', enum: 'Log::LEVEL'},
             source: {wire_key: 'source', ref: 'Script::Source'},
@@ -61,6 +65,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-loggenericlogentry
           GenericLogEntry = Serialization::Record.define(
             level: {wire_key: 'level', enum: 'Log::LEVEL'},
             source: {wire_key: 'source', ref: 'Script::Source'},
@@ -72,6 +77,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-logconsolelogentry
           ConsoleLogEntry = Serialization::Record.define(
             type: {fixed: 'console'},
             level: {wire_key: 'level', enum: 'Log::LEVEL'},
@@ -85,6 +91,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-logjavascriptlogentry
           JavascriptLogEntry = Serialization::Record.define(
             type: {fixed: 'javascript'},
             level: {wire_key: 'level', enum: 'Log::LEVEL'},

@@ -26,15 +26,18 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+        # @see https://w3c.github.io/webdriver-bidi/#module-webExtension
         class WebExtension < Domain
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallparameters
           InstallParameters = Serialization::Record.define(
             extension_data: {wire_key: 'extensionData', ref: 'WebExtension::ExtensionData'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensionextensiondata
           class ExtensionData < Serialization::Union
             discriminator 'type', {archive_path: 'archivePath', base64: 'base64', path: 'path'}
             variants(
@@ -46,6 +49,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensionextensionpath
           ExtensionPath = Serialization::Record.define(
             type: {fixed: 'path'},
             path: {wire_key: 'path', primitive: 'string'}
@@ -53,6 +57,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensionextensionarchivepath
           ExtensionArchivePath = Serialization::Record.define(
             type: {fixed: 'archivePath'},
             path: {wire_key: 'path', primitive: 'string'}
@@ -60,6 +65,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensionextensionbase64encoded
           ExtensionBase64Encoded = Serialization::Record.define(
             type: {fixed: 'base64'},
             value: {wire_key: 'value', primitive: 'string'}
@@ -67,14 +73,17 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallresult
           InstallResult = Serialization::Record.define(extension: 'extension')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensionuninstallparameters
           UninstallParameters = Serialization::Record.define(extension: 'extension')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-webExtension-install
           def install(extension_data:)
             params = InstallParameters.new(extension_data: extension_data)
             execute(cmd: 'webExtension.install', params: params, result: WebExtension::InstallResult)
@@ -82,6 +91,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-webExtension-uninstall
           def uninstall(extension:)
             params = UninstallParameters.new(extension: extension)
             execute(cmd: 'webExtension.uninstall', params: params)

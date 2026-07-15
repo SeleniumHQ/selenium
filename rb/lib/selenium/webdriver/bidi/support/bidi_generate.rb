@@ -172,7 +172,7 @@ module BiDiGenerate
   # command); union_params picks its variant via `.build` rather than `.new`. result_ref
   # is the Protocol-relative result class path, or nil to return the raw hash.
   Command = Struct.new(:wire_name, :method_name, :params, :result_ref, :params_class,
-                       :union_params, keyword_init: true) do
+                       :union_params, :spec_href, keyword_init: true) do
     def required_params = params.select(&:required)
     def optional_params = params.reject(&:required)
     def enum_checks(indent) = params.filter_map { |p| p.enum_check(indent) }
@@ -230,7 +230,8 @@ module BiDiGenerate
   end
 
   # constant_name is the SCREAMING_SNAKE hash name; pairs are [symbol_key, wire_value] tuples.
-  Enum = Struct.new(:constant_name, :pairs, keyword_init: true)
+  # spec_href links to the type's definition in the live spec (nil when the schema has none).
+  Enum = Struct.new(:constant_name, :pairs, :spec_href, keyword_init: true)
 
   # ref is the Protocol-relative class path for a nested structured field (nil
   # for a scalar/opaque field); list wraps it in an array. wire_key is the exact
@@ -270,9 +271,10 @@ module BiDiGenerate
 
   # A generated immutable value type (a Serialization::Record.define(...) class). discriminator is the
   # baked variant tag {ruby_name:, wire:, value:} or nil; schema_name/synthetic/owner/
-  # nested drive owner-nesting (see nest_synthetic).
+  # nested drive owner-nesting (see nest_synthetic). spec_href links to the type's
+  # definition in the live spec (nil when the schema has none, e.g. a synthetic type).
   TypeClass = Struct.new(:ruby_name, :fields, :discriminator, :extensible,
-                         :schema_name, :synthetic, :owner, :label, :nested, keyword_init: true) do
+                         :schema_name, :synthetic, :owner, :label, :nested, :spec_href, keyword_init: true) do
     def union? = false
     def nested_types = nested || []
 
@@ -347,8 +349,10 @@ module BiDiGenerate
   end
 
   # A generated discriminated union (< Serialization::Union, resolved by lexical scope).
-  # nested holds its synthetic variant records (see nest_synthetic).
-  UnionClass = Struct.new(:ruby_name, :discriminator_wire, :variants, :schema_name, :nested, keyword_init: true) do
+  # nested holds its synthetic variant records (see nest_synthetic). spec_href links to
+  # the union's definition in the live spec (nil when the schema has none).
+  UnionClass = Struct.new(:ruby_name, :discriminator_wire, :variants, :schema_name, :nested, :spec_href,
+                          keyword_init: true) do
     def union? = true
     def value_variants = variants.select { |v| v.mode == :value }
     def presence_variants = variants.select { |v| v.mode == :presence }
@@ -366,14 +370,22 @@ module BiDiGenerate
     end
   end
 
-  Module = Struct.new(:name, :ruby_class, :filename, :commands, :events, :enums, :types, keyword_init: true)
+  # spec_href links the domain's module section in the live spec (nil when unknown).
+  Module = Struct.new(:name, :ruby_class, :filename, :commands, :events, :enums, :types, :spec_href,
+                      keyword_init: true)
 
   class Schema
     def initialize(schema)
       @types = schema['types']
       @commands = schema['commands']
       @events = schema['events']
+      @domains = schema['domains'] || {}
       promote_command_params_records!
+    end
+
+    # The domain's `#module-<domain>` spec link, or nil when the schema has none.
+    def domain_href(domain)
+      @domains.dig(domain, 'specHref')
     end
 
     # A command written in CDDL map form carries its params as an *inline* object (rather
@@ -443,7 +455,8 @@ module BiDiGenerate
         next unless name.start_with?("#{domain}.")
 
         pairs = type['values'].map { |v| [BiDiGenerate.enum_key(v), v.to_s] }
-        Enum.new(constant_name: BiDiGenerate.screaming_snake(name.sub("#{domain}.", '')), pairs: pairs)
+        Enum.new(constant_name: BiDiGenerate.screaming_snake(name.sub("#{domain}.", '')), pairs: pairs,
+                 spec_href: type['specHref'])
       end
     end
 
@@ -608,7 +621,7 @@ module BiDiGenerate
       TypeClass.new(ruby_name: BiDiGenerate.type_class_name(name), fields: fields,
                     discriminator: discriminator, extensible: type['extensible'] ? true : false,
                     schema_name: name, synthetic: type['synthetic'] ? true : false,
-                    owner: type['owner'], label: type['label'])
+                    owner: type['owner'], label: type['label'], spec_href: type['specHref'])
     end
 
     # A const field is a baked discriminator tag, unless it is also nullable: the spec's
@@ -658,7 +671,8 @@ module BiDiGenerate
       raise "union #{name} selector yielded no dispatch variants" if variants.empty?
 
       UnionClass.new(ruby_name: BiDiGenerate.type_class_name(name),
-                     discriminator_wire: selector['by'], variants: variants, schema_name: name)
+                     discriminator_wire: selector['by'], variants: variants, schema_name: name,
+                     spec_href: @types[name]['specHref'])
     end
 
     def discriminated_variants(selector)
@@ -691,7 +705,8 @@ module BiDiGenerate
         VariantIR.new(mode: :value, value: const['type']['const'], ref: ruby_path(ref), requires: nil)
       end
       UnionClass.new(ruby_name: BiDiGenerate.type_class_name(name),
-                     discriminator_wire: consts.values.first['wire'], variants: variants, schema_name: name)
+                     discriminator_wire: consts.values.first['wire'], variants: variants, schema_name: name,
+                     spec_href: @types[name]['specHref'])
     end
 
     def record_params(fields)
@@ -842,7 +857,8 @@ module BiDiGenerate
         commands: schema.commands_for(domain).map { |cmd| build_command(schema, cmd) },
         events: schema.events_for(domain).map { |ev| build_event(schema, ev) },
         enums: schema.enums_for(domain),
-        types: nest_synthetic(schema.types_for(domain))
+        types: nest_synthetic(schema.types_for(domain)),
+        spec_href: schema.domain_href(domain)
       )
     end
   end
@@ -864,7 +880,8 @@ module BiDiGenerate
       params: params,
       result_ref: cmd['result'] && schema.structured_ref(cmd['result']['ref']),
       params_class: params_class,
-      union_params: params_kind == 'union'
+      union_params: params_kind == 'union',
+      spec_href: cmd['specHref']
     )
   end
 
