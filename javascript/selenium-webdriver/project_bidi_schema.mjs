@@ -473,7 +473,7 @@ export function projectSchema(ast, model, links = {}) {
   const envelopeParams = commandEnvelopeParams(types)
   // Commands and events link to their own prose section (`#command-*` / `#event-*`),
   // keyed by the wire method; domains to their `#module-*` section. Present-only-when-known.
-  const link = (map, key) => map?.[key.toLowerCase()]
+  const link = (map, key) => (typeof key === 'string' ? map?.[key.toLowerCase()] : undefined)
   for (const [domain, entry] of Object.entries(model)) {
     for (const c of entry.commands ?? []) {
       const cmd = {

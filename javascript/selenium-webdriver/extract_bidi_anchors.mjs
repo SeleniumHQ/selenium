@@ -56,7 +56,7 @@ const lower = (s) => s.toLowerCase()
  * @returns {{modules: object, types: object, commands: object, events: object}}
  */
 export function extractAnchors(html, base = SPEC_URL) {
-  const ids = new Set([...html.matchAll(/id="([^"]+)"/g)].map((m) => m[1]))
+  const ids = new Set([...html.matchAll(/id=(?:"([^"]+)"|'([^']+)')/g)].map((m) => m[1] ?? m[2]))
   const index = { modules: {}, types: {}, commands: {}, events: {} }
   const href = (id) => `${base.replace(/#.*$/, '').replace(/\/?$/, '/')}#${id}`
   for (const id of ids) {
@@ -94,7 +94,14 @@ async function main() {
     console.error('Usage: extract_bidi_anchors.mjs [--spec <url|file>] --out <anchors.json>')
     process.exit(1)
   }
-  const html = /^https?:/.test(spec) ? await (await fetch(spec)).text() : readFileSync(resolveInput(spec), 'utf8')
+  let html
+  if (/^https?:/.test(spec)) {
+    const res = await fetch(spec)
+    if (!res.ok) throw new Error(`Failed to fetch ${spec}: HTTP ${res.status}`)
+    html = await res.text()
+  } else {
+    html = readFileSync(resolveInput(spec), 'utf8')
+  }
   const index = extractAnchors(html, SPEC_URL)
   writeFileSync(resolve(args.out), JSON.stringify(index, null, 2) + '\n', 'utf8')
   const n = (o) => Object.keys(o).length

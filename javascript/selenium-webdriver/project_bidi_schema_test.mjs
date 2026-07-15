@@ -487,7 +487,7 @@ describe('extractAnchors (prose-anchor index from spec HTML)', () => {
   const idx = extractAnchors(
     [
       '<h2 id="module-session">Session</h2>',
-      '<h3 id="command-session-subscribe">subscribe</h3>',
+      "<h3 id='command-session-subscribe'>subscribe</h3>", // single-quoted ids are matched too
       '<h3 id="type-session-CapabilityRequest">CapabilityRequest</h3>',
       '<h3 id="event-log-entryAdded">entryAdded</h3>',
       '<h4 id="module-browser-commands">a sub-section, not a module</h4>',
