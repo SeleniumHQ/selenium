@@ -1,5 +1,6 @@
 """Bazel rules for generating WebDriver BiDi TypeScript modules from CDDL specification."""
 
+load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
 load("@aspect_rules_js//js:defs.bzl", "js_run_binary")
 
 # Language bindings consume the generated schema artifact; the ast/model are
@@ -120,9 +121,12 @@ def generate_bidi_library(
         name,
         cddl_file,
         extra_cddl_files = [],
+        dfns_files = [],
+        spec_html = None,
         enhancements_manifest = None,
         generator = None,
         schema_generator = None,
+        anchors_extractor = None,
         merge_tool = "//py/private:merge_cddl",
         spec_version = "1.0",
         output_path = "bidi/generated"):
@@ -132,9 +136,16 @@ def generate_bidi_library(
         name: Base name for the targets.
         cddl_file: Primary CDDL spec label (webdriver-bidi-all.cddl).
         extra_cddl_files: Additional CDDL files merged before generation.
+        dfns_files: webref definition-index files (one per merged spec). When given,
+            the schema step joins them by type name to attach a `specHref` spec link
+            to each type. Optional — omitting them yields a schema with no links.
+        spec_html: the pinned rendered core spec HTML. When given, its prose section
+            anchors are extracted and joined, upgrading type links to `#type-*` sections
+            and adding `#command-*` / `#event-*` / `#module-*` links. Optional.
         enhancements_manifest: JSON manifest for per-domain customisations.
         generator: The generate_bidi.mjs js_binary label. Defaults to :generate_bidi_script.
         schema_generator: The project_bidi_schema.mjs js_binary label. Defaults to :project_bidi_schema_script.
+        anchors_extractor: The extract_bidi_anchors.mjs js_binary label. Defaults to :extract_bidi_anchors_script.
         merge_tool: Python binary that concatenates CDDL files (output first, then inputs).
         spec_version: Spec version string passed to the generator.
         output_path: Output path for generated files within the package (default: bidi/generated).
@@ -143,6 +154,8 @@ def generate_bidi_library(
         generator = ":generate_bidi_script"
     if schema_generator == None:
         schema_generator = ":project_bidi_schema_script"
+    if anchors_extractor == None:
+        anchors_extractor = ":extract_bidi_anchors_script"
 
     pkg = native.package_name()
     ts_src_path = output_path + "_src"
@@ -197,20 +210,56 @@ def generate_bidi_library(
     # the generated Ruby / Java / Python clients consume. The step validates the
     # schema (referential integrity + input/output completeness) and fails the
     # build on any error, so a dropped or dangling type cannot ship silently.
+    # Stage each dfns index (often an external @repo//file:dfns.json) into this
+    # package: js_run_binary copies its srcs to bin, which rejects external files
+    # directly, so copy_file brings them to a package-local path first.
+    staged_dfns = []
+    for i, dfns in enumerate(dfns_files):
+        staged = name + "_dfns_%d.json" % i
+        copy_file(
+            name = name + "_dfns_copy_%d" % i,
+            src = dfns,
+            out = staged,
+        )
+        staged_dfns.append(":" + staged)
+
+    # Extract the core spec's prose section anchors from the pinned rendered HTML into
+    # a small index the schema step joins against. The HTML is an external http_file, so
+    # stage it into the package first (js_run_binary rejects external srcs, like dfns).
+    anchors_out = None
+    if spec_html:
+        staged_html = name + "_spec.html"
+        copy_file(name = name + "_spec_html_copy", src = spec_html, out = staged_html)
+        anchors_out = name + "_anchors.json"
+        js_run_binary(
+            name = name + "_anchors",
+            srcs = [":" + staged_html],
+            outs = [anchors_out],
+            args = ["--spec", "$(location :" + staged_html + ")", "--out", pkg + "/" + anchors_out],
+            tool = anchors_extractor,
+        )
+
     schema_target = name + "_schema"
     schema_out = name + "_schema.json"
+    schema_srcs = [":" + ast_target, ":" + json_target] + staged_dfns
+    schema_args = [
+        "--ast",
+        "$(location :" + ast_target + ")",
+        "--model",
+        "$(location :" + json_target + ")",
+        "--dump-schema",
+        pkg + "/" + schema_out,
+    ]
+    for staged in staged_dfns:
+        schema_args += ["--dfns", "$(location " + staged + ")"]
+    if anchors_out:
+        schema_srcs.append(":" + anchors_out)
+        schema_args += ["--anchors", "$(location :" + anchors_out + ")"]
     js_run_binary(
         name = schema_target,
-        srcs = [":" + ast_target, ":" + json_target],
+        srcs = schema_srcs,
         outs = [schema_out],
-        args = [
-            "--ast",
-            "$(location :" + ast_target + ")",
-            "--model",
-            "$(location :" + json_target + ")",
-            "--dump-schema",
-            pkg + "/" + schema_out,
-        ],
+        args = schema_args,
         tool = schema_generator,
         visibility = _ARTIFACT_VISIBILITY,
     )

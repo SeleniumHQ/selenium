@@ -26,9 +26,11 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+        # @see https://w3c.github.io/webdriver-bidi/#module-storage
         class Storage < Domain
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey
           PartitionKey = Serialization::Record.define(
             user_context: {wire_key: 'userContext', required: false, primitive: 'string'},
             source_origin: {wire_key: 'sourceOrigin', required: false, primitive: 'string'},
@@ -37,6 +39,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-storagecookiefilter
           CookieFilter = Serialization::Record.define(
             name: {wire_key: 'name', required: false, primitive: 'string'},
             value: {wire_key: 'value', required: false, ref: 'Network::BytesValue'},
@@ -52,6 +55,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-storagebrowsingcontextpartitiondescriptor
           BrowsingContextPartitionDescriptor = Serialization::Record.define(
             type: {fixed: 'context'},
             context: 'context'
@@ -59,6 +63,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-storagestoragekeypartitiondescriptor
           StorageKeyPartitionDescriptor = Serialization::Record.define(
             type: {fixed: 'storageKey'},
             user_context: {wire_key: 'userContext', required: false, primitive: 'string'},
@@ -68,6 +73,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-storagepartitiondescriptor
           class PartitionDescriptor < Serialization::Union
             discriminator 'type', {context: 'context', storage_key: 'storageKey'}
             variants(
@@ -78,6 +84,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-storagegetcookiesparameters
           GetCookiesParameters = Serialization::Record.define(
             filter: {wire_key: 'filter', required: false, ref: 'Storage::CookieFilter'},
             partition: {wire_key: 'partition', required: false, ref: 'Storage::PartitionDescriptor'}
@@ -85,6 +92,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-storagegetcookiesresult
           GetCookiesResult = Serialization::Record.define(
             cookies: {wire_key: 'cookies', ref: 'Network::Cookie', list: true},
             partition_key: {wire_key: 'partitionKey', ref: 'Storage::PartitionKey'}
@@ -92,6 +100,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-storagepartialcookie
           PartialCookie = Serialization::Record.define(
             name: {wire_key: 'name', primitive: 'string'},
             value: {wire_key: 'value', ref: 'Network::BytesValue'},
@@ -106,6 +115,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-storagesetcookieparameters
           SetCookieParameters = Serialization::Record.define(
             cookie: {wire_key: 'cookie', ref: 'Storage::PartialCookie'},
             partition: {wire_key: 'partition', required: false, ref: 'Storage::PartitionDescriptor'}
@@ -113,12 +123,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-storagesetcookieresult
           SetCookieResult = Serialization::Record.define(
             partition_key: {wire_key: 'partitionKey', ref: 'Storage::PartitionKey'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-storagedeletecookiesparameters
           DeleteCookiesParameters = Serialization::Record.define(
             filter: {wire_key: 'filter', required: false, ref: 'Storage::CookieFilter'},
             partition: {wire_key: 'partition', required: false, ref: 'Storage::PartitionDescriptor'}
@@ -126,12 +138,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-storagedeletecookiesresult
           DeleteCookiesResult = Serialization::Record.define(
             partition_key: {wire_key: 'partitionKey', ref: 'Storage::PartitionKey'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-storage-deleteCookies
           def delete_cookies(filter: Serialization::UNSET, partition: Serialization::UNSET)
             params = DeleteCookiesParameters.new(filter: filter, partition: partition)
             execute(cmd: 'storage.deleteCookies', params: params, result: Storage::DeleteCookiesResult)
@@ -139,6 +153,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-storage-getCookies
           def get_cookies(filter: Serialization::UNSET, partition: Serialization::UNSET)
             params = GetCookiesParameters.new(filter: filter, partition: partition)
             execute(cmd: 'storage.getCookies', params: params, result: Storage::GetCookiesResult)
@@ -146,6 +161,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-storage-setCookie
           def set_cookie(cookie:, partition: Serialization::UNSET)
             params = SetCookieParameters.new(cookie: cookie, partition: partition)
             execute(cmd: 'storage.setCookie', params: params, result: Storage::SetCookieResult)

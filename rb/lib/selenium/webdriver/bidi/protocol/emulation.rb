@@ -26,17 +26,21 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+        # @see https://w3c.github.io/webdriver-bidi/#module-emulation
         class Emulation < Domain
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationforcedcolorsmodetheme
           FORCED_COLORS_MODE_THEME = {
             light: 'light',
             dark: 'dark'
           }.freeze
 
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationscreenorientationnatural
           SCREEN_ORIENTATION_NATURAL = {
             portrait: 'portrait',
             landscape: 'landscape'
           }.freeze
 
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationscreenorientationtype
           SCREEN_ORIENTATION_TYPE = {
             portrait_primary: 'portrait-primary',
             portrait_secondary: 'portrait-secondary',
@@ -46,6 +50,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetforcedcolorsmodethemeoverrideparameters
           SetForcedColorsModeThemeOverrideParameters = Serialization::Record.define(
             theme: {wire_key: 'theme', nullable: true, enum: 'Emulation::FORCED_COLORS_MODE_THEME'},
             contexts: {wire_key: 'contexts', required: false, list: true},
@@ -54,6 +59,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetgeolocationoverrideparameters
           class SetGeolocationOverrideParameters < Serialization::Union
             presence(
               'Emulation::SetGeolocationOverrideParameters::Coordinates' => ['coordinates'],
@@ -79,6 +85,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationgeolocationcoordinates
           GeolocationCoordinates = Serialization::Record.define(
             latitude: {wire_key: 'latitude', primitive: 'integer'},
             longitude: {wire_key: 'longitude', primitive: 'integer'},
@@ -91,10 +98,12 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationgeolocationpositionerror
           GeolocationPositionError = Serialization::Record.define(type: {fixed: 'positionUnavailable'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetlocaleoverrideparameters
           SetLocaleOverrideParameters = Serialization::Record.define(
             locale: {wire_key: 'locale', nullable: true, primitive: 'string'},
             contexts: {wire_key: 'contexts', required: false, list: true},
@@ -103,6 +112,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetnetworkconditionsparameters
           SetNetworkConditionsParameters = Serialization::Record.define(
             network_conditions: {
               wire_key: 'networkConditions',
@@ -115,14 +125,17 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationnetworkconditionsoffline
           NetworkConditionsOffline = Serialization::Record.define(type: {fixed: 'offline'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationscreenarea
           ScreenArea = Serialization::Record.define(width: 'width', height: 'height')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetscreensettingsoverrideparameters
           SetScreenSettingsOverrideParameters = Serialization::Record.define(
             screen_area: {wire_key: 'screenArea', nullable: true, ref: 'Emulation::ScreenArea'},
             contexts: {wire_key: 'contexts', required: false, list: true},
@@ -131,6 +144,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationscreenorientation
           ScreenOrientation = Serialization::Record.define(
             natural: {wire_key: 'natural', enum: 'Emulation::SCREEN_ORIENTATION_NATURAL'},
             type: {wire_key: 'type', enum: 'Emulation::SCREEN_ORIENTATION_TYPE'}
@@ -138,6 +152,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetscreenorientationoverrideparameters
           SetScreenOrientationOverrideParameters = Serialization::Record.define(
             screen_orientation: {wire_key: 'screenOrientation', nullable: true, ref: 'Emulation::ScreenOrientation'},
             contexts: {wire_key: 'contexts', required: false, list: true},
@@ -146,6 +161,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetuseragentoverrideparameters
           SetUserAgentOverrideParameters = Serialization::Record.define(
             user_agent: {wire_key: 'userAgent', nullable: true, primitive: 'string'},
             contexts: {wire_key: 'contexts', required: false, list: true},
@@ -154,6 +170,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetscriptingenabledparameters
           SetScriptingEnabledParameters = Serialization::Record.define(
             enabled: {wire_key: 'enabled', nullable: true},
             contexts: {wire_key: 'contexts', required: false, list: true},
@@ -162,6 +179,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetscrollbartypeoverrideparameters
           SetScrollbarTypeOverrideParameters = Serialization::Record.define(
             scrollbar_type: {wire_key: 'scrollbarType', nullable: true},
             contexts: {wire_key: 'contexts', required: false, list: true},
@@ -170,6 +188,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsettimezoneoverrideparameters
           SetTimezoneOverrideParameters = Serialization::Record.define(
             timezone: {wire_key: 'timezone', nullable: true, primitive: 'string'},
             contexts: {wire_key: 'contexts', required: false, list: true},
@@ -178,6 +197,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsettouchoverrideparameters
           SetTouchOverrideParameters = Serialization::Record.define(
             max_touch_points: {wire_key: 'maxTouchPoints', nullable: true},
             contexts: {wire_key: 'contexts', required: false, list: true},
@@ -186,6 +206,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-emulation-setForcedColorsModeThemeOverride
           def set_forced_colors_mode_theme_override(
             theme:,
             contexts: Serialization::UNSET,
@@ -202,6 +223,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-emulation-setGeolocationOverride
           def set_geolocation_override(
             contexts: Serialization::UNSET,
             user_contexts: Serialization::UNSET,
@@ -219,6 +241,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-emulation-setLocaleOverride
           def set_locale_override(locale:, contexts: Serialization::UNSET, user_contexts: Serialization::UNSET)
             params = SetLocaleOverrideParameters.new(locale: locale, contexts: contexts, user_contexts: user_contexts)
             execute(cmd: 'emulation.setLocaleOverride', params: params)
@@ -226,6 +249,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-emulation-setNetworkConditions
           def set_network_conditions(
             network_conditions:,
             contexts: Serialization::UNSET,
@@ -241,6 +265,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-emulation-setScreenOrientationOverride
           def set_screen_orientation_override(
             screen_orientation:,
             contexts: Serialization::UNSET,
@@ -256,6 +281,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-emulation-setScreenSettingsOverride
           def set_screen_settings_override(
             screen_area:,
             contexts: Serialization::UNSET,
@@ -271,6 +297,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-emulation-setScriptingEnabled
           def set_scripting_enabled(enabled:, contexts: Serialization::UNSET, user_contexts: Serialization::UNSET)
             params = SetScriptingEnabledParameters.new(
               enabled: enabled,
@@ -282,6 +309,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-emulation-setScrollbarTypeOverride
           def set_scrollbar_type_override(
             scrollbar_type:,
             contexts: Serialization::UNSET,
@@ -297,6 +325,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-emulation-setTimezoneOverride
           def set_timezone_override(timezone:, contexts: Serialization::UNSET, user_contexts: Serialization::UNSET)
             params = SetTimezoneOverrideParameters.new(
               timezone: timezone,
@@ -308,6 +337,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-emulation-setTouchOverride
           def set_touch_override(max_touch_points:, contexts: Serialization::UNSET, user_contexts: Serialization::UNSET)
             params = SetTouchOverrideParameters.new(
               max_touch_points: max_touch_points,
@@ -319,6 +349,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-emulation-setUserAgentOverride
           def set_user_agent_override(user_agent:, contexts: Serialization::UNSET, user_contexts: Serialization::UNSET)
             params = SetUserAgentOverrideParameters.new(
               user_agent: user_agent,

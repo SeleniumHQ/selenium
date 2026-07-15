@@ -26,6 +26,7 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+        # @see https://w3c.github.io/webdriver-bidi/#module-script
         class Script < Domain
           EVENTS = {
             message: 'script.message',
@@ -33,6 +34,7 @@ module Selenium
             realm_destroyed: 'script.realmDestroyed'
           }.freeze
 
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptspecialnumber
           SPECIAL_NUMBER = {
             na_n: 'NaN',
             neg0: '-0',
@@ -40,6 +42,7 @@ module Selenium
             neg_infinity: '-Infinity'
           }.freeze
 
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-RealmType
           REALM_TYPE = {
             window: 'window',
             dedicated_worker: 'dedicated-worker',
@@ -51,6 +54,7 @@ module Selenium
             worklet: 'worklet'
           }.freeze
 
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-ResultOwnership
           RESULT_OWNERSHIP = {
             root: 'root',
             none: 'none'
@@ -69,6 +73,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-ChannelValue
           ChannelValue = Serialization::Record.define(
             type: {fixed: 'channel'},
             value: {wire_key: 'value', ref: 'Script::ChannelProperties'}
@@ -76,6 +81,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptchannelproperties
           ChannelProperties = Serialization::Record.define(
             channel: 'channel',
             serialization_options: {
@@ -88,6 +94,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-EvaluateResult
           class EvaluateResult < Serialization::Union
             discriminator 'type', {success: 'success', exception: 'exception'}
             variants(
@@ -98,6 +105,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluateresultsuccess
           EvaluateResultSuccess = Serialization::Record.define(
             type: {fixed: 'success'},
             result: {wire_key: 'result', ref: 'Script::RemoteValue'},
@@ -106,6 +114,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluateresultexception
           EvaluateResultException = Serialization::Record.define(
             type: {fixed: 'exception'},
             exception_details: {wire_key: 'exceptionDetails', ref: 'Script::ExceptionDetails'},
@@ -114,6 +123,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-ExceptionDetails
           ExceptionDetails = Serialization::Record.define(
             column_number: 'columnNumber',
             exception: {wire_key: 'exception', ref: 'Script::RemoteValue'},
@@ -124,6 +134,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-LocalValue
           class LocalValue < Serialization::Union
             discriminator 'type', {
               undefined: 'undefined',
@@ -160,6 +171,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptarraylocalvalue
           ArrayLocalValue = Serialization::Record.define(
             type: {fixed: 'array'},
             value: {wire_key: 'value', ref: 'Script::LocalValue', list: true}
@@ -167,6 +179,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptdatelocalvalue
           DateLocalValue = Serialization::Record.define(
             type: {fixed: 'date'},
             value: {wire_key: 'value', primitive: 'string'}
@@ -174,6 +187,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptmaplocalvalue
           MapLocalValue = Serialization::Record.define(
             type: {fixed: 'map'},
             value: {wire_key: 'value', ref: 'Script::LocalValue', list: true}
@@ -181,6 +195,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptobjectlocalvalue
           ObjectLocalValue = Serialization::Record.define(
             type: {fixed: 'object'},
             value: {wire_key: 'value', ref: 'Script::LocalValue', list: true}
@@ -188,6 +203,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptregexpvalue
           RegExpValue = Serialization::Record.define(
             pattern: {wire_key: 'pattern', primitive: 'string'},
             flags: {wire_key: 'flags', required: false, primitive: 'string'}
@@ -195,6 +211,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptregexplocalvalue
           RegExpLocalValue = Serialization::Record.define(
             type: {fixed: 'regexp'},
             value: {wire_key: 'value', ref: 'Script::RegExpValue'}
@@ -202,6 +219,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptsetlocalvalue
           SetLocalValue = Serialization::Record.define(
             type: {fixed: 'set'},
             value: {wire_key: 'value', ref: 'Script::LocalValue', list: true}
@@ -209,6 +227,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-PrimitiveProtocolValue
           class PrimitiveProtocolValue < Serialization::Union
             discriminator 'type', {
               undefined: 'undefined',
@@ -230,14 +249,17 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptundefinedvalue
           UndefinedValue = Serialization::Record.define(type: {fixed: 'undefined'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptnullvalue
           NullValue = Serialization::Record.define(type: {fixed: 'null'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptstringvalue
           StringValue = Serialization::Record.define(
             type: {fixed: 'string'},
             value: {wire_key: 'value', primitive: 'string'}
@@ -245,10 +267,12 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptnumbervalue
           NumberValue = Serialization::Record.define(type: {fixed: 'number'}, value: 'value')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptbooleanvalue
           BooleanValue = Serialization::Record.define(
             type: {fixed: 'boolean'},
             value: {wire_key: 'value', primitive: 'boolean'}
@@ -256,6 +280,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptbigintvalue
           BigIntValue = Serialization::Record.define(
             type: {fixed: 'bigint'},
             value: {wire_key: 'value', primitive: 'string'}
@@ -263,6 +288,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-RealmInfo
           class RealmInfo < Serialization::Union
             discriminator 'type', {
               window: 'window',
@@ -288,6 +314,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptbaserealminfo
           BaseRealmInfo = Serialization::Record.define(
             realm: 'realm',
             origin: {wire_key: 'origin', primitive: 'string'}
@@ -295,6 +322,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptwindowrealminfo
           WindowRealmInfo = Serialization::Record.define(
             type: {fixed: 'window'},
             realm: 'realm',
@@ -306,6 +334,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptdedicatedworkerrealminfo
           DedicatedWorkerRealmInfo = Serialization::Record.define(
             type: {fixed: 'dedicated-worker'},
             realm: 'realm',
@@ -315,6 +344,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptsharedworkerrealminfo
           SharedWorkerRealmInfo = Serialization::Record.define(
             type: {fixed: 'shared-worker'},
             realm: 'realm',
@@ -323,6 +353,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptserviceworkerrealminfo
           ServiceWorkerRealmInfo = Serialization::Record.define(
             type: {fixed: 'service-worker'},
             realm: 'realm',
@@ -331,6 +362,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptworkerrealminfo
           WorkerRealmInfo = Serialization::Record.define(
             type: {fixed: 'worker'},
             realm: 'realm',
@@ -339,6 +371,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptpaintworkletrealminfo
           PaintWorkletRealmInfo = Serialization::Record.define(
             type: {fixed: 'paint-worklet'},
             realm: 'realm',
@@ -347,6 +380,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptaudioworkletrealminfo
           AudioWorkletRealmInfo = Serialization::Record.define(
             type: {fixed: 'audio-worklet'},
             realm: 'realm',
@@ -355,6 +389,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptworkletrealminfo
           WorkletRealmInfo = Serialization::Record.define(
             type: {fixed: 'worklet'},
             realm: 'realm',
@@ -363,6 +398,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-RemoteReference
           class RemoteReference < Serialization::Union
             presence(
               'Script::SharedReference' => ['sharedId'],
@@ -372,6 +408,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptsharedreference
           SharedReference = Serialization::Record.define(
             shared_id: 'sharedId',
             handle: {wire_key: 'handle', required: false},
@@ -380,6 +417,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptremoteobjectreference
           RemoteObjectReference = Serialization::Record.define(
             handle: 'handle',
             shared_id: {wire_key: 'sharedId', required: false},
@@ -388,6 +426,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-RemoteValue
           class RemoteValue < Serialization::Union
             discriminator 'type', {
               undefined: 'undefined',
@@ -449,6 +488,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptsymbolremotevalue
           SymbolRemoteValue = Serialization::Record.define(
             type: {fixed: 'symbol'},
             handle: {wire_key: 'handle', required: false},
@@ -457,6 +497,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptarrayremotevalue
           ArrayRemoteValue = Serialization::Record.define(
             type: {fixed: 'array'},
             handle: {wire_key: 'handle', required: false},
@@ -466,6 +507,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptobjectremotevalue
           ObjectRemoteValue = Serialization::Record.define(
             type: {fixed: 'object'},
             handle: {wire_key: 'handle', required: false},
@@ -475,6 +517,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptfunctionremotevalue
           FunctionRemoteValue = Serialization::Record.define(
             type: {fixed: 'function'},
             handle: {wire_key: 'handle', required: false},
@@ -483,6 +526,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptregexpremotevalue
           RegExpRemoteValue = Serialization::Record.define(
             type: {fixed: 'regexp'},
             value: {wire_key: 'value', ref: 'Script::RegExpValue'},
@@ -492,6 +536,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptdateremotevalue
           DateRemoteValue = Serialization::Record.define(
             type: {fixed: 'date'},
             value: {wire_key: 'value', primitive: 'string'},
@@ -501,6 +546,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptmapremotevalue
           MapRemoteValue = Serialization::Record.define(
             type: {fixed: 'map'},
             handle: {wire_key: 'handle', required: false},
@@ -510,6 +556,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptsetremotevalue
           SetRemoteValue = Serialization::Record.define(
             type: {fixed: 'set'},
             handle: {wire_key: 'handle', required: false},
@@ -519,6 +566,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptweakmapremotevalue
           WeakMapRemoteValue = Serialization::Record.define(
             type: {fixed: 'weakmap'},
             handle: {wire_key: 'handle', required: false},
@@ -527,6 +575,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptweaksetremotevalue
           WeakSetRemoteValue = Serialization::Record.define(
             type: {fixed: 'weakset'},
             handle: {wire_key: 'handle', required: false},
@@ -535,6 +584,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptgeneratorremotevalue
           GeneratorRemoteValue = Serialization::Record.define(
             type: {fixed: 'generator'},
             handle: {wire_key: 'handle', required: false},
@@ -543,6 +593,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scripterrorremotevalue
           ErrorRemoteValue = Serialization::Record.define(
             type: {fixed: 'error'},
             handle: {wire_key: 'handle', required: false},
@@ -551,6 +602,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptproxyremotevalue
           ProxyRemoteValue = Serialization::Record.define(
             type: {fixed: 'proxy'},
             handle: {wire_key: 'handle', required: false},
@@ -559,6 +611,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptpromiseremotevalue
           PromiseRemoteValue = Serialization::Record.define(
             type: {fixed: 'promise'},
             handle: {wire_key: 'handle', required: false},
@@ -567,6 +620,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scripttypedarrayremotevalue
           TypedArrayRemoteValue = Serialization::Record.define(
             type: {fixed: 'typedarray'},
             handle: {wire_key: 'handle', required: false},
@@ -575,6 +629,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptarraybufferremotevalue
           ArrayBufferRemoteValue = Serialization::Record.define(
             type: {fixed: 'arraybuffer'},
             handle: {wire_key: 'handle', required: false},
@@ -583,6 +638,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptnodelistremotevalue
           NodeListRemoteValue = Serialization::Record.define(
             type: {fixed: 'nodelist'},
             handle: {wire_key: 'handle', required: false},
@@ -592,6 +648,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scripthtmlcollectionremotevalue
           HTMLCollectionRemoteValue = Serialization::Record.define(
             type: {fixed: 'htmlcollection'},
             handle: {wire_key: 'handle', required: false},
@@ -601,6 +658,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptnoderemotevalue
           NodeRemoteValue = Serialization::Record.define(
             type: {fixed: 'node'},
             shared_id: {wire_key: 'sharedId', required: false},
@@ -611,6 +669,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptnodeproperties
           NodeProperties = Serialization::Record.define(
             node_type: 'nodeType',
             child_node_count: 'childNodeCount',
@@ -625,6 +684,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptwindowproxyremotevalue
           WindowProxyRemoteValue = Serialization::Record.define(
             type: {fixed: 'window'},
             value: {wire_key: 'value', ref: 'Script::WindowProxyProperties'},
@@ -634,10 +694,12 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptwindowproxyproperties
           WindowProxyProperties = Serialization::Record.define(context: 'context')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-SerializationOptions
           SerializationOptions = Serialization::Record.define(
             max_dom_depth: {wire_key: 'maxDomDepth', required: false, nullable: true},
             max_object_depth: {wire_key: 'maxObjectDepth', required: false, nullable: true},
@@ -650,6 +712,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-StackFrame
           StackFrame = Serialization::Record.define(
             column_number: 'columnNumber',
             function_name: {wire_key: 'functionName', primitive: 'string'},
@@ -659,12 +722,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-StackTrace
           StackTrace = Serialization::Record.define(
             call_frames: {wire_key: 'callFrames', ref: 'Script::StackFrame', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-Source
           Source = Serialization::Record.define(
             realm: 'realm',
             context: {wire_key: 'context', required: false},
@@ -673,10 +738,12 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptrealmtarget
           RealmTarget = Serialization::Record.define(realm: 'realm')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptcontexttarget
           ContextTarget = Serialization::Record.define(
             context: 'context',
             sandbox: {wire_key: 'sandbox', required: false, primitive: 'string'}
@@ -684,6 +751,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-Target
           class Target < Serialization::Union
             presence(
               'Script::ContextTarget' => ['context'],
@@ -693,6 +761,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptaddpreloadscriptparameters
           AddPreloadScriptParameters = Serialization::Record.define(
             function_declaration: {wire_key: 'functionDeclaration', primitive: 'string'},
             arguments: {wire_key: 'arguments', required: false, ref: 'Script::ChannelValue', list: true},
@@ -703,10 +772,12 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptaddpreloadscriptresult
           AddPreloadScriptResult = Serialization::Record.define(script: 'script')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptdisownparameters
           DisownParameters = Serialization::Record.define(
             handles: {wire_key: 'handles', list: true},
             target: {wire_key: 'target', ref: 'Script::Target'}
@@ -714,6 +785,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptcallfunctionparameters
           CallFunctionParameters = Serialization::Record.define(
             function_declaration: {wire_key: 'functionDeclaration', primitive: 'string'},
             await_promise: {wire_key: 'awaitPromise', primitive: 'boolean'},
@@ -731,6 +803,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluateparameters
           EvaluateParameters = Serialization::Record.define(
             expression: {wire_key: 'expression', primitive: 'string'},
             target: {wire_key: 'target', ref: 'Script::Target'},
@@ -746,6 +819,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptgetrealmsparameters
           GetRealmsParameters = Serialization::Record.define(
             context: {wire_key: 'context', required: false},
             type: {wire_key: 'type', required: false, enum: 'Script::REALM_TYPE'}
@@ -753,16 +827,19 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptgetrealmsresult
           GetRealmsResult = Serialization::Record.define(
             realms: {wire_key: 'realms', ref: 'Script::RealmInfo', list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptremovepreloadscriptparameters
           RemovePreloadScriptParameters = Serialization::Record.define(script: 'script')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptmessageparameters
           MessageParameters = Serialization::Record.define(
             channel: 'channel',
             data: {wire_key: 'data', ref: 'Script::RemoteValue'},
@@ -771,6 +848,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptrealmdestroyedparameters
           RealmDestroyedParameters = Serialization::Record.define(realm: 'realm')
 
           EVENT_TYPES = {
@@ -781,6 +859,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-script-addPreloadScript
           def add_preload_script(
             function_declaration:,
             arguments: Serialization::UNSET,
@@ -800,6 +879,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-script-callFunction
           def call_function(
             function_declaration:,
             await_promise:,
@@ -826,6 +906,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-script-disown
           def disown(handles:, target:)
             params = DisownParameters.new(handles: handles, target: target)
             execute(cmd: 'script.disown', params: params)
@@ -833,6 +914,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-script-evaluate
           def evaluate(
             expression:,
             target:,
@@ -855,6 +937,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-script-getRealms
           def get_realms(context: Serialization::UNSET, type: Serialization::UNSET)
             Serialization.validate!('type', type, Script::REALM_TYPE)
             params = GetRealmsParameters.new(context: context, type: type)
@@ -863,6 +946,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-script-removePreloadScript
           def remove_preload_script(script:)
             params = RemovePreloadScriptParameters.new(script: script)
             execute(cmd: 'script.removePreloadScript', params: params)

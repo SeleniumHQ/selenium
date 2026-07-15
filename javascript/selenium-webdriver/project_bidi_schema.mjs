@@ -21,10 +21,10 @@
  * The normalizer has already removed the awkward CDDL shapes, so this is a
  * straight mapping into a small vocabulary:
  *
- *   type node:  { kind: 'record', fields: [field], map?, extensible? }
- *             | { kind: 'enum',   values: [string] }
- *             | { kind: 'union',  variants: [ref], selector }
- *             | { kind: 'alias',  type }
+ *   type node:  { kind: 'record', fields: [field], map?, extensible?, specHref? }
+ *             | { kind: 'enum',   values: [string], specHref? }
+ *             | { kind: 'union',  variants: [ref], selector, specHref? }
+ *             | { kind: 'alias',  type, specHref? }
  *   selector:   { by, variants: [{ value, ref }], default? }   // discriminated
  *             | { ordered: [{ ref, requires: [key] }] }        // structural, spec order
  *             | { correlated: true }                           // resolved by request id, not the payload
@@ -33,6 +33,15 @@
  *               any ref may also carry `nullable: true` (a `/ null` alternative). On a
  *               record node, `map` is the value type of `* key => value` entries and
  *               `extensible: true` marks an open `* text => any` record.
+ *
+ * `specHref` (present only when known) is the URL of the element's definition in the
+ * live spec — a binding can render it as a doc-comment link. It is carried on each
+ * type node, on each `commands[]` / `events[]` entry, and (as `{specHref}`) per domain
+ * in the schema's `domains` map. Two anchor sources are joined: the readable prose
+ * section (`#type-…` / `#command-…` / `#event-…` / `#module-…`) where the core spec
+ * has one, falling back to the webref CDDL production (`#cddl-type-…`) otherwise. It
+ * points at the editor's draft, so for an older generated artifact the target drifts
+ * from the pinned source; synthetic types (and anything neither source covers) omit it.
  *
  * Types the normalizer synthesized for anonymous CDDL constructs additionally
  * carry `{ synthetic: true, owner, label }`: `owner` is the type the construct
@@ -375,12 +384,64 @@ function correlatedUnions(types) {
 }
 
 /**
+ * Build a `{ typeName: specHref }` map from one or more webref definition indexes
+ * (`ed/dfns/<spec>.json`, each `{ spec, dfns: [...] }`). Only `cddl-type` entries are
+ * used, keyed by their `linkingText` — which is exactly the dotted schema type name
+ * (e.g. `session.CapabilityRequest`). The `href` is already absolute (per-spec origin),
+ * so indexes from different specs merge without a base-URL table; first index wins on
+ * the rare cross-spec name clash. Types the index does not cover simply get no entry.
+ * @param {object[]} dfnsDocs Parsed webref dfns documents.
+ * @returns {Object<string,string>} Map from schema type name to its spec-definition URL.
+ */
+export function buildSpecHrefs(dfnsDocs) {
+  const hrefs = {}
+  for (const doc of dfnsDocs ?? [])
+    for (const dfn of doc?.dfns ?? []) {
+      const name = dfn.type === 'cddl-type' ? dfn.linkingText?.[0] : undefined
+      if (name && dfn.href && !(name in hrefs)) hrefs[name] = dfn.href
+    }
+  return hrefs
+}
+
+/**
+ * Compose the spec-link maps the projector attaches, from the webref CDDL indexes
+ * (all merged specs) and the core spec's prose-anchor index (see
+ * extract_bidi_anchors.mjs). All maps are lowercase-keyed for a case-insensitive
+ * join (the prose anchors carry casing quirks that do not match schema names
+ * exactly). Returns:
+ *   types    — every CDDL type's `#cddl-type-*` anchor, upgraded to the readable
+ *              `#type-<domain>-<Name>` prose section where the core spec has one.
+ *   commands — `#command-<domain>-<name>` prose sections (core spec).
+ *   events   — `#event-<domain>-<name>` prose sections (core spec).
+ *   domains  — `#module-<domain>` prose sections (core spec).
+ * The prose scheme is a core-BiDi convention; adjacent specs (Permissions, Web
+ * Bluetooth, …) keep the CDDL fallback. Anything absent gets no entry (fail-closed).
+ * @param {object[]} dfnsDocs Parsed webref dfns documents.
+ * @param {{modules?:object,types?:object,commands?:object,events?:object}} [anchors] Prose-anchor index.
+ * @returns {{types:object,commands:object,events:object,domains:object}}
+ */
+export function buildSpecLinks(dfnsDocs, anchors = {}) {
+  const types = {}
+  for (const [name, href] of Object.entries(buildSpecHrefs(dfnsDocs))) types[name.toLowerCase()] = href
+  Object.assign(types, anchors.types ?? {}) // the prose section wins over the CDDL production
+  return {
+    types,
+    commands: { ...(anchors.commands ?? {}) },
+    events: { ...(anchors.events ?? {}) },
+    domains: { ...(anchors.modules ?? {}) },
+  }
+}
+
+/**
  * Build the flat, binding-neutral schema from the raw AST and command/event model.
  * @param {object[]} ast The parsed CDDL AST (array of definition nodes).
  * @param {object} model The binding-neutral command/event model (per-domain).
- * @returns {{schemaVersion: number, commands: object[], events: object[], types: object}} The schema.
+ * @param {{types?:object,commands?:object,events?:object,domains?:object}} [links] Optional
+ *   spec-link maps (see buildSpecLinks). When given, each type/command/event with a known URL
+ *   carries it as `specHref`, and linked domains are collected in the schema's `domains` map.
+ * @returns {{schemaVersion: number, commands: object[], events: object[], types: object, domains: object}} The schema.
  */
-export function projectSchema(ast, model) {
+export function projectSchema(ast, model, links = {}) {
   const types = {}
   for (const def of normalizeAst(ast)) {
     if (!def?.Name) continue
@@ -394,6 +455,11 @@ export function projectSchema(ast, model) {
       node.owner = def['x-selenium-owner']
       node.label = def['x-selenium-label']
     }
+    // Link to the type's definition in the live spec, when the index covers it —
+    // the readable prose section where one exists, else the CDDL production.
+    // Synthetic types have no spec definition and are (correctly) never in it.
+    const typeHref = links.types?.[def.Name.toLowerCase()]
+    if (typeHref) node.specHref = typeHref
     types[def.Name] = node
   }
   for (const [name, node] of Object.entries(types))
@@ -405,21 +471,39 @@ export function projectSchema(ast, model) {
   const commands = []
   const events = []
   const envelopeParams = commandEnvelopeParams(types)
+  // Commands and events link to their own prose section (`#command-*` / `#event-*`),
+  // keyed by the wire method; domains to their `#module-*` section. Present-only-when-known.
+  const link = (map, key) => (typeof key === 'string' ? map?.[key.toLowerCase()] : undefined)
   for (const [domain, entry] of Object.entries(model)) {
-    for (const c of entry.commands ?? [])
-      commands.push({
+    for (const c of entry.commands ?? []) {
+      const cmd = {
         domain,
         method: c.method,
         name: c.name,
         // Prefer the envelope's params (it captures inline params the model drops).
         params: typeRef(envelopeParams.get(c.method) ?? c.params),
         result: typeRef(c.result),
-      })
-    for (const e of entry.events ?? [])
-      events.push({ domain, method: e.method, name: e.name, params: typeRef(envelopeParams.get(e.method) ?? e.params) })
+      }
+      const href = link(links.commands, c.method)
+      if (href) cmd.specHref = href
+      commands.push(cmd)
+    }
+    for (const e of entry.events ?? []) {
+      const ev = { domain, method: e.method, name: e.name, params: typeRef(envelopeParams.get(e.method) ?? e.params) }
+      const href = link(links.events, e.method)
+      if (href) ev.specHref = href
+      events.push(ev)
+    }
   }
 
-  return { schemaVersion: 1, commands, events, types }
+  // Per-domain module links, for a binding that emits one class/namespace per domain.
+  const domains = {}
+  for (const domain of Object.keys(model)) {
+    const href = link(links.domains, domain)
+    if (href) domains[domain] = { specHref: href }
+  }
+
+  return { schemaVersion: 1, commands, events, types, domains }
 }
 
 /**
@@ -591,16 +675,31 @@ async function main() {
   }
 
   const { values: args } = parseArgs({
-    options: { ast: { type: 'string' }, model: { type: 'string' }, 'dump-schema': { type: 'string' } },
+    options: {
+      ast: { type: 'string' },
+      model: { type: 'string' },
+      'dump-schema': { type: 'string' },
+      // Repeatable: one webref dfns index per merged spec. Optional — omitting them
+      // (and --anchors) yields a schema with no specHref links (fully backward compatible).
+      dfns: { type: 'string', multiple: true },
+      // The core spec's prose-anchor index (see extract_bidi_anchors.mjs). Optional;
+      // upgrades type links to prose sections and adds command/event/domain links.
+      anchors: { type: 'string' },
+    },
   })
   if (!args.ast || !args.model || !args['dump-schema']) {
-    console.error('Usage: project_bidi_schema.mjs --ast <ast.json> --model <model.json> --dump-schema <out.json>')
+    console.error(
+      'Usage: project_bidi_schema.mjs --ast <ast.json> --model <model.json> --dump-schema <out.json>' +
+        ' [--dfns <dfns.json> ...] [--anchors <anchors.json>]',
+    )
     process.exit(1)
   }
 
   const ast = JSON.parse(readFileSync(resolveInput(args.ast), 'utf8'))
   const model = JSON.parse(readFileSync(resolveInput(args.model), 'utf8'))
-  const schema = projectSchema(ast, model)
+  const dfnsDocs = (args.dfns ?? []).map((p) => JSON.parse(readFileSync(resolveInput(p), 'utf8')))
+  const anchors = args.anchors ? JSON.parse(readFileSync(resolveInput(args.anchors), 'utf8')) : {}
+  const schema = projectSchema(ast, model, buildSpecLinks(dfnsDocs, anchors))
 
   // Generation is the gate: a broken or incomplete schema fails the build.
   const errors = [...checkSchema(schema), ...checkCompleteness(ast, schema)]
@@ -611,8 +710,12 @@ async function main() {
   }
 
   writeFileSync(resolve(args['dump-schema']), JSON.stringify(schema, null, 2) + '\n', 'utf8')
+  const prose = (u) => (u && !u.includes('#cddl-') ? 1 : 0)
+  const linkedTypes = Object.values(schema.types).filter((t) => t.specHref)
+  const proseTypes = linkedTypes.filter((t) => prose(t.specHref)).length
   console.log(
-    `  ${schema.commands.length} commands, ${schema.events.length} events, ${Object.keys(schema.types).length} types → ${args['dump-schema']}`,
+    `  ${schema.commands.length} commands, ${schema.events.length} events, ${Object.keys(schema.types).length} types` +
+      ` (${linkedTypes.length} spec-linked, ${proseTypes} prose) → ${args['dump-schema']}`,
   )
 }
 

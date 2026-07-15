@@ -26,6 +26,9 @@ module Selenium
       module Protocol
         # @api private
         # @see <%= BiDiGenerate::BIDI_DOC_URL %>
+<%- if mod.spec_href -%>
+        # @see <%= mod.spec_href %>
+<%- end -%>
         class <%= mod.ruby_class %> < Domain
 <%- unless mod.events.empty? -%>
           EVENTS = {
@@ -34,6 +37,9 @@ module Selenium
 
 <%- end -%>
 <%- mod.enums.each do |enum| -%>
+<%- if enum.spec_href -%>
+          # @see <%= enum.spec_href %>
+<%- end -%>
           <%= enum.constant_name %> = {
             <%= enum.pairs.map { |key, wire_val| "#{key}: '#{wire_val}'" }.join(",\n            ") %>
           }.freeze
@@ -43,6 +49,9 @@ module Selenium
 <%- if type.union? -%>
           # @api private
           # @see <%= BiDiGenerate::BIDI_DOC_URL %>
+<%- if type.spec_href -%>
+          # @see <%= type.spec_href %>
+<%- end -%>
           class <%= type.ruby_name %> < Serialization::Union
 <%- if type.discriminator_wire && !type.value_variants.empty? -%>
             <%= type.discriminator_decl(12) %>
@@ -69,6 +78,9 @@ module Selenium
 <%- else -%>
           # @api private
           # @see <%= BiDiGenerate::BIDI_DOC_URL %>
+<%- if type.spec_href -%>
+          # @see <%= type.spec_href %>
+<%- end -%>
           <%= type.define_assignment(type.ruby_name, 10) %>
 <%- type.nested_types.each do |nested| -%>
 
@@ -93,6 +105,9 @@ module Selenium
 <%- end -%>
           # @api private
           # @see <%= BiDiGenerate::BIDI_DOC_URL %>
+<%- if cmd.spec_href -%>
+          # @see <%= cmd.spec_href %>
+<%- end -%>
           <%= cmd.def_header(10) %>
 <%- cmd.enum_checks(12).each do |check| -%>
             <%= check %>

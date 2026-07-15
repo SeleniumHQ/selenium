@@ -26,11 +26,13 @@ module Selenium
       module Protocol
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+        # @see https://w3c.github.io/webdriver-bidi/#module-input
         class Input < Domain
           EVENTS = {
             file_dialog_opened: 'input.fileDialogOpened'
           }.freeze
 
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpointertype
           POINTER_TYPE = {
             mouse: 'mouse',
             pen: 'pen',
@@ -39,6 +41,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputelementorigin
           ElementOrigin = Serialization::Record.define(
             type: {fixed: 'element'},
             element: {wire_key: 'element', ref: 'Script::SharedReference'}
@@ -46,6 +49,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputperformactionsparameters
           PerformActionsParameters = Serialization::Record.define(
             context: 'context',
             actions: {wire_key: 'actions', ref: 'Input::SourceActions', list: true}
@@ -53,6 +57,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputsourceactions
           class SourceActions < Serialization::Union
             discriminator 'type', {none: 'none', key: 'key', pointer: 'pointer', wheel: 'wheel'}
             variants(
@@ -65,6 +70,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputnonesourceactions
           NoneSourceActions = Serialization::Record.define(
             type: {fixed: 'none'},
             id: {wire_key: 'id', primitive: 'string'},
@@ -73,6 +79,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputkeysourceactions
           KeySourceActions = Serialization::Record.define(
             type: {fixed: 'key'},
             id: {wire_key: 'id', primitive: 'string'},
@@ -81,6 +88,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputkeysourceaction
           class KeySourceAction < Serialization::Union
             discriminator 'type', {pause: 'pause', key_down: 'keyDown', key_up: 'keyUp'}
             variants(
@@ -92,6 +100,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpointersourceactions
           PointerSourceActions = Serialization::Record.define(
             type: {fixed: 'pointer'},
             id: {wire_key: 'id', primitive: 'string'},
@@ -101,12 +110,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpointerparameters
           PointerParameters = Serialization::Record.define(
             pointer_type: {wire_key: 'pointerType', required: false, enum: 'Input::POINTER_TYPE'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpointersourceaction
           class PointerSourceAction < Serialization::Union
             discriminator 'type', {
               pause: 'pause',
@@ -124,6 +135,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputwheelsourceactions
           WheelSourceActions = Serialization::Record.define(
             type: {fixed: 'wheel'},
             id: {wire_key: 'id', primitive: 'string'},
@@ -132,6 +144,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputwheelsourceaction
           class WheelSourceAction < Serialization::Union
             discriminator 'type', {pause: 'pause', scroll: 'scroll'}
             variants(
@@ -142,6 +155,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpauseaction
           PauseAction = Serialization::Record.define(
             type: {fixed: 'pause'},
             duration: {wire_key: 'duration', required: false}
@@ -149,6 +163,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputkeydownaction
           KeyDownAction = Serialization::Record.define(
             type: {fixed: 'keyDown'},
             value: {wire_key: 'value', primitive: 'string'}
@@ -156,6 +171,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputkeyupaction
           KeyUpAction = Serialization::Record.define(
             type: {fixed: 'keyUp'},
             value: {wire_key: 'value', primitive: 'string'}
@@ -163,10 +179,12 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpointerupaction
           PointerUpAction = Serialization::Record.define(type: {fixed: 'pointerUp'}, button: 'button')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpointerdownaction
           PointerDownAction = Serialization::Record.define(
             type: {fixed: 'pointerDown'},
             button: 'button',
@@ -181,6 +199,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpointermoveaction
           PointerMoveAction = Serialization::Record.define(
             type: {fixed: 'pointerMove'},
             x: {wire_key: 'x', primitive: 'number'},
@@ -198,6 +217,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputwheelscrollaction
           WheelScrollAction = Serialization::Record.define(
             type: {fixed: 'scroll'},
             x: 'x',
@@ -210,6 +230,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpointercommonproperties
           PointerCommonProperties = Serialization::Record.define(
             width: {wire_key: 'width', required: false},
             height: {wire_key: 'height', required: false},
@@ -222,6 +243,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-input-origin
           class Origin < Serialization::Union
             discriminator 'type', {element: 'element'}
             variants(
@@ -231,10 +253,12 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputreleaseactionsparameters
           ReleaseActionsParameters = Serialization::Record.define(context: 'context')
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputsetfilesparameters
           SetFilesParameters = Serialization::Record.define(
             context: 'context',
             element: {wire_key: 'element', ref: 'Script::SharedReference'},
@@ -243,6 +267,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputfiledialoginfo
           FileDialogInfo = Serialization::Record.define(
             context: 'context',
             user_context: {wire_key: 'userContext', required: false},
@@ -256,6 +281,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-input-performActions
           def perform_actions(context:, actions:)
             params = PerformActionsParameters.new(context: context, actions: actions)
             execute(cmd: 'input.performActions', params: params)
@@ -263,6 +289,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-input-releaseActions
           def release_actions(context:)
             params = ReleaseActionsParameters.new(context: context)
             execute(cmd: 'input.releaseActions', params: params)
@@ -270,6 +297,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-input-setFiles
           def set_files(context:, element:, files:)
             params = SetFilesParameters.new(context: context, element: element, files: files)
             execute(cmd: 'input.setFiles', params: params)

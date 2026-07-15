@@ -8,6 +8,25 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 _COMMIT = "42c791d397dec7b6aa6349e662824b0079e8f299"
 _BASE_URL = "https://raw.githubusercontent.com/w3c/webref/{commit}/ed/cddl".format(commit = _COMMIT)
 
+# The webref "definitions index" for each spec (same commit, so it stays in lockstep
+# with the CDDL). It maps every CDDL type to its anchor in the live spec; schema
+# generation joins on the type name to attach a `specHref` link. Downloaded as
+# "dfns.json" per repo, referenced as @<repo_name>//file:dfns.json.
+_DFNS_BASE_URL = "https://raw.githubusercontent.com/w3c/webref/{commit}/ed/dfns".format(commit = _COMMIT)
+
+# The rendered WebDriver BiDi spec, pinned at a w3c/webdriver-bidi "gh-pages" commit
+# (that branch commits the built HTML, so a commit sha gives a reproducible, sha-able
+# snapshot). Only this file carries the readable prose section ids
+# (`#type-`/`#command-`/`#event-`/`#module-`) that webref does not extract; the schema
+# step runs extract_bidi_anchors.mjs over it to build the prose-anchor index. This is a
+# separate repo/branch from the webref pin above, so //scripts:update_cddl repins it to
+# gh-pages' own tip; both track the same editor's draft, within a day of each other.
+_BIDI_SPEC_HTML_COMMIT = "7424bec706691d894643bbca6c98dd14c2745d3c"
+_BIDI_SPEC_HTML_SHA256 = "07d046210ef367301e039835157182e361e22f9bf9375ee053dbe8bce3422416"
+_BIDI_SPEC_HTML_URL = "https://raw.githubusercontent.com/w3c/webdriver-bidi/{commit}/index.html".format(
+    commit = _BIDI_SPEC_HTML_COMMIT,
+)
+
 # The "-all" (union) CDDL file for each protocol in
 # https://github.com/w3c/webref/tree/{commit}/ed/cddl -- the per-end
 # "-local"/"-remote" splits are skipped since generation merges the union.
@@ -34,8 +53,40 @@ def webref_cddl():
             url = _BASE_URL + "/" + filename,
         )
 
+# The webref dfns file for each spec that feeds BiDi schema generation. The dfns
+# filename differs from the "-all" CDDL filename (no "-all" suffix), so it is listed
+# explicitly. Each entry is (repo_name, filename, sha256), downloaded as "dfns.json"
+# and referenced as @<repo_name>//file:dfns.json. Only the specs merged into the BiDi
+# schema (see the javascript/ and py/ BUILD merge lists) need one.
+_DFNS_FILES = [
+    ("webdriver_bidi_dfns", "webdriver-bidi.json", "346c31f3f858f3558ec28f82d0fd49c4e79be32bef429b0786d875c3dca7ae73"),
+    ("permissions_dfns", "permissions.json", "bc5d2907c61e2548c6fc4a42a32c86396b56a68033c62299c4d563db510c105f"),
+    ("prefetch_dfns", "prefetch.json", "b647ef493f8f09a6266c2269c344b16b28344bd14b2b987d660df01ce5833433"),
+    ("ua_client_hints_dfns", "ua-client-hints.json", "56a31bf6fd2ba03158500498d14742f8edd7a2d560580b4aa7f4a703977e40cf"),
+    ("web_bluetooth_dfns", "web-bluetooth.json", "a9303427b98ec6e99b1adfbbd27607cc14237093e158314768bb865c02642979"),
+]
+
+def webref_dfns():
+    for name, filename, sha256 in _DFNS_FILES:
+        http_file(
+            name = name,
+            downloaded_file_path = "dfns.json",
+            sha256 = sha256,
+            url = _DFNS_BASE_URL + "/" + filename,
+        )
+
+def webref_bidi_spec_html():
+    http_file(
+        name = "webdriver_bidi_spec_html",
+        downloaded_file_path = "index.html",
+        sha256 = _BIDI_SPEC_HTML_SHA256,
+        url = _BIDI_SPEC_HTML_URL,
+    )
+
 def _webref_cddl_impl(_ctx):
     webref_cddl()
+    webref_dfns()
+    webref_bidi_spec_html()
 
 webref_cddl_extension = module_extension(
     implementation = _webref_cddl_impl,

@@ -36,6 +36,14 @@ js_binary(
     entry_point = "project_bidi_schema.mjs",
 )
 
+# Extracts the core spec's prose section anchors (#type-/#command-/#event-/#module-)
+# from the pinned rendered HTML into the small index the schema step joins against.
+js_binary(
+    name = "extract_bidi_anchors_script",
+    data = ["extract_bidi_anchors.mjs"],
+    entry_point = "extract_bidi_anchors.mjs",
+)
+
 # Tests for the BiDi schema tooling: unit tests for the normalizer + projector
 # transforms, plus the authoritative field-fidelity check that diffs the
 # projected schema against cddl2ts (an independent generator over the same AST,
@@ -48,6 +56,7 @@ mocha_test(
     chdir = package_name(),
     data = [
         "bidi_schema_diff_test.mjs",
+        "extract_bidi_anchors.mjs",
         "normalize_bidi_ast.mjs",
         "normalize_bidi_ast_test.mjs",
         "project_bidi_schema.mjs",
@@ -65,6 +74,15 @@ mocha_test(
 generate_bidi_library(
     name = "create-bidi-src",
     cddl_file = "@webdriver_bidi_all_cddl//file:spec.cddl",
+    # One webref definition index per merged spec above; the schema step joins them by
+    # type name to attach a `specHref` link to each type's definition in the live spec.
+    dfns_files = [
+        "@webdriver_bidi_dfns//file:dfns.json",
+        "@permissions_dfns//file:dfns.json",
+        "@prefetch_dfns//file:dfns.json",
+        "@ua_client_hints_dfns//file:dfns.json",
+        "@web_bluetooth_dfns//file:dfns.json",
+    ],
     enhancements_manifest = "//javascript/selenium-webdriver/private:bidi_enhancements_manifest",
     extra_cddl_files = [
         "@permissions_all_cddl//file:spec.cddl",
@@ -72,6 +90,10 @@ generate_bidi_library(
         "@ua_client_hints_all_cddl//file:spec.cddl",
         "@web_bluetooth_all_cddl//file:spec.cddl",
     ],
+    # The pinned rendered core spec. The schema step extracts its prose section anchors
+    # (#type-/#command-/#event-/#module-) to upgrade type links and add command/event/
+    # domain links; adjacent specs keep the webref CDDL fallback.
+    spec_html = "@webdriver_bidi_spec_html//file:index.html",
     spec_version = "1.0",
 )
 
