@@ -15,4 +15,4 @@ How to build docs
     ./go py:docs_generate
 
 
-After building, docs are available in `bazel-bin/py/docs/_build/html/`
+After building, docs are available in ``bazel-bin/py/docs/_build/html/``
