@@ -73,8 +73,9 @@ their *form* varies:
    list, so vendor extension works exactly where the spec permits it and validation stays strict
    everywhere else. In practice: an `Extensible` type carries caller-supplied extras onto the wire (vendor
    fields such as `goog:*` capabilities or vendor proxy keys) and tolerates unknown inbound properties,
-   while a closed type rejects unknown properties outbound (item 3) and accepts-but-ignores them inbound
-   (item 7). The one prohibition is never injecting arbitrary properties into a *closed* type, which would
+   while a closed type rejects unknown properties outbound (item 3), accepts them inbound without erroring
+   (item 7), and never preserves them (item 8). The one prohibition is never injecting arbitrary
+   properties into a *closed* type, which would
    defeat item 3. (Message-level extras are separate: the command envelope is itself `Extensible`
    (`Command = { id, CommandData, Extensible }`), but it is formed above this layer by the transport, so
    those extras are out of scope here — neither required nor forbidden, surfaced wherever a binding likes.)
@@ -112,7 +113,8 @@ their *form* varies:
    configuration among them. A cookie read from `storage.getCookies`
    with a vendor attribute, then passed to `storage.setCookie`, must reach the wire with that attribute
    intact. Every other type (an extensible-but-inbound-only log entry, or a non-extensible type) tolerates
-   and drops (item 7). Where a type both stores inbound extras and takes caller-set outbound extras, the
+   it without erroring (item 7) but does not preserve it. Where a type both stores inbound extras and takes
+   caller-set outbound extras, the
    two merge on serialization and a caller-set value wins. (Widening this scope, if the layer ever went
    public, is the alternative weighed in Considered options.)
 
