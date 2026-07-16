@@ -11,11 +11,45 @@ build:
   os: ubuntu-24.04
   tools:
     python: "3.12"
-  commands:
-    - pip install -r py/requirements_lock.txt
-    - cd py && python3 generate_api_module_listing.py && cd
-    - PYTHONPATH=py sphinx-autogen -o $READTHEDOCS_OUTPUT/html py/docs/source/api.rst
-    - PYTHONPATH=py sphinx-build -b html -d build/docs/doctrees py/docs/source $READTHEDOCS_OUTPUT/html
 
-sphinx:
-  configuration: py/docs/source/conf.py
+  commands:
+    - |
+      set -euo pipefail
+
+      REPO_DIR="$(pwd)"
+      PACKAGE="selenium"
+      VERSION="$(
+        curl -fsSL "https://test.pypi.org/pypi/${PACKAGE}/json" |
+          sed -n 's/.*"version":"\([^"]*\)".*/\1/p' |
+          head -n1
+      )"
+      URL="$(
+        curl -fsSL "https://test.pypi.org/pypi/${PACKAGE}/${VERSION}/json" |
+          sed -n 's/.*"url":"\([^"]*\.tar\.gz\)".*/\1/p' |
+          head -n1
+      )"
+      SDIST="$(basename "${URL}")"
+
+      # install dependencies
+      pip install -r "${REPO_DIR}/py/requirements_lock.txt"
+
+      # fetch latest nightly sdist tarball from TestPyPI
+      curl -fsSLOJ "${URL}"
+
+      # overlay packaged/generated code from the sdist into the repo checkout
+      tar -xzf "${SDIST}"
+      cp -a "${SDIST%.tar.gz}/selenium/." "${REPO_DIR}/py/${PACKAGE}/"
+
+      # remove extracted sdist contents
+      rm -rf "${SDIST%.tar.gz}" "${SDIST}"
+
+      # generate new .rst with API modules
+      cd "${REPO_DIR}/py" && python3 "generate_api_module_listing.py" && cd ..
+
+      export PYTHONPATH="${REPO_DIR}/py:${PYTHONPATH:-}"
+
+      # generate doc stubs
+      sphinx-autogen -o "${READTHEDOCS_OUTPUT}/html" "py/docs/source/api.rst"
+
+      # build docs
+      sphinx-build -b html -d build/docs/doctrees py/docs/source ${READTHEDOCS_OUTPUT}/html
