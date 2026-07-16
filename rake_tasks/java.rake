@@ -145,13 +145,15 @@ task :grid do |_task, arguments|
   Bazel.execute('build', arguments.to_a, '//java/src/org/openqa/selenium/grid:executable-grid')
 end
 
-# Exclude JUnit runtime jars because IDEs bundle their own; keep librunfiles.jar for the Runfiles API.
+# Exclude JUnit runtime jars because IDEs bundle their own; keep librunfiles.jar (Runfiles API)
+# and libzip.jar (rules_jvm_external, used by src/dev tooling). Skip exec-config duplicates.
 JAVA_LIBS_STARLARK = <<~STARLARK.gsub(/\s+/, ' ').strip
   "\\n".join([
     f.path
     for f in target.files.to_list()
     if f.path.endswith(".jar")
-       and (f.path.startswith("external/") or "/genfiles/" in f.path or f.path.endswith("librunfiles.jar") or ("/devtools/v" in f.path and f.path.endswith("-project.jar")))
+       and ("-exec/" not in f.path)
+       and (f.path.startswith("external/") or "/genfiles/" in f.path or f.path.endswith("librunfiles.jar") or f.path.endswith("libzip.jar") or ("/devtools/v" in f.path and f.path.endswith("-project.jar")))
        and (not "junit-jupiter-engine" in f.path)
        and (not "junit-platform-engine" in f.path)
        and (not "junit-platform-launcher" in f.path)
@@ -162,7 +164,9 @@ STARLARK
 desc 'Copy Bazel-built dependency jars to ./java-libs for local development'
 task :local_dev do
   # pin_browsers defaults to true and would download pinned browsers/drivers this task doesn't need.
+  # java/test and java/src/dev are the non-release sources IntelliJ compiles (see java-dev.iml).
   Bazel.execute('build', ['--pin_browsers=false'], '//java/test/...')
+  Bazel.execute('build', ['--pin_browsers=false'], '//java/src/dev/...')
 
   # Bazel.execute merges stdout/stderr, so ignore INFO/progress lines and keep only real paths.
   execroot = nil
@@ -171,7 +175,7 @@ task :local_dev do
 
   jars = []
   Bazel.execute('cquery', ['--pin_browsers=false', '--output=starlark', "--starlark:expr=#{JAVA_LIBS_STARLARK}"],
-                'deps(kind("java_test", //java/test/...))') do |out|
+                'deps(kind("java_test", //java/test/...)) + deps(//java/src/dev/...)') do |out|
     jars = out.lines.map(&:strip).select { |line| line.end_with?('.jar') }.uniq
   end
 
