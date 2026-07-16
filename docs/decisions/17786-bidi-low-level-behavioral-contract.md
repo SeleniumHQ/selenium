@@ -39,7 +39,8 @@ their *form* varies:
 
 - **Mechanism** — a static type system or runtime checks.
 - **Object** — a dataclass, a record, a value type.
-- **Exception** — a shared error *category* is required; the exact type is idiomatic.
+- **Exception** — malformed input must *raise* rather than return a bad value; the error's type and
+  hierarchy are idiomatic.
 
 ### Outbound (constructing and sending)
 
