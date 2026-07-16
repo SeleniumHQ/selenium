@@ -1,8 +1,8 @@
 # Selenium 5 Release Charter
 
-- Status: Proposed <!-- Proposed | Accepted | Released | Superseded -->
+- Status: Proposed
 - Owner: Selenium Technical Leadership Committee (TLC)
-- Discussion: <!-- link to this charter's PR -->
+- Discussion: https://github.com/SeleniumHQ/selenium/pull/17717
 
 ## Purpose
 
