@@ -67,45 +67,30 @@ end
 
 desc 'Copy known generated files for local development (use `./go py:local_dev all` to copy everything)'
 task :local_dev, [:all] do |_task, arguments|
-  Bazel.execute('build', [], '//py:selenium')
+  Bazel.execute('build', [], '//py:selenium-wheel')
 
   bazel_bin = 'bazel-bin/py/selenium/webdriver'
   lib_path = 'py/selenium/webdriver'
 
-  copy_all = arguments[:all] == 'all'
-  if copy_all
-    FileUtils.rm_rf("#{lib_path}/common/devtools")
-    FileUtils.cp_r("#{bazel_bin}/.", lib_path, remove_destination: true)
-  else
-    bidi_src = "#{bazel_bin}/common/bidi"
-    bidi_dest = "#{lib_path}/common/bidi"
-    if Dir.exist?(bidi_src)
-      FileUtils.mkdir_p(bidi_dest)
-      Dir.children(bidi_src).sort.each do |entry|
-        src = File.join(bidi_src, entry)
-        dest = File.join(bidi_dest, entry)
-        next unless File.file?(src) || File.symlink?(src)
+  dirs = arguments[:all] ? Dir.children(bazel_bin) : %w[common/bidi common/devtools common/linux common/macos common/windows remote]
 
-        resolved_src = File.symlink?(src) ? File.realpath(src) : src
-        FileUtils.rm_f(dest)
-        FileUtils.cp(resolved_src, dest)
-      end
+  dirs.each do |dir|
+    src_dir = "#{bazel_bin}/#{dir}"
+    dest_dir = "#{lib_path}/#{dir}"
+    abort("Commit or stash your changes under #{dest_dir} first") if SeleniumRake.git.diff('HEAD').path(dest_dir).any?
+
+    FileUtils.rm_rf(dest_dir)
+    # Copy each file individually to resolve Bazel's cache symlinks
+    Dir.glob(File.join(src_dir, '**', '*')).each do |src|
+      next unless File.file?(src)
+
+      dest = File.join(dest_dir, src.delete_prefix("#{src_dir}/"))
+      FileUtils.mkdir_p(File.dirname(dest))
+      FileUtils.cp(File.realpath(src), dest)
     end
 
-    %w[common/devtools common/linux common/macos common/windows].each do |dir|
-      src = "#{bazel_bin}/#{dir}"
-      dest = "#{lib_path}/#{dir}"
-      next unless Dir.exist?(src)
-
-      FileUtils.rm_rf(dest)
-      FileUtils.cp_r(src, dest)
-    end
-
-    %w[getAttribute.js isDisplayed.js findElements.js].each do |atom|
-      dest = "#{lib_path}/remote/#{atom}"
-      FileUtils.rm_f(dest)
-      FileUtils.cp("#{bazel_bin}/remote/#{atom}", dest)
-    end
+    # Restore any git tracked files in the directories
+    SeleniumRake.git.checkout_file('HEAD', dest_dir) unless SeleniumRake.git.ls_files(dest_dir).empty?
   end
 end
 
