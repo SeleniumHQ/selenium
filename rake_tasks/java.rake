@@ -101,7 +101,9 @@ end
 
 def trigger_sonatype_publish(token)
   puts 'Triggering Sonatype upload with automatic publishing...'
-  uri = URI('https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.seleniumhq?publishing_type=automatic')
+  url = 'https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/' \
+        'org.seleniumhq?publishing_type=automatic'
+  uri = URI(url)
 
   req = Net::HTTP::Post.new(uri)
   req['Authorization'] = "Basic #{token}"
@@ -239,7 +241,8 @@ end
 
 desc 'Verify Java packages are published on Maven Central'
 task :verify do
-  SeleniumRake.verify_package_published("https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java/#{java_version}/selenium-java-#{java_version}.pom")
+  base = 'https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java'
+  SeleniumRake.verify_package_published("#{base}/#{java_version}/selenium-java-#{java_version}.pom")
 end
 
 desc 'Install jars to local m2 directory'
