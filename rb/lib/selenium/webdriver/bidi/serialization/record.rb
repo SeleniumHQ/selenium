@@ -29,7 +29,7 @@ module Selenium
         # @api private
         class Record < ::Data
           # Named Field, not Member, to avoid colliding with +::Data#members+.
-          Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required, :primitive)
+          Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required, :primitive, :scalar)
 
           def self.define(**spec)
             extensible = spec.delete(:extensible) || false
@@ -59,7 +59,8 @@ module Selenium
             Field.new(name: name.to_sym, wire_key: meta.fetch(:wire_key, name.to_s),
                       nullable: meta[:nullable] || false, ref: meta[:ref],
                       list: meta[:list] || false, fixed: meta.fetch(:fixed, UNSET), enum: meta[:enum],
-                      required: meta.fetch(:required, true), primitive: meta[:primitive])
+                      required: meta.fetch(:required, true), primitive: meta[:primitive],
+                      scalar: meta[:scalar])
           end
           private_class_method :field
 
@@ -147,8 +148,18 @@ module Selenium
                 return raw
               end
 
+              read_ref(field, raw)
+            end
+
+            # Reads a ref-typed value into its class. A `scalar` position is an inline union with
+            # a scalar arm collapsed onto its union ref (a map's string keys): a non-object leaf
+            # passes through instead of being handed to the object_only union, but only when it
+            # matches the arm's primitive (+scalar+ carries it). A list recurses per element.
+            def read_ref(field, raw)
               klass = (@refs ||= {})[field.name] ||= Protocol.const_get(field.ref)
-              field.list ? read_list(raw, klass) : klass.from_json(raw)
+              return read_list(field, raw, klass) if field.list
+
+              field.scalar && !raw.is_a?(::Hash) ? scalar_value(field, raw) : klass.from_json(raw)
             end
 
             # A declared list must arrive as an array; a scalar-shaped field (enum or ref, not a
@@ -181,10 +192,48 @@ module Selenium
               (@enums ||= {})[field.name] ||= Protocol.const_get(field.enum)
             end
 
-            # Parses each element, recursing into nested lists (e.g. a map's [key, value] pairs)
-            # so their entries become typed too.
-            def read_list(raw, klass)
-              raw.map { |element| element.is_a?(::Array) ? read_list(element, klass) : klass.from_json(element) }
+            # Parses each element. A `scalar` field is a map encoded as `[key, value]` pairs, so
+            # every element must be a 2-item pair — each is read as one, and a malformed entry is
+            # rejected. Non-scalar lists recurse into nested lists; other elements deserialize.
+            def read_list(field, raw, klass)
+              raw.map do |element|
+                if field.scalar
+                  read_map_entry(field, element, klass)
+                elsif element.is_a?(::Array)
+                  read_list(field, element, klass)
+                else
+                  klass.from_json(element)
+                end
+              end
+            end
+
+            # A map entry is a `[key, value]` pair. The key is `Ref / text` — an object key
+            # deserializes, a bare-string key passes through once validated against the arm's
+            # primitive. The value is the object-only Ref and always deserializes, so a bare scalar
+            # there is rejected (object_only holds at the value position). A non-pair element is a
+            # malformed entry and is rejected outright.
+            def read_map_entry(field, element, klass)
+              unless element.is_a?(::Array) && element.size == 2
+                raise Error::WebDriverError,
+                      "#{name}##{field.name} expected a [key, value] pair, got #{element.inspect}"
+              end
+
+              key, value = element
+              key = key.is_a?(::Hash) ? klass.from_json(key) : scalar_value(field, key)
+              [key, klass.from_json(value)]
+            end
+
+            # A bare scalar at a scalar-tolerant union position must match one of the union's
+            # scalar-arm primitives (+scalar+ is a primitive name or an array of them); a
+            # wrong-typed scalar (a number where a string is expected) is a wire error, not
+            # something to pass through. An unrecognized primitive (none in PRIMITIVE_TYPES) is
+            # left unchecked, matching the lenient default elsewhere.
+            def scalar_value(field, value)
+              expected = Array(field.scalar).flat_map { |primitive| PRIMITIVE_TYPES[primitive] || [] }
+              return value if expected.empty? || expected.any? { |type| value.is_a?(type) }
+
+              raise Error::WebDriverError,
+                    "#{name}##{field.name} expected #{Array(field.scalar).join(' or ')}, got #{value.inspect}"
             end
 
             def extra(json_payload)

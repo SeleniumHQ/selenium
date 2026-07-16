@@ -152,6 +152,7 @@ describe('projectType (list / union / alias defs)', () => {
           { ref: 'x.Other', requires: ['b'] },
         ],
       },
+      objectOnly: true, // both arms are records
     })
   })
   it('projects a single-member dispatch choice group as an alias to its ref', () => {
@@ -372,6 +373,93 @@ describe('unionSelector', () => {
         { ref: 'x.B', requires: ['b'] },
       ],
     })
+  })
+})
+
+describe('schema signals (objectOnly / preserveExtras / enum primitive)', () => {
+  const rec = (name, typeConst) => group(name, [field('type', [lit(typeConst)])])
+  const union = (name, refs) => ({
+    Type: 'variable',
+    Name: name,
+    IsChoiceAddition: false,
+    Comments: [],
+    PropertyType: refs.map(ref),
+  })
+  const enumDef = (name, values) => ({
+    Type: 'variable',
+    Name: name,
+    IsChoiceAddition: false,
+    Comments: [],
+    PropertyType: values.map(lit),
+  })
+
+  it('flags a union whose every arm is an object type as objectOnly', () => {
+    const s = projectSchema([union('x.U', ['x.A', 'x.B']), rec('x.A', 'a'), rec('x.B', 'b')], {})
+    assert.equal(s.types['x.U'].objectOnly, true)
+    assert.deepEqual(checkSchema(s), [])
+  })
+
+  it('does not flag a first-class union with an enum (scalar) arm as objectOnly', () => {
+    const s = projectSchema([union('x.U', ['x.A', 'x.E']), rec('x.A', 'a'), enumDef('x.E', ['one', 'two'])], {})
+    assert.equal(s.types['x.E'].kind, 'enum')
+    assert.equal(s.types['x.U'].objectOnly, undefined)
+  })
+
+  it('does not flag a bare-scalar alias-union (input.Origin shape) as objectOnly', () => {
+    // "viewport" / "pointer" / ElementOrigin — the const arms keep it an alias-union
+    // that must still pass a bare-string payload through, so it stays unflagged.
+    const origin = {
+      Type: 'variable',
+      Name: 'x.Origin',
+      IsChoiceAddition: false,
+      Comments: [],
+      PropertyType: [lit('viewport'), lit('pointer'), ref('x.Element')],
+    }
+    const s = projectSchema([origin, group('x.Element', [field('type', [lit('element')]), field('id', ['text'])])], {})
+    assert.equal(s.types['x.Origin'].kind, 'alias')
+    assert.equal(s.types['x.Origin'].objectOnly, undefined)
+  })
+
+  it('marks an extensible type reachable from command params as preserveExtras, but not a result-only one', () => {
+    const ast = [
+      group('x.SetParams', [field('cfg', [ref('x.Config')])]),
+      group('x.Config', [field('text', ['any'], { n: 0, m: null })]),
+      group('x.GetResult', [field('info', [ref('x.Info')])]),
+      group('x.Info', [field('text', ['any'], { n: 0, m: null })]),
+    ]
+    const model = { x: { commands: [{ method: 'x.set', name: 'set', params: 'x.SetParams', result: 'x.GetResult' }] } }
+    const s = projectSchema(ast, model)
+    assert.equal(s.types['x.Config'].extensible, true)
+    assert.equal(s.types['x.Config'].preserveExtras, true) // reachable through the command's params
+    assert.equal(s.types['x.Info'].extensible, true)
+    assert.equal(s.types['x.Info'].preserveExtras, undefined) // reachable only through the result
+    assert.deepEqual(checkSchema(s), [])
+  })
+
+  it('types an inline (non-hoisted) literal choice with the primitive its literals share', () => {
+    // A nullable literal choice (`("classic" / "overlay") / null`) the normalizer leaves
+    // inline — carry `primitive: string` so the scalar is typed rather than opaque.
+    const s = projectSchema([group('x.R', [field('kind', [lit('classic'), lit('overlay'), 'null'])])], {})
+    assert.deepEqual(s.types['x.R'].fields[0].type, {
+      enum: ['classic', 'overlay'],
+      primitive: 'string',
+      nullable: true,
+    })
+    assert.deepEqual(checkSchema(s), [])
+  })
+
+  it('flags an inline union with a bare-scalar arm as scalar-tolerant (map key: Ref / text)', () => {
+    const ast = [
+      group('x.R', [field('entry', [ref('x.U'), 'text']), field('objects', [ref('x.A'), ref('x.B')])]),
+      union('x.U', ['x.A', 'x.B']),
+      rec('x.A', 'a'),
+      rec('x.B', 'b'),
+    ]
+    const s = projectSchema(ast, {}).types['x.R'].fields
+    // The `Ref / text` arm makes the union scalar-tolerant, carrying the arm's primitive...
+    assert.deepEqual(s[0].type, { union: [{ ref: 'x.U' }, { primitive: 'string' }], scalar: 'string' })
+    // ...but an all-object union is not flagged (no scalar arm to pass through).
+    assert.deepEqual(s[1].type, { union: [{ ref: 'x.A' }, { ref: 'x.B' }] })
   })
 })
 

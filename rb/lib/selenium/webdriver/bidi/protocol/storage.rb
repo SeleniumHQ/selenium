@@ -33,8 +33,7 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey
           PartitionKey = Serialization::Record.define(
             user_context: {wire_key: 'userContext', required: false, primitive: 'string'},
-            source_origin: {wire_key: 'sourceOrigin', required: false, primitive: 'string'},
-            extensible: true
+            source_origin: {wire_key: 'sourceOrigin', required: false, primitive: 'string'}
           )
 
           # @api private
@@ -45,11 +44,11 @@ module Selenium
             value: {wire_key: 'value', required: false, ref: 'Network::BytesValue'},
             domain: {wire_key: 'domain', required: false, primitive: 'string'},
             path: {wire_key: 'path', required: false, primitive: 'string'},
-            size: {wire_key: 'size', required: false},
+            size: {wire_key: 'size', required: false, primitive: 'integer'},
             http_only: {wire_key: 'httpOnly', required: false, primitive: 'boolean'},
             secure: {wire_key: 'secure', required: false, primitive: 'boolean'},
             same_site: {wire_key: 'sameSite', required: false, enum: 'Network::SAME_SITE'},
-            expiry: {wire_key: 'expiry', required: false},
+            expiry: {wire_key: 'expiry', required: false, primitive: 'integer'},
             extensible: true
           )
 
@@ -58,7 +57,7 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-storagebrowsingcontextpartitiondescriptor
           BrowsingContextPartitionDescriptor = Serialization::Record.define(
             type: {fixed: 'context'},
-            context: 'context'
+            context: {wire_key: 'context', primitive: 'string'}
           )
 
           # @api private
@@ -80,6 +79,7 @@ module Selenium
               context: 'Storage::BrowsingContextPartitionDescriptor',
               storage_key: 'Storage::StorageKeyPartitionDescriptor'
             )
+            object_only
           end
 
           # @api private
@@ -109,7 +109,7 @@ module Selenium
             http_only: {wire_key: 'httpOnly', required: false, primitive: 'boolean'},
             secure: {wire_key: 'secure', required: false, primitive: 'boolean'},
             same_site: {wire_key: 'sameSite', required: false, enum: 'Network::SAME_SITE'},
-            expiry: {wire_key: 'expiry', required: false},
+            expiry: {wire_key: 'expiry', required: false, primitive: 'integer'},
             extensible: true
           )
 

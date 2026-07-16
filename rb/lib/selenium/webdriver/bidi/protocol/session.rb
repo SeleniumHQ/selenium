@@ -78,6 +78,7 @@ module Selenium
               pac: 'Session::PacProxyConfiguration',
               system: 'Session::SystemProxyConfiguration'
             )
+            object_only
           end
 
           # @api private
@@ -203,14 +204,13 @@ module Selenium
               required: false,
               ref: 'Session::UserPromptHandler'
             },
-            web_socket_url: {wire_key: 'webSocketUrl', required: false, primitive: 'string'},
-            extensible: true
+            web_socket_url: {wire_key: 'webSocketUrl', required: false, primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionsubscriberesult
-          SubscribeResult = Serialization::Record.define(subscription: 'subscription')
+          SubscribeResult = Serialization::Record.define(subscription: {wire_key: 'subscription', primitive: 'string'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -220,6 +220,7 @@ module Selenium
               'Session::UnsubscribeByAttributesRequest' => ['events'],
               'Session::UnsubscribeByIDRequest' => ['subscriptions']
             )
+            object_only
           end
 
           # @api private

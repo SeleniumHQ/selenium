@@ -46,18 +46,18 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#type-browser-ClientWindowInfo
           ClientWindowInfo = Serialization::Record.define(
             active: {wire_key: 'active', primitive: 'boolean'},
-            client_window: 'clientWindow',
-            height: 'height',
+            client_window: {wire_key: 'clientWindow', primitive: 'string'},
+            height: {wire_key: 'height', primitive: 'integer'},
             state: {wire_key: 'state', enum: 'Browser::CLIENT_WINDOW_INFO_STATE'},
-            width: 'width',
-            x: 'x',
-            y: 'y'
+            width: {wire_key: 'width', primitive: 'integer'},
+            x: {wire_key: 'x', primitive: 'integer'},
+            y: {wire_key: 'y', primitive: 'integer'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-browser-UserContextInfo
-          UserContextInfo = Serialization::Record.define(user_context: 'userContext')
+          UserContextInfo = Serialization::Record.define(user_context: {wire_key: 'userContext', primitive: 'string'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -89,7 +89,9 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browserremoveusercontextparameters
-          RemoveUserContextParameters = Serialization::Record.define(user_context: 'userContext')
+          RemoveUserContextParameters = Serialization::Record.define(
+            user_context: {wire_key: 'userContext', primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -100,11 +102,12 @@ module Selenium
               normal: 'Browser::SetClientWindowStateParameters::ClientWindowRectState'
             )
             fallback 'Browser::SetClientWindowStateParameters::ClientWindowNamedState'
+            object_only
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
             ClientWindowNamedState = Serialization::Record.define(
-              client_window: 'clientWindow',
+              client_window: {wire_key: 'clientWindow', primitive: 'string'},
               state: {wire_key: 'state', enum: 'Browser::CLIENT_WINDOW_NAMED_STATE_STATE'}
             )
 
@@ -112,11 +115,11 @@ module Selenium
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
             ClientWindowRectState = Serialization::Record.define(
               state: {fixed: 'normal'},
-              client_window: 'clientWindow',
-              width: {wire_key: 'width', required: false},
-              height: {wire_key: 'height', required: false},
-              x: {wire_key: 'x', required: false},
-              y: {wire_key: 'y', required: false}
+              client_window: {wire_key: 'clientWindow', primitive: 'string'},
+              width: {wire_key: 'width', required: false, primitive: 'integer'},
+              height: {wire_key: 'height', required: false, primitive: 'integer'},
+              x: {wire_key: 'x', required: false, primitive: 'integer'},
+              y: {wire_key: 'y', required: false, primitive: 'integer'}
             )
           end
 
@@ -137,6 +140,7 @@ module Selenium
               allowed: 'Browser::DownloadBehavior::Allowed',
               denied: 'Browser::DownloadBehavior::Denied'
             )
+            object_only
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/

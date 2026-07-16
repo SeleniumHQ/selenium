@@ -104,7 +104,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothrequestdeviceinfo
           RequestDeviceInfo = Serialization::Record.define(
-            id: 'id',
+            id: {wire_key: 'id', primitive: 'string'},
             name: {wire_key: 'name', nullable: true, primitive: 'string'}
           )
 
@@ -132,14 +132,15 @@ module Selenium
               true => 'Bluetooth::HandleRequestDevicePromptParameters::AcceptParameters',
               false => 'Bluetooth::HandleRequestDevicePromptParameters::CancelParameters'
             )
+            object_only
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
             AcceptParameters = Serialization::Record.define(
               accept: {fixed: true},
               context: {wire_key: 'context', primitive: 'string'},
-              prompt: 'prompt',
-              device: 'device'
+              prompt: {wire_key: 'prompt', primitive: 'string'},
+              device: {wire_key: 'device', primitive: 'string'}
             )
 
             # @api private
@@ -147,7 +148,7 @@ module Selenium
             CancelParameters = Serialization::Record.define(
               accept: {fixed: false},
               context: {wire_key: 'context', primitive: 'string'},
-              prompt: 'prompt'
+              prompt: {wire_key: 'prompt', primitive: 'string'}
             )
           end
 
@@ -218,7 +219,7 @@ module Selenium
           SimulateServiceParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
-            uuid: 'uuid',
+            uuid: {wire_key: 'uuid', primitive: 'string'},
             type: {wire_key: 'type', enum: 'Bluetooth::SIMULATE_SERVICE_PARAMETERS_TYPE'}
           )
 
@@ -228,8 +229,8 @@ module Selenium
           SimulateCharacteristicParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
-            service_uuid: 'serviceUuid',
-            characteristic_uuid: 'characteristicUuid',
+            service_uuid: {wire_key: 'serviceUuid', primitive: 'string'},
+            characteristic_uuid: {wire_key: 'characteristicUuid', primitive: 'string'},
             characteristic_properties: {
               wire_key: 'characteristicProperties',
               required: false,
@@ -244,8 +245,8 @@ module Selenium
           SimulateCharacteristicResponseParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
-            service_uuid: 'serviceUuid',
-            characteristic_uuid: 'characteristicUuid',
+            service_uuid: {wire_key: 'serviceUuid', primitive: 'string'},
+            characteristic_uuid: {wire_key: 'characteristicUuid', primitive: 'string'},
             type: {wire_key: 'type', enum: 'Bluetooth::SIMULATE_CHARACTERISTIC_RESPONSE_PARAMETERS_TYPE'},
             code: {wire_key: 'code', primitive: 'integer'},
             data: {wire_key: 'data', required: false, list: true}
@@ -257,9 +258,9 @@ module Selenium
           SimulateDescriptorParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
-            service_uuid: 'serviceUuid',
-            characteristic_uuid: 'characteristicUuid',
-            descriptor_uuid: 'descriptorUuid',
+            service_uuid: {wire_key: 'serviceUuid', primitive: 'string'},
+            characteristic_uuid: {wire_key: 'characteristicUuid', primitive: 'string'},
+            descriptor_uuid: {wire_key: 'descriptorUuid', primitive: 'string'},
             type: {wire_key: 'type', enum: 'Bluetooth::SIMULATE_DESCRIPTOR_PARAMETERS_TYPE'}
           )
 
@@ -269,9 +270,9 @@ module Selenium
           SimulateDescriptorResponseParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
-            service_uuid: 'serviceUuid',
-            characteristic_uuid: 'characteristicUuid',
-            descriptor_uuid: 'descriptorUuid',
+            service_uuid: {wire_key: 'serviceUuid', primitive: 'string'},
+            characteristic_uuid: {wire_key: 'characteristicUuid', primitive: 'string'},
+            descriptor_uuid: {wire_key: 'descriptorUuid', primitive: 'string'},
             type: {wire_key: 'type', enum: 'Bluetooth::SIMULATE_DESCRIPTOR_RESPONSE_PARAMETERS_TYPE'},
             code: {wire_key: 'code', primitive: 'integer'},
             data: {wire_key: 'data', required: false, list: true}
@@ -282,7 +283,7 @@ module Selenium
           # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothrequestdevicepromptupdatedparameters
           RequestDevicePromptUpdatedParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
-            prompt: 'prompt',
+            prompt: {wire_key: 'prompt', primitive: 'string'},
             devices: {wire_key: 'devices', ref: 'Bluetooth::RequestDeviceInfo', list: true}
           )
 
@@ -300,8 +301,8 @@ module Selenium
           CharacteristicEventGeneratedParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
-            service_uuid: 'serviceUuid',
-            characteristic_uuid: 'characteristicUuid',
+            service_uuid: {wire_key: 'serviceUuid', primitive: 'string'},
+            characteristic_uuid: {wire_key: 'characteristicUuid', primitive: 'string'},
             type: {wire_key: 'type', enum: 'Bluetooth::CHARACTERISTIC_EVENT_GENERATED_PARAMETERS_TYPE'},
             data: {wire_key: 'data', required: false, list: true}
           )
@@ -312,9 +313,9 @@ module Selenium
           DescriptorEventGeneratedParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
-            service_uuid: 'serviceUuid',
-            characteristic_uuid: 'characteristicUuid',
-            descriptor_uuid: 'descriptorUuid',
+            service_uuid: {wire_key: 'serviceUuid', primitive: 'string'},
+            characteristic_uuid: {wire_key: 'characteristicUuid', primitive: 'string'},
+            descriptor_uuid: {wire_key: 'descriptorUuid', primitive: 'string'},
             type: {wire_key: 'type', enum: 'Bluetooth::DESCRIPTOR_EVENT_GENERATED_PARAMETERS_TYPE'},
             data: {wire_key: 'data', required: false, list: true}
           )

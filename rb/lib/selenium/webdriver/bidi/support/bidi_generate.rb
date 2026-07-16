@@ -236,7 +236,7 @@ module BiDiGenerate
   # ref is the Protocol-relative class path for a nested structured field (nil
   # for a scalar/opaque field); list wraps it in an array. wire_key is the exact
   # JSON payload key (the schema's `wire` name, baked verbatim).
-  FieldIR = Struct.new(:ruby_name, :wire_key, :required, :nullable, :ref, :list, :enum, :primitive, :rbs,
+  FieldIR = Struct.new(:ruby_name, :wire_key, :required, :nullable, :ref, :list, :enum, :primitive, :scalar, :rbs,
                        keyword_init: true) do
     # A `Serialization::Record.define` spec entry: `name: 'jsonKey'` shorthand, or
     # `name: {wire_key:, …}` when the field carries JSON facts beyond its name.
@@ -247,12 +247,19 @@ module BiDiGenerate
       meta << 'nullable: true' if nullable
       meta << "ref: '#{ref}'" if ref
       meta << 'list: true' if list
+      meta << "scalar: #{scalar_literal}" if scalar
       meta << "enum: '#{enum}'" if enum
       meta << "primitive: '#{primitive}'" if primitive
       return "#{ruby_name}: '#{wire_key}'" if meta.empty?
 
       meta.unshift("wire_key: '#{wire_key}'")
       BiDiGenerate.wrap_call("#{ruby_name}: ", meta, indent, open: '{', close: '}')
+    end
+
+    # The `scalar` primitive(s) a bare non-object wire value must match at a scalar-tolerant
+    # union position: a single primitive string, or an array when the union's scalar arms differ.
+    def scalar_literal
+      scalar.is_a?(::Array) ? "[#{scalar.map { |s| "'#{s}'" }.join(', ')}]" : "'#{scalar}'"
     end
 
     # The `self.new` keyword for this field — a user-supplied input carrying the field's
@@ -350,8 +357,10 @@ module BiDiGenerate
 
   # A generated discriminated union (< Serialization::Union, resolved by lexical scope).
   # nested holds its synthetic variant records (see nest_synthetic). spec_href links to
-  # the union's definition in the live spec (nil when the schema has none).
-  UnionClass = Struct.new(:ruby_name, :discriminator_wire, :variants, :schema_name, :nested, :spec_href,
+  # the union's definition in the live spec (nil when the schema has none). object_only
+  # mirrors the schema's `objectOnly` signal: when true, a non-Hash payload is rejected
+  # rather than passed through (every arm is an object, so it can match no variant).
+  UnionClass = Struct.new(:ruby_name, :discriminator_wire, :variants, :schema_name, :nested, :spec_href, :object_only,
                           keyword_init: true) do
     def union? = true
     def value_variants = variants.select { |v| v.mode == :value }
@@ -533,29 +542,33 @@ module BiDiGenerate
       nullable = node['nullable'] ? true : false
       if node.key?('list')
         element = resolve(node['list'])
-        return {ref: element[:ref], list: true, nullable: nullable, rbs: nilable("Array[#{element[:rbs]}]", nullable)}
+        return {ref: element[:ref], list: true, nullable: nullable, scalar: element[:scalar],
+                rbs: nilable("Array[#{element[:rbs]}]", nullable)}
       end
       if node.key?('ref')
         named = resolve_named(node['ref'])
-        return {ref: named[:ref], list: named[:list], nullable: nullable, rbs: nilable(named[:rbs], nullable)}
+        return {ref: named[:ref], list: named[:list], nullable: nullable, scalar: named[:scalar],
+                rbs: nilable(named[:rbs], nullable)}
       end
       return resolve_union(node, nullable) if node.key?('union')
 
-      {ref: nil, list: false, nullable: nullable, primitive: checkable_primitive(node),
-       rbs: nilable(scalar_rbs(node), nullable)}
+      {ref: nil, list: false, nullable: nullable, rbs: nilable(scalar_rbs(node), nullable)}
     end
 
     # An inline union of one union-typed arm plus scalars (e.g. a MappingRemoteValue entry,
-    # RemoteValue / string) parses through that arm — its from_json returns a non-Hash value
-    # unchanged, so the scalar siblings pass through. Carry its ref so nested entries are typed;
-    # any other shape (a record arm, multiple structured arms, all scalars) stays opaque.
+    # RemoteValue / string) is carried as that union ref so nested entries are typed. Because
+    # the union is object_only, a bare-scalar sibling would raise there — so the projector's
+    # `scalar` signal (a bare-scalar arm is present) is forwarded, and the runtime passes a
+    # non-object leaf through instead (the map's string keys). Any other shape (a record arm,
+    # multiple structured arms, all scalars) stays opaque.
     def resolve_union(node, nullable)
       refs = node['union'].select { |arm| arm.key?('ref') }
       opaque = {ref: nil, list: false, nullable: nullable, rbs: nilable('untyped', nullable)}
       return opaque unless refs.one? && union_ref?(refs.first['ref'])
 
       named = resolve_named(refs.first['ref'])
-      {ref: named[:ref], list: named[:list], nullable: nullable, rbs: nilable('untyped', nullable)}
+      {ref: named[:ref], list: named[:list], nullable: nullable, scalar: node['scalar'],
+       rbs: nilable('untyped', nullable)}
     end
 
     # True when a ref (following aliases) is a union — the only arm whose from_json tolerates a
@@ -602,7 +615,7 @@ module BiDiGenerate
 
       if inner.key?('list')
         element = resolve(inner['list'])
-        return {ref: element[:ref], list: true, rbs: "Array[#{element[:rbs]}]"}
+        return {ref: element[:ref], list: true, scalar: element[:scalar], rbs: "Array[#{element[:rbs]}]"}
       end
 
       {ref: nil, list: false, rbs: scalar_rbs(inner)}
@@ -618,8 +631,11 @@ module BiDiGenerate
                                 wire: const['wire'], value: const['type']['const'],
                                 rbs: rbs_const(const['type']['const'])}
       fields = type['fields'].reject { |f| baked_discriminator?(f) }.map { |f| field_ir(f) }
+      # Gate the extensions store on `preserveExtras` (extensible AND re-sendable), not raw
+      # `extensible`: only a type you receive and can hand back keeps unknown wire keys. A
+      # received-only extensible type gets no store, so its unknown keys are silently ignored.
       TypeClass.new(ruby_name: BiDiGenerate.type_class_name(name), fields: fields,
-                    discriminator: discriminator, extensible: type['extensible'] ? true : false,
+                    discriminator: discriminator, extensible: type['preserveExtras'] ? true : false,
                     schema_name: name, synthetic: type['synthetic'] ? true : false,
                     owner: type['owner'], label: type['label'], spec_href: type['specHref'])
     end
@@ -638,7 +654,25 @@ module BiDiGenerate
       FieldIR.new(ruby_name: ruby_name, wire_key: field['wire'],
                   required: field['required'], nullable: resolved[:nullable],
                   ref: resolved[:ref], list: resolved[:list], enum: enum_const(field['type']),
-                  primitive: resolved[:primitive], rbs: resolved[:rbs])
+                  primitive: leaf_primitive(field['type']), scalar: resolved[:scalar],
+                  rbs: resolved[:rbs])
+    end
+
+    # The runtime-checkable scalar primitive of a field, following alias chains so a
+    # scalar hidden behind a named alias (js-uint -> integer, browsingContext.BrowsingContext
+    # -> string) is typed rather than opaque. The projector carries the primitive on the
+    # alias node; this surfaces it onto the field. Nil for a list (its elements are not
+    # scalar-checked), a record/union ref, an enum, a const, or an opaque value.
+    def leaf_primitive(node, seen = {})
+      return node['primitive'] if node.key?('primitive') && CHECKABLE_PRIMITIVES.include?(node['primitive'])
+      return nil unless node.key?('ref')
+
+      name = node['ref']
+      type = @types[name]
+      return nil if seen[name] || type.nil? || type['kind'] != 'alias'
+
+      seen[name] = true
+      leaf_primitive(type['type'], seen)
     end
 
     def union_class(name)
@@ -672,7 +706,7 @@ module BiDiGenerate
 
       UnionClass.new(ruby_name: BiDiGenerate.type_class_name(name),
                      discriminator_wire: selector['by'], variants: variants, schema_name: name,
-                     spec_href: @types[name]['specHref'])
+                     spec_href: @types[name]['specHref'], object_only: @types[name]['objectOnly'] ? true : false)
     end
 
     def discriminated_variants(selector)
@@ -704,9 +738,11 @@ module BiDiGenerate
       variants = consts.map do |ref, const|
         VariantIR.new(mode: :value, value: const['type']['const'], ref: ruby_path(ref), requires: nil)
       end
+      # An alias-union carries bare-scalar arms (input.Origin's "viewport"/"pointer"), so it
+      # is never object_only — those arms must still pass a non-Hash payload through.
       UnionClass.new(ruby_name: BiDiGenerate.type_class_name(name),
                      discriminator_wire: consts.values.first['wire'], variants: variants, schema_name: name,
-                     spec_href: @types[name]['specHref'])
+                     spec_href: @types[name]['specHref'], object_only: @types[name]['objectOnly'] ? true : false)
     end
 
     def record_params(fields)
@@ -737,10 +773,6 @@ module BiDiGenerate
     # const, or opaque value) gets no descriptor and is left unchecked — lenient, so a missed
     # check fails open rather than a wrong strict default rejecting valid data.
     CHECKABLE_PRIMITIVES = %w[string number integer boolean].freeze
-
-    def checkable_primitive(node)
-      node['primitive'] if node.key?('primitive') && CHECKABLE_PRIMITIVES.include?(node['primitive'])
-    end
 
     # The leaf of +resolve+: the bare scalar type, before any nullable wrap. An alias's
     # own nullable is intentionally left off — only the referencing node's is applied.
