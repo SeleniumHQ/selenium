@@ -22,9 +22,11 @@ module Selenium
       class BiDiBridge < Bridge
         @browsing_context: BiDi::BrowsingContext
 
+        @connection: untyped
+
         attr_reader bidi: BiDi
 
-        attr_reader transport: BiDi::Transport
+        attr_reader connection: untyped
 
         def create_session: (untyped capabilities) -> void
 

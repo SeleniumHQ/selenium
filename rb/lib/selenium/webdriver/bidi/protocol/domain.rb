@@ -24,8 +24,10 @@ module Selenium
         # @api private
         class Domain
           def initialize(source)
-            @transport = source.is_a?(Driver) ? source.send(:bridge).transport : source
-            raise(Error::WebDriverError, 'a Driver or Transport is required') unless @transport.is_a?(Transport)
+            connection = source.is_a?(Driver) ? source.send(:bridge).connection : source
+            raise(Error::WebDriverError, 'a Driver or connection is required') unless connection.respond_to?(:send_cmd)
+
+            @transport = Transport.new(connection)
           end
 
           private

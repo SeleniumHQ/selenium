@@ -23,7 +23,7 @@ module Selenium
         class Domain
           @transport: Transport
 
-          def initialize: (Driver | Transport source) -> void
+          def initialize: (untyped source) -> void
 
           private
 
