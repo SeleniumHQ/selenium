@@ -144,6 +144,25 @@ jobs:
         run: git pull origin "$GIT_REF"
         env:
           GIT_REF: ${{ github.ref }}
+      - name: Delete browsers and drivers
+        if: inputs.os == 'ubuntu' || inputs.os == 'macos'
+        run: ./scripts/github-actions/delete-browsers-drivers.sh
+      - name: Delete drivers (Windows)
+        if: inputs.os == 'windows'
+        shell: pwsh
+        run: ./scripts/github-actions/delete-browsers-drivers.ps1
+      - name: Free disk space
+        if: inputs.os == 'ubuntu'
+        shell: bash
+        run: |
+          . ./scripts/github-actions/disk-status.sh
+          if [ "$AVAIL_GB" -lt 25 ]; then
+            ./scripts/github-actions/free-disk-space.sh
+          fi
+      - name: Disk status before cache restore
+        if: inputs.os != 'macos'
+        shell: bash
+        run: . ./scripts/github-actions/disk-status.sh
       - name: Restore cache
         if: inputs.cache-name != ''
         uses: actions/cache/restore@v5
@@ -170,6 +189,7 @@ jobs:
           node-version: ${{ inputs.node-version }}
       - name: Setup Bazel with caching
         continue-on-error: true
+        timeout-minutes: 10
         uses: bazel-contrib/setup-bazel@0.19.0
         with:
           cache-save: ${{ inputs.cache-save }}
@@ -220,21 +240,6 @@ jobs:
       - name: Configure RubyGems credentials via OIDC
         if: inputs.gem-trusted-publishing
         uses: rubygems/configure-rubygems-credentials@main
-      - name: Delete browsers and drivers
-        if: inputs.os == 'ubuntu' || inputs.os == 'macos'
-        run: ./scripts/github-actions/delete-browsers-drivers.sh
-      - name: Delete drivers (Windows)
-        if: inputs.os == 'windows'
-        shell: pwsh
-        run: ./scripts/github-actions/delete-browsers-drivers.ps1
-      - name: Free disk space
-        if: inputs.os == 'ubuntu'
-        shell: bash
-        run: |
-          . ./scripts/github-actions/disk-status.sh
-          if [ "$AVAIL_GB" -lt 20 ]; then
-            ./scripts/github-actions/free-disk-space.sh
-          fi
       - name: Run Bazel
         id: run-bazel
         continue-on-error: true
