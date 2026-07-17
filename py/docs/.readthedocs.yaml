@@ -23,7 +23,6 @@ build:
           sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' |
           head -n1
       )"
-
       URL="$(
         curl -fsSL "https://test.pypi.org/pypi/${PACKAGE}/${VERSION}/json" |
           sed -n 's/.*"url"[[:space:]]*:[[:space:]]*"\([^"]*\.tar\.gz\)".*/\1/p' |
@@ -35,7 +34,7 @@ build:
       pip install -r "${REPO_DIR}/py/requirements_lock.txt"
 
       # fetch latest nightly sdist tarball from TestPyPI
-      curl -fsSLOJ "${URL}"
+      curl -fsSL -o "${SDIST}" "${URL}"
 
       # overlay packaged/generated code from the sdist into the repo checkout
       tar -xzf "${SDIST}"
