@@ -88,7 +88,6 @@ task :local_dev, [:all] do |_task, arguments|
   dirs.each do |dir|
     src_dir = "#{bazel_bin}/#{dir}"
     dest_dir = "#{lib_path}/#{dir}"
-    abort("Commit or stash your changes under #{dest_dir} first") unless `git status --porcelain #{dest_dir}`.empty?
 
     FileUtils.rm_rf(dest_dir)
     # Restore any git tracked files in the directory we just deleted
