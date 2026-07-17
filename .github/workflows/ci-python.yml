@@ -2,10 +2,6 @@ name: CI - Python
 
 on:
   workflow_call:
-    inputs:
-      targets:
-        required: true
-        type: string
   workflow_dispatch:
 
 permissions:
@@ -67,12 +63,16 @@ jobs:
       name: Integration Tests Remote
       needs-display: true
       rerun-with-debug: true
+      download-artifact-name: targets
       run: >
+        [ -s py-targets.txt ] || echo //py/... > py-targets.txt;
+        { echo "tests(//py:test-remote) intersect set("; cat py-targets.txt; echo ")"; } > query.txt;
+        bazel query --query_file=query.txt --output=label > remote-targets.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --keep_going
         --flaky_test_attempts 3
         --local_test_jobs 1
-        $(bazel query "tests(//py:test-remote) intersect set(${{ inputs.targets || '//py/...' }})" --output=label 2>/dev/null)
+        --target_pattern_file=remote-targets.txt
 
   browser-tests:
     name: Browser Tests
@@ -90,13 +90,17 @@ jobs:
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      download-artifact-name: targets
       run: >
+        [ -s py-targets.txt ] || echo //py/... > py-targets.txt;
+        { echo "tests(//py:test-${{ matrix.browser }}) intersect set("; cat py-targets.txt; echo ")"; } > query.txt;
+        bazel query --query_file=query.txt --output=label > browser-targets.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --keep_going
         --flaky_test_attempts 3
         --local_test_jobs 1
         --skip_incompatible_explicit_targets
-        $(bazel query "tests(//py:test-${{ matrix.browser }}) intersect set(${{ inputs.targets || '//py/...' }})" --output=label 2>/dev/null)
+        --target_pattern_file=browser-targets.txt
 
   selenium-manager-tests:
     name: Selenium Manager Tests
@@ -110,7 +114,9 @@ jobs:
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      download-artifact-name: targets
       run: >
+        [ -s py-targets.txt ] || echo //py/... > py-targets.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --local_test_jobs 1
         --flaky_test_attempts 3
@@ -118,4 +124,4 @@ jobs:
         --build_tests_only
         --skip_incompatible_explicit_targets
         --test_tag_filters=se-manager
-        ${{ inputs.targets || '//py/...' }}
+        --target_pattern_file=py-targets.txt
