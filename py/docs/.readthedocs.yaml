@@ -20,12 +20,13 @@ build:
       PACKAGE="selenium"
       VERSION="$(
         curl -fsSL "https://test.pypi.org/pypi/${PACKAGE}/json" |
-          sed -n 's/.*"version":"\([^"]*\)".*/\1/p' |
+          sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' |
           head -n1
       )"
+
       URL="$(
         curl -fsSL "https://test.pypi.org/pypi/${PACKAGE}/${VERSION}/json" |
-          sed -n 's/.*"url":"\([^"]*\.tar\.gz\)".*/\1/p' |
+          sed -n 's/.*"url"[[:space:]]*:[[:space:]]*"\([^"]*\.tar\.gz\)".*/\1/p' |
           head -n1
       )"
       SDIST="$(basename "${URL}")"
