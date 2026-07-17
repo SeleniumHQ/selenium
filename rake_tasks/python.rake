@@ -72,14 +72,28 @@ task :local_dev, [:all] do |_task, arguments|
   bazel_bin = 'bazel-bin/py/selenium/webdriver'
   lib_path = 'py/selenium/webdriver'
 
-  dirs = arguments[:all] ? Dir.children(bazel_bin) : %w[common/bidi common/devtools common/linux common/macos common/windows remote]
+  if arguments[:all] == 'all'
+    dirs = Dir.children(bazel_bin)
+    files = []
+  else
+    dirs = %w[common/bidi common/devtools]
+    files = %w[
+      remote/getAttribute.js remote/isDisplayed.js remote/findElements.js
+      common/mutation-listener.js common/bidi-mutation-listener.js
+      common/linux/selenium-manager common/macos/selenium-manager common/windows/selenium-manager.exe
+      firefox/webdriver_prefs.json
+    ]
+  end
 
   dirs.each do |dir|
     src_dir = "#{bazel_bin}/#{dir}"
     dest_dir = "#{lib_path}/#{dir}"
-    abort("Commit or stash your changes under #{dest_dir} first") if SeleniumRake.git.diff('HEAD').path(dest_dir).any?
+    abort("Commit or stash your changes under #{dest_dir} first") unless `git status --porcelain #{dest_dir}`.empty?
 
     FileUtils.rm_rf(dest_dir)
+    # Restore any git tracked files in the directory we just deleted
+    SeleniumRake.git.checkout_file('HEAD', dest_dir) unless SeleniumRake.git.ls_files(dest_dir).empty?
+
     # Copy each file individually to resolve Bazel's cache symlinks
     Dir.glob(File.join(src_dir, '**', '*')).each do |src|
       next unless File.file?(src)
@@ -88,9 +102,13 @@ task :local_dev, [:all] do |_task, arguments|
       FileUtils.mkdir_p(File.dirname(dest))
       FileUtils.cp(File.realpath(src), dest)
     end
+  end
 
-    # Restore any git tracked files in the directories
-    SeleniumRake.git.checkout_file('HEAD', dest_dir) unless SeleniumRake.git.ls_files(dest_dir).empty?
+  files.each do |file|
+    dest = "#{lib_path}/#{file}"
+    FileUtils.mkdir_p(File.dirname(dest))
+    FileUtils.rm_f(dest)
+    FileUtils.cp(File.realpath("#{bazel_bin}/#{file}"), dest)
   end
 end
 
