@@ -65,8 +65,8 @@ jobs:
       rerun-with-debug: true
       download-artifact-name: targets
       run: >
-        [ -s py-targets.txt ] || echo //py/... > py-targets.txt;
-        { echo "tests(//py:test-remote) intersect set("; cat py-targets.txt; echo ")"; } > query.txt;
+        [ -s bazel-targets-py.txt ] || echo //py/... > bazel-targets-py.txt;
+        { echo "tests(//py:test-remote) intersect set("; cat bazel-targets-py.txt; echo ")"; } > query.txt;
         bazel query --query_file=query.txt --output=label > remote-targets.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --keep_going
@@ -92,8 +92,8 @@ jobs:
       rerun-with-debug: true
       download-artifact-name: targets
       run: >
-        [ -s py-targets.txt ] || echo //py/... > py-targets.txt;
-        { echo "tests(//py:test-${{ matrix.browser }}) intersect set("; cat py-targets.txt; echo ")"; } > query.txt;
+        [ -s bazel-targets-py.txt ] || echo //py/... > bazel-targets-py.txt;
+        { echo "tests(//py:test-${{ matrix.browser }}) intersect set("; cat bazel-targets-py.txt; echo ")"; } > query.txt;
         bazel query --query_file=query.txt --output=label > browser-targets.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --keep_going
@@ -116,7 +116,7 @@ jobs:
       rerun-with-debug: true
       download-artifact-name: targets
       run: >
-        [ -s py-targets.txt ] || echo //py/... > py-targets.txt;
+        [ -s bazel-targets-py.txt ] || echo //py/... > bazel-targets-py.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --local_test_jobs 1
         --flaky_test_attempts 3
@@ -124,4 +124,4 @@ jobs:
         --build_tests_only
         --skip_incompatible_explicit_targets
         --test_tag_filters=se-manager
-        --target_pattern_file=py-targets.txt
+        --target_pattern_file=bazel-targets-py.txt

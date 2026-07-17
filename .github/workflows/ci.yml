@@ -94,7 +94,7 @@ jobs:
             lang_targets=$(echo "$targets" | tr ' ' '\n' | awk -v p="^${pattern}[:/]" '$0 ~ p')
             if [ -n "$lang_targets" ]; then
               echo "$tag=true" >> "$GITHUB_OUTPUT"
-              echo "$lang_targets" > "${tag}-targets.txt"
+              echo "$lang_targets" > "bazel-targets-${tag}.txt"
             fi
           }
           check_binding "//java" "java"
@@ -107,7 +107,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: targets
-          path: "*-targets.txt"
+          path: bazel-targets-*.txt
           if-no-files-found: ignore
   dotnet:
     name: .NET

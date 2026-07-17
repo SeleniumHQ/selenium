@@ -64,7 +64,7 @@ jobs:
       rerun-with-debug: true
       download-artifact-name: targets
       run: >
-        [ -s rb-targets.txt ] || echo //rb/... > rb-targets.txt;
+        [ -s bazel-targets-rb.txt ] || echo //rb/... > bazel-targets-rb.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --keep_going
         --flaky_test_attempts 2
@@ -75,7 +75,7 @@ jobs:
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_env=SKIP_PENDING=true
         --test_tag_filters=unit,os-sensitive,se-manager,skip-rbe
-        --target_pattern_file=rb-targets.txt
+        --target_pattern_file=bazel-targets-rb.txt
 
   os-tests-full:
     name: ${{ matrix.os }}-full
