@@ -124,7 +124,9 @@ module SeleniumRake
   def self.verify_package_published(url)
     puts "Verifying #{url}..."
     uri = URI(url)
-    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') { |http| http.request(Net::HTTP::Get.new(uri)) }
+    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
+      http.request(Net::HTTP::Get.new(uri))
+    end
     raise "Package not published: #{url}" unless res.is_a?(Net::HTTPSuccess)
 
     puts 'Verified!'

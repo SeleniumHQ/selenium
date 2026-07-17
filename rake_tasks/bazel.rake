@@ -44,7 +44,9 @@ task :affected_targets do |_task, args|
               BINDING_TARGETS.values
             elsif File.exist?(index_file)
               override_targets = changed_files.filter_map { |f| BINDING_TARGETS[TARGET_OVERRIDES[f]] }
-              covered_pattern = Regexp.union(override_targets.map { |t| %r{\A#{Regexp.escape(t.delete_suffix('/...'))}[:/]} })
+              covered_pattern = Regexp.union(
+                override_targets.map { |t| %r{\A#{Regexp.escape(t.delete_suffix('/...'))}[:/]} }
+              )
               index_targets = affected_targets_with_index(changed_files, index_file).grep_v(covered_pattern)
               (override_targets + index_targets).uniq
             else
@@ -162,7 +164,8 @@ def affected_targets_with_index(changed_files, index_file)
     return affected_targets_by_directory(changed_files)
   end
 
-  test_files, lib_files = changed_files.partition { |f| f.match?(%r{[_-]test\.rb$|_tests?\.py$|Test\.java$|\.test\.[jt]s$|_spec\.rb$|^dotnet/test/}) }
+  test_pattern = %r{[_-]test\.rb$|_tests?\.py$|Test\.java$|\.test\.[jt]s$|_spec\.rb$|^dotnet/test/}
+  test_files, lib_files = changed_files.partition { |f| f.match?(test_pattern) }
 
   affected = Set.new
   # Just test the tests

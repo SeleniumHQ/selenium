@@ -15,8 +15,6 @@ Gemspec/DevelopmentDependencies:
 Layout/LineLength:
   AllowedPatterns:
     - '^\s*#'
-  Exclude:
-    - '../rake_tasks/**/*'
 
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
