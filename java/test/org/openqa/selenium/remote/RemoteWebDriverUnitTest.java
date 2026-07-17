@@ -62,6 +62,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
+import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
@@ -850,5 +851,11 @@ class RemoteWebDriverUnitTest {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> fixture.driver.fireSessionEvent(null))
         .withMessageContaining("Event type");
+  }
+
+  @Test
+  void doesNotInitializeBiDiWhenNotRequested() {
+    WebDriverFixture fixture = new WebDriverFixture(echoCapabilities);
+    assertThatExceptionOfType(BiDiException.class).isThrownBy(fixture.driver::getHandle);
   }
 }
