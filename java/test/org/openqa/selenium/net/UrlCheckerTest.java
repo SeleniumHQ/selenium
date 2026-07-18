@@ -105,6 +105,12 @@ class UrlCheckerTest {
 
   @Test
   void waitUntilUnavailablePreservesInterruptStatus() throws Exception {
+    // The server must be up and serving so waitUntilUnavailable actually blocks
+    // (it polls while the URL stays available); otherwise it returns immediately and
+    // the interrupt is never observed. Mirrors testWaitUntilUnavailableIsTimely.
+    server.start();
+    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, url);
+
     Thread caller = Thread.currentThread();
     Thread interrupter =
         new Thread(
