@@ -123,10 +123,10 @@ js_library(
 
     pkg_archive(
         name = "mac_edge",
-        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/50ebf58f-2ba1-47fe-8b2d-b717caec1fad/MicrosoftEdge-150.0.4078.65.pkg",
-        sha256 = "68929c051651b056123369874fe5f6bea0a268500e6c506f6922b2d539a2fd86",
+        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/a746c1d3-7688-46d9-93de-9ececc350dfe/MicrosoftEdge-150.0.4078.83.pkg",
+        sha256 = "846f6322d16b23ee8da31bf61651b768aafa29ea7889f9586221e1bfc3a9bb6c",
         move = {
-            "MicrosoftEdge-150.0.4078.65.pkg/Payload/Microsoft Edge.app": "Edge.app",
+            "MicrosoftEdge-150.0.4078.83.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
@@ -143,8 +143,8 @@ js_library(
 
     deb_archive(
         name = "linux_edge",
-        url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_150.0.4078.65-1_amd64.deb",
-        sha256 = "9adf1fc7a8091393c616230b79c789e6b98b9b09905dac71ed563cc8f210ab21",
+        url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_150.0.4078.83-1_amd64.deb",
+        sha256 = "b939fafdfe10f5e89f689af9fd4ea2eca98902d24ac4779a52c755fa899caa54",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -165,8 +165,8 @@ js_library(
 
     http_archive(
         name = "linux_edgedriver",
-        url = "https://msedgedriver.microsoft.com/150.0.4078.65/edgedriver_linux64.zip",
-        sha256 = "3a54eedfbc275c9fb6d446f3aa94968705d9780853e926cafddd2078e6640ab0",
+        url = "https://msedgedriver.microsoft.com/150.0.4078.83/edgedriver_linux64.zip",
+        sha256 = "12c4fa4cd610a7eaa2f58a0738c1c0681ce39c9922aab1b6b6010de6009ed64d",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
