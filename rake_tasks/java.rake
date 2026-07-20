@@ -170,14 +170,16 @@ task :local_dev do
 
   # Copy what Bazel actually materialized. The resolved maven tree is deduplicated (one version
   # per artifact), and globbing only ever yields files that exist, so unresolved/lazy deps in the
-  # dependency graph can neither collide nor abort the task.
+  # dependency graph can neither collide nor abort the task. Skip the exec-configuration bazel-out
+  # tree (its config dir ends in "-exec") to avoid copying duplicate build-tool jars.
+  exec_config = %r{[\\/]bazel-out[\\/][^\\/]*-exec[\\/]}
   bin = File.join(execroot, 'bazel-out', '*', 'bin')
   jars = Dir.glob([
                     File.join(bin, 'external/rules_jvm_external++maven+maven/**/*.jar'),
                     File.join(bin, 'java/src/org/openqa/selenium/devtools/v*/v*-project.jar'),
                     File.join(bin, 'external/rules_java+/**/librunfiles.jar'),
                     File.join(bin, 'external/rules_jvm_external+/**/libzip.jar')
-                  ]).reject { |path| path.include?('-exec/') }
+                  ]).grep_v(exec_config)
 
   lib = File.join(Dir.pwd, 'java-libs')
   sources = File.join(lib, 'sources')
