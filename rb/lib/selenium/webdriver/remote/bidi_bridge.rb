@@ -18,21 +18,20 @@
 # under the License.
 
 require 'selenium/webdriver/bidi'
-require 'selenium/webdriver/bidi/transport'
 
 module Selenium
   module WebDriver
     module Remote
       class BiDiBridge < Bridge
-        attr_reader :bidi, :transport
+        attr_reader :bidi, :connection
 
         def create_session(capabilities)
           super
 
           begin
             @bidi = Selenium::WebDriver::BiDi.new(url: validated_socket_url)
-            # Share the BiDi object's socket until the bridge owns the connection directly.
-            @transport = BiDi::Transport.new(@bidi.ws)
+            # Reuse the BiDi object's socket as the connection until the bridge owns it directly.
+            @connection = @bidi.ws
           rescue StandardError
             quit
             raise
