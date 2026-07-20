@@ -163,7 +163,9 @@ task :local_dev do
 
   # Bazel.execute merges stdout/stderr, so ignore INFO/progress lines and keep only the path.
   execroot = nil
-  Bazel.execute('info', [], 'execution_root') { |out| execroot = out.lines.map(&:strip).grep(%r{[\\/]execroot[\\/]}).last }
+  Bazel.execute('info', [], 'execution_root') do |out|
+    execroot = out.lines.map(&:strip).grep(%r{[\\/]execroot[\\/]}).last
+  end
   raise 'Could not determine Bazel execution_root' unless execroot
 
   # Copy what Bazel actually materialized. The resolved maven tree is deduplicated (one version
