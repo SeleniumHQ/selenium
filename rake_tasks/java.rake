@@ -191,6 +191,11 @@ task :local_dev do
     warn "warning: overwriting #{base} (duplicate basename)" if File.exist?(dest)
     FileUtils.cp(path, dest)
   end
+
+  copied = Dir.children(lib).count { |entry| entry.end_with?('.jar') }
+  raise "No dependency jars copied to #{lib}; expected Bazel outputs are missing" if copied.zero?
+
+  puts "Copied #{copied} dependency jars to #{lib}"
 end
 
 desc 'Package Java bindings and grid into releasable packages and stage for release'
