@@ -57,6 +57,7 @@ module Selenium
       # Unpins a previously pinned script so it no longer runs on new pages.
       #
       # @param [String] script_id the id returned by #pin
+      # @return [void]
       def unpin(script_id)
         @bidi.send_cmd('script.removePreloadScript', script: script_id)
       end

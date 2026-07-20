@@ -36,7 +36,7 @@ module Selenium
 
       def pin: (String script) -> String
 
-      def unpin: (String script_id) -> untyped
+      def unpin: (String script_id) -> void
     end
   end
 end
