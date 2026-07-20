@@ -145,51 +145,51 @@ task :grid do |_task, arguments|
   Bazel.execute('build', arguments.to_a, '//java/src/org/openqa/selenium/grid:executable-grid')
 end
 
-# Exclude JUnit runtime jars because IDEs bundle their own; keep librunfiles.jar (Runfiles API)
-# and libzip.jar (rules_jvm_external, used by src/dev tooling). Skip exec-config duplicates.
-JAVA_LIBS_STARLARK = <<~STARLARK.gsub(/\s+/, ' ').strip
-  "\\n".join([
-    f.path
-    for f in target.files.to_list()
-    if f.path.endswith(".jar")
-       and ("-exec/" not in f.path)
-       and (f.path.startswith("external/") or "/genfiles/" in f.path or f.path.endswith("librunfiles.jar") or f.path.endswith("libzip.jar") or ("/devtools/v" in f.path and f.path.endswith("-project.jar")))
-       and (not "junit-jupiter-engine" in f.path)
-       and (not "junit-platform-engine" in f.path)
-       and (not "junit-platform-launcher" in f.path)
-       and (not "junit-platform-reporting" in f.path)
-  ])
-STARLARK
+# Skip when copying: rules_jvm_external's header_/processed_ variants (compile stubs, not
+# classpath jars) and the JUnit runtime jars that IDEs supply via their own test runner.
+JAVA_LIBS_SKIP = %w[
+  header_ processed_
+  junit-jupiter-engine junit-platform-engine junit-platform-launcher junit-platform-reporting
+].freeze
 
 desc 'Copy Bazel-built dependency jars to ./java-libs for local development'
 task :local_dev do
   # pin_browsers defaults to true and would download pinned browsers/drivers this task doesn't need.
-  # java/test and java/src/dev are the non-release sources IntelliJ compiles (see java-dev.iml).
-  Bazel.execute('build', ['--pin_browsers=false'], '//java/test/...')
-  Bazel.execute('build', ['--pin_browsers=false'], '//java/src/dev/...')
+  # @maven materializes the resolved third-party classpath; java/test and java/src/dev add the
+  # generated jars the non-release IntelliJ module compiles against (see java-dev.iml).
+  ['@maven//...', '//java/test/...', '//java/src/dev/...'].each do |target|
+    Bazel.execute('build', ['--pin_browsers=false'], target)
+  end
 
-  # Bazel.execute merges stdout/stderr, so ignore INFO/progress lines and keep only real paths.
+  # Bazel.execute merges stdout/stderr, so ignore INFO/progress lines and keep only the path.
   execroot = nil
   Bazel.execute('info', [], 'execution_root') { |out| execroot = out.lines.map(&:strip).grep(%r{[\\/]execroot[\\/]}).last }
   raise 'Could not determine Bazel execution_root' unless execroot
 
-  jars = []
-  Bazel.execute('cquery', ['--pin_browsers=false', '--output=starlark', "--starlark:expr=#{JAVA_LIBS_STARLARK}"],
-                'deps(kind("java_test", //java/test/...)) + deps(//java/src/dev/...)') do |out|
-    jars = out.lines.map(&:strip).select { |line| line.end_with?('.jar') }.uniq
-  end
+  # Copy what Bazel actually materialized. The resolved maven tree is deduplicated (one version
+  # per artifact), and globbing only ever yields files that exist, so unresolved/lazy deps in the
+  # dependency graph can neither collide nor abort the task.
+  bin = File.join(execroot, 'bazel-out', '*', 'bin')
+  jars = Dir.glob([
+                    File.join(bin, 'external/rules_jvm_external++maven+maven/**/*.jar'),
+                    File.join(bin, 'java/src/org/openqa/selenium/devtools/v*/v*-project.jar'),
+                    File.join(bin, 'external/rules_java+/**/librunfiles.jar'),
+                    File.join(bin, 'external/rules_jvm_external+/**/libzip.jar')
+                  ]).reject { |path| path.include?('-exec/') }
 
   lib = File.join(Dir.pwd, 'java-libs')
   sources = File.join(lib, 'sources')
   FileUtils.rm_rf(lib)
   FileUtils.mkdir_p(sources)
 
-  jars.each do |rel|
-    base = File.basename(rel)
+  jars.each do |path|
+    base = File.basename(path)
+    next if JAVA_LIBS_SKIP.any? { |prefix| base.start_with?(prefix) }
+
     dir = base.end_with?('-sources.jar', '-src.jar') ? sources : lib
     dest = File.join(dir, base)
     warn "warning: overwriting #{base} (duplicate basename)" if File.exist?(dest)
-    FileUtils.cp(File.join(execroot, rel), dest)
+    FileUtils.cp(path, dest)
   end
 end
 
