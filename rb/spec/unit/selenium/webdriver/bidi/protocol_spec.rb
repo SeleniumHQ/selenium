@@ -27,39 +27,41 @@ module Selenium
       module Protocol
         describe 'generated command surface' do
           let(:connection) { instance_double(WebDriver::WebSocketConnection) }
-          let(:transport) { Transport.new(connection) }
+
+          # The double stands in for a real connection, which responds to send_cmd.
+          before { allow(connection).to receive(:send_cmd) }
 
           describe 'construction' do
-            it 'is driven by the transport it is given' do
-              expect(BrowsingContext.new(transport).instance_variable_get(:@transport)).to be(transport)
+            it 'builds a transport over the connection it is given' do
+              expect(BrowsingContext.new(connection).instance_variable_get(:@transport)).to be_a(Transport)
             end
 
-            it 'raises without a driver or transport' do
+            it 'raises without a driver or connection' do
               expect { BrowsingContext.new(Object.new) }
-                .to raise_error(Error::WebDriverError, /Driver or Transport/)
+                .to raise_error(Error::WebDriverError, /Driver or connection/)
             end
           end
 
           describe 'enum argument validation' do
             it 'raises on a value outside the allowed enum set, before any wire call' do
-              expect { BrowsingContext.new(transport).navigate(context: 'c', url: 'x', wait: :tomorrow) }
+              expect { BrowsingContext.new(connection).navigate(context: 'c', url: 'x', wait: :tomorrow) }
                 .to raise_error(ArgumentError, /wait must be one of/)
             end
 
             it 'validates each element of a list-valued enum' do
-              expect { Network.new(transport).add_data_collector(data_types: %i[bogus], max_encoded_data_size: 1) }
+              expect { Network.new(connection).add_data_collector(data_types: %i[bogus], max_encoded_data_size: 1) }
                 .to raise_error(ArgumentError, /dataTypes must be one of/)
             end
 
             it 'validates a union discriminator against the combined allowed set' do
-              expect { Network.new(transport).continue_with_auth(request: 'r', action: :bogus) }
+              expect { Network.new(connection).continue_with_auth(request: 'r', action: :bogus) }
                 .to raise_error(ArgumentError, /action must be one of.*provide_credentials.*default.*cancel/)
             end
 
             it 'passes an allowed value through to the transport' do
               allow(connection).to receive(:send_cmd).and_return('result' => {'navigation' => 'n', 'url' => 'u'})
 
-              BrowsingContext.new(transport).navigate(context: 'c', url: 'u', wait: :complete)
+              BrowsingContext.new(connection).navigate(context: 'c', url: 'u', wait: :complete)
 
               expect(connection).to have_received(:send_cmd)
                 .with(method: 'browsingContext.navigate', params: hash_including('wait' => 'complete'))
@@ -70,7 +72,7 @@ module Selenium
             it 'marshals params (dropping nils) and parses the typed result' do
               allow(connection).to receive(:send_cmd).and_return('result' => {'navigation' => 'n1', 'url' => 'https://x'})
 
-              result = BrowsingContext.new(transport).navigate(context: 'c', url: 'https://x')
+              result = BrowsingContext.new(connection).navigate(context: 'c', url: 'https://x')
 
               expect(connection).to have_received(:send_cmd)
                 .with(method: 'browsingContext.navigate', params: {'context' => 'c', 'url' => 'https://x'})
