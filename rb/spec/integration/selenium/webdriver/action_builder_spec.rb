@@ -393,8 +393,7 @@ module Selenium
           }.not_to raise_error
         end
 
-        it 'raises MoveTargetOutOfBoundsError when origin offset is out of viewport',
-           pending_unless: {browser: %i[chrome edge firefox]} do
+        it 'raises MoveTargetOutOfBoundsError when origin offset is out of viewport' do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame.html')
           scroll_origin = WheelActions::ScrollOrigin.viewport(-10, -10)
 
