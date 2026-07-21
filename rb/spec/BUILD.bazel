@@ -57,9 +57,7 @@ genrule(
     name = "java-location",
     srcs = [],
     outs = ["java-location.txt"],
-    # Strip the "external/" exec-path prefix so the result is a canonical rlocation
-    # path that Bazel::Runfiles#rlocation resolves directly.
-    cmd = "echo $(JAVA) | sed 's|^external/||' > $@",
+    cmd = "echo $(JAVA) > $@",
     toolchains = ["@bazel_tools//tools/jdk:current_java_runtime"],
     visibility = ["//rb/spec:__subpackages__"],
 )

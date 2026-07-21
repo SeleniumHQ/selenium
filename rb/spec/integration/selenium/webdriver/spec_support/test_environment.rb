@@ -149,8 +149,10 @@ module Selenium
         def bazel_java
           return unless ENV.key?('WD_BAZEL_JAVA_LOCATION')
 
-          java_path = File.read(File.expand_path(ENV.fetch('WD_BAZEL_JAVA_LOCATION'))).chomp
-          resolved = runfiles.rlocation(java_path)
+          # $(JAVA) is an exec path (external/<repo>/...); strip the prefix to a canonical rlocation
+          # path, and fall back to the raw path on a lookup miss so we never realpath nil.
+          java_path = File.read(File.expand_path(ENV.fetch('WD_BAZEL_JAVA_LOCATION'))).chomp.sub(%r{^external/}, '')
+          resolved = runfiles.rlocation(java_path) || java_path
 
           # Resolve the JDK symlink to its real path to dodge a Windows JVM bug mapping lib\modules.
           Platform.windows? && File.exist?(resolved) ? File.realpath(resolved) : resolved
