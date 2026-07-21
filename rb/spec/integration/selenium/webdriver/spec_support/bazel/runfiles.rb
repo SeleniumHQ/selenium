@@ -58,6 +58,8 @@ module Bazel
       invalid_path = %r{\A\.\.[/\\]|[/\\]\.\.[/\\]|\A\.[/\\]|[/\\]\.[/\\]|[/\\]\.\z|[/\\][/\\]}
       raise ArgumentError, "path is not valid: #{path.inspect}" if path.match?(invalid_path)
 
+      raise ArgumentError, "path is absolute without a drive letter: #{path.inspect}" if path.start_with?('\\')
+
       @strategy.rlocation(path)
     end
 
