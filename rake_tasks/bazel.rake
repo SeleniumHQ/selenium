@@ -182,7 +182,36 @@ def affected_targets_with_index(changed_files, index_file)
     end
   end
 
-  affected.to_a
+  prune_stale_targets(affected.to_a)
+end
+
+# The index is a trunk snapshot, so renamed/removed targets leave stale labels that break
+# `bazel test`. Drop any label whose test is gone; keep all if the check can't run.
+def prune_stale_targets(labels)
+  live = live_test_labels(labels)
+  return labels if live.nil?
+
+  kept = labels.select { |l| live.include?(l) }
+  (labels - kept).each { |l| puts "  Dropping stale target not in graph: #{l}" }
+  kept
+end
+
+# Test labels that still exist in `labels`' packages. Only on-disk packages are queried, so
+# `//pkg:*` can't error on a deleted package. Returns nil if the query itself fails.
+def live_test_labels(labels)
+  packages = labels.filter_map { |l| l[%r{\A//([^:]*)}, 1] }.uniq
+  packages.select! { |pkg| File.exist?(File.join(pkg, 'BUILD.bazel')) || File.exist?(File.join(pkg, 'BUILD')) }
+  return Set.new if packages.empty?
+
+  live = Set.new
+  query = packages.map { |pkg| "//#{pkg}:*" }.join(' + ')
+  Bazel.execute('query', ['--output=label'], "kind(_test, #{query})") do |out|
+    live = out.lines.map(&:strip).select { |l| l.start_with?('//') }.to_set
+  end
+  live
+rescue StandardError => e
+  puts "  Warning: keeping all targets; stale-target check failed: #{e.message}"
+  nil
 end
 
 def query_unindexed_file(filepath)
@@ -192,9 +221,10 @@ def query_unindexed_file(filepath)
   rel = pkg == '.' ? filepath : filepath.sub(%r{^#{Regexp.escape(pkg)}/}, '')
   pkg = '' if pkg == '.'
 
-  # Find targets that contain this file in their srcs
+  # BUILD files are never in a target's srcs, so match the whole package to catch added/renamed targets.
+  scope = File.basename(filepath).start_with?('BUILD') ? "//#{pkg}:*" : "attr(srcs, '#{rel}', //#{pkg}:*)"
   containing = []
-  Bazel.execute('query', ['--output=label'], "attr(srcs, '#{rel}', //#{pkg}:*)") do |out|
+  Bazel.execute('query', ['--output=label'], scope) do |out|
     containing = out.lines.map(&:strip).select { |l| l.start_with?('//') }
   end
   return [] if containing.empty?
