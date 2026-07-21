@@ -18,12 +18,19 @@
 # under the License.
 
 require 'selenium/webdriver/bidi'
+require 'selenium/webdriver/bidi/protocol'
 
 module Selenium
   module WebDriver
     module Remote
       class BiDiBridge < Bridge
         attr_reader :bidi, :connection
+
+        READINESS_STATE = {
+          'none' => :none,
+          'eager' => :interactive,
+          'normal' => :complete
+        }.freeze
 
         def create_session(capabilities)
           super
@@ -39,19 +46,23 @@ module Selenium
         end
 
         def get(url)
-          browsing_context.navigate(url)
+          browsing_context.navigate(context: window_handle, url: url, wait: readiness_state)
+          nil
         end
 
         def go_back
-          browsing_context.traverse_history(-1)
+          browsing_context.traverse_history(context: window_handle, delta: -1)
+          nil
         end
 
         def go_forward
-          browsing_context.traverse_history(1)
+          browsing_context.traverse_history(context: window_handle, delta: 1)
+          nil
         end
 
         def refresh
-          browsing_context.reload
+          browsing_context.reload(context: window_handle, wait: readiness_state)
+          nil
         end
 
         def quit
@@ -77,7 +88,11 @@ module Selenium
         end
 
         def browsing_context
-          @browsing_context ||= WebDriver::BiDi::BrowsingContext.new(self)
+          @browsing_context ||= BiDi::Protocol::BrowsingContext.new(connection)
+        end
+
+        def readiness_state
+          READINESS_STATE.fetch(capabilities[:page_load_strategy] || 'normal')
         end
       end # BiDiBridge
     end # Remote
