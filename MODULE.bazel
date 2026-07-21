@@ -6,7 +6,7 @@ bazel_dep(name = "aspect_rules_esbuild", version = "0.26.0")
 bazel_dep(name = "aspect_rules_jest", version = "0.25.2")
 bazel_dep(name = "aspect_rules_js", version = "3.1.2")
 bazel_dep(name = "aspect_rules_ts", version = "3.8.9")
-bazel_dep(name = "bazel_features", version = "1.47.1")
+bazel_dep(name = "bazel_features", version = "1.50.0")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
 bazel_dep(name = "buildifier_prebuilt", version = "8.5.1.2")
 bazel_dep(name = "contrib_rules_jvm", version = "0.33.0")
@@ -17,7 +17,7 @@ bazel_dep(name = "platforms", version = "1.1.0")
 # If you update this, also update the prebuilt version of `protoc` we use below
 bazel_dep(name = "protobuf", version = "33.5")
 
-bazel_dep(name = "rules_cc", version = "0.2.19", dev_dependency = True)
+bazel_dep(name = "rules_cc", version = "0.2.20", dev_dependency = True)
 
 # rules_rs pulls protobuf for optional prost support. Keep Selenium on the
 # explicitly pinned protobuf version above so it stays paired with prebuilt protoc.
