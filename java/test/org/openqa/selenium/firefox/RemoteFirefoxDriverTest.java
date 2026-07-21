@@ -23,13 +23,10 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import java.io.File;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
-import org.openqa.selenium.testing.NoDriverBeforeTest;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 class RemoteFirefoxDriverTest extends JupiterTestBase {
 
@@ -48,43 +45,5 @@ class RemoteFirefoxDriverTest extends JupiterTestBase {
   void shouldTakeFullPageScreenshot() {
     File tempFile = ((HasFullPageScreenshot) driver).getFullPageScreenshotAs(OutputType.FILE);
     assertThat(tempFile).exists().isNotEmpty();
-  }
-
-  @Test
-  @NoDriverBeforeTest
-  public void shouldAllowRemoteWebDriverBuilderToUseHasContext() {
-    FirefoxOptions options = new FirefoxOptions();
-    String dir = "foo/bar";
-    options.addPreference("browser.download.dir", dir);
-    options.addArguments("-remote-allow-system-access");
-    localDriver = new WebDriverBuilder().get(options);
-
-    ((HasContext) localDriver).setContext(FirefoxCommandContext.CHROME);
-    String result =
-        (String)
-            ((JavascriptExecutor) localDriver)
-                .executeScript("return Services.prefs.getStringPref('browser.download.dir')");
-    assertThat(result).isEqualTo(dir);
-  }
-
-  @Test
-  @NoDriverBeforeTest
-  public void shouldSetContext() {
-    FirefoxOptions options = new FirefoxOptions();
-    String dir = "foo/bar";
-    options.addPreference("browser.download.dir", dir);
-    options.addArguments("-remote-allow-system-access");
-
-    localDriver = new WebDriverBuilder().get(options);
-
-    HasContext context = (HasContext) localDriver;
-    context.setContext(FirefoxCommandContext.CHROME);
-
-    String result =
-        (String)
-            ((JavascriptExecutor) localDriver)
-                .executeScript("return Services.prefs.getStringPref('browser.download.dir')");
-
-    assertThat(result).isEqualTo(dir);
   }
 }

@@ -211,13 +211,13 @@ module Selenium
           @root ||= Pathname.new('../../../../../../../').realpath(__FILE__)
         end
 
-        def create_driver!(listener: nil, http_client: nil, **, &block)
+        def create_driver!(listener: nil, http_client: nil, service: nil, **, &block)
           check_for_previous_error
           http_client ||= Remote::Http::Default.new(read_timeout: 30)
           @safari_pairing_attempts ||= 0
 
           method = :"#{driver}_driver"
-          opts = {options: build_options(**), listener: listener, http_client: http_client}
+          opts = {options: build_options(**), listener: listener, http_client: http_client, service: service}.compact
           instance = private_methods.include?(method) ? send(method, **opts) : WebDriver::Driver.for(driver, **opts)
           @safari_pairing_attempts = 0
           @create_driver_error_count -= 1 unless @create_driver_error_count.zero?

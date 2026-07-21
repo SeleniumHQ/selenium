@@ -39,9 +39,8 @@ suite(
 
       describe('context switching', function () {
         beforeEach(async function () {
-          let options = env.builder().getFirefoxOptions() || new firefox.Options()
-          options.addArguments('-remote-allow-system-access')
-          driver = await env.builder().setFirefoxOptions(options).build()
+          let service = new firefox.ServiceBuilder().addArguments('--allow-system-access')
+          driver = await env.builder().setFirefoxService(service).build()
         })
 
         it('can get context', async function () {
