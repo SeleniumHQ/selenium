@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require_relative 'bazel/runfiles'
+require 'bazel/runfiles'
 
 module Selenium
   module WebDriver
