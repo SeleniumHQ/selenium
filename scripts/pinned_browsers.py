@@ -9,6 +9,8 @@ from pathlib import Path
 import urllib3
 from packaging.version import parse
 
+from scripts.generated_note import generated_note
+
 # Find the current stable versions of each browser we
 # support and the sha256 of these. That's useful for
 # updating `//common:repositories.bzl`
@@ -531,7 +533,7 @@ js_library(
 
 
 if __name__ == "__main__":
-    content = """# This file has been generated using `bazel run scripts:pinned_browsers`
+    content = f"""{generated_note("#", "pinned_browsers.py", "bazel run //scripts:pinned_browsers")}
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("//common/private:deb_archive.bzl", "deb_archive")

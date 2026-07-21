@@ -1,22 +1,20 @@
 import os
 import sys
+from pathlib import Path
 
-_copyright = """/*
- * Copyright 2011-2014 Software Freedom Conservancy
- *
- * Licensed under the Apache License, Version 2.0 (the \"License\");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an \"AS IS\" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+from scripts.generated_note import generated_note
+
+# Shared license body, copied next to this file by BUILD.bazel — see scripts/license_header.txt.
+_LICENSE_NOTICE = (Path(__file__).parent / "license_header.txt").read_text(encoding="utf-8").rstrip("\n")
+_LICENSE_BLOCK = "/*\n" + "\n".join(f" * {line}".rstrip() for line in _LICENSE_NOTICE.split("\n")) + "\n */"
+
+_copyright = f"""{_LICENSE_BLOCK}
 """
+
+# One C-style block comment serves every output language (C++ and Java both accept it).
+_REGEN_HINT = "bazel build the closure_lang_file target for this file, e.g. //javascript/chrome-driver:source"
+_GENERATED_NOTE_RAW = generated_note("", "gen_file.py", _REGEN_HINT)
+_GENERATED_NOTE_BLOCK = "/*\n" + "\n".join(f" * {line}" for line in _GENERATED_NOTE_RAW.split("\n")) + "\n */"
 
 
 def get_atom_name(name):
@@ -81,7 +79,7 @@ def generate_header(file_name, out, js_map, just_declare, utf8):
     out.write(
         f"""{_copyright}
 
-/* AUTO GENERATED - DO NOT EDIT BY HAND */
+{_GENERATED_NOTE_BLOCK}
 #ifndef {define_guard}
 #define {define_guard}
 {include_stddef}
@@ -125,7 +123,7 @@ def generate_cc_source(out, js_map, utf8):
     out.write(
         f"""{_copyright}
 
-/* AUTO GENERATED - DO NOT EDIT BY HAND */
+{_GENERATED_NOTE_BLOCK}
 
 #include <stddef.h>  // For NULL.
 #include "atoms.h"
@@ -154,13 +152,13 @@ def generate_java_source(file_name, out, preamble, js_map):
 
     out.write(_copyright)
     out.write("\n")
+    out.write(_GENERATED_NOTE_BLOCK)
+    out.write("\n\n")
     out.write(preamble)
     out.write("")
     out.write(
         f"""
 public enum {class_name} {{
-
-    // AUTO GENERATED - DO NOT EDIT BY HAND
 """
     )
 

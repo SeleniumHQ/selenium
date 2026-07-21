@@ -28,7 +28,8 @@
 import { parse } from 'cddl'
 import { transform } from 'cddl2ts'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
 
 // ============================================================
@@ -708,23 +709,22 @@ function modelToEvents(model) {
 // Code generation
 // ============================================================
 
-const LICENSE_HEADER = `\
-// Licensed to the Software Freedom Conservancy (SFC) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The SFC licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.`
+// Shared license + note text, copied next to this script by BUILD.bazel — see scripts/*.txt.
+const GENERATOR_DIR = dirname(fileURLToPath(import.meta.url))
+const commentLines = (text) =>
+  text
+    .split('\n')
+    .map((line) => `// ${line}`.trimEnd())
+    .join('\n')
+
+const LICENSE_HEADER = commentLines(readFileSync(join(GENERATOR_DIR, 'license_header.txt'), 'utf8').replace(/\n$/, ''))
+
+const GENERATED_NOTE = commentLines(
+  readFileSync(join(GENERATOR_DIR, 'generated_note_template.txt'), 'utf8')
+    .replace('{generator}', 'generate_bidi.mjs')
+    .replace('{command}', 'bazel build //javascript/selenium-webdriver:create-bidi-src')
+    .trim(),
+)
 
 // ============================================================
 // Type-map helpers for cross-domain import generation
@@ -791,9 +791,9 @@ function generateDomainFile({
   specVersion,
   typeNameToDomain,
 }) {
-  const parts = [LICENSE_HEADER, '']
+  const parts = [LICENSE_HEADER, '', GENERATED_NOTE]
 
-  parts.push(`// Auto-generated from WebDriver BiDi CDDL spec (v${specVersion}) — DO NOT EDIT MANUALLY`)
+  parts.push(`// Built from the WebDriver BiDi CDDL spec (v${specVersion}).`)
   parts.push(`// Source: https://github.com/w3c/webref/tree/main/ed/cddl`)
   parts.push('')
 

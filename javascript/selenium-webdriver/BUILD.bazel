@@ -14,11 +14,26 @@ load("//javascript/selenium-webdriver/private:generate_bidi.bzl", "generate_bidi
 
 npm_link_all_packages(name = "node_modules")
 
+# Copy the shared license + note next to the generator so it can read them as siblings.
+copy_file(
+    name = "license_header_local",
+    src = "//scripts:license_header.txt",
+    out = "license_header.txt",
+)
+
+copy_file(
+    name = "generated_note_local",
+    src = "//scripts:generated_note_template.txt",
+    out = "generated_note_template.txt",
+)
+
 # Generator script that reads the merged CDDL spec and produces one .ts file per BiDi domain.
 js_binary(
     name = "generate_bidi_script",
     data = [
         "generate_bidi.mjs",
+        ":generated_note_local",
+        ":license_header_local",
         ":node_modules/cddl",
         ":node_modules/cddl2ts",
     ],

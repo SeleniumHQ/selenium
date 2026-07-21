@@ -31,6 +31,7 @@ import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.google.devtools.build.runfiles.Runfiles;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -58,6 +59,35 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
 public class CdpClientGenerator {
+
+  // Shared license + note text (see scripts/*.txt); prepended as a raw string because
+  // JavaParser's CompilationUnit#toString() can't carry a file-level leading comment.
+  private static final String FILE_HEADER = loadFileHeader();
+
+  private static String loadFileHeader() {
+    try {
+      Runfiles runfiles = Runfiles.preload().withSourceRepository("");
+      String license = readCommented(runfiles, "_main/scripts/license_header.txt", "// ");
+      String note =
+          readCommented(runfiles, "_main/scripts/generated_note_template.txt", "// ")
+              .replace("{generator}", "CdpClientGenerator.java")
+              .replace(
+                  "{command}",
+                  "bazel build //java/src/org/openqa/selenium/devtools/latest:create-cdp-srcs"
+                      + " (one per CDP version)");
+      return license + "\n\n" + note + "\n\n";
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  private static String readCommented(Runfiles runfiles, String rlocation, String prefix)
+      throws IOException {
+    Path file = Paths.get(runfiles.rlocation(rlocation));
+    return Files.readAllLines(file, UTF_8).stream()
+        .map(line -> line.isEmpty() ? prefix.strip() : prefix + line)
+        .collect(joining("\n"));
+  }
 
   public static void main(String[] args) throws IOException {
     Path browserProtocol = Paths.get(args[0]);
@@ -347,7 +377,7 @@ public class CdpClientGenerator {
       ensureFileDoesNotExists(commandFile);
 
       try {
-        Files.write(commandFile, unit.toString().getBytes(UTF_8));
+        Files.write(commandFile, (FILE_HEADER + unit).getBytes(UTF_8));
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }
@@ -430,7 +460,7 @@ public class CdpClientGenerator {
         ensureFileDoesNotExists(eventFile);
 
         try {
-          Files.write(eventFile, unit.toString().getBytes(UTF_8));
+          Files.write(eventFile, (FILE_HEADER + unit).getBytes(UTF_8));
         } catch (IOException e) {
           throw new UncheckedIOException(e);
         }
@@ -544,7 +574,7 @@ public class CdpClientGenerator {
       ensureFileDoesNotExists(typeFile);
 
       try {
-        Files.write(typeFile, unit.toString().getBytes(UTF_8));
+        Files.write(typeFile, (FILE_HEADER + unit).getBytes(UTF_8));
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }

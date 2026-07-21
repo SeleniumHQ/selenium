@@ -20,6 +20,7 @@
 require 'json'
 require 'erb'
 require 'fileutils'
+require_relative '../../../../../support/generated_note'
 
 # Generates Ruby WebDriver BiDi protocol modules from the shared, binding-neutral
 # BiDi schema produced by the JavaScript generator (see PR #17700):
@@ -940,6 +941,8 @@ module BiDiGenerate
   end
 
   def self.render(mod, template_path)
+    generated_note = GeneratedNote.render('#', 'bidi_generate.rb',
+                                          'bazel run //rb/lib/selenium/webdriver:bidi-generate')
     ERB.new(File.read(template_path), trim_mode: '-').result(binding)
   end
 
