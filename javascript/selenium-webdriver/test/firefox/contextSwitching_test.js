@@ -39,6 +39,10 @@ suite(
 
       describe('context switching', function () {
         beforeEach(async function () {
+          // System access can only be granted to a local geckodriver, not a Grid session.
+          if (process.env.SELENIUM_REMOTE_URL || process.env.SELENIUM_SERVER_JAR) {
+            return this.skip()
+          }
           let service = new firefox.ServiceBuilder().addArguments('--allow-system-access')
           driver = await env.builder().setFirefoxService(service).build()
         })
