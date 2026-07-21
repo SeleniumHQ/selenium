@@ -17,6 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require_relative 'bazel/runfiles'
+
 module Selenium
   module WebDriver
     module SpecSupport
@@ -128,12 +130,12 @@ module Selenium
 
         def driver_path
           env = {chrome: 'CHROMEDRIVER_BINARY', edge: 'MSEDGEDRIVER_BINARY', firefox: 'GECKODRIVER_BINARY'}[browser]
-          rlocation(ENV.fetch(env)) if env && ENV.key?(env)
+          runfiles.rlocation(ENV.fetch(env)) if env && ENV.key?(env)
         end
 
         def browser_path
           env = "#{browser.to_s.upcase}_BINARY"
-          rlocation(ENV.fetch(env)) if ENV.key?(env)
+          runfiles.rlocation(ENV.fetch(env)) if ENV.key?(env)
         end
 
         def options_key
@@ -148,7 +150,9 @@ module Selenium
           return unless ENV.key?('WD_BAZEL_JAVA_LOCATION')
 
           java_path = File.read(File.expand_path(ENV.fetch('WD_BAZEL_JAVA_LOCATION'))).chomp
-          resolved = rlocation(java_path)
+          resolved = runfiles.rlocation(java_path)
+
+          # Resolve the JDK symlink to its real path to dodge a Windows JVM bug mapping lib\modules.
           Platform.windows? && File.exist?(resolved) ? File.realpath(resolved) : resolved
         end
 
@@ -308,7 +312,7 @@ module Selenium
           service ||= WebDriver::Service.chrome
           service.args << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
           service.args << '--verbose' if WebDriver.logger.debug?
-          service.executable_path = rlocation(ENV['CHROMEDRIVER_BINARY']) if ENV.key?('CHROMEDRIVER_BINARY')
+          service.executable_path = runfiles.rlocation(ENV['CHROMEDRIVER_BINARY']) if ENV.key?('CHROMEDRIVER_BINARY')
           WebDriver::Driver.for(:chrome, service: service, **)
         end
 
@@ -316,14 +320,14 @@ module Selenium
           service ||= WebDriver::Service.edge
           service.args << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
           service.args << '--verbose' if WebDriver.logger.debug?
-          service.executable_path = rlocation(ENV['MSEDGEDRIVER_BINARY']) if ENV.key?('MSEDGEDRIVER_BINARY')
+          service.executable_path = runfiles.rlocation(ENV['MSEDGEDRIVER_BINARY']) if ENV.key?('MSEDGEDRIVER_BINARY')
           WebDriver::Driver.for(:edge, service: service, **)
         end
 
         def firefox_driver(service: nil, **)
           service ||= WebDriver::Service.firefox
           service.args.push('--log', 'trace') if WebDriver.logger.debug?
-          service.executable_path = rlocation(ENV['GECKODRIVER_BINARY']) if ENV.key?('GECKODRIVER_BINARY')
+          service.executable_path = runfiles.rlocation(ENV['GECKODRIVER_BINARY']) if ENV.key?('GECKODRIVER_BINARY')
           WebDriver::Driver.for(:firefox, service: service, **)
         end
 
@@ -342,7 +346,7 @@ module Selenium
         def chrome_options(args: [], **opts)
           opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
-          opts[:binary] ||= rlocation(ENV['CHROME_BINARY']) if ENV.key?('CHROME_BINARY')
+          opts[:binary] ||= runfiles.rlocation(ENV['CHROME_BINARY']) if ENV.key?('CHROME_BINARY')
           args << '--headless' if ENV['HEADLESS']
           args << '--no-sandbox' unless Platform.windows?
           args << '--disable-dev-shm-usage' if GlobalTestEnv.rbe?
@@ -353,7 +357,7 @@ module Selenium
         def edge_options(args: [], **opts)
           opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
-          opts[:binary] ||= rlocation(ENV['EDGE_BINARY']) if ENV.key?('EDGE_BINARY')
+          opts[:binary] ||= runfiles.rlocation(ENV['EDGE_BINARY']) if ENV.key?('EDGE_BINARY')
           args << '--headless' if ENV['HEADLESS']
           args << '--no-sandbox' unless Platform.windows?
           args << '--disable-dev-shm-usage' if GlobalTestEnv.rbe?
@@ -364,7 +368,7 @@ module Selenium
         def firefox_options(args: [], **opts)
           opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
-          opts[:binary] ||= rlocation(ENV['FIREFOX_BINARY']) if ENV.key?('FIREFOX_BINARY')
+          opts[:binary] ||= runfiles.rlocation(ENV['FIREFOX_BINARY']) if ENV.key?('FIREFOX_BINARY')
           opts[:unhandled_prompt_behavior] ||= 'ignore'
           args << '--headless' if ENV['HEADLESS']
           WebDriver::Options.firefox(args: args, **opts)
@@ -392,20 +396,9 @@ module Selenium
           sock.close
         end
 
-        # Resolves a Bazel rootpath to an absolute path using the runfiles tree.
-        # $(location) returns rootpath like "external/<repo>/<path>" but Bazel 9
-        # runfiles use rlocation paths like "<repo>/<path>" (no "external/" prefix).
-        def rlocation(path)
-          return path if path.nil? || File.exist?(path)
-
-          runfiles_dir = ENV.fetch('RUNFILES_DIR', nil)
-          return path unless runfiles_dir
-
-          rlocation_path = path.sub(%r{^external/}, '')
-          resolved = File.join(runfiles_dir, rlocation_path)
-          return resolved if File.exist?(resolved)
-
-          path
+        # Resolves Bazel $(rlocationpath ...) values to absolute paths in the runfiles tree.
+        def runfiles
+          @runfiles ||= Bazel::Runfiles.create
         end
       end
     end # SpecSupport
