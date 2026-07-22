@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -24,8 +25,10 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.time.Duration;
+import java.util.List;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 @Tag("UnitTests")
 class GeckoDriverServiceTest {
@@ -49,5 +52,18 @@ class GeckoDriverServiceTest {
     builderMock.build();
 
     verify(builderMock).createDriverService(any(), anyInt(), eq(customTimeout), any(), any());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void builderEnablesSystemAccessArgument() {
+    GeckoDriverService.Builder builderMock =
+        spy(GeckoDriverService.Builder.class).withAllowSystemAccess(true);
+
+    builderMock.build();
+
+    ArgumentCaptor<List<String>> args = ArgumentCaptor.forClass(List.class);
+    verify(builderMock).createDriverService(any(), anyInt(), any(), args.capture(), any());
+    assertThat(args.getValue()).contains("--allow-system-access");
   }
 }
