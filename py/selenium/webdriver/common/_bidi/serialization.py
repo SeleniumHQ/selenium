@@ -222,6 +222,9 @@ class Record:
 
     @classmethod
     def from_json(cls, payload: dict) -> Any:
+        if not isinstance(payload, dict):
+            got = type(payload).__name__
+            raise BiDiSerializationError(f"{cls.__name__} expected an object on the wire, got {got} {payload!r}")
         kwargs: dict = {}
         known: set[str] = set()
         for f in _fields(cls):

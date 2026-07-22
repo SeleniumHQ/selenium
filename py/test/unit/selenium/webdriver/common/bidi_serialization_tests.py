@@ -229,6 +229,11 @@ def test_missing_required_field_raises():
         Point.from_json({"x": 1})
 
 
+def test_from_json_with_a_non_object_payload_raises_a_serialization_error():
+    with pytest.raises(BiDiSerializationError, match=r"Point expected an object on the wire, got str"):
+        Point.from_json("not-an-object")
+
+
 def test_missing_optional_field_becomes_unset():
     assert Optionals.from_json({"req": "r", "nullable": "n"}).opt is UNSET
 

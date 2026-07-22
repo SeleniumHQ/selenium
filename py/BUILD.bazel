@@ -809,8 +809,13 @@ py_binary(
 
 py_library(
     name = "bidi_protocol",
-    # Hand-written runtime from source + the generated domain modules from the rule.
-    srcs = [":create-bidi-protocol-src"] + glob(["selenium/webdriver/common/_bidi/*.py"]),
+    # Listed explicitly, not globbed: a local generate run drops the generated modules here too, and a glob would double them against the rule's outputs.
+    srcs = [":create-bidi-protocol-src"] + [
+        "selenium/webdriver/common/_bidi/__init__.py",
+        "selenium/webdriver/common/_bidi/domain.py",
+        "selenium/webdriver/common/_bidi/serialization.py",
+        "selenium/webdriver/common/_bidi/transport.py",
+    ],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [":exceptions"],

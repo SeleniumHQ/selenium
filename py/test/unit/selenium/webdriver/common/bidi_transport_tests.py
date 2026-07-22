@@ -129,6 +129,13 @@ def test_execute_error_without_a_message_raises_with_just_the_error():
     assert exc_info.value.msg == "unknown command"
 
 
+def test_execute_treats_the_presence_of_error_as_an_error_not_its_truthiness():
+    connection = DrivingConnection(error="")
+
+    with pytest.raises(WebDriverException):
+        Transport(connection).execute("bad.command", result=Result)
+
+
 # --- Domain seam ---
 
 

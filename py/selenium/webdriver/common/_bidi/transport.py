@@ -51,7 +51,7 @@ class Transport:
 
     def execute(self, cmd: str, params: Any = None, result: Any = None) -> Any:
         reply = self._connection.send_cmd(cmd, params.as_json() if params is not None else {})
-        if reply.get("error"):
+        if "error" in reply:
             message = reply.get("message")
             raise WebDriverException(f"{reply['error']}: {message}" if message else reply["error"])
         value = reply["result"]
