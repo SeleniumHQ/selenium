@@ -76,7 +76,7 @@ task :local_dev, [:all] do |_task, arguments|
     dirs = Dir.children(bazel_bin)
     files = []
   else
-    dirs = %w[common/bidi common/devtools]
+    dirs = %w[common/bidi common/_bidi common/devtools]
     files = %w[
       remote/getAttribute.js remote/isDisplayed.js remote/findElements.js
       common/mutation-listener.js common/bidi-mutation-listener.js

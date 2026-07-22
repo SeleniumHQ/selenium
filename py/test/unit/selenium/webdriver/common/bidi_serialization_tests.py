@@ -1,0 +1,453 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+"""Unit tests for the hand-written BiDi serialization runtime.
+
+Exercises `selenium.webdriver.common._bidi.serialization` — the Record/Union/UNSET
+machinery every generated module builds on — in isolation, using small value
+types declared here the way the generator emits them. The generated modules are
+covered by the command-surface and browser round-trip tests; the subject here is
+the runtime's own rules: strict inbound validation, UNSET omit-vs-null, and union
+dispatch.
+"""
+
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Any
+
+import pytest
+
+from selenium.webdriver.common._bidi.serialization import (
+    UNSET,
+    BiDiSerializationError,
+    Record,
+    Union,
+    UnsetType,
+    meta,
+    register,
+    resolve,
+)
+
+# --- fixtures: value types declared the way the generator emits them ---
+
+
+@register("test.Color")
+class Color(str, Enum):
+    RED = "red"
+    BLUE = "blue"
+
+
+@register("test.Point")
+@dataclass(frozen=True)
+class Point(Record):
+    x: int = field(metadata=meta("x", required=True, primitive="int"))
+    y: int = field(metadata=meta("y", required=True, primitive="int"))
+
+
+@register("test.Optionals")
+@dataclass(frozen=True)
+class Optionals(Record):
+    req: str = field(metadata=meta("req", required=True, primitive="str"))
+    nullable: str | None = field(metadata=meta("nullable", required=True, nullable=True, primitive="str"))
+    opt: str | UnsetType = field(default=UNSET, metadata=meta("opt", primitive="str"))
+
+
+@register("test.Scalars")
+@dataclass(frozen=True)
+class Scalars(Record):
+    count: int = field(metadata=meta("count", required=True, primitive="int"))
+    ratio: float = field(metadata=meta("ratio", required=True, primitive="float"))
+    flag: bool = field(metadata=meta("flag", required=True, primitive="bool"))
+    name: str = field(metadata=meta("name", required=True, primitive="str"))
+
+
+@register("test.Painted")
+@dataclass(frozen=True)
+class Painted(Record):
+    color: Color = field(metadata=meta("color", required=True, enum="test.Color"))
+
+
+@register("test.Tags")
+@dataclass(frozen=True)
+class Tags(Record):
+    tags: list[str] = field(metadata=meta("tags", required=True, is_list=True, primitive="str"))
+
+
+@register("test.Line")
+@dataclass(frozen=True)
+class Line(Record):
+    start: Point = field(metadata=meta("start", required=True, ref="test.Point"))
+
+
+@register("test.Path")
+@dataclass(frozen=True)
+class Path(Record):
+    points: list[Point] = field(metadata=meta("points", required=True, ref="test.Point", is_list=True))
+
+
+@register("test.Extensible")
+@dataclass(frozen=True)
+class Extensible(Record):
+    _EXTENSIBLE = True
+
+    known: str = field(metadata=meta("known", required=True, primitive="str"))
+    extensions: dict[str, Any] | UnsetType = field(default=UNSET, metadata=meta("extensions"))
+
+
+@register("test.Cat")
+@dataclass(frozen=True)
+class Cat(Record):
+    meow: str = field(metadata=meta("meow", required=True, primitive="str"))
+    kind: str = field(default="cat", init=False, metadata=meta("kind", required=True, fixed="cat"))
+
+
+@register("test.Dog")
+@dataclass(frozen=True)
+class Dog(Record):
+    bark: str = field(metadata=meta("bark", required=True, primitive="str"))
+    kind: str = field(default="dog", init=False, metadata=meta("kind", required=True, fixed="dog"))
+
+
+@register("test.Animal")
+class Animal(Union):
+    _DISCRIMINATOR = "kind"
+    _VARIANTS = {"cat": "test.Cat", "dog": "test.Dog"}
+    _DISCRIMINATOR_VALUES = frozenset({"cat", "dog"})
+
+
+@register("test.Fallback")
+class Fallback(Union):
+    _DISCRIMINATOR = "kind"
+    _VARIANTS = {"cat": "test.Cat"}
+    _FALLBACK = "test.Dog"
+    _DISCRIMINATOR_VALUES = frozenset({"cat"})
+
+
+@register("test.Circle")
+@dataclass(frozen=True)
+class Circle(Record):
+    radius: int = field(metadata=meta("radius", required=True, primitive="int"))
+
+
+@register("test.Rect")
+@dataclass(frozen=True)
+class Rect(Record):
+    width: int = field(metadata=meta("width", required=True, primitive="int"))
+    height: int = field(metadata=meta("height", required=True, primitive="int"))
+
+
+@register("test.Shape")
+class Shape(Union):
+    _PRESENCE = (("test.Circle", ("radius",)), ("test.Rect", ("width", "height")))
+
+
+@register("test.BareOrObject")
+class BareOrObject(Union):
+    _DISCRIMINATOR = "type"
+    _VARIANTS = {}
+
+
+@register("test.ObjectOnly")
+class ObjectOnly(Union):
+    _DISCRIMINATOR = "kind"
+    _VARIANTS = {"cat": "test.Cat", "dog": "test.Dog"}
+    _OBJECT_ONLY = True
+
+
+@register("test.StringMap")
+@dataclass(frozen=True)
+class StringMap(Record):
+    # A map encoded as [key, value] pairs the way the generator emits one: the value
+    # type is an object-only union and `scalar` lets a bare-string key pass through
+    # (an object key still deserializes), while the value must stay an object.
+    value: list[list[Any]] = field(
+        metadata=meta("value", required=True, ref="test.ObjectOnly", is_list=True, scalar="str")
+    )
+
+
+# --- UNSET sentinel ---
+
+
+def test_unset_is_a_singleton():
+    assert UnsetType() is UNSET
+
+
+def test_unset_is_falsy():
+    assert not UNSET
+
+
+def test_unset_repr():
+    assert repr(UNSET) == "UNSET"
+
+
+# --- registry ---
+
+
+def test_resolve_returns_the_registered_class():
+    assert resolve("test.Point") is Point
+
+
+def test_resolve_unknown_raises():
+    with pytest.raises(BiDiSerializationError, match=r"unknown BiDi type 'test.Nope'"):
+        resolve("test.Nope")
+
+
+# --- outbound: as_json ---
+
+
+def test_as_json_maps_field_names_to_wire_keys():
+    assert Point(x=1, y=2).as_json() == {"x": 1, "y": 2}
+
+
+def test_as_json_omits_unset_but_emits_explicit_null_for_nullable():
+    assert Optionals(req="r", nullable=None).as_json() == {"req": "r", "nullable": None}
+
+
+def test_round_trips_through_the_wire():
+    assert Point.from_json(Point(x=1, y=2).as_json()) == Point(x=1, y=2)
+
+
+# --- inbound: required / optional / null ---
+
+
+def test_missing_required_field_raises():
+    with pytest.raises(BiDiSerializationError, match=r"Point.y missing required 'y'"):
+        Point.from_json({"x": 1})
+
+
+def test_missing_optional_field_becomes_unset():
+    assert Optionals.from_json({"req": "r", "nullable": "n"}).opt is UNSET
+
+
+def test_explicit_null_for_a_nullable_field_becomes_none():
+    assert Optionals.from_json({"req": "r", "nullable": None}).nullable is None
+
+
+def test_explicit_null_for_a_non_nullable_field_raises():
+    with pytest.raises(BiDiSerializationError, match=r"Point.x received null but is not nullable"):
+        Point.from_json({"x": None, "y": 2})
+
+
+# --- construction-time validation (__post_init__) ---
+
+
+def test_constructing_with_none_for_a_non_nullable_field_raises():
+    with pytest.raises(BiDiSerializationError, match=r"Point.x cannot be None"):
+        Point(x=None, y=2)
+
+
+def test_constructing_with_an_invalid_enum_value_raises():
+    with pytest.raises(BiDiSerializationError, match=r"is not a valid Color"):
+        Painted(color="green")
+
+
+def test_constructing_with_a_valid_enum_member_is_accepted():
+    assert Painted(color=Color.RED).as_json() == {"color": "red"}
+
+
+# --- strict primitive checks (inbound) ---
+
+
+def test_integer_rejects_a_fractional_float():
+    with pytest.raises(BiDiSerializationError, match=r"expected int"):
+        Scalars.from_json({"count": 1.5, "ratio": 1.0, "flag": True, "name": "n"})
+
+
+def test_integer_rejects_even_a_whole_valued_float():
+    with pytest.raises(BiDiSerializationError, match=r"expected int"):
+        Scalars.from_json({"count": 5.0, "ratio": 1.0, "flag": True, "name": "n"})
+
+
+def test_integer_rejects_a_bool():
+    with pytest.raises(BiDiSerializationError, match=r"expected int"):
+        Scalars.from_json({"count": True, "ratio": 1.0, "flag": True, "name": "n"})
+
+
+def test_number_accepts_both_int_and_float():
+    assert Scalars.from_json({"count": 1, "ratio": 2, "flag": True, "name": "n"}).ratio == 2
+    assert Scalars.from_json({"count": 1, "ratio": 2.5, "flag": True, "name": "n"}).ratio == 2.5
+
+
+def test_number_rejects_a_bool():
+    with pytest.raises(BiDiSerializationError, match=r"expected float"):
+        Scalars.from_json({"count": 1, "ratio": True, "flag": True, "name": "n"})
+
+
+def test_bool_accepts_a_bool_but_rejects_an_int():
+    assert Scalars.from_json({"count": 1, "ratio": 1.0, "flag": False, "name": "n"}).flag is False
+    with pytest.raises(BiDiSerializationError, match=r"expected bool"):
+        Scalars.from_json({"count": 1, "ratio": 1.0, "flag": 1, "name": "n"})
+
+
+def test_string_rejects_a_number():
+    with pytest.raises(BiDiSerializationError, match=r"expected str"):
+        Scalars.from_json({"count": 1, "ratio": 1.0, "flag": True, "name": 3})
+
+
+# --- list vs scalar shape ---
+
+
+def test_a_scalar_for_a_list_field_raises():
+    with pytest.raises(BiDiSerializationError, match=r"expected a list"):
+        Tags.from_json({"tags": "a"})
+
+
+def test_a_list_for_a_scalar_field_raises():
+    with pytest.raises(BiDiSerializationError, match=r"expected a single value"):
+        Point.from_json({"x": [1], "y": 2})
+
+
+def test_a_list_of_primitives_round_trips():
+    assert Tags.from_json({"tags": ["a", "b"]}).tags == ["a", "b"]
+
+
+# --- nested refs ---
+
+
+def test_a_nested_record_round_trips():
+    line = Line.from_json({"start": {"x": 1, "y": 2}})
+    assert line.start == Point(x=1, y=2)
+    assert line.as_json() == {"start": {"x": 1, "y": 2}}
+
+
+def test_a_non_object_for_a_record_ref_raises():
+    with pytest.raises(BiDiSerializationError, match=r"Line.start: expected an object"):
+        Line.from_json({"start": "nope"})
+
+
+def test_a_list_of_records_round_trips():
+    path = Path.from_json({"points": [{"x": 1, "y": 2}, {"x": 3, "y": 4}]})
+    assert path.points == [Point(x=1, y=2), Point(x=3, y=4)]
+
+
+# --- enum inbound ---
+
+
+def test_an_inbound_enum_token_is_restored_to_its_member():
+    assert Painted.from_json({"color": "blue"}).color is Color.BLUE
+
+
+def test_an_inbound_enum_value_outside_the_schema_raises():
+    with pytest.raises(BiDiSerializationError, match=r"is not a valid Color"):
+        Painted.from_json({"color": "green"})
+
+
+# --- extensible records ---
+
+
+def test_an_extensible_record_captures_unknown_keys():
+    assert Extensible.from_json({"known": "k", "extra": "e", "more": 1}).extensions == {"extra": "e", "more": 1}
+
+
+def test_an_extensible_record_merges_captured_keys_back_on_serialization():
+    assert Extensible(known="k", extensions={"extra": "e"}).as_json() == {"known": "k", "extra": "e"}
+
+
+def test_a_non_extensible_record_ignores_unknown_keys():
+    assert Point.from_json({"x": 1, "y": 2, "z": 3}) == Point(x=1, y=2)
+
+
+# --- union dispatch: inbound ---
+
+
+def test_a_discriminated_union_dispatches_by_its_tag():
+    assert Animal.from_json({"kind": "cat", "meow": "hi"}) == Cat(meow="hi")
+
+
+def test_a_structural_union_dispatches_by_which_fields_are_present():
+    assert Shape.from_json({"radius": 5}) == Circle(radius=5)
+    assert Shape.from_json({"width": 3, "height": 4}) == Rect(width=3, height=4)
+
+
+def test_an_unknown_discriminator_falls_back_to_the_declared_variant():
+    assert Fallback.from_json({"kind": "fish", "bark": "woof"}) == Dog(bark="woof")
+
+
+def test_a_bare_scalar_arm_is_returned_unchanged():
+    assert BareOrObject.from_json("viewport") == "viewport"
+
+
+def test_a_variant_outside_the_schema_raises_instead_of_passing_through():
+    with pytest.raises(BiDiSerializationError, match=r"not in this Selenium's BiDi schema"):
+        Animal.from_json({"kind": "fish"})
+
+
+# --- object-only unions: a non-object payload is a wire error, not a scalar arm ---
+
+
+def test_an_object_only_union_still_dispatches_an_object():
+    assert ObjectOnly.from_json({"kind": "cat", "meow": "hi"}) == Cat(meow="hi")
+
+
+def test_an_object_only_union_rejects_a_non_object():
+    with pytest.raises(BiDiSerializationError, match=r"expected an object on the wire"):
+        ObjectOnly.from_json("viewport")
+
+
+# --- scalar map entries: object-only value, but a bare-string key still passes ---
+
+
+def test_a_map_entry_deserializes_object_key_and_value():
+    payload = {"value": [[{"kind": "cat", "meow": "a"}, {"kind": "dog", "bark": "b"}]]}
+    assert StringMap.from_json(payload).value == [[Cat(meow="a"), Dog(bark="b")]]
+
+
+def test_a_map_entry_passes_a_bare_string_key_through():
+    assert StringMap.from_json({"value": [["k", {"kind": "cat", "meow": "a"}]]}).value == [["k", Cat(meow="a")]]
+
+
+def test_a_map_entry_rejects_a_wrong_typed_scalar_key():
+    with pytest.raises(BiDiSerializationError, match=r"map key expected str"):
+        StringMap.from_json({"value": [[5, {"kind": "cat", "meow": "a"}]]})
+
+
+def test_a_map_entry_value_is_object_only():
+    with pytest.raises(BiDiSerializationError, match=r"expected an object on the wire"):
+        StringMap.from_json({"value": [["k", "not-an-object"]]})
+
+
+def test_a_malformed_map_entry_raises():
+    with pytest.raises(BiDiSerializationError, match=r"expected a \[key, value\] pair"):
+        StringMap.from_json({"value": [["k"]]})
+
+
+# --- union dispatch: outbound (build) ---
+
+
+def test_build_selects_a_variant_by_its_discriminator_and_bakes_the_tag():
+    animal = Animal.build(kind="cat", meow="hi")
+    assert animal == Cat(meow="hi")
+    assert animal.kind == "cat"
+
+
+def test_build_selects_a_variant_by_which_fields_are_supplied():
+    assert Shape.build(radius=5) == Circle(radius=5)
+
+
+def test_build_rejects_a_discriminator_value_outside_the_allowed_set():
+    with pytest.raises(BiDiSerializationError, match=r"not a valid discriminator"):
+        Animal.build(kind="fish", meow="hi")
+
+
+def test_build_rejects_a_field_that_does_not_belong_to_the_selected_variant():
+    with pytest.raises(BiDiSerializationError, match=r"invalid combination.*bark"):
+        Animal.build(kind="cat", bark="woof")
+
+
+def test_build_raises_when_no_variant_matches():
+    with pytest.raises(BiDiSerializationError, match=r"no Shape variant matches"):
+        Shape.build(depth=5)
