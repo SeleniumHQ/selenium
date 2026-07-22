@@ -34,6 +34,11 @@
   </Match>
 
   <Match>
+    <Class name="org.openqa.selenium.bidi.protocol.script.EvaluateResultException"/>
+    <Bug pattern="NM_CLASS_NOT_EXCEPTION"/>
+  </Match>
+
+  <Match>
     <Class name="org.openqa.selenium.build.Build"/>
     <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
   </Match>
