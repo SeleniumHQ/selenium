@@ -171,6 +171,15 @@ public class BiDiGenerator {
     private final Set<String> senderTypes;
 
     /**
+     * Types reachable from command results or event params — i.e. types a caller can receive. A
+     * type in both this set and {@code senderTypes} is used bidirectionally (e.g.
+     * script.SharedReference: built to send as a script argument, and also received inside a remote
+     * value) and is the only case that needs an immutable value class plus a separate Builder — see
+     * {@link #appendBuilder}.
+     */
+    private final Set<String> receivableTypes;
+
+    /**
      * Maps a variant record/union name to every parent union it belongs to. A type can genuinely
      * belong to more than one union at once (e.g. PrimitiveProtocolValue is a member of both
      * RemoteValue and LocalValue) — unions are generated as interfaces specifically so this is a
@@ -201,6 +210,7 @@ public class BiDiGenerator {
               .orElse(Collections.emptyList());
       this.reachable = computeReachable(commands, events);
       this.senderTypes = computeSenderTypes();
+      this.receivableTypes = computeReceivableTypes();
       this.variantParent = computeVariantParent();
       this.syntheticChildren = computeSyntheticChildren();
     }
@@ -240,6 +250,55 @@ public class BiDiGenerator {
         }
         // Union variants that extend a senderType union must also implement toMap().
         // Include them so appendRecordBody generates the override.
+        if ("union".equals(str(node, "kind"))) {
+          List<String> variants = (List<String>) node.get("variants");
+          if (variants != null) {
+            for (String v : variants) {
+              if (result.add(v)) queue.add(v);
+            }
+          }
+          Map<String, Object> sel = mapField(node, "selector");
+          if (sel != null) {
+            List<Map<String, Object>> svs = (List<Map<String, Object>>) sel.get("variants");
+            if (svs != null) {
+              for (Map<String, Object> sv : svs) {
+                String ref = str(sv, "ref");
+                if (ref != null && result.add(ref)) queue.add(ref);
+              }
+            }
+            String def = str(sel, "default");
+            if (def != null && result.add(def)) queue.add(def);
+          }
+        }
+      }
+      return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Set<String> computeReceivableTypes() {
+      List<Map<String, Object>> commands =
+          Optional.ofNullable((List<Map<String, Object>>) schema.get("commands"))
+              .orElse(Collections.emptyList());
+      List<Map<String, Object>> events =
+          Optional.ofNullable((List<Map<String, Object>>) schema.get("events"))
+              .orElse(Collections.emptyList());
+      Set<String> result = new LinkedHashSet<>();
+      java.util.ArrayDeque<String> queue = new java.util.ArrayDeque<>();
+      for (Map<String, Object> cmd : commands) {
+        seedRef(mapField(cmd, "result"), queue, result);
+      }
+      for (Map<String, Object> evt : events) {
+        seedRef(mapField(evt, "params"), queue, result);
+      }
+      while (!queue.isEmpty()) {
+        String name = queue.poll();
+        Map<String, Object> node = types.get(name);
+        if (node == null) continue;
+        collectRefs(node, queue, result);
+        if (Boolean.TRUE.equals(node.get("synthetic"))) {
+          String owner = str(node, "owner");
+          if (owner != null && result.add(owner)) queue.add(owner);
+        }
         if ("union".equals(str(node, "kind"))) {
           List<String> variants = (List<String>) node.get("variants");
           if (variants != null) {
@@ -605,12 +664,25 @@ public class BiDiGenerator {
       boolean needsToMap = senderTypes.contains(typeName);
       List<String> parentUnionRefs = reachableParents(typeName);
 
-      // Fields
+      // A type reachable only from outbound command params (senderTypes) is caller-owned start
+      // to finish, so it keeps a single mutable class with fluent setters (the "else" branch
+      // below, unchanged from before). A type reachable only from inbound results/events is
+      // simplified the other way: since the caller never builds one, it gets no setters and no
+      // public constructor at all — only the deserializer's. A type reachable from *both* is the
+      // only case that must not expose mutation on a received instance (BiDi low-level
+      // behavioral contract, item 12): it becomes a fully immutable value class, with a separate
+      // nested Builder (see appendBuilder) as the only way to construct an outbound instance.
+      boolean isReceivable = receivableTypes.contains(typeName);
+      boolean immutable = hasOptionals && isReceivable;
+      boolean needsBuilder = immutable && needsToMap;
+
+      // Fields — an immutable type's fields (including their xSet presence flags) are final:
+      // assigned once, in the single deserialization constructor, never mutated afterward.
       for (FieldInfo f : fields) {
         String jt = fieldJavaType(f, domain);
         sb.append(m)
             .append("private ")
-            .append(f.required ? "final " : "")
+            .append(f.required || immutable ? "final " : "")
             .append(jt)
             .append(" ")
             .append(f.name)
@@ -621,14 +693,19 @@ public class BiDiGenerator {
           // and toMap() needs that distinction to send an explicit null on the wire (R2/R7).
           // Only needed for fields the schema actually declares nullable; an optional field
           // whose type is never null-able has no legal "explicit null" wire state to represent.
-          sb.append(m).append("private boolean ").append(f.name).append("Set;\n");
+          sb.append(m)
+              .append("private ")
+              .append(immutable ? "final " : "")
+              .append("boolean ")
+              .append(f.name)
+              .append("Set;\n");
         }
       }
       if (!fields.isEmpty()) sb.append("\n");
 
-      // User-facing constructor (required fields only — empty parameter list, i.e. a plain no-arg
-      // constructor, when there are no required fields at all).
-      if (hasOptionals) {
+      // User-facing constructor (required fields only) — sender-only types alone; an immutable
+      // type has no way to be constructed except its Builder (if it has one) or the deserializer.
+      if (hasOptionals && !immutable) {
         sb.append(m).append("public ").append(cls).append("(");
         sb.append(
             required.stream().map(f -> paramDecl(f, domain)).collect(Collectors.joining(", ")));
@@ -658,30 +735,33 @@ public class BiDiGenerator {
         sb.append(m).append("}\n\n");
       }
 
-      // Fluent setters for optional fields
-      for (FieldInfo f : optional) {
-        String baseType = resolveJavaType(f.typeRef, domain, true);
-        sb.append(m)
-            .append("public ")
-            .append(cls)
-            .append(" set")
-            .append(capitalize(f.name))
-            .append("(")
-            .append(baseType)
-            .append(" ")
-            .append(f.name)
-            .append(") {\n");
-        sb.append(m)
-            .append("  this.")
-            .append(f.name)
-            .append(" = Optional.ofNullable(")
-            .append(f.name)
-            .append(");\n");
-        if (isNullable(f.typeRef)) {
-          sb.append(m).append("  this.").append(f.name).append("Set = true;\n");
+      // Fluent setters for optional fields — sender-only types only. An immutable/receivable
+      // type never exposes these; use its Builder to construct one instead.
+      if (!immutable) {
+        for (FieldInfo f : optional) {
+          String baseType = resolveJavaType(f.typeRef, domain, true);
+          sb.append(m)
+              .append("public ")
+              .append(cls)
+              .append(" set")
+              .append(capitalize(f.name))
+              .append("(")
+              .append(baseType)
+              .append(" ")
+              .append(f.name)
+              .append(") {\n");
+          sb.append(m)
+              .append("  this.")
+              .append(f.name)
+              .append(" = Optional.ofNullable(")
+              .append(f.name)
+              .append(");\n");
+          if (isNullable(f.typeRef)) {
+            sb.append(m).append("  this.").append(f.name).append("Set = true;\n");
+          }
+          sb.append(m).append("  return this;\n");
+          sb.append(m).append("}\n\n");
         }
-        sb.append(m).append("  return this;\n");
-        sb.append(m).append("}\n\n");
       }
 
       // Getters
@@ -749,6 +829,88 @@ public class BiDiGenerator {
         }
         sb.append(m).append("}\n\n");
       }
+
+      if (needsBuilder) {
+        appendBuilder(sb, cls, fields, required, optional, domain, m);
+      }
+    }
+
+    // Generates a nested public Builder for a type used both to send command params and to
+    // receive results/events (senderTypes ∩ receivableTypes) — the only case where a caller
+    // needs a mutable way to construct an instance, while a received instance itself stays fully
+    // immutable (BiDi low-level behavioral contract, item 12). All validation (required-field
+    // presence, const-value checks) lives in the outer class's single constructor, which build()
+    // delegates to — so a Builder-constructed instance is validated exactly like a deserialized
+    // one, through the same code path.
+    private void appendBuilder(
+        StringBuilder sb,
+        String cls,
+        List<FieldInfo> fields,
+        List<FieldInfo> required,
+        List<FieldInfo> optional,
+        String domain,
+        String m) {
+      sb.append(m)
+          .append("public static Builder builder(")
+          .append(
+              required.stream().map(f -> paramDecl(f, domain)).collect(Collectors.joining(", ")))
+          .append(") {\n");
+      sb.append(m)
+          .append("  return new Builder(")
+          .append(required.stream().map(f -> f.name).collect(Collectors.joining(", ")))
+          .append(");\n");
+      sb.append(m).append("}\n\n");
+
+      sb.append(m).append("public static final class Builder {\n\n");
+      String bm = m + "  ";
+      for (FieldInfo f : required) {
+        sb.append(bm)
+            .append("private final ")
+            .append(fieldJavaType(f, domain))
+            .append(" ")
+            .append(f.name)
+            .append(";\n");
+      }
+      for (FieldInfo f : optional) {
+        String baseType = resolveJavaType(f.typeRef, domain, true);
+        sb.append(bm).append("private ").append(baseType).append(" ").append(f.name).append(";\n");
+      }
+      sb.append("\n");
+
+      sb.append(bm)
+          .append("private Builder(")
+          .append(
+              required.stream().map(f -> paramDecl(f, domain)).collect(Collectors.joining(", ")))
+          .append(") {\n");
+      for (FieldInfo f : required) {
+        sb.append(bm).append("  this.").append(f.name).append(" = ").append(f.name).append(";\n");
+      }
+      sb.append(bm).append("}\n\n");
+
+      for (FieldInfo f : optional) {
+        String baseType = resolveJavaType(f.typeRef, domain, true);
+        sb.append(bm)
+            .append("public Builder set")
+            .append(capitalize(f.name))
+            .append("(")
+            .append(baseType)
+            .append(" ")
+            .append(f.name)
+            .append(") {\n");
+        sb.append(bm).append("  this.").append(f.name).append(" = ").append(f.name).append(";\n");
+        sb.append(bm).append("  return this;\n");
+        sb.append(bm).append("}\n\n");
+      }
+
+      sb.append(bm).append("public ").append(cls).append(" build() {\n");
+      sb.append(bm).append("  return new ").append(cls).append("(");
+      sb.append(
+          fields.stream()
+              .map(f -> f.required ? f.name : "Optional.ofNullable(" + f.name + ")")
+              .collect(Collectors.joining(", ")));
+      sb.append(");\n");
+      sb.append(bm).append("}\n");
+      sb.append(m).append("}\n");
     }
 
     /**
@@ -799,6 +961,7 @@ public class BiDiGenerator {
         StringBuilder sb, FieldInfo f, String domain, String bodyIndent) {
       if (f.required) {
         boolean nullable = f.typeRef != null && Boolean.TRUE.equals(f.typeRef.get("nullable"));
+        appendConstValidation(sb, f, nullable, bodyIndent);
         if (isPrimitive(f.typeRef) || nullable) {
           sb.append(bodyIndent)
               .append("this.")
@@ -834,6 +997,32 @@ public class BiDiGenerator {
               .append(".isPresent();\n");
         }
       }
+    }
+
+    // A const field's value is fixed by the spec; a caller-supplied (or, on deserialization,
+    // remote-supplied) value that isn't the literal — or null, when the const is also nullable —
+    // must be rejected locally rather than silently accepted. This is what lets a nullable const
+    // (browsingContext.SetBypassCSPParameters.bypass,
+    // emulation.SetScriptingEnabledParameters.enabled)
+    // actually behave as "the literal or null" instead of any value of that type going unchecked.
+    private void appendConstValidation(
+        StringBuilder sb, FieldInfo f, boolean nullable, String bodyIndent) {
+      if (f.typeRef == null || !f.typeRef.containsKey("const")) return;
+      Object constValue = f.typeRef.get("const");
+      String literal =
+          constValue instanceof Boolean ? constValue.toString() : "\"" + constValue + "\"";
+      String condition =
+          nullable
+              ? f.name + " != null && !Objects.equals(" + f.name + ", " + literal + ")"
+              : "!Objects.equals(" + f.name + ", " + literal + ")";
+      String suffix = nullable ? " or null, got: " : ", got: ";
+      sb.append(bodyIndent).append("if (").append(condition).append(") {\n");
+      sb.append(bodyIndent)
+          .append(
+              String.format(
+                  "  throw new BiDiException(\"%s must be \" + %s + \"%s\" + %s);%n",
+                  f.wire, literal, suffix, f.name));
+      sb.append(bodyIndent).append("}\n");
     }
 
     // ─── Enum ─────────────────────────────────────────────────────
@@ -952,8 +1141,19 @@ public class BiDiGenerator {
             Object value = sv.get("value");
             String variantRef = str(sv, "ref");
             String variantClass = resolveRefToJavaClass(variantRef, domain);
-            String test =
-                value == null ? "discriminator == null" : "\"" + value + "\".equals(discriminator)";
+            // A discriminator value isn't always a string (e.g.
+            // bluetooth.HandleRequestDevicePromptParameters dispatches on a boolean "accept"
+            // field) — the deserialized map value is a real Boolean there, so comparing it
+            // against a quoted string literal via String#equals would never match. Emit a literal
+            // of the value's own type instead of always quoting it.
+            String test;
+            if (value == null) {
+              test = "discriminator == null";
+            } else if (value instanceof Boolean) {
+              test = "Objects.equals(discriminator, " + value + ")";
+            } else {
+              test = "\"" + value + "\".equals(discriminator)";
+            }
             sb.append("    if (").append(test).append(")\n");
             appendFromMapReturn(sb, cls, variantRef, variantClass, domain, "      ");
           }
@@ -1040,6 +1240,13 @@ public class BiDiGenerator {
         return primitiveToJava(str(typeRef, "primitive"), box);
       }
       if (typeRef.containsKey("const")) {
+        // A const's Java type must reflect its actual wire type (e.g. the boolean literal in
+        // browsingContext.SetBypassCSPParameters.bypass), not always String — most consts are
+        // fixed discriminator strings, but a nullable const can be a caller-settable boolean.
+        Object constValue = typeRef.get("const");
+        if (constValue instanceof Boolean) {
+          return primitiveToJava("boolean", box);
+        }
         return "String";
       }
       if (typeRef.containsKey("ref")) {
@@ -1131,6 +1338,11 @@ public class BiDiGenerator {
       if (typeRef == null) return false;
       String prim = str(typeRef, "primitive");
       if ("boolean".equals(prim) || "integer".equals(prim)) return true;
+      // A non-nullable boolean const (e.g. bluetooth.HandleRequestDevicePromptParameters.accept)
+      // resolves to the unboxed "boolean" Java type, same as a plain boolean primitive field —
+      // it must be treated the same way here so the constructor doesn't null-check a value that
+      // can never be null.
+      if (typeRef.get("const") instanceof Boolean) return true;
       // Follow aliases (e.g. js-uint → { primitive: "integer" })
       String ref = str(typeRef, "ref");
       if (ref != null) {
