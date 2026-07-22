@@ -30,6 +30,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -40,6 +41,7 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.openqa.selenium.json.Json;
 
 /**
@@ -449,11 +451,15 @@ public class BiDiGenerator {
       return reachable;
     }
 
+    // A command/event's params or result is not always a direct {"ref": ...} — it can be a
+    // container wrapping one, e.g. {"list": {"ref": "test.Item"}} for a command whose result is
+    // directly a list of records (see resolveCommandResultArg). Delegating to collectRefs, which
+    // already recurses through arbitrarily nested Map/List structures looking for "ref" keys,
+    // seeds those nested types too instead of only ever finding a ref at the very top level.
     private static void seedRef(
         Map<String, Object> typeRef, java.util.ArrayDeque<String> queue, Set<String> reachable) {
       if (typeRef == null) return;
-      String ref = str(typeRef, "ref");
-      if (ref != null && reachable.add(ref)) queue.add(ref);
+      collectRefs(typeRef, queue, reachable);
     }
 
     @SuppressWarnings("unchecked")
@@ -615,14 +621,18 @@ public class BiDiGenerator {
       if (needsToMap) {
         sb.append("import java.util.Collections;\n");
         sb.append("import java.util.LinkedHashMap;\n");
-        sb.append("import java.util.Map;\n");
       }
+      // Always imported: needed by fromJson() (see appendFromJson) whenever this class, or any
+      // nested synthetic class in this file, has an escaped-reserved-word field.
+      sb.append("import java.util.Map;\n");
       sb.append("import java.util.Objects;\n");
       sb.append("import java.util.Optional;\n");
       sb.append("import org.jspecify.annotations.Nullable;\n");
       sb.append("import org.openqa.selenium.Beta;\n");
       // BiDiException is needed by nested enum fromString() methods and union fromMap() methods.
-      sb.append("import org.openqa.selenium.bidi.BiDiException;\n\n");
+      sb.append("import org.openqa.selenium.bidi.BiDiException;\n");
+      sb.append("import org.openqa.selenium.json.Json;\n");
+      sb.append("import org.openqa.selenium.json.TypeToken;\n\n");
       sb.append(API_JAVADOC);
       sb.append("@Beta\n");
       // Unions are generated as interfaces, so a type belonging to more than one union (e.g.
@@ -676,6 +686,13 @@ public class BiDiGenerator {
       boolean immutable = hasOptionals && isReceivable;
       boolean needsBuilder = immutable && needsToMap;
 
+      // Nullable optional fields need a <field>Set presence flag (see below); a type with a
+      // Builder needs a way for build() to state that flag explicitly rather than have it
+      // re-derived from Optional.isPresent() (which cannot tell "explicitly set to null" apart
+      // from "never set" — see appendConstructorAssignment).
+      List<FieldInfo> nullableOptional =
+          optional.stream().filter(f -> isNullable(f.typeRef)).collect(Collectors.toList());
+
       // Fields — an immutable type's fields (including their xSet presence flags) are final:
       // assigned once, in the single deserialization constructor, never mutated afterward.
       for (FieldInfo f : fields) {
@@ -727,10 +744,19 @@ public class BiDiGenerator {
       if (fields.isEmpty()) {
         sb.append(") {}\n\n");
       } else {
-        sb.append(fields.stream().map(f -> paramDecl(f, domain)).collect(Collectors.joining(", ")));
+        List<String> ctorParams =
+            fields.stream()
+                .map(f -> paramDecl(f, domain))
+                .collect(Collectors.toCollection(ArrayList::new));
+        if (needsBuilder) {
+          for (FieldInfo f : nullableOptional) {
+            ctorParams.add("Optional<Boolean> " + f.name + "SetOverride");
+          }
+        }
+        sb.append(String.join(", ", ctorParams));
         sb.append(") {\n");
         for (FieldInfo f : fields) {
-          appendConstructorAssignment(sb, f, domain, m + "  ");
+          appendConstructorAssignment(sb, f, domain, m + "  ", needsBuilder);
         }
         sb.append(m).append("}\n\n");
       }
@@ -833,6 +859,51 @@ public class BiDiGenerator {
       if (needsBuilder) {
         appendBuilder(sb, cls, fields, required, optional, domain, m);
       }
+
+      // A field whose spec name collides with a Java reserved word (e.g.
+      // script.CallFunctionParameters'
+      // "this", session.UserPromptHandler's "default") gets its Java identifier escaped
+      // (escapeReserved) but keeps its original wire key. ConstructorCoercer matches JSON
+      // properties to constructor parameters by exact name, so it can never find the wire key
+      // "this" for a parameter named "this_" — that field would silently deserialize as absent.
+      // fromJson reads every field by its wire key directly and calls the all-fields constructor,
+      // bypassing that name-matching entirely; StaticInitializerCoercer picks up a class's own
+      // "fromJson" ahead of ConstructorCoercer whenever one is present.
+      boolean needsFromJson = fields.stream().anyMatch(f -> !f.name.equals(f.wire));
+      if (needsFromJson) {
+        appendFromJson(sb, cls, fields, domain, m);
+      }
+    }
+
+    private void appendFromJson(
+        StringBuilder sb, String cls, List<FieldInfo> fields, String domain, String m) {
+      sb.append("\n")
+          .append(m)
+          .append("private static ")
+          .append(cls)
+          .append(" fromJson(Map<String, Object> map) {\n");
+      sb.append(m).append("  Json json = new Json();\n");
+      for (FieldInfo f : fields) {
+        String decodeType =
+            f.required ? resolveJavaType(f.typeRef, domain, true) : fieldJavaType(f, domain);
+        sb.append(m)
+            .append("  ")
+            .append(decodeType)
+            .append(" ")
+            .append(f.name)
+            .append(" = json.toType(json.toJson(map.get(\"")
+            .append(f.wire)
+            .append("\")), new TypeToken<")
+            .append(decodeType)
+            .append(">() {}.getType());\n");
+      }
+      sb.append(m)
+          .append("  return new ")
+          .append(cls)
+          .append("(")
+          .append(fields.stream().map(f -> f.name).collect(Collectors.joining(", ")))
+          .append(");\n");
+      sb.append(m).append("}\n");
     }
 
     // Generates a nested public Builder for a type used both to send command params and to
@@ -874,6 +945,12 @@ public class BiDiGenerator {
       for (FieldInfo f : optional) {
         String baseType = resolveJavaType(f.typeRef, domain, true);
         sb.append(bm).append("private ").append(baseType).append(" ").append(f.name).append(";\n");
+        if (isNullable(f.typeRef)) {
+          // Tracks whether setX was ever called, independent of the value passed — build() needs
+          // this to tell the outer class's constructor that a null was explicit, not "never set"
+          // (Optional.ofNullable(null) alone is indistinguishable from an untouched field).
+          sb.append(bm).append("private boolean ").append(f.name).append("Set;\n");
+        }
       }
       sb.append("\n");
 
@@ -898,16 +975,25 @@ public class BiDiGenerator {
             .append(f.name)
             .append(") {\n");
         sb.append(bm).append("  this.").append(f.name).append(" = ").append(f.name).append(";\n");
+        if (isNullable(f.typeRef)) {
+          sb.append(bm).append("  this.").append(f.name).append("Set = true;\n");
+        }
         sb.append(bm).append("  return this;\n");
         sb.append(bm).append("}\n\n");
       }
 
+      List<FieldInfo> nullableOptional =
+          optional.stream().filter(f -> isNullable(f.typeRef)).collect(Collectors.toList());
       sb.append(bm).append("public ").append(cls).append(" build() {\n");
       sb.append(bm).append("  return new ").append(cls).append("(");
-      sb.append(
+      List<String> buildArgs =
           fields.stream()
               .map(f -> f.required ? f.name : "Optional.ofNullable(" + f.name + ")")
-              .collect(Collectors.joining(", ")));
+              .collect(Collectors.toCollection(ArrayList::new));
+      for (FieldInfo f : nullableOptional) {
+        buildArgs.add("Optional.of(" + f.name + "Set)");
+      }
+      sb.append(String.join(", ", buildArgs));
       sb.append(");\n");
       sb.append(bm).append("}\n");
       sb.append(m).append("}\n");
@@ -959,6 +1045,24 @@ public class BiDiGenerator {
 
     private void appendConstructorAssignment(
         StringBuilder sb, FieldInfo f, String domain, String bodyIndent) {
+      appendConstructorAssignment(sb, f, domain, bodyIndent, false);
+    }
+
+    // supportsSetOverride is true only for the all-fields constructor of a type that has a
+    // Builder (immutable + sendable). That constructor is called from two places: the shared
+    // JSON deserializer (which can never distinguish an explicit wire "null" from an absent key
+    // once the value has collapsed to Optional.empty() — a separate, pre-existing limitation, out
+    // of scope here) and Builder.build() (which knows for certain whether its setter was called,
+    // independent of the value passed). The extra <field>SetOverride parameter lets build() state
+    // that fact explicitly; it is Optional-typed so ConstructorCoercer's reflection-based matching
+    // — which only requires non-Optional parameters to correspond to a real wire key — leaves it
+    // untouched (defaulting to empty) when the constructor is invoked from deserialization.
+    private void appendConstructorAssignment(
+        StringBuilder sb,
+        FieldInfo f,
+        String domain,
+        String bodyIndent,
+        boolean supportsSetOverride) {
       if (f.required) {
         boolean nullable = f.typeRef != null && Boolean.TRUE.equals(f.typeRef.get("nullable"));
         appendConstValidation(sb, f, nullable, bodyIndent);
@@ -989,12 +1093,19 @@ public class BiDiGenerator {
             .append(f.name)
             .append(" : Optional.empty();\n");
         if (isNullable(f.typeRef)) {
-          sb.append(bodyIndent)
-              .append("this.")
-              .append(f.name)
-              .append("Set = this.")
-              .append(f.name)
-              .append(".isPresent();\n");
+          sb.append(bodyIndent).append("this.").append(f.name).append("Set = ");
+          if (supportsSetOverride) {
+            sb.append(f.name)
+                .append("SetOverride != null && ")
+                .append(f.name)
+                .append("SetOverride.isPresent() ? ")
+                .append(f.name)
+                .append("SetOverride.get() : this.")
+                .append(f.name)
+                .append(".isPresent();\n");
+          } else {
+            sb.append("this.").append(f.name).append(".isPresent();\n");
+          }
         }
       }
     }
@@ -1407,6 +1518,27 @@ public class BiDiGenerator {
         }
         return varName;
       }
+      if (typeRef.containsKey("map")) {
+        // resolveJavaType already resolves a "map" typeRef to java.util.Map<String, V> (see
+        // above) — without this branch, a Map<String, SomeRecord/SomeUnion/SomeEnum> field would
+        // be put on the wire as raw Java objects instead of their wire-compatible shape.
+        @SuppressWarnings("unchecked")
+        Map<String, Object> val = (Map<String, Object>) typeRef.get("map");
+        String valKind = resolvedKindFromTypeRef(val);
+        if ("enum".equals(valKind)) {
+          return varName
+              + ".entrySet().stream().collect(java.util.stream.Collectors.toMap("
+              + "java.util.Map.Entry::getKey, e -> e.getValue().toString(), (a, b) -> b, "
+              + "java.util.LinkedHashMap::new))";
+        }
+        if ("record".equals(valKind) || "union".equals(valKind)) {
+          return varName
+              + ".entrySet().stream().collect(java.util.stream.Collectors.toMap("
+              + "java.util.Map.Entry::getKey, e -> e.getValue().toMap(), (a, b) -> b, "
+              + "java.util.LinkedHashMap::new))";
+        }
+        return varName;
+      }
       return varName;
     }
 
@@ -1427,6 +1559,7 @@ public class BiDiGenerator {
       if (typeRef.containsKey("ref")) return resolvedKindOf(str(typeRef, "ref"));
       if (typeRef.containsKey("primitive") || typeRef.containsKey("const")) return "primitive";
       if (typeRef.containsKey("list")) return "list";
+      if (typeRef.containsKey("map")) return "map";
       return "unknown";
     }
 
@@ -1444,8 +1577,14 @@ public class BiDiGenerator {
     private String resolveCommandResultArg(Map<String, Object> resultRef, String contextDomain) {
       if (resultRef == null) return null;
       if (resultRef.containsKey("list") || resultRef.containsKey("map")) {
-        // Generic container types: use Object.class and rely on caller to cast
-        return "Object.class";
+        // A raw Class token (e.g. List.class) erases the element/value type at runtime, so the
+        // shared JSON coercer (which resolves List<Foo>/Map<String, Foo> generically off a real
+        // java.lang.reflect.Type — see CollectionCoercer/MapCoercer) would have no way to know
+        // what to coerce each element/value into. TypeToken captures that generic signature as an
+        // actual Type, matching the same resolveJavaType string already used for this method's
+        // declared return type, so the two can never drift out of sync.
+        String containerType = resolveJavaType(resultRef, contextDomain, true);
+        return "new org.openqa.selenium.json.TypeToken<" + containerType + ">() {}.getType()";
       }
       String javaType = resolveJavaType(resultRef, contextDomain, true);
       if (resultRef.containsKey("ref")) {
@@ -1574,39 +1713,41 @@ public class BiDiGenerator {
     Files.write(file, content.getBytes(UTF_8));
   }
 
+  // Files.walkFileTree does not guarantee a stable traversal order, and an unset JarEntry
+  // timestamp defaults to the moment it's written — either would make bidi-generated.srcjar
+  // differ byte-for-byte between builds of the exact same schema, which breaks Bazel's
+  // action-cache reuse for everything downstream. Sorting entries by their normalized jar path
+  // and zeroing every entry's timestamp makes the output a pure function of the generated
+  // content.
   private static void packToJar(Path tempDir, Path outputJar) throws IOException {
     Files.createDirectories(outputJar.getParent());
+    List<Path> paths;
+    try (Stream<Path> walk = Files.walk(tempDir)) {
+      paths =
+          walk.filter(p -> !p.equals(tempDir))
+              .sorted(Comparator.comparing(p -> relativeJarPath(tempDir, p)))
+              .collect(Collectors.toList());
+    }
     try (OutputStream os = Files.newOutputStream(outputJar);
         JarOutputStream jos = new JarOutputStream(os)) {
-      Files.walkFileTree(
-          tempDir,
-          new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
-                throws IOException {
-              String rel = tempDir.relativize(dir).toString().replace('\\', '/');
-              if (!rel.isEmpty()) {
-                JarEntry e = new JarEntry(rel + "/");
-                jos.putNextEntry(e);
-                jos.closeEntry();
-              }
-              return FileVisitResult.CONTINUE;
-            }
-
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
-                throws IOException {
-              String rel = tempDir.relativize(file).toString().replace('\\', '/');
-              JarEntry e = new JarEntry(rel);
-              jos.putNextEntry(e);
-              try (InputStream is = Files.newInputStream(file)) {
-                is.transferTo(jos);
-              }
-              jos.closeEntry();
-              return FileVisitResult.CONTINUE;
-            }
-          });
+      for (Path path : paths) {
+        boolean isDirectory = Files.isDirectory(path);
+        String rel = relativeJarPath(tempDir, path);
+        JarEntry entry = new JarEntry(isDirectory ? rel + "/" : rel);
+        entry.setTime(0L);
+        jos.putNextEntry(entry);
+        if (!isDirectory) {
+          try (InputStream is = Files.newInputStream(path)) {
+            is.transferTo(jos);
+          }
+        }
+        jos.closeEntry();
+      }
     }
+  }
+
+  private static String relativeJarPath(Path root, Path path) {
+    return root.relativize(path).toString().replace('\\', '/');
   }
 
   private static void deleteRecursive(Path dir) throws IOException {
