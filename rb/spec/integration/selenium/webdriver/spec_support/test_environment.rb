@@ -404,6 +404,7 @@ module Selenium
         def runfiles_path(env_key)
           value = ENV.fetch(env_key, nil)
           return if value.nil? || value.empty? # a cleared --test_env passes "", which rlocation rejects
+          return value if File.exist?(value) # honor an on-disk override for local runs without runfiles
 
           runfiles.rlocation(value) || raise("runfiles could not resolve #{env_key}=#{value.inspect}")
         end
