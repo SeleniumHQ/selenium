@@ -39,6 +39,10 @@ public class ConverterFunctions {
   /**
    * Returns a function that deserializes a {@code Map<String, Object>} event payload into an
    * instance of {@code type} via the Selenium JSON library (ConstructorCoercer).
+   *
+   * @param type the class to deserialize the map into
+   * @param <T> the deserialized type
+   * @return a function that converts a raw event payload into an instance of {@code type}
    */
   public static <T> Function<Map<String, Object>, T> fromMap(Class<T> type) {
     Require.nonNull("Type", type);
