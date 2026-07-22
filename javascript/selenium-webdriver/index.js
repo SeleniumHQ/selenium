@@ -479,6 +479,14 @@ class Builder {
   }
 
   /**
+   * @return {firefox.ServiceBuilder} the Firefox service currently configured
+   *     for this instance.
+   */
+  getFirefoxService() {
+    return this.firefoxService_
+  }
+
+  /**
    * Sets the {@link firefox.ServiceBuilder} to use to manage the geckodriver
    * child process when creating Firefox sessions locally.
    *

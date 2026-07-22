@@ -43,8 +43,10 @@ suite(
           if (process.env.SELENIUM_REMOTE_URL || process.env.SELENIUM_SERVER_JAR) {
             return this.skip()
           }
-          let service = new firefox.ServiceBuilder().addArguments('--allow-system-access')
-          driver = await env.builder().setFirefoxService(service).build()
+          const builder = env.builder()
+          const service = builder.getFirefoxService() || new firefox.ServiceBuilder()
+          service.addArguments('--allow-system-access')
+          driver = await builder.setFirefoxService(service).build()
         })
 
         it('can get context', async function () {

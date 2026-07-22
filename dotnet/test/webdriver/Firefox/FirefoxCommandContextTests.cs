@@ -25,6 +25,7 @@ namespace OpenQA.Selenium.Tests.Firefox;
 [IgnoreBrowser(Browser.Chrome)]
 [IgnoreBrowser(Browser.Edge)]
 [IgnoreBrowser(Browser.Safari)]
+[IgnoreBrowser(Browser.Remote, "System access can only be granted to a local driver service")]
 public class FirefoxCommandContextTests
 {
     [Test]
