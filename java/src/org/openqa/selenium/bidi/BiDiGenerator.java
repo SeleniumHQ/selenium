@@ -1257,12 +1257,20 @@ public class BiDiGenerator {
             // bluetooth.HandleRequestDevicePromptParameters dispatches on a boolean "accept"
             // field) — the deserialized map value is a real Boolean there, so comparing it
             // against a quoted string literal via String#equals would never match. Emit a literal
-            // of the value's own type instead of always quoting it.
+            // of the value's own type instead of always quoting it. A numeric discriminator is
+            // the same story: Selenium's JSON parser (see JsonInput#nextNumber, also used to read
+            // this very schema) materializes an integer wire value as Long and a decimal one as
+            // Double — never String — so it needs a real numeric literal (with the matching L/d
+            // suffix) rather than a quoted comparison too.
             String test;
             if (value == null) {
               test = "discriminator == null";
             } else if (value instanceof Boolean) {
               test = "Objects.equals(discriminator, " + value + ")";
+            } else if (value instanceof Long) {
+              test = "Objects.equals(discriminator, " + value + "L)";
+            } else if (value instanceof Double) {
+              test = "Objects.equals(discriminator, " + value + "d)";
             } else {
               test = "\"" + value + "\".equals(discriminator)";
             }
