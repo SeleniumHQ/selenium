@@ -11,8 +11,8 @@ def pin_browsers():
 
     http_archive(
         name = "linux_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/152.0.6/linux-x86_64/en-US/firefox-152.0.6.tar.xz",
-        sha256 = "c8080dad034d8c9119651463807639c6a648cb0186909988da6acc3ef2467322",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/153.0/linux-x86_64/en-US/firefox-153.0.tar.xz",
+        sha256 = "bfc57e7b6b4e6204b11e7e03c4b93cff708e9fb37f6b9948be243455311d82ee",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -33,8 +33,8 @@ js_library(
 
     dmg_archive(
         name = "mac_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/152.0.6/mac/en-US/Firefox%20152.0.6.dmg",
-        sha256 = "747002d592063e0b106de0c500b34fe6d84438b3b866621521c8e7be9ea7816c",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/153.0/mac/en-US/Firefox%20153.0.dmg",
+        sha256 = "2f9b5a20e546e7e79e4182f8fe10353a3e251635963ab3f6d399a3f290adeb96",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -89,8 +89,8 @@ js_library(
 
     http_archive(
         name = "linux_geckodriver",
-        url = "https://github.com/mozilla/geckodriver/releases/download/v0.37.0/geckodriver-v0.37.0-linux64.tar.gz",
-        sha256 = "90d4e33bd9816684400c160d1309aaffec23a3f65103511d5a62d8501062e548",
+        url = "https://github.com/mozilla/geckodriver/releases/download/v0.37.1/geckodriver-v0.37.1-linux64.tar.gz",
+        sha256 = "e815130ea95983e162ae91843b48d3a3ce991735635fce83a647afde21e09f7e",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -106,8 +106,8 @@ js_library(
 
     http_archive(
         name = "mac_geckodriver",
-        url = "https://github.com/mozilla/geckodriver/releases/download/v0.37.0/geckodriver-v0.37.0-macos-aarch64.tar.gz",
-        sha256 = "369165b614164f8adc43d8e017f55fe1ced208afe474be2f0cc1c01fc6529725",
+        url = "https://github.com/mozilla/geckodriver/releases/download/v0.37.1/geckodriver-v0.37.1-macos-aarch64.tar.gz",
+        sha256 = "d02b3f7003f999caf90974a2ef5da0286c05d01cee19112c86846d759fdba4f5",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
