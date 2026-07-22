@@ -34,6 +34,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -1657,7 +1658,7 @@ public class BiDiGenerator {
   }
 
   static String domainPackage(String domain) {
-    return BASE_PKG + ".protocol." + domain.toLowerCase();
+    return BASE_PKG + ".protocol." + domain.toLowerCase(Locale.ROOT);
   }
 
   static String domainOf(String typeName) {
@@ -1676,12 +1677,14 @@ public class BiDiGenerator {
   }
 
   static String toConstantName(String camel) {
-    // Insert underscore before each uppercase letter, then upper-case the whole string
-    return camel.replaceAll("([A-Z])", "_$1").toUpperCase();
+    // Insert underscore before each uppercase letter, then upper-case the whole string.
+    // Locale.ROOT avoids locale-sensitive case conversion (e.g. Turkish "i" -> "İ") producing a
+    // non-ASCII constant name depending on the JVM's default locale.
+    return camel.replaceAll("([A-Z])", "_$1").toUpperCase(Locale.ROOT);
   }
 
   static String toEnumConstant(String wireValue) {
-    return wireValue.toUpperCase().replace('-', '_').replace('.', '_').replace(' ', '_');
+    return wireValue.toUpperCase(Locale.ROOT).replace('-', '_').replace('.', '_').replace(' ', '_');
   }
 
   static String primitiveToJava(String primitive, boolean box) {
