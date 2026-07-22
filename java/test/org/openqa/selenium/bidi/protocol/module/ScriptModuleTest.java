@@ -18,6 +18,7 @@
 package org.openqa.selenium.bidi.protocol.module;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
@@ -208,14 +209,10 @@ class ScriptModuleTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
+  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(FIREFOX)
   void canListenToRealmDestroyedEvent() throws Exception {
-    // The hand-written reference test (org.openqa.selenium.bidi.script.ScriptEventsTest) marks
-    // this @NotYetImplemented on Chrome, Edge, and Firefox. Verified directly here: Chrome now
-    // passes (that annotation was stale, dropped). Edge genuinely times out (kept). Firefox
-    // couldn't be verified in this environment, so its @NotYetImplemented is left as inherited
-    // from the reference test rather than guessed at.
     Script script = new Script(driver);
     CompletableFuture<RealmDestroyedParameters> future = new CompletableFuture<>();
     script.subscribe(Script.REALM_DESTROYED, future::complete);
