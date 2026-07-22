@@ -170,12 +170,28 @@ copy_file(
     visibility = ["//dotnet/test/webdriver:__pkg__"],
 )
 
+copy_file(
+    name = "manager-sbom",
+    src = "//common/manager:selenium-manager-sbom",
+    out = "manager/selenium-manager.cdx.json",
+    visibility = ["//dotnet/test/webdriver:__pkg__"],
+)
+
+copy_file(
+    name = "manager-notice",
+    src = "//common/manager:selenium-manager-notice",
+    out = "manager/selenium-manager-THIRD-PARTY-NOTICES.txt",
+    visibility = ["//dotnet/test/webdriver:__pkg__"],
+)
+
 nuget_pack(
     name = "webdriver-pack",
     files = {
         "//common/images:selenium_logo_small.png": "icon.png",
         "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
         "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
+        "//common/manager:selenium-manager-notice": "manager/selenium-manager-THIRD-PARTY-NOTICES.txt",
+        "//common/manager:selenium-manager-sbom": "manager/selenium-manager.cdx.json",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
         ":assets-nuget-readme": "README.md",
         ":assets-nuget-build-props": "build/Selenium.WebDriver.props",

@@ -119,6 +119,12 @@ rust_library(
 )
 
 filegroup(
+    name = "cargo-lock",
+    srcs = ["Cargo.lock"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
     name = "selenium_manager_srcs",
     srcs = [
         "Cargo.lock",

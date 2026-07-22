@@ -1,7 +1,60 @@
+load("@rules_python//python:defs.bzl", "py_binary")
+load(":crate_metadata.bzl", "selenium_manager_notice", "selenium_manager_sbom")
+
 package(
     default_visibility = [
         "//dotnet/src/webdriver:__pkg__",
         "//dotnet/test/common:__pkg__",
+        "//java/src/org/openqa/selenium/manager:__pkg__",
+        "//javascript/selenium-webdriver:__pkg__",
+        "//py:__pkg__",
+        "//rb:__pkg__",
+    ],
+)
+
+py_binary(
+    name = "sbom_generator",
+    srcs = ["generate_sbom.py"],
+    main = "generate_sbom.py",
+    visibility = ["//visibility:private"],
+)
+
+py_binary(
+    name = "notice_generator",
+    srcs = ["generate_notice.py"],
+    main = "generate_notice.py",
+    visibility = ["//visibility:private"],
+)
+
+# CycloneDX SBOM for the bundled Selenium Manager binary. Fully cargo-free: the
+# component list and dependency graph come from rust/Cargo.lock, and licenses
+# are harvested off the crate dependency graph via crate_manifests_aspect (the
+# vendored Cargo.toml manifests crate_universe already fetched). Every binding
+# copies this artifact next to the binary it ships.
+selenium_manager_sbom(
+    name = "selenium-manager-sbom",
+    out = "selenium-manager.cdx.json",
+    crates = ["//rust:selenium-manager"],
+    lockfile = "//rust:cargo-lock",
+    visibility = [
+        "//dotnet/src/webdriver:__pkg__",
+        "//java/src/org/openqa/selenium/manager:__pkg__",
+        "//javascript/selenium-webdriver:__pkg__",
+        "//py:__pkg__",
+        "//rb:__pkg__",
+    ],
+)
+
+# Third-party attribution NOTICE for the bundled Selenium Manager binary. Cargo-free
+# companion to the SBOM: crate_manifests_aspect harvests each crate's LICENSE/NOTICE
+# text off the dependency graph so the copyright notices that MIT/BSD/Apache require
+# in binary distributions travel with the binary. Every binding copies it alongside.
+selenium_manager_notice(
+    name = "selenium-manager-notice",
+    out = "selenium-manager-THIRD-PARTY-NOTICES.txt",
+    crates = ["//rust:selenium-manager"],
+    visibility = [
+        "//dotnet/src/webdriver:__pkg__",
         "//java/src/org/openqa/selenium/manager:__pkg__",
         "//javascript/selenium-webdriver:__pkg__",
         "//py:__pkg__",

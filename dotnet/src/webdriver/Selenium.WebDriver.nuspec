@@ -64,6 +64,8 @@
     <file src="manager/linux/selenium-manager" target="runtimes/linux/native/selenium-manager" />
     <file src="manager/macos/selenium-manager" target="runtimes/osx/native/selenium-manager" />
     <file src="manager/windows/selenium-manager.exe" target="runtimes/win/native/selenium-manager.exe" />
+    <file src="manager/selenium-manager.cdx.json" target="selenium-manager.cdx.json" />
+    <file src="manager/selenium-manager-THIRD-PARTY-NOTICES.txt" target="selenium-manager-THIRD-PARTY-NOTICES.txt" />
 
     <file src="icon.png" />
     <file src="README.md" />
