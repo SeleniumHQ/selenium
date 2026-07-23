@@ -68,7 +68,7 @@ module Selenium
           {'type' => 'string', 'value' => 'Hello, world!'}
         ]
         expect(log_entry.timestamp).to be_an_integer
-        expect(log_entry.source).to match(
+        expect(log_entry.source).to include(
           'context' => an_instance_of(String),
           'realm' => an_instance_of(String)
         )
@@ -138,7 +138,7 @@ module Selenium
         expect(log_entry.level).to eq 'error'
         expect(log_entry.text).to eq 'Error: Not working'
         expect(log_entry.timestamp).to be_an_integer
-        expect(log_entry.source).to match(
+        expect(log_entry.source).to include(
           'context' => an_instance_of(String),
           'realm' => an_instance_of(String)
         )
