@@ -32,8 +32,8 @@ require_relative '../../../../../support/generated_note'
 #
 # Invoked via `bazel run //rb/lib/selenium/webdriver:bidi-generate`. Bazel passes
 # the schema path (resolved through runfiles) plus the workspace-relative output
-# directory as ARGV. Can also be run directly:
-#   ruby bidi_generate.rb schema.json output/dir
+# directory as ARGV, and supplies the shared generated-note text as a runfile, so
+# this is not runnable directly from a source checkout.
 #
 # @api private
 module BiDiGenerate

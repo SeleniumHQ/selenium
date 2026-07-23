@@ -24,10 +24,11 @@ and produces Python type definitions and command classes that conform to the
 WebDriver BiDi protocol.
 
 Usage:
-    python generate_bidi.py <cddl_file> <output_dir> <spec_version>
+    bazel run //py:create-bidi-src
 
-Example:
-    python generate_bidi.py local.cddl ./selenium/webdriver/common/bidi 1.0
+Bazel passes <cddl_file> <output_dir> <spec_version> as ARGV and supplies the shared
+license and generated-note text as runfiles, so this is not runnable directly from a
+source checkout.
 """
 
 import argparse
