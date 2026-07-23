@@ -21,7 +21,7 @@
 module GeneratedNote
   def self.runfiles
     @runfiles ||= begin
-      ensure_runfiles_on_load_path # Delete this when update to rules_ruby 0.28.0
+      ensure_runfiles_on_load_path # Delete this when updating to rules_ruby 0.28.0
       require 'bazel/runfiles'
       Bazel::Runfiles.create
     end
@@ -40,7 +40,7 @@ module GeneratedNote
     text.rstrip.split("\n").map { |line| "#{comment_prefix} #{line}" }.join("\n")
   end
 
-  # Delete this when update to rules_ruby 0.28.0
+  # Delete this when updating to rules_ruby 0.28.0
   def self.ensure_runfiles_on_load_path
     if (manifest = ENV.fetch('RUNFILES_MANIFEST_FILE', nil)) && File.exist?(manifest)
       entry = File.foreach(manifest).find { |line| line.start_with?('_main/rb/lib/bazel/runfiles.rb ') }

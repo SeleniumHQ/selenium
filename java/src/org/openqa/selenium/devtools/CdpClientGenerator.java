@@ -71,10 +71,7 @@ public class CdpClientGenerator {
       String note =
           readCommented(runfiles, "_main/scripts/generated_note_template.txt", "// ")
               .replace("{generator}", "CdpClientGenerator.java")
-              .replace(
-                  "{command}",
-                  "bazel build //java/src/org/openqa/selenium/devtools/latest:create-cdp-srcs"
-                      + " (one per CDP version)");
+              .replace("{command}", "bazel build //java/src/org/openqa/selenium/devtools/...");
       return license + "\n\n" + note + "\n\n";
     } catch (IOException e) {
       throw new UncheckedIOException(e);
@@ -83,7 +80,11 @@ public class CdpClientGenerator {
 
   private static String readCommented(Runfiles runfiles, String rlocation, String prefix)
       throws IOException {
-    Path file = Paths.get(runfiles.rlocation(rlocation));
+    String resolved = runfiles.rlocation(rlocation);
+    if (resolved == null) {
+      throw new IOException("Could not resolve runfile " + rlocation);
+    }
+    Path file = Paths.get(resolved);
     return Files.readAllLines(file, UTF_8).stream()
         .map(line -> line.isEmpty() ? prefix.strip() : prefix + line)
         .collect(joining("\n"));

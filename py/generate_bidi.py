@@ -26,9 +26,9 @@ WebDriver BiDi protocol.
 Usage:
     bazel run //py:create-bidi-src
 
-Bazel passes <cddl_file> <output_dir> <spec_version> as ARGV and supplies the shared
-license and generated-note text as runfiles, so this is not runnable directly from a
-source checkout.
+Bazel passes cddl_file, output_dir and spec_version as command-line arguments and
+supplies the shared license and generated-note text as runfiles, so this is not
+runnable directly from a source checkout.
 """
 
 import argparse
