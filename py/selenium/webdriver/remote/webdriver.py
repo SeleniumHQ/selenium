@@ -253,7 +253,7 @@ class WebDriver(BaseWebDriver):
         Args:
             command_executor: Either a string representing the URL of the remote
                 server or a custom remote_connection.RemoteConnection object.
-                Defaults to 'http://127.0.0.1:4444/wd/hub'.
+                Defaults to 'http://127.0.0.1:4444'.
             keep_alive: (Deprecated) Whether to configure
                 remote_connection.RemoteConnection to use HTTP keep-alive.
                 Defaults to True.

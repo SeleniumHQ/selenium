@@ -16,6 +16,7 @@ rb_library(
     visibility = ["//rb/spec:__subpackages__"],
     deps = [
         "//rb/lib:selenium-webdriver",
+        "//rb/lib/bazel:runfiles",
         "//rb/lib/selenium:devtools",
         "//rb/lib/selenium:server",
         "//rb/lib/selenium:webdriver",
