@@ -1,7 +1,8 @@
 # 17670. BiDi implementation boundaries
 
-- Status: Proposed
+- Status: Accepted
 - Discussion: https://github.com/SeleniumHQ/selenium/pull/17670
+- Tracking: https://github.com/SeleniumHQ/selenium/issues/17814
 
 ## Context
 
