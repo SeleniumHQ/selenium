@@ -11,10 +11,11 @@ _LICENSE_BLOCK = "/*\n" + "\n".join(f" * {line}".rstrip() for line in _LICENSE_N
 _copyright = f"""{_LICENSE_BLOCK}
 """
 
+
 # One C-style block comment serves every output language (C++ and Java both accept it).
-_REGEN_HINT = "bazel build the closure_lang_file target for this file, e.g. //javascript/chrome-driver:source"
-_GENERATED_NOTE_RAW = generated_note("", "gen_file.py", _REGEN_HINT)
-_GENERATED_NOTE_BLOCK = "/*\n" + "\n".join(f" * {line}" for line in _GENERATED_NOTE_RAW.split("\n")) + "\n */"
+def generated_note_block(label):
+    raw = generated_note("", "gen_file.py", f"bazel build {label}")
+    return "/*\n" + "\n".join(f" * {line}" for line in raw.split("\n")) + "\n */"
 
 
 def get_atom_name(name):
@@ -73,13 +74,13 @@ def write_atom_literal(out, name, contents, lang, utf8):
         out.write("      .toString()),\n")
 
 
-def generate_header(file_name, out, js_map, just_declare, utf8):
+def generate_header(file_name, out, js_map, just_declare, utf8, note):
     define_guard = "WEBDRIVER_{}".format(os.path.basename(file_name.upper()).replace(".", "_"))
     include_stddef = "" if utf8 else "\n#include <stddef.h>  // For wchar_t."
     out.write(
         f"""{_copyright}
 
-{_GENERATED_NOTE_BLOCK}
+{note}
 #ifndef {define_guard}
 #define {define_guard}
 {include_stddef}
@@ -119,11 +120,11 @@ static inline {string_type} asString(const {char_type}* const atom[]) {{
     )
 
 
-def generate_cc_source(out, js_map, utf8):
+def generate_cc_source(out, js_map, utf8, note):
     out.write(
         f"""{_copyright}
 
-{_GENERATED_NOTE_BLOCK}
+{note}
 
 #include <stddef.h>  // For NULL.
 #include "atoms.h"
@@ -145,14 +146,14 @@ namespace atoms {{
 """)
 
 
-def generate_java_source(file_name, out, preamble, js_map):
+def generate_java_source(file_name, out, preamble, js_map, note):
     if not file_name.endswith(".java"):
         raise RuntimeError("File name must end in .java")
     class_name = os.path.basename(file_name[:-5])
 
     out.write(_copyright)
     out.write("\n")
-    out.write(_GENERATED_NOTE_BLOCK)
+    out.write(note)
     out.write("\n\n")
     out.write(preamble)
     out.write("")
@@ -192,20 +193,21 @@ def main(argv=[]):
     file_name = argv[2]
     preamble = argv[3]
     utf8 = argv[4] == "true"
+    note = generated_note_block(argv[5])
 
     js_map = {}
-    for i in range(5, len(argv), 2):
+    for i in range(6, len(argv), 2):
         js_map[argv[i]] = argv[i + 1]
 
     with open(file_name, "w") as out:
         if "cc" == lang:
-            generate_cc_source(out, js_map, utf8)
+            generate_cc_source(out, js_map, utf8, note)
         elif "hdecl" == lang:
-            generate_header(file_name, out, js_map, True, utf8)
+            generate_header(file_name, out, js_map, True, utf8, note)
         elif "hh" == lang:
-            generate_header(file_name, out, js_map, False, utf8)
+            generate_header(file_name, out, js_map, False, utf8, note)
         elif "java" == lang:
-            generate_java_source(file_name, out, preamble, js_map)
+            generate_java_source(file_name, out, preamble, js_map, note)
         else:
             raise RuntimeError(f"Unknown lang: {lang}")
 
