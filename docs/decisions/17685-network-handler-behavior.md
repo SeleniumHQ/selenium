@@ -37,10 +37,16 @@ dispose of the event as it runs — it does not gather every handler's outcome a
 end. There are multiple ways to implement the decisions below; the examples are illustrative
 user-facing code in Ruby and Java.
 
-1. **Handlers are added, removed, and cleared.** Each family — request, response, authentication —
-   has an add, a remove, and a clear. `add` returns a handle object; `remove` takes that handle and
-   unregisters exactly that handler; `clear` removes every handler in the family. Removing a handler
-   stops it being consulted for later events but does not disturb an event already in flight.
+1. **Handlers are added, removed, and cleared.** Each family — request, response,
+   authentication — has an add, a remove, and a clear. `add` returns a handle
+   object; `remove` takes that handle and unregisters exactly that handler;
+   `clear` removes every handler in the family. Removing a handler stops it
+   being consulted for later events but does not disturb an event already in
+   flight.
+
+   Additionally, a convenience method named `addAuthentication` wraps
+   `addAuthenticationHandler`, taking credentials without a callable for the
+   primary use case.
 
 ```ruby
 handle = network.add_request_handler { |r| r.fail if blocked?(r.url) }
@@ -49,46 +55,83 @@ network.clear_request_handlers
 ```
 
 ```java
-RequestHandler handle = network.addRequestHandler(r -> { if (blocked(r.url())) r.fail(); });
+RequestHandler handle = network.addRequestHandler(
+    r -> { if (blocked(r.url())) r.fail(); });
 network.removeRequestHandler(handle);
 network.clearRequestHandlers();
 ```
 
-2. **A handler is scoped by an optional list of URL patterns given as structured objects.** Each
-   pattern is an object of URL components — protocol, hostname, port, pathname, search — each
-   optional: a component that is set matches exactly, one left unset matches any value. A handler
-   matches a request against any pattern in its list; with no list it matches every request. A pattern
-   is an object, not a URL or glob string.
+2. **URL filtering is declared when a handler is registered.** By default a
+   handler matches every event; patterns narrow it. What they cannot express,
+   the user may filter in the callable.
+
+   The argument name is the equivalent of `urlPatterns`. Its values must
+   support, in a language idiomatic way, one or more strings and/or objects,
+   where the object types are limited to what the BiDi spec directly supports
+   and each component takes an optional string value. A binding may also take
+   its language's native URL object, passing it on as a pattern string rather
+   than deconstructing it to an object. Predicates are not accepted; a user who
+   wants one may write it inside the callable.
+
+   Everything specified by an url pattern argument must be resolvable by the
+   remote end; no additional filtering is done client-side. Everything else
+   errors, including unsupported wildcard matching — the protocol matches
+   literally, so a glob is not refused by the remote, it quietly matches
+   nothing.
 
 ```ruby
-# One or more component objects; a request matches any of them
-network.add_request_handler(url_patterns: [{hostname: "api.example.com"}, {hostname: "cdn.example.com"}]) { |r| r.fail }
+# A pattern string or components — an event matches any of them
+network.add_request_handler(
+  url_patterns: ["https://api.example.com/orders",
+                 {hostname: "cdn.example.com"}]
+) { |r| r.fail }
+
+# Wildcards are rejected; the matching goes in the callable instead
+network.add_request_handler(url_patterns: ["https://*.example.com/"]) # raises
+network.add_request_handler(url_patterns: [{hostname: "api.example.com"}]) do |r|
+  r.fail if r.url.end_with?(".json")
+end
 ```
 
 ```java
 network.addRequestHandler(
-    List.of(new UrlPattern().hostname("api.example.com"), new UrlPattern().hostname("cdn.example.com")),
+    List.of(UrlPattern.of("https://api.example.com/orders"),
+            UrlPattern.builder().hostname("cdn.example.com").build()),
     r -> r.fail());
+
+network.addRequestHandler(
+    UrlPattern.builder().hostname("api.example.com").build(),
+    r -> { if (r.url().endsWith(".json")) r.fail(); });
 ```
 
-3. **A handler is a callable that acts on the event object.** A request or response handler may
-   observe it, change it, or settle its disposition (decisions 4–6); an authentication handler
-   supplies credentials for it, computed in the callable or given as a static username and password.
+3. **A handler is a callable that acts on the event object.** A request or
+   response handler may observe it, change it, or settle its disposition
+   (decisions 4–6); an authentication handler settles a challenge by supplying
+   credentials or cancelling.
 
 ```ruby
-# Credentials computed in the callable, or supplied statically
-network.add_authentication_handler { |e| e.authenticate(vault.credentials_for(e.url)) }
-network.add_authentication_handler(username: "user", password: "pass", url_patterns: [{hostname: "secure.example.com"}])
+network.add_authentication_handler do |e|
+  (c = vault.credentials_for(e.url)) ? e.authenticate(c) : e.cancel
+end
+
+network.add_authentication(username: "user", password: "pass",
+                           url_patterns: [{hostname: "secure.example.com"}])
 ```
 
 ```java
-network.addAuthenticationHandler(e -> e.authenticate(vault.credentialsFor(e.url())));
-network.addAuthenticationHandler("user", "pass", List.of(new UrlPattern().hostname("secure.example.com")));
+network.addAuthenticationHandler(e -> {
+  Credentials c = vault.credentialsFor(e.url());
+  if (c != null) e.authenticate(c); else e.cancel();
+});
+
+network.addAuthentication(UsernameAndPassword.of("user", "pass"),
+    List.of(UrlPattern.builder().hostname("secure.example.com").build()));
 ```
 
 4. **A request or response handler observes or intercepts, and the event object enforces which.**
    There is one method to add handlers, and which mode the handler operates under is decided at
-   creation; intercepting is the default and observing is opt-in. An observing handler receives a
+   creation; intercepting is the default and observing is opt-in — a default that cannot change later
+   without breaking existing handlers. An observing handler receives a
    read-only event object: it can read the event but has no methods to mutate or settle it, and it
    does not pause network traffic. An intercepting handler receives a mutable event object: it can
    stage changes and settle the event, and network traffic is paused until handling resolves it.
@@ -114,27 +157,31 @@ network.addRequestHandler(new ObservationOptions(), r -> log(r.url()));         
 ```
 
 5. **When a handler settles a disposition, the first to do so resolves the event and stops the
-   chain.** The user settles the event by acting on the object the callable receives.
-   * Playwright only intercepts requests and requires an explicit disposition: continue (stop
-     processing other handlers), fulfill (respond with a mock), abort (respond with an error),
-     fallback (process other handlers, if any).
-   * Selenium supports:
-     * Request: `fail` (Playwright's `abort`, BiDi's `FailRequest`), `respond` (Playwright's `fulfill`, BiDi's `ProvideResponse`), and `submit` (Playwright's `continue`, BiDi's `ContinueRequest`).
-     * Response: `fail` (BiDi's `FailRequest`), and `submit`: note that since we don't need to prevent a round trip from a request, whether this is a BiDi `ContinueResponse` or `ProvideResponse` can be an implementation detail based on whether a replacement body value is provided.
+   chain.** The user settles the event by acting on the object the callable receives. A handler that
+   only stages mutations does not settle; it passes the event to the next handler (decision 6).
+   * A request has three: `fail` (BiDi's `FailRequest`) ends it with an error;
+     `respond` (`ProvideResponse`) replies with a mock, so nothing reaches the server; `submit`
+     (`ContinueRequest`) sends it on, with any staged mutations, and consults no further handler.
+   * `submit` is never required — a handler that settles nothing lets the event continue anyway
+     (decision 6) — and because it short-circuits the chain it can override what a shared handler
+     installed. That is occasionally necessary and easy to invoke by accident, so its name should read
+     as a deliberate, terminal override.
+   * A response has `fail` and `submit`. It has already round-tripped, so whether `submit` maps to
+     `ContinueResponse` or `ProvideResponse` follows from whether a replacement body was given.
 
 ```ruby
-# Names and params can match spec detail; response verbs mirror request (fail, submit)
-network.add_request_handler { |r| r.fail if something }
-network.add_request_handler { |r| r.respond(content: mocked_response) if something }
-network.add_request_handler { |r| r.add_header("X-Test", true) && r.submit if something }
-network.add_response_handler { |r| r.submit(content: mocked_response) if something }
+# fail: error out; respond: mock, no round trip; submit: send (mutated) to the server and stop the chain
+network.add_request_handler { |r| r.fail if blocked?(r.url) }
+network.add_request_handler { |r| r.respond(content: mocked_response) if stubbed?(r.url) }        # not sent to the server
+network.add_request_handler { |r| r.add_header("X-Test", true); r.submit if override?(r.url) }    # sent to the server, chain stops
+network.add_response_handler { |r| r.submit(content: mocked_response) if rewrite?(r.url) }
 ```
 
 ```java
-network.addRequestHandler(r -> { if (something) r.fail(); });
-network.addRequestHandler(r -> { if (something) r.respond(mockedResponse); });
-network.addRequestHandler(r -> { if (something) { r.addHeader("X-Test", "true"); r.submit(); } });
-network.addResponseHandler(r -> { if (something) r.submit(mockedResponse); });
+network.addRequestHandler(r -> { if (blocked(r.url())) r.fail(); });
+network.addRequestHandler(r -> { if (stubbed(r.url())) r.respond(mockedResponse); });             // not sent to the server
+network.addRequestHandler(r -> { if (override(r.url())) { r.addHeader("X-Test", "true"); r.submit(); } }); // sent, chain stops
+network.addResponseHandler(r -> { if (rewrite(r.url())) r.submit(mockedResponse); });
 ```
 
 6. **Default disposition is to process other handlers.** If a handler does not specify the
@@ -256,20 +303,35 @@ network.addResponseHandler(new BodyCollection(), r -> log(r.body()));
   - A bare numeric id as the handle — an object is type-safe and cannot be confused with an unrelated
     id.
 - **Filtering (decision 2).**
-  - No filter, matching only in the callback — no declarative scope a binding could hand to the
-    remote, so interception cannot be narrowed to the URLs of interest.
-  - A client-side predicate — adds nothing over a conditional in the callback and can never be handed
-    to the remote.
-  - A URL or glob string — the protocol matches each component by exact equality (an unset component
-    matches any), so a string reads as though `*` wildcards work when they do not, and its parsing is
-    ambiguous about which component a wildcard belongs to.
-  - The structured object is the shape the standard pattern syntax itself uses, so when the protocol
-    adopts the wildcard characters it reserves today, the same fields carry them — no structural
-    change, and existing exact patterns keep working.
+  - No patterns, matching only in the callback — nothing to hand the remote, so every event must be
+    intercepted to answer any question about it.
+  - A predicate, as one binding ships today — cannot cross the wire, so it has the same cost, and adds
+    nothing over a conditional in the callback.
+  - Reject URL strings and require the object form — the spec accepts a pattern string itself, so
+    refusing one buys no safety.
+  - Take a native URL apart into components, erroring on what no component represents — URLs are
+    complicated enough that parsing them is work we would own and get wrong; passing one on as a
+    pattern string leaves that to the spec.
+  - Accept globs, matching them client-side until the spec catches up — widely understood, and another
+    framework ships exactly this. But it means intercepting every event, and no two glob dialects agree
+    with each other or with the URL pattern syntax the spec is adopting: `/orders/*` is valid in both
+    and matches one segment or any depth. The same string would quietly mean different things. Users
+    can do this in the callable, and if enough do, we can revisit with evidence.
+  - Let each binding choose which forms it accepts — five capability sets, so what a user can express
+    would depend on their language rather than the spec.
 - **Authentication as a callable (decision 3).**
   - Exclude auth from the callable model and expose only static credentials (an earlier draft) — a
-    callable can compute credentials per challenge and reuses the one registration surface; the static
-    form is kept as sugar, not the whole surface.
+    callable can compute credentials per challenge, and only a callable can cancel one.
+  - Overload the handler method so it takes either a callable or a username and password — one method
+    per family is tidier, but the two forms do not do the same thing (static credentials can only ever
+    supply, never cancel), and `add_*_handler` would promise a handler the user never wrote.
+  - Give the credentials method its own registry, separate from the handlers — then `remove` and
+    `clear` would silently miss it, and the two would not have a defined order relative to each other.
+  - Ship only the callable form and add the credentials method later if it is asked for — the callable
+    can express everything the credentials method can, so the second method is convenience rather than
+    capability. It is included because supplying a username and password is the overwhelmingly common
+    case, and a signature a user can read without understanding callbacks serves them better than the
+    one general form.
 - **Modes (decision 4).**
   - Give observation its own method — it shares the whole registration shape, and the read-only
     contract can only be carried by the event object's type (we will not introspect the callable),
@@ -284,6 +346,14 @@ network.addResponseHandler(new BodyCollection(), r -> log(r.body()));
 - **Verb names (decision 5).**
   - Playwright's (abort / fulfill / continue / fallback) or BiDi's (failRequest / provideResponse /
     continueRequest / continueResponse) — either can be matched to spec detail per binding.
+  - Name the pass-through `continue` — reads ambiguously as "continue this request" versus "continue to
+    the next handler"; `submit` names the intent of sending this request now.
+  - Omit a pass-through disposition entirely and only continue after gathering every handler's
+    mutations at the end — safest against an accidental short-circuit, but leaves no way for one handler
+    to override a default a shared handler set, so it is kept as a deliberately named override instead.
+  - `submit` may not be the best name for that override, and a better one is worth settling before
+    this ships: `finish`, `complete`, `send`, or a form each binding marks as terminal in its own way,
+    such as a Ruby `submit!`.
 - **Ordering (decision 7).**
   - Registration order instead of LIFO — prevents overriding global settings locally.
 - **Failure (decision 8).**
@@ -309,6 +379,6 @@ network.addResponseHandler(new BodyCollection(), r -> log(r.body()));
 - Client code can override shared handlers locally and resolve a request its own way, a broken
   handler stays contained, and the original event remains readable.
 - Authentication handlers gain a callable form in addition to static credentials, so credentials can
-  be produced per challenge.
+  be produced — or the challenge cancelled — per challenge.
 - This changes handler behavior that several bindings already ship, so it is not backwards
   compatible.
