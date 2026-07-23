@@ -46,7 +46,8 @@ user-facing code in Ruby and Java.
 
    Additionally, a convenience method named `addAuthentication` wraps
    `addAuthenticationHandler`, taking credentials without a callable for the
-   primary use case.
+   primary use case. It returns the same handle as the rest of the family and is
+   removed and cleared the same way.
 
 ```ruby
 handle = network.add_request_handler { |r| r.fail if blocked?(r.url) }
@@ -277,7 +278,7 @@ network.addRequestHandler(r -> r.addHeader("X-Test", "true"));
     by default; the handler declares that it needs the body when it is registered — not from inside
     the callback, since the collector must be in place before the event — and Selenium then owns the
     collector's lifecycle, size cap, and browser-support quirks. The body is readable on the event
-    inside that handler.
+    inside that handler, where applicable.
     * The user never calls `addDataCollector` / `getData` or tears a collector down.
     * There is no way to collect or read body data outside a handler; collection happens only through
       the `add_request_handler` / `add_response_handler` registration.
