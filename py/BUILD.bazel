@@ -703,10 +703,18 @@ py_binary(
     deps = [requirement("inflection")],
 )
 
+copy_file(
+    name = "license_header_local",
+    src = "//scripts:license_header.txt",
+    out = "license_header.txt",
+)
+
 py_binary(
     name = "generate_bidi",
     srcs = ["generate_bidi.py"],
+    data = [":license_header_local"],
     srcs_version = "PY3",
+    deps = ["//scripts:generated_note"],
 )
 
 [generate_devtools(
