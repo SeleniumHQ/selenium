@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Quiescence Oracle — Test Harness</title>
+<!-- In Selenium this page is loaded with the quiescence polyfill supplied as a
+     BiDi preload script (script.addPreloadScript), so window.__quiescence is
+     already installed before this page's scripts run. The inline script below
+     guards against its absence so the page also degrades gracefully when opened
+     without the preload. -->
+<style>
+  body { font-family: system-ui, sans-serif; margin: 2rem; max-width: 60rem; }
+  button { margin: 0.2rem; padding: 0.4rem 0.8rem; }
+  #state { font-size: 1.4rem; font-weight: 700; padding: 0.4rem 0.8rem; border-radius: 6px; display: inline-block; }
+  .quiet { background: #c8f7c5; } .busy { background: #f7c5c5; }
+  pre { background: #f4f4f4; padding: 0.8rem; border-radius: 6px; min-height: 6rem; white-space: pre-wrap; }
+  fieldset { margin-top: 1rem; }
+</style>
+</head>
+<body>
+<h1>Quiescence oracle test harness</h1>
+<p>State: <span id="state" class="quiet">quiet</span> &nbsp; Clock: <span id="clock">–</span></p>
+
+<fieldset><legend>Provably-completing work</legend>
+  <button id="btn-timeout">setTimeout 3s</button>
+  <button id="btn-long-timeout">setTimeout 30s (policy-inert)</button>
+  <button id="btn-fetch-slow">fetch /slow?ms=3000</button>
+  <button id="btn-xhr-slow">XHR /slow?ms=2000</button>
+  <button id="btn-fetch-ignored">fetch /slow?ms=5000&beacon=1 (ignored by pattern)</button>
+  <button id="btn-chain">chained: fetch → timeout → fetch</button>
+</fieldset>
+
+<fieldset><legend>Periodic work (the undecidable corner)</legend>
+  <button id="btn-heartbeat">start no-op heartbeat interval (1s) → should go observed-inert after 3 ticks</button>
+  <button id="btn-clock">start DOM-mutating clock (1s) → stays a blocker</button>
+  <button id="btn-clock-inert">markInert(clock) — cooperative annotation</button>
+  <button id="btn-stop-periodic">stop all periodic</button>
+</fieldset>
+
+<fieldset><legend>Controls</legend>
+  <button id="btn-await">awaitQuiet(8s)</button>
+  <button id="btn-blockers">dump blockers</button>
+</fieldset>
+
+<pre id="log"></pre>
+
+<script>
+(function () {
+  const logEl = document.getElementById('log');
+  const stateEl = document.getElementById('state');
+  const log = (m) => { logEl.textContent = new Date().toISOString().slice(11, 23)
+    + '  ' + m + '\n' + logEl.textContent; };
+
+  const q = window.__quiescence;
+  if (!q) {
+    log('window.__quiescence is not installed — load this page with the '
+      + 'quiescence preload script (Selenium injects it automatically).');
+    return;
+  }
+
+  q.setPolicy({ ignoreUrlPatterns: ['beacon=1'] });
+  q.onStateChanged((p) => {
+    stateEl.textContent = p.quiet ? 'quiet' : 'busy';
+    stateEl.className = p.quiet ? 'quiet' : 'busy';
+    log('stateChanged → ' + (p.quiet ? 'QUIET'
+      : 'BUSY: ' + p.blockers.map((b) => b.type + (b.url ? '(' + b.url + ')' : '')).join(', ')));
+  });
+
+  const $ = (id) => document.getElementById(id);
+  let heartbeat = null; let clock = null;
+
+  $('btn-timeout').onclick = () => setTimeout(() => log('3s timeout fired'), 3000);
+  $('btn-long-timeout').onclick = () => setTimeout(() => log('30s timeout fired'), 30000);
+  $('btn-fetch-slow').onclick = () =>
+    fetch('/slow?ms=3000').then((r) => r.text()).then((t) => log('fetch done: ' + t));
+  $('btn-xhr-slow').onclick = () => {
+    const x = new XMLHttpRequest();
+    x.open('GET', '/slow?ms=2000');
+    x.onloadend = () => log('xhr done');
+    x.send();
+  };
+  $('btn-fetch-ignored').onclick = () =>
+    fetch('/slow?ms=5000&beacon=1').then(() => log('ignored beacon done'));
+  $('btn-chain').onclick = () =>
+    fetch('/slow?ms=1000').then(() => new Promise((res) => setTimeout(res, 800)))
+      .then(() => fetch('/slow?ms=1000')).then(() => log('chain done'));
+
+  $('btn-heartbeat').onclick = () => {
+    if (heartbeat) return;
+    let n = 0;
+    heartbeat = setInterval(() => { n++; /* deliberately effect-free */ }, 1000);
+    log('heartbeat started (watch it become inert after '
+      + '3 quiet ticks — state flips to QUIET while it still runs)');
+  };
+  $('btn-clock').onclick = () => {
+    if (clock) return;
+    clock = setInterval(() => {
+      document.getElementById('clock').textContent = new Date().toLocaleTimeString();
+    }, 1000);
+    log('clock started (DOM-mutating: will never be observed-inert)');
+  };
+  $('btn-clock-inert').onclick = () => {
+    if (!clock) { log('start the clock first'); return; }
+    log('markInert(clock) → ' + q.markInert(clock));
+  };
+  $('btn-stop-periodic').onclick = () => {
+    if (heartbeat) { clearInterval(heartbeat); heartbeat = null; }
+    if (clock) { clearInterval(clock); clock = null; }
+    log('periodic work stopped');
+  };
+
+  $('btn-await').onclick = async () => {
+    log('awaitQuiet(8000) …');
+    const r = await q.awaitQuiet({ timeoutMs: 8000 });
+    log('awaitQuiet → ' + JSON.stringify(r));
+  };
+  $('btn-blockers').onclick = () => log('blockers: ' + JSON.stringify(q.getBlockers()));
+}());
+</script>
+</body>
+</html>

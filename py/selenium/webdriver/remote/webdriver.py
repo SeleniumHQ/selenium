@@ -24,6 +24,7 @@ import contextlib
 import copy
 import functools
 import inspect
+import logging
 import os
 import pkgutil
 import tempfile
@@ -74,13 +75,33 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 from selenium.webdriver.support.relative_locator import RelativeBy
 
+logger = logging.getLogger(__name__)
+
 cdp = None
+
+_quiescence_preload_source: str | None = None
 
 
 def import_cdp() -> None:
     global cdp
     if not cdp:
         cdp = import_module("selenium.webdriver.common.bidi.cdp")
+
+
+def _load_quiescence_preload() -> str:
+    """Load the quiescence polyfill and wrap it as a BiDi preload declaration.
+
+    ``script.addPreloadScript`` expects a function declaration, whereas the
+    polyfill ships as a self-installing IIFE, so it is wrapped in an arrow
+    function. The wrapped source is cached after the first read.
+    """
+    global _quiescence_preload_source
+    if _quiescence_preload_source is None:
+        data = pkgutil.get_data("selenium.webdriver.common", "quiescence.js")
+        if data is None:
+            raise WebDriverException("Failed to load quiescence.js preload script")
+        _quiescence_preload_source = "() => {\n" + data.decode("utf-8") + "\n}"
+    return _quiescence_preload_source
 
 
 def _create_caps(caps) -> dict:
@@ -304,6 +325,8 @@ class WebDriver(BaseWebDriver):
         self._input: Input | None = None
         self._request: APIRequestContext | None = None
         self._devtools: Any | None = None
+        self._quiescence_script_id: str | None = None
+        self._quiescence_preload_attempted: bool = False
 
     def __repr__(self) -> str:
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
@@ -520,7 +543,30 @@ class WebDriver(BaseWebDriver):
         Example:
             `driver.get("https://example.com")`
         """
+        self._ensure_quiescence_preload()
         self.execute(Command.GET, {"url": url})
+
+    def _ensure_quiescence_preload(self) -> None:
+        """Register the quiescence polyfill as a BiDi preload script (once).
+
+        The polyfill installs ``window.__quiescence`` before any page script
+        runs, letting callers observe when the document has no pending timers,
+        network requests, or animation loops. Registering it before the first
+        navigation means it is active for that page and every subsequent one.
+
+        Injection is best-effort: it only runs when the session negotiated a
+        BiDi WebSocket (``webSocketUrl`` capability), and any failure is logged
+        rather than raised so classic navigation is never affected.
+        """
+        if self._quiescence_preload_attempted:
+            return
+        self._quiescence_preload_attempted = True
+        if not self.caps.get("webSocketUrl"):
+            return
+        try:
+            self._quiescence_script_id = self.script._add_preload_script(_load_quiescence_preload())
+        except Exception as exc:
+            logger.debug("Could not register quiescence preload script: %s", exc)
 
     @property
     def title(self) -> str:

@@ -163,6 +163,12 @@ copy_file(
 )
 
 copy_file(
+    name = "quiescence",
+    src = "//javascript/atoms:quiescence.js",
+    out = "selenium/webdriver/common/quiescence.js",
+)
+
+copy_file(
     name = "firefox-driver-prefs",
     src = "//third_party/js/selenium:webdriver_json",
     out = "selenium/webdriver/firefox/webdriver_prefs.json",
@@ -270,6 +276,7 @@ py_library(
         ":find-elements",
         ":get-attribute",
         ":is-displayed",
+        ":quiescence",
     ],
     imports = ["."],
     visibility = ["//visibility:public"],

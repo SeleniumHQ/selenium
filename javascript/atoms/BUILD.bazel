@@ -4,6 +4,13 @@ load("//javascript:defs.bzl", "closure_js_deps", "closure_test_suite")
 
 package(default_visibility = ["//visibility:public"])
 
+# Standalone preload scripts (not compiled through Closure) consumed by the
+# language bindings, e.g. the BiDi quiescence polyfill injected by the Python
+# binding via script.addPreloadScript.
+exports_files([
+    "quiescence.js",
+])
+
 js_binary(
     name = "strip_trailing_semicolon",
     data = ["typescript/strip-trailing-semicolon.js"],
