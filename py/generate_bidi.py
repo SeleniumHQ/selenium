@@ -24,7 +24,7 @@ and produces Python type definitions and command classes that conform to the
 WebDriver BiDi protocol.
 
 Usage:
-    bazel run //py:create-bidi-src
+    bazel build //py:create-bidi-src
 
 Bazel passes cddl_file, output_dir and spec_version as command-line arguments and
 supplies the shared license and generated-note text as runfiles, so this is not
@@ -55,7 +55,7 @@ logger = logging.getLogger("generate_bidi")
 _LICENSE_NOTICE = (Path(__file__).parent / "license_header.txt").read_text(encoding="utf-8").rstrip("\n")
 LICENSE_HEADER = "\n".join(f"# {line}".rstrip() for line in _LICENSE_NOTICE.split("\n"))
 
-GENERATED_NOTE = generated_note("#", "generate_bidi.py", "bazel run //py:create-bidi-src")
+GENERATED_NOTE = generated_note("#", "py/generate_bidi.py", "bazel build //py:create-bidi-src")
 
 SHARED_HEADER = f"""{LICENSE_HEADER}
 

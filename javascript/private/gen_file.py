@@ -14,7 +14,7 @@ _copyright = f"""{_LICENSE_BLOCK}
 
 # One C-style block comment serves every output language (C++ and Java both accept it).
 def generated_note_block(label):
-    raw = generated_note("", "gen_file.py", f"bazel build {label}")
+    raw = generated_note("", "javascript/private/gen_file.py", f"bazel build {label}")
     return "/*\n" + "\n".join(f" * {line}" for line in raw.split("\n")) + "\n */"
 
 

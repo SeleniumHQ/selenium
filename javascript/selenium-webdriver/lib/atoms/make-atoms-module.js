@@ -38,7 +38,7 @@ const LICENSE_HEADER = commentLines(
 const GENERATED_NOTE = commentLines(
   fs
     .readFileSync(path.join(__dirname, 'generated_note_template.txt'), 'utf8')
-    .replace('{generator}', 'make-atoms-module.js')
+    .replace('{generator}', 'javascript/selenium-webdriver/lib/atoms/make-atoms-module.js')
     .replace('{command}', 'bazel build //javascript/selenium-webdriver/lib/atoms:all')
     .trim(),
 )

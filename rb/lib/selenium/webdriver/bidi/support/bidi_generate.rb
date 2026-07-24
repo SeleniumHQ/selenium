@@ -941,7 +941,7 @@ module BiDiGenerate
   end
 
   def self.render(mod, template_path)
-    generated_note = GeneratedNote.render('#', 'bidi_generate.rb',
+    generated_note = GeneratedNote.render('#', 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb',
                                           'bazel run //rb/lib/selenium/webdriver:bidi-generate')
     ERB.new(File.read(template_path), trim_mode: '-').result(binding)
   end

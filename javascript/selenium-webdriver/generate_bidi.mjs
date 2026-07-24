@@ -721,7 +721,7 @@ const LICENSE_HEADER = commentLines(readFileSync(join(GENERATOR_DIR, 'license_he
 
 const GENERATED_NOTE = commentLines(
   readFileSync(join(GENERATOR_DIR, 'generated_note_template.txt'), 'utf8')
-    .replace('{generator}', 'generate_bidi.mjs')
+    .replace('{generator}', 'javascript/selenium-webdriver/generate_bidi.mjs')
     .replace('{command}', 'bazel build //javascript/selenium-webdriver:create-bidi-src')
     .trim(),
 )

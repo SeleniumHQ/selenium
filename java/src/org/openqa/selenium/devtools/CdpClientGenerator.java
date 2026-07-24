@@ -70,7 +70,8 @@ public class CdpClientGenerator {
       String license = readCommented(runfiles, "_main/scripts/license_header.txt", "// ");
       String note =
           readCommented(runfiles, "_main/scripts/generated_note_template.txt", "// ")
-              .replace("{generator}", "CdpClientGenerator.java")
+              .replace(
+                  "{generator}", "java/src/org/openqa/selenium/devtools/CdpClientGenerator.java")
               .replace("{command}", "bazel build //java/src/org/openqa/selenium/devtools/...");
       return license + "\n\n" + note + "\n\n";
     } catch (IOException e) {

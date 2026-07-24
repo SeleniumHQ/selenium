@@ -36,7 +36,8 @@ module Selenium
         # Renders the standard two-line "generated, DO NOT EDIT" marker — see
         # rb/support/generated_note.rb and scripts/generated_note_template.txt.
         def generated_note
-          GeneratedNote.render('#', 'cdp_client_generator.rb', 'bazel run //rb/lib/selenium/devtools:cdp-generate')
+          GeneratedNote.render('#', 'rb/lib/selenium/devtools/support/cdp_client_generator.rb',
+                               'bazel build //rb/lib/selenium/devtools:all')
         end
 
         def call(output_dir:, version:, **opts)
