@@ -1,0 +1,25 @@
+Selenium Manager bundles third-party Rust crates. Their copyright notices and
+license terms are reproduced below. Licenses shared by multiple crates are
+listed once, followed by every crate that uses them.
+
+This file is generated; do not edit by hand. Regenerate with:
+    cargo about generate about.hbs > selenium-manager-THIRD-PARTY-NOTICES.txt
+
+Overview of licenses:
+{{#each overview}}
+  - {{name}}: {{count}} crate(s)
+{{/each}}
+
+{{#each licenses}}
+================================================================================
+{{name}}
+================================================================================
+
+Used by:
+{{#each used_by}}
+  - {{crate.name}} {{crate.version}}
+{{/each}}
+
+{{text}}
+
+{{/each}}

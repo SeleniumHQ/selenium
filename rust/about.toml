@@ -1,0 +1,59 @@
+# cargo-about configuration for the Selenium Manager third-party NOTICE.
+#
+# Used by the ci-rust.yml `release` job:
+#   cargo about generate about.hbs > selenium-manager-THIRD-PARTY-NOTICES.txt
+#
+# `targets` is the whole point of generating here rather than in Bazel: a single
+# cargo invocation resolves the crate closure for every platform we ship, so the
+# NOTICE covers target-gated crates (Windows-only winapi/windows-*) that a
+# single-platform build would never see.
+
+# Evaluate the license closure for every shipped triple. These do not need the
+# corresponding rustup targets installed -- cargo-about filters `cargo metadata`
+# by platform cfg, it does not compile.
+targets = [
+    "x86_64-unknown-linux-musl",
+    "x86_64-apple-darwin",
+    "aarch64-apple-darwin",
+    "i686-pc-windows-msvc",
+    "x86_64-pc-windows-msvc",
+    "aarch64-pc-windows-msvc",
+]
+
+# Dev-dependencies (assert_cmd, rstest, is_executable, ...) are not linked into
+# the shipped binary, so they must not appear in the attribution.
+ignore-dev-dependencies = true
+
+# Do not emit an attribution entry for the workspace crate itself.
+[private]
+ignore = true
+
+# Every SPDX license present in the resolved tree must be listed here; an
+# un-accepted license fails generation. Keep this list in sync with the tree --
+# a new transitive dependency introducing a new license will (correctly) break
+# the release until the license is reviewed and added.
+accepted = [
+    "MIT",
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Unicode-3.0",
+    "Unicode-DFS-2016",
+    "0BSD",
+    "Zlib",
+    "MPL-2.0",
+    "Unlicense",
+    "CC0-1.0",
+    "BSL-1.0",
+    "OpenSSL",
+]
+
+# ring ships a `license-file` (a concatenation of ISC/MIT/OpenSSL terms) rather
+# than an SPDX `license` expression. cargo-about's built-in workaround supplies
+# the correct expression and bundled text so it is attributed instead of failing
+# as NOASSERTION.
+workarounds = [
+    "ring",
+]
