@@ -236,24 +236,33 @@ module BiDiGenerate
   # ref is the Protocol-relative class path for a nested structured field (nil
   # for a scalar/opaque field); list wraps it in an array. wire_key is the exact
   # JSON payload key (the schema's `wire` name, baked verbatim).
-  FieldIR = Struct.new(:ruby_name, :wire_key, :required, :nullable, :ref, :list, :enum, :primitive, :scalar, :rbs,
-                       keyword_init: true) do
+  FieldIR = Struct.new(:ruby_name, :wire_key, :required, :nullable, :ref, :list, :enum, :primitive, :scalar, :const,
+                       :rbs, keyword_init: true) do
     # A `Serialization::Record.define` spec entry: `name: 'jsonKey'` shorthand, or
     # `name: {wire_key:, …}` when the field carries JSON facts beyond its name.
     # enum carries the allowed-values constant path, validated at construction.
     def spec_entry(indent = 0)
-      meta = []
-      meta << 'required: false' unless required
-      meta << 'nullable: true' if nullable
-      meta << "ref: '#{ref}'" if ref
-      meta << 'list: true' if list
-      meta << "scalar: #{scalar_literal}" if scalar
-      meta << "enum: '#{enum}'" if enum
-      meta << "primitive: '#{primitive}'" if primitive
+      meta = value_facts
       return "#{ruby_name}: '#{wire_key}'" if meta.empty?
 
       meta.unshift("wire_key: '#{wire_key}'")
       BiDiGenerate.wrap_call("#{ruby_name}: ", meta, indent, open: '{', close: '}')
+    end
+
+    # The JSON facts beyond the field's name, in the order Record.define reads them. A
+    # nullable const (`literal / null`) carries `const:` so the runtime rejects a value that
+    # is neither the literal nor null; `const.nil?` means the field has no const at all.
+    def value_facts
+      facts = []
+      facts << 'required: false' unless required
+      facts << 'nullable: true' if nullable
+      facts << "const: #{BiDiGenerate.ruby_literal(const)}" unless const.nil?
+      facts << "ref: '#{ref}'" if ref
+      facts << 'list: true' if list
+      facts << "scalar: #{scalar_literal}" if scalar
+      facts << "enum: '#{enum}'" if enum
+      facts << "primitive: '#{primitive}'" if primitive
+      facts
     end
 
     # The `scalar` primitive(s) a bare non-object wire value must match at a scalar-tolerant
@@ -655,7 +664,23 @@ module BiDiGenerate
                   required: field['required'], nullable: resolved[:nullable],
                   ref: resolved[:ref], list: resolved[:list], enum: enum_const(field['type']),
                   primitive: leaf_primitive(field['type']), scalar: resolved[:scalar],
-                  rbs: resolved[:rbs])
+                  const: leaf_const(field['type']), rbs: resolved[:rbs])
+    end
+
+    # The literal value of a const field, following alias chains, so the runtime can reject a
+    # value that is neither the literal nor null (a `literal / null` param such as
+    # emulation.setScriptingEnabled's `enabled`). Nil for any non-const node — const literals are
+    # never nil, so nil unambiguously means "no const" (a null value is carried by `nullable`).
+    def leaf_const(node, seen = {})
+      return node['const'] if node.key?('const')
+      return nil unless node.key?('ref')
+
+      name = node['ref']
+      type = @types[name]
+      return nil if seen[name] || type.nil? || type['kind'] != 'alias'
+
+      seen[name] = true
+      leaf_const(type['type'], seen)
     end
 
     # The runtime-checkable scalar primitive of a field, following alias chains so a
