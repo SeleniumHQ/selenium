@@ -222,30 +222,16 @@ jobs:
           path: selenium-manager-macos-debug.tar
           retention-days: 6
 
-  release:
-    name: "Release Binaries"
+  sbom:
+    name: "SBOM and Notices"
     runs-on: ubuntu-latest
-    needs: [ macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug ]
+    needs: tests
     if: github.event_name != 'schedule' && github.event.repository.fork == false && (github.ref == 'refs/heads/trunk' || inputs.release)
     steps:
-      - name: "Checkout selenium_manager_artifacts"
-        uses: actions/checkout@v6
-        with:
-          token: ${{ secrets.SELENIUM_CI_TOKEN }}
-          repository: SeleniumHQ/selenium_manager_artifacts
-      - name: "Checkout selenium source"
+      - name: "Checkout project"
         uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
-          path: selenium
-      - name: "Download Artifacts"
-        uses: actions/download-artifact@v8
-        with:
-          path: artifacts
-      # SBOM/NOTICE are generated here, once, from cargo's cross-platform crate
-      # resolution so a single release carries license artifacts covering every
-      # shipped platform (including Windows-only winapi/windows-*). Bazel later
-      # downloads these exactly like it downloads the binaries.
       - name: "Update Rust"
         run: |
           rustup update
@@ -253,24 +239,50 @@ jobs:
       - name: "Install SBOM tools"
         run: cargo install --locked cargo-cyclonedx@0.5.7 cargo-about@0.6.6
       - name: "Generate SBOM and third-party notices"
-        working-directory: selenium/rust
+        working-directory: rust
         run: |
-          # --target all resolves target-gated crates for every platform, not
-          # just the ubuntu host; default output name is <crate>.cdx.json.
+          # cargo resolves the crate closure for every platform in one pass, so a
+          # single SBOM/NOTICE covers all targets. --target all keeps target-gated
+          # crates (Windows-only winapi/windows-*); default output name is
+          # <crate>.cdx.json. about.toml pins the shipped triples so the NOTICE
+          # matches the SBOM.
           cargo cyclonedx --format json --all-features --target all
-          # about.toml pins the shipped triples so the NOTICE matches the SBOM.
           cargo about generate about.hbs > selenium-manager-THIRD-PARTY-NOTICES.txt
           # Guard cross-platform completeness: a host-filtered SBOM would omit
           # Windows-only winapi and silently ship an incomplete artifact.
           grep -q '"name" *: *"winapi"' selenium-manager.cdx.json \
             || { echo "::error::SBOM is missing winapi; --target all did not include Windows crates"; exit 1; }
+      - name: "Upload SBOM and notices"
+        uses: actions/upload-artifact@v7
+        with:
+          name: selenium-manager-sbom
+          path: |
+            rust/selenium-manager.cdx.json
+            rust/selenium-manager-THIRD-PARTY-NOTICES.txt
+          retention-days: 6
+
+  release:
+    name: "Release Binaries"
+    runs-on: ubuntu-latest
+    needs: [ macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug, sbom ]
+    if: github.event_name != 'schedule' && github.event.repository.fork == false && (github.ref == 'refs/heads/trunk' || inputs.release)
+    steps:
+      - name: "Checkout selenium_manager_artifacts"
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          repository: SeleniumHQ/selenium_manager_artifacts
+      - name: "Download Artifacts"
+        uses: actions/download-artifact@v8
+        with:
+          path: artifacts
       - name: "Prepare and Commit"
         run: |
           linux_sha=$(shasum -a 256 artifacts/selenium-manager-linux/selenium-manager-linux | awk '{print $1}')
           macos_sha=$(shasum -a 256 artifacts/selenium-manager-macos/selenium-manager-macos | awk '{print $1}')
           windows_sha=$(shasum -a 256 artifacts/selenium-manager-windows/selenium-manager-windows.exe | awk '{print $1}')
-          sbom_sha=$(shasum -a 256 selenium/rust/selenium-manager.cdx.json | awk '{print $1}')
-          notice_sha=$(shasum -a 256 selenium/rust/selenium-manager-THIRD-PARTY-NOTICES.txt | awk '{print $1}')
+          sbom_sha=$(shasum -a 256 artifacts/selenium-manager-sbom/selenium-manager.cdx.json | awk '{print $1}')
+          notice_sha=$(shasum -a 256 artifacts/selenium-manager-sbom/selenium-manager-THIRD-PARTY-NOTICES.txt | awk '{print $1}')
           echo "{\"macos\": \"$macos_sha\", \"windows\": \"$windows_sha\", \"linux\": \"$linux_sha\", \"sbom\": \"$sbom_sha\", \"notice\": \"$notice_sha\"}" > latest.json
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
@@ -295,5 +307,5 @@ jobs:
             artifacts/selenium-manager-linux-debug/selenium-manager-linux-debug.tar
             artifacts/selenium-manager-macos-debug/selenium-manager-macos-debug.tar
             artifacts/selenium-manager-windows-debug/selenium-manager-windows-debug.exe
-            selenium/rust/selenium-manager.cdx.json
-            selenium/rust/selenium-manager-THIRD-PARTY-NOTICES.txt
+            artifacts/selenium-manager-sbom/selenium-manager.cdx.json
+            artifacts/selenium-manager-sbom/selenium-manager-THIRD-PARTY-NOTICES.txt
