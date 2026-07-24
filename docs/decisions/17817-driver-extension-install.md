@@ -22,15 +22,15 @@ port exposes that live connection, so over the pipe the vendored endpoint still 
 API does not.
 
 WebDriver BiDi specifies extension install and uninstall, which both Firefox and Chromium
-implement. Bindings already expose the BiDi module for it, and pointing users at that module is
-what we advertise today.
+implement. Most bindings already expose the BiDi module for it, and pointing users at that module
+is what we advertise today.
 
 | Binding    | Firefox-only method (classic) | Currently advertised BiDi approach |
 |------------|-------------------------------|------------------------------------|
 | Java       | `installExtension` (on `FirefoxDriver`) | `new WebExtension(driver).install(...)` |
 | Python     | `install_addon` | `driver.webextension.install(...)` |
 | Ruby       | `install_addon` (`HasAddons`) | `BiDi::Protocol::WebExtension` (protocol module) |
-| .NET       | `InstallAddOn`, `InstallAddOnFromFile`, `InstallAddOnFromDirectory` | `driver.AsBiDiAsync()` → `BiDi.WebExtension.InstallAsync(...)` |
+| .NET       | `InstallAddOn`, `InstallAddOnFromFile`, `InstallAddOnFromDirectory` | `(await driver.AsBiDiAsync()).WebExtension.InstallAsync(...)` |
 | JavaScript | `installAddon` | none |
 
 ## Decision
@@ -60,7 +60,7 @@ what we advertise today.
   today. Per [ADR 17670](17670-bidi-implementation-boundaries.md) that module is the internal implementation: protocol-shaped, outside the
   deprecation policy, and reached differently in every binding — direct construction in Java, an
   accessor in Python, a protocol class in Ruby, through a BiDi object in .NET, and absent in
-  JavaScript. It also makes users know which protocol services the command in order to use it.
+  JavaScript. It also forces users to know which protocol services the command in order to use it.
 - **A dedicated `extensions` namespace on the driver** (Rejected) — the strongest alternative:
   consistent with the high-level `network` / `script` surfaces, available in every binding, and with
   room for later operations such as listing or enabling. Rejected because the surface is two verbs,
@@ -78,14 +78,14 @@ what we advertise today.
 
 **Signed and unsigned extensions**
 
-Signed extensions install over the pipe with no additional browser flags. Unsigned extensions — the
-common case for locally built or test extensions — additionally require Chrome's unsigned-extension
-flag, which must be set when the browser launches and cannot be added once the session is running.
+Signed extensions install with no extra browser configuration. Unsigned extensions — the common
+case for locally built or test extensions — additionally require the browser to be launched with
+unsigned-extension loading enabled, which cannot be turned on once the session is running.
 
 - **Allow unsigned extensions by default** (Accepted) — automation routinely loads locally built,
-  unsigned extensions, and the flag has no effect unless the user's own code installs one. Because
-  it must be set at launch, an opt-in would force the choice before the user knows whether they will
-  need it, turning a late discovery into a session restart.
+  unsigned extensions, and enabling it has no effect unless the user's own code installs one.
+  Because it can only be set at launch, an opt-in would force the choice before the user knows
+  whether they will need it, turning a late discovery into a session restart.
 - **Leave unsigned extensions to an explicit opt-in** (Rejected) — a more conservative browser
   posture, but the restriction exists to stop malicious software installing extensions into a
   browser someone actually browses with. That does not describe a session the automation itself
