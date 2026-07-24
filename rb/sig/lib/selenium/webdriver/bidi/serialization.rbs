@@ -60,6 +60,8 @@ module Selenium
 
             def validate_values: (Hash[Symbol, untyped] attributes) -> void
 
+            def validate_const: (untyped field, untyped value) -> void
+
             def check_outbound_shape: (untyped field, untyped value) -> void
 
             def fixed?: (untyped field) -> bool

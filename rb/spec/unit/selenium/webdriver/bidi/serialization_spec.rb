@@ -199,6 +199,13 @@ module Selenium
               expect(BrowsingContext::SetBypassCSPParameters.new(bypass: true).as_json).to eq('bypass' => true)
               expect(BrowsingContext::SetBypassCSPParameters.new(bypass: nil).as_json).to eq('bypass' => nil)
             end
+
+            it 'rejects a value that is neither the literal nor null, before it reaches the wire' do
+              expect { BrowsingContext::SetBypassCSPParameters.new(bypass: false) }
+                .to raise_error(ArgumentError, /bypass must be true/)
+              expect { Emulation::SetScriptingEnabledParameters.new(enabled: true) }
+                .to raise_error(ArgumentError, /enabled must be false/)
+            end
           end
 
           describe 'extensible records' do

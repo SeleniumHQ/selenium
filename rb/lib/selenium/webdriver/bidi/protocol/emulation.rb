@@ -176,7 +176,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetscriptingenabledparameters
           SetScriptingEnabledParameters = Serialization::Record.define(
-            enabled: {wire_key: 'enabled', nullable: true},
+            enabled: {wire_key: 'enabled', nullable: true, const: false},
             contexts: {wire_key: 'contexts', required: false, list: true},
             user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )

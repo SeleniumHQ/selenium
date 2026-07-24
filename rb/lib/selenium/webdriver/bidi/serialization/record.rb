@@ -29,7 +29,8 @@ module Selenium
         # @api private
         class Record < ::Data
           # Named Field, not Member, to avoid colliding with +::Data#members+.
-          Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required, :primitive, :scalar)
+          Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required, :primitive,
+                                :scalar, :const)
 
           def self.define(**spec)
             extensible = spec.delete(:extensible) || false
@@ -60,7 +61,7 @@ module Selenium
                       nullable: meta[:nullable] || false, ref: meta[:ref],
                       list: meta[:list] || false, fixed: meta.fetch(:fixed, UNSET), enum: meta[:enum],
                       required: meta.fetch(:required, true), primitive: meta[:primitive],
-                      scalar: meta[:scalar])
+                      scalar: meta[:scalar], const: meta.fetch(:const, UNSET))
           end
           private_class_method :field
 
@@ -97,9 +98,10 @@ module Selenium
 
             # Checks each field's value: a required field cannot be omitted (UNSET), a non-nullable
             # field cannot be nil (nil is neither a value nor the UNSET omit-sentinel, so it would be
-            # silently dropped on the wire), and an enum field must be in its allowed set. The enum
-            # constant is resolved lazily so a cross-domain enum need not be loaded first. Outbound
-            # only (from +new+); inbound presence/enum are checked separately in +wire_value+/+read+.
+            # silently dropped on the wire), a nullable-const field must carry its literal (not some
+            # other value), and an enum field must be in its allowed set. The enum constant is resolved
+            # lazily so a cross-domain enum need not be loaded first. Outbound only (from +new+);
+            # inbound presence/enum are checked separately in +wire_value+/+read+.
             def validate_values(attributes)
               fields.each do |f|
                 value = attributes[f.name]
@@ -107,9 +109,19 @@ module Selenium
                 raise ::ArgumentError, "#{name}##{f.name} cannot be nil" if value.nil? && !f.nullable
                 next if value.nil? || UNSET.equal?(value)
 
+                validate_const(f, value)
                 check_outbound_shape(f, value)
                 Serialization.validate!("#{name}##{f.name}", value, Protocol.const_get(f.enum)) if f.enum
               end
+            end
+
+            # A nullable constant (`literal / null`) is caller-settable but its only non-null value is
+            # the literal, so a value that is neither the literal nor nil (nil is handled above) is a
+            # local error rather than a wire round-trip. A non-const field carries UNSET here and passes.
+            def validate_const(field, value)
+              return if UNSET.equal?(field.const) || value == field.const
+
+              raise ::ArgumentError, "#{name}##{field.name} must be #{field.const.inspect}, got #{value.inspect}"
             end
 
             # Outbound mirror of check_shape: a list-typed arg must be an array, a scalar-shaped one

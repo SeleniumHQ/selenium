@@ -393,7 +393,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextsetbypasscspparameters
           SetBypassCSPParameters = Serialization::Record.define(
-            bypass: {wire_key: 'bypass', nullable: true},
+            bypass: {wire_key: 'bypass', nullable: true, const: true},
             contexts: {wire_key: 'contexts', required: false, list: true},
             user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )

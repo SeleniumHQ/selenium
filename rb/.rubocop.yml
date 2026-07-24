@@ -64,6 +64,7 @@ Metrics/ModuleLength:
   Max: 110
   Exclude:
     - 'lib/selenium/webdriver/common/platform.rb'
+    - 'lib/selenium/webdriver/bidi/serialization/record.rb'
     - 'lib/selenium/webdriver/bidi/support/bidi_generate.rb'
     - 'spec/**/*'
 
