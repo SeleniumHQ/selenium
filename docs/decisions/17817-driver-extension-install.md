@@ -1,9 +1,7 @@
-# NNNN. The driver installs extensions directly
-
-<!-- NNNN is this proposal's PR number; rename the file to NNNN-driver-extension-install.md once GitHub assigns it. -->
+# 17817. The driver installs extensions directly
 
 - Status: Proposed
-- Discussion: <!-- link to this record's PR once opened -->
+- Discussion: https://github.com/SeleniumHQ/selenium/pull/17817
 
 ## Context
 
