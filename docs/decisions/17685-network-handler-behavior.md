@@ -140,6 +140,8 @@ network.addAuthentication(UsernameAndPassword.of("user", "pass"),
      as a deliberate, terminal override.
    * A response has `fail` and `submit`. It has already round-tripped, so whether `submit` maps to
      `ContinueResponse` or `ProvideResponse` follows from whether a replacement body was given.
+   * Within one handler, settling more than once is an error — after it settles, a further
+     disposition call raises rather than overriding the first.
 
 ```ruby
 # fail: error out; respond: mock, no round trip; submit: send (mutated) to the server and stop the chain
@@ -190,20 +192,20 @@ network.addRequestHandler(r -> r.addHeader("X-Test", "true"));
 network.addRequestHandler(r -> r.removeHeader("X-Test"));
 ```
 
-7. **An uncaught exception discards the handler's staged changes and surfaces to the user.** The
-   event keeps flowing as if that handler had not run, so one broken handler cannot corrupt live
-   traffic or stall the page; but the failure is not swallowed — the handler expresses the test's
-   intent, so a failure in it reaches the user rather than passing silently.
+7. **An uncaught exception is raised to the user, not logged.** The handler callable is responsible
+   for its own error handling; an exception it does not catch surfaces rather than being swallowed.
+   The event still continues (decision 5) so the browser is not left waiting; what a throwing handler
+   contributed to it before the exception is unspecified.
 
 ```ruby
-# The error surfaces; the header addition from the other handler still applies
+# The exception is raised; the header addition from the other handler still applies
 network.add_request_handler { |r| r.add_header("X-Test", true) }
 network.add_request_handler { |r| raise Exception }
 ```
 
 ```java
 network.addRequestHandler(r -> r.addHeader("X-Test", "true"));
-network.addRequestHandler(r -> { throw new RuntimeException(); });   // surfaces to the user
+network.addRequestHandler(r -> { throw new RuntimeException(); });   // raised to the user
 ```
 
 8. **Return values within the callables are ignored.** No meaning will ever be applied to anything a
@@ -316,10 +318,16 @@ network.addResponseHandler(new BodyCollection(), r -> log(r.body()));
 - **Ordering (decision 6).**
   - Registration order instead of LIFO — prevents overriding global settings locally.
 - **Failure (decision 7).**
-  - End the session on any uncaught exception (Playwright) — burdens users with unrelated network
-    errors, worse when intercepting by default.
-  - Log the exception rather than surface it — the failure is the test's own bug, so it should reach
-    the user rather than pass silently.
+  - Log the exception instead of raising it — but an uncaught exception is the handler's own bug, so
+    it should error, not disappear into a log.
+  - End the whole session on any uncaught exception, as an unhandled rejection effectively does in
+    Playwright — disproportionate to one handler's bug: it closes the browser and drops all other
+    handlers, whereas decision 7 surfaces the error and leaves the session running.
+  - Shape the wire outcome on a throw — snapshot each handler so only prior handlers' changes survive,
+    or revert to the browser's original request — but the event resolves before the exception
+    surfaces, so the outcome is moot either way.
+  - Abort or mock-respond on any handler error — deterministic, but turns a handler bug into a failed
+    or empty request instead of letting it proceed.
 - **Return values (decision 8).**
   - Let a return value set event or handler state instead of acting on the wrapper — not
     straightforward across all languages.
