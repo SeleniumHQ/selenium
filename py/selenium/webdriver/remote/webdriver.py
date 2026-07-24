@@ -604,7 +604,6 @@ class WebDriver(BaseWebDriver):
         Example:
             `driver.get("https://example.com")`
         """
-        self._ensure_quiescence_preload()
         self.execute(Command.GET, {"url": url})
 
     def _ensure_quiescence_preload(self) -> None:
@@ -612,12 +611,14 @@ class WebDriver(BaseWebDriver):
 
         The polyfill installs ``window.__quiescence`` before any page script
         runs, letting callers observe when the document has no pending timers,
-        network requests, or animation loops. Registering it before the first
-        navigation means it is active for that page and every subsequent one.
+        network requests, or animation loops. It is registered from
+        ``browsing_context.navigate()`` (which, unlike ``get()``, does not wait
+        for the page to load) so the oracle is available on the document that
+        navigation creates and on every subsequent one.
 
         Injection is best-effort: it only runs when the session negotiated a
         BiDi WebSocket (``webSocketUrl`` capability), and any failure is logged
-        rather than raised so classic navigation is never affected.
+        rather than raised so navigation is never affected.
         """
         if self._quiescence_preload_attempted:
             return
@@ -1402,7 +1403,7 @@ class WebDriver(BaseWebDriver):
             self._start_bidi()
 
         if self._browsing_context is None:
-            self._browsing_context = BrowsingContext(self._websocket_connection)
+            self._browsing_context = BrowsingContext(self._websocket_connection, self)
 
         return self._browsing_context
 

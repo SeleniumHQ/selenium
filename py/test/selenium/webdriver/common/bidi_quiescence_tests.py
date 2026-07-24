@@ -17,14 +17,25 @@
 
 """Integration tests for the quiescence polyfill injected as a BiDi preload.
 
-``driver.get()`` registers ``javascript/atoms/quiescence.js`` as a preload
-script when the session negotiated a BiDi WebSocket, so ``window.__quiescence``
-is installed before any page script runs.
+``browsing_context.navigate()`` registers ``javascript/atoms/quiescence.js`` as
+a preload script when the session negotiated a BiDi WebSocket, so
+``window.__quiescence`` is installed before any page script runs. Unlike
+``driver.get()``, BiDi navigation does not wait for the page to load, which is
+where the quiescence oracle earns its keep.
 """
 
 import time
 
 from selenium.webdriver.support.ui import WebDriverWait
+
+
+def _navigate(driver, pages, name):
+    """Navigate to a served page via BiDi, which registers the preload."""
+    driver.browsing_context.navigate(
+        context=driver.current_window_handle,
+        url=pages.url(name),
+        wait="complete",
+    )
 
 
 def _is_quiet(driver):
@@ -47,20 +58,20 @@ def _await_quiet(driver, timeout_ms=5000, settle_ms=50):
 
 
 def test_quiescence_preload_installed(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     assert driver.execute_script("return typeof window.__quiescence") == "object"
     assert driver._quiescence_script_id is not None
 
 
 def test_idle_page_is_quiet(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     assert driver.execute_script("return window.__quiescence.isQuiet()") is True
 
 
 def test_await_quiet_resolves_on_idle_page(driver, pages):
-    pages.load("quiescence.html")
+    _navigate(driver, pages, "quiescence.html")
 
     result = _await_quiet(driver)
 
@@ -69,7 +80,7 @@ def test_await_quiet_resolves_on_idle_page(driver, pages):
 
 
 def test_pending_timeout_is_a_blocker(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script("window.setTimeout(() => {}, 2000);")
 
@@ -79,7 +90,7 @@ def test_pending_timeout_is_a_blocker(driver, pages):
 
 
 def test_await_quiet_waits_for_pending_timeout(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script("window.setTimeout(() => {}, 1000);")
 
@@ -90,7 +101,7 @@ def test_await_quiet_waits_for_pending_timeout(driver, pages):
 
 
 def test_long_timeout_is_policy_inert(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script("window.setTimeout(() => {}, 30000);")
 
@@ -98,10 +109,10 @@ def test_long_timeout_is_policy_inert(driver, pages):
 
 
 def test_preload_persists_across_navigations(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
     first_id = driver._quiescence_script_id
 
-    pages.load("quiescence.html")
+    _navigate(driver, pages, "quiescence.html")
 
     # The preload is registered once and re-runs on every navigation, so the
     # script id is stable and the API is present on the new document.
@@ -115,7 +126,7 @@ def test_preload_persists_across_navigations(driver, pages):
 
 
 def test_fetch_blocks_and_await_waits(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script("window.__q_fetch = window.fetch('/slow?ms=1500');")
 
@@ -127,7 +138,7 @@ def test_fetch_blocks_and_await_waits(driver, pages):
 
 
 def test_xhr_blocks_and_clears(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script("const x = new XMLHttpRequest(); x.open('GET', '/slow?ms=1200'); x.send();")
 
@@ -137,7 +148,7 @@ def test_xhr_blocks_and_clears(driver, pages):
 
 
 def test_ignored_url_pattern_does_not_block(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     # A fetch whose URL matches an ignore pattern must never count as a blocker.
     quiet = driver.execute_script(
@@ -149,7 +160,7 @@ def test_ignored_url_pattern_does_not_block(driver, pages):
 
 
 def test_websocket_registers_blocker(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     # Constructing a WebSocket should add a 'websocket' blocker synchronously,
     # before the connection resolves or closes.
@@ -166,7 +177,7 @@ def test_websocket_registers_blocker(driver, pages):
 
 
 def test_chained_work_is_awaited(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script(
         "window.__q_chain_done = false;"
@@ -190,7 +201,7 @@ def test_chained_work_is_awaited(driver, pages):
 
 
 def test_effect_free_interval_becomes_observed_inert(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script("window.__q_hb = setInterval(() => {}, 200);")
 
@@ -204,7 +215,7 @@ def test_effect_free_interval_becomes_observed_inert(driver, pages):
 
 
 def test_dom_mutating_interval_stays_blocker(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script(
         "window.__q_clock = setInterval("
@@ -220,7 +231,7 @@ def test_dom_mutating_interval_stays_blocker(driver, pages):
 
 
 def test_storage_writing_interval_stays_blocker(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script(
         "window.__q_st = setInterval(() => { localStorage.setItem('k', String(performance.now())); }, 100);"
@@ -235,7 +246,7 @@ def test_storage_writing_interval_stays_blocker(driver, pages):
 
 
 def test_mark_inert_clears_blocker_immediately(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script(
         "window.__q_clock = setInterval("
@@ -252,7 +263,7 @@ def test_mark_inert_clears_blocker_immediately(driver, pages):
 
 
 def test_mark_inert_survives_subsequent_ticks(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script(
         "window.__q_clock = setInterval("
@@ -278,7 +289,7 @@ def test_mark_inert_survives_subsequent_ticks(driver, pages):
 
 
 def test_clear_timeout_removes_blocker(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script("window.__q_t = setTimeout(() => {}, 5000);")
     assert _is_quiet(driver) is False
@@ -288,7 +299,7 @@ def test_clear_timeout_removes_blocker(driver, pages):
 
 
 def test_timeout_just_below_policy_threshold_blocks(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     # Default inertTimeoutMinDelayMs is 10000ms; 9999ms must still block.
     driver.execute_script("window.__q_t = setTimeout(() => {}, 9999);")
@@ -297,7 +308,7 @@ def test_timeout_just_below_policy_threshold_blocks(driver, pages):
 
 
 def test_timeout_at_policy_threshold_is_inert(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     # A delay of exactly the threshold (10000ms) is treated as inert.
     driver.execute_script("window.__q_t = setTimeout(() => {}, 10000);")
@@ -311,7 +322,7 @@ def test_timeout_at_policy_threshold_is_inert(driver, pages):
 
 
 def test_single_pending_raf_blocks(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     types_ = driver.execute_script(
         "requestAnimationFrame(() => {});return window.__quiescence.getBlockers().map((b) => b.type);"
@@ -320,7 +331,7 @@ def test_single_pending_raf_blocks(driver, pages):
 
 
 def test_noop_raf_loop_becomes_observed_inert(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script(
         "window.__q_raf_stop = false;"
@@ -338,7 +349,7 @@ def test_noop_raf_loop_becomes_observed_inert(driver, pages):
 
 
 def test_dom_mutating_raf_loop_stays_blocker(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script(
         "window.__q_raf_stop = false;"
@@ -358,7 +369,7 @@ def test_dom_mutating_raf_loop_stays_blocker(driver, pages):
 
 
 def test_count_raf_policy_disables_raf_blocking(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     quiet = driver.execute_script(
         "window.__quiescence.setPolicy({countRaf: false});"
@@ -374,7 +385,7 @@ def test_count_raf_policy_disables_raf_blocking(driver, pages):
 
 
 def test_await_quiet_times_out_with_named_blockers(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script(
         "window.__q_clock = setInterval(  () => { document.body.appendChild(document.createElement('div')); }, 100);"
@@ -389,7 +400,7 @@ def test_await_quiet_times_out_with_named_blockers(driver, pages):
 
 
 def test_snapshot_includes_non_blocking_entries(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     # A policy-inert timeout does not block, but should still appear in the raw
     # ledger snapshot exposed for debugging.
@@ -402,7 +413,7 @@ def test_snapshot_includes_non_blocking_entries(driver, pages):
 
 
 def test_on_state_changed_reports_transitions(driver, pages):
-    pages.load("blank.html")
+    _navigate(driver, pages, "blank.html")
 
     driver.execute_script(
         "window.__q_events = [];"
