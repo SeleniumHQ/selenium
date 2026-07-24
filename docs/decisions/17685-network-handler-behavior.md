@@ -132,7 +132,8 @@ network.addAuthentication(UsernameAndPassword.of("user", "pass"),
 4. **A request or response handler observes or intercepts, and the event object enforces which.**
    The mode is decided at registration; intercepting is the default and observing is opt-in. An
    observing handler receives a read-only event object, takes no part in the disposition chain
-   (decisions 5–7), and takes no patterns. An intercepting handler receives a mutable
+   (decisions 5–7), and takes no patterns — supplying them is an error. An intercepting
+   handler receives a mutable
    event object: it can stage changes and settle the event, and traffic is paused until handling
    resolves it.
    * How a binding lets the user pick the mode — a keyword argument, an options object, an overload —
