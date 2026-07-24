@@ -175,6 +175,12 @@ copy_file(
 )
 
 copy_file(
+    name = "quiescence",
+    src = "//javascript/atoms:quiescence.js",
+    out = "selenium/webdriver/common/quiescence.js",
+)
+
+copy_file(
     name = "webextensions-selenium-example-xpi",
     testonly = True,
     src = "//common/extensions:webextensions-selenium-example.xpi",
@@ -294,6 +300,7 @@ py_library(
         ":find-elements",
         ":get-attribute",
         ":is-displayed",
+        ":quiescence",
     ],
     imports = ["."],
     visibility = ["//visibility:public"],
