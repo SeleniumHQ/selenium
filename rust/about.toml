@@ -1,21 +1,4 @@
-# cargo-about config for the third-party NOTICE (see the sbom job in ci-rust.yml).
-
-# All shipped triples, so the NOTICE covers target-gated crates (winapi/windows-*).
-targets = [
-    "x86_64-unknown-linux-musl",
-    "x86_64-apple-darwin",
-    "aarch64-apple-darwin",
-    "i686-pc-windows-msvc",
-    "x86_64-pc-windows-msvc",
-    "aarch64-pc-windows-msvc",
-]
-
-ignore-dev-dependencies = true
-
-[private]
-ignore = true
-
-# An unlisted license fails generation; add new ones only after review.
+# Licenses present in the crate tree; cargo-about won't emit the NOTICE without this list.
 accepted = [
     "MIT",
     "Apache-2.0",
@@ -34,7 +17,7 @@ accepted = [
     "OpenSSL",
 ]
 
-# ring has a license-file, not an SPDX expression; the built-in workaround attributes it.
-workarounds = [
-    "ring",
-]
+ignore-dev-dependencies = true
+
+# ring ships a license-file rather than an SPDX expression.
+workarounds = ["ring"]
