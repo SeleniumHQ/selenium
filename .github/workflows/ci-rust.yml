@@ -241,15 +241,9 @@ jobs:
       - name: "Generate SBOM and third-party notices"
         working-directory: rust
         run: |
-          # cargo resolves the crate closure for every platform in one pass, so a
-          # single SBOM/NOTICE covers all targets. --target all keeps target-gated
-          # crates (Windows-only winapi/windows-*); default output name is
-          # <crate>.cdx.json. about.toml pins the shipped triples so the NOTICE
-          # matches the SBOM.
+          # --target all includes target-gated crates for every platform, not just the host.
           cargo cyclonedx --format json --all-features --target all
           cargo about generate about.hbs > selenium-manager-THIRD-PARTY-NOTICES.txt
-          # Guard cross-platform completeness: a host-filtered SBOM would omit
-          # Windows-only winapi and silently ship an incomplete artifact.
           grep -q '"name" *: *"winapi"' selenium-manager.cdx.json \
             || { echo "::error::SBOM is missing winapi; --target all did not include Windows crates"; exit 1; }
       - name: "Upload SBOM and notices"

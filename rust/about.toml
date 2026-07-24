@@ -1,16 +1,6 @@
-# cargo-about configuration for the Selenium Manager third-party NOTICE.
-#
-# Used by the ci-rust.yml `release` job:
-#   cargo about generate about.hbs > selenium-manager-THIRD-PARTY-NOTICES.txt
-#
-# `targets` is the whole point of generating here rather than in Bazel: a single
-# cargo invocation resolves the crate closure for every platform we ship, so the
-# NOTICE covers target-gated crates (Windows-only winapi/windows-*) that a
-# single-platform build would never see.
+# cargo-about config for the third-party NOTICE (see the sbom job in ci-rust.yml).
 
-# Evaluate the license closure for every shipped triple. These do not need the
-# corresponding rustup targets installed -- cargo-about filters `cargo metadata`
-# by platform cfg, it does not compile.
+# All shipped triples, so the NOTICE covers target-gated crates (winapi/windows-*).
 targets = [
     "x86_64-unknown-linux-musl",
     "x86_64-apple-darwin",
@@ -20,18 +10,12 @@ targets = [
     "aarch64-pc-windows-msvc",
 ]
 
-# Dev-dependencies (assert_cmd, rstest, is_executable, ...) are not linked into
-# the shipped binary, so they must not appear in the attribution.
 ignore-dev-dependencies = true
 
-# Do not emit an attribution entry for the workspace crate itself.
 [private]
 ignore = true
 
-# Every SPDX license present in the resolved tree must be listed here; an
-# un-accepted license fails generation. Keep this list in sync with the tree --
-# a new transitive dependency introducing a new license will (correctly) break
-# the release until the license is reviewed and added.
+# An unlisted license fails generation; add new ones only after review.
 accepted = [
     "MIT",
     "Apache-2.0",
@@ -50,10 +34,7 @@ accepted = [
     "OpenSSL",
 ]
 
-# ring ships a `license-file` (a concatenation of ISC/MIT/OpenSSL terms) rather
-# than an SPDX `license` expression. cargo-about's built-in workaround supplies
-# the correct expression and bundled text so it is attributed instead of failing
-# as NOASSERTION.
+# ring has a license-file, not an SPDX expression; the built-in workaround attributes it.
 workarounds = [
     "ring",
 ]
