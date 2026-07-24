@@ -243,6 +243,29 @@ class SetClientWindowStateParameters:
             },
         },
         "extra_methods": [
+            '''    def navigate(self, context: Any | None = None, url: Any | None = None, wait: Any | None = None):
+        """Execute browsingContext.navigate"""
+        if context is None:
+            raise TypeError("navigate() missing required argument: 'context'")
+        if url is None:
+            raise TypeError("navigate() missing required argument: 'url'")
+
+        # Register the quiescence preload (once) so window.__quiescence is
+        # installed on the document this navigation creates. Unlike the classic
+        # GET command, browsingContext.navigate does not wait for the page to
+        # load, so the quiescence oracle is registered here rather than in get().
+        if self._driver is not None:
+            self._driver._ensure_quiescence_preload()
+
+        params = {
+            "context": context,
+            "url": url,
+            "wait": wait,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browsingContext.navigate", params)
+        result = self._conn.execute(cmd)
+        return result''',
             '''    def set_viewport(
         self,
         context: str | None = None,
