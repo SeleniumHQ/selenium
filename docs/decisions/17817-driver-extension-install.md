@@ -14,10 +14,12 @@ created. Branded production Chrome stopped honoring that path in Chrome 137; Chr
 unbranded Chromium builds still honor it. Installing an extension after the session is created is
 therefore now a requirement, not a convenience.
 
-A Chromium driver reaches the browser over one of two transports: a local TCP debugging port, or a
-pipe inherited from the process that launched the browser. The port is what makes CDP reachable;
-the pipe is private to the driver and carries WebDriver BiDi only. Chrome accepts extension install
-over BiDi only on the pipe.
+Installing an extension in Chromium with BiDi requires the driver to connect to the browser over an
+inherited pipe rather than a local debugging port, and that has a cost. Chromium exposes CDP two
+ways: a vendored endpoint (`goog/cdp/execute`) that sends and receives CDP commands but not events,
+and a live DevTools connection that Selenium's higher-level CDP API is built on. Only the debugging
+port exposes that live connection, so over the pipe the vendored endpoint still works but the CDP
+API does not.
 
 WebDriver BiDi specifies extension install and uninstall, which both Firefox and Chromium
 implement. Bindings already expose the BiDi module for it, and pointing users at that module is
@@ -44,9 +46,9 @@ what we advertise today.
    extension requires no additional flags from the user, signed or not. Firefox already exposes BiDi
    natively.
 
-3. **A session provides BiDi or CDP, not both.** The pipe carries BiDi but not CDP, so a BiDi
-   session has no CDP available. No configuration provides both — a single transport carries one or
-   the other — so a caller who needs CDP does not enable BiDi.
+3. **When BiDi is enabled, Selenium disables its CDP API.** The vendored CDP endpoint remains
+   available; the CDP API is turned off rather than left to fail when its DevTools connection is
+   unavailable.
 
 ## Considered options
 
@@ -99,8 +101,9 @@ flag, which must be set when the browser launches and cannot be added once the s
 
 - **Extensions can be added and removed mid-session**, on both Firefox and Chromium, without
   preparing capabilities before the session starts.
-- **CDP is unavailable in a BiDi session.** Users who need `execute_cdp_cmd`, port-based DevTools,
-  or Grid `se:cdp` do not enable BiDi for that session. This needs a release-note call-out.
+- **Users relying on Selenium's CDP API can switch to the BiDi equivalent**, call the CDP endpoint
+  directly through their language's wrapper method (`execute_cdp_cmd` and equivalents), or not
+  enable BiDi.
 - **Chromium BiDi sessions are more secure** — no localhost CDP control port for other local
   processes to attach to. The gain is largest on shared, containerized, or CI Grid nodes.
 - **Grid needs no code changes.** BiDi over Grid is proxied through chromedriver's own
