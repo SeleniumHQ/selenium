@@ -31,8 +31,8 @@ nothing here exposes a protocol type.
 
 ## Decision
 
-Request and response handlers observe or intercept and reconcile to one disposition; authentication
-handlers supply credentials. Selenium consults intercept handlers one at a time and lets each
+Request and response handlers observe the event, or intercept it and reconcile to one disposition;
+authentication handlers supply credentials. Selenium consults intercept handlers one at a time and lets each
 dispose of the event as it runs — it does not gather every handler's outcome and reconcile at the
 end. There are multiple ways to implement the decisions below; the examples are illustrative
 user-facing code in Ruby and Java.
@@ -62,9 +62,9 @@ network.removeRequestHandler(handle);
 network.clearRequestHandlers();
 ```
 
-2. **URL filtering is declared when a handler is registered.** By default a
-   handler matches every event; patterns narrow it. What they cannot express,
-   the user may filter in the callable.
+2. **URL filtering is declared when an intercepting handler is registered.** By
+   default it intercepts every event; patterns narrow it. What they cannot
+   express, the user may filter in the callable.
 
    The argument name is the equivalent of `urlPatterns`. Its values must
    support, in a language idiomatic way, one or more strings and/or objects,
@@ -130,36 +130,30 @@ network.addAuthentication(UsernameAndPassword.of("user", "pass"),
 ```
 
 4. **A request or response handler observes or intercepts, and the event object enforces which.**
-   There is one method to add handlers, and which mode the handler operates under is decided at
-   creation; intercepting is the default and observing is opt-in — a default that cannot change later
-   without breaking existing handlers. An observing handler receives a
-   read-only event object: it can read the event but has no methods to mutate or settle it, and it
-   does not pause network traffic. An intercepting handler receives a mutable event object: it can
-   stage changes and settle the event, and network traffic is paused until handling resolves it.
-   Because the object's type carries the difference — a read-only object simply has no
-   mutate-or-settle methods — nothing has to introspect the callable to tell the modes apart.
+   The mode is decided at registration; intercepting is the default and observing is opt-in. An
+   observing handler receives a read-only event object, takes no part in the disposition chain
+   (decisions 5–7), and takes no patterns. An intercepting handler receives a mutable
+   event object: it can stage changes and settle the event, and traffic is paused until handling
+   resolves it.
    * How a binding lets the user pick the mode — a keyword argument, an options object, an overload —
-     is its own idiom; what is fixed is that it is the same method, not a separate observe one.
+     is its own idiom; what is fixed is that it is the same method name, not an
+     `add_request_observer` alongside an `add_request_intercept`.
 
 ```ruby
 # Same method, two modes; the event object handed to the block differs
-network.add_request_handler { |r| r.fail if something }         # intercept: mutable, blocking
-network.add_request_handler(observe: true) { |r| log(r.url) }   # observe: read-only, non-blocking
-
-# An observed event object has no mutation methods, so trying to mutate raises
-network.add_request_handler(observe: true) { |r| r.fail }       # raises: observed events are read-only
+network.add_request_handler { |r| r.fail if something }         # intercept: mutable, in the chain
+network.add_request_handler(observe: true) { |r| log(r.url) }   # observe: read-only, outside the chain
 ```
 
 ```java
-network.addRequestHandler(r -> { if (something) r.fail(); });                    // intercept: mutable, blocking
-network.addRequestHandler(new ObservationOptions(), r -> log(r.url()));          // observe: read-only, non-blocking
-
-// The observe callback's event type has no fail()/mutate methods — this would not compile
+network.addRequestHandler(r -> { if (something) r.fail(); });                    // intercept: mutable, in the chain
+network.addRequestHandler(new ObservationOptions(), r -> log(r.url()));          // observe: read-only, outside the chain
 ```
 
-5. **When a handler settles a disposition, the first to do so resolves the event and stops the
-   chain.** The user settles the event by acting on the object the callable receives. A handler that
-   only stages mutations does not settle; it passes the event to the next handler (decision 6).
+5. **When an intercepting handler settles a disposition, the first to do so resolves the event and
+   stops the chain.** The user settles the event by acting on the object the callable receives. A
+   handler that only stages mutations does not settle; it passes the event to the next handler
+   (decision 6).
    * A request has three: `fail` (BiDi's `FailRequest`) ends it with an error;
      `respond` (`ProvideResponse`) replies with a mock, so nothing reaches the server; `submit`
      (`ContinueRequest`) sends it on, with any staged mutations, and consults no further handler.
@@ -185,9 +179,9 @@ network.addRequestHandler(r -> { if (override(r.url())) { r.addHeader("X-Test", 
 network.addResponseHandler(r -> { if (rewrite(r.url())) r.submit(mockedResponse); });
 ```
 
-6. **Default disposition is to process other handlers.** If a handler does not specify the
-   disposition, the original event and any staged mutations pass to the next handler. If no handler
-   ever specifies one, the event proceeds with the staged mutations.
+6. **Default disposition is to process other intercepting handlers.** If a handler does not specify
+   the disposition, the original event and any staged mutations pass to the next handler. If no
+   handler ever specifies one, the event proceeds with the staged mutations.
    * In Playwright request interception there is no default; the user must specify fallback if that
      is the intent.
 
@@ -203,6 +197,8 @@ network.addRequestHandler(r -> r.addHeader("X-Test", "true"));
 7. **Later-registered handlers are consulted first.** This applies to every family — request,
    response, and authentication. Registering an additional handler can mutate the state used by
    previously registered ones.
+   * Ordering is a property of the chain, so it covers intercepting handlers; observing handlers
+     have no defined order, including relative to one another.
    * Matches Playwright's Last-In-First-Out (LIFO) behavior.
    * Allows users to locally override handlers set by a shared library or suite.
    * The alternative is being stuck with the top-level behavior everywhere, or not being able to set
@@ -278,7 +274,7 @@ network.addRequestHandler(r -> r.addHeader("X-Test", "true"));
     by default; the handler declares that it needs the body when it is registered — not from inside
     the callback, since the collector must be in place before the event — and Selenium then owns the
     collector's lifecycle, size cap, and browser-support quirks. The body is readable on the event
-    inside that handler, where applicable.
+    inside that handler, in either mode — the collector holds it independently of the chain.
     * The user never calls `addDataCollector` / `getData` or tears a collector down.
     * There is no way to collect or read body data outside a handler; collection happens only through
       the `add_request_handler` / `add_response_handler` registration.
@@ -320,6 +316,8 @@ network.addResponseHandler(new BodyCollection(), r -> log(r.body()));
     can do this in the callable, and if enough do, we can revisit with evidence.
   - Let each binding choose which forms it accepts — five capability sets, so what a user can express
     would depend on their language rather than the spec.
+  - Give observing handlers patterns too, matched client-side — the same argument would be enforced
+    in two different places, and a conditional in the callable already does it.
 - **Authentication as a callable (decision 3).**
   - Exclude auth from the callable model and expose only static credentials (an earlier draft) — a
     callable can compute credentials per challenge, and only a callable can cancel one.
@@ -334,9 +332,11 @@ network.addResponseHandler(new BodyCollection(), r -> log(r.body()));
     case, and a signature a user can read without understanding callbacks serves them better than the
     one general form.
 - **Modes (decision 4).**
-  - Give observation its own method — it shares the whole registration shape, and the read-only
-    contract can only be carried by the event object's type (we will not introspect the callable),
-    not the method.
+  - Give observation its own method — the modes read one event stream and share the whole
+    registration shape, so a second name duplicates add, remove, and clear for both request and
+    response to carry what is one flag.
+  - Hand an observing handler the resolved event and its final disposition — it would have to be
+    sequenced behind the chain, and the response phase already reports the request as actually sent.
   - Make everything interception and add observation later — routing observation through interception
     pauses traffic and perturbs what it records (cache, timing).
 - **Reconciliation (decisions 5 & 6).**
@@ -381,5 +381,7 @@ network.addResponseHandler(new BodyCollection(), r -> log(r.body()));
   handler stays contained, and the original event remains readable.
 - Authentication handlers gain a callable form in addition to static credentials, so credentials can
   be produced — or the challenge cancelled — per challenge.
+- Observing does not make traffic non-blocking: both modes read the same event, so it is paused
+  whenever an intercepting handler's patterns match it, whatever else is observing.
 - This changes handler behavior that several bindings already ship, so it is not backwards
   compatible.
