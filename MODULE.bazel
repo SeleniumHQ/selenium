@@ -26,6 +26,24 @@ single_version_override(
     version = "33.5",
 )
 
+# We set `--@llvm//config:experimental_stub_libgcc_s=True` in .bazelrc so the
+# LLVM cc toolchain doesn't try to resolve a `-lgcc_s` it doesn't ship. In
+# v0.8.0 the `experimental_stub_libgcc_s` bool_flag isn't marked
+# `scope = "universal"`, so the flag value on the target config doesn't
+# propagate to exec config and tool builds (process_wrapper,
+# //rust:_selenium-manager-bin) still fail to link. The patch adds
+# `scope = "universal"` so the flag does propagate; can be dropped once
+# hermeticbuild/hermetic-llvm#544 lands.
+single_version_override(
+    module_name = "llvm",
+    patch_strip = 1,
+    patches = [
+        "//third_party/bazel:llvm_libgcc_s_universal_scope.patch",
+    ],
+    version = "0.8.3",
+)
+
+bazel_dep(name = "rules_android", version = "0.7.2")
 bazel_dep(name = "rules_closure", version = "0.16.0")
 bazel_dep(name = "rules_dotnet", version = "0.21.5")
 
@@ -40,6 +58,16 @@ bazel_dep(name = "rules_python", version = "1.9.0")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.26.0")
 bazel_dep(name = "rules_rs", version = "0.0.96")
+
+# Native C libraries pulled in by the `*-sys` crates that the Selenium
+# Manager Rust binary depends on. Pointing each `*-sys` crate at its
+# BCR-hosted cc_library (per rules_rs's `bazel mod tidy` suggestion) lets
+# the C source build with the LLVM cc toolchain — which is target-libc
+# aware, so the same crate compiles correctly for both the host and the
+# musl cross-compile targets.
+bazel_dep(name = "bzip2", version = "1.0.8.bcr.3")
+bazel_dep(name = "xz", version = "5.4.5.bcr.8")
+bazel_dep(name = "zstd", version = "1.5.7.bcr.1")
 
 single_version_override(
     module_name = "rules_jvm_external",
@@ -383,15 +411,30 @@ use_repo(rust_toolchains, "default_rust_toolchains")
 
 register_toolchains("@default_rust_toolchains//:all")
 
-# TODO: Register only Windows exec for now, full @llvm migration can be done as followup.
 llvm_toolchains = use_extension("@llvm//extensions:toolchain.bzl", "toolchain")
+
+# Register the hermetic LLVM exec toolchain for every platform we build on so
+# that the C/C++ toolchain used for exec-config targets (process_wrapper, cargo
+# build scripts, etc.) is fully version-pinned and reproducible.
+#
+# macOS is now viable because the Rust TLS stack uses `ring` (pure Rust + light
+# C, no system-framework deps) instead of `aws-lc-rs` / `aws-lc-sys`, which
+# previously required CoreServices and compiler-rt from the Xcode sysroot.
+#
+# Windows uses the gnullvm ABI (PE binary, MSVCRT runtime) rather than MSVC
+# because the hermetic LLVM toolchain ships everything needed for gnullvm
+# targets without a separately-provisioned Visual Studio installation.
 llvm_toolchains.exec(
     arch = "x86_64",
-    os = "windows",
+    os = "linux",
 )
 llvm_toolchains.exec(
     arch = "aarch64",
-    os = "windows",
+    os = "linux",
+)
+llvm_toolchains.exec(
+    arch = "x86_64",
+    os = "macos",
 )
 llvm_toolchains.exec(
     arch = "aarch64",
@@ -399,7 +442,11 @@ llvm_toolchains.exec(
 )
 llvm_toolchains.exec(
     arch = "x86_64",
-    os = "macos",
+    os = "windows",
+)
+llvm_toolchains.exec(
+    arch = "aarch64",
+    os = "windows",
 )
 use_repo(llvm_toolchains, "llvm_toolchains")
 
@@ -412,25 +459,60 @@ crate.from_cargo(
     cargo_toml = "//rust:Cargo.toml",
     platform_triples = [
         "aarch64-apple-darwin",
+        "aarch64-pc-windows-gnullvm",
         "aarch64-pc-windows-msvc",
         "aarch64-unknown-linux-gnu",
+        "aarch64-unknown-linux-musl",
         "x86_64-apple-darwin",
+        "x86_64-pc-windows-gnullvm",
         "x86_64-pc-windows-msvc",
         "x86_64-unknown-linux-gnu",
+        "x86_64-unknown-linux-musl",
     ],
 )
+
+# Both crates ship `readme.md` but their source uses `include_str!("../readme.md")`.
+# Bazel's Rust sandbox only includes `.rs` source files — not auxiliary data files
+# like README — so the include_str! fails at compile time regardless of case. We
+# patch out the doc attribute entirely; no documentation needed in a Bazel build.
+crate.annotation(
+    crate = "windows-link",
+    patch_args = ["-p1"],
+    patches = ["//third_party/bazel:windows_link_readme_case.patch"],
+)
+crate.annotation(
+    crate = "windows-targets",
+    patch_args = ["-p1"],
+    patches = ["//third_party/bazel:windows_targets_readme_case.patch"],
+    version = "0.53.4",
+)
+
+# Point the `*-sys` crates at the BCR cc_library packages so their cargo
+# build scripts don't run. The `inject_repo` calls below make the
+# corresponding repos visible to the crate extension. (Auto-suggested by
+# `bazel mod tidy` against rules_rs's well-known annotations.)
 crate.annotation(
     crate = "bzip2-sys",
-    gen_build_script = "on",
+    gen_build_script = "off",
+    deps = ["@bzip2//:bz2"],
 )
 crate.annotation(
     crate = "lzma-sys",
-    gen_build_script = "on",
+    gen_build_script = "off",
+    deps = ["@xz//:lzma"],
 )
 crate.annotation(
     crate = "zstd-sys",
-    gen_build_script = "on",
+    gen_build_script = "off",
+    deps = ["@zstd"],
 )
+
+inject_repo(crate, "bzip2")
+
+inject_repo(crate, "xz")
+
+inject_repo(crate, "zstd")
+
 use_repo(crate, "crates")
 
 selenium_manager_artifacts = use_extension("//common:selenium_manager.bzl", "selenium_manager_artifacts")

@@ -77,14 +77,22 @@ def nuget_pack_impl(ctx):
 
     working_dir = ctx.label.name + "-working-dir"
 
-    # Copy files directly into the working directory layout (no intermediate zip)
+    # Copy files directly into the working directory layout (no intermediate zip).
+    # Tree artifacts (directories produced e.g. by copy_to_directory) are copied
+    # recursively into the destination directory.
     copy_cmds = []
     for (file, rel_path) in layout.items():
         dest = working_dir + "/" + rel_path
-        copy_cmds.append("mkdir -p \"$(dirname '{dest}')\" && cp '{src}' '{dest}'".format(
-            dest = dest,
-            src = file.path,
-        ))
+        if file.is_directory:
+            copy_cmds.append("mkdir -p '{dest}' && cp -R '{src}'/. '{dest}'".format(
+                dest = dest,
+                src = file.path,
+            ))
+        else:
+            copy_cmds.append("mkdir -p \"$(dirname '{dest}')\" && cp '{src}' '{dest}'".format(
+                dest = dest,
+                src = file.path,
+            ))
 
     cmd_parts = [
         "rm -rf '%s'" % working_dir,

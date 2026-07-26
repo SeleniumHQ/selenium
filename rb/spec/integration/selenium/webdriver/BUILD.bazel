@@ -9,9 +9,7 @@ rb_library(
         "spec_support.rb",
     ] + glob(["spec_support/**/*"]),
     data = [
-        "//rb:manager-linux",
-        "//rb:manager-macos",
-        "//rb:manager-windows",
+        "//rb:manager-bundle",
     ],
     visibility = ["//rb/spec:__subpackages__"],
     deps = [
