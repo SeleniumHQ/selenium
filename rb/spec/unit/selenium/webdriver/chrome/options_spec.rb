@@ -203,6 +203,23 @@ module Selenium
           end
         end
 
+        describe '#add_chromium_option' do
+          it 'nests a vendor capability inside the browser options object' do
+            options.add_chromium_option('unhandledCapability', 'value')
+
+            expect(options.as_json['goog:chromeOptions']).to include('unhandledCapability' => 'value')
+          end
+
+          it 'merges with capabilities set through dedicated methods' do
+            options.add_argument('foo')
+            options.add_chromium_option('unhandledCapability', 'value')
+
+            chrome_options = options.as_json['goog:chromeOptions']
+            expect(chrome_options['args']).to eq(['foo'])
+            expect(chrome_options['unhandledCapability']).to eq('value')
+          end
+        end
+
         describe '#add_preference' do
           it 'adds a preference' do
             options.add_preference(:foo, 'bar')
@@ -267,6 +284,15 @@ module Selenium
             expect(options.as_json).to eq('browserName' => 'chrome',
                                           'foo:bar' => {'foo' => 'bar'},
                                           'goog:chromeOptions' => {})
+          end
+
+          it 'merges a hand-built vendor options hash instead of overwriting it' do
+            options.add_argument('foo')
+            options.add_option('goog:chromeOptions', {'detach' => true})
+
+            chrome_options = options.as_json['goog:chromeOptions']
+            expect(chrome_options['detach']).to be(true)
+            expect(chrome_options['args']).to eq(['foo'])
           end
 
           it 'processes unhandled_prompt_behavior hash values' do

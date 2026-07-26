@@ -144,6 +144,23 @@ module Selenium
           end
         end
 
+        describe '#add_firefox_option' do
+          it 'nests a vendor capability inside the browser options object' do
+            options.add_firefox_option('unhandledCapability', 'value')
+
+            expect(options.as_json['moz:firefoxOptions']).to include('unhandledCapability' => 'value')
+          end
+
+          it 'merges with capabilities set through dedicated methods' do
+            options.add_argument('foo')
+            options.add_firefox_option('unhandledCapability', 'value')
+
+            firefox_options = options.as_json['moz:firefoxOptions']
+            expect(firefox_options['args']).to eq(['foo'])
+            expect(firefox_options['unhandledCapability']).to eq('value')
+          end
+        end
+
         describe '#add_preference' do
           it 'adds a preference' do
             options.add_preference(:foo, 'bar')
