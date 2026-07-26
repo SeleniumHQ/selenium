@@ -133,6 +133,20 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="ChromiumDriver"/> class using the specified command executor and options.
+    /// </summary>
+    /// <param name="commandExecutor">The <see cref="ICommandExecutor"/> to use for executing commands.</param>
+    /// <param name="options">The <see cref="ChromiumOptions"/> to be used with the ChromiumDriver.</param>
+    /// <param name="autoStartSession">Whether to automatically start the session.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">If the Chromium options capability name is <see langword="null"/>.</exception>
+    protected ChromiumDriver(ICommandExecutor commandExecutor, ChromiumOptions options, bool autoStartSession)
+        : base(commandExecutor, ConvertOptionsToCapabilities(options), autoStartSession)
+    {
+        this.optionsCapabilityName = options.CapabilityName ?? throw new ArgumentException("No chromium options capability name specified", nameof(options));
+    }
+
+    /// <summary>
     /// Gets the dictionary of custom Chromium commands registered with the driver.
     /// </summary>
     protected static IReadOnlyDictionary<string, CommandInfo> ChromiumCustomCommands => new ReadOnlyDictionary<string, CommandInfo>(chromiumCustomCommands);
@@ -144,7 +158,15 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             .GetAwaiter().GetResult();
     }
 
-    private static async Task<ICommandExecutor> GenerateDriverServiceCommandExecutorAsync(DriverService service, DriverOptions options, TimeSpan commandTimeout)
+    /// <summary>
+    /// Asynchronously generates a driver service command executor.
+    /// </summary>
+    /// <param name="service">The <see cref="DriverService"/> to use.</param>
+    /// <param name="options">The <see cref="DriverOptions"/> to be used with the driver.</param>
+    /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the <see cref="ICommandExecutor"/>.</returns>
+    /// <exception cref="ArgumentNullException">If <paramref name="service"/> or <paramref name="options"/> are <see langword="null"/>.</exception>
+    protected static async Task<ICommandExecutor> GenerateDriverServiceCommandExecutorAsync(DriverService service, DriverOptions options, TimeSpan commandTimeout)
     {
         if (service is null)
         {

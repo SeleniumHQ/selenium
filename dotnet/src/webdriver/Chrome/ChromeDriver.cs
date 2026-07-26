@@ -158,6 +158,61 @@ public class ChromeDriver : ChromiumDriver
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified command executor and options.
+    /// </summary>
+    /// <param name="commandExecutor">The <see cref="ICommandExecutor"/> to use for executing commands.</param>
+    /// <param name="options">The <see cref="ChromeOptions"/> to use for this driver.</param>
+    /// <param name="autoStartSession">Whether to automatically start the session.</param>
+    protected ChromeDriver(ICommandExecutor commandExecutor, ChromeOptions options, bool autoStartSession)
+        : base(commandExecutor, options, autoStartSession)
+    {
+        if (autoStartSession)
+        {
+            this.AddCustomChromeCommands();
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously creates and starts a new instance of the <see cref="ChromeDriver"/> class with default options.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the initialized <see cref="ChromeDriver"/>.</returns>
+    public static Task<ChromeDriver> StartAsync()
+    {
+        return StartAsync(new ChromeOptions());
+    }
+
+    /// <summary>
+    /// Asynchronously creates and starts a new instance of the <see cref="ChromeDriver"/> class using the specified options.
+    /// </summary>
+    /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the initialized <see cref="ChromeDriver"/>.</returns>
+    /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
+    public static async Task<ChromeDriver> StartAsync(ChromeOptions options)
+    {
+        if (options is null)
+        {
+            throw new ArgumentNullException(nameof(options), "Chrome options must not be null");
+        }
+
+        ChromeDriverService service = ChromeDriverService.CreateDefaultService();
+        ICommandExecutor executor = await GenerateDriverServiceCommandExecutorAsync(service, options, DefaultCommandTimeout).ConfigureAwait(false);
+
+        ChromeDriver driver = new(executor, options, autoStartSession: false);
+        driver.AddCustomChromeCommands();
+
+        try
+        {
+            await driver.StartSessionAsync(options.ToCapabilities()).ConfigureAwait(false);
+            return driver;
+        }
+        catch
+        {
+            driver.Dispose();
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Gets a read-only dictionary of the custom WebDriver commands defined for ChromeDriver.
     /// The keys of the dictionary are the names assigned to the command; the values are the
     /// <see cref="CommandInfo"/> objects describing the command behavior.

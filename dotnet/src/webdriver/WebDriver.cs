@@ -43,11 +43,22 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     private readonly List<string> registeredCommands = new List<string>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebDriver"/> class.
+    /// Initializes a new instance of the <see cref="WebDriver"/> class and automatically starts the driver session.
     /// </summary>
     /// <param name="executor">The <see cref="ICommandExecutor"/> object used to execute commands.</param>
     /// <param name="capabilities">The <see cref="ICapabilities"/> object used to configure the driver session.</param>
     protected WebDriver(ICommandExecutor executor, ICapabilities capabilities)
+        : this(executor, capabilities, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebDriver"/> class with optional automatic session initialization.
+    /// </summary>
+    /// <param name="executor">The <see cref="ICommandExecutor"/> object used to execute commands.</param>
+    /// <param name="capabilities">The <see cref="ICapabilities"/> object used to configure the driver session.</param>
+    /// <param name="autoStartSession">Whether to automatically start the driver session. When <see langword="true"/>, the session is started immediately; when <see langword="false"/>, the session must be started manually.</param>
+    protected WebDriver(ICommandExecutor executor, ICapabilities capabilities, bool autoStartSession)
     {
         this.CommandExecutor = executor;
         this.elementFactory = new WebElementFactory(this);
@@ -61,22 +72,25 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
             this.RegisterDriverCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"), true);
         }
 
-        try
-        {
-            this.StartSession(capabilities);
-        }
-        catch (Exception)
+        if (autoStartSession)
         {
             try
             {
-                // Failed to start driver session, disposing of driver
-                this.Dispose();
+                this.StartSession(capabilities);
             }
-            catch
+            catch (Exception)
             {
-                // Ignore the clean-up exception. We'll propagate the original failure.
+                try
+                {
+                    // Failed to start driver session, disposing of driver
+                    this.Dispose();
+                }
+                catch
+                {
+                    // Ignore the clean-up exception. We'll propagate the original failure.
+                }
+                throw;
             }
-            throw;
         }
     }
 
@@ -88,7 +102,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <summary>
     /// Gets the <see cref="ICapabilities"/> that the driver session was created with, which may be different from those requested.
     /// </summary>
-    public ICapabilities Capabilities { get; private set; }
+    public ICapabilities Capabilities { get; private set; } = null!;
 
     /// <summary>
     /// Gets or sets the URL the browser is currently displaying.
@@ -180,7 +194,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <summary>
     /// Gets the <see cref="Selenium.SessionId"/> for the current session of this driver.
     /// </summary>
-    public SessionId SessionId { get; private set; }
+    public SessionId SessionId { get; private set; } = null!;
 
     /// <summary>
     /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
@@ -589,11 +603,20 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// Starts a session with the driver
     /// </summary>
     /// <param name="capabilities">Capabilities of the browser</param>
-    [MemberNotNull(nameof(SessionId))]
-    [MemberNotNull(nameof(Capabilities))]
     protected void StartSession(ICapabilities capabilities)
     {
-        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
+        Task.Run(() => this.StartSessionAsync(capabilities)).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    /// Asynchronously starts a session with the driver.
+    /// </summary>
+    /// <param name="capabilities">Capabilities of the browser.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    /// <exception cref="WebDriverException">If the session cannot be started or the response is invalid.</exception>
+    protected async Task StartSessionAsync(ICapabilities capabilities)
+    {
+        Dictionary<string, object?> parameters = [];
 
         // If the object passed into the RemoteWebDriver constructor is a
         // RemoteSessionSettings object, it is expected that all intermediate
@@ -604,11 +627,12 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         {
             Dictionary<string, object> matchCapabilities = this.GetCapabilitiesDictionary(capabilities);
 
-            List<object> firstMatchCapabilitiesList = new List<object>();
-            firstMatchCapabilitiesList.Add(matchCapabilities);
+            List<object> firstMatchCapabilitiesList = [matchCapabilities];
 
-            Dictionary<string, object> specCompliantCapabilitiesDictionary = new Dictionary<string, object>();
-            specCompliantCapabilitiesDictionary["firstMatch"] = firstMatchCapabilitiesList;
+            Dictionary<string, object> specCompliantCapabilitiesDictionary = new()
+            {
+                ["firstMatch"] = firstMatchCapabilitiesList
+            };
 
             parameters.Add("capabilities", specCompliantCapabilitiesDictionary);
         }
@@ -617,9 +641,10 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
             parameters.Add("capabilities", remoteSettings.ToDictionary());
         }
 
-        Response response = this.Execute(DriverCommand.NewSession, parameters);
+        Response response = await this.ExecuteAsync(DriverCommand.NewSession, parameters).ConfigureAwait(false);
 
         response.EnsureValueIsNotNull();
+
         if (response.Value is not Dictionary<string, object> rawCapabilities)
         {
             string errorMessage = string.Format(CultureInfo.InvariantCulture, "The new session command returned a value ('{0}') that is not a valid JSON object.", response.Value);
