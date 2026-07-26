@@ -31,3 +31,13 @@ alias(
     name = "selenium-manager-windows",
     actual = "@download_sm_windows//file",
 )
+
+alias(
+    name = "selenium-manager-sbom",
+    actual = "@download_sm_sbom//file",
+)
+
+alias(
+    name = "selenium-manager-notice",
+    actual = "@download_sm_notice//file",
+)
