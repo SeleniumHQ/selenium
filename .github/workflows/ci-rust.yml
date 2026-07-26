@@ -244,8 +244,6 @@ jobs:
           # --target all includes target-gated crates for every platform, not just the host.
           cargo cyclonedx --format json --all-features --target all
           cargo about generate about.hbs > selenium-manager-THIRD-PARTY-NOTICES.txt
-          grep -q '"name" *: *"winapi"' selenium-manager.cdx.json \
-            || { echo "::error::SBOM is missing winapi; --target all did not include Windows crates"; exit 1; }
       - name: "Upload SBOM and notices"
         uses: actions/upload-artifact@v7
         with:

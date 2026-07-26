@@ -15,9 +15,14 @@ accepted = [
     "CC0-1.0",
     "BSL-1.0",
     "OpenSSL",
+    "CDLA-Permissive-2.0",
+    "bzip2-1.0.6",
 ]
 
 ignore-dev-dependencies = true
+
+# Resolve licenses from the crates themselves; don't depend on the clearlydefined service.
+no-clearly-defined = true
 
 # ring ships a license-file rather than an SPDX expression.
 workarounds = ["ring"]
