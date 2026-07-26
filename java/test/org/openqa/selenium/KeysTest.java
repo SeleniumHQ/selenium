@@ -68,4 +68,9 @@ class KeysTest {
     Keys key = Keys.LEFT;
     assertThat((CharSequence) getKeyFromUnicode(key.charAt(0))).isEqualTo(key);
   }
+
+  @Test
+  void getCodePointReturnsKeyCodePoint() {
+    assertThat(LEFT.getCodePoint()).isEqualTo(0xE012);
+  }
 }
