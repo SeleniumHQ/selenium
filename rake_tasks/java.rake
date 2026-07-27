@@ -207,10 +207,11 @@ task :local_dev do
 
   jars.each do |path|
     base = File.basename(path)
-    # Third-party jars are scoped to the resolved classpath; Selenium's generated jars pass through.
     if path.include?(maven_tree)
-      stem = base.sub(/-(?:sources|src)\.jar$/, '.jar')
-      next unless needed.include?(base) || needed.include?(stem)
+      # rules_jvm_external emits header_/processed_ compile variants beside the raw jar; skip those
+      # and copy the raw jar, whose clean name matches the stripped `needed` basenames.
+      next if base.start_with?('header_', 'processed_')
+      next unless needed.include?(base.sub(/-(?:sources|src)\.jar$/, '.jar'))
     elsif base.start_with?('libcdp')
       # Every CDP version emits libcdp.jar; prefix with the version dir so a flat dir holds them all.
       base = "#{File.basename(File.dirname(path))}-#{base}"
@@ -222,10 +223,14 @@ task :local_dev do
     FileUtils.cp(path, dest)
   end
 
-  copied = Dir.children(lib).count { |entry| entry.end_with?('.jar') }
-  raise "No dependency jars copied to #{lib}; expected Bazel outputs are missing" if copied.zero?
+  copied = Dir.children(lib).select { |entry| entry.end_with?('.jar') }
+  raise "No dependency jars copied to #{lib}; expected Bazel outputs are missing" if copied.empty?
 
-  puts "Copied #{copied} dependency jars to #{lib}"
+  # Fail loudly rather than hand the IDE an incomplete classpath if a resolved jar wasn't materialized.
+  missing = needed - copied
+  raise "Resolved classpath jars missing from #{lib}: #{missing.join(', ')}" unless missing.empty?
+
+  puts "Copied #{copied.size} dependency jars to #{lib}"
 end
 
 desc 'Package Java bindings and grid into releasable packages and stage for release'
