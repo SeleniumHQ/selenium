@@ -373,6 +373,7 @@ class RelativeLocatorTest extends JupiterTestBase {
     String url =
         appServer.create(
             new Page()
+                .withDoctype()
                 .withTitle("Collapsed Borders")
                 .withStyles(
                     " table {\n"
