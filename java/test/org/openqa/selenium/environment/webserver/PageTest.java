@@ -32,8 +32,10 @@ class PageTest {
     assertThat(page).doesNotContain("<!DOCTYPE");
 
     // Legacy shape/ordering contract: <script>/<style> sit after </head> closes, not inside it.
-    assertThat(page.indexOf("</head>")).isLessThan(page.indexOf("<script"));
-    assertThat(page.indexOf("</head>")).isLessThan(page.indexOf("<style"));
+    // containsSubsequence asserts presence AND order together, so a missing "</head>" fails here
+    // instead of silently passing the way raw indexOf().isLessThan() would (both return -1).
+    assertThat(page).containsSubsequence("</head>", "<script");
+    assertThat(page).containsSubsequence("</head>", "<style");
 
     // Key content is still present, in the expected tag order, without pinning incidental
     // whitespace (e.g. the exact "<body  >" spacing or the blank line for an empty body).
