@@ -17,7 +17,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="java" />
     <orderEntry type="library" name="maven" level="project" />
-    <orderEntry type="library" name="libcdp" level="project" />
     <orderEntry type="library" name="tools" level="project" />
     <orderEntry type="library" name="java-libs" level="project" />
   </component>

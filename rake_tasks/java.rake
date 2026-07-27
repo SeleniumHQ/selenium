@@ -145,38 +145,57 @@ task :grid do |_task, arguments|
   Bazel.execute('build', arguments.to_a, '//java/src/org/openqa/selenium/grid:executable-grid')
 end
 
-# Skip when copying: rules_jvm_external's header_/processed_ variants (compile stubs, not
-# classpath jars) and the JUnit runtime jars that IDEs supply via their own test runner.
-JAVA_LIBS_SKIP = %w[
-  header_ processed_
+# IDE test runners supply their own JUnit Platform launcher/engine; a second copy clashes.
+JAVA_LIBS_IDE_TEST_RUNTIME = %w[
   junit-jupiter-engine junit-platform-engine junit-platform-launcher junit-platform-reporting
 ].freeze
 
+# Third-party jars on the IntelliJ modules' resolved classpath. Scoping to this drops unused
+# transitives (e.g. javacc's test-only junit-4) by construction. Reads two providers, duck-typed
+# because cquery keys them by long Starlark ids: JavaInfo.transitive_runtime_jars for libraries, and
+# JavaRuntimeClasspathInfo.runtime_classpath for the in-tree java_binary tools (CDP/module generators).
+def resolved_third_party_jars
+  expr = '"\n".join(' \
+         '[f.path for p in providers(target).values() ' \
+         'if hasattr(p, "transitive_runtime_jars") for f in p.transitive_runtime_jars.to_list()] + ' \
+         '[f.path for p in providers(target).values() ' \
+         'if hasattr(p, "runtime_classpath") for f in p.runtime_classpath.to_list()])'
+  query = 'set(//java/src/... //java/test/... //java/src/dev/...)'
+  jars = []
+  Bazel.execute('cquery', ['--pin_browsers=false', '--output=starlark', "--starlark:expr=#{expr}"], query) do |out|
+    jars = out.lines.map(&:strip)
+              .grep(%r{\+\+maven\+maven/.*\.jar$})
+              .map { |path| File.basename(path).sub(/\A(?:processed|header)_/, '') }
+  end
+  jars.uniq.reject { |base| JAVA_LIBS_IDE_TEST_RUNTIME.any? { |name| base.start_with?(name) } }
+end
+
 desc 'Copy Bazel-built dependency jars to ./java-libs for local development'
 task :local_dev do
-  # pin_browsers defaults to true and would download pinned browsers/drivers this task doesn't need.
-  # @maven materializes the resolved third-party classpath; java/test and java/src/dev add the
-  # generated jars the non-release IntelliJ module compiles against (see java-dev.iml).
+  # pin_browsers defaults true and pulls pinned browsers this task doesn't need. @maven has the
+  # third-party jars; the module builds materialize the generated jars (devtools) the IDE can't rebuild.
   ['@maven//...', '//java/test/...', '//java/src/dev/...'].each do |target|
     Bazel.execute('build', ['--pin_browsers=false'], target)
   end
 
-  # Bazel.execute merges stdout/stderr, so ignore INFO/progress lines and keep only the path.
+  needed = resolved_third_party_jars
+  raise 'Resolved classpath query returned no third-party jars' if needed.empty?
+
+  # Bazel.execute merges stdout/stderr, so keep only the path line.
   execroot = nil
   Bazel.execute('info', [], 'execution_root') do |out|
     execroot = out.lines.map(&:strip).grep(%r{[\\/]execroot[\\/]}).last
   end
   raise 'Could not determine Bazel execution_root' unless execroot
 
-  # Copy what Bazel actually materialized. The resolved maven tree is deduplicated (one version
-  # per artifact), and globbing only ever yields files that exist, so unresolved/lazy deps in the
-  # dependency graph can neither collide nor abort the task. Skip the exec-configuration bazel-out
-  # tree (its config dir ends in "-exec") to avoid copying duplicate build-tool jars.
+  # Skip the exec-configuration bazel-out tree (config dir ends in "-exec") to avoid build-tool dupes.
   exec_config = %r{[\\/]bazel-out[\\/][^\\/]*-exec[\\/]}
   bin = File.join(execroot, 'bazel-out', '*', 'bin')
+  maven_tree = 'external/rules_jvm_external++maven+maven'
   jars = Dir.glob([
-                    File.join(bin, 'external/rules_jvm_external++maven+maven/**/*.jar'),
-                    File.join(bin, 'java/src/org/openqa/selenium/devtools/v*/v*-project.jar'),
+                    File.join(bin, maven_tree, '**/*.jar'),
+                    File.join(bin, 'java/src/org/openqa/selenium/devtools/v*/libcdp.jar'),
+                    File.join(bin, 'java/src/org/openqa/selenium/devtools/v*/libcdp-src.jar'),
                     File.join(bin, 'external/rules_java+/**/librunfiles.jar'),
                     File.join(bin, 'external/rules_jvm_external+/**/libzip.jar')
                   ]).grep_v(exec_config)
@@ -188,7 +207,14 @@ task :local_dev do
 
   jars.each do |path|
     base = File.basename(path)
-    next if JAVA_LIBS_SKIP.any? { |prefix| base.start_with?(prefix) }
+    # Third-party jars are scoped to the resolved classpath; Selenium's generated jars pass through.
+    if path.include?(maven_tree)
+      stem = base.sub(/-(?:sources|src)\.jar$/, '.jar')
+      next unless needed.include?(base) || needed.include?(stem)
+    elsif base.start_with?('libcdp')
+      # Every CDP version emits libcdp.jar; prefix with the version dir so a flat dir holds them all.
+      base = "#{File.basename(File.dirname(path))}-#{base}"
+    end
 
     dir = base.end_with?('-sources.jar', '-src.jar') ? sources : lib
     dest = File.join(dir, base)
