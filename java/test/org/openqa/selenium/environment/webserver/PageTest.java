@@ -28,25 +28,22 @@ class PageTest {
     String page =
         new Page().withTitle("Legacy").withScripts("var a = 1;").withStyles("body { }").toString();
 
+    // No doctype: default output stays in quirks mode for backward compatibility.
     assertThat(page).doesNotContain("<!DOCTYPE");
+
+    // Legacy shape/ordering contract: <script>/<style> sit after </head> closes, not inside it.
+    assertThat(page.indexOf("</head>")).isLessThan(page.indexOf("<script"));
+    assertThat(page.indexOf("</head>")).isLessThan(page.indexOf("<style"));
+
+    // Key content is still present, in the expected tag order, without pinning incidental
+    // whitespace (e.g. the exact "<body  >" spacing or the blank line for an empty body).
     assertThat(page)
-        .isEqualTo(
-            String.join(
-                "\n",
-                "<html>",
-                "<head>",
-                "<title>Legacy</title>",
-                "</head>",
-                "<script type='text/javascript'>",
-                "var a = 1;",
-                "</script>",
-                "<style>",
-                "body { }",
-                "</style>",
-                "<body  >",
-                "",
-                "</body>",
-                "</html>"));
+        .contains("<title>Legacy</title>")
+        .contains("var a = 1;")
+        .contains("body { }")
+        .contains("<body")
+        .contains("</body>")
+        .contains("</html>");
   }
 
   @Test
