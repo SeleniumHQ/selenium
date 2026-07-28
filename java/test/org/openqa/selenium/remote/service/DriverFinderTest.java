@@ -33,6 +33,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -42,6 +45,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.chrome.ElectronOptions;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.manager.SeleniumManager;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
@@ -63,6 +67,54 @@ class DriverFinderTest {
     driverFile = createExecutableFile("testDriver");
     browserFile = createExecutableFile("testBrowser");
     when(service.getDriverName()).thenReturn("driverName");
+  }
+
+  /**
+   * The shared {@code org.openqa.selenium} logger that {@code Debug.configureLogger()} manages --
+   * deliberately not this test class's own logger, because the assertion is about the shared
+   * category's state.
+   */
+  private static Logger seleniumLogger() {
+    return Logger.getLogger("org.openqa.selenium");
+  }
+
+  private String oldDebugProperty;
+  private Level oldLoggerLevel;
+
+  @BeforeEach
+  void storeDebugState() {
+    oldDebugProperty = System.getProperty("selenium.debug");
+    oldLoggerLevel = seleniumLogger().getLevel();
+    System.clearProperty("selenium.debug");
+  }
+
+  @AfterEach
+  void restoreDebugState() {
+    if (oldDebugProperty != null) {
+      System.setProperty("selenium.debug", oldDebugProperty);
+    } else {
+      System.clearProperty("selenium.debug");
+    }
+    Debug.configureLogger();
+    seleniumLogger().setLevel(oldLoggerLevel);
+  }
+
+  @Test
+  void secondDiscoveryPicksUpADebugPropertyChangedAfterTheFirst() {
+    when(service.getExecutable()).thenReturn(driverFile.toString());
+    Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+
+    // First discovery while debugging is off -- nothing for configureLogger to react to.
+    new DriverFinder(service, capabilities).getDriverPath();
+
+    System.setProperty("selenium.debug", "true");
+
+    // Second discovery after the property changed. No RemoteWebDriver constructor is involved
+    // (this is also the only coverage InternetExplorerDriver's discovery path gets), so only
+    // getBinaryPaths' own Debug.configureLogger() call can pick this up.
+    new DriverFinder(service, capabilities).getDriverPath();
+
+    assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINE);
   }
 
   @Test

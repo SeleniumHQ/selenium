@@ -27,6 +27,7 @@ import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.manager.SeleniumManager;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
@@ -91,6 +92,12 @@ public class DriverFinder {
   }
 
   private Result getBinaryPaths() {
+    // Discovery logging (this class and SeleniumManager) can run before any RemoteWebDriver
+    // constructor -- e.g. as an argument to a browser driver's super(...) call, or with no
+    // RemoteWebDriver involved at all (InternetExplorerDriver, DriverService's lazy lookup, the
+    // DriverInfo classes). Reflect the current debug switches before that logging happens;
+    // configureLogger() is idempotent, so repeated calls are cheap.
+    Debug.configureLogger();
     if (result == null) {
       try {
         String driverName = service.getDriverName();
