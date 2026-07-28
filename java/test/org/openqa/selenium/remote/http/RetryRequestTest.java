@@ -41,6 +41,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.TimeoutException;
@@ -337,6 +341,55 @@ class RetryRequestTest {
         .isInstanceOf(UncheckedIOException.class)
         .isSameAs(lastThrown.get());
     assertThat(count).hasValue(4);
+  }
+
+  @Test
+  void retryLogLevelTracksDebugToggleAtEachLogSite() {
+    // Force RetryRequest's class initialization BEFORE the debug property changes, pinning the
+    // stale-static-snapshot repro regardless of test execution order.
+    HttpHandler handler =
+        new RetryRequest().andFinally(request -> new HttpResponse().setStatus(HTTP_UNAVAILABLE));
+
+    Logger log = Logger.getLogger(RetryRequest.class.getName());
+    List<LogRecord> records = new ArrayList<>();
+    Handler capture =
+        new Handler() {
+          @Override
+          public void publish(LogRecord record) {
+            records.add(record);
+          }
+
+          @Override
+          public void flush() {}
+
+          @Override
+          public void close() {}
+        };
+    capture.setLevel(Level.ALL);
+    Level oldLevel = log.getLevel();
+    String oldDebugProperty = System.getProperty("selenium.debug");
+    log.setLevel(Level.ALL);
+    log.addHandler(capture);
+    try {
+      System.setProperty("selenium.debug", "true");
+      handler.execute(new HttpRequest(GET, "/"));
+      assertThat(records).isNotEmpty();
+      assertThat(records).allSatisfy(r -> assertThat(r.getLevel()).isEqualTo(Level.INFO));
+
+      records.clear();
+      System.clearProperty("selenium.debug");
+      handler.execute(new HttpRequest(GET, "/"));
+      assertThat(records).isNotEmpty();
+      assertThat(records).allSatisfy(r -> assertThat(r.getLevel()).isEqualTo(Level.FINE));
+    } finally {
+      if (oldDebugProperty != null) {
+        System.setProperty("selenium.debug", oldDebugProperty);
+      } else {
+        System.clearProperty("selenium.debug");
+      }
+      log.removeHandler(capture);
+      log.setLevel(oldLevel);
+    }
   }
 
   @Test

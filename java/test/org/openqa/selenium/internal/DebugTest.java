@@ -37,7 +37,14 @@ import org.junit.jupiter.api.Test;
 @Tag("UnitTests")
 class DebugTest {
 
-  private static final Logger SELENIUM_LOGGER = Logger.getLogger("org.openqa.selenium");
+  /**
+   * The shared {@code org.openqa.selenium} logger whose state {@link Debug#configureLogger()}
+   * manages -- deliberately not this test class's own logger, because the behavior under test
+   * lives on the shared category.
+   */
+  private static Logger seleniumLogger() {
+    return Logger.getLogger("org.openqa.selenium");
+  }
 
   private String oldDebugProperty;
   private String oldVerboseProperty;
@@ -47,7 +54,7 @@ class DebugTest {
   void storeSystemProperties() {
     oldDebugProperty = System.getProperty("selenium.debug");
     oldVerboseProperty = System.getProperty("selenium.webdriver.verbose");
-    oldLoggerLevel = SELENIUM_LOGGER.getLevel();
+    oldLoggerLevel = seleniumLogger().getLevel();
     System.clearProperty("selenium.debug");
     System.clearProperty("selenium.webdriver.verbose");
   }
@@ -70,7 +77,7 @@ class DebugTest {
     // A test may have changed the logger's level directly (simulating code other than Debug
     // touching it); put it back exactly as found so tests stay isolated regardless of what
     // configureLogger()'s own restore logic decided to do.
-    SELENIUM_LOGGER.setLevel(oldLoggerLevel);
+    seleniumLogger().setLevel(oldLoggerLevel);
   }
 
   @Test
@@ -97,18 +104,18 @@ class DebugTest {
 
     Debug.configureLogger();
 
-    assertThat(SELENIUM_LOGGER.getLevel()).isEqualTo(Level.FINE);
+    assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINE);
   }
 
   @Test
   void configureLoggerDoesNotClobberALevelChangedWhileDebuggingWasOn() {
     System.setProperty("selenium.debug", "true");
     Debug.configureLogger();
-    assertThat(SELENIUM_LOGGER.getLevel()).isEqualTo(Level.FINE);
+    assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINE);
 
     // Something other than Debug changes the level while debugging is still on -- e.g. the user's
     // own logging config.
-    SELENIUM_LOGGER.setLevel(Level.WARNING);
+    seleniumLogger().setLevel(Level.WARNING);
 
     System.clearProperty("selenium.debug");
     Debug.configureLogger();
@@ -116,18 +123,18 @@ class DebugTest {
     // The externally-set WARNING must survive. Debug must not clobber it with the level that was
     // ambient before IT turned debugging on -- that snapshot is stale the moment anything else
     // changes the level in between.
-    assertThat(SELENIUM_LOGGER.getLevel()).isEqualTo(Level.WARNING);
+    assertThat(seleniumLogger().getLevel()).isEqualTo(Level.WARNING);
   }
 
   @Test
   void configureLoggerRestoresPreDebugLevelAndRemovesHandlerWhenTurnedOff() {
-    Level preDebugLevel = SELENIUM_LOGGER.getLevel();
-    List<Handler> handlersBeforeDebug = new ArrayList<>(List.of(SELENIUM_LOGGER.getHandlers()));
+    Level preDebugLevel = seleniumLogger().getLevel();
+    List<Handler> handlersBeforeDebug = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
 
     System.setProperty("selenium.debug", "true");
     Debug.configureLogger();
 
-    List<Handler> handlersWhileDebugging = new ArrayList<>(List.of(SELENIUM_LOGGER.getHandlers()));
+    List<Handler> handlersWhileDebugging = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
     handlersWhileDebugging.removeAll(handlersBeforeDebug);
     assertThat(handlersWhileDebugging).hasSize(1);
     Handler installedHandler = handlersWhileDebugging.get(0);
@@ -136,36 +143,36 @@ class DebugTest {
     System.clearProperty("selenium.debug");
     Debug.configureLogger();
 
-    assertThat(SELENIUM_LOGGER.getLevel()).isEqualTo(preDebugLevel);
-    assertThat(SELENIUM_LOGGER.getHandlers()).doesNotContain(installedHandler);
+    assertThat(seleniumLogger().getLevel()).isEqualTo(preDebugLevel);
+    assertThat(seleniumLogger().getHandlers()).doesNotContain(installedHandler);
   }
 
   @Test
   void configureLoggerIsIdempotent() {
-    int before = SELENIUM_LOGGER.getHandlers().length;
+    int before = seleniumLogger().getHandlers().length;
     System.setProperty("selenium.debug", "true");
 
     for (int i = 0; i < 5; i++) {
       Debug.configureLogger();
     }
 
-    assertThat(SELENIUM_LOGGER.getHandlers().length - before).isEqualTo(1);
+    assertThat(seleniumLogger().getHandlers().length - before).isEqualTo(1);
   }
 
   @Test
   void configureLoggerLeavesUserHandlersAlone() {
     Handler userHandler = new ConsoleHandler();
-    SELENIUM_LOGGER.addHandler(userHandler);
+    seleniumLogger().addHandler(userHandler);
     try {
       System.setProperty("selenium.debug", "true");
       Debug.configureLogger();
-      assertThat(SELENIUM_LOGGER.getHandlers()).contains(userHandler);
+      assertThat(seleniumLogger().getHandlers()).contains(userHandler);
 
       System.clearProperty("selenium.debug");
       Debug.configureLogger();
-      assertThat(SELENIUM_LOGGER.getHandlers()).contains(userHandler);
+      assertThat(seleniumLogger().getHandlers()).contains(userHandler);
     } finally {
-      SELENIUM_LOGGER.removeHandler(userHandler);
+      seleniumLogger().removeHandler(userHandler);
     }
   }
 
@@ -188,13 +195,13 @@ class DebugTest {
     // Simulates a handler the caller already has attached directly to this logger (e.g. their
     // own handler at INFO) that already prints INFO-and-above records on its own.
     userHandler.setLevel(Level.INFO);
-    SELENIUM_LOGGER.addHandler(userHandler);
+    seleniumLogger().addHandler(userHandler);
 
-    boolean oldUseParentHandlers = SELENIUM_LOGGER.getUseParentHandlers();
+    boolean oldUseParentHandlers = seleniumLogger().getUseParentHandlers();
     // Isolate this check to handlers attached directly to org.openqa.selenium. Propagation to the
     // JVM's own root logger handler is a separate, legitimate print channel this test isn't
     // about, and it would otherwise be indistinguishable from a real duplicate here.
-    SELENIUM_LOGGER.setUseParentHandlers(false);
+    seleniumLogger().setUseParentHandlers(false);
 
     PrintStream originalErr = System.err;
     ByteArrayOutputStream capturedErr = new ByteArrayOutputStream();
@@ -204,14 +211,14 @@ class DebugTest {
       System.setProperty("selenium.debug", "true");
       Debug.configureLogger();
 
-      SELENIUM_LOGGER.log(Level.INFO, marker);
-      for (Handler handler : SELENIUM_LOGGER.getHandlers()) {
+      seleniumLogger().log(Level.INFO, marker);
+      for (Handler handler : seleniumLogger().getHandlers()) {
         handler.flush();
       }
     } finally {
       System.setErr(originalErr);
-      SELENIUM_LOGGER.setUseParentHandlers(oldUseParentHandlers);
-      SELENIUM_LOGGER.removeHandler(userHandler);
+      seleniumLogger().setUseParentHandlers(oldUseParentHandlers);
+      seleniumLogger().removeHandler(userHandler);
     }
 
     // The caller's own handler must still see the record: Selenium never suppresses records for
@@ -221,6 +228,39 @@ class DebugTest {
     // the caller's handler just printed would appear a second time, straight from Selenium's own
     // console handler.
     assertThat(capturedErr.toString()).doesNotContain(marker);
+  }
+
+  @Test
+  void configureLoggerDoesNotLowerAnAlreadyMoreVerboseLevel() {
+    // The application already asked for MORE verbosity than the debug switch provides, e.g. to
+    // see W3CHttpResponseCodec's FINER response-decoding diagnostics.
+    seleniumLogger().setLevel(Level.FINER);
+
+    System.setProperty("selenium.debug", "true");
+    Debug.configureLogger();
+    // Turning debug on must never make the logger LESS verbose than it already was.
+    assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINER);
+
+    System.clearProperty("selenium.debug");
+    Debug.configureLogger();
+    assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINER);
+  }
+
+  @Test
+  void configureLoggerDoesNotRestoreALevelItNeverChanged() {
+    seleniumLogger().setLevel(Level.FINER);
+    System.setProperty("selenium.debug", "true");
+    Debug.configureLogger(); // debug on, level untouched (already more verbose than FINE)
+
+    // Something else deliberately drops verbosity to FINE while debugging is on.
+    seleniumLogger().setLevel(Level.FINE);
+
+    System.clearProperty("selenium.debug");
+    Debug.configureLogger();
+
+    // Debug never changed the level (it was already more verbose when debug turned on), so
+    // turning debug off must not "restore" a pre-debug snapshot it never took either.
+    assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINE);
   }
 
   @Test
