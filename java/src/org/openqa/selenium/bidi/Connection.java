@@ -18,7 +18,6 @@
 package org.openqa.selenium.bidi;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -147,7 +146,7 @@ public class Connection implements Closeable {
     try (JsonOutput out = JSON.newOutput(json).writeClassName(false)) {
       out.write(serialized);
     }
-    LOG.log(getDebugLogLevel(), "-> {0}", json);
+    LOG.log(Level.FINE, "-> {0}", json);
     socket.sendText(json);
 
     if (!command.getSendsResponse()) {
@@ -302,7 +301,7 @@ public class Connection implements Closeable {
     // TODO: decode once, and once only
 
     String asString = String.valueOf(data);
-    LOG.log(getDebugLogLevel(), "<- {0}", asString);
+    LOG.log(Level.FINE, "<- {0}", asString);
 
     Map<String, Object> raw = JSON.toType(asString, MAP_TYPE);
     if (raw.get("id") instanceof Number
@@ -346,7 +345,7 @@ public class Connection implements Closeable {
 
   private void handleEventResponse(Map<String, Object> rawDataMap) {
     LOG.log(
-        getDebugLogLevel(),
+        Level.FINE,
         () ->
             String.format(
                 "Method %s called with %s callbacks available",
@@ -365,7 +364,7 @@ public class Connection implements Closeable {
           .filter(
               event -> {
                 LOG.log(
-                    getDebugLogLevel(),
+                    Level.FINE,
                     "Matching {0} with {1}",
                     new Object[] {rawDataMap.get("method"), event.getKey().getMethod()});
                 return rawDataMap.get("method").equals(event.getKey().getMethod());
@@ -387,7 +386,7 @@ public class Connection implements Closeable {
                   @SuppressWarnings("unchecked")
                   Consumer<Object> obj = (Consumer<Object>) action;
                   LOG.log(
-                      getDebugLogLevel(),
+                      Level.FINE,
                       "Calling callback for {0} using {1} being passed {2}",
                       new Object[] {event.getKey(), obj, finalValue});
                   obj.accept(finalValue);
