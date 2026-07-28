@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote;
 
 import static java.util.logging.Level.WARNING;
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
@@ -37,6 +36,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -114,8 +114,7 @@ public class RemoteWebDriverBuilder {
     Require.nonNull("Capabilities to use", maybeThis);
 
     if (!requestedCapabilities.isEmpty()) {
-      LOG.log(
-          getDebugLogLevel(), "Removing existing requested capabilities: " + requestedCapabilities);
+      LOG.log(Level.FINE, "Removing existing requested capabilities: " + requestedCapabilities);
       requestedCapabilities.clear();
     }
 
@@ -155,7 +154,7 @@ public class RemoteWebDriverBuilder {
     Object previous = metadata.put(key, value);
     if (previous != null) {
       LOG.log(
-          getDebugLogLevel(),
+          Level.FINE,
           String.format(
               "Overwriting metadata %s. Previous value %s, new value %s", key, previous, value));
     }
@@ -176,7 +175,7 @@ public class RemoteWebDriverBuilder {
     Object previous = additionalCapabilities.put(capabilityName, value);
     if (previous != null) {
       LOG.log(
-          getDebugLogLevel(),
+          Level.FINE,
           () ->
               String.format(
                   "Overwriting capability %s. Previous value %s, new value %s",

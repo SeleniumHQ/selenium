@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.node;
 
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import io.netty.buffer.Unpooled;
@@ -181,7 +180,7 @@ public class ProxyNodeWebsockets
       }
 
       if (cdpUri.isPresent()) {
-        LOG.log(getDebugLogLevel(), String.format("Endpoint found in %s", cdpEndpointCap));
+        LOG.log(Level.FINE, String.format("Endpoint found in %s", cdpEndpointCap));
         return cdpUri.map(cdp -> createWsEndPoint(cdp, downstream, sessionConsumer, sessionId));
       } else {
         try {
@@ -246,7 +245,7 @@ public class ProxyNodeWebsockets
       LOG.warning("Invalid URI for endpoint " + vncLocalAddress);
       return Optional.empty();
     }
-    LOG.log(getDebugLogLevel(), String.format("Endpoint found in %s", "se:vncLocalAddress"));
+    LOG.log(Level.FINE, String.format("Endpoint found in %s", "se:vncLocalAddress"));
     return vncUri.map(vnc -> createWsEndPoint(vnc, downstream, sessionConsumer, sessionId));
   }
 

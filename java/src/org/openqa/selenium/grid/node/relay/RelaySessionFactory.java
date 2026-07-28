@@ -49,7 +49,6 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.DefaultActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
-import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CapabilityType;
@@ -244,7 +243,7 @@ public class RelaySessionFactory implements SessionFactory {
     try (HttpClient client = clientFactory.createClient(clientConfig)) {
       HttpResponse response =
           client.execute(new HttpRequest(HttpMethod.GET, serviceStatusUrl.toString()));
-      LOG.log(Debug.getDebugLogLevel(), response::contentAsString);
+      LOG.log(Level.FINE, response::contentAsString);
       return response.getStatus() == 200;
     } catch (Exception e) {
       LOG.log(
@@ -252,7 +251,7 @@ public class RelaySessionFactory implements SessionFactory {
           () ->
               String.format(
                   "Error checking service status %s. %s", serviceStatusUrl, e.getMessage()));
-      LOG.log(Debug.getDebugLogLevel(), "Error checking service status " + serviceStatusUrl, e);
+      LOG.log(Level.FINE, "Error checking service status " + serviceStatusUrl, e);
     }
     return false;
   }
