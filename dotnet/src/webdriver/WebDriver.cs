@@ -604,6 +604,11 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         {
             Dictionary<string, object> matchCapabilities = this.GetCapabilitiesDictionary(capabilities);
 
+            if (this.CommandExecutor is Remote.HttpCommandExecutor httpExecutor)
+            {
+                matchCapabilities["se:remoteUrl"] = httpExecutor.RemoteServerUri.AbsoluteUri;
+            }
+
             List<object> firstMatchCapabilitiesList = new List<object>();
             firstMatchCapabilitiesList.Add(matchCapabilities);
 
@@ -614,6 +619,9 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         }
         else
         {
+            // A RemoteSessionSettings payload is a hand-built W3C capabilities object; the caller
+            // owns it in full, so se:remoteUrl is not auto-advertised here (they can set it
+            // themselves). Auto-injection stays on the plain-capabilities path above.
             parameters.Add("capabilities", remoteSettings.ToDictionary());
         }
 

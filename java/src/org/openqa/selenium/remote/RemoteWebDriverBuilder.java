@@ -529,8 +529,14 @@ public class RemoteWebDriverBuilder {
   private NewSessionPayload getPayload() {
     Map<String, Object> roughPayload = new TreeMap<>(metadata);
 
+    Map<String, Object> alwaysMatch = new TreeMap<>(additionalCapabilities);
+    URI baseUri = getBaseUri();
+    if (baseUri != null && driverService == null) {
+      alwaysMatch.put("se:remoteUrl", baseUri.toString());
+    }
+
     Map<String, Object> w3cCaps = new TreeMap<>();
-    w3cCaps.put("alwaysMatch", additionalCapabilities);
+    w3cCaps.put("alwaysMatch", alwaysMatch);
     if (!requestedCapabilities.isEmpty()) {
       w3cCaps.put("firstMatch", requestedCapabilities);
     }

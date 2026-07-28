@@ -260,9 +260,20 @@ public class RemoteWebDriver
     sessionId = new SessionId(opaqueKey);
   }
 
+  private Capabilities addRemoteUrl(Capabilities capabilities) {
+    URI baseUri = clientConfig.baseUri();
+    if (baseUri == null) {
+      return capabilities;
+    }
+    MutableCapabilities withRemoteUrl = new MutableCapabilities(capabilities);
+    withRemoteUrl.setCapability("se:remoteUrl", baseUri.toString());
+    return withRemoteUrl;
+  }
+
   protected void startSession(Capabilities capabilities) {
     checkNonW3CCapabilities(capabilities);
     checkChromeW3CFalse(capabilities);
+    capabilities = addRemoteUrl(capabilities);
 
     try {
       Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
