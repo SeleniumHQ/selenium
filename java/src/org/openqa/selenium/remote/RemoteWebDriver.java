@@ -210,6 +210,19 @@ public class RemoteWebDriver
     this(executor, capabilities, ClientConfig.defaultConfig());
   }
 
+  /**
+   * Creates a new driver that runs its commands through the given executor, requesting a new
+   * session with the given capabilities. Before the session starts, the current Selenium debug
+   * switches are reflected onto the {@code org.openqa.selenium} logger via {@link
+   * Debug#configureLogger()}, so a debug property changed at runtime takes effect for every
+   * driver constructed afterwards.
+   *
+   * @param executor the command executor used to communicate with the remote end; must not be
+   *     null
+   * @param capabilities the capabilities requested for the new session; null is treated as an
+   *     empty set of capabilities
+   * @param clientConfig the HTTP client configuration for the connection; must not be null
+   */
   public RemoteWebDriver(
       CommandExecutor executor, Capabilities capabilities, ClientConfig clientConfig) {
     // Instance-time (not class-load-time) so a property change made after this class has already

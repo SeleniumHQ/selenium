@@ -85,6 +85,15 @@ public class LoggingOptions {
     return config.get(LOGGING_SECTION, "log-encoding").orElse(null);
   }
 
+  /**
+   * Resolves the Grid log level from the {@code log-level} entry of the logging config section
+   * and stores it for {@link #configureLogging()}. Any active Selenium debug switch ({@code
+   * SE_DEBUG}, {@code -Dselenium.debug=true}, {@code -Dselenium.webdriver.verbose=true})
+   * overrides the configured value and forces {@link Level#FINE}. An unparseable configured
+   * value falls back to the default ({@code INFO}).
+   *
+   * @return this instance, for method chaining
+   */
   public LoggingOptions setLoggingLevel() {
     String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(DEFAULT_LOG_LEVEL);
     if (Debug.isDebugAll() || Debug.isDebugging()) {
