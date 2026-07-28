@@ -102,7 +102,33 @@ impl SeleniumManager for EdgeManager {
     }
 
     fn get_browser_names_in_path(&self) -> Vec<&str> {
-        vec![self.get_browser_name()]
+        vec!["microsoft-edge", "microsoft-edge-stable"]
+    }
+
+    fn detect_browser_in_known_locations(&self) -> Option<PathBuf> {
+        // msedgedriver is built from chromedriver and searches the same fixed directories (Linux-only).
+        if !LINUX.is(self.get_os()) {
+            return None;
+        }
+        let names = ["msedge", "microsoft-edge", "microsoft-edge-stable"];
+        let dirs = [
+            "/usr/local/sbin",
+            "/usr/local/bin",
+            "/usr/sbin",
+            "/usr/bin",
+            "/sbin",
+            "/bin",
+            "/opt/microsoft/msedge",
+        ];
+        for name in names {
+            for dir in dirs {
+                let candidate = Path::new(dir).join(name);
+                if candidate.exists() {
+                    return Some(candidate);
+                }
+            }
+        }
+        None
     }
 
     fn get_http_client(&self) -> &Client {

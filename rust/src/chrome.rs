@@ -228,7 +228,39 @@ impl SeleniumManager for ChromeManager {
     }
 
     fn get_browser_names_in_path(&self) -> Vec<&str> {
-        vec![self.get_browser_name(), "chromium-browser", "chromium"]
+        vec![
+            self.get_browser_name(),
+            "google-chrome",
+            "chromium",
+            "chromium-browser",
+        ]
+    }
+
+    fn detect_browser_in_known_locations(&self) -> Option<PathBuf> {
+        // chromedriver's fixed directory search (chrome_finder.cc) is Linux-only.
+        if !LINUX.is(self.get_os()) {
+            return None;
+        }
+        let names = ["chrome", "google-chrome", "chromium", "chromium-browser"];
+        let dirs = [
+            "/usr/local/sbin",
+            "/usr/local/bin",
+            "/usr/sbin",
+            "/usr/bin",
+            "/sbin",
+            "/bin",
+            "/opt/google/chrome",
+            "/opt/chromium.org/chromium",
+        ];
+        for name in names {
+            for dir in dirs {
+                let candidate = Path::new(dir).join(name);
+                if candidate.exists() {
+                    return Some(candidate);
+                }
+            }
+        }
+        None
     }
 
     fn get_http_client(&self) -> &Client {

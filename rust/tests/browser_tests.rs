@@ -19,6 +19,9 @@ use crate::common::{assert_output, get_selenium_manager, get_stdout};
 
 use exitcode::DATAERR;
 use rstest::rstest;
+use selenium_manager::SeleniumManager;
+use selenium_manager::chrome::ChromeManager;
+use selenium_manager::edge::EdgeManager;
 use std::env::consts::OS;
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
@@ -233,4 +236,36 @@ fn browser_path_major_version_mismatch_test() {
         stdout_str.contains("999"),
         "Should mention requested version"
     );
+}
+
+#[test]
+fn chrome_matches_chromedriver_binary_names() {
+    let manager = ChromeManager::new().unwrap();
+    assert_eq!(
+        manager.get_browser_names_in_path(),
+        vec!["chrome", "google-chrome", "chromium", "chromium-browser"]
+    );
+}
+
+#[test]
+fn chrome_detect_browser_in_known_locations_is_linux_only() {
+    let mut manager = ChromeManager::new().unwrap();
+    manager.config.os = "macos".to_string();
+    assert!(manager.detect_browser_in_known_locations().is_none());
+}
+
+#[test]
+fn edge_matches_msedgedriver_binary_names() {
+    let manager = EdgeManager::new().unwrap();
+    assert_eq!(
+        manager.get_browser_names_in_path(),
+        vec!["microsoft-edge", "microsoft-edge-stable"]
+    );
+}
+
+#[test]
+fn edge_detect_browser_in_known_locations_is_linux_only() {
+    let mut manager = EdgeManager::new().unwrap();
+    manager.config.os = "macos".to_string();
+    assert!(manager.detect_browser_in_known_locations().is_none());
 }
