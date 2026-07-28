@@ -1291,7 +1291,7 @@ public class LocalNode extends Node implements Closeable {
 
   private URI rewrite(String path, URI baseUri) {
     try {
-      String scheme = "https".equals(baseUri.getScheme()) ? "wss" : "ws";
+      String scheme = "https".equalsIgnoreCase(baseUri.getScheme()) ? "wss" : "ws";
       path = NodeOptions.normalizeSubPath(baseUri.getPath()) + path;
       return new URI(
           scheme, baseUri.getUserInfo(), baseUri.getHost(), baseUri.getPort(), path, null, null);

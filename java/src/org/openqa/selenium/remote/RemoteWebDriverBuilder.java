@@ -526,12 +526,18 @@ public class RemoteWebDriverBuilder {
         .collect(Collectors.toSet());
   }
 
+  private boolean hasExplicitRemoteUrl() {
+    return additionalCapabilities.containsKey("se:remoteUrl")
+        || requestedCapabilities.stream()
+            .anyMatch(caps -> caps.getCapabilityNames().contains("se:remoteUrl"));
+  }
+
   private NewSessionPayload getPayload() {
     Map<String, Object> roughPayload = new TreeMap<>(metadata);
 
     Map<String, Object> alwaysMatch = new TreeMap<>(additionalCapabilities);
     URI baseUri = getBaseUri();
-    if (baseUri != null && driverService == null) {
+    if (baseUri != null && driverService == null && !hasExplicitRemoteUrl()) {
       alwaysMatch.put("se:remoteUrl", baseUri.toString());
     }
 

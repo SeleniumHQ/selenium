@@ -181,7 +181,7 @@ public class RemoteWebDriver
             Boolean.parseBoolean(System.getProperty(WEBDRIVER_REMOTE_ENABLE_TRACING, "true")),
             clientConfig),
         Require.nonNull("Capabilities", capabilities),
-        clientConfig);
+        clientConfig.baseUrl(remoteAddress));
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, boolean enableTracing) {
@@ -196,7 +196,7 @@ public class RemoteWebDriver
     this(
         createExecutor(Require.nonNull("Server URL", remoteAddress), enableTracing, clientConfig),
         Require.nonNull("Capabilities", capabilities),
-        clientConfig);
+        clientConfig.baseUrl(remoteAddress));
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
