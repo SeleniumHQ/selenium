@@ -100,21 +100,52 @@ class DriverFinderTest {
   }
 
   @Test
-  void secondDiscoveryPicksUpADebugPropertyChangedAfterTheFirst() {
-    when(service.getExecutable()).thenReturn(driverFile.toString());
+  void secondDiscoveryPicksUpADebugPropertyChangedAfterTheFirst() throws IOException {
+    // A small in-memory DriverService (no mocking framework): this test makes no verify()/
+    // interaction assertions on the service, only on the shared org.openqa.selenium logger's
+    // level, so it doesn't need Mockito's machinery -- matching the pattern already applied
+    // elsewhere on this PR (e.g. RemoteWebDriverInitializationTest, commit 31ea2ca102).
+    DriverService inMemoryService = new InMemoryDriverService(driverFile);
     Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
 
     // First discovery while debugging is off -- nothing for configureLogger to react to.
-    new DriverFinder(service, capabilities).getDriverPath();
+    new DriverFinder(inMemoryService, capabilities).getDriverPath();
 
     System.setProperty("selenium.debug", "true");
 
     // Second discovery after the property changed. No RemoteWebDriver constructor is involved
     // (this is also the only coverage InternetExplorerDriver's discovery path gets), so only
     // getBinaryPaths' own Debug.configureLogger() call can pick this up.
-    new DriverFinder(service, capabilities).getDriverPath();
+    new DriverFinder(inMemoryService, capabilities).getDriverPath();
 
     assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINE);
+  }
+
+  /**
+   * Minimal real {@link DriverService}: {@link #getExecutable()} answers straight from the
+   * constructor-set path (inherited, not overridden), {@link #getDriverName()} returns a fixed
+   * name, and the two abstract accessors throw since {@code getBinaryPaths()} never reaches them
+   * once {@link #getExecutable()} already resolves a path.
+   */
+  private static class InMemoryDriverService extends DriverService {
+    InMemoryDriverService(Path driverFile) throws IOException {
+      super(driverFile.toFile(), 0, DEFAULT_TIMEOUT, null, null);
+    }
+
+    @Override
+    protected String getDriverName() {
+      return "driverName";
+    }
+
+    @Override
+    public String getDriverProperty() {
+      throw new UnsupportedOperationException("getDriverProperty");
+    }
+
+    @Override
+    protected String getDriverEnvironmentVariable() {
+      throw new UnsupportedOperationException("getDriverEnvironmentVariable");
+    }
   }
 
   @Test
