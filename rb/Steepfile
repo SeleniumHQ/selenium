@@ -16,8 +16,6 @@ target :lib do
     'lib/selenium/webdriver/bidi/struct.rb',
     # The generator + its up-to-date checker are build tooling, not typed runtime code
     'lib/selenium/webdriver/bidi/support/**/*.rb',
-    # Vendored Bazel::Runfiles (rules_ruby#374); build/test tooling, removed when that ships upstream
-    'lib/bazel/**/*.rb',
     # Ignore all spec files
     'spec/**/*.rb',
     # Ignore line 166 due to UDP RBS issue

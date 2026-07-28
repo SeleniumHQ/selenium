@@ -176,6 +176,8 @@ nuget_pack(
         "//common/images:selenium_logo_small.png": "icon.png",
         "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
         "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
+        "//common/manager:selenium-manager-notice": "selenium-manager-THIRD-PARTY-NOTICES.txt",
+        "//common/manager:selenium-manager-sbom": "selenium-manager.cdx.json",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
         ":assets-nuget-readme": "README.md",
         ":assets-nuget-build-props": "build/Selenium.WebDriver.props",

@@ -25,5 +25,5 @@ rb_library(
 rb_library(
     name = "generated_note",
     srcs = ["generated_note.rb"],
-    deps = ["//rb/lib/bazel:runfiles"],  # Delete this when updating to rules_ruby 0.28.0
+    deps = ["@rules_ruby//ruby/runfiles"],
 )
