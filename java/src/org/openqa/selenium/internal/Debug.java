@@ -69,6 +69,34 @@ public class Debug {
     return isDebugging() ? Level.INFO : Level.FINE;
   }
 
+  /**
+   * Reports whether a log record from {@code loggerName} at {@code level} would already be
+   * emitted by the handler {@link #configureLogger()} installs directly on {@code
+   * org.openqa.selenium} -- that handler and its filter together cover exactly {@link
+   * Level#FINE}- and {@link Level#CONFIG}-range records from that logger and its descendants,
+   * while {@link #isDebugging()} or {@link #isDebugAll()} is true. A caller
+   * further up the logger hierarchy (e.g. a handler on the root logger, which receives the same
+   * record too via normal handler propagation) can use this to avoid printing it a second time,
+   * without disabling propagation itself -- which would instead silently drop every {@link
+   * Level#INFO}-and-above {@code org.openqa.selenium} record that caller would otherwise print.
+   *
+   * @param loggerName the originating logger's name; {@code null} is never covered
+   * @param level the record's level
+   * @return true when {@link #configureLogger()}'s own handler already covers this record
+   */
+  public static boolean isHandledBySeleniumDebugHandler(String loggerName, Level level) {
+    if (!(isDebugging() || isDebugAll())) {
+      return false;
+    }
+    boolean withinSeleniumHierarchy =
+        loggerName != null
+            && (loggerName.equals("org.openqa.selenium")
+                || loggerName.startsWith("org.openqa.selenium."));
+    return withinSeleniumHierarchy
+        && level.intValue() >= Level.FINE.intValue()
+        && level.intValue() < Level.INFO.intValue();
+  }
+
   public static boolean isDebugAll() {
     boolean everything = Boolean.parseBoolean(System.getenv("SE_DEBUG"));
     if (everything && DEBUG_WARNING_LOGGED.compareAndSet(false, true)) {

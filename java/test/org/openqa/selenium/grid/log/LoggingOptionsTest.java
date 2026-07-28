@@ -20,10 +20,15 @@ package org.openqa.selenium.grid.log;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
@@ -133,6 +138,49 @@ class LoggingOptionsTest {
     LogRecord fineRecord = new LogRecord(Level.FINE, "fine message");
     assertThat(handlers[0].isLoggable(infoRecord)).isFalse();
     assertThat(handlers[0].isLoggable(fineRecord)).isTrue();
+  }
+
+  @Test
+  void configureLoggingDoesNotDuplicateSeleniumDebugRecordsThroughGridsRootHandler()
+      throws IOException {
+    // Debug.configureLogger() (called one line into configureLogging()) installs a handler
+    // directly on org.openqa.selenium that already prints FINE/CONFIG-range records to stderr --
+    // it never disables useParentHandlers, so those same records also propagate up to whatever
+    // handler(s) configureLogging() itself then attaches to the ROOT logger a few lines later.
+    // Nothing stopped Grid's own root handler from ALSO accepting them: a FINE record from any
+    // org.openqa.selenium(.*) logger got printed twice, once by each handler. INFO-and-above
+    // records must be unaffected -- Debug's own handler already excludes those, so they only ever
+    // reached Grid's root handler in the first place.
+    System.setProperty("selenium.debug", "true");
+    Path logFile = Files.createTempFile("logging-options-test", ".log");
+    String marker = "duplicate-check-" + UUID.randomUUID();
+    try {
+      String seleniumErr =
+          captureStderrDuring(
+              () -> {
+                new LoggingOptions(
+                        new MapConfig(
+                            Map.of(
+                                "logging",
+                                Map.of("log-file", logFile.toAbsolutePath().toString()))))
+                    .configureLogging();
+                Logger.getLogger("org.openqa.selenium.grid.log.LoggingOptionsTest").fine(marker);
+              });
+
+      // Debug's own handler on org.openqa.selenium must still print it -- unchanged behavior.
+      assertThat(seleniumErr).contains(marker);
+      // Grid's root handler must not ALSO print it now that the two ranges overlap.
+      String gridLog = Files.readString(logFile);
+      assertThat(gridLog).doesNotContain(marker);
+      // INFO+ output Grid already prints (e.g. its own "Using encoding" startup line) must still
+      // reach the file -- only the FINE/CONFIG range Debug's handler already owns is suppressed.
+      assertThat(gridLog).contains("Using");
+    } finally {
+      for (Handler handler : LogManager.getLogManager().getLogger("").getHandlers()) {
+        handler.close();
+      }
+      Files.deleteIfExists(logFile);
+    }
   }
 
   private static MapConfig emptyConfig() {

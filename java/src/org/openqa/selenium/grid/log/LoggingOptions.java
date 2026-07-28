@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Filter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -189,6 +190,7 @@ public class LoggingOptions {
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new TerseFormatter(getLogTimestampFormat()));
       handler.setLevel(level);
+      handler.setFilter(NOT_ALREADY_HANDLED_BY_SELENIUM_DEBUG_HANDLER);
       configureLogEncoding(logger, encoding, handler);
     }
 
@@ -196,9 +198,19 @@ public class LoggingOptions {
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new JsonFormatter());
       handler.setLevel(level);
+      handler.setFilter(NOT_ALREADY_HANDLED_BY_SELENIUM_DEBUG_HANDLER);
       configureLogEncoding(logger, encoding, handler);
     }
   }
+
+  // Records that Debug.configureLogger()'s own handler on org.openqa.selenium already prints
+  // (FINE/CONFIG-range records from that logger or a descendant, while a debug switch is on) must
+  // not also print through this root handler -- that handler's own useParentHandlers is never
+  // disabled, so the same record reaches both. INFO-and-above org.openqa.selenium records, and
+  // everything from every other logger, are untouched: Debug's handler never covered those in the
+  // first place.
+  private static final Filter NOT_ALREADY_HANDLED_BY_SELENIUM_DEBUG_HANDLER =
+      record -> !Debug.isHandledBySeleniumDebugHandler(record.getLoggerName(), record.getLevel());
 
   private void configureLogEncoding(Logger logger, @Nullable String encoding, Handler handler) {
     String message;
