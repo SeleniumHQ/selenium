@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
@@ -464,7 +463,7 @@ public class LocalDistributor extends Distributor implements Closeable {
 
     if (slotIds.isEmpty()) {
       LOG.log(
-          getDebugLogLevel(),
+          Level.FINE,
           String.format("No slots found for request %s and capabilities %s", requestId, caps));
       return null;
     }
@@ -574,7 +573,7 @@ public class LocalDistributor extends Distributor implements Closeable {
                   sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req));
                 } catch (RejectedExecutionException e) {
                   LOG.log(
-                      getDebugLogLevel(),
+                      Level.FINE,
                       "Dropping session creation task while shutting down distributor",
                       e);
                 }
@@ -632,9 +631,7 @@ public class LocalDistributor extends Distributor implements Closeable {
 
         if (response.isLeft() && response.left() instanceof RetrySessionRequestException) {
           try (Span childSpan = span.createSpan("distributor.retry")) {
-            if (LOG.isLoggable(getDebugLogLevel())) {
-              LOG.log(getDebugLogLevel(), "Retrying {0}", sessionRequest.getDesiredCapabilities());
-            }
+            LOG.log(Level.FINE, "Retrying {0}", sessionRequest.getDesiredCapabilities());
             boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 
             attributeMap.put("request.retry_add", retried);

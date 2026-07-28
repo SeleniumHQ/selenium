@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.events.EventBus;
@@ -40,7 +41,6 @@ import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.GridModel;
-import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.redis.GridRedisClient;
@@ -197,7 +197,7 @@ public class RedisBackedGridModel extends GridModel {
       if (existing.getNodeId().equals(node.getNodeId())
           && existing.getExternalUri().equals(node.getExternalUri())) {
         // Same node refreshing — keep existing availability.
-        LOG.log(Debug.getDebugLogLevel(), "Refreshing node with id {0}", node.getNodeId());
+        LOG.log(Level.FINE, "Refreshing node with id {0}", node.getNodeId());
         NodeStatus refreshed = rewrite(node, existing.getAvailability());
         writeNodeBlob(refreshed);
         redis.set(lastTouchKey(node.getNodeId()), String.valueOf(Instant.now().toEpochMilli()));
@@ -229,7 +229,7 @@ public class RedisBackedGridModel extends GridModel {
 
     // Add as DOWN until health check promotes it.
     LOG.log(
-        Debug.getDebugLogLevel(),
+        Level.FINE,
         "Adding node with id {0} and URI {1}",
         new Object[] {node.getNodeId(), node.getExternalUri()});
     NodeStatus asDown = rewrite(node, DOWN);
