@@ -41,7 +41,11 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jspecify.annotations.NullMarked;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -49,6 +53,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -58,7 +63,49 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 @Tag("UnitTests")
 class RemoteWebDriverInitializationTest {
+  private static final Logger SELENIUM_LOGGER = Logger.getLogger("org.openqa.selenium");
+
   private boolean quitCalled = false;
+  private String oldDebugProperty;
+  private Level oldLoggerLevel;
+
+  @BeforeEach
+  void storeDebugState() {
+    oldDebugProperty = System.getProperty("selenium.debug");
+    oldLoggerLevel = SELENIUM_LOGGER.getLevel();
+    System.clearProperty("selenium.debug");
+  }
+
+  @AfterEach
+  void restoreDebugState() {
+    if (oldDebugProperty != null) {
+      System.setProperty("selenium.debug", oldDebugProperty);
+    } else {
+      System.clearProperty("selenium.debug");
+    }
+    Debug.configureLogger();
+    SELENIUM_LOGGER.setLevel(oldLoggerLevel);
+  }
+
+  @Test
+  void constructingASecondDriverPicksUpADebugPropertyChangedAfterTheFirst() throws IOException {
+    // First construction: touches (and, the first time in this JVM, initializes) the class while
+    // debugging is off -- exercises the static initializer with nothing to react to yet.
+    new RemoteWebDriver(
+        WebDriverFixture.prepareExecutorMock(echoCapabilities, nullValueResponder),
+        new ImmutableCapabilities());
+
+    System.setProperty("selenium.debug", "true");
+
+    // Second construction, after the property changed. The class's static initializer already
+    // ran once and won't run again, so picking this up can only be the canonical constructor's
+    // own call to Debug.configureLogger().
+    new RemoteWebDriver(
+        WebDriverFixture.prepareExecutorMock(echoCapabilities, nullValueResponder),
+        new ImmutableCapabilities());
+
+    assertThat(SELENIUM_LOGGER.getLevel()).isEqualTo(Level.FINE);
+  }
 
   @Test
   void testQuitsIfStartSessionFails() {

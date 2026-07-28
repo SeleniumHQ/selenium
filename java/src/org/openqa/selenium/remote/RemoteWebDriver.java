@@ -122,6 +122,17 @@ public class RemoteWebDriver
         PrintsPage,
         TakesScreenshot {
 
+  // Guarantees (JLS 12.4.2) that debug logging is configured before ANY subclass constructor
+  // body runs -- including argument expressions passed to a subclass's own super(...) call, e.g.
+  // ChromeDriver/FirefoxDriver's DriverFinder/SeleniumManager discovery, which logs at FINE
+  // before super(...) is ever reached. configureLogger() is idempotent, so this and the call in
+  // the canonical instance constructor below are both safe to keep: this one covers logging that
+  // happens before an instance exists, the other picks up a property changed after this class
+  // already loaded.
+  static {
+    Debug.configureLogger();
+  }
+
   private static final Logger LOG = Logger.getLogger(RemoteWebDriver.class.getName());
 
   /** Boolean system property that defines whether the tracing is enabled or not. */

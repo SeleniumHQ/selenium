@@ -44,12 +44,12 @@ public class Debug {
 
   /**
    * @deprecated Individual log statements no longer change what severity they report at based on
-   *     this switch; {@link #configureLogger()} raises the real {@code org.openqa.selenium}
-   *     logger to {@link Level#FINE} instead, which is the ordinary way to see Selenium's debug
-   *     output. Enable it with {@code -Dselenium.debug=true}, the {@code SE_DEBUG} environment
-   *     variable, or directly via {@code Logger.getLogger("org.openqa.selenium").setLevel(Level
-   *     .FINE)}. This method's own behavior is unchanged and kept only for existing call sites
-   *     still comparing against it.
+   *     this switch; {@link #configureLogger()} raises the real {@code org.openqa.selenium} logger
+   *     to {@link Level#FINE} instead, which is the ordinary way to see Selenium's debug output.
+   *     Enable it with {@code -Dselenium.debug=true}, the {@code SE_DEBUG} environment variable, or
+   *     directly via {@code Logger.getLogger("org.openqa.selenium").setLevel(Level.FINE)}. This
+   *     method's own behavior is unchanged and kept only for existing call sites still comparing
+   *     against it.
    */
   @Deprecated(forRemoval = true)
   public static Level getDebugLogLevel() {
@@ -69,13 +69,16 @@ public class Debug {
 
   /**
    * Reflects the current debug switches ({@code -Dselenium.debug=true}, {@code
-   * -Dselenium.webdriver.verbose=true}, {@code SE_DEBUG}) onto the real {@code
-   * org.openqa.selenium} logger: raises it to {@link Level#FINE} and attaches a handler Selenium
-   * owns, filtered to leave {@link Level#INFO} and above to the caller's own handlers so output
-   * they already print is never duplicated. Idempotent: repeated calls while the switches are
-   * unchanged do nothing. Reversible: once every switch is off, the next call removes exactly the
-   * handler this method installed and restores the logger's previous level. Safe to call from
-   * concurrent driver construction.
+   * -Dselenium.webdriver.verbose=true}, {@code SE_DEBUG}) onto the real {@code org.openqa.selenium}
+   * logger: raises it to {@link Level#FINE} and attaches a handler Selenium owns, filtered to leave
+   * {@link Level#INFO} and above to the caller's own handlers so output they already print is never
+   * duplicated. Idempotent: repeated calls while the switches are unchanged do nothing. Reversible:
+   * once every switch is off, the next call removes exactly the handler this method installed and
+   * restores the logger's level to what it was before debugging turned on, unless something else
+   * changed the level in the meantime -- that change is left alone rather than clobbered. This
+   * can't distinguish an external override that happens to also set exactly {@link Level#FINE}:
+   * since JUL has no level-change listener to tell the two apart, that specific case still restores
+   * the pre-debug level. Safe to call from concurrent driver construction.
    */
   public static synchronized void configureLogger() {
     boolean shouldDebug = isDebugging() || isDebugAll();
@@ -97,7 +100,12 @@ public class Debug {
       SELENIUM_LOGGER.removeHandler(installedHandler);
       installedHandler.close();
       installedHandler = null;
-      SELENIUM_LOGGER.setLevel(previousLevel);
+      // Only restore the snapshotted level if nothing else changed it in the meantime. If the
+      // logger's current level no longer matches the FINE we set, someone else already overrode
+      // it after we turned debugging on, and restoring our stale snapshot would clobber theirs.
+      if (Level.FINE.equals(SELENIUM_LOGGER.getLevel())) {
+        SELENIUM_LOGGER.setLevel(previousLevel);
+      }
     }
 
     loggerConfigured = shouldDebug;
