@@ -30,36 +30,6 @@ _DOMAIN_TS_FILES = [
     "webextension.ts",
 ]
 
-def _merge_cddl_impl(ctx):
-    """Merges one or more CDDL files into a single output file."""
-    out = ctx.outputs.out
-    args = ctx.actions.args()
-    args.add(out)
-    args.add_all(ctx.files.srcs)
-    ctx.actions.run(
-        inputs = ctx.files.srcs,
-        outputs = [out],
-        executable = ctx.executable.tool,
-        arguments = [args],
-        mnemonic = "MergeCddl",
-        progress_message = "Merging CDDL files into %s" % out.short_path,
-    )
-    return [DefaultInfo(files = depset([out]))]
-
-_merge_cddl = rule(
-    implementation = _merge_cddl_impl,
-    attrs = {
-        "srcs": attr.label_list(allow_files = True, mandatory = True),
-        "out": attr.output(mandatory = True),
-        "tool": attr.label(
-            executable = True,
-            cfg = "exec",
-            mandatory = True,
-        ),
-    },
-    doc = "Merges CDDL specification files into a single file using an external merge tool.",
-)
-
 def _compile_bidi_ts_impl(ctx):
     ts_files = ctx.files.srcs
     output_subdir = ctx.attr.output_subdir
@@ -127,15 +97,14 @@ def generate_bidi_library(
         generator = None,
         schema_generator = None,
         anchors_extractor = None,
-        merge_tool = "//py/private:merge_cddl",
         spec_version = "1.0",
         output_path = "bidi/generated"):
-    """Macro that merges CDDL, generates BiDi TypeScript modules, and compiles them to JS.
+    """Macro that generates BiDi TypeScript modules from CDDL and compiles them to JS.
 
     Args:
         name: Base name for the targets.
         cddl_file: Primary CDDL spec label (webdriver-bidi-all.cddl).
-        extra_cddl_files: Additional CDDL files merged before generation.
+        extra_cddl_files: Additional CDDL specs parsed alongside the primary one.
         dfns_files: webref definition-index files (one per merged spec). When given,
             the schema step joins them by type name to attach a `specHref` spec link
             to each type. Optional — omitting them yields a schema with no links.
@@ -146,7 +115,6 @@ def generate_bidi_library(
         generator: The generate_bidi.mjs js_binary label. Defaults to :generate_bidi_script.
         schema_generator: The project_bidi_schema.mjs js_binary label. Defaults to :project_bidi_schema_script.
         anchors_extractor: The extract_bidi_anchors.mjs js_binary label. Defaults to :extract_bidi_anchors_script.
-        merge_tool: Python binary that concatenates CDDL files (output first, then inputs).
         spec_version: Spec version string passed to the generator.
         output_path: Output path for generated files within the package (default: bidi/generated).
     """
@@ -160,32 +128,25 @@ def generate_bidi_library(
     pkg = native.package_name()
     ts_src_path = output_path + "_src"
 
-    # Step 1: merge CDDL files into one.
-    # merge_cddl signature: <output> <input1> [<input2> ...]
-    # Uses ctx.actions.run so arguments are passed as an argv list rather than
-    # a shell command string, avoiding quoting/escaping issues with special chars.
-    merged_name = name + "_merged_cddl"
-    _merge_cddl(
-        name = merged_name,
-        srcs = [cddl_file] + extra_cddl_files,
-        out = name + "_merged.cddl",
-        tool = merge_tool,
-    )
-
-    # Step 2: parse the merged CDDL once into the reusable AST artifact. Internal
-    # input to the schema and the JS generator; not consumed by other bindings.
+    # Step 1: parse the base specs into the reusable AST artifact. generate_bidi.mjs
+    # parses each `--cddl` file and concatenates their definitions (no separate merge
+    # tool). Internal input to the schema and the JS generator; not consumed by other
+    # bindings. js_run_binary copies its srcs to bin and rejects external/cross-package
+    # files, so stage each spec into the package first (as the dfns/spec_html steps do).
+    staged_specs = []
+    cddl_args = []
+    for i, spec in enumerate([cddl_file] + extra_cddl_files):
+        staged = name + "_cddl_%d.cddl" % i
+        copy_file(name = name + "_cddl_copy_%d" % i, src = spec, out = staged)
+        staged_specs.append(":" + staged)
+        cddl_args += ["--cddl", "$(location :" + staged + ")"]
     ast_target = name + "_ast"
     ast_out = name + "_ast.json"
     js_run_binary(
         name = ast_target,
-        srcs = [":" + merged_name],
+        srcs = staged_specs,
         outs = [ast_out],
-        args = [
-            "--cddl",
-            "$(location :" + merged_name + ")",
-            "--dump-ast",
-            pkg + "/" + ast_out,
-        ],
+        args = cddl_args + ["--dump-ast", pkg + "/" + ast_out],
         tool = generator,
     )
 

@@ -104,6 +104,10 @@ const typeList = (t) => (Array.isArray(t) ? t : t === undefined || t === null ? 
 const isLiteral = (e) => e && typeof e === 'object' && e.Type === 'literal'
 const isRef = (e) => e && typeof e === 'object' && e.Type === 'group' && typeof e.Value === 'string'
 
+// An occurrence with no upper bound (`*` / `+`). The parser emits Infinity; the AST's
+// JSON round-trip renders that as null, so treat both as unbounded.
+const isUnbounded = (occ) => !!occ && (occ.m === null || occ.m === Infinity)
+
 // A `null` keyword or a `nil` prelude ref in a union means the value may be null.
 const isNullAlt = (e) =>
   e === 'null' || (e && typeof e === 'object' && e.Type === 'group' && PRELUDE[e.Value] === 'null')
@@ -242,20 +246,21 @@ function projectType(def) {
 }
 
 /**
- * Project a CDDL group into a record. A property with `Occurrence.m === null` is
- * an unbounded entry (`* key => value`), not a scalar field: `* text => any` marks
- * the record extensible, `* text => T` becomes a typed map, and an unbounded group
- * spread is folded in. Everything else is a normal field.
+ * Project a CDDL group into a record. A property with an unbounded occurrence (`*`/`+`)
+ * is a map/spread entry, not a scalar field: `* text => any` marks the record extensible,
+ * `* text => T` becomes a typed map, and an unbounded group spread is folded in. Everything
+ * else is a normal field.
  */
 function projectRecord(def) {
   const record = { kind: 'record', fields: [] }
   for (const prop of (def.Properties ?? []).flat()) {
     if (!prop || typeof prop !== 'object') continue
-    // `m === null` is overloaded in this parser: a key-typed entry is a map
-    // (`* text => value`); an anonymous entry is a structural spread; everything
-    // else is just an optional field (the `?` quantifier). Only the first two
-    // are not real fields.
-    if (prop.Occurrence?.m === null && (!prop.Name || prop.Name in PRIMITIVES || prop.Name in PRELUDE)) {
+    // An unbounded upper bound is overloaded in this parser: a key-typed entry is a map
+    // (`* text => value`); an anonymous entry is a structural spread; everything else is
+    // just an optional field (the `?` quantifier). Only the first two are not real fields.
+    // The parser emits the bound as Infinity; the AST's JSON round-trip turns it into null,
+    // so accept either rather than depending on that coercion.
+    if (isUnbounded(prop.Occurrence) && (!prop.Name || prop.Name in PRIMITIVES || prop.Name in PRELUDE)) {
       if (prop.Name in PRIMITIVES || prop.Name in PRELUDE) {
         const value = projectRef(prop.Type)
         if (value.primitive === 'any') record.extensible = true
