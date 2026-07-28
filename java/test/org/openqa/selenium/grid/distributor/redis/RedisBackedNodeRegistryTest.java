@@ -26,6 +26,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -33,6 +35,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -236,6 +242,60 @@ class RedisBackedNodeRegistryTest {
   @Test
   void isReadyReturnsTrueWhenBusIsReady() {
     assertThat(registry.isReady()).isTrue();
+  }
+
+  @Test
+  void addLogsAtWarningWhenNodeStatusThrows() {
+    // An exception here aborts registration entirely (see the catch block in add()) -- that's an
+    // actionable failure, not routine diagnostics, so it must be visible at WARNING by default.
+    // Mirrors LocalNodeRegistryTest.addLogsAtWarningWhenNodeStatusThrows: RedisBackedNodeRegistry's
+    // add() has the identical catch-and-warn path but had no test of its own.
+    NodeId nodeId = new NodeId(UUID.randomUUID());
+    RuntimeException statusFailure = new RuntimeException("node heartbeat started before ready");
+    TestNode node =
+        new TestNode(
+            tracer,
+            nodeId,
+            uri(PortProber.findFreePort()),
+            secret,
+            () -> {
+              throw new AssertionError("health check must not run for a node that failed add()");
+            }) {
+          @Override
+          public NodeStatus getStatus() {
+            throw statusFailure;
+          }
+        };
+
+    Logger log = Logger.getLogger(RedisBackedNodeRegistry.class.getName());
+    List<LogRecord> records = new ArrayList<>();
+    Handler capture =
+        new Handler() {
+          @Override
+          public void publish(LogRecord record) {
+            records.add(record);
+          }
+
+          @Override
+          public void flush() {}
+
+          @Override
+          public void close() {}
+        };
+    capture.setLevel(Level.ALL);
+    Level oldLevel = log.getLevel();
+    log.setLevel(Level.ALL);
+    log.addHandler(capture);
+    try {
+      registry.add(node);
+
+      assertThat(records).hasSize(1);
+      assertThat(records.get(0).getLevel()).isEqualTo(Level.WARNING);
+      assertThat(records.get(0).getThrown()).isSameAs(statusFailure);
+    } finally {
+      log.removeHandler(capture);
+      log.setLevel(oldLevel);
+    }
   }
 
   private static class TestNode extends Node {
