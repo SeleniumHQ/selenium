@@ -74,13 +74,18 @@ class RemoteWebDriverInitializationTest {
 
   private boolean quitCalled = false;
   private String oldDebugProperty;
+  // Legacy alias for selenium.debug -- Debug.isDebugging() honors either, so a test JVM that
+  // happens to have this set externally must not leak into the "no switch" baseline assertions.
+  private String oldVerboseProperty;
   private Level oldLoggerLevel;
 
   @BeforeEach
   void storeDebugState() {
     oldDebugProperty = System.getProperty("selenium.debug");
+    oldVerboseProperty = System.getProperty("selenium.webdriver.verbose");
     oldLoggerLevel = seleniumLogger().getLevel();
     System.clearProperty("selenium.debug");
+    System.clearProperty("selenium.webdriver.verbose");
   }
 
   @AfterEach
@@ -89,6 +94,11 @@ class RemoteWebDriverInitializationTest {
       System.setProperty("selenium.debug", oldDebugProperty);
     } else {
       System.clearProperty("selenium.debug");
+    }
+    if (oldVerboseProperty != null) {
+      System.setProperty("selenium.webdriver.verbose", oldVerboseProperty);
+    } else {
+      System.clearProperty("selenium.webdriver.verbose");
     }
     Debug.configureLogger();
     seleniumLogger().setLevel(oldLoggerLevel);
@@ -206,6 +216,27 @@ class RemoteWebDriverInitializationTest {
                         && singleton(capabilities)
                             .equals(command.getParameters().get("capabilities"))));
     verifyNoMoreInteractions(executor);
+    assertThat(driver.getSessionId()).isNotNull();
+  }
+
+  @Test
+  void constructorTreatsNullCapabilitiesAsEmptyCapabilities() throws IOException {
+    // Javadoc on the canonical constructor promises "null is treated as an empty set of
+    // capabilities" -- verify startSession() actually receives the coalesced empty
+    // ImmutableCapabilities, not the raw null parameter, and that this does not NPE.
+    CommandExecutor executor =
+        WebDriverFixture.prepareExecutorMock(echoCapabilities, nullValueResponder);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, null);
+
+    verify(executor)
+        .execute(
+            argThat(
+                command ->
+                    command.getName().equals(DriverCommand.NEW_SESSION)
+                        && command.getSessionId() == null
+                        && singleton(new ImmutableCapabilities())
+                            .equals(command.getParameters().get("capabilities"))));
     assertThat(driver.getSessionId()).isNotNull();
   }
 

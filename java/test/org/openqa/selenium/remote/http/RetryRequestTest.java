@@ -344,11 +344,13 @@ class RetryRequestTest {
   }
 
   @Test
-  void retryLogsAtFineRegardlessOfDebugToggle() {
+  void retryLogsAtWarningRegardlessOfDebugToggle() {
     // RetryRequest no longer varies its own report level with the debug switch (that was the
     // deprecated getDebugLogLevel() dance, migrated away as part of #17835) -- it always logs at
-    // FINE, and Debug.configureLogger() is what makes FINE visible when debugging is on. Lock in
-    // that invariant on both sides of the switch instead of the pre-migration toggle behavior.
+    // WARNING, since a connection-failure/server-error retry is an operationally significant,
+    // actionable event (bounded to a handful of attempts by RETRIES_ON_CONNECTION_FAILURE /
+    // RETRIES_ON_SERVER_ERROR), not routine diagnostics that should require debug mode to see. Lock
+    // in that invariant on both sides of the switch instead of the pre-migration toggle behavior.
     HttpHandler handler =
         new RetryRequest().andFinally(request -> new HttpResponse().setStatus(HTTP_UNAVAILABLE));
 
@@ -370,24 +372,31 @@ class RetryRequestTest {
     capture.setLevel(Level.ALL);
     Level oldLevel = log.getLevel();
     String oldDebugProperty = System.getProperty("selenium.debug");
+    String oldVerboseProperty = System.getProperty("selenium.webdriver.verbose");
     log.setLevel(Level.ALL);
     log.addHandler(capture);
     try {
       System.setProperty("selenium.debug", "true");
       handler.execute(new HttpRequest(GET, "/"));
       assertThat(records).isNotEmpty();
-      assertThat(records).allSatisfy(r -> assertThat(r.getLevel()).isEqualTo(Level.FINE));
+      assertThat(records).allSatisfy(r -> assertThat(r.getLevel()).isEqualTo(Level.WARNING));
 
       records.clear();
       System.clearProperty("selenium.debug");
+      System.clearProperty("selenium.webdriver.verbose");
       handler.execute(new HttpRequest(GET, "/"));
       assertThat(records).isNotEmpty();
-      assertThat(records).allSatisfy(r -> assertThat(r.getLevel()).isEqualTo(Level.FINE));
+      assertThat(records).allSatisfy(r -> assertThat(r.getLevel()).isEqualTo(Level.WARNING));
     } finally {
       if (oldDebugProperty != null) {
         System.setProperty("selenium.debug", oldDebugProperty);
       } else {
         System.clearProperty("selenium.debug");
+      }
+      if (oldVerboseProperty != null) {
+        System.setProperty("selenium.webdriver.verbose", oldVerboseProperty);
+      } else {
+        System.clearProperty("selenium.webdriver.verbose");
       }
       log.removeHandler(capture);
       log.setLevel(oldLevel);

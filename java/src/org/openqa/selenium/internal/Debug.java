@@ -52,6 +52,9 @@ public class Debug {
   }
 
   /**
+   * Returns the log level that debug output should be reported at: {@link Level#INFO} when {@link
+   * #isDebugging()} is true, {@link Level#FINE} otherwise.
+   *
    * @deprecated Individual log statements no longer change what severity they report at based on
    *     this switch; {@link #configureLogger()} raises the real {@code org.openqa.selenium} logger
    *     to {@link Level#FINE} instead, which is the ordinary way to see Selenium's debug output.
@@ -59,6 +62,7 @@ public class Debug {
    *     directly via {@code Logger.getLogger("org.openqa.selenium").setLevel(Level.FINE)}. This
    *     method's own behavior is unchanged and kept only for existing call sites still comparing
    *     against it.
+   * @return {@link Level#INFO} when debugging is enabled; {@link Level#FINE} otherwise
    */
   @Deprecated(forRemoval = true)
   public static Level getDebugLogLevel() {

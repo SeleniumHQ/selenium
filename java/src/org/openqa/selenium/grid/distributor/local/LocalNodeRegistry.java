@@ -227,7 +227,7 @@ public class LocalNodeRegistry implements NodeRegistry {
       }
     } catch (Exception e) {
       LOG.log(
-          Level.FINE, String.format("Exception while adding Node %s", node.getUri()), e);
+          Level.WARNING, String.format("Exception while adding Node %s", node.getUri()), e);
       return;
     }
 

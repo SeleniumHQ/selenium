@@ -233,7 +233,7 @@ public class RemoteWebDriver
     this.capabilities = requireNonNullElseGet(capabilities, () -> new ImmutableCapabilities());
 
     try {
-      startSession(capabilities);
+      startSession(this.capabilities);
     } catch (RuntimeException e) {
       try {
         quit();

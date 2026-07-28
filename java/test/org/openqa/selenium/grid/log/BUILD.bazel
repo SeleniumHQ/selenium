@@ -6,6 +6,7 @@ java_test_suite(
     size = "small",
     srcs = glob(["*Test.java"]),
     deps = [
+        "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/grid/config",
         "//java/src/org/openqa/selenium/grid/log",
         artifact("org.assertj:assertj-core"),

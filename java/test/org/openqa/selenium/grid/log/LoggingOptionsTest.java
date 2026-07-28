@@ -22,21 +22,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.internal.Debug;
 
 @Tag("UnitTests")
 class LoggingOptionsTest {
 
   private String oldDebugProperty;
+  // Legacy alias for selenium.debug -- Debug.isDebugging() honors either, so a test JVM that
+  // happens to have this set externally must not leak into the "no switch" baseline assertions.
+  private String oldVerboseProperty;
+  private Level oldSeleniumLoggerLevel;
 
   @BeforeEach
   void storeSystemProperty() {
     oldDebugProperty = System.getProperty("selenium.debug");
+    oldVerboseProperty = System.getProperty("selenium.webdriver.verbose");
+    oldSeleniumLoggerLevel = Logger.getLogger("org.openqa.selenium").getLevel();
     System.clearProperty("selenium.debug");
+    System.clearProperty("selenium.webdriver.verbose");
   }
 
   @AfterEach
@@ -46,6 +56,16 @@ class LoggingOptionsTest {
     } else {
       System.clearProperty("selenium.debug");
     }
+    if (oldVerboseProperty != null) {
+      System.setProperty("selenium.webdriver.verbose", oldVerboseProperty);
+    } else {
+      System.clearProperty("selenium.webdriver.verbose");
+    }
+    // Reverts whatever configureLogging() may have done to the shared org.openqa.selenium logger
+    // via Debug.configureLogger() during the test, now that the properties are back to their
+    // original values.
+    Debug.configureLogger();
+    Logger.getLogger("org.openqa.selenium").setLevel(oldSeleniumLoggerLevel);
   }
 
   @Test
@@ -66,6 +86,28 @@ class LoggingOptionsTest {
     String output = captureStderrDuring(() -> new LoggingOptions(emptyConfig()).setLoggingLevel());
 
     assertThat(output).doesNotContain("forcing Grid log level to FINE");
+  }
+
+  @Test
+  void configureLoggingRaisesSeleniumLoggerEvenWithExternalJulConfigSet() {
+    // configureLogging() early-returns once an external java.util.logging.config.* property is
+    // detected, handing the rest of logging setup off entirely. Debug.configureLogger() must still
+    // run before that early return, or Selenium's own FINE-level wire diagnostics stay invisible
+    // under -Dselenium.debug=true whenever an operator has such a property set.
+    System.setProperty("selenium.debug", "true");
+    String oldConfigFile = System.getProperty("java.util.logging.config.file");
+    System.setProperty("java.util.logging.config.file", "does-not-need-to-exist.properties");
+    try {
+      new LoggingOptions(emptyConfig()).configureLogging();
+
+      assertThat(Logger.getLogger("org.openqa.selenium").getLevel()).isEqualTo(Level.FINE);
+    } finally {
+      if (oldConfigFile != null) {
+        System.setProperty("java.util.logging.config.file", oldConfigFile);
+      } else {
+        System.clearProperty("java.util.logging.config.file");
+      }
+    }
   }
 
   private static MapConfig emptyConfig() {

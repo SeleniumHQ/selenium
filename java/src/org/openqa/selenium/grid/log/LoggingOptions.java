@@ -138,6 +138,15 @@ public class LoggingOptions {
       return;
     }
 
+    // Reflect the current debug switches onto the shared org.openqa.selenium logger before
+    // anything else below -- in particular, before the external-JUL-config early return just
+    // below hands the rest of logging setup off entirely. Without this, Selenium's own FINE-level
+    // wire diagnostics (RequestConverter, the BiDi/CDP Connection classes) stay invisible under
+    // -Dselenium.debug=true whenever an external `java.util.logging.config.*` property is set,
+    // since nothing else on Grid's startup path would ever call this. Idempotent and cheap, same
+    // chokepoint pattern as DriverFinder.getBinaryPaths().
+    Debug.configureLogger();
+
     String configClass = System.getProperty("java.util.logging.config.class");
     String configFile = System.getProperty("java.util.logging.config.file");
 

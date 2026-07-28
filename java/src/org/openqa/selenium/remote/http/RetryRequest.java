@@ -48,7 +48,7 @@ public class RetryRequest implements Filter {
 
           // must be a connection failure and check whether we have retries left for this
           if (isConnectionFailure && i < RETRIES_ON_CONNECTION_FAILURE) {
-            LOG.log(Level.FINE, "Retry #" + (i + 1) + " on ConnectException", ex);
+            LOG.log(Level.WARNING, "Retry #" + (i + 1) + " on ConnectException", ex);
             continue;
           }
 
@@ -63,7 +63,7 @@ public class RetryRequest implements Filter {
 
         // must be a server error and check whether we have retries left for this
         if (isServerError && i < RETRIES_ON_SERVER_ERROR) {
-          LOG.log(Level.FINE, "Retry #" + (i + 1) + " on ServerError: " + response.getStatus());
+          LOG.log(Level.WARNING, "Retry #" + (i + 1) + " on ServerError: " + response.getStatus());
           continue;
         }
 
