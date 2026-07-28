@@ -145,7 +145,7 @@ function resolveInputPath(p) {
 async function main() {
   const { values: args } = parseArgs({
     options: {
-      cddl: { type: 'string' },
+      cddl: { type: 'string', multiple: true },
       ast: { type: 'string' },
       model: { type: 'string' },
       'dump-ast': { type: 'string' },
@@ -157,8 +157,12 @@ async function main() {
   })
 
   // One pipeline stage per invocation; the flags select the stage.
-  if (args['dump-ast'] && args.cddl) {
-    writeJson(args['dump-ast'], parseCddl(args.cddl), 'ast')
+  if (args['dump-ast'] && args.cddl?.length) {
+    // The base spec is several CDDL files (webdriver-bidi + the adjacent specs); each
+    // is parsed independently and their definitions concatenated. Top-level CDDL
+    // productions are position-independent (refs resolve by name later), so this equals
+    // parsing one merged file — without a separate merge step or tool.
+    writeJson(args['dump-ast'], args.cddl.flatMap(parseCddl), 'ast')
   } else if (args['dump-model'] && args.ast) {
     writeJson(args['dump-model'], buildModel(readJson(args.ast, 'AST')), 'model', true)
   } else if (args['output-dir'] && args.ast && args.model) {
@@ -166,7 +170,7 @@ async function main() {
   } else {
     console.error(
       'Usage (one stage per invocation):\n' +
-        '  generate_bidi.mjs --cddl <file> --dump-ast <file>\n' +
+        '  generate_bidi.mjs --cddl <file> [--cddl <file>...] --dump-ast <file>\n' +
         '  generate_bidi.mjs --ast <file> --dump-model <file>\n' +
         '  generate_bidi.mjs --ast <file> --model <file> --output-dir <dir> [--enhancements <file>] [--spec-version <v>]',
     )
