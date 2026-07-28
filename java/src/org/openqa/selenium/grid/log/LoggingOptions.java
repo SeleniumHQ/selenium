@@ -87,9 +87,10 @@ public class LoggingOptions {
 
   public LoggingOptions setLoggingLevel() {
     String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(DEFAULT_LOG_LEVEL);
-    if (Debug.isDebugAll()) {
+    if (Debug.isDebugAll() || Debug.isDebugging()) {
       System.err.println(
-          "WARNING: Environment Variable `SE_DEBUG` is set; forcing Grid log level to FINE and"
+          "WARNING: Selenium debug logging is enabled (`SE_DEBUG`, `-Dselenium.debug=true`, or"
+              + " `-Dselenium.webdriver.verbose=true`); forcing Grid log level to FINE and"
               + " overriding configured log level.");
       configLevel = Level.FINE.getName();
     }
