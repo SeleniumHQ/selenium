@@ -35,6 +35,7 @@ const http = require('../http/index')
 const fs = require('node:fs')
 const { Capabilities } = require('./capabilities')
 const path = require('node:path')
+const util = require('node:util')
 const { NoSuchElementError } = require('./error')
 const cdpTargets = ['page', 'browser']
 const { Credential } = require('./virtual_authenticator')
@@ -1313,10 +1314,13 @@ class WebDriver {
   }
 
   /**
-   * Initiates bidi connection using 'webSocketUrl'
-   * @returns {BIDI}
+   * Initiates bidi connection using 'webSocketUrl'. Internal implementation
+   * backing the deprecated {@link WebDriver#getBidi}; composed BiDi modules
+   * (bidi/*.js factories, generated `<Domain>.create(driver)` classes) call
+   * this directly so they don't trip the deprecation warning on that method.
+   * @returns {Promise<BIDI>}
    */
-  async getBidi() {
+  async _getBidiConnection() {
     if (this._bidiConnection === undefined) {
       const caps = await this.getCapabilities()
       let WebSocketUrl = caps['map_'].get('webSocketUrl')
@@ -1788,6 +1792,24 @@ class WebDriver {
     return await this.execute(cmd)
   }
 }
+
+/**
+ * Returns the WebDriver BiDi connection for this session.
+ *
+ * @deprecated BiDi is an internal implementation detail (see
+ * docs/decisions/17670-bidi-implementation-boundaries.md) — this accessor hands
+ * back the raw transport directly, which is no longer supported public API.
+ * Use a composed BiDi module instead, e.g. `Network.create(driver)` or
+ * `require('selenium-webdriver/bidi/network')`.
+ * @function
+ * @name WebDriver#getBidi
+ * @returns {Promise<BIDI>}
+ */
+WebDriver.prototype.getBidi = util.deprecate(
+  WebDriver.prototype._getBidiConnection,
+  'WebDriver#getBidi() is deprecated. Use a composed BiDi module instead, e.g. Network.create(driver) or ' +
+    "require('selenium-webdriver/bidi/network'). See docs/decisions/17670-bidi-implementation-boundaries.md.",
+)
 
 /**
  * Interface for navigating back and forth in the browser history.
