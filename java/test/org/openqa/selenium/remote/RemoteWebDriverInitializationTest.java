@@ -41,6 +41,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jspecify.annotations.NullMarked;
@@ -220,23 +221,25 @@ class RemoteWebDriverInitializationTest {
   }
 
   @Test
-  void constructorTreatsNullCapabilitiesAsEmptyCapabilities() throws IOException {
+  void constructorTreatsNullCapabilitiesAsEmptyCapabilities() {
     // Javadoc on the canonical constructor promises "null is treated as an empty set of
     // capabilities" -- verify startSession() actually receives the coalesced empty
     // ImmutableCapabilities, not the raw null parameter, and that this does not NPE.
+    // A plain in-memory executor (no mocking framework): records the single NEW_SESSION command
+    // this construction issues, then answers it by echoing the requested capabilities back.
+    AtomicReference<Command> sentCommand = new AtomicReference<>();
     CommandExecutor executor =
-        WebDriverFixture.prepareExecutorMock(echoCapabilities, nullValueResponder);
+        command -> {
+          sentCommand.set(command);
+          return echoCapabilities.apply(command);
+        };
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, null);
 
-    verify(executor)
-        .execute(
-            argThat(
-                command ->
-                    command.getName().equals(DriverCommand.NEW_SESSION)
-                        && command.getSessionId() == null
-                        && singleton(new ImmutableCapabilities())
-                            .equals(command.getParameters().get("capabilities"))));
+    assertThat(sentCommand.get().getName()).isEqualTo(DriverCommand.NEW_SESSION);
+    assertThat(sentCommand.get().getSessionId()).isNull();
+    assertThat(sentCommand.get().getParameters().get("capabilities"))
+        .isEqualTo(singleton(new ImmutableCapabilities()));
     assertThat(driver.getSessionId()).isNotNull();
   }
 
