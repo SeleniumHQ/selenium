@@ -156,11 +156,21 @@ public class LoggingOptions {
       return;
     }
 
-    // Remove all handlers from existing loggers
+    // Remove all handlers from existing loggers, except org.openqa.selenium: Debug.configureLogger()
+    // above may have just installed a handler there for debug-mode output, and this loop would
+    // otherwise strip it moments later (Debug holds a strong static reference so that logger stays
+    // registered here too). Debug's own installed-handler bookkeeping has no way to learn a handler
+    // was removed out from under it, so once stripped its idempotency guard would prevent ever
+    // reinstalling one until the debug switch is toggled off and back on.
     LogManager logManager = LogManager.getLogManager();
     Enumeration<String> names = logManager.getLoggerNames();
     while (names.hasMoreElements()) {
-      Logger logger = logManager.getLogger(names.nextElement());
+      String name = names.nextElement();
+      if ("org.openqa.selenium".equals(name)) {
+        continue;
+      }
+
+      Logger logger = logManager.getLogger(name);
       if (logger == null) {
         continue;
       }

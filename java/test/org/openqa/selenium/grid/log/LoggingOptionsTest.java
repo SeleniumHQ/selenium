@@ -22,7 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Map;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -108,6 +110,29 @@ class LoggingOptionsTest {
         System.clearProperty("java.util.logging.config.file");
       }
     }
+  }
+
+  @Test
+  void configureLoggingPreservesDebugHandlerWhenNoExternalJulConfigIsSet() {
+    // configureLogging() enumerates every registered logger and strips its handlers so Grid's own
+    // console setup starts from a clean slate. org.openqa.selenium stays registered throughout
+    // (Debug holds a strong static reference to it), so the handler Debug.configureLogger() just
+    // installed one line above used to get swept up in that too: removed before configureLogging()
+    // returned, leaving debug mode silently broken since Debug's bookkeeping has no way to learn
+    // its handler was removed out from under it.
+    System.setProperty("selenium.debug", "true");
+
+    new LoggingOptions(emptyConfig()).configureLogging();
+
+    Logger seleniumLogger = Logger.getLogger("org.openqa.selenium");
+    Handler[] handlers = seleniumLogger.getHandlers();
+    assertThat(handlers).hasSize(1);
+    assertThat(handlers[0].getLevel()).isEqualTo(Level.FINE);
+
+    LogRecord infoRecord = new LogRecord(Level.INFO, "info message");
+    LogRecord fineRecord = new LogRecord(Level.FINE, "fine message");
+    assertThat(handlers[0].isLoggable(infoRecord)).isFalse();
+    assertThat(handlers[0].isLoggable(fineRecord)).isTrue();
   }
 
   private static MapConfig emptyConfig() {
