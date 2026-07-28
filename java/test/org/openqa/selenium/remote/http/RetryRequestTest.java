@@ -344,9 +344,11 @@ class RetryRequestTest {
   }
 
   @Test
-  void retryLogLevelTracksDebugToggleAtEachLogSite() {
-    // Force RetryRequest's class initialization BEFORE the debug property changes, pinning the
-    // stale-static-snapshot repro regardless of test execution order.
+  void retryLogsAtFineRegardlessOfDebugToggle() {
+    // RetryRequest no longer varies its own report level with the debug switch (that was the
+    // deprecated getDebugLogLevel() dance, migrated away as part of #17835) -- it always logs at
+    // FINE, and Debug.configureLogger() is what makes FINE visible when debugging is on. Lock in
+    // that invariant on both sides of the switch instead of the pre-migration toggle behavior.
     HttpHandler handler =
         new RetryRequest().andFinally(request -> new HttpResponse().setStatus(HTTP_UNAVAILABLE));
 
@@ -374,7 +376,7 @@ class RetryRequestTest {
       System.setProperty("selenium.debug", "true");
       handler.execute(new HttpRequest(GET, "/"));
       assertThat(records).isNotEmpty();
-      assertThat(records).allSatisfy(r -> assertThat(r.getLevel()).isEqualTo(Level.INFO));
+      assertThat(records).allSatisfy(r -> assertThat(r.getLevel()).isEqualTo(Level.FINE));
 
       records.clear();
       System.clearProperty("selenium.debug");
