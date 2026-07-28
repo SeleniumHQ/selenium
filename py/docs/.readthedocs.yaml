@@ -14,8 +14,6 @@ build:
 
   commands:
     - |
-      set -euo pipefail
-
       REPO_DIR="$(pwd)"
       PACKAGE="selenium"
       VERSION="$(
