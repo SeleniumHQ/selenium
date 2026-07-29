@@ -256,6 +256,12 @@ class DebugTest {
     Level oldParentLevel = parentLogger.getLevel();
     parentLogger.setLevel(Level.FINER);
     try {
+      // Enforce the starting precondition rather than merely asserting it: @AfterEach already
+      // restores this logger's own level after every test, so forcing it to null here is safe
+      // and can't leak into other tests -- but without this, a leftover explicit level from
+      // elsewhere in the same JVM run could fail this precondition before the real behavior under
+      // test ever runs.
+      seleniumLogger().setLevel(null);
       assertThat(seleniumLogger().getLevel()).isNull();
 
       System.setProperty("selenium.debug", "true");
