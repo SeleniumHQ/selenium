@@ -299,4 +299,33 @@ class DebugTest {
     Debug.configureLogger();
     assertThat(Debug.isHandledBySeleniumDebugHandler("org.openqa.selenium", Level.FINE)).isFalse();
   }
+
+  @Test
+  void isHandlerCurrentlyInstalledReflectsExternalHandlerRemoval() {
+    // isHandlerCurrentlyInstalled() must answer whether Debug's handler is REALLY still attached
+    // to org.openqa.selenium, not just whether Debug's own bookkeeping thinks it installed one and
+    // was never told otherwise. Something outside Debug entirely can remove that handler without
+    // going through configureLogger() -- e.g. LogManager.getLogManager().reset() (routine in
+    // embedding scenarios: Spring Boot's JavaLoggingSystem, a Log4j-JUL bridge, a container
+    // shutdown hook) or a direct removeHandler() call by unrelated code -- and Debug has no way to
+    // be told when that happens.
+    List<Handler> handlersBeforeDebug = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
+
+    System.setProperty("selenium.debug", "true");
+    Debug.configureLogger();
+    assertThat(Debug.isHandlerCurrentlyInstalled()).isTrue();
+
+    List<Handler> handlersWhileDebugging = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
+    handlersWhileDebugging.removeAll(handlersBeforeDebug);
+    assertThat(handlersWhileDebugging).hasSize(1);
+    Handler installedHandler = handlersWhileDebugging.get(0);
+
+    // Simulates the external-actor scenario: something other than Debug removes the handler
+    // directly, without ever calling configureLogger().
+    seleniumLogger().removeHandler(installedHandler);
+
+    assertThat(Debug.isHandlerCurrentlyInstalled())
+        .as("the handler was removed out from under Debug's bookkeeping by something else")
+        .isFalse();
+  }
 }

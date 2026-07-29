@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.internal;
 
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Filter;
@@ -75,12 +76,18 @@ public class Debug {
    * read the live system property/environment variable, this reflects the handler's actual,
    * current installation state -- the two can genuinely diverge for however long it takes some
    * caller to next invoke {@link #configureLogger()} after a switch changes, since nothing installs
-   * or removes the handler except that call.
+   * or removes the handler except that call. This checks the logger's real handler list rather
+   * than trusting the {@code loggerConfigured} bookkeeping flag alone, since something outside
+   * this class can remove the handler without ever going through {@link #configureLogger()} --
+   * e.g. {@code LogManager.getLogManager().reset()} (routine in embedding scenarios: Spring Boot's
+   * {@code JavaLoggingSystem}, a Log4j-JUL bridge, a container shutdown hook) or a direct {@code
+   * removeHandler()} call by unrelated code -- which would otherwise leave the flag stale-true.
    *
    * @return true when a handler installed by {@link #configureLogger()} is currently attached
    */
   public static synchronized boolean isHandlerCurrentlyInstalled() {
-    return loggerConfigured;
+    return installedHandler != null
+        && Arrays.asList(SELENIUM_LOGGER.getHandlers()).contains(installedHandler);
   }
 
   /**
