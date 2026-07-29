@@ -84,40 +84,26 @@ module Selenium
             expect(driver.execute_script('return [window.innerWidth, window.innerHeight]')).to eq([800, 600])
           end
 
-          it 'accepts user prompts without text',
-             pending_if: {browser_family: :chromium,
-                          reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
-            driver.navigate.to url_for('alerts.html')
-            driver.find_element(id: 'alert').click
-            wait_for_alert
-            browsing_context.handle_user_prompt(context: driver.window_handle, accept: true)
-            wait_for_no_alert
-
-            expect(driver.title).to eq('Testing Alerts')
+          it 'returns a no such alert error when no prompt is open' do
+            expect {
+              browsing_context.handle_user_prompt(context: driver.window_handle, accept: true)
+            }.to raise_error(Error::NoSuchAlertError)
           end
 
-          it 'accepts user prompts with text',
-             pending_if: {browser_family: :chromium,
-                          reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
-            driver.navigate.to url_for('alerts.html')
-            driver.find_element(id: 'prompt').click
-            wait_for_alert
-            browsing_context.handle_user_prompt(context: driver.window_handle, accept: true, user_text: 'Hello, world!')
-            wait_for_no_alert
-
-            expect(driver.title).to eq('Testing Alerts')
+          it 'accepts user text in the protocol payload' do
+            expect {
+              browsing_context.handle_user_prompt(
+                context: driver.window_handle,
+                accept: true,
+                user_text: 'Hello, world!'
+              )
+            }.to raise_error(Error::NoSuchAlertError)
           end
 
-          it 'rejects user prompts',
-             pending_if: {browser_family: :chromium,
-                          reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
-            driver.navigate.to url_for('alerts.html')
-            driver.find_element(id: 'alert').click
-            wait_for_alert
-            browsing_context.handle_user_prompt(context: driver.window_handle, accept: false)
-            wait_for_no_alert
-
-            expect(driver.title).to eq('Testing Alerts')
+          it 'accepts a reject prompt protocol payload' do
+            expect {
+              browsing_context.handle_user_prompt(context: driver.window_handle, accept: false)
+            }.to raise_error(Error::NoSuchAlertError)
           end
 
           it 'activates a browser context',
