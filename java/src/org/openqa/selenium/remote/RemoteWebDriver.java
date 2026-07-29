@@ -122,8 +122,15 @@ public class RemoteWebDriver
         PrintsPage,
         TakesScreenshot {
 
+  // Guarantees (JLS 12.4.2) that debug logging is configured before ANY subclass constructor
+  // body runs -- including argument expressions passed to a subclass's own super(...) call, e.g.
+  // ChromeDriver/FirefoxDriver's DriverFinder/SeleniumManager discovery, which logs at FINE
+  // before super(...) is ever reached. configureLogger() is idempotent, so this and the call in
+  // the canonical instance constructor below are both safe to keep: this one covers logging that
+  // happens before an instance exists, the other picks up a property changed after this class
+  // already loaded.
   static {
-    org.openqa.selenium.internal.Debug.configureLogger();
+    Debug.configureLogger();
   }
 
   private static final Logger LOG = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -203,14 +210,30 @@ public class RemoteWebDriver
     this(executor, capabilities, ClientConfig.defaultConfig());
   }
 
+  /**
+   * Creates a new driver that runs its commands through the given executor, requesting a new
+   * session with the given capabilities. Before the session starts, the current Selenium debug
+   * switches are reflected onto the {@code org.openqa.selenium} logger via {@link
+   * Debug#configureLogger()}, so a debug property changed at runtime takes effect for every
+   * driver constructed afterwards.
+   *
+   * @param executor the command executor used to communicate with the remote end; must not be
+   *     null
+   * @param capabilities the capabilities requested for the new session; null is treated as an
+   *     empty set of capabilities
+   * @param clientConfig the HTTP client configuration for the connection; must not be null
+   */
   public RemoteWebDriver(
       CommandExecutor executor, Capabilities capabilities, ClientConfig clientConfig) {
+    // Instance-time (not class-load-time) so a property change made after this class has already
+    // loaded still takes effect for drivers constructed afterwards.
+    Debug.configureLogger();
     this.clientConfig = Require.nonNull("Client config", clientConfig);
     this.executor = Require.nonNull("Command executor", executor);
     this.capabilities = requireNonNullElseGet(capabilities, () -> new ImmutableCapabilities());
 
     try {
-      startSession(capabilities);
+      startSession(this.capabilities);
     } catch (RuntimeException e) {
       try {
         quit();
