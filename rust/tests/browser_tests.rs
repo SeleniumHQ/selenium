@@ -259,7 +259,7 @@ fn edge_matches_msedgedriver_binary_names() {
     let manager = EdgeManager::new().unwrap();
     assert_eq!(
         manager.get_browser_names_in_path(),
-        vec!["microsoft-edge", "microsoft-edge-stable"]
+        vec!["edge", "microsoft-edge", "microsoft-edge-stable"]
     );
 }
 
@@ -268,4 +268,30 @@ fn edge_detect_browser_in_known_locations_is_linux_only() {
     let mut manager = EdgeManager::new().unwrap();
     manager.config.os = "macos".to_string();
     assert!(manager.detect_browser_in_known_locations().is_none());
+}
+
+#[test]
+fn first_existing_path_searches_name_major() {
+    use selenium_manager::files::first_existing_path;
+    use std::fs;
+
+    let base = std::env::temp_dir().join("sm-first-existing-path-test");
+    let dir_a = base.join("a");
+    let dir_b = base.join("b");
+    fs::create_dir_all(&dir_a).unwrap();
+    fs::create_dir_all(&dir_b).unwrap();
+    // "wanted" only exists in the later dir; "other" only in the earlier dir.
+    fs::write(dir_a.join("other"), "").unwrap();
+    fs::write(dir_b.join("wanted"), "").unwrap();
+
+    let dirs = [dir_a.to_str().unwrap(), dir_b.to_str().unwrap()];
+    // Name-major: "wanted" is tried across every dir before "other", so it wins despite
+    // "other" sitting in an earlier directory.
+    assert_eq!(
+        first_existing_path(&dirs, &["wanted", "other"]),
+        Some(dir_b.join("wanted"))
+    );
+    assert!(first_existing_path(&dirs, &["missing"]).is_none());
+
+    fs::remove_dir_all(&base).ok();
 }

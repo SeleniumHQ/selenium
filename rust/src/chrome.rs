@@ -19,7 +19,7 @@ use crate::config::ARCH::{ARM64, X32};
 use crate::config::ManagerConfig;
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
-use crate::files::{BrowserPath, compose_driver_path_in_cache};
+use crate::files::{BrowserPath, compose_driver_path_in_cache, first_existing_path};
 use crate::logger::Logger;
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -241,26 +241,19 @@ impl SeleniumManager for ChromeManager {
         if !LINUX.is(self.get_os()) {
             return None;
         }
-        let names = ["chrome", "google-chrome", "chromium", "chromium-browser"];
-        let dirs = [
-            "/usr/local/sbin",
-            "/usr/local/bin",
-            "/usr/sbin",
-            "/usr/bin",
-            "/sbin",
-            "/bin",
-            "/opt/google/chrome",
-            "/opt/chromium.org/chromium",
-        ];
-        for name in names {
-            for dir in dirs {
-                let candidate = Path::new(dir).join(name);
-                if candidate.exists() {
-                    return Some(candidate);
-                }
-            }
-        }
-        None
+        first_existing_path(
+            &[
+                "/usr/local/sbin",
+                "/usr/local/bin",
+                "/usr/sbin",
+                "/usr/bin",
+                "/sbin",
+                "/bin",
+                "/opt/google/chrome",
+                "/opt/chromium.org/chromium",
+            ],
+            &["chrome", "google-chrome", "chromium", "chromium-browser"],
+        )
     }
 
     fn get_http_client(&self) -> &Client {
