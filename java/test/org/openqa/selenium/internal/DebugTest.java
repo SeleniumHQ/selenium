@@ -272,4 +272,31 @@ class DebugTest {
     System.clearProperty("selenium.debug");
     assertThat(Debug.getDebugLogLevel()).isEqualTo(Level.FINE);
   }
+
+  @Test
+  void isHandledBySeleniumDebugHandlerReflectsActualHandlerInstallationNotLiveProperty() {
+    // isHandledBySeleniumDebugHandler() exists so a caller further up the logger hierarchy (e.g.
+    // Grid's root handler) can tell whether THIS handler will actually also print a given record,
+    // to avoid a duplicate. That question is about the handler's real, current installation
+    // state, not the live system property: a property change takes effect only once something
+    // calls configureLogger() again to react to it, and the two can genuinely diverge for however
+    // long that takes -- checking the live property instead would answer "yes, handled" the
+    // instant the property flips, even though the handler that must actually be there to back
+    // that answer hasn't been installed (or removed) yet.
+    System.setProperty("selenium.debug", "true");
+    Debug.configureLogger();
+    assertThat(Debug.isHandledBySeleniumDebugHandler("org.openqa.selenium", Level.FINE)).isTrue();
+
+    // The property flips off, but nothing has called configureLogger() again yet -- the handler
+    // installed above is still attached and will still print a FINE record published right now.
+    System.clearProperty("selenium.debug");
+    assertThat(Debug.isHandledBySeleniumDebugHandler("org.openqa.selenium", Level.FINE))
+        .as("the handler installed while debugging was on is still attached and still handling")
+        .isTrue();
+
+    // Only once configureLogger() actually reacts does the handler come off, and only then must
+    // callers stop treating this range as already handled.
+    Debug.configureLogger();
+    assertThat(Debug.isHandledBySeleniumDebugHandler("org.openqa.selenium", Level.FINE)).isFalse();
+  }
 }
