@@ -110,9 +110,7 @@ public class Connection implements Closeable {
     // RemoteWebDriver or DriverFinder) would otherwise never trigger the raise. Idempotent and
     // cheap, same pattern as DriverFinder.getBinaryPaths(). The deprecated 2-arg constructor
     // delegates here, so this single call point covers both.
-    Debug.configureLogger();
-    this.client = Require.nonNull("HTTP client", client);
-    this.wsConfig = wsClientConfig(clientConfig, url);
+    this.client = Require.nonNull("HTTP client", client);`n    this.wsConfig = wsClientConfig(clientConfig, url);`n    Debug.configureLogger();
     this.socket = this.client.openSocket(new HttpRequest(GET, wsConfig.baseUri()), new Listener());
     this.isClosed = new AtomicBoolean();
   }
@@ -392,3 +390,4 @@ public class Connection implements Closeable {
     }
   }
 }
+

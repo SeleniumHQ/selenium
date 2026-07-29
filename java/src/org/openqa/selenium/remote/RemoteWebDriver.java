@@ -227,9 +227,7 @@ public class RemoteWebDriver
       CommandExecutor executor, Capabilities capabilities, ClientConfig clientConfig) {
     // Instance-time (not class-load-time) so a property change made after this class has already
     // loaded still takes effect for drivers constructed afterwards.
-    Debug.configureLogger();
-    this.clientConfig = Require.nonNull("Client config", clientConfig);
-    this.executor = Require.nonNull("Command executor", executor);
+    this.clientConfig = Require.nonNull("Client config", clientConfig);`n    this.executor = Require.nonNull("Command executor", executor);`n    Debug.configureLogger();
     this.capabilities = requireNonNullElseGet(capabilities, () -> new ImmutableCapabilities());
 
     try {
@@ -1472,3 +1470,4 @@ public class RemoteWebDriver
     }
   }
 }
+
