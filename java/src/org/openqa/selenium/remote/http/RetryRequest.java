@@ -28,7 +28,6 @@ import org.openqa.selenium.internal.Debug;
 public class RetryRequest implements Filter {
 
   private static final Logger LOG = Logger.getLogger(RetryRequest.class.getName());
-  private static final Level LOG_LEVEL = Debug.getDebugLogLevel();
 
   private static final int RETRIES_ON_CONNECTION_FAILURE = 3;
   private static final int RETRIES_ON_SERVER_ERROR = 2;
@@ -50,7 +49,7 @@ public class RetryRequest implements Filter {
 
           // must be a connection failure and check whether we have retries left for this
           if (isConnectionFailure && i < RETRIES_ON_CONNECTION_FAILURE) {
-            LOG.log(LOG_LEVEL, "Retry #" + (i + 1) + " on ConnectException", ex);
+            LOG.log(Debug.getDebugLogLevel(), "Retry #" + (i + 1) + " on ConnectException", ex);
             continue;
           }
 
@@ -65,7 +64,7 @@ public class RetryRequest implements Filter {
 
         // must be a server error and check whether we have retries left for this
         if (isServerError && i < RETRIES_ON_SERVER_ERROR) {
-          LOG.log(LOG_LEVEL, "Retry #" + (i + 1) + " on ServerError: " + response.getStatus());
+          LOG.log(Debug.getDebugLogLevel(), "Retry #" + (i + 1) + " on ServerError: " + response.getStatus());
           continue;
         }
 
@@ -79,3 +78,4 @@ public class RetryRequest implements Filter {
     };
   }
 }
+
