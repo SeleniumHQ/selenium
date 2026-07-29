@@ -45,10 +45,6 @@ public class Handle {
     return bidi.addListener(event, handler);
   }
 
-  <X> String subscribe(Event<X> event, Consumer<X> handler, SubscriptionScope scope) {
-    return bidi.addListener(event, handler, scope);
-  }
-
   void unsubscribe(String subscriptionId) {
     bidi.removeListener(subscriptionId);
   }

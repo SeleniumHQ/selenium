@@ -21,7 +21,6 @@ import static java.util.Collections.emptyMap;
 
 import java.io.Closeable;
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -113,18 +112,6 @@ public class BiDi implements Closeable {
 
     String subscriptionId =
         subscribe(Map.of("contexts", browsingContextIds, "events", List.of(event.getMethod())));
-    connection.addListener(subscriptionId, event, handler);
-    return subscriptionId;
-  }
-
-  <X> String addListener(Event<X> event, Consumer<X> handler, SubscriptionScope scope) {
-    Require.nonNull("Event to listen for", event);
-    Require.nonNull("Handler to call", handler);
-    Require.nonNull("Subscription scope", scope);
-
-    Map<String, Object> params = new HashMap<>(scope.toMap());
-    params.put("events", List.of(event.getMethod()));
-    String subscriptionId = subscribe(params);
     connection.addListener(subscriptionId, event, handler);
     return subscriptionId;
   }
