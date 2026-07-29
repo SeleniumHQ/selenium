@@ -199,11 +199,15 @@ def resolve(schema_name: str) -> type:
     # owning module may not have run its @register decorators yet. Import it now (a no-op if
     # already loaded) and retry, so e.g. resolving `script.NodeRemoteValue` works even when the
     # caller only imported `browsing_context`.
-    module = _camel_to_snake(schema_name.split(".", 1)[0])
+    target = f"{__package__}.{_camel_to_snake(schema_name.split('.', 1)[0])}"
     try:
-        import_module(f"{__package__}.{module}")
-    except ImportError:
-        pass
+        import_module(target)
+    except ModuleNotFoundError as exc:
+        # Only the target module itself being absent means "unknown type" (handled below). If the
+        # module exists but one of *its* imports is missing, surface that real failure rather than
+        # masking it — likewise a non-ModuleNotFoundError ImportError propagates untouched.
+        if exc.name != target:
+            raise
     try:
         return _REGISTRY[schema_name]
     except KeyError:
@@ -425,15 +429,38 @@ def _validate_outbound(owner: str, name: str, w: _Wire, value: Any) -> None:
     if w.is_list:
         if not isinstance(value, list):
             raise BiDiSerializationError(f"{owner}.{name}: expected a list, got {type(value).__name__} {value!r}")
+        validate_item = _validate_outbound_map_entry if w.scalar is not None else _validate_outbound_scalar
         for item in value:
-            _validate_outbound_scalar(owner, name, w, item)
+            validate_item(owner, name, w, item)
         return
     _validate_outbound_scalar(owner, name, w, value)
 
 
+def _validate_outbound_map_entry(owner: str, name: str, w: _Wire, element: Any) -> None:
+    """Validate one outbound ``[key, value]`` map entry: pair shape, key type, object-only value.
+
+    Mirrors the inbound :func:`_read_map_entry` checks: an object key is a typed record instance and
+    a bare-scalar key must match the arm's ``scalar`` primitive, while the value is always an object.
+    """
+    if not (isinstance(element, list) and len(element) == 2):
+        raise BiDiSerializationError(f"{owner}.{name}: expected a [key, value] pair, got {element!r}")
+    key, value = element
+    if not isinstance(key, Record):
+        scalars = [s for s in (w.scalar if isinstance(w.scalar, list) else [w.scalar]) if s is not None]
+        checks = [_PRIMITIVE_CHECKS[s] for s in scalars if s in _PRIMITIVE_CHECKS]
+        if checks and not any(check(key) for check in checks):
+            raise BiDiSerializationError(
+                f"{owner}.{name}: map key expected {' or '.join(scalars)}, got {type(key).__name__} {key!r}"
+            )
+    if not isinstance(value, Record):
+        raise BiDiSerializationError(
+            f"{owner}.{name}: map value expected an object, got {type(value).__name__} {value!r}"
+        )
+
+
 def _validate_outbound_scalar(owner: str, name: str, w: _Wire, value: Any) -> None:
-    if value is None or w.scalar is not None:
-        return  # map entries carry their own shape; null is handled upstream
+    if value is None:
+        return  # null is handled upstream
     if w.enum is not None:
         return  # enum membership is validated at construction (__post_init__)
     if w.ref is not None:

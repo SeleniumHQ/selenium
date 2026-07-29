@@ -222,6 +222,30 @@ def test_resolve_lazily_imports_the_owning_module_on_a_cross_domain_miss(monkeyp
     assert calls == ["selenium.webdriver.common._bidi.lazy_domain"]
 
 
+def test_resolve_reports_unknown_type_when_the_owning_module_is_absent(monkeypatch):
+    from selenium.webdriver.common._bidi import serialization as _ser
+
+    def module_absent(name):
+        raise ModuleNotFoundError(f"No module named {name!r}", name=name)  # the target itself is missing
+
+    monkeypatch.setattr(_ser, "import_module", module_absent)
+    with pytest.raises(BiDiSerializationError, match=r"unknown BiDi type 'noSuchDomain.Type'"):
+        resolve("noSuchDomain.Type")
+
+
+def test_resolve_reraises_a_dependency_import_failure_instead_of_masking_it(monkeypatch):
+    # The owning module exists but one of *its* imports is missing: surface that, don't report it
+    # as an unknown type.
+    from selenium.webdriver.common._bidi import serialization as _ser
+
+    def dependency_missing(name):
+        raise ModuleNotFoundError("No module named 'thirdparty'", name="thirdparty")
+
+    monkeypatch.setattr(_ser, "import_module", dependency_missing)
+    with pytest.raises(ModuleNotFoundError, match=r"thirdparty"):
+        resolve("someDomain.SomeType")
+
+
 # --- outbound: as_json ---
 
 
@@ -263,6 +287,25 @@ def test_as_json_rejects_a_raw_dict_where_a_typed_record_is_expected():
 def test_as_json_rejects_a_wrong_typed_item_in_a_list_of_records():
     with pytest.raises(BiDiSerializationError, match=r"Path.points: expected Point, got dict"):
         Path(points=[Point(x=1, y=2), {"x": 3, "y": 4}]).as_json()
+
+
+def test_as_json_serializes_a_valid_map():
+    assert StringMap(value=[["k", Cat(meow="hi")]]).as_json() == {"value": [["k", {"meow": "hi", "kind": "cat"}]]}
+
+
+def test_as_json_rejects_a_malformed_map_pair():
+    with pytest.raises(BiDiSerializationError, match=r"StringMap.value: expected a \[key, value\] pair"):
+        StringMap(value=[["k"]]).as_json()
+
+
+def test_as_json_rejects_a_wrong_typed_map_key():
+    with pytest.raises(BiDiSerializationError, match=r"StringMap.value: map key expected str, got int"):
+        StringMap(value=[[5, Cat(meow="hi")]]).as_json()
+
+
+def test_as_json_rejects_a_non_object_map_value():
+    with pytest.raises(BiDiSerializationError, match=r"StringMap.value: map value expected an object, got str"):
+        StringMap(value=[["k", "not-an-object"]]).as_json()
 
 
 # --- inbound: required / optional / null ---
