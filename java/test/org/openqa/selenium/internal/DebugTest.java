@@ -247,6 +247,36 @@ class DebugTest {
   }
 
   @Test
+  void configureLoggerDoesNotClampAnInheritedMoreVerboseEffectiveLevel() {
+    // org.openqa.selenium's OWN level stays null/unset (inheriting), but its parent logger
+    // (org.openqa) is explicitly more verbose than FINE -- the real EFFECTIVE level right now is
+    // already FINER, and configureLogger() must not clobber that down to FINE just because the
+    // child logger's own level happens to be null rather than explicitly set.
+    Logger parentLogger = Logger.getLogger("org.openqa");
+    Level oldParentLevel = parentLogger.getLevel();
+    parentLogger.setLevel(Level.FINER);
+    try {
+      assertThat(seleniumLogger().getLevel()).isNull();
+
+      System.setProperty("selenium.debug", "true");
+      Debug.configureLogger();
+
+      // The logger's OWN level must stay untouched: configureLogger() had nothing to raise since
+      // the EFFECTIVE level was already more verbose than FINE.
+      assertThat(seleniumLogger().getLevel()).isNull();
+      // The inherited FINER effective level must still be in force.
+      assertThat(seleniumLogger().isLoggable(Level.FINER)).isTrue();
+
+      // Nothing was raised, so turning debug back off must be a no-op for the level.
+      System.clearProperty("selenium.debug");
+      Debug.configureLogger();
+      assertThat(seleniumLogger().getLevel()).isNull();
+    } finally {
+      parentLogger.setLevel(oldParentLevel);
+    }
+  }
+
+  @Test
   void configureLoggerDoesNotRestoreALevelItNeverChanged() {
     seleniumLogger().setLevel(Level.FINER);
     System.setProperty("selenium.debug", "true");

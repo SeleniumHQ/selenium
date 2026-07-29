@@ -145,6 +145,26 @@ public class Debug {
   }
 
   /**
+   * Computes {@code logger}'s effective level: its own level if set, otherwise the first non-null
+   * level found walking up its {@link Logger#getParent()} chain, falling back to {@link Level#INFO}
+   * (JUL's own root default) if none is ever set. {@link Logger} has no single built-in method for
+   * this, but walking the parent chain is how the JVM itself resolves it internally when deciding
+   * whether a record is loggable.
+   *
+   * @param logger the logger to compute the effective level of
+   * @return the effective level; never {@code null}
+   */
+  private static Level effectiveLevel(Logger logger) {
+    for (Logger current = logger; current != null; current = current.getParent()) {
+      Level level = current.getLevel();
+      if (level != null) {
+        return level;
+      }
+    }
+    return Level.INFO;
+  }
+
+  /**
    * Reflects the current debug switches ({@code -Dselenium.debug=true}, {@code
    * -Dselenium.webdriver.verbose=true}, {@code SE_DEBUG}) onto the real {@code org.openqa.selenium}
    * logger: raises it to {@link Level#FINE} when it is currently less verbose than {@link
@@ -186,16 +206,17 @@ public class Debug {
       // level happens to be right now, corrupting the snapshot that turning debug off later needs
       // to restore the correct pre-debug level.
       if (!loggerConfigured) {
+        // Only raise the level when the logger's EFFECTIVE level is currently LESS verbose than
+        // FINE (higher intValue). A more-verbose effective level (FINER, FINEST, ALL) is left
+        // alone: lowering it would make records like W3CHttpResponseCodec's FINER diagnostics
+        // unloggable while "debugging". This decides off the effective level rather than the
+        // logger's own (possibly null/inherited) level -- a null own level with a more-verbose
+        // level set on a parent logger already means FINER-or-better records are loggable right
+        // now, and forcing this logger's own level to FINE would clobber that inherited
+        // verbosity. What gets snapshotted/restored is still the logger's own level exactly as
+        // before; only the raise/no-raise decision changes.
         Level currentLevel = SELENIUM_LOGGER.getLevel();
-        // Only raise the level when the logger is currently LESS verbose than FINE (higher
-        // intValue). A null level inherits the parent's (default INFO), so raising applies then
-        // too. An already more-verbose level (FINER, FINEST, ALL) is left alone: lowering it
-        // would make records like W3CHttpResponseCodec's FINER diagnostics unloggable while
-        // "debugging". This reads the logger's own level, not its effective level -- a
-        // more-verbose level inherited from a parent while this logger's own level is unset is
-        // still pinned to FINE, since JUL offers no way to read the effective level.
-        levelRaisedByDebug =
-            currentLevel == null || currentLevel.intValue() > Level.FINE.intValue();
+        levelRaisedByDebug = effectiveLevel(SELENIUM_LOGGER).intValue() > Level.FINE.intValue();
         if (levelRaisedByDebug) {
           previousLevel = currentLevel;
           SELENIUM_LOGGER.setLevel(Level.FINE);

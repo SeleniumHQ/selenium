@@ -111,7 +111,13 @@ class LoggingOptionsTest {
     try {
       new LoggingOptions(emptyConfig()).configureLogging();
 
-      assertThat(Logger.getLogger("org.openqa.selenium").getLevel()).isEqualTo(Level.FINE);
+      // Checks effective loggability rather than the logger's own explicit level: Debug now
+      // decides whether to raise off the EFFECTIVE level (Debug.java's effectiveLevel()), so when
+      // an earlier test already left an ancestor logger (e.g. the root logger, via this same
+      // configureLogging() path) at FINE-or-more-verbose, org.openqa.selenium's own level
+      // correctly stays untouched -- there's nothing left to raise. Either way, what actually
+      // matters -- Selenium's FINE-level wire diagnostics being visible -- must hold.
+      assertThat(Logger.getLogger("org.openqa.selenium").isLoggable(Level.FINE)).isTrue();
     } finally {
       if (oldConfigFile != null) {
         System.setProperty("java.util.logging.config.file", oldConfigFile);
