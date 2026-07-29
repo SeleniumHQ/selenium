@@ -243,6 +243,54 @@ module Selenium
             end
           end
 
+          describe 'webExtension.install Firefox (moz:) vendor extension' do
+            let(:extension) { WebExtension::ExtensionPath.new(path: '/tmp/ext') }
+
+            # Construct the moz vendor subclass directly, with execute stubbed to capture the
+            # params the vendor install would send.
+            def moz_install(**kwargs)
+              captured = nil
+              connection = Object.new
+              connection.define_singleton_method(:send_cmd) { |**| {} }
+              domain = WebExtension::Moz.new(connection)
+              domain.define_singleton_method(:execute) { |params:, **| captured = params }
+              domain.install(extension_data: extension, **kwargs)
+              captured
+            end
+
+            it 'composes typed moz: options into the extensible params under their exact wire keys' do
+              params = moz_install(allow_private_browsing: true, permanent: false)
+
+              expect(params.as_json).to eq(
+                'extensionData' => {'type' => 'path', 'path' => '/tmp/ext'},
+                'moz:allowPrivateBrowsing' => true,
+                'moz:permanent' => false
+              )
+            end
+
+            it 'omits vendor options left unset' do
+              params = moz_install(permanent: true)
+
+              expect(params.as_json).to eq(
+                'extensionData' => {'type' => 'path', 'path' => '/tmp/ext'},
+                'moz:permanent' => true
+              )
+            end
+
+            it 'keeps moz: off the shared install so non-Firefox sessions never see it' do
+              shared = WebExtension.instance_method(:install).parameters.map(&:last)
+
+              expect(shared).to eq([:extension_data])
+            end
+
+            # #1140 makes InstallParameters extensible, so a not-yet-typed vendor key still rides along.
+            it 'passes an unknown vendor key through the extensions bag' do
+              params = WebExtension::InstallParameters.new(extension_data: extension, extensions: {'moz:future' => 1})
+
+              expect(params.as_json).to include('moz:future' => 1)
+            end
+          end
+
           describe 'outbound union command params' do
             it 'sends explicit null for a nullable union field a flat hash would have dropped' do
               params = Emulation::SetGeolocationOverrideParameters.build(coordinates: nil)
