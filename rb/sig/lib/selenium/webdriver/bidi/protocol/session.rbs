@@ -39,7 +39,7 @@ module Selenium
             attr_reader proxy: untyped
             attr_reader unhandled_prompt_behavior: untyped
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (?accept_insecure_certs: bool, ?browser_name: String, ?browser_version: String, ?platform_name: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?extensions: untyped) -> instance
+            def self.new: (?accept_insecure_certs: bool, ?browser_name: String, ?browser_version: String, ?platform_name: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?extensions: Hash[String, untyped]) -> instance
           end
 
           class ProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Union
@@ -48,13 +48,13 @@ module Selenium
           class AutodetectProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader proxy_type: String
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (?proxy_type: String, ?extensions: untyped) -> instance
+            def self.new: (?proxy_type: String, ?extensions: Hash[String, untyped]) -> instance
           end
 
           class DirectProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader proxy_type: String
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (?proxy_type: String, ?extensions: untyped) -> instance
+            def self.new: (?proxy_type: String, ?extensions: Hash[String, untyped]) -> instance
           end
 
           class ManualProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -65,7 +65,7 @@ module Selenium
             attr_reader socks_version: Integer
             attr_reader no_proxy: untyped
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (?proxy_type: String, ?http_proxy: String, ?ssl_proxy: String, socks_proxy: String, socks_version: Integer, ?no_proxy: Array[String], ?extensions: untyped) -> instance
+            def self.new: (?proxy_type: String, ?http_proxy: String, ?ssl_proxy: String, socks_proxy: String, socks_version: Integer, ?no_proxy: Array[String], ?extensions: Hash[String, untyped]) -> instance
           end
 
           class SocksProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -78,13 +78,13 @@ module Selenium
             attr_reader proxy_type: String
             attr_reader proxy_autoconfig_url: String
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (?proxy_type: String, proxy_autoconfig_url: String, ?extensions: untyped) -> instance
+            def self.new: (?proxy_type: String, proxy_autoconfig_url: String, ?extensions: Hash[String, untyped]) -> instance
           end
 
           class SystemProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader proxy_type: String
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (?proxy_type: String, ?extensions: untyped) -> instance
+            def self.new: (?proxy_type: String, ?extensions: Hash[String, untyped]) -> instance
           end
 
           class UserPromptHandler < ::Selenium::WebDriver::BiDi::Serialization::Record

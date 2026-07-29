@@ -57,7 +57,7 @@ module Selenium
           class InstallParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData, ?extensions: untyped) -> instance
+            def self.new: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData, ?extensions: Hash[String, untyped]) -> instance
           end
 
           def install: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData) -> ::Selenium::WebDriver::BiDi::Protocol::WebExtension::InstallResult

@@ -420,7 +420,9 @@ module BiDiGenerate
       parts = []
       parts << "?#{discriminator[:ruby_name]}: #{discriminator[:rbs]}" if discriminator
       parts.concat(fields.map(&:rbs_arg))
-      parts << '?extensions: untyped' if extensible
+      # Match the reader type and the extensible Record impl (which calls `merge!`/`empty?` on it),
+      # so a type checker rejects a non-Hash before it crashes at serialization.
+      parts << '?extensions: Hash[String, untyped]' if extensible
       parts.join(', ')
     end
   end
