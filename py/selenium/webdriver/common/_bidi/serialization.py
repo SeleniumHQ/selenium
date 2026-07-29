@@ -274,11 +274,14 @@ class Record:
                 continue
             kwargs[f.name] = _read_field(cls, f.name, w, payload)
         undeclared = [k for k in payload if k not in known]
-        for key in undeclared:
-            # A property the type does not declare is tolerated for forward-compatibility
-            # (ADR decision 2.3): warned, and kept only on an extensible (re-sendable) type
-            # so a caller can echo it back on the wire — otherwise dropped.
-            _tolerate(f"{cls.__name__}: undeclared property {key!r} ({'kept' if cls._EXTENSIBLE else 'dropped'})")
+        if undeclared:
+            # Properties the type does not declare are tolerated for forward-compatibility
+            # (ADR decision 2.3): warned once for the whole record — not once per key, so a
+            # verbose payload cannot flood the log — and kept only on an extensible
+            # (re-sendable) type so a caller can echo them back on the wire, else dropped.
+            noun = "property" if len(undeclared) == 1 else "properties"
+            names = ", ".join(repr(k) for k in undeclared)
+            _tolerate(f"{cls.__name__}: undeclared {noun} {names} ({'kept' if cls._EXTENSIBLE else 'dropped'})")
         if cls._EXTENSIBLE:
             kwargs["extensions"] = {k: payload[k] for k in undeclared}
         return cls(**kwargs)

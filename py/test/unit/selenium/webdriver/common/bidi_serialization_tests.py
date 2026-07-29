@@ -403,6 +403,16 @@ def test_strict_inbound_escalates_an_undeclared_property_to_an_error():
         Point.from_json({"x": 1, "y": 2, "z": 3})
 
 
+def test_many_undeclared_properties_warn_once_for_the_record_not_once_per_key(caplog):
+    with caplog.at_level(logging.WARNING):
+        Point.from_json({"x": 1, "y": 2, "a": 1, "b": 2, "c": 3})
+    undeclared_warnings = [r for r in caplog.records if "undeclared" in r.getMessage()]
+    assert len(undeclared_warnings) == 1
+    assert "a" in caplog.text
+    assert "b" in caplog.text
+    assert "c" in caplog.text
+
+
 # --- union dispatch: inbound ---
 
 
