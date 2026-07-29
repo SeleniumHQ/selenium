@@ -230,6 +230,45 @@ class NodeTest {
   }
 
   @Test
+  void ignoresRemoteUrlPathWhenBuildingProxiedUrls() {
+    // The client's URL path (e.g. "/wd/hub") is its HTTP endpoint, not a Grid sub-path; folding it
+    // into the proxied websocket URLs would produce routes the Node does not serve. Only the
+    // origin (host/port) of se:remoteUrl is used.
+    Capabilities request =
+        new ImmutableCapabilities(
+            "browserName",
+            "cheese",
+            "se:vncLocalAddress",
+            "localhost:5900",
+            "se:remoteUrl",
+            "http://localhost:9999/wd/hub");
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        local.newSession(createSessionRequest(request));
+    assertThatEither(response).isRight();
+
+    Session session = response.right().getSession();
+    assertThat(String.valueOf(session.getCapabilities().getCapability("se:vnc")))
+        .isEqualTo("ws://localhost:9999/session/" + session.getId() + "/se/vnc");
+  }
+
+  @Test
+  void doesNotReturnRemoteUrlInSessionCapabilities() {
+    Capabilities request =
+        new ImmutableCapabilities(
+            "browserName", "cheese", "se:remoteUrl", "http://user:secret@localhost:9999");
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        local.newSession(createSessionRequest(request));
+    assertThatEither(response).isRight();
+
+    // se:remoteUrl is transport-only: it is consumed to build the proxied URLs and must not be
+    // echoed back in the session capabilities, where its embedded credentials could leak.
+    Session session = response.right().getSession();
+    assertThat(session.getCapabilities().getCapability("se:remoteUrl")).isNull();
+  }
+
+  @Test
   void preservesCredentialsFromClientAdvertisedRemoteUrl() {
     Capabilities request =
         new ImmutableCapabilities(

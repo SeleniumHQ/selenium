@@ -1331,7 +1331,12 @@ public class LocalNode extends Node implements Closeable {
         String scheme = uri.getScheme();
         if (uri.getHost() != null
             && ("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme))) {
-          return uri;
+          // Use only the reachable origin (scheme/userinfo/host/port). se:remoteUrl advertises
+          // where the client reached the Grid so proxied URLs get a reachable host/port; the URL's
+          // path is the client's HTTP endpoint (e.g. "/wd/hub"), not a Grid sub-path. Folding it in
+          // would produce websocket URLs the Node's routes (keyed off the configured grid-url
+          // sub-path) do not match. A real reverse-proxy path prefix is configured via grid-url.
+          return new URI(scheme, uri.getUserInfo(), uri.getHost(), uri.getPort(), null, null, null);
         }
       } catch (URISyntaxException e) {
         // Fall through to the warning below.
