@@ -206,10 +206,12 @@ class LoggingOptionsTest {
               Logger.getLogger("org.openqa.selenium.grid.log.LoggingOptionsTest").fine(marker);
             });
 
-    // Debug's own handler on org.openqa.selenium must still print it -- unchanged behavior.
-    assertThat(captured.err()).contains(marker);
-    // Grid's root handler (defaulting to stderr here, same as Debug's handler) must not ALSO
-    // print it.
+    // Debug's own handler must print it, and Grid's root handler -- defaulting to stderr here,
+    // the SAME destination as Debug's handler -- must not ALSO print it. Both handlers write to
+    // stderr in this scenario, so a duplication regression shows up as the marker appearing TWICE
+    // in the captured stderr; exactly-once is the whole assertion.
+    assertThat(captured.err()).containsOnlyOnce(marker);
+    // Secondary sanity check: with SE_DEBUG set and no log-file, nothing routes to stdout at all.
     assertThat(captured.out()).doesNotContain(marker);
   }
 
