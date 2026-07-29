@@ -270,10 +270,12 @@ fn edge_detect_browser_in_known_locations_is_linux_only() {
     assert!(manager.detect_browser_in_known_locations().is_none());
 }
 
-#[test]
-fn edge_webview2_is_not_treated_as_edge_browser() {
-    let mut manager = EdgeManager::new_with_name("webview2".to_string()).unwrap();
-    assert_eq!(manager.get_browser_names_in_path(), vec!["webview2"]);
+#[rstest]
+#[case("webview2")]
+#[case("WebView2")]
+fn edge_webview2_is_not_treated_as_edge_browser(#[case] name: String) {
+    let mut manager = EdgeManager::new_with_name(name.clone()).unwrap();
+    assert_eq!(manager.get_browser_names_in_path(), vec![name.as_str()]);
     manager.config.os = "linux".to_string();
     assert!(manager.detect_browser_in_known_locations().is_none());
 }

@@ -791,7 +791,8 @@ pub trait SeleniumManager {
     }
 
     fn is_webview2(&self) -> bool {
-        self.get_browser_name().eq(WEBVIEW2_NAME)
+        // Browser selection matches case-insensitively but keeps the original casing (e.g. "WebView2").
+        self.get_browser_name().eq_ignore_ascii_case(WEBVIEW2_NAME)
     }
 
     fn is_browser_version_beta(&self) -> bool {
