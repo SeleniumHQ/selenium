@@ -79,6 +79,13 @@ class LoggingOptionsTest {
     } else {
       System.clearProperty("selenium.webdriver.verbose");
     }
+    // Force the stubbed SE_DEBUG off BEFORE re-syncing Debug below: SystemStubsExtension only
+    // restores the real environment after this whole method returns (extension callbacks wrap
+    // user @AfterEach methods), so without this a test that stubbed SE_DEBUG=true would have
+    // configureLogger() still see debugging "on" here, keep its handler installed, and leak it
+    // -- with nothing ever re-syncing after the stub's later restoration. Unconditional: safe
+    // for tests that never touched the stub.
+    environment.set("SE_DEBUG", "false");
     // Reverts whatever configureLogging() may have done to the shared org.openqa.selenium logger
     // via Debug.configureLogger() during the test, now that the properties are back to their
     // original values.
@@ -296,6 +303,26 @@ class LoggingOptionsTest {
     List<Handler> leakedHandlers = new ArrayList<>(List.of(rootLogger.getHandlers()));
     leakedHandlers.removeAll(handlersBefore);
     assertThat(leakedHandlers).isEmpty();
+  }
+
+  @Test
+  void afterEachCleanupTearsDownDebugHandlerInstalledUnderStubbedSeDebug() {
+    // The @AfterEach cleanup re-syncs Debug via Debug.configureLogger(), which only works if that
+    // call sees the FINAL switch state. The plain selenium.debug/selenium.webdriver.verbose
+    // properties are restored synchronously inside that same method, but the stubbed SE_DEBUG is
+    // only restored by SystemStubsExtension's own lifecycle callback, which runs AFTER user
+    // @AfterEach methods complete. A cleanup that merely calls configureLogger() therefore still
+    // sees SE_DEBUG=true, leaves Debug's handler installed, and nothing re-syncs after the stub's
+    // later restoration -- the handler (and Debug's loggerConfigured bookkeeping) silently leaks
+    // into every later test in this JVM. Invoking the REAL cleanup method here proves it tears
+    // the handler down deterministically instead of depending on extension-restoration timing.
+    environment.set("SE_DEBUG", "true");
+    captureStdOutAndErrDuring(() -> new LoggingOptions(emptyConfig()).configureLogging());
+    assertThat(Debug.isHandlerCurrentlyInstalled()).isTrue();
+
+    restoreSystemProperty();
+
+    assertThat(Debug.isHandlerCurrentlyInstalled()).isFalse();
   }
 
   private static MapConfig emptyConfig() {
