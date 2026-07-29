@@ -21,10 +21,11 @@ Exercises `selenium.webdriver.common._bidi.serialization` — the Record/Union/U
 machinery every generated module builds on — in isolation, using small value
 types declared here the way the generator emits them. The generated modules are
 covered by the command-surface and browser round-trip tests; the subject here is
-the runtime's own rules: strict inbound validation, UNSET omit-vs-null, and union
-dispatch.
+the runtime's own rules: boundary validation (tolerant inbound vs. strict mode),
+UNSET omit-vs-null, and union dispatch.
 """
 
+import logging
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
@@ -40,6 +41,7 @@ from selenium.webdriver.common._bidi.serialization import (
     meta,
     register,
     resolve,
+    strict_inbound,
 )
 
 # --- fixtures: value types declared the way the generator emits them ---
@@ -224,9 +226,32 @@ def test_round_trips_through_the_wire():
 # --- inbound: required / optional / null ---
 
 
-def test_missing_required_field_raises():
-    with pytest.raises(BiDiSerializationError, match=r"Point.y missing required 'y'"):
+def test_a_missing_required_field_inbound_is_tolerated_warned_and_left_unset(caplog):
+    with caplog.at_level(logging.WARNING):
+        result = Point.from_json({"x": 1})
+    assert result.x == 1
+    assert result.y is UNSET
+    assert "y" in caplog.text
+    assert "required" in caplog.text
+
+
+def test_strict_inbound_escalates_a_missing_required_field_to_an_error():
+    with strict_inbound(), pytest.raises(BiDiSerializationError, match=r"required 'y'"):
         Point.from_json({"x": 1})
+
+
+def test_strict_inbound_scope_is_restored_after_the_block():
+    with strict_inbound():
+        pass
+    assert Point.from_json({"x": 1}).y is UNSET  # tolerant again
+
+
+def test_as_json_errors_when_a_required_field_is_unset():
+    # A field the wire omitted is tolerated inbound (left UNSET) but must not go back out:
+    # outbound requires every required field, so re-serializing it errors.
+    incomplete = Point.from_json({"x": 1})
+    with pytest.raises(BiDiSerializationError, match=r"Point.y: required 'y' is not set"):
+        incomplete.as_json()
 
 
 def test_from_json_with_a_non_object_payload_raises_a_serialization_error():
@@ -354,16 +379,28 @@ def test_an_inbound_enum_value_outside_the_schema_raises():
 # --- extensible records ---
 
 
-def test_an_extensible_record_captures_unknown_keys():
-    assert Extensible.from_json({"known": "k", "extra": "e", "more": 1}).extensions == {"extra": "e", "more": 1}
+def test_an_extensible_record_keeps_and_warns_on_undeclared_properties(caplog):
+    with caplog.at_level(logging.WARNING):
+        result = Extensible.from_json({"known": "k", "extra": "e", "more": 1})
+    assert result.extensions == {"extra": "e", "more": 1}
+    assert "extra" in caplog.text
+    assert "more" in caplog.text
 
 
 def test_an_extensible_record_merges_captured_keys_back_on_serialization():
     assert Extensible(known="k", extensions={"extra": "e"}).as_json() == {"known": "k", "extra": "e"}
 
 
-def test_a_non_extensible_record_ignores_unknown_keys():
-    assert Point.from_json({"x": 1, "y": 2, "z": 3}) == Point(x=1, y=2)
+def test_a_closed_record_drops_and_warns_on_undeclared_properties(caplog):
+    with caplog.at_level(logging.WARNING):
+        result = Point.from_json({"x": 1, "y": 2, "z": 3})
+    assert result == Point(x=1, y=2)
+    assert "z" in caplog.text
+
+
+def test_strict_inbound_escalates_an_undeclared_property_to_an_error():
+    with strict_inbound(), pytest.raises(BiDiSerializationError, match=r"undeclared property 'z'"):
+        Point.from_json({"x": 1, "y": 2, "z": 3})
 
 
 # --- union dispatch: inbound ---

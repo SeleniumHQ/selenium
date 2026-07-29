@@ -33,16 +33,48 @@ https://www.selenium.dev/documentation/warnings/bidi-implementation/
 from __future__ import annotations
 
 import dataclasses
-from collections.abc import Callable
+import logging
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any
 
 from selenium.common.exceptions import WebDriverException
 
+logger = logging.getLogger(__name__)
+
 
 class BiDiSerializationError(WebDriverException):
     """A payload could not be (de)serialized against this Selenium's BiDi schema."""
+
+
+_strict_inbound: ContextVar[bool] = ContextVar("bidi_strict_inbound", default=False)
+
+
+@contextmanager
+def strict_inbound() -> Iterator[None]:
+    """Escalate the inbound tolerations to errors for the duration of the block.
+
+    By default the layer tolerates a payload that lags or runs ahead of this Selenium's
+    schema — a missing required field or an undeclared property — by warning and carrying
+    on (the wire boundary is not ours to control). Wrap a command call in
+    ``with strict_inbound():`` to make those deviations raise :class:`BiDiSerializationError`
+    instead, for a caller that wants strict conformance. A corrupt value always errors.
+    """
+    token = _strict_inbound.set(True)
+    try:
+        yield
+    finally:
+        _strict_inbound.reset(token)
+
+
+def _tolerate(message: str) -> None:
+    """A tolerated inbound deviation: raise it in strict mode, otherwise warn and continue."""
+    if _strict_inbound.get():
+        raise BiDiSerializationError(message)
+    logger.warning(message)
 
 
 class UnsetType:
@@ -168,9 +200,12 @@ class Record:
     """Immutable value-type base for generated params/results/event payloads.
 
     Subclasses are ``@dataclass(frozen=True)`` whose fields are declared with
-    :func:`meta`. Outbound (:meth:`as_json`) omits ``UNSET`` and emits ``null`` only
-    for nullable fields; inbound (:meth:`from_json`) is strict on values and
-    required-presence, lenient on unknown keys (the spec permits extra properties).
+    :func:`meta`. The object itself is permissive; validation lives at the boundaries.
+    Outbound (:meth:`as_json`) omits ``UNSET``, emits ``null`` only for nullable fields,
+    and errors if a required field is unset. Inbound (:meth:`from_json`) errors on a
+    corrupt value but tolerates a missing required field or an undeclared property —
+    it warns and carries on (``strict_inbound`` escalates to an error) — so a client
+    generated from one spec revision keeps working against a browser on another.
     """
 
     _EXTENSIBLE: bool = False
@@ -212,6 +247,11 @@ class Record:
             w = _wire_of(f)
             value = getattr(self, f.name)
             if value is UNSET:
+                # Outbound requires every required field (ADR decision 1). Enforced here at
+                # the boundary, not in the constructor, so the object stays permissive and
+                # inbound can tolerate the same field being absent (see from_json).
+                if w.required:
+                    raise BiDiSerializationError(f"{type(self).__name__}.{f.name}: required {w.wire!r} is not set")
                 continue
             if value is None and not w.nullable:
                 continue
@@ -233,15 +273,24 @@ class Record:
             if w.fixed is not UNSET or f.name == "extensions":
                 continue
             kwargs[f.name] = _read_field(cls, f.name, w, payload)
+        undeclared = [k for k in payload if k not in known]
+        for key in undeclared:
+            # A property the type does not declare is tolerated for forward-compatibility
+            # (ADR decision 2.3): warned, and kept only on an extensible (re-sendable) type
+            # so a caller can echo it back on the wire — otherwise dropped.
+            _tolerate(f"{cls.__name__}: undeclared property {key!r} ({'kept' if cls._EXTENSIBLE else 'dropped'})")
         if cls._EXTENSIBLE:
-            kwargs["extensions"] = {k: v for k, v in payload.items() if k not in known}
+            kwargs["extensions"] = {k: payload[k] for k in undeclared}
         return cls(**kwargs)
 
 
 def _read_field(cls: type, name: str, w: _Wire, payload: dict) -> Any:
     if w.wire not in payload:
         if w.required:
-            raise BiDiSerializationError(f"{cls.__name__}.{name} missing required {w.wire!r}")
+            # A required field absent on the wire is tolerated, not errored (ADR decision
+            # 2.2): the sender may predate its addition to the spec. It is left omitted and
+            # warned; outbound still requires it (see as_json). strict_inbound escalates.
+            _tolerate(f"{cls.__name__}.{name}: required {w.wire!r} missing on the wire; leaving it unset")
         return UNSET
     raw = payload[w.wire]
     if raw is None:
