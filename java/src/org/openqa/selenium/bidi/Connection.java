@@ -47,6 +47,7 @@ import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -78,6 +79,11 @@ public class Connection implements Closeable {
   private final AtomicBoolean underlyingSocketClosed = new AtomicBoolean(false);
 
   public Connection(HttpClient client, String url) {
+    // Reflect the current debug switches before this connection starts logging its wire
+    // diagnostics at FINE -- callers that construct a Connection directly (never going through
+    // RemoteWebDriver or DriverFinder) would otherwise never trigger the raise. Idempotent and
+    // cheap, same pattern as DriverFinder.getBinaryPaths().
+    Debug.configureLogger();
     Require.nonNull("HTTP client", client);
     Require.nonNull("URL to connect to", url);
 

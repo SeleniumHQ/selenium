@@ -51,6 +51,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.idealized.target.model.SessionID;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -92,6 +93,12 @@ public class Connection implements Closeable {
   }
 
   public Connection(HttpClient client, String url, ClientConfig clientConfig) {
+    // Reflect the current debug switches before this connection starts logging its wire
+    // diagnostics at FINE -- callers that construct a Connection directly (never going through
+    // RemoteWebDriver or DriverFinder) would otherwise never trigger the raise. Idempotent and
+    // cheap, same pattern as DriverFinder.getBinaryPaths(). The deprecated 2-arg constructor
+    // delegates here, so this single call point covers both.
+    Debug.configureLogger();
     this.client = Require.nonNull("HTTP client", client);
     this.wsConfig = wsClientConfig(clientConfig, url);
     this.socket = this.client.openSocket(new HttpRequest(GET, wsConfig.baseUri()), new Listener());
