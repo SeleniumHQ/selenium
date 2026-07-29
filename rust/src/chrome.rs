@@ -41,6 +41,20 @@ use std::sync::mpsc::{Receiver, Sender};
 
 pub const CHROME_NAME: &str = "chrome";
 pub const CHROMEDRIVER_NAME: &str = "chromedriver";
+
+// Directories and names chromedriver searches to locate Chrome/Chromium on Linux (chrome_finder.cc).
+pub const CHROME_KNOWN_DIRS: &[&str] = &[
+    "/usr/local/sbin",
+    "/usr/local/bin",
+    "/usr/sbin",
+    "/usr/bin",
+    "/sbin",
+    "/bin",
+    "/opt/google/chrome",
+    "/opt/chromium.org/chromium",
+];
+pub const CHROME_KNOWN_NAMES: &[&str] =
+    &["chrome", "google-chrome", "chromium", "chromium-browser"];
 const DRIVER_URL: &str = "https://chromedriver.storage.googleapis.com/";
 const LATEST_RELEASE: &str = "LATEST_RELEASE";
 const CFT_URL: &str = "https://googlechromelabs.github.io/chrome-for-testing/";
@@ -241,19 +255,7 @@ impl SeleniumManager for ChromeManager {
         if !LINUX.is(self.get_os()) {
             return None;
         }
-        first_existing_path(
-            &[
-                "/usr/local/sbin",
-                "/usr/local/bin",
-                "/usr/sbin",
-                "/usr/bin",
-                "/sbin",
-                "/bin",
-                "/opt/google/chrome",
-                "/opt/chromium.org/chromium",
-            ],
-            &["chrome", "google-chrome", "chromium", "chromium-browser"],
-        )
+        first_existing_path(CHROME_KNOWN_DIRS, CHROME_KNOWN_NAMES)
     }
 
     fn get_http_client(&self) -> &Client {

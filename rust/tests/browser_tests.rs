@@ -271,13 +271,36 @@ fn edge_detect_browser_in_known_locations_is_linux_only() {
 }
 
 #[test]
+fn edge_webview2_is_not_treated_as_edge_browser() {
+    let mut manager = EdgeManager::new_with_name("webview2".to_string()).unwrap();
+    assert_eq!(manager.get_browser_names_in_path(), vec!["webview2"]);
+    manager.config.os = "linux".to_string();
+    assert!(manager.detect_browser_in_known_locations().is_none());
+}
+
+#[test]
+fn chrome_known_locations_include_opt_install_dirs() {
+    use selenium_manager::chrome::{CHROME_KNOWN_DIRS, CHROME_KNOWN_NAMES};
+    assert!(CHROME_KNOWN_DIRS.contains(&"/opt/google/chrome"));
+    assert!(CHROME_KNOWN_DIRS.contains(&"/opt/chromium.org/chromium"));
+    assert!(CHROME_KNOWN_NAMES.contains(&"chrome"));
+}
+
+#[test]
+fn edge_known_locations_include_opt_install_dir() {
+    use selenium_manager::edge::{EDGE_KNOWN_DIRS, EDGE_KNOWN_NAMES};
+    assert!(EDGE_KNOWN_DIRS.contains(&"/opt/microsoft/msedge"));
+    assert!(EDGE_KNOWN_NAMES.contains(&"msedge"));
+}
+
+#[test]
 fn first_existing_path_searches_name_major() {
     use selenium_manager::files::first_existing_path;
     use std::fs;
 
-    let base = std::env::temp_dir().join("sm-first-existing-path-test");
-    let dir_a = base.join("a");
-    let dir_b = base.join("b");
+    let base = tempfile::tempdir().unwrap();
+    let dir_a = base.path().join("a");
+    let dir_b = base.path().join("b");
     fs::create_dir_all(&dir_a).unwrap();
     fs::create_dir_all(&dir_b).unwrap();
     // "wanted" only exists in the later dir; "other" only in the earlier dir.
@@ -292,6 +315,4 @@ fn first_existing_path_searches_name_major() {
         Some(dir_b.join("wanted"))
     );
     assert!(first_existing_path(&dirs, &["missing"]).is_none());
-
-    fs::remove_dir_all(&base).ok();
 }

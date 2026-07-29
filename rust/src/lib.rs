@@ -426,8 +426,10 @@ pub trait SeleniumManager {
     }
 
     fn detect_browser_path(&mut self) -> Option<PathBuf> {
-        // A driver's own binary search is channel-agnostic, so only mirror it for the default channel.
+        // A driver's binary search is channel-agnostic and finds system browsers, so mirror it only
+        // for the default channel and when the user hasn't asked to skip browsers in the path.
         if !self.is_browser_version_unstable()
+            && !self.is_skip_browser_in_path()
             && let Some(browser_path) = self.detect_browser_in_known_locations()
         {
             let canon_browser_path = self.canonicalize_path(browser_path);
