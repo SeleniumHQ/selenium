@@ -88,6 +88,16 @@ describe('projectSchema', () => {
     assert.equal(open.fields.length, 0)
   })
 
+  it('treats an unbounded occurrence as extensible whether m is null or Infinity', () => {
+    // The cddl parser emits the `*` upper bound as Infinity; only the AST's JSON
+    // round-trip renders it as null. Projecting an AST directly (no round-trip) must
+    // still recognize it, not emit a `text` field.
+    const ast = [group('x.RawOpenMap', [field('text', ['any'], { n: 0, m: Infinity })])]
+    const open = projectSchema(ast, {}).types['x.RawOpenMap']
+    assert.equal(open.extensible, true)
+    assert.equal(open.fields.length, 0)
+  })
+
   it('passes both validators on a well-formed schema', () => {
     assert.deepEqual(checkSchema(schema), [])
     assert.deepEqual(checkCompleteness(AST, schema), [])

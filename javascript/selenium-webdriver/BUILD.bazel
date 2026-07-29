@@ -84,8 +84,8 @@ mocha_test(
 )
 
 # Generate WebDriver BiDi TypeScript modules from CDDL specification.
-# extra_cddl_files are merged with the primary BiDi spec before generation so that
-# adjacent specs (Permissions, Prefetch, UA Client Hints, Web Bluetooth) are included.
+# extra_cddl_files are parsed alongside the primary BiDi spec so that adjacent specs
+# (Permissions, Prefetch, UA Client Hints, Web Bluetooth) are included.
 generate_bidi_library(
     name = "create-bidi-src",
     cddl_file = "@webdriver_bidi_all_cddl//file:spec.cddl",
