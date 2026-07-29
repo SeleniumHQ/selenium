@@ -234,6 +234,7 @@ class UnionIR:
     variant_types: list[str]  # annotation names for the value alias
     object_only: bool = False
     spec_href: str | None = None
+    scalar_type: str | None = None  # Literal[...] for an alias-union's bare-scalar arms
 
 
 @dataclass
@@ -391,6 +392,8 @@ class Schema:
         for v in ir.variants:
             py = self._py_ref(v.ref, self._pending_refs)
             ir.variant_types.append(py)
+        if ir.scalar_type:
+            ir.variant_types.append(ir.scalar_type)
         return ir
 
     def _union_from_selector(self, name: str, selector: dict) -> UnionIR:
@@ -451,7 +454,13 @@ class Schema:
             variants.append(VariantIR("value", const["type"]["const"], ref, None))
         values = [v.value for v in variants] if all(isinstance(v.value, str) for v in variants) else None
         # An alias-union carries bare-scalar arms (input.Origin's "viewport"/"pointer"), so the
-        # projector leaves it unflagged and a non-object payload still passes through.
+        # projector leaves it unflagged and a non-object payload still passes through. Those arms
+        # have no ref, so they are absent from the record variants above; surface them in the value
+        # alias as a Literal[...] so a caller sees the scalar options, not only the record variant.
+        scalar_consts = [
+            arm["const"] for arm in self.types[name]["type"]["union"] if "const" in arm and "ref" not in arm
+        ]
+        scalar_type = f"Literal[{', '.join(repr(c) for c in scalar_consts)}]" if scalar_consts else None
         object_only = bool(self.types[name].get("objectOnly"))
         return UnionIR(
             type_class_name(name),
@@ -462,6 +471,7 @@ class Schema:
             [],
             object_only=object_only,
             spec_href=self.types[name].get("specHref"),
+            scalar_type=scalar_type,
         )
 
     def params_for(self, params_ref: dict | None) -> list[ParamIR] | None:
@@ -961,6 +971,7 @@ def _import_order(name: str) -> tuple[int, str]:
 def _imports(mod: ModuleIR) -> list[str]:
     has_records = bool(mod.records)
     has_unions = bool(mod.unions)
+    uses_literal = any((u.scalar_type or "").startswith("Literal[") for u in mod.unions)
     uses_unset = (
         any(not f.required for r in mod.records for f in r.fields)
         or any(r.extensible for r in mod.records)
@@ -978,6 +989,8 @@ def _imports(mod: ModuleIR) -> list[str]:
     typing_names = ["TYPE_CHECKING"] if mod.imports else []
     if uses_any:
         typing_names.append("Any")
+    if uses_literal:
+        typing_names.append("Literal")
     if has_unions:
         typing_names.append("TypeAlias")
 
