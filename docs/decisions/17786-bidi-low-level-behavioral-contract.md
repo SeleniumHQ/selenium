@@ -13,195 +13,126 @@ API that build on it. *This record is about the low-level layer.*
 These behaviors are observable at the wire boundary, so bindings diverge on them without a shared
 reference. One contract can state them for every binding at once — the same behavior in any language.
 
+The transport layer (the connection that carries messages and matches responses to their commands) and
+the orchestration layer (session lifecycle, event subscription and routing, and the high-level API these
+feed) are out of scope.
+
 ## Decision
 
-**Any implementation of this layer must exhibit the behaviors below.** Some are settled by the spec; the
-rest are choices this record standardizes so bindings don't diverge — the next section marks which is
-which.
+The spec settles the layer's baseline: spec strings reach the wire verbatim, an *omitted* field stays
+distinct from an explicit *null*, and a union resolves by the spec's declared rule rather than a structural
+guess. What the spec leaves open, this record decides.
 
-An implementation must exhibit them at runtime, not merely declare them in its types or schema. A
-statically-typed deserializer will fill a correctly-typed object from malformed input — most often a null
-in a non-nullable field — and return it as valid unless a check is written, so a layer can type-check
-perfectly and still violate the contract. Conformance is shown by the rejection firing on malformed
-input, not by a happy-path round trip or matching types.
+Where the type system prevents a violation it satisfies the contract: a static binding whose types make
+an invalid outbound payload unconstructable meets decision 1 at compile time. Inbound is different — a
+statically-typed deserializer fills a correctly-typed object from malformed input (typically a null in a
+non-nullable field) and returns it as valid, so the inbound decisions must be exhibited at runtime, not
+merely declared in types or schema.
 
-### How to read this contract
+1. **Outbound is validated before sending.** A caller mistake surfaces as a local error rather than a
+   remote round-trip. For all commands defined in the spec:
+   - **Error if an enum value is undefined**, or a nullable constant is set to anything but its literal
+     or null;
+   - **Error unless all required fields are set**;
+   - **Error if an unknown property is set**, unless the spec marks its type as extensible.
 
-Each item is tagged with the *kind* of requirement it is:
+   A static binding gets these from its type system; a dynamic one must check them explicitly.
 
-| Tier | Meaning |
-|---|---|
-| **Compliance** | The spec determines the answer; there is nothing for this record to decide. |
-| **Decision** | A genuine choice this record owns, not compelled by the spec. |
+2. **Inbound is validated against the resolved type.** Process error responses first: a remote error
+   surfaces as an error even if its payload fails validation — the checks below must not turn it into a
+   local serialization failure. The error's contents and shape are otherwise out of scope.
 
-The behaviors are uniform across every binding — a malformed payload is malformed in any language. Only
-their *form* varies:
+   Otherwise, once the spec's union rule resolves the payload's type (if applicable), each mismatch is
+   handled by its kind:
+   1. **Error if corrupted** — the value cannot fit the resolved type: a null in a non-nullable field, a
+      wrong primitive type, a cardinality mismatch, a non-object where an object is expected.
+   2. **Warn if a required field is missing** — the field must be left *omitted* (not an explicit *null*,
+      and not a generic placeholder), so an implementation based on a previously generated spec does not fail
+      against a browser implementing a more recent one. An absent field reads the same whether it reflects
+      that lag or a genuine defect — the layer cannot tell them apart — so it warns rather than errors,
+      leaving a strict mode to escalate to an error for callers who want it.
+   3. **Warn if a property is undeclared** — a property the type does not define is tolerated rather than
+      rejected (forward-compatibility). Where an extensible type's data can be sent again through a command —
+      the received type or its command-parameter counterpart is extensible — any unknown property it arrived
+      with is kept on the object, so a caller can reproduce it on the wire: a vendor attribute received on a
+      `network.Cookie` can be set again through `storage.setCookie` unchanged.
 
-- **Mechanism** — a static type system or runtime checks.
-- **Object** — a dataclass, a record, a value type.
-- **Exception** — malformed input must *raise* rather than return a bad value; the error's type and
-  hierarchy are idiomatic.
+   Each warning identifies the type and the field or property at fault; its level, format, and channel are
+   the implementation's.
 
-### Outbound (constructing and sending)
+   A closed vocabulary with no catch-all — a union such as `script.RemoteValue`, or an enum token outside
+   its defined set — errors on the unknown member rather than coercing it onto a defined one; an error
+   response's code is the exception, surfacing under the rule above rather than failing here.
 
-1. **Spec strings go on the wire verbatim.** *(Compliance.)* The exact spec string appears on the wire
-   for method names, enum values, and fixed/const values; no casing or naming transform alters it. The
-   spec's `beforeunload` goes on the wire unchanged; a binding that camelCases it to `beforeUnload` fails.
+3. **All objects must be typed, with spec-mirrored names.**
+   - **Typed, not raw maps.** Parameters and results are typed value objects: an enum is the language's
+     closed-vocabulary type, and each variant of a union is a distinct type, branched on by type rather than
+     by inspecting a tag value.
+   - **Full numeric precision.** An int64- or bigint-range value uses the language's wide-integer or
+     arbitrary-precision type, never a narrowing double.
+   - **Spec-mirrored names.** Method and property names mirror the spec command and its wire keys, in the
+     language's idiom.
+   - **Faithful to what was received.** The layer represents received values as they arrived — no
+     normalization, coercion, or lossy re-encoding — so what a caller reads back is what the wire carried.
 
-2. **Optionality and nullability are represented exactly as the spec declares.** *(Compliance.)*
-   - **Omitted is distinct from explicit null.** An unset optional is *absent* from the payload; an
-     explicit null serializes as `null`. The remote end acts on the difference.
-   - **Per-field nullability is honored** as declared.
-   - **A nullable constant is a settable value.** Where a field's value is a constant *and* nullable
-     (`browsingContext.setBypassCSP`, `emulation.setScriptingEnabled`), the layer must send the literal
-     *or* `null`, never only the literal. (A non-nullable constant is always the literal, so it can be a
-     fixed value.)
-
-3. **Outbound is validated locally, before sending.** *(Decision.)* A caller mistake is caught here as a
-   local error, rather than sent for the remote end to reject on a round-trip. Three things are checked
-   before the message leaves: enum and const-value membership, required-field presence, and no unknown
-   properties on a closed type. An undefined enum value raises locally; so does a value that is neither
-   the literal nor `null` for a nullable constant (a `true`/`null` field rejects `false`; see item 2). A
-   static binding gets these from its type system; a dynamic one checks them explicitly. This layer
-   carries only spec-modeled commands — a higher layer needing one the spec does not model builds its own
-   path rather than routing untyped data through a typed one.
-
-### Extensibility (cross-cutting)
-
-4. **Extensibility follows the spec's per-type signal.** *(Decision.)* Whether a type admits extra
-   properties is read from its own CDDL definition, per type and never a hand-maintained list, so vendor
-   extension works exactly where the spec permits it. Outbound, an `Extensible` type carries
-   caller-supplied extras onto the wire (vendor fields such as `goog:*` capabilities or vendor proxy
-   keys), while a closed type rejects them (item 3); injecting extras into a closed type is the single
-   prohibition here. Inbound, the signal governs only whether extras are *preserved* (item 8), not
-   whether they are tolerated — tolerance is uniform across every type (item 6). The message envelope is
-   itself `Extensible` (`Command = { id, CommandData, Extensible }`), but the transport forms it above
-   this layer, so those message-level extras are out of scope.
-
-### Inbound (receiving and parsing)
-
-5. **Variants and vocabulary are resolved by the spec's declared rule.** *(Compliance.)* A union resolves
-   to a variant by its declared rule — a discriminator value, the presence of required keys, or a
-   declared default — never a re-derived structural guess, so a valid payload always resolves to the same
-   variant, and resolving it wrong is a parsing bug. An *unrecognized* token or variant is out of scope
-   here — raising on it is the strict default (item 7). For a union whose arms are all objects, a
-   non-object payload selects no variant and raises.
-
-6. **Inbound payloads are validated against the resolved type.** *(Decision.)* Once item 5 has resolved
-   the type, every key in the payload falls into one of three cases, and a declared field is checked
-   rather than populated silently:
-   - **Corruption — always raises.** A null in a non-nullable field, a value of the wrong primitive
-     type, a list/scalar cardinality mismatch, a non-object where a field expects an object. The wire
-     asserted something untrue, and absorbing it is what misrepresents protocol state.
-   - **Absence — raises.** A required field is missing. Nothing untrue was asserted and every field that
-     did arrive is still correct, so absence is the one case a relaxation may reach (item 7).
-   - **Undeclared key — never raises.** Every type tolerates a property it does not define, open or
-     closed; most parsers do this by default, and a reject-unmapped setting would violate it. The spec
-     does not compel this — §4 Transport gives no normative requirements for local ends, and
-     `Extensible` is declared per type — so universal tolerance is this record's forward-compatibility
-     choice. Whether such a key is also *preserved* is item 8.
-
-7. **Inbound is strict by default.** *(Decision.)* Unrecognized enum tokens and union variants (item 5)
-   and failed field checks (item 6) raise; a strict contract is cheaper to loosen than a lenient one is
-   to tighten. A specific field may be relaxed where a real remote end sends it off-spec, and any such
-   relaxation is bounded:
-   - **Only absence is relaxable** (item 6): never corruption, and never a field item 5 dispatches on.
-   - **It removes a check; it never exposes a type, variant, or enum value the spec does not define.**
-     Inventing one to absorb a malformed payload models a browser's bug as protocol, and it outlives
-     the bug.
-   - **The tolerated absence is still reported**, never silently absorbed. A binding *may* additionally
-     let a caller admit an uncatalogued absence at runtime, so a user is not blocked until the next
-     release; that is a per-binding convenience, not required here, and it too reports.
-
-   An error the remote reports always raises as that error, whatever else is relaxed. A malformed part
-   of an `ErrorResponse` degrades what the raised error carries but never replaces it with a parse
-   failure — the command did fail, and an error response has no protocol state to misrepresent beyond the
-   failure itself.
-
-8. **Preserving extras is scoped to types that are both extensible and re-sendable.** *(Decision.)*
-   Tolerating an undeclared key (item 6) is the floor; *preserving* it — **storing** it readable after
-   parse and **echoing** it back on serialization — is worth doing only where a received instance can go
-   back out onto the wire, so it happens only when both spec-derivable facts hold:
-   - **Extensible** — its CDDL definition includes the `Extensible` group (`Extensible = (*text => any)`),
-     admitting arbitrary extra properties.
-   - **Re-sendable** — it can appear within a command's parameters, so a received instance can be handed
-     back.
-
-   Which types meet both is determined by each type's spec definition, not a hand-maintained list —
-   cookies, capabilities, and proxy configuration among them. A cookie read from `storage.getCookies`
-   with a vendor attribute, then passed to `storage.setCookie`, must reach the wire with that attribute
-   intact. Any other type — an
-   inbound-only extensible type such as a log entry, or a closed type — tolerates an undeclared key
-   without erroring (item 6) but does not preserve it. Where a type both stores inbound extras and takes
-   caller-set outbound extras, the two merge on serialization and a caller-set value wins. Widening this
-   scope, should the layer ever go public, is the alternative weighed in Considered options.
-
-### Surface
-
-9. **Names mirror the spec, mapped to language idiom.** *(Decision.)* The surface method mirrors the spec
-   command, and params/fields carry idiomatic names of their wire keys, so the layer reads as a direct
-   projection of the spec and cross-references cleanly across bindings. For example, a Python
-   `set_viewport(device_pixel_ratio=…)` call serializes the wire key `devicePixelRatio` under
-   `browsingContext.setViewport`. This is a naming convention rather than a spec requirement (keeping the
-   *wire* names exact is item 1); language sugar belongs in the higher public layer, not here.
-
-10. **Structured data is typed, not raw maps.** *(Decision.)* Params and results are typed value objects:
-    enums are the language's closed-vocabulary type, and discriminated-union variants are distinct types
-    branched on by type, not by inspecting a tag value. A `script.evaluate` result, for example, comes
-    back as a `StringValue` or `NumberValue`, not a raw `{type, value}` map. This typing is the foundation
-    the inbound items stand on: a raw-map surface structurally cannot do union dispatch (5), field checks
-    (6), or read-only objects (11).
-
-11. **Objects this layer hands to callers are read-only.** *(Decision.)* A received object that reaches a
-    caller (e.g. the request inside a network handler) is immutable at the top level, because mutating it
-    changes nothing on the wire and the layer would rather forbid the mutation than let it mislead. The
-    caller reads the object and acts through the higher layer. Shallow immutability is enough; nested
-    containers need not be deep-frozen.
+   Further language sugar belongs in the higher public layer, not here.
 
 ## Considered options
 
-The Compliance items (1, 2, 5) have no valid alternative; a divergence there is a bug.
-
-- **Specify a production method (mandate generation) rather than behavior.** Generation does not by
-  itself guarantee any behavior and imposes cost where it isn't ergonomic; the behaviors are identical
-  however the code is produced. Rejected: the contract is the behavior, generation an optional strategy.
-- **Item 3 — defer to the server.** Send the command and let the remote end return an error rather than
-  validating locally; the spec defines those errors, so it is legal. Rejected: a local error is clearer
-  and cheaper than a round-trip, and a static binding gets it for free.
-- **Item 4 — surface message-level extras in the definitions layer** rather than leaving them to the
-  transport. Rejected: the envelope is the transport's; this layer governs per-type
-  extensibility only.
-- **Item 6 — lenient inbound.** Best-effort an off-spec response rather than raising. Rejected: silently
-  misrepresenting protocol state is worse than a clear error; strictness loosens on evidence (item 7)
-  when a real payload demands it.
-- **Item 6 — do not enforce required-ness inbound at all**, treating every field as possibly absent.
-  Rejected: it erases the signal, and a divergence never recorded is never reported upstream or retired.
-  webdriverbidi-net retired six such relaxations in nineteen months precisely because strictness
-  surfaced them; a binding enforcing nothing accumulates the same divergences with no record of any.
-- **Item 7 — start lenient and tighten later** rather than starting strict. Rejected on merit: it is
-  cheaper to loosen a strict contract than to tighten a lenient one. Being internal only lowers the cost
-  of the strict path (a rejection on browser drift is a dev-side fix, not a user-facing break); it is not
-  the reason to be strict — a careful public implementation can be strict too.
-- **Item 7 — mandate a runtime escape hatch** for uncatalogued absences, as a required behavior of every
-  binding. Not adopted: no implementation ships that exact shape (net's `TransportErrorBehavior` discards
-  the whole message rather than admitting the absent field), and a global strictness toggle is a
-  configuration concern this record otherwise scopes out. Left as a per-binding option instead —
-  permitted because it spares a user the release-cadence wait, not required because the catalogued
-  relaxation path already covers the divergences that recur.
-- **Item 8 — keep extras broad**, preserving unknown fields on all extensible types. This is the right
-  choice for a public surface, which can't narrow later without dropping a field a user relies on.
-  Rejected here only because the layer is internal: it can scope tight and widen later at no cost. *This
-  is the one decision the internal premise actually turns on.*
-- **Item 9 — free naming** rather than mirroring the spec. Rejected: mirroring the spec command and
-  params aids cross-referencing and keeps bindings comparable.
-- **Item 10 — raw dicts** rather than typed objects; the spec permits it. Rejected: raw maps structurally
-  cannot do strict dispatch, field checks, or read-only objects.
-- **Item 11 — mutable received objects** rather than read-only. Rejected: a received object is
-  informational, so read-only prevents mistaking it for a control surface.
+- **Mandate generation rather than specify behavior.** Generation does not by itself guarantee any
+  behavior and adds cost where it isn't ergonomic; the behaviors are identical however the code is produced.
+  Rejected: the contract is the behavior, generation an optional strategy.
+- **Rely on the type system alone, with no runtime conformance.** Let outbound checks fall out of
+  compilation and inbound objects out of casting, with no runtime rejection. Rejected: a statically-typed
+  deserializer fills a correctly-typed object from malformed input and returns it as valid, so types alone
+  pass inbound corruption through — the contract has to fire at runtime.
+- **Defer outbound validation to the server** (decision 1). Send the command and let the remote end return
+  the error the spec defines. Rejected: a local error is clearer and cheaper than a round-trip, and a static
+  binding gets it for free.
+- **Enforce required-ness inbound too** (decision 2). Error on a missing required field as the outbound path
+  does. Rejected: the remote end is not ours to control, so a browser lagging a newly-required field would
+  cost the caller the whole message until Selenium regenerated and shipped a fix — a hard block over a value
+  no caller depended on. Tolerating absence costs the caller nothing and never blocks them.
+- **Keep inbound strict, relaxing reactively via a manifest** (decision 2). Type inbound required-ness as
+  present-or-error, and annotate the specific lagging fields in a checked-in manifest so the generator
+  relaxes only those. Rejected: inbound strictness has no user-facing value, and even scoped to one field it
+  still blocks the caller until the project notices the lag, annotates it, and ships a release — a reactive
+  burden Selenium cannot promise. Tolerating absence and warning preserves the same signal with nothing to
+  maintain.
+- **Tolerate malformed values, not only absence** (decision 2). Best-effort a wrong-typed or unmappable
+  value rather than erroring. Rejected: unlike a missing field, a present-but-invalid value cannot yield a
+  valid typed object — tolerating it means a placeholder or a broken object, the failure this layer exists
+  to prevent.
+- **Tolerate an unknown `RemoteValue` variant instead of erroring** (decision 2). Surface an unknown-value
+  carrier that keeps the raw discriminator rather than erroring. Rejected: the trigger is rare (the
+  value-type set is near-complete) and the carrier is a permanent cost — an unknown branch every exhaustive
+  match must handle. Its one merit — a carrier is more recoverable than an error, since a consumer can
+  re-derive "throw on unknown" on top of it, not the reverse — does not outweigh that; a binding that wants
+  it can still layer one on top.
+- **Enforce required-ness in the object's constructor** (decisions 1 & 2). Let the object reject a missing
+  field itself rather than at the serialization boundary. Rejected: constructor enforcement is symmetric —
+  it rejects an incomplete inbound payload as readily as an outbound one, making tolerated absence
+  impossible. A permissive object with enforcement at the boundaries is what lets the two directions differ.
+- **Surface message-level extras in this layer** (decision 2) rather than leaving them to the transport.
+  Rejected: the envelope is the transport's; this layer governs per-type extensibility only.
+- **Retain extras on every extensible type** (decision 2), not only those that are sent back. This is the right
+  choice for a public surface, which cannot narrow later without dropping a field users rely on. Rejected
+  here only because the layer is internal: it can scope tight now and widen later at no cost. *This is the
+  one decision the internal premise turns on.*
+- **Raw dicts rather than typed objects** (decision 3); the spec permits it. Rejected: raw maps structurally
+  cannot do union dispatch, field checks, or a faithful record of what was received.
+- **Free naming rather than mirroring the spec** (decision 3). Rejected: divergent surface names let the
+  bindings drift out of step with the spec and one another, defeating the cross-binding coherence that is the
+  point of one contract across many languages.
 
 ## Consequences
 
-- The contract holds for any implementation regardless of language or production method; conformance is
-  checkable independently of how the layer was built.
-- The per-type signals items 5/6/8 need are all derivable from the spec; a binding that discards one, or
-  parses into a lenient runtime, falls out of conformance on exactly the items that depend on it.
+- Conformance is checkable independently of how the layer is built — any language, generated or
+  hand-written — so long as the runtime behavior matches.
+- Required-ness is asymmetric: a required field must be present to send (decision 1) but is tolerated when
+  absent on receipt (decision 2) — the layer validates what it controls and accepts what it does not.
+- Tolerating absence constrains the type, not just the deserializer: a static binding cannot type an inbound
+  field non-null yet leave it omitted when missing. A nullable slot suffices for most fields (real data is
+  never null there, so null marks omitted); a required *nullable* field (network `context`/`navigation`,
+  response sizes, log `text`, ~30 in all) instead needs omitted kept distinct from null. The trigger is
+  schema-detectable (`required ∧ nullable`).
