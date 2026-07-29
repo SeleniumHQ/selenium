@@ -202,7 +202,19 @@ function projectEntry(e) {
 }
 
 function projectField(prop) {
-  return { name: prop.Name, wire: prop.Name, required: (prop.Occurrence?.n ?? 1) >= 1, type: projectRef(prop.Type) }
+  const field = {
+    name: prop.Name,
+    wire: prop.Name,
+    required: (prop.Occurrence?.n ?? 1) >= 1,
+    type: projectRef(prop.Type),
+  }
+  // Provenance stamped by a vendor overlay (generate_bidi.mjs). Carried on the field so
+  // extractVendor can route it out of the shared schema; stripped there before it ships.
+  if (prop['x-selenium-vendor']) {
+    field.vendor = prop['x-selenium-vendor']
+    field.via = prop['x-selenium-vendor-via']
+  }
+  return field
 }
 
 // A group whose members are all anonymous refs (a top-level `a // b // c`
@@ -637,7 +649,53 @@ export function projectSchema(ast, model, links = {}) {
     if (href) domains[domain] = { specHref: href }
   }
 
-  return { schemaVersion: 1, commands, events, types, domains }
+  // Partition vendor-tagged fields out of the shared, browser-neutral schema into a namespaced
+  // `vendor` section. The shared `types` are then exactly what upstream emits (spec-only); a
+  // binding that reads only `types`/`commands`/`events` never sees vendor fields.
+  const vendor = extractVendor(types)
+  const schema = { schemaVersion: 1, commands, events, types, domains }
+  if (Object.keys(vendor).length) schema.vendor = vendor
+  return schema
+}
+
+/**
+ * Move every vendor-tagged field out of the shared `types` and into a `{ <namespace>: { extends:
+ * { <targetType>: { via, fields } } } }` structure. A field's `via` names the spec extension point
+ * it flowed through; the field having resolved into a real shared record (via the `//=` fold and
+ * group flatten) is what proves the merge happened — this only re-routes the output. The pure
+ * extension-point anchor type (e.g. `webExtension.InstallParametersExtension`), left with no
+ * spec fields once its vendor fields move out, is dropped from the shared schema.
+ * With no vendor tags present this returns `{}` and mutates nothing, so output is unchanged.
+ * @param {object} types The projected `types` map (mutated in place).
+ * @returns {object} The vendor section, empty when there are no vendor fields.
+ */
+function extractVendor(types) {
+  const vendor = {}
+  const anchors = new Set()
+  for (const [typeName, node] of Object.entries(types)) {
+    if (node.kind !== 'record' || !Array.isArray(node.fields)) continue
+    const kept = []
+    for (const field of node.fields) {
+      if (!field.vendor) {
+        kept.push(field)
+        continue
+      }
+      anchors.add(field.via)
+      // The extension point's own type carries a copy of its fields; drop that copy (the anchor
+      // itself is removed below) and route only the copy that resolved into a real target type.
+      if (field.via === typeName) continue
+      const { vendor: ns, via, ...clean } = field
+      const bucket = (vendor[ns] ??= { extends: {} })
+      const entry = (bucket.extends[typeName] ??= { via, fields: [] })
+      entry.fields.push(clean)
+    }
+    node.fields = kept
+  }
+  for (const name of anchors) {
+    const anchor = types[name]
+    if (anchor && anchor.kind === 'record' && (anchor.fields?.length ?? 0) === 0) delete types[name]
+  }
+  return vendor
 }
 
 /**
