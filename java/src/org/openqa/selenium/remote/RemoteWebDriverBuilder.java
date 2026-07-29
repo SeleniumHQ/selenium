@@ -526,6 +526,10 @@ public class RemoteWebDriverBuilder {
         .collect(Collectors.toSet());
   }
 
+  // If any requested capability sets se:remoteUrl explicitly, auto-injection is suppressed for the
+  // whole payload to preserve that value and avoid an alwaysMatch/firstMatch overlap. When several
+  // first-match alternatives are supplied and only some set it, the others do not receive the
+  // client-reachable URL; that multi-alternative case is intentionally not supported.
   private boolean hasExplicitRemoteUrl() {
     return additionalCapabilities.containsKey("se:remoteUrl")
         || requestedCapabilities.stream()

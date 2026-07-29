@@ -1226,6 +1226,11 @@ public class LocalNode extends Node implements Closeable {
 
     URI baseUri = resolvePublicGridUri(toUse);
 
+    // se:remoteUrl is transport-only: it is consumed above to resolve the public URI, so drop it
+    // from the returned capabilities rather than echo it (and any embedded credentials) back to the
+    // client, into session-created events, or into the session-created log line.
+    toUse = removeCapability(toUse, "se:remoteUrl");
+
     // Add se:cdp if necessary to send the cdp url back
     if ((isSupportingCdp || toUse.getCapability("se:cdp") != null) && cdpEnabled) {
       String cdpPath = String.format("/session/%s/se/cdp", other.getId());
@@ -1298,6 +1303,18 @@ public class LocalNode extends Node implements Closeable {
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private Capabilities removeCapability(Capabilities caps, String name) {
+    MutableCapabilities filtered = new MutableCapabilities();
+    caps.asMap()
+        .forEach(
+            (key, value) -> {
+              if (!name.equals(key)) {
+                filtered.setCapability(key, value);
+              }
+            });
+    return new PersistentCapabilities(filtered);
   }
 
   // A configured grid-url always wins; only when the node falls back to its auto-detected address
