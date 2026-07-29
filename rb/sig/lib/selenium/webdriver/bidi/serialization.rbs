@@ -28,6 +28,8 @@ module Selenium
 
         def self.to_symbol: (String name, untyped value, untyped enum) -> untyped
 
+        def self.strict?: () -> bool
+
         class Record < ::Data
           def self.define: (**untyped spec) -> singleton(Record)
 
@@ -68,6 +70,8 @@ module Selenium
 
             def wire_value: (untyped field, Hash[untyped, untyped] json_payload) -> untyped
 
+            def missing_required: (untyped field) -> untyped
+
             def read: (untyped field, untyped raw) -> untyped
 
             def read_ref: (untyped field, untyped raw) -> untyped
@@ -85,6 +89,8 @@ module Selenium
             def scalar_value: (untyped field, untyped value) -> untyped
 
             def extra: (Hash[untyped, untyped] json_payload) -> Hash[untyped, untyped]
+
+            def warn_undeclared: (Hash[untyped, untyped] undeclared) -> void
           end
 
           interface _Serializable

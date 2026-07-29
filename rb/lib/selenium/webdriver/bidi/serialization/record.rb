@@ -79,9 +79,10 @@ module Selenium
               construct(**attributes)
             end
 
-            # Inbound: builds from the wire. A missing required field raises (in +wire_value+),
-            # enum tokens are mapped back to symbols and an unrecognized one raises (in +read+), and
-            # extra keys are captured (extensible) or ignored (closed) — strict on shape, lenient on extras.
+            # Inbound: builds from the wire. A missing required field is omitted and warned (or
+            # raised in strict mode, in +wire_value+); enum tokens are mapped back to symbols and an
+            # unrecognized one raises (in +read+); an undeclared property is warned, then captured
+            # (extensible) or dropped (closed) — strict on shape, lenient on extras.
             def from_json(json_payload)
               unless json_payload.is_a?(::Hash)
                 raise Error::WebDriverError, "#{name} expected an object on the wire, got #{json_payload.inspect}"
@@ -90,7 +91,9 @@ module Selenium
               attributes = fields.to_h do |f|
                 [f.name, wire_value(f, json_payload)]
               end
-              attributes[:extensions] = extra(json_payload) if extensible?
+              undeclared = extra(json_payload)
+              warn_undeclared(undeclared) unless undeclared.empty?
+              attributes[:extensions] = undeclared if extensible?
               construct(**attributes)
             end
 
@@ -143,7 +146,19 @@ module Selenium
               return read(field, json_payload[field.wire_key]) if json_payload.key?(field.wire_key)
               return UNSET unless field.required
 
-              raise Error::WebDriverError, "#{name}##{field.name} is required but was missing from the response"
+              missing_required(field)
+            end
+
+            # A required field absent from the response is tolerated as omitted (UNSET) and warned, so a
+            # schema ahead of the browser does not block the caller; strict mode (SE_BIDI_STRICT) escalates
+            # to an error for callers who want it. Omitted (UNSET) stays distinct from an explicit null (nil),
+            # which matters for the required-and-nullable fields the schema flags.
+            def missing_required(field)
+              message = "#{name}##{field.name} is required but was missing from the response"
+              raise Error::WebDriverError, message if Serialization.strict?
+
+              WebDriver.logger.warn(message, id: :bidi_missing_required)
+              UNSET
             end
 
             def read(field, raw)
@@ -251,6 +266,16 @@ module Selenium
             def extra(json_payload)
               known = (@wire_keys ||= fields.map(&:wire_key))
               json_payload.except(*known)
+            end
+
+            # Forward-compat signal: a property the type does not model is tolerated (retained on an
+            # extensible type, dropped on a closed one) and warned so schema drift is visible. Tagged
+            # +:bidi_undeclared_property+ so a caller can silence it via +logger.ignore+.
+            def warn_undeclared(undeclared)
+              undeclared.each_key do |key|
+                WebDriver.logger.warn("#{name} received an undeclared property: #{key.inspect}",
+                                      id: :bidi_undeclared_property)
+              end
             end
           end
 
