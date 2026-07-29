@@ -34,11 +34,13 @@ from __future__ import annotations
 
 import dataclasses
 import logging
+import re
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
 from enum import Enum
+from importlib import import_module
 from typing import Any
 
 from selenium.common.exceptions import WebDriverException
@@ -75,6 +77,20 @@ def _tolerate(message: str) -> None:
     if _strict_inbound.get():
         raise BiDiSerializationError(message)
     logger.warning(message)
+
+
+# Cap how many key names one tolerated-inbound warning spells out, so a payload with many
+# unknown/absent keys yields a bounded log line / exception message instead of one built from
+# every remote-supplied key; the remainder is summarized as a count.
+_MAX_KEYS_SHOWN = 10
+
+
+def _summarize(owner: str, kind: str, keys: list[str], suffix: str) -> str:
+    """A bounded ``owner: kind 'a', 'b', … (+N more) (suffix)`` message for tolerated keys."""
+    shown = ", ".join(repr(k) for k in keys[:_MAX_KEYS_SHOWN])
+    if len(keys) > _MAX_KEYS_SHOWN:
+        shown += f", … (+{len(keys) - _MAX_KEYS_SHOWN} more)"
+    return f"{owner}: {kind} {shown} ({suffix})"
 
 
 class UnsetType:
@@ -168,7 +184,26 @@ def register(schema_name: str) -> Callable[[type], type]:
     return decorate
 
 
+def _camel_to_snake(name: str) -> str:
+    """``browsingContext`` -> ``browsing_context`` (mirrors the generator's domain->module map)."""
+    name = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", name)
+    name = re.sub(r"([a-z\d])([A-Z])", r"\1_\2", name)
+    return name.lower()
+
+
 def resolve(schema_name: str) -> type:
+    cls = _REGISTRY.get(schema_name)
+    if cls is not None:
+        return cls
+    # A cross-domain ref: generated modules import each other only under TYPE_CHECKING, so the
+    # owning module may not have run its @register decorators yet. Import it now (a no-op if
+    # already loaded) and retry, so e.g. resolving `script.NodeRemoteValue` works even when the
+    # caller only imported `browsing_context`.
+    module = _camel_to_snake(schema_name.split(".", 1)[0])
+    try:
+        import_module(f"{__package__}.{module}")
+    except ImportError:
+        pass
     try:
         return _REGISTRY[schema_name]
     except KeyError:
@@ -267,34 +302,35 @@ class Record:
             raise BiDiSerializationError(f"{cls.__name__} expected an object on the wire, got {got} {payload!r}")
         kwargs: dict = {}
         known: set[str] = set()
+        missing_required: list[str] = []
         for f in _fields(cls):
             w = _wire_of(f)
             known.add(w.wire)
             if w.fixed is not UNSET or f.name == "extensions":
                 continue
+            if w.wire not in payload:
+                if w.required:
+                    missing_required.append(w.wire)
+                kwargs[f.name] = UNSET
+                continue
             kwargs[f.name] = _read_field(cls, f.name, w, payload)
         undeclared = [k for k in payload if k not in known]
+        # Tolerate a payload that lags or runs ahead of this schema (ADR decisions 2.2/2.3): a
+        # missing required field is left unset; an undeclared property is kept only on an
+        # extensible (re-sendable) type, else dropped. Each kind warns at most once per record —
+        # never once per key, so a verbose payload cannot flood the log; strict_inbound raises.
+        if missing_required:
+            _tolerate(_summarize(cls.__name__, "missing required", missing_required, "left unset"))
         if undeclared:
-            # Properties the type does not declare are tolerated for forward-compatibility
-            # (ADR decision 2.3): warned once for the whole record — not once per key, so a
-            # verbose payload cannot flood the log — and kept only on an extensible
-            # (re-sendable) type so a caller can echo them back on the wire, else dropped.
-            noun = "property" if len(undeclared) == 1 else "properties"
-            names = ", ".join(repr(k) for k in undeclared)
-            _tolerate(f"{cls.__name__}: undeclared {noun} {names} ({'kept' if cls._EXTENSIBLE else 'dropped'})")
+            _tolerate(_summarize(cls.__name__, "undeclared", undeclared, "kept" if cls._EXTENSIBLE else "dropped"))
         if cls._EXTENSIBLE:
             kwargs["extensions"] = {k: payload[k] for k in undeclared}
         return cls(**kwargs)
 
 
 def _read_field(cls: type, name: str, w: _Wire, payload: dict) -> Any:
-    if w.wire not in payload:
-        if w.required:
-            # A required field absent on the wire is tolerated, not errored (ADR decision
-            # 2.2): the sender may predate its addition to the spec. It is left omitted and
-            # warned; outbound still requires it (see as_json). strict_inbound escalates.
-            _tolerate(f"{cls.__name__}.{name}: required {w.wire!r} missing on the wire; leaving it unset")
-        return UNSET
+    # Called only for a field present on the wire; from_json handles an absent field (an absent
+    # required one is tolerated and warned there, in one bounded message per record).
     raw = payload[w.wire]
     if raw is None:
         if w.nullable:

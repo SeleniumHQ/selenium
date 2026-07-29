@@ -208,6 +208,20 @@ def test_resolve_unknown_raises():
         resolve("test.Nope")
 
 
+def test_resolve_lazily_imports_the_owning_module_on_a_cross_domain_miss(monkeypatch):
+    # Cross-domain refs are only TYPE_CHECKING imports, so a type may be unregistered until its
+    # module is imported. On a miss, resolve imports `_bidi.<domain>` (camelCase -> snake) — which
+    # would run that module's @register — and retries; here the fake import registers nothing, so
+    # it still raises, but must have tried the correctly-mapped module.
+    from selenium.webdriver.common._bidi import serialization as _ser
+
+    calls: list[str] = []
+    monkeypatch.setattr(_ser, "import_module", lambda name: calls.append(name))
+    with pytest.raises(BiDiSerializationError):
+        resolve("lazyDomain.LazyType")
+    assert calls == ["selenium.webdriver.common._bidi.lazy_domain"]
+
+
 # --- outbound: as_json ---
 
 
@@ -231,12 +245,23 @@ def test_a_missing_required_field_inbound_is_tolerated_warned_and_left_unset(cap
         result = Point.from_json({"x": 1})
     assert result.x == 1
     assert result.y is UNSET
-    assert "y" in caplog.text
-    assert "required" in caplog.text
+    assert "missing required" in caplog.text
+    assert "'y'" in caplog.text
+
+
+def test_multiple_missing_required_fields_warn_once_for_the_record(caplog):
+    with caplog.at_level(logging.WARNING):
+        result = Point.from_json({})
+    assert result.x is UNSET
+    assert result.y is UNSET
+    missing_warnings = [r for r in caplog.records if "missing required" in r.getMessage()]
+    assert len(missing_warnings) == 1
+    assert "'x'" in caplog.text
+    assert "'y'" in caplog.text
 
 
 def test_strict_inbound_escalates_a_missing_required_field_to_an_error():
-    with strict_inbound(), pytest.raises(BiDiSerializationError, match=r"required 'y'"):
+    with strict_inbound(), pytest.raises(BiDiSerializationError, match=r"missing required 'y'"):
         Point.from_json({"x": 1})
 
 
@@ -383,8 +408,8 @@ def test_an_extensible_record_keeps_and_warns_on_undeclared_properties(caplog):
     with caplog.at_level(logging.WARNING):
         result = Extensible.from_json({"known": "k", "extra": "e", "more": 1})
     assert result.extensions == {"extra": "e", "more": 1}
-    assert "extra" in caplog.text
-    assert "more" in caplog.text
+    assert "'extra'" in caplog.text
+    assert "'more'" in caplog.text
 
 
 def test_an_extensible_record_merges_captured_keys_back_on_serialization():
@@ -395,11 +420,11 @@ def test_a_closed_record_drops_and_warns_on_undeclared_properties(caplog):
     with caplog.at_level(logging.WARNING):
         result = Point.from_json({"x": 1, "y": 2, "z": 3})
     assert result == Point(x=1, y=2)
-    assert "z" in caplog.text
+    assert "'z'" in caplog.text
 
 
 def test_strict_inbound_escalates_an_undeclared_property_to_an_error():
-    with strict_inbound(), pytest.raises(BiDiSerializationError, match=r"undeclared property 'z'"):
+    with strict_inbound(), pytest.raises(BiDiSerializationError, match=r"undeclared 'z'"):
         Point.from_json({"x": 1, "y": 2, "z": 3})
 
 
@@ -408,9 +433,18 @@ def test_many_undeclared_properties_warn_once_for_the_record_not_once_per_key(ca
         Point.from_json({"x": 1, "y": 2, "a": 1, "b": 2, "c": 3})
     undeclared_warnings = [r for r in caplog.records if "undeclared" in r.getMessage()]
     assert len(undeclared_warnings) == 1
-    assert "a" in caplog.text
-    assert "b" in caplog.text
-    assert "c" in caplog.text
+    assert "'a'" in caplog.text
+    assert "'b'" in caplog.text
+    assert "'c'" in caplog.text
+
+
+def test_a_flood_of_undeclared_properties_is_summarized_rather_than_dumped(caplog):
+    payload = {"x": 1, "y": 2, **{f"k{i}": i for i in range(50)}}
+    with caplog.at_level(logging.WARNING):
+        Point.from_json(payload)
+    assert "'k0'" in caplog.text  # first few named
+    assert "'k49'" not in caplog.text  # the rest omitted
+    assert "more)" in caplog.text  # summarized as a count
 
 
 # --- union dispatch: inbound ---
