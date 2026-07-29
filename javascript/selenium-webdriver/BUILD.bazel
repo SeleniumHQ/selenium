@@ -105,11 +105,21 @@ generate_bidi_library(
         "@ua_client_hints_all_cddl//file:spec.cddl",
         "@web_bluetooth_all_cddl//file:spec.cddl",
     ],
+    # The local #1140 extension point (supersedes the upstream closed InstallParameters): spec-
+    # shaped and browser-neutral, it only opens the map. Stays in the shared schema.
+    override_cddl_files = [
+        "//common/bidi:webdriver-bidi-1140.cddl",
+    ],
     # The pinned rendered core spec. The schema step extracts its prose section anchors
     # (#type-/#command-/#event-/#module-) to upgrade type links and add command/event/
     # domain links; adjacent specs keep the webref CDDL fallback.
     spec_html = "@webdriver_bidi_spec_html//file:index.html",
     spec_version = "1.0",
+    # Firefox's vendor fields plugged into that extension point. Provenance-tagged and routed into
+    # the schema's separate `vendor` section, so the shared schema stays exactly what upstream emits.
+    vendor_cddl_files = [
+        "//common/bidi:webextension-install-extensions.cddl",
+    ],
 )
 
 VERSION = "4.47.0-nightly202607110055"

@@ -120,6 +120,10 @@ module Selenium
             <%= cmd.execute_call(12) %>
           end
 <%- end -%>
+<%- mod.vendor_modules.each do |vendor_module| -%>
+
+<%= vendor_module.render(10) %>
+<%- end -%>
         end # <%= mod.ruby_class %>
       end # Protocol
     end # BiDi

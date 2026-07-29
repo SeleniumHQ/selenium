@@ -450,22 +450,35 @@ export function flattenGroupComposition(ast) {
 // ============================================================
 
 /**
- * Drop duplicate definitions, keeping the first occurrence — the `*-all.cddl`
- * input concatenates local + remote specs that both define shared types. This
- * matches `buildModel`'s `buildDefMap` ("first wins") so the normalized artifact
- * carries one def per name.
+ * Collapse same-named definitions into one. A plain duplicate keeps the first
+ * occurrence — the `*-all.cddl` input concatenates local + remote specs that both
+ * define shared types, matching `buildModel`'s `buildDefMap` ("first wins"). A
+ * choice-addition (`//=` group socket or `/=` type socket, `IsChoiceAddition: true`)
+ * instead folds its members into the retained base, so a group extension point like
+ * `webExtension.InstallParametersExtension //= (...)` is resolved before
+ * `flattenGroupComposition` splices that group into its referents.
+ * Pure — folds into a fresh clone rather than mutating the input def.
  * @param {object[]} ast The AST to dedupe.
- * @returns {object[]} A new AST array with duplicate-named defs removed (first wins).
+ * @returns {object[]} A new AST array with duplicate-named defs collapsed.
  */
 export function dedupeDefs(ast) {
-  const seen = new Set()
+  const indexByName = new Map()
   const out = []
   for (const def of ast) {
-    if (def && typeof def === 'object' && typeof def.Name === 'string') {
-      if (seen.has(def.Name)) continue
-      seen.add(def.Name)
+    const name = def && typeof def === 'object' && typeof def.Name === 'string' ? def.Name : null
+    if (name === null || !indexByName.has(name)) {
+      if (name !== null) indexByName.set(name, out.length)
+      out.push(def)
+      continue
     }
-    out.push(def)
+    if (!def.IsChoiceAddition) continue // plain duplicate: first wins
+    const i = indexByName.get(name)
+    const base = out[i]
+    const merged = { ...base }
+    if (base.Properties || def.Properties) merged.Properties = [...(base.Properties ?? []), ...(def.Properties ?? [])]
+    if (base.PropertyType || def.PropertyType)
+      merged.PropertyType = [...(base.PropertyType ?? []), ...(def.PropertyType ?? [])]
+    out[i] = merged
   }
   return out
 }

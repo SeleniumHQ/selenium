@@ -30,13 +30,6 @@ module Selenium
         class WebExtension < Domain
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallparameters
-          InstallParameters = Serialization::Record.define(
-            extension_data: {wire_key: 'extensionData', ref: 'WebExtension::ExtensionData'}
-          )
-
-          # @api private
-          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensionextensiondata
           class ExtensionData < Serialization::Union
             discriminator 'type', {archive_path: 'archivePath', base64: 'base64', path: 'path'}
@@ -84,6 +77,14 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallparameters
+          InstallParameters = Serialization::Record.define(
+            extension_data: {wire_key: 'extensionData', ref: 'WebExtension::ExtensionData'},
+            extensible: true
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#command-webExtension-install
           def install(extension_data:)
             params = InstallParameters.new(extension_data: extension_data)
@@ -96,6 +97,23 @@ module Selenium
           def uninstall(extension:)
             params = UninstallParameters.new(extension: extension)
             execute(cmd: 'webExtension.uninstall', params: params)
+          end
+
+          # @api private
+          # moz: vendor variant of WebExtension, overriding commands with browser-specific params.
+          # Construct Moz.new(source) for a matching session; other sessions use WebExtension.
+          class Moz < WebExtension
+            # @api private
+            # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+            # @see https://w3c.github.io/webdriver-bidi/#command-webExtension-install
+            def install(extension_data:, allow_private_browsing: Serialization::UNSET, permanent: Serialization::UNSET)
+              extensions = {
+                'moz:allowPrivateBrowsing' => allow_private_browsing,
+                'moz:permanent' => permanent
+              }.reject { |_, value| Serialization::UNSET.equal?(value) }
+              params = InstallParameters.new(extension_data: extension_data, extensions: extensions)
+              execute(cmd: 'webExtension.install', params: params, result: WebExtension::InstallResult)
+            end
           end
         end # WebExtension
       end # Protocol

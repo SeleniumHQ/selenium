@@ -23,11 +23,6 @@ module Selenium
     class BiDi
       module Protocol
         class WebExtension < ::Selenium::WebDriver::BiDi::Protocol::Domain
-          class InstallParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData
-            def self.new: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData) -> instance
-          end
-
           class ExtensionData < ::Selenium::WebDriver::BiDi::Serialization::Union
           end
 
@@ -59,8 +54,18 @@ module Selenium
             def self.new: (extension: String) -> instance
           end
 
+          class InstallParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
+            attr_reader extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData
+            attr_reader extensions: Hash[String, untyped]
+            def self.new: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData, ?extensions: Hash[String, untyped]) -> instance
+          end
+
           def install: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData) -> ::Selenium::WebDriver::BiDi::Protocol::WebExtension::InstallResult
           def uninstall: (extension: String) -> untyped
+
+          class Moz < ::Selenium::WebDriver::BiDi::Protocol::WebExtension
+            def install: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData, ?allow_private_browsing: bool, ?permanent: bool) -> ::Selenium::WebDriver::BiDi::Protocol::WebExtension::InstallResult
+          end
         end
       end
     end
