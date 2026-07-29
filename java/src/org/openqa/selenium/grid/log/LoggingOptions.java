@@ -224,20 +224,24 @@ public class LoggingOptions {
    * prints (FINE/CONFIG-range records from that logger or a descendant, while its handler is
    * installed) must not also print through this root handler, PROVIDED this root handler's
    * destination is the one Debug's handler also writes to -- that handler's own useParentHandlers
-   * is never disabled, so the same record reaches both. That's only true when no {@code log-file}
-   * is configured: {@link #getOutputStream()} then defaults this handler to {@code
-   * System.out}/{@code System.err}, the same visible destination as Debug's own {@code
-   * ConsoleHandler} (fixed to {@code System.err}) in every realistic deployment. A configured
-   * log-file is a genuinely separate destination Debug never writes to, so suppressing there would
-   * silently drop the record from the operator's chosen sink instead of de-duplicating it -- worse
-   * than the problem this filter exists to solve. INFO-and-above {@code org.openqa.selenium}
-   * records, and everything from every other logger, are untouched either way: Debug's handler
-   * never covered those in the first place.
+   * is never disabled, so the same record reaches both. Debug's own handler is always a {@code
+   * ConsoleHandler}, which per its JDK contract always targets {@code System.err}; this root
+   * handler's destination only coincides with that when {@link Debug#isDebugAll()} ({@code
+   * SE_DEBUG}) is set AND no {@code log-file} is configured -- {@link #getOutputStream()} then
+   * defaults this handler to {@code System.err} too. When debugging is instead enabled via {@code
+   * -Dselenium.debug=true}/{@code -Dselenium.webdriver.verbose=true} without {@code SE_DEBUG},
+   * {@link #getOutputStream()} defaults to {@code System.out} -- a genuinely different destination
+   * from Debug's handler -- so suppressing there would make the record invisible to an operator
+   * watching Grid's own stdout/structured log output instead of de-duplicating it. A configured
+   * log-file is a genuinely separate destination Debug never writes to either, for the same reason.
+   * INFO-and-above {@code org.openqa.selenium} records, and everything from every other logger, are
+   * untouched either way: Debug's handler never covered those in the first place.
    */
   private Filter rootHandlerFilter() {
     boolean logFileConfigured = config.get(LOGGING_SECTION, "log-file").isPresent();
+    boolean sameDestinationAsDebugHandler = !logFileConfigured && Debug.isDebugAll();
     return record ->
-        logFileConfigured
+        !sameDestinationAsDebugHandler
             || !Debug.isHandledBySeleniumDebugHandler(record.getLoggerName(), record.getLevel());
   }
 

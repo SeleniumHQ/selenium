@@ -39,11 +39,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.internal.Debug;
+import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
+import uk.org.webcompere.systemstubs.jupiter.SystemStub;
+import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 
 @Tag("UnitTests")
+@ExtendWith(SystemStubsExtension.class)
 class LoggingOptionsTest {
+
+  @SystemStub private EnvironmentVariables environment;
 
   private String oldDebugProperty;
   // Legacy alias for selenium.debug -- Debug.isDebugging() honors either, so a test JVM that
@@ -179,15 +186,17 @@ class LoggingOptionsTest {
     // directly on org.openqa.selenium that already prints FINE/CONFIG-range records to stderr --
     // it never disables useParentHandlers, so those same records also propagate up to whatever
     // handler(s) configureLogging() itself then attaches to the ROOT logger a few lines later.
-    // With no log-file configured, getOutputStream() defaults that root handler to System.out (no
-    // SE_DEBUG here) -- a different JUL handler/stream than Debug's stderr one, but the same
-    // visible destination in every realistic deployment (Grid's primary real-world usage is
-    // containerized, where the container log driver merges stdout+stderr into one stream a human
-    // actually reads), so nothing stopped a FINE record from org.openqa.selenium(.*) printing
-    // twice, once from each handler. INFO-and-above records must be unaffected -- Debug's own
-    // handler already excludes those, so they only ever reached Grid's root handler in the first
-    // place.
-    System.setProperty("selenium.debug", "true");
+    // With SE_DEBUG set and no log-file configured, getOutputStream() defaults that root handler
+    // to System.err too -- the exact same destination Debug's own ConsoleHandler always targets --
+    // so nothing stopped a FINE record from org.openqa.selenium(.*) printing twice, once from each
+    // handler. INFO-and-above records must be unaffected -- Debug's own handler already excludes
+    // those, so they only ever reached Grid's root handler in the first place. SE_DEBUG is set via
+    // an environment-variable stub rather than the selenium.debug property: this scenario is
+    // specifically about Debug.isDebugAll() (SE_DEBUG), which is what makes getOutputStream()
+    // route to System.err in the first place -- selenium.debug=true alone does not (see
+    // configureLoggingDoesNotSuppressSeleniumDebugRecordsOnRootHandlerWhenDebugPropertyIsSetWithoutSeDebug
+    // for that contrasting case).
+    environment.set("SE_DEBUG", "true");
     String marker = "duplicate-check-" + UUID.randomUUID();
 
     Captured captured =
@@ -199,8 +208,38 @@ class LoggingOptionsTest {
 
     // Debug's own handler on org.openqa.selenium must still print it -- unchanged behavior.
     assertThat(captured.err()).contains(marker);
-    // Grid's root handler (defaulting to stdout here) must not ALSO print it.
+    // Grid's root handler (defaulting to stderr here, same as Debug's handler) must not ALSO
+    // print it.
     assertThat(captured.out()).doesNotContain(marker);
+  }
+
+  @Test
+  void
+      configureLoggingDoesNotSuppressSeleniumDebugRecordsOnRootHandlerWhenDebugPropertyIsSetWithoutSeDebug() {
+    // With selenium.debug=true (property only -- SE_DEBUG is deliberately left unset here) and no
+    // log-file configured, getOutputStream() defaults Grid's root handler to System.out --
+    // Debug.isDebugAll() is false in this scenario, so getOutputStream() never routes to
+    // System.err. Debug's own handler on org.openqa.selenium is always a ConsoleHandler, which per
+    // its JDK contract always targets System.err regardless of anything Grid does. Root handler
+    // (stdout) and Debug's handler (stderr) are therefore genuinely DIFFERENT destinations here --
+    // suppressing the record from the root handler on the assumption it's already visible via
+    // Debug's handler would make it invisible to an operator watching Grid's own stdout/structured
+    // log output, this PR's own advertised primary use case.
+    System.setProperty("selenium.debug", "true");
+    String marker = "distinct-destination-check-" + UUID.randomUUID();
+
+    Captured captured =
+        captureStdOutAndErrDuring(
+            () -> {
+              new LoggingOptions(emptyConfig()).configureLogging();
+              Logger.getLogger("org.openqa.selenium.grid.log.LoggingOptionsTest").fine(marker);
+            });
+
+    // Debug's own handler on org.openqa.selenium must still print it -- unchanged behavior.
+    assertThat(captured.err()).contains(marker);
+    // Grid's root handler (stdout here, a genuinely different destination) must ALSO print it --
+    // it must not be suppressed as if it were a duplicate of Debug's stderr output.
+    assertThat(captured.out()).contains(marker);
   }
 
   @Test

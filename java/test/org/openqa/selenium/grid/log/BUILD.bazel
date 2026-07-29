@@ -11,5 +11,7 @@ java_test_suite(
         "//java/src/org/openqa/selenium/grid/log",
         artifact("org.assertj:assertj-core"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("uk.org.webcompere:system-stubs-jupiter"),
+        artifact("uk.org.webcompere:system-stubs-core"),
     ] + JUNIT5_DEPS,
 )
