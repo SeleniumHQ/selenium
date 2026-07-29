@@ -92,6 +92,18 @@ public class Connection implements Closeable {
     this(client, url, ClientConfig.defaultConfig());
   }
 
+  /**
+   * Creates a new CDP connection to the given URL using the given HTTP client and client
+   * configuration. Before the socket opens, the current Selenium debug switches are reflected onto
+   * the {@code org.openqa.selenium} logger via {@link Debug#configureLogger()}, so connections
+   * constructed directly (bypassing {@code RemoteWebDriver}/{@code DriverFinder}) still honor
+   * {@code -Dselenium.debug} and friends. The deprecated 2-arg constructor delegates here, so this
+   * single call point covers both.
+   *
+   * @param client the HTTP client used to open the underlying web socket; must not be null
+   * @param url the URL to open the web socket connection to
+   * @param clientConfig the client configuration to use when opening the connection
+   */
   public Connection(HttpClient client, String url, ClientConfig clientConfig) {
     // Reflect the current debug switches before this connection starts logging its wire
     // diagnostics at FINE -- callers that construct a Connection directly (never going through

@@ -78,6 +78,15 @@ public class Connection implements Closeable {
   private final WebSocket socket;
   private final AtomicBoolean underlyingSocketClosed = new AtomicBoolean(false);
 
+  /**
+   * Creates a new BiDi connection to the given URL using the given HTTP client. Before the socket
+   * opens, the current Selenium debug switches are reflected onto the {@code org.openqa.selenium}
+   * logger via {@link Debug#configureLogger()}, so connections constructed directly (bypassing
+   * {@code RemoteWebDriver}/{@code DriverFinder}) still honor {@code -Dselenium.debug} and friends.
+   *
+   * @param client the HTTP client used to open the underlying web socket; must not be null
+   * @param url the URL to open the web socket connection to; must not be null
+   */
   public Connection(HttpClient client, String url) {
     // Reflect the current debug switches before this connection starts logging its wire
     // diagnostics at FINE -- callers that construct a Connection directly (never going through
