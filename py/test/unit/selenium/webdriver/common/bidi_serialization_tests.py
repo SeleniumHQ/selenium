@@ -237,6 +237,34 @@ def test_round_trips_through_the_wire():
     assert Point.from_json(Point(x=1, y=2).as_json()) == Point(x=1, y=2)
 
 
+# --- outbound value validation (as_json, ADR decision 1) ---
+
+
+def test_as_json_accepts_valid_outbound_values():
+    assert Line(start=Point(x=1, y=2)).as_json() == {"start": {"x": 1, "y": 2}}
+    assert Tags(tags=["a", "b"]).as_json() == {"tags": ["a", "b"]}
+
+
+def test_as_json_rejects_a_wrong_typed_primitive():
+    with pytest.raises(BiDiSerializationError, match=r"Point.x: expected int, got str"):
+        Point(x="nope", y=2).as_json()
+
+
+def test_as_json_rejects_a_scalar_where_a_list_is_expected():
+    with pytest.raises(BiDiSerializationError, match=r"Tags.tags: expected a list"):
+        Tags(tags="a").as_json()
+
+
+def test_as_json_rejects_a_raw_dict_where_a_typed_record_is_expected():
+    with pytest.raises(BiDiSerializationError, match=r"Line.start: expected Point, got dict"):
+        Line(start={"x": 1, "y": 2}).as_json()
+
+
+def test_as_json_rejects_a_wrong_typed_item_in_a_list_of_records():
+    with pytest.raises(BiDiSerializationError, match=r"Path.points: expected Point, got dict"):
+        Path(points=[Point(x=1, y=2), {"x": 3, "y": 4}]).as_json()
+
+
 # --- inbound: required / optional / null ---
 
 

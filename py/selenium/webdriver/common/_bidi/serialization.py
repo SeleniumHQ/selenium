@@ -290,6 +290,7 @@ class Record:
                 continue
             if value is None and not w.nullable:
                 continue
+            _validate_outbound(type(self).__name__, f.name, w, value)
             payload[w.wire] = _as_json(value)
         if self._EXTENSIBLE:
             payload.update(getattr(self, "extensions", None) or {})
@@ -411,6 +412,45 @@ def _read_scalar(cls: type, name: str, w: _Wire, raw: Any) -> Any:
             got = type(raw).__name__
             raise BiDiSerializationError(f"{cls.__name__}.{name}: expected {w.primitive}, got {got} {raw!r}")
     return raw
+
+
+def _validate_outbound(owner: str, name: str, w: _Wire, value: Any) -> None:
+    """Reject an outbound value that violates its wire type before it is sent (ADR decision 1).
+
+    A caller mistake — a wrong primitive, a scalar where a list is expected, a raw dict where a
+    typed record belongs — surfaces here as a local error rather than a remote protocol error.
+    """
+    if value is None:
+        return  # nullability is handled by as_json
+    if w.is_list:
+        if not isinstance(value, list):
+            raise BiDiSerializationError(f"{owner}.{name}: expected a list, got {type(value).__name__} {value!r}")
+        for item in value:
+            _validate_outbound_scalar(owner, name, w, item)
+        return
+    _validate_outbound_scalar(owner, name, w, value)
+
+
+def _validate_outbound_scalar(owner: str, name: str, w: _Wire, value: Any) -> None:
+    if value is None or w.scalar is not None:
+        return  # map entries carry their own shape; null is handled upstream
+    if w.enum is not None:
+        return  # enum membership is validated at construction (__post_init__)
+    if w.ref is not None:
+        klass = resolve(w.ref)
+        # Records must be passed as instances; unions/enums stay permissive (a union arm may be a
+        # bare scalar or any variant, selected via Union.build rather than checked here).
+        if isinstance(klass, type) and issubclass(klass, Record) and not isinstance(value, klass):
+            raise BiDiSerializationError(
+                f"{owner}.{name}: expected {klass.__name__}, got {type(value).__name__} {value!r}"
+            )
+        return
+    if w.primitive is not None:
+        check = _PRIMITIVE_CHECKS.get(w.primitive)
+        if check and not check(value):
+            raise BiDiSerializationError(
+                f"{owner}.{name}: expected {w.primitive}, got {type(value).__name__} {value!r}"
+            )
 
 
 class Union:
