@@ -141,19 +141,48 @@ class LoggingOptionsTest {
   }
 
   @Test
-  void configureLoggingDoesNotDuplicateSeleniumDebugRecordsThroughGridsRootHandler()
-      throws IOException {
+  void configureLoggingDoesNotDuplicateSeleniumDebugRecordsWhenNoLogFileIsConfigured() {
     // Debug.configureLogger() (called one line into configureLogging()) installs a handler
     // directly on org.openqa.selenium that already prints FINE/CONFIG-range records to stderr --
     // it never disables useParentHandlers, so those same records also propagate up to whatever
     // handler(s) configureLogging() itself then attaches to the ROOT logger a few lines later.
-    // Nothing stopped Grid's own root handler from ALSO accepting them: a FINE record from any
-    // org.openqa.selenium(.*) logger got printed twice, once by each handler. INFO-and-above
-    // records must be unaffected -- Debug's own handler already excludes those, so they only ever
-    // reached Grid's root handler in the first place.
+    // With no log-file configured, getOutputStream() defaults that root handler to System.out (no
+    // SE_DEBUG here) -- a different JUL handler/stream than Debug's stderr one, but the same
+    // visible destination in every realistic deployment (Grid's primary real-world usage is
+    // containerized, where the container log driver merges stdout+stderr into one stream a human
+    // actually reads), so nothing stopped a FINE record from org.openqa.selenium(.*) printing
+    // twice, once from each handler. INFO-and-above records must be unaffected -- Debug's own
+    // handler already excludes those, so they only ever reached Grid's root handler in the first
+    // place.
+    System.setProperty("selenium.debug", "true");
+    String marker = "duplicate-check-" + UUID.randomUUID();
+
+    Captured captured =
+        captureStdOutAndErrDuring(
+            () -> {
+              new LoggingOptions(emptyConfig()).configureLogging();
+              Logger.getLogger("org.openqa.selenium.grid.log.LoggingOptionsTest").fine(marker);
+            });
+
+    // Debug's own handler on org.openqa.selenium must still print it -- unchanged behavior.
+    assertThat(captured.err()).contains(marker);
+    // Grid's root handler (defaulting to stdout here) must not ALSO print it.
+    assertThat(captured.out()).doesNotContain(marker);
+  }
+
+  @Test
+  void configureLoggingLetsSeleniumDebugRecordsReachAConfiguredLogFileAlongsideDebugsHandler()
+      throws IOException {
+    // A configured log-file is a destination genuinely separate from anything Debug touches --
+    // Debug's own handler always targets stderr (java.util.logging.ConsoleHandler's fixed
+    // target), regardless of Grid's own logging config. Suppressing FINE/CONFIG-range
+    // org.openqa.selenium records from that file the same way they're suppressed from the
+    // stdout/stderr default (above) would silently drop them from the operator's chosen sink and
+    // its plain/structured formatting -- worse than the duplicate this suppression exists to fix.
+    // Debug's stderr trace legitimately coexists with the file here; both must fire.
     System.setProperty("selenium.debug", "true");
     Path logFile = Files.createTempFile("logging-options-test", ".log");
-    String marker = "duplicate-check-" + UUID.randomUUID();
+    String marker = "log-file-check-" + UUID.randomUUID();
     try {
       String seleniumErr =
           captureStderrDuring(
@@ -167,14 +196,8 @@ class LoggingOptionsTest {
                 Logger.getLogger("org.openqa.selenium.grid.log.LoggingOptionsTest").fine(marker);
               });
 
-      // Debug's own handler on org.openqa.selenium must still print it -- unchanged behavior.
       assertThat(seleniumErr).contains(marker);
-      // Grid's root handler must not ALSO print it now that the two ranges overlap.
-      String gridLog = Files.readString(logFile);
-      assertThat(gridLog).doesNotContain(marker);
-      // INFO+ output Grid already prints (e.g. its own "Using encoding" startup line) must still
-      // reach the file -- only the FINE/CONFIG range Debug's handler already owns is suppressed.
-      assertThat(gridLog).contains("Using");
+      assertThat(Files.readString(logFile)).contains(marker);
     } finally {
       for (Handler handler : LogManager.getLogManager().getLogger("").getHandlers()) {
         handler.close();
@@ -197,5 +220,40 @@ class LoggingOptionsTest {
       System.setErr(originalErr);
     }
     return captured.toString();
+  }
+
+  private static Captured captureStdOutAndErrDuring(Runnable action) {
+    PrintStream originalOut = System.out;
+    PrintStream originalErr = System.err;
+    ByteArrayOutputStream capturedOut = new ByteArrayOutputStream();
+    ByteArrayOutputStream capturedErr = new ByteArrayOutputStream();
+    try {
+      System.setOut(new PrintStream(capturedOut));
+      System.setErr(new PrintStream(capturedErr));
+      action.run();
+    } finally {
+      System.setOut(originalOut);
+      System.setErr(originalErr);
+    }
+    return new Captured(capturedOut.toString(), capturedErr.toString());
+  }
+
+  /** Plain holder, not a record: this test target still compiles at source level 11. */
+  private static class Captured {
+    private final String out;
+    private final String err;
+
+    Captured(String out, String err) {
+      this.out = out;
+      this.err = err;
+    }
+
+    String out() {
+      return out;
+    }
+
+    String err() {
+      return err;
+    }
   }
 }

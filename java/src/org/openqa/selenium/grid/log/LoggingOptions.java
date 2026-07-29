@@ -190,7 +190,7 @@ public class LoggingOptions {
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new TerseFormatter(getLogTimestampFormat()));
       handler.setLevel(level);
-      handler.setFilter(NOT_ALREADY_HANDLED_BY_SELENIUM_DEBUG_HANDLER);
+      handler.setFilter(rootHandlerFilter());
       configureLogEncoding(logger, encoding, handler);
     }
 
@@ -198,19 +198,32 @@ public class LoggingOptions {
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new JsonFormatter());
       handler.setLevel(level);
-      handler.setFilter(NOT_ALREADY_HANDLED_BY_SELENIUM_DEBUG_HANDLER);
+      handler.setFilter(rootHandlerFilter());
       configureLogEncoding(logger, encoding, handler);
     }
   }
 
-  // Records that Debug.configureLogger()'s own handler on org.openqa.selenium already prints
-  // (FINE/CONFIG-range records from that logger or a descendant, while a debug switch is on) must
-  // not also print through this root handler -- that handler's own useParentHandlers is never
-  // disabled, so the same record reaches both. INFO-and-above org.openqa.selenium records, and
-  // everything from every other logger, are untouched: Debug's handler never covered those in the
-  // first place.
-  private static final Filter NOT_ALREADY_HANDLED_BY_SELENIUM_DEBUG_HANDLER =
-      record -> !Debug.isHandledBySeleniumDebugHandler(record.getLoggerName(), record.getLevel());
+  /**
+   * Records that Debug.configureLogger()'s own handler on {@code org.openqa.selenium} already
+   * prints (FINE/CONFIG-range records from that logger or a descendant, while its handler is
+   * installed) must not also print through this root handler, PROVIDED this root handler's
+   * destination is the one Debug's handler also writes to -- that handler's own
+   * useParentHandlers is never disabled, so the same record reaches both. That's only true when
+   * no {@code log-file} is configured: {@link #getOutputStream()} then defaults this handler to
+   * {@code System.out}/{@code System.err}, the same visible destination as Debug's own {@code
+   * ConsoleHandler} (fixed to {@code System.err}) in every realistic deployment. A configured
+   * log-file is a genuinely separate destination Debug never writes to, so suppressing there
+   * would silently drop the record from the operator's chosen sink instead of de-duplicating it
+   * -- worse than the problem this filter exists to solve. INFO-and-above {@code
+   * org.openqa.selenium} records, and everything from every other logger, are untouched either
+   * way: Debug's handler never covered those in the first place.
+   */
+  private Filter rootHandlerFilter() {
+    boolean logFileConfigured = config.get(LOGGING_SECTION, "log-file").isPresent();
+    return record ->
+        logFileConfigured
+            || !Debug.isHandledBySeleniumDebugHandler(record.getLoggerName(), record.getLevel());
+  }
 
   private void configureLogEncoding(Logger logger, @Nullable String encoding, Handler handler) {
     String message;
