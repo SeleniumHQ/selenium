@@ -210,7 +210,9 @@ module Selenium
 
           describe 'extensible records' do
             it 'captures unknown keys and merges them back on serialization' do
-              parsed = Script::SharedReference.from_json('sharedId' => 's1', 'webdriverValue' => 42)
+              parsed = nil
+              expect { parsed = Script::SharedReference.from_json('sharedId' => 's1', 'webdriverValue' => 42) }
+                .to have_warning(:bidi_undeclared_property)
 
               expect(parsed.shared_id).to eq('s1')
               expect(parsed.extensions).to eq('webdriverValue' => 42)
@@ -220,7 +222,9 @@ module Selenium
             # A re-sendable type (reachable from a command's params, e.g. a cookie filter) keeps
             # unknown properties so a received-then-resent payload round-trips them.
             it 'preserves an unknown key on a re-sendable type across a receive/re-send round trip' do
-              parsed = Storage::CookieFilter.from_json('name' => 'sid', 'x-vendor' => 'keep-me')
+              parsed = nil
+              expect { parsed = Storage::CookieFilter.from_json('name' => 'sid', 'x-vendor' => 'keep-me') }
+                .to have_warning(:bidi_undeclared_property)
 
               expect(parsed.extensions).to eq('x-vendor' => 'keep-me')
               expect(parsed.as_json).to eq('name' => 'sid', 'x-vendor' => 'keep-me')
@@ -230,16 +234,19 @@ module Selenium
             # params), so preserveExtras is false: unknown keys are ignored, not stored/echoed.
             it 'drops an unknown key on an extensible-but-received-only type on re-serialize' do
               wire = Network::Cookie.new(**valid_cookie_attrs).as_json.merge('x-vendor' => 'drop-me')
-              parsed = Network::Cookie.from_json(wire)
+              parsed = nil
+              expect { parsed = Network::Cookie.from_json(wire) }.to have_warning(:bidi_undeclared_property)
 
               expect(parsed).not_to respond_to(:extensions)
               expect(parsed.as_json).not_to include('x-vendor')
             end
 
-            it 'ignores an unknown key without raising on a non-extensible type' do
+            it 'warns on and drops an unknown key on a non-extensible type' do
               wire = {'type' => 'password', 'username' => 'u', 'password' => 'p', 'x-vendor' => 'v'}
+              parsed = nil
+              expect { parsed = Network::AuthCredentials.from_json(wire) }.to have_warning(:bidi_undeclared_property)
 
-              expect { Network::AuthCredentials.from_json(wire) }.not_to raise_error
+              expect(parsed).not_to respond_to(:extensions)
             end
           end
 
@@ -404,11 +411,6 @@ module Selenium
             # tripping the required-presence check on the others.
             let(:cookie_wire) { Network::Cookie.new(**valid_cookie_attrs).as_json }
 
-            it 'raises when a required field is missing from the response' do
-              expect { Network::Cookie.from_json('name' => 'sid') }
-                .to raise_error(Error::WebDriverError, /Cookie#value is required but was missing/)
-            end
-
             it 'raises when a non-nullable field arrives as explicit null' do
               expect { Network::Cookie.from_json(cookie_wire.merge('name' => nil)) }
                 .to raise_error(Error::WebDriverError, /Cookie#name received null but is not nullable/)
@@ -467,6 +469,27 @@ module Selenium
             it 'raises when an alias-typed integer field (js-uint) arrives as a string' do
               expect { Network::Cookie.from_json(cookie_wire.merge('size' => 'big')) }
                 .to raise_error(Error::WebDriverError, /size expected integer/)
+            end
+          end
+
+          # RequestDeviceInfo is a minimal record: a required `id` and a required-and-nullable `name`.
+          describe 'inbound required-field tolerance' do
+            it 'tolerates a missing required-nullable field as omitted (UNSET, not null) and warns' do
+              parsed = nil
+              expect { parsed = Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1') }
+                .to have_warning(:bidi_missing_required)
+              explicit = Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1', 'name' => nil)
+
+              expect(parsed.name).to equal(Serialization::UNSET)
+              expect(explicit.name).to be_nil
+            end
+
+            it 'escalates a missing required field to an error in strict mode (SE_BIDI_STRICT)' do
+              allow(ENV).to receive(:fetch).and_call_original
+              allow(ENV).to receive(:fetch).with('SE_BIDI_STRICT', '').and_return('true')
+
+              expect { Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1') }
+                .to raise_error(Error::WebDriverError, /RequestDeviceInfo#name is required but was missing/)
             end
           end
         end
