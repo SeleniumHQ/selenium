@@ -41,8 +41,8 @@ public class Debug {
   }
 
   /**
-   * Reports whether Selenium debug logging has been requested via the {@code selenium.debug} or
-   * the legacy {@code selenium.webdriver.verbose} system property. Read live on every call, so a
+   * Reports whether Selenium debug logging has been requested via the {@code selenium.debug} or the
+   * legacy {@code selenium.webdriver.verbose} system property. Read live on every call, so a
    * property change made at runtime is reflected immediately.
    *
    * @return true when either the {@code selenium.debug} or the {@code selenium.webdriver.verbose}
@@ -71,16 +71,16 @@ public class Debug {
   }
 
   /**
-   * Reports whether {@link #configureLogger()}'s handler is attached to {@code
-   * org.openqa.selenium} right now. Unlike {@link #isDebugging()} or {@link #isDebugAll()}, which
-   * read the live system property/environment variable, this reflects the handler's actual,
-   * current installation state -- the two can genuinely diverge for however long it takes some
-   * caller to next invoke {@link #configureLogger()} after a switch changes, since nothing installs
-   * or removes the handler except that call. This checks the logger's real handler list rather
-   * than trusting the {@code loggerConfigured} bookkeeping flag alone, since something outside
-   * this class can remove the handler without ever going through {@link #configureLogger()} --
-   * e.g. {@code LogManager.getLogManager().reset()} (routine in embedding scenarios: Spring Boot's
-   * {@code JavaLoggingSystem}, a Log4j-JUL bridge, a container shutdown hook) or a direct {@code
+   * Reports whether {@link #configureLogger()}'s handler is attached to {@code org.openqa.selenium}
+   * right now. Unlike {@link #isDebugging()} or {@link #isDebugAll()}, which read the live system
+   * property/environment variable, this reflects the handler's actual, current installation state
+   * -- the two can genuinely diverge for however long it takes some caller to next invoke {@link
+   * #configureLogger()} after a switch changes, since nothing installs or removes the handler
+   * except that call. This checks the logger's real handler list rather than trusting the {@code
+   * loggerConfigured} bookkeeping flag alone, since something outside this class can remove the
+   * handler without ever going through {@link #configureLogger()} -- e.g. {@code
+   * LogManager.getLogManager().reset()} (routine in embedding scenarios: Spring Boot's {@code
+   * JavaLoggingSystem}, a Log4j-JUL bridge, a container shutdown hook) or a direct {@code
    * removeHandler()} call by unrelated code -- which would otherwise leave the flag stale-true.
    *
    * @return true when a handler installed by {@link #configureLogger()} is currently attached
@@ -91,15 +91,30 @@ public class Debug {
   }
 
   /**
-   * Reports whether a log record from {@code loggerName} at {@code level} would already be
-   * emitted by the handler {@link #configureLogger()} installs directly on {@code
-   * org.openqa.selenium} -- that handler and its filter together cover exactly {@link
-   * Level#FINE}- and {@link Level#CONFIG}-range records from that logger and its descendants,
-   * whenever that handler is {@linkplain #isHandlerCurrentlyInstalled() currently installed}. A
-   * caller further up the logger hierarchy (e.g. a handler on the root logger, which receives the
-   * same record too via normal handler propagation) can use this to avoid printing it a second
-   * time, without disabling propagation itself -- which would instead silently drop every {@link
-   * Level#INFO}-and-above {@code org.openqa.selenium} record that caller would otherwise print.
+   * Reports whether {@code handler} is specifically the one {@link #configureLogger()} installed on
+   * {@code org.openqa.selenium} -- not merely whether some handler exists there. A caller that
+   * needs to strip handlers from that logger down to a clean slate (e.g. Grid's logging setup) must
+   * preserve only Debug's own handler, not every handler that happens to be attached to that
+   * logger; this lets such a caller identify exactly the one to keep without this class exposing
+   * the field itself.
+   *
+   * @param handler the handler to check; {@code null} is never Debug's own
+   * @return true when {@code handler} is the exact instance {@link #configureLogger()} installed
+   */
+  public static synchronized boolean isOwnHandler(Handler handler) {
+    return handler != null && handler == installedHandler;
+  }
+
+  /**
+   * Reports whether a log record from {@code loggerName} at {@code level} would already be emitted
+   * by the handler {@link #configureLogger()} installs directly on {@code org.openqa.selenium} --
+   * that handler and its filter together cover exactly {@link Level#FINE}- and {@link
+   * Level#CONFIG}-range records from that logger and its descendants, whenever that handler is
+   * {@linkplain #isHandlerCurrentlyInstalled() currently installed}. A caller further up the logger
+   * hierarchy (e.g. a handler on the root logger, which receives the same record too via normal
+   * handler propagation) can use this to avoid printing it a second time, without disabling
+   * propagation itself -- which would instead silently drop every {@link Level#INFO}-and-above
+   * {@code org.openqa.selenium} record that caller would otherwise print.
    *
    * @param loggerName the originating logger's name; {@code null} is never covered
    * @param level the record's level
@@ -144,38 +159,54 @@ public class Debug {
    * {@link Level#FINE}: since JUL has no level-change listener to tell the two apart, that specific
    * case still restores the pre-debug level. Safe to call from concurrent driver construction.
    *
-   * <p>Cross-binding note: the Python binding does the analogous thing at import time (the
-   * {@code SE_DEBUG} block at the top of {@code py/selenium/webdriver/__init__.py}): when the
-   * {@code SE_DEBUG} environment variable is set it puts the {@code selenium} logger at
-   * {@code DEBUG} and attaches an unfiltered {@code StreamHandler} if the logger has none of
-   * its own. Two deliberate differences here: Java only raises the level when the logger is
-   * currently less verbose than {@link Level#FINE} (Python sets {@code DEBUG} unconditionally),
-   * and Java's handler is filtered to records below {@link Level#INFO} so output the caller's
-   * own handlers already print is never duplicated.
+   * <p>Cross-binding note: the Python binding does the analogous thing at import time (the {@code
+   * SE_DEBUG} block at the top of {@code py/selenium/webdriver/__init__.py}): when the {@code
+   * SE_DEBUG} environment variable is set it puts the {@code selenium} logger at {@code DEBUG} and
+   * attaches an unfiltered {@code StreamHandler} if the logger has none of its own. Two deliberate
+   * differences here: Java only raises the level when the logger is currently less verbose than
+   * {@link Level#FINE} (Python sets {@code DEBUG} unconditionally), and Java's handler is filtered
+   * to records below {@link Level#INFO} so output the caller's own handlers already print is never
+   * duplicated.
    */
   public static synchronized void configureLogger() {
     boolean shouldDebug = isDebugging() || isDebugAll();
-    if (shouldDebug == loggerConfigured) {
+    // When shouldDebug is on and already configured, only skip if the handler this method
+    // installed is still actually attached -- something outside this class (e.g. a LogManager
+    // reset, or unrelated code calling removeHandler() directly) can remove it without ever
+    // going through configureLogger(), and that divergence must be repaired here rather than
+    // silently left until the debug switch itself changes.
+    if (shouldDebug == loggerConfigured && (!shouldDebug || isHandlerCurrentlyInstalled())) {
       return;
     }
 
     if (shouldDebug) {
-      Level currentLevel = SELENIUM_LOGGER.getLevel();
-      // Only raise the level when the logger is currently LESS verbose than FINE (higher
-      // intValue). A null level inherits the parent's (default INFO), so raising applies then
-      // too. An already more-verbose level (FINER, FINEST, ALL) is left alone: lowering it
-      // would make records like W3CHttpResponseCodec's FINER diagnostics unloggable while
-      // "debugging". This reads the logger's own level, not its effective level -- a
-      // more-verbose level inherited from a parent while this logger's own level is unset is
-      // still pinned to FINE, since JUL offers no way to read the effective level.
-      levelRaisedByDebug = currentLevel == null || currentLevel.intValue() > Level.FINE.intValue();
-      if (levelRaisedByDebug) {
-        previousLevel = currentLevel;
-        SELENIUM_LOGGER.setLevel(Level.FINE);
-      } else {
-        previousLevel = null;
+      // Only run the level-raising bookkeeping on a genuine off->on transition. A call that
+      // reaches here merely to repair a missing handler (loggerConfigured already true) must not
+      // re-run this: doing so would overwrite levelRaisedByDebug/previousLevel with whatever the
+      // level happens to be right now, corrupting the snapshot that turning debug off later needs
+      // to restore the correct pre-debug level.
+      if (!loggerConfigured) {
+        Level currentLevel = SELENIUM_LOGGER.getLevel();
+        // Only raise the level when the logger is currently LESS verbose than FINE (higher
+        // intValue). A null level inherits the parent's (default INFO), so raising applies then
+        // too. An already more-verbose level (FINER, FINEST, ALL) is left alone: lowering it
+        // would make records like W3CHttpResponseCodec's FINER diagnostics unloggable while
+        // "debugging". This reads the logger's own level, not its effective level -- a
+        // more-verbose level inherited from a parent while this logger's own level is unset is
+        // still pinned to FINE, since JUL offers no way to read the effective level.
+        levelRaisedByDebug =
+            currentLevel == null || currentLevel.intValue() > Level.FINE.intValue();
+        if (levelRaisedByDebug) {
+          previousLevel = currentLevel;
+          SELENIUM_LOGGER.setLevel(Level.FINE);
+        } else {
+          previousLevel = null;
+        }
       }
 
+      // Runs unconditionally whenever shouldDebug is true and we reach this point -- both on a
+      // genuine turn-on and on a handler-repair call -- since that's the actual state that needs
+      // fixing in the repair case.
       Handler handler = new ConsoleHandler();
       handler.setLevel(Level.FINE);
       Filter belowInfo = record -> record.getLevel().intValue() < Level.INFO.intValue();
@@ -183,9 +214,14 @@ public class Debug {
       SELENIUM_LOGGER.addHandler(handler);
       installedHandler = handler;
     } else {
-      SELENIUM_LOGGER.removeHandler(installedHandler);
-      installedHandler.close();
-      installedHandler = null;
+      // installedHandler can already be null here if it was removed externally and debugging
+      // turned off before any repair call ever ran -- Logger.removeHandler(null) throws NPE per
+      // its javadoc, so guard against that.
+      if (installedHandler != null) {
+        SELENIUM_LOGGER.removeHandler(installedHandler);
+        installedHandler.close();
+        installedHandler = null;
+      }
       // Restore only when Debug itself raised the level AND nothing else changed it since. The
       // FINE-equality guard keeps the existing "external override while debugging" protection;
       // levelRaisedByDebug additionally covers the case where Debug never touched the level at

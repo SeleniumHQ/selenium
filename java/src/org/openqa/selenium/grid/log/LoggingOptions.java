@@ -87,11 +87,11 @@ public class LoggingOptions {
   }
 
   /**
-   * Resolves the Grid log level from the {@code log-level} entry of the logging config section
-   * and stores it for {@link #configureLogging()}. Any active Selenium debug switch ({@code
-   * SE_DEBUG}, {@code -Dselenium.debug=true}, {@code -Dselenium.webdriver.verbose=true})
-   * overrides the configured value and forces {@link Level#FINE}. An unparseable configured
-   * value falls back to the default ({@code INFO}).
+   * Resolves the Grid log level from the {@code log-level} entry of the logging config section and
+   * stores it for {@link #configureLogging()}. Any active Selenium debug switch ({@code SE_DEBUG},
+   * {@code -Dselenium.debug=true}, {@code -Dselenium.webdriver.verbose=true}) overrides the
+   * configured value and forces {@link Level#FINE}. An unparseable configured value falls back to
+   * the default ({@code INFO}).
    *
    * @return this instance, for method chaining
    */
@@ -134,6 +134,15 @@ public class LoggingOptions {
     return OpenTelemetryTracer.getInstance();
   }
 
+  /**
+   * Configures logging for the Grid, wiring up Grid's own log handlers and, before doing so,
+   * reflecting the current Selenium debug switches onto the {@code org.openqa.selenium} logger via
+   * {@link Debug#configureLogger()}. Returns early without changing anything if logging is disabled
+   * ({@code enable} is {@code false}) or if an external {@code java.util.logging.config} class/file
+   * is configured, in which case that configuration takes priority. Otherwise, every other
+   * registered logger has its handlers stripped to start from a clean slate before Grid's root
+   * handlers are installed.
+   */
   public void configureLogging() {
     if (!config.getBool(LOGGING_SECTION, "enable").orElse(DEFAULT_CONFIGURE_LOGGING)) {
       return;
@@ -157,7 +166,8 @@ public class LoggingOptions {
       return;
     }
 
-    // Remove all handlers from existing loggers, except org.openqa.selenium: Debug.configureLogger()
+    // Remove all handlers from existing loggers, except org.openqa.selenium:
+    // Debug.configureLogger()
     // above may have just installed a handler there for debug-mode output, and this loop would
     // otherwise strip it moments later (Debug holds a strong static reference so that logger stays
     // registered here too). Debug's own installed-handler bookkeeping has no way to learn a handler
@@ -167,12 +177,18 @@ public class LoggingOptions {
     Enumeration<String> names = logManager.getLoggerNames();
     while (names.hasMoreElements()) {
       String name = names.nextElement();
-      if ("org.openqa.selenium".equals(name)) {
+      Logger logger = logManager.getLogger(name);
+      if (logger == null) {
         continue;
       }
 
-      Logger logger = logManager.getLogger(name);
-      if (logger == null) {
+      if ("org.openqa.selenium".equals(name)) {
+        // Strip everything except the handler Debug.configureLogger() installed above -- an
+        // unrelated handler some other code attached to this logger must still be reset here,
+        // same as on any other logger; only Debug's own handler is exempt.
+        Arrays.stream(logger.getHandlers())
+            .filter(handler -> !Debug.isOwnHandler(handler))
+            .forEach(logger::removeHandler);
         continue;
       }
 
@@ -207,16 +223,16 @@ public class LoggingOptions {
    * Records that Debug.configureLogger()'s own handler on {@code org.openqa.selenium} already
    * prints (FINE/CONFIG-range records from that logger or a descendant, while its handler is
    * installed) must not also print through this root handler, PROVIDED this root handler's
-   * destination is the one Debug's handler also writes to -- that handler's own
-   * useParentHandlers is never disabled, so the same record reaches both. That's only true when
-   * no {@code log-file} is configured: {@link #getOutputStream()} then defaults this handler to
-   * {@code System.out}/{@code System.err}, the same visible destination as Debug's own {@code
+   * destination is the one Debug's handler also writes to -- that handler's own useParentHandlers
+   * is never disabled, so the same record reaches both. That's only true when no {@code log-file}
+   * is configured: {@link #getOutputStream()} then defaults this handler to {@code
+   * System.out}/{@code System.err}, the same visible destination as Debug's own {@code
    * ConsoleHandler} (fixed to {@code System.err}) in every realistic deployment. A configured
-   * log-file is a genuinely separate destination Debug never writes to, so suppressing there
-   * would silently drop the record from the operator's chosen sink instead of de-duplicating it
-   * -- worse than the problem this filter exists to solve. INFO-and-above {@code
-   * org.openqa.selenium} records, and everything from every other logger, are untouched either
-   * way: Debug's handler never covered those in the first place.
+   * log-file is a genuinely separate destination Debug never writes to, so suppressing there would
+   * silently drop the record from the operator's chosen sink instead of de-duplicating it -- worse
+   * than the problem this filter exists to solve. INFO-and-above {@code org.openqa.selenium}
+   * records, and everything from every other logger, are untouched either way: Debug's handler
+   * never covered those in the first place.
    */
   private Filter rootHandlerFilter() {
     boolean logFileConfigured = config.get(LOGGING_SECTION, "log-file").isPresent();

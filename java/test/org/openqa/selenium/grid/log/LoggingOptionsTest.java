@@ -24,8 +24,12 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -141,6 +145,29 @@ class LoggingOptionsTest {
   }
 
   @Test
+  void configureLoggingStripsUnrelatedHandlersFromSeleniumLoggerButKeepsDebugsOwn() {
+    // The "org.openqa.selenium" exemption in configureLogging()'s handler-reset loop exists only
+    // to preserve the handler Debug.configureLogger() installs -- not to preserve every handler on
+    // that logger unconditionally. An unrelated handler some other code attached there must still
+    // be stripped, same as on any other logger.
+    System.setProperty("selenium.debug", "true");
+    Logger seleniumLogger = Logger.getLogger("org.openqa.selenium");
+    Handler unrelatedHandler = new ConsoleHandler();
+    seleniumLogger.addHandler(unrelatedHandler);
+    try {
+      new LoggingOptions(emptyConfig()).configureLogging();
+
+      Handler[] handlersAfter = seleniumLogger.getHandlers();
+      assertThat(handlersAfter).doesNotContain(unrelatedHandler);
+      assertThat(handlersAfter).hasSize(1);
+      assertThat(handlersAfter[0].getLevel()).isEqualTo(Level.FINE);
+      assertThat(Debug.isOwnHandler(handlersAfter[0])).isTrue();
+    } finally {
+      seleniumLogger.removeHandler(unrelatedHandler);
+    }
+  }
+
+  @Test
   void configureLoggingDoesNotDuplicateSeleniumDebugRecordsWhenNoLogFileIsConfigured() {
     // Debug.configureLogger() (called one line into configureLogging()) installs a handler
     // directly on org.openqa.selenium that already prints FINE/CONFIG-range records to stderr --
@@ -206,6 +233,24 @@ class LoggingOptionsTest {
     }
   }
 
+  @Test
+  void captureStdOutAndErrDuringDoesNotLeakRootLoggerHandlers() {
+    // configureLogging() installs root-logger handlers bound to whatever System.out/err are AT
+    // THAT MOMENT (via getOutputStream()). If the capture helper only swaps the streams back
+    // afterward without also removing those handlers, they keep writing into the now-discarded
+    // ByteArrayOutputStream instead of the real console, and pollute later tests/output in the
+    // same JVM.
+    System.setProperty("selenium.debug", "true");
+    Logger rootLogger = LogManager.getLogManager().getLogger("");
+    List<Handler> handlersBefore = List.of(rootLogger.getHandlers());
+
+    captureStdOutAndErrDuring(() -> new LoggingOptions(emptyConfig()).configureLogging());
+
+    List<Handler> leakedHandlers = new ArrayList<>(List.of(rootLogger.getHandlers()));
+    leakedHandlers.removeAll(handlersBefore);
+    assertThat(leakedHandlers).isEmpty();
+  }
+
   private static MapConfig emptyConfig() {
     return new MapConfig(Map.of());
   }
@@ -227,6 +272,8 @@ class LoggingOptionsTest {
     PrintStream originalErr = System.err;
     ByteArrayOutputStream capturedOut = new ByteArrayOutputStream();
     ByteArrayOutputStream capturedErr = new ByteArrayOutputStream();
+    Logger rootLogger = LogManager.getLogManager().getLogger("");
+    Handler[] handlersBefore = rootLogger.getHandlers();
     try {
       System.setOut(new PrintStream(capturedOut));
       System.setErr(new PrintStream(capturedErr));
@@ -234,6 +281,12 @@ class LoggingOptionsTest {
     } finally {
       System.setOut(originalOut);
       System.setErr(originalErr);
+      for (Handler handler : rootLogger.getHandlers()) {
+        if (!Arrays.asList(handlersBefore).contains(handler)) {
+          rootLogger.removeHandler(handler);
+          handler.close();
+        }
+      }
     }
     return new Captured(capturedOut.toString(), capturedErr.toString());
   }

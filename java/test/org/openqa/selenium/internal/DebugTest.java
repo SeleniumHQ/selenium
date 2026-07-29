@@ -39,8 +39,8 @@ class DebugTest {
 
   /**
    * The shared {@code org.openqa.selenium} logger whose state {@link Debug#configureLogger()}
-   * manages -- deliberately not this test class's own logger, because the behavior under test
-   * lives on the shared category.
+   * manages -- deliberately not this test class's own logger, because the behavior under test lives
+   * on the shared category.
    */
   private static Logger seleniumLogger() {
     return Logger.getLogger("org.openqa.selenium");
@@ -298,6 +298,39 @@ class DebugTest {
     // callers stop treating this range as already handled.
     Debug.configureLogger();
     assertThat(Debug.isHandledBySeleniumDebugHandler("org.openqa.selenium", Level.FINE)).isFalse();
+  }
+
+  @Test
+  void configureLoggerRepairsAnExternallyRemovedHandlerWithoutCorruptingRestoreBookkeeping() {
+    Level preDebugLevel = seleniumLogger().getLevel();
+    List<Handler> handlersBeforeDebug = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
+
+    System.setProperty("selenium.debug", "true");
+    Debug.configureLogger();
+
+    List<Handler> handlersWhileDebugging = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
+    handlersWhileDebugging.removeAll(handlersBeforeDebug);
+    assertThat(handlersWhileDebugging).hasSize(1);
+    Handler installedHandler = handlersWhileDebugging.get(0);
+
+    // Something outside Debug removes the handler directly while debugging stays on -- e.g.
+    // LogManager.getLogManager().reset() or a direct removeHandler() call by unrelated code.
+    seleniumLogger().removeHandler(installedHandler);
+    assertThat(Debug.isHandlerCurrentlyInstalled()).isFalse();
+
+    // The property is unchanged (still true) -- a naive fast-path keyed only on
+    // shouldDebug == loggerConfigured would return early here and never repair the handler.
+    Debug.configureLogger();
+    assertThat(Debug.isHandlerCurrentlyInstalled())
+        .as("the repair call must reinstall a handler even though the debug switch never changed")
+        .isTrue();
+
+    // Turning debug back off after the repair call must still restore the ORIGINAL pre-debug
+    // level -- proving the repair call didn't re-run the level-raising bookkeeping and corrupt
+    // levelRaisedByDebug/previousLevel.
+    System.clearProperty("selenium.debug");
+    Debug.configureLogger();
+    assertThat(seleniumLogger().getLevel()).isEqualTo(preDebugLevel);
   }
 
   @Test
