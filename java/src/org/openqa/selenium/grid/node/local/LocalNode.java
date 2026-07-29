@@ -145,6 +145,7 @@ public class LocalNode extends Node implements Closeable {
   private final EventBus bus;
   private final URI externalUri;
   private final URI gridUri;
+  private final boolean gridUrlSpecified;
   private final Duration heartbeatPeriod;
   private final HealthCheck healthCheck;
   private final int maxSessionCount;
@@ -175,6 +176,7 @@ public class LocalNode extends Node implements Closeable {
       EventBus bus,
       URI uri,
       URI gridUri,
+      boolean gridUrlSpecified,
       @Nullable HealthCheck healthCheck,
       int maxSessionCount,
       int drainAfterSessionCount,
@@ -200,6 +202,7 @@ public class LocalNode extends Node implements Closeable {
 
     this.externalUri = Require.nonNull("Remote node URI", uri);
     this.gridUri = Require.nonNull("Grid URI", gridUri);
+    this.gridUrlSpecified = gridUrlSpecified;
     this.maxSessionCount =
         Math.min(Require.positive("Max session count", maxSessionCount), factories.size());
     this.heartbeatPeriod = heartbeatPeriod;
@@ -1221,10 +1224,17 @@ public class LocalNode extends Node implements Closeable {
     Capabilities toUse =
         ImmutableCapabilities.copyOf(requestCapabilities.merge(other.getCapabilities()));
 
+    URI baseUri = resolvePublicGridUri(toUse);
+
+    // se:remoteUrl is transport-only: it is consumed above to resolve the public URI, so drop it
+    // from the returned capabilities rather than echo it (and any embedded credentials) back to the
+    // client, into session-created events, or into the session-created log line.
+    toUse = removeCapability(toUse, "se:remoteUrl");
+
     // Add se:cdp if necessary to send the cdp url back
     if ((isSupportingCdp || toUse.getCapability("se:cdp") != null) && cdpEnabled) {
       String cdpPath = String.format("/session/%s/se/cdp", other.getId());
-      toUse = new PersistentCapabilities(toUse).setCapability("se:cdp", rewrite(cdpPath));
+      toUse = new PersistentCapabilities(toUse).setCapability("se:cdp", rewrite(cdpPath, baseUri));
     } else {
       // Remove any se:cdp* from the response, CDP is not supported nor enabled
       MutableCapabilities cdpFiltered = new MutableCapabilities();
@@ -1259,7 +1269,7 @@ public class LocalNode extends Node implements Closeable {
       toUse =
           new PersistentCapabilities(toUse)
               .setCapability("se:gridWebSocketUrl", uri)
-              .setCapability("webSocketUrl", rewrite(bidiPath));
+              .setCapability("webSocketUrl", rewrite(bidiPath, baseUri));
     } else {
       // Remove any "webSocketUrl" from the response, BiDi is not supported nor enabled
       MutableCapabilities bidiFiltered = new MutableCapabilities();
@@ -1278,21 +1288,66 @@ public class LocalNode extends Node implements Closeable {
     boolean isVncEnabled = toUse.getCapability("se:vncLocalAddress") != null;
     if (isVncEnabled) {
       String vncPath = String.format("/session/%s/se/vnc", other.getId());
-      toUse = new PersistentCapabilities(toUse).setCapability("se:vnc", rewrite(vncPath));
+      toUse = new PersistentCapabilities(toUse).setCapability("se:vnc", rewrite(vncPath, baseUri));
     }
 
     return new Session(other.getId(), externalUri, other.getStereotype(), toUse, Instant.now());
   }
 
-  private URI rewrite(String path) {
+  private URI rewrite(String path, URI baseUri) {
     try {
-      String scheme = "https".equals(gridUri.getScheme()) ? "wss" : "ws";
-      path = NodeOptions.normalizeSubPath(gridUri.getPath()) + path;
+      String scheme = "https".equalsIgnoreCase(baseUri.getScheme()) ? "wss" : "ws";
+      path = NodeOptions.normalizeSubPath(baseUri.getPath()) + path;
       return new URI(
-          scheme, gridUri.getUserInfo(), gridUri.getHost(), gridUri.getPort(), path, null, null);
+          scheme, baseUri.getUserInfo(), baseUri.getHost(), baseUri.getPort(), path, null, null);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private Capabilities removeCapability(Capabilities caps, String name) {
+    MutableCapabilities filtered = new MutableCapabilities();
+    caps.asMap()
+        .forEach(
+            (key, value) -> {
+              if (!name.equals(key)) {
+                filtered.setCapability(key, value);
+              }
+            });
+    return new PersistentCapabilities(filtered);
+  }
+
+  // A configured grid-url always wins; only when the node falls back to its auto-detected address
+  // (which may be unreachable behind Docker/proxy) do we use the client-advertised se:remoteUrl.
+  private URI resolvePublicGridUri(Capabilities caps) {
+    if (gridUrlSpecified) {
+      return gridUri;
+    }
+    Object raw = caps.getCapability("se:remoteUrl");
+    if (raw instanceof String && !((String) raw).isEmpty()) {
+      String value = (String) raw;
+      try {
+        URI uri = new URI(value);
+        String scheme = uri.getScheme();
+        if (uri.getHost() != null
+            && ("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme))) {
+          // Use only the reachable origin (scheme/userinfo/host/port). se:remoteUrl advertises
+          // where the client reached the Grid so proxied URLs get a reachable host/port; the URL's
+          // path is the client's HTTP endpoint (e.g. "/wd/hub"), not a Grid sub-path. Folding it in
+          // would produce websocket URLs the Node's routes (keyed off the configured grid-url
+          // sub-path) do not match. A real reverse-proxy path prefix is configured via grid-url.
+          return new URI(scheme, uri.getUserInfo(), uri.getHost(), uri.getPort(), null, null, null);
+        }
+      } catch (URISyntaxException e) {
+        // Fall through to the warning below.
+      }
+      LOG.warning(
+          () ->
+              String.format(
+                  "Ignoring unusable se:remoteUrl '%s'; using %s for proxied URLs",
+                  value, gridUri));
+    }
+    return gridUri;
   }
 
   @Override
@@ -1457,6 +1512,7 @@ public class LocalNode extends Node implements Closeable {
     private final Secret registrationSecret;
     private final List<SessionSlot> factories;
     private final List<NodeCommandInterceptor> interceptors = new ArrayList<>();
+    private boolean gridUrlSpecified = false;
     private int maxSessions = NodeOptions.DEFAULT_MAX_SESSIONS;
     private int drainAfterSessionCount = NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
     private boolean cdpEnabled = NodeOptions.DEFAULT_ENABLE_CDP;
@@ -1548,12 +1604,18 @@ public class LocalNode extends Node implements Closeable {
       return this;
     }
 
+    public Builder gridUrlSpecified(boolean configured) {
+      this.gridUrlSpecified = configured;
+      return this;
+    }
+
     public LocalNode build() {
       return new LocalNode(
           tracer,
           bus,
           uri,
           gridUri,
+          gridUrlSpecified,
           healthCheck,
           maxSessions,
           drainAfterSessionCount,

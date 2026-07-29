@@ -181,7 +181,7 @@ public class RemoteWebDriver
             Boolean.parseBoolean(System.getProperty(WEBDRIVER_REMOTE_ENABLE_TRACING, "true")),
             clientConfig),
         Require.nonNull("Capabilities", capabilities),
-        clientConfig);
+        clientConfig.baseUrl(remoteAddress));
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, boolean enableTracing) {
@@ -196,7 +196,7 @@ public class RemoteWebDriver
     this(
         createExecutor(Require.nonNull("Server URL", remoteAddress), enableTracing, clientConfig),
         Require.nonNull("Capabilities", capabilities),
-        clientConfig);
+        clientConfig.baseUrl(remoteAddress));
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
@@ -260,9 +260,20 @@ public class RemoteWebDriver
     sessionId = new SessionId(opaqueKey);
   }
 
+  private Capabilities addRemoteUrl(Capabilities capabilities) {
+    URI baseUri = clientConfig.baseUri();
+    if (baseUri == null) {
+      return capabilities;
+    }
+    MutableCapabilities withRemoteUrl = new MutableCapabilities(capabilities);
+    withRemoteUrl.setCapability("se:remoteUrl", baseUri.toString());
+    return withRemoteUrl;
+  }
+
   protected void startSession(Capabilities capabilities) {
     checkNonW3CCapabilities(capabilities);
     checkChromeW3CFalse(capabilities);
+    capabilities = addRemoteUrl(capabilities);
 
     try {
       Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
