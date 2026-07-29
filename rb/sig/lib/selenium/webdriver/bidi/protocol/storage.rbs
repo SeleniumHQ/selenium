@@ -40,7 +40,7 @@ module Selenium
             attr_reader same_site: untyped
             attr_reader expiry: untyped
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (?name: String, ?value: ::Selenium::WebDriver::BiDi::Protocol::Network::BytesValue, ?domain: String, ?path: String, ?size: Integer, ?http_only: bool, ?secure: bool, ?same_site: Symbol, ?expiry: Integer, ?extensions: untyped) -> instance
+            def self.new: (?name: String, ?value: ::Selenium::WebDriver::BiDi::Protocol::Network::BytesValue, ?domain: String, ?path: String, ?size: Integer, ?http_only: bool, ?secure: bool, ?same_site: Symbol, ?expiry: Integer, ?extensions: Hash[String, untyped]) -> instance
           end
 
           class BrowsingContextPartitionDescriptor < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -54,7 +54,7 @@ module Selenium
             attr_reader user_context: untyped
             attr_reader source_origin: untyped
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (?type: String, ?user_context: String, ?source_origin: String, ?extensions: untyped) -> instance
+            def self.new: (?type: String, ?user_context: String, ?source_origin: String, ?extensions: Hash[String, untyped]) -> instance
           end
 
           class PartitionDescriptor < ::Selenium::WebDriver::BiDi::Serialization::Union
@@ -82,7 +82,7 @@ module Selenium
             attr_reader same_site: untyped
             attr_reader expiry: untyped
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (name: String, value: ::Selenium::WebDriver::BiDi::Protocol::Network::BytesValue, domain: String, ?path: String, ?http_only: bool, ?secure: bool, ?same_site: Symbol, ?expiry: Integer, ?extensions: untyped) -> instance
+            def self.new: (name: String, value: ::Selenium::WebDriver::BiDi::Protocol::Network::BytesValue, domain: String, ?path: String, ?http_only: bool, ?secure: bool, ?same_site: Symbol, ?expiry: Integer, ?extensions: Hash[String, untyped]) -> instance
           end
 
           class SetCookieParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
