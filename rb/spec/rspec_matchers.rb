@@ -17,44 +17,68 @@
 # specific language governing permissions and limitations
 # under the License.
 
-LEVELS = %w[error warning info deprecated].freeze
+LEVELS = {'error' => 'ERROR', 'warning' => 'WARN', 'info' => 'INFO', 'deprecated' => 'WARN'}.freeze
 
-LEVELS.each do |level|
-  RSpec::Matchers.define "have_#{level}" do |entry|
-    match do |actual|
-      # Suppresses logging output to stderr while ensuring that it is still happening
+# Block matchers to capture logger output in memory and assert on contents
+#
+#   expect { do_thing }.to have_deprecated(:some_id)          # exact set of ids logged
+#   expect { do_thing }.to have_deprecated(%i[id_a id_b])     # several ids at once
+#   expect { do_thing }.not_to have_deprecated(:some_id)      # id was not logged
+#
+# When the logged message is from an external source, its content can be asserted with String or Regexp:
+#
+#   expect { do_thing }.to have_warning(:some_id, 'exact text')
+LEVELS.each do |level, severity|
+  # *args (not |ids, message = nil|) so a lone Array of ids isn't auto-splatted into (ids, message).
+  RSpec::Matchers.define "have_#{level}" do |*args|
+    ids, message = args
+    match do |block|
+      lines = capture_log_lines(&block).grep(/\A\S+ \S+ #{severity}\b/)
+      lines = lines.grep(/\[DEPRECATION\]/) if level == 'deprecated'
+      @found = lines.flat_map { |line| (line[/\[:[^\]]*\]/] || '').scan(/:(\w+)/).flatten }.map(&:to_sym)
+      @expected = Array(ids).map(&:to_sym)
+
+      next false unless @found.uniq.sort == @expected.uniq.sort
+      next true if message.nil?
+
+      @matching_lines = lines.select { |line| @expected.any? { |id| line.include?("[:#{id}]") } }
+      @matching_lines.any? { |line| message.is_a?(Regexp) ? line.match?(message) : line.include?(message) }
+    end
+
+    failure_message do
+      if @found.uniq.sort == @expected.uniq.sort
+        "expected a #{@expected} entry matching #{message.inspect}, but logged: #{@matching_lines.map(&:strip)}"
+      else
+        found = @found.empty? ? 'nothing was logged' : "these ids were logged: #{@found.uniq}"
+        "expected #{@expected} to have been logged, but #{found}"
+      end
+    end
+
+    failure_message_when_negated do
+      "expected #{@expected} not to have been logged, but it was found among: #{@found.uniq}"
+    end
+
+    def supports_block_expectations?
+      true
+    end
+
+    # Suppresses logging output to stderr while capturing it, so an expected entry does not pollute
+    # test output and an unexpected one still fails the assertion.
+    def capture_log_lines
       default_output = Selenium::WebDriver.logger.io
       io = StringIO.new
       Selenium::WebDriver.logger.output = io
 
       begin
-        actual.call
+        yield
       rescue StandardError => e
         raise e, 'Can not evaluate output when statement raises an exception'
       ensure
         Selenium::WebDriver.logger.output = default_output
       end
 
-      @entries_found = (io.rewind && io.read).scan(/\[:([^\]]*)\]/).flatten.map(&:to_sym)
-      expect(Array(entry).sort).to eq(@entries_found.sort)
-    end
-
-    failure_message do
-      but_message = if @entries_found.nil? || @entries_found.empty?
-                      "no #{entry} entries were reported"
-                    else
-                      "instead these entries were found: [#{@entries_found.join(', ')}]"
-                    end
-      "expected :#{entry} to have been logged, but #{but_message}"
-    end
-
-    failure_message_when_negated do
-      but_message = "it was found among these entries: [#{@entries_found.join(', ')}]"
-      "expected :#{entry} not to have been logged, but #{but_message}"
-    end
-
-    def supports_block_expectations?
-      true
+      io.rewind
+      io.read.split("\n")
     end
   end
 end

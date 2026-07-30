@@ -124,7 +124,7 @@ module Selenium
           end
 
           def follow_redirect(response, redirects)
-            WebDriver.logger.debug("Redirect to #{response['Location']}; times: #{redirects}")
+            WebDriver.logger.debug("Redirect to #{response['Location']}; times: #{redirects}", id: :redirect)
             raise Error::WebDriverError, 'too many redirects' if redirects >= client_config.max_redirects
 
             request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil, redirects + 1)
