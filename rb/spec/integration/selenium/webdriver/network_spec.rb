@@ -21,9 +21,9 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Network, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'},
-                      pending_if: {browser: %i[safari safari_preview],
-                                   reason: 'Safari does not support the BiDi network domain'} do
+    describe Network, pending_if: {browser: %i[safari safari_preview],
+                                   reason: 'Safari does not support the BiDi network domain'},
+                      skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
       let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
       let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }
 
@@ -265,7 +265,7 @@ module Selenium
 
       it 'adds a response handler that provides a response',
          pending_if: {browser: :firefox,
-                  reason: 'https://github.com/w3c/webdriver-bidi/issues/747'} do
+                      reason: 'https://github.com/w3c/webdriver-bidi/issues/747'} do
         reset_driver!(web_socket_url: true) do |driver|
           network = described_class.new(driver)
           network.add_response_handler do |response|
