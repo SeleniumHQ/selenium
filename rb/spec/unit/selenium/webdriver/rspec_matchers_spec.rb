@@ -41,6 +41,11 @@ module Selenium
         expect { WebDriver.logger.error('boom: kaboom', id: :err) }.to have_error(:err, /kaboom/)
       end
 
+      it 'asserts message content on an entry with multiple ids' do
+        expect { WebDriver.logger.warn('boom happened', id: %i[general specific]) }
+          .to have_warning(%i[general specific], /boom/)
+      end
+
       it 'only matches at the named severity' do
         expect { WebDriver.logger.warn('m', id: :warned) }.not_to have_info(:warned)
       end

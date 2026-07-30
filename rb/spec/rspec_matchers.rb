@@ -35,13 +35,13 @@ LEVELS.each do |level, severity|
     match do |block|
       lines = capture_log_lines(&block).grep(/\A\S+ \S+ #{severity}\b/)
       lines = lines.grep(/\[DEPRECATION\]/) if level == 'deprecated'
-      @found = lines.flat_map { |line| (line[/\[:[^\]]*\]/] || '').scan(/:(\w+)/).flatten }.map(&:to_sym)
+      @found = lines.flat_map { |line| ids_in(line) }
       @expected = Array(ids).map(&:to_sym)
 
       next false unless @found.uniq.sort == @expected.uniq.sort
       next true if message.nil?
 
-      @matching_lines = lines.select { |line| @expected.any? { |id| line.include?("[:#{id}]") } }
+      @matching_lines = lines.select { |line| @expected.intersect?(ids_in(line)) }
       @matching_lines.any? { |line| message.is_a?(Regexp) ? line.match?(message) : line.include?(message) }
     end
 
@@ -60,6 +60,11 @@ LEVELS.each do |level, severity|
 
     def supports_block_expectations?
       true
+    end
+
+    # Ids logged on a single line, whether tagged singly (`[:foo]`) or with several (`[:foo, :bar]`).
+    def ids_in(line)
+      (line[/\[:[^\]]*\]/] || '').scan(/:(\w+)/).flatten.map(&:to_sym)
     end
 
     # Suppresses logging output to stderr while capturing it, so an expected entry does not pollute
