@@ -97,7 +97,6 @@ module Selenium
         it 'can configure a manual proxy' do
           proxy = Proxy.new(
             http: 'foo:123',
-            ftp: 'bar:234',
             ssl: 'baz:345',
             no_proxy: 'localhost'
           )
@@ -105,8 +104,6 @@ module Selenium
           profile.proxy = proxy
           expect(read_generated_prefs).to include('user_pref("network.proxy.http", "foo")',
                                                   'user_pref("network.proxy.http_port", 123)',
-                                                  'user_pref("network.proxy.ftp", "bar")',
-                                                  'user_pref("network.proxy.ftp_port", 234)',
                                                   'user_pref("network.proxy.ssl", "baz")',
                                                   'user_pref("network.proxy.ssl_port", 345)',
                                                   'user_pref("network.proxy.no_proxies_on", "localhost")',

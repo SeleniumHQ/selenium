@@ -133,7 +133,6 @@ module Selenium
           when :manual
             self['network.proxy.type'] = 1
 
-            set_manual_proxy_preference 'ftp', proxy.ftp
             set_manual_proxy_preference 'http', proxy.http
             set_manual_proxy_preference 'ssl', proxy.ssl
             set_manual_proxy_preference 'socks', proxy.socks
