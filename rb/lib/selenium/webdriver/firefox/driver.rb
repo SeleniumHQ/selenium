@@ -29,8 +29,6 @@ module Selenium
         EXTENSIONS = [DriverExtensions::HasAddons,
                       DriverExtensions::FullPageScreenshot,
                       DriverExtensions::HasContext,
-                      DriverExtensions::HasLogEvents,
-                      DriverExtensions::HasNetworkInterception,
                       DriverExtensions::PrintsPage].freeze
 
         include LocalDriver
