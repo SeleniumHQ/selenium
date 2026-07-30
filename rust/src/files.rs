@@ -78,6 +78,20 @@ impl BrowserPath {
     }
 }
 
+// Returns the first `<dir>/<name>` that exists, searched name-major (every dir tried for a
+// name before moving to the next name), matching how a browser's own driver walks candidates.
+pub fn first_existing_path(dirs: &[&str], names: &[&str]) -> Option<PathBuf> {
+    for name in names {
+        for dir in dirs {
+            let candidate = Path::new(dir).join(name);
+            if candidate.exists() {
+                return Some(candidate);
+            }
+        }
+    }
+    None
+}
+
 pub fn create_parent_path_if_not_exists(path: &Path) -> Result<(), Error> {
     if let Some(p) = path.parent() {
         create_path_if_not_exists(p)?;
