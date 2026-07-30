@@ -9,6 +9,6 @@ Common optional files and directories:
 .local/AGENTS.md
 .local/agent/skills/<local-skill-name>/SKILL.md
 .local/agent/scripts/
-.local/bazel-out/
+.local/output-base/
 .local/plans/
 .local/scratch/

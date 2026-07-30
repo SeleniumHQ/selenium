@@ -2,10 +2,6 @@ name: CI - Ruby
 
 on:
   workflow_call:
-    inputs:
-      targets:
-        required: true
-        type: string
   workflow_dispatch:
     inputs:
       smoke:
@@ -66,7 +62,9 @@ jobs:
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      download-artifact-name: targets
       run: >
+        [ -s bazel-targets-rb.txt ] || echo //rb/... > bazel-targets-rb.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --keep_going
         --flaky_test_attempts 2
@@ -77,7 +75,7 @@ jobs:
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_env=SKIP_PENDING=true
         --test_tag_filters=unit,os-sensitive,se-manager,skip-rbe
-        ${{ inputs.targets || '//rb/...' }}
+        --target_pattern_file=bazel-targets-rb.txt
 
   os-tests-full:
     name: ${{ matrix.os }}-full
@@ -90,10 +88,11 @@ jobs:
         tag_filters: [chrome-beta, firefox-beta, edge-local]
         include:
           - os: macos
-            tag_filters: safari-local
+            tag_filters: safari-local,safari-preview-bidi
     with:
       name: (${{ matrix.tag_filters }})
       needs-display: true
+      safari-preview: ${{ contains(matrix.tag_filters, 'safari-preview') }}
       os: ${{ matrix.os }}
       rerun-with-debug: true
       run: >

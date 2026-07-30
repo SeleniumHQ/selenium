@@ -80,7 +80,9 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.Connection;
+import org.openqa.selenium.bidi.Handle;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
@@ -179,7 +181,7 @@ public class RemoteWebDriver
             Boolean.parseBoolean(System.getProperty(WEBDRIVER_REMOTE_ENABLE_TRACING, "true")),
             clientConfig),
         Require.nonNull("Capabilities", capabilities),
-        clientConfig);
+        clientConfig.baseUrl(remoteAddress));
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, boolean enableTracing) {
@@ -194,7 +196,7 @@ public class RemoteWebDriver
     this(
         createExecutor(Require.nonNull("Server URL", remoteAddress), enableTracing, clientConfig),
         Require.nonNull("Capabilities", capabilities),
-        clientConfig);
+        clientConfig.baseUrl(remoteAddress));
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
@@ -258,9 +260,20 @@ public class RemoteWebDriver
     sessionId = new SessionId(opaqueKey);
   }
 
+  private Capabilities addRemoteUrl(Capabilities capabilities) {
+    URI baseUri = clientConfig.baseUri();
+    if (baseUri == null) {
+      return capabilities;
+    }
+    MutableCapabilities withRemoteUrl = new MutableCapabilities(capabilities);
+    withRemoteUrl.setCapability("se:remoteUrl", baseUri.toString());
+    return withRemoteUrl;
+  }
+
   protected void startSession(Capabilities capabilities) {
     checkNonW3CCapabilities(capabilities);
     checkChromeW3CFalse(capabilities);
+    capabilities = addRemoteUrl(capabilities);
 
     try {
       Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
@@ -290,9 +303,7 @@ public class RemoteWebDriver
 
       this.capabilities = returnedCapabilities;
       sessionId = new SessionId(response.getSessionId());
-      if (Boolean.TRUE.equals(capabilities.getCapability("webSocketUrl"))) {
-        this.biDi = createBiDi();
-      }
+      this.biDi = createBiDi();
     } catch (Exception e) {
       // If session creation fails, stop the driver service to prevent zombie processes
       if (executor instanceof DriverCommandExecutor) {
@@ -473,6 +484,22 @@ public class RemoteWebDriver
   @Override
   public Optional<BiDi> maybeGetBiDi() {
     return biDi;
+  }
+
+  // Calls maybeGetBiDi() rather than reading the private field directly so that subclasses
+  // that override maybeGetBiDi() (e.g. AppiumDriver) are not broken before they migrate to
+  // overriding getHandle(). Remove the @SuppressWarnings and switch to the field once
+  // maybeGetBiDi() is deleted.
+  @SuppressWarnings("deprecation")
+  @Override
+  public Handle getHandle() {
+    return maybeGetBiDi()
+        .map(BiDi::asHandle)
+        .orElseThrow(
+            () ->
+                new BiDiException(
+                    "Check if this browser version supports BiDi and if the"
+                        + " 'webSocketUrl: true' capability is set."));
   }
 
   // Misc

@@ -20,7 +20,14 @@
 // The completeness test is the "compare input to output independent of
 // generation" gate — it re-derives expected methods from the raw AST, not the model.
 import assert from 'node:assert/strict'
-import { projectSchema, checkSchema, checkCompleteness } from './project_bidi_schema.mjs'
+import {
+  projectSchema,
+  checkSchema,
+  checkCompleteness,
+  buildSpecHrefs,
+  buildSpecLinks,
+} from './project_bidi_schema.mjs'
+import { extractAnchors } from './extract_bidi_anchors.mjs'
 
 const lit = (v) => ({ Type: 'literal', Value: v, Unwrapped: false })
 const ref = (v) => ({ Type: 'group', Value: v, Unwrapped: false })
@@ -77,6 +84,16 @@ describe('projectSchema', () => {
 
   it('marks `* text => any` extensible instead of emitting a phantom field', () => {
     const open = schema.types['x.OpenMap']
+    assert.equal(open.extensible, true)
+    assert.equal(open.fields.length, 0)
+  })
+
+  it('treats an unbounded occurrence as extensible whether m is null or Infinity', () => {
+    // The cddl parser emits the `*` upper bound as Infinity; only the AST's JSON
+    // round-trip renders it as null. Projecting an AST directly (no round-trip) must
+    // still recognize it, not emit a `text` field.
+    const ast = [group('x.RawOpenMap', [field('text', ['any'], { n: 0, m: Infinity })])]
+    const open = projectSchema(ast, {}).types['x.RawOpenMap']
     assert.equal(open.extensible, true)
     assert.equal(open.fields.length, 0)
   })
@@ -145,6 +162,7 @@ describe('projectType (list / union / alias defs)', () => {
           { ref: 'x.Other', requires: ['b'] },
         ],
       },
+      objectOnly: true, // both arms are records
     })
   })
   it('projects a single-member dispatch choice group as an alias to its ref', () => {
@@ -368,6 +386,93 @@ describe('unionSelector', () => {
   })
 })
 
+describe('schema signals (objectOnly / preserveExtras / enum primitive)', () => {
+  const rec = (name, typeConst) => group(name, [field('type', [lit(typeConst)])])
+  const union = (name, refs) => ({
+    Type: 'variable',
+    Name: name,
+    IsChoiceAddition: false,
+    Comments: [],
+    PropertyType: refs.map(ref),
+  })
+  const enumDef = (name, values) => ({
+    Type: 'variable',
+    Name: name,
+    IsChoiceAddition: false,
+    Comments: [],
+    PropertyType: values.map(lit),
+  })
+
+  it('flags a union whose every arm is an object type as objectOnly', () => {
+    const s = projectSchema([union('x.U', ['x.A', 'x.B']), rec('x.A', 'a'), rec('x.B', 'b')], {})
+    assert.equal(s.types['x.U'].objectOnly, true)
+    assert.deepEqual(checkSchema(s), [])
+  })
+
+  it('does not flag a first-class union with an enum (scalar) arm as objectOnly', () => {
+    const s = projectSchema([union('x.U', ['x.A', 'x.E']), rec('x.A', 'a'), enumDef('x.E', ['one', 'two'])], {})
+    assert.equal(s.types['x.E'].kind, 'enum')
+    assert.equal(s.types['x.U'].objectOnly, undefined)
+  })
+
+  it('does not flag a bare-scalar alias-union (input.Origin shape) as objectOnly', () => {
+    // "viewport" / "pointer" / ElementOrigin — the const arms keep it an alias-union
+    // that must still pass a bare-string payload through, so it stays unflagged.
+    const origin = {
+      Type: 'variable',
+      Name: 'x.Origin',
+      IsChoiceAddition: false,
+      Comments: [],
+      PropertyType: [lit('viewport'), lit('pointer'), ref('x.Element')],
+    }
+    const s = projectSchema([origin, group('x.Element', [field('type', [lit('element')]), field('id', ['text'])])], {})
+    assert.equal(s.types['x.Origin'].kind, 'alias')
+    assert.equal(s.types['x.Origin'].objectOnly, undefined)
+  })
+
+  it('marks an extensible type reachable from command params as preserveExtras, but not a result-only one', () => {
+    const ast = [
+      group('x.SetParams', [field('cfg', [ref('x.Config')])]),
+      group('x.Config', [field('text', ['any'], { n: 0, m: null })]),
+      group('x.GetResult', [field('info', [ref('x.Info')])]),
+      group('x.Info', [field('text', ['any'], { n: 0, m: null })]),
+    ]
+    const model = { x: { commands: [{ method: 'x.set', name: 'set', params: 'x.SetParams', result: 'x.GetResult' }] } }
+    const s = projectSchema(ast, model)
+    assert.equal(s.types['x.Config'].extensible, true)
+    assert.equal(s.types['x.Config'].preserveExtras, true) // reachable through the command's params
+    assert.equal(s.types['x.Info'].extensible, true)
+    assert.equal(s.types['x.Info'].preserveExtras, undefined) // reachable only through the result
+    assert.deepEqual(checkSchema(s), [])
+  })
+
+  it('types an inline (non-hoisted) literal choice with the primitive its literals share', () => {
+    // A nullable literal choice (`("classic" / "overlay") / null`) the normalizer leaves
+    // inline — carry `primitive: string` so the scalar is typed rather than opaque.
+    const s = projectSchema([group('x.R', [field('kind', [lit('classic'), lit('overlay'), 'null'])])], {})
+    assert.deepEqual(s.types['x.R'].fields[0].type, {
+      enum: ['classic', 'overlay'],
+      primitive: 'string',
+      nullable: true,
+    })
+    assert.deepEqual(checkSchema(s), [])
+  })
+
+  it('flags an inline union with a bare-scalar arm as scalar-tolerant (map key: Ref / text)', () => {
+    const ast = [
+      group('x.R', [field('entry', [ref('x.U'), 'text']), field('objects', [ref('x.A'), ref('x.B')])]),
+      union('x.U', ['x.A', 'x.B']),
+      rec('x.A', 'a'),
+      rec('x.B', 'b'),
+    ]
+    const s = projectSchema(ast, {}).types['x.R'].fields
+    // The `Ref / text` arm makes the union scalar-tolerant, carrying the arm's primitive...
+    assert.deepEqual(s[0].type, { union: [{ ref: 'x.U' }, { primitive: 'string' }], scalar: 'string' })
+    // ...but an all-object union is not flagged (no scalar arm to pass through).
+    assert.deepEqual(s[1].type, { union: [{ ref: 'x.A' }, { ref: 'x.B' }] })
+  })
+})
+
 describe('checkCompleteness (input vs output, generator-independent)', () => {
   it('fails when a command/event present in the AST is missing from the schema', () => {
     const astWithExtra = [
@@ -398,6 +503,145 @@ describe('checkCompleteness (input vs output, generator-independent)', () => {
     assert.deepEqual(checkCompleteness(AST, schema), [
       'stale KNOWN_INCOMPLETE entry (now emitted, remove it): bluetooth.characteristicEventGenerated',
     ])
+  })
+})
+
+describe('specHref (spec-definition links from the webref dfns index)', () => {
+  // Shape mirrors a real webref ed/dfns/<spec>.json: { spec, dfns: [{ type, linkingText, href }] }.
+  const dfnsDoc = (url, entries) => ({
+    spec: { url },
+    dfns: entries.map(([type, name, href]) => ({ type, linkingText: [name], href })),
+  })
+
+  it('maps cddl-type entries by name, ignoring keys/values/other dfn types', () => {
+    const hrefs = buildSpecHrefs([
+      dfnsDoc('https://w3c.github.io/webdriver-bidi/', [
+        [
+          'cddl-type',
+          'session.CapabilityRequest',
+          'https://w3c.github.io/webdriver-bidi/#cddl-type-sessioncapabilityrequest',
+        ],
+        ['cddl-key', 'proxy', 'https://w3c.github.io/webdriver-bidi/#cddl-key-sessioncapabilityrequest-proxy'],
+        ['cddl-value', 'default', 'https://w3c.github.io/webdriver-bidi/#cddl-value-networksamesite-default'],
+        ['dfn', 'wait queue', 'https://w3c.github.io/webdriver-bidi/#wait-queue'],
+      ]),
+    ])
+    assert.deepEqual(hrefs, {
+      'session.CapabilityRequest': 'https://w3c.github.io/webdriver-bidi/#cddl-type-sessioncapabilityrequest',
+    })
+  })
+
+  it('merges multiple indexes and keeps absolute per-spec origins (first wins on clash)', () => {
+    const hrefs = buildSpecHrefs([
+      dfnsDoc('https://w3c.github.io/webdriver-bidi/', [['cddl-type', 'x.Shared', 'https://a.example/#x']]),
+      dfnsDoc('https://w3c.github.io/permissions/', [
+        ['cddl-type', 'x.Shared', 'https://b.example/#x'], // clash: first index wins
+        ['cddl-type', 'permissions.Foo', 'https://w3c.github.io/permissions/#cddl-type-permissionsfoo'],
+      ]),
+    ])
+    assert.equal(hrefs['x.Shared'], 'https://a.example/#x')
+    assert.equal(hrefs['permissions.Foo'], 'https://w3c.github.io/permissions/#cddl-type-permissionsfoo')
+  })
+
+  it('is empty and harmless on missing/malformed input', () => {
+    assert.deepEqual(buildSpecHrefs(), {})
+    assert.deepEqual(buildSpecHrefs([null, {}, { dfns: null }]), {})
+  })
+})
+
+describe('buildSpecLinks (merge CDDL fallback with prose anchors)', () => {
+  const dfnsDoc = (entries) => ({ dfns: entries.map(([t, name, href]) => ({ type: t, linkingText: [name], href })) })
+
+  it('lowercases CDDL keys and lets a prose section override the CDDL production', () => {
+    const dfns = [
+      dfnsDoc([
+        ['cddl-type', 'network.Cookie', 'CDDL_COOKIE'],
+        ['cddl-type', 'network.OtherType', 'CDDL_OTHER'],
+      ]),
+    ]
+    const links = buildSpecLinks(dfns, { types: { 'network.cookie': 'PROSE_COOKIE' } })
+    assert.equal(links.types['network.cookie'], 'PROSE_COOKIE') // prose wins
+    assert.equal(links.types['network.othertype'], 'CDDL_OTHER') // CDDL fallback, lowercased key
+  })
+
+  it('passes command/event/module anchor maps through to their buckets', () => {
+    const links = buildSpecLinks([], {
+      modules: { network: 'M' },
+      commands: { 'network.setcachebehavior': 'C' },
+      events: { 'log.entryadded': 'E' },
+    })
+    assert.equal(links.domains.network, 'M')
+    assert.equal(links.commands['network.setcachebehavior'], 'C')
+    assert.equal(links.events['log.entryadded'], 'E')
+  })
+
+  it('is harmless with no anchors (CDDL-only) or no inputs', () => {
+    assert.deepEqual(buildSpecLinks(), { types: {}, commands: {}, events: {}, domains: {} })
+  })
+})
+
+describe('extractAnchors (prose-anchor index from spec HTML)', () => {
+  const base = 'https://w3c.github.io/webdriver-bidi/'
+  const idx = extractAnchors(
+    [
+      '<h2 id="module-session">Session</h2>',
+      "<h3 id='command-session-subscribe'>subscribe</h3>", // single-quoted ids are matched too
+      '<h3 id="type-session-CapabilityRequest">CapabilityRequest</h3>',
+      '<h3 id="event-log-entryAdded">entryAdded</h3>',
+      '<h4 id="module-browser-commands">a sub-section, not a module</h4>',
+      '<h4 id="cddl-type-sessionstatus">a CDDL production, ignored</h4>',
+    ].join('\n'),
+    base,
+  )
+
+  it('indexes module/type/command/event prose sections with lowercased dotted keys', () => {
+    assert.equal(idx.modules.session, `${base}#module-session`)
+    assert.equal(idx.commands['session.subscribe'], `${base}#command-session-subscribe`)
+    assert.equal(idx.types['session.capabilityrequest'], `${base}#type-session-CapabilityRequest`)
+    assert.equal(idx.events['log.entryadded'], `${base}#event-log-entryAdded`)
+  })
+
+  it('ignores module sub-sections and CDDL productions', () => {
+    assert.equal(idx.modules.browser, undefined) // module-browser-commands is a sub-section
+    assert.equal(
+      Object.values(idx.types).some((h) => h.includes('cddl-type')),
+      false,
+    )
+  })
+})
+
+describe('spec links attached to the schema (types, commands, events, domains)', () => {
+  const B = 'https://w3c.github.io/webdriver-bidi/'
+  const links = {
+    types: { 'network.setcachebehaviorparameters': `${B}#type-network-SetCacheBehaviorParameters` },
+    commands: { 'network.setcachebehavior': `${B}#command-network-setCacheBehavior` },
+    events: {},
+    domains: { network: `${B}#module-network` },
+  }
+  const schema = projectSchema(AST, MODEL, links)
+
+  it('links a type (case-insensitively) and a domain, omitting the unlinked', () => {
+    assert.equal(
+      schema.types['network.SetCacheBehaviorParameters'].specHref,
+      links.types['network.setcachebehaviorparameters'],
+    )
+    assert.equal(schema.domains.network.specHref, links.domains.network)
+    // A synthetic type (hoisted enum) has no spec definition → no specHref.
+    assert.equal(schema.types['network.SetCacheBehaviorParametersCacheBehavior'].specHref, undefined)
+    // A type/domain absent from the maps is untouched.
+    assert.equal(schema.types['session.Caps'].specHref, undefined)
+  })
+
+  it('links a command by its wire method, and omits an event with no anchor', () => {
+    assert.equal(schema.commands[0].specHref, links.commands['network.setcachebehavior'])
+  })
+
+  it('is fully optional: the two-arg call emits no specHref and an empty domains map', () => {
+    const bare = projectSchema(AST, MODEL)
+    for (const node of Object.values(bare.types)) assert.equal(node.specHref, undefined)
+    assert.equal(bare.commands[0].specHref, undefined)
+    assert.deepEqual(bare.domains, {})
+    assert.deepEqual(checkSchema(bare), [])
   })
 })
 

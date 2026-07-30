@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.bidi.module.Script;
 import org.openqa.selenium.bidi.module.SpeculationInspector;
@@ -229,6 +230,7 @@ class SpeculationInspectorTest extends JupiterTestBase {
   @NeedsFreshDriver
   @NotYetImplemented(FIREFOX)
   @NotYetImplemented(SAFARI)
+  @Disabled("https://github.com/SeleniumHQ/selenium/issues/17764")
   void canClearListenersForBrowsingContext() throws InterruptedException {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
@@ -284,6 +286,7 @@ class SpeculationInspectorTest extends JupiterTestBase {
   @NeedsFreshDriver
   @NotYetImplemented(FIREFOX)
   @NotYetImplemented(SAFARI)
+  @Disabled("https://github.com/SeleniumHQ/selenium/issues/17764")
   void canClearListenersForMultipleBrowsingContexts() throws InterruptedException {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
@@ -345,7 +348,7 @@ class SpeculationInspectorTest extends JupiterTestBase {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
 
-    long subscriptionId =
+    String subscriptionId =
         speculationInspector.onPrefetchStatusUpdated(
             event -> {
               events.add(event);

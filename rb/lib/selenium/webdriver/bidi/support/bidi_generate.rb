@@ -20,6 +20,7 @@
 require 'json'
 require 'erb'
 require 'fileutils'
+require_relative '../../../../../support/generated_note'
 
 # Generates Ruby WebDriver BiDi protocol modules from the shared, binding-neutral
 # BiDi schema produced by the JavaScript generator (see PR #17700):
@@ -31,8 +32,8 @@ require 'fileutils'
 #
 # Invoked via `bazel run //rb/lib/selenium/webdriver:bidi-generate`. Bazel passes
 # the schema path (resolved through runfiles) plus the workspace-relative output
-# directory as ARGV. Can also be run directly:
-#   ruby bidi_generate.rb schema.json output/dir
+# directory as ARGV, and supplies the shared generated-note text as a runfile, so
+# this is not runnable directly from a source checkout.
 #
 # @api private
 module BiDiGenerate
@@ -104,6 +105,9 @@ module BiDiGenerate
   # Append underscore to a field name that would shadow a core method; the wire
   # name is unaffected, only the Ruby reader is renamed.
   def self.safe_field_name(name)
+    # A vendor-prefixed wire name carries a colon (moz:allowPrivateBrowsing); swap it
+    # for an underscore so the Ruby reader is a legal identifier. The wire key is kept.
+    name = name.tr(':', '_')
     RESERVED_FIELD_NAMES.include?(name) ? "#{name}_" : name
   end
 
@@ -172,7 +176,7 @@ module BiDiGenerate
   # command); union_params picks its variant via `.build` rather than `.new`. result_ref
   # is the Protocol-relative result class path, or nil to return the raw hash.
   Command = Struct.new(:wire_name, :method_name, :params, :result_ref, :params_class,
-                       :union_params, keyword_init: true) do
+                       :union_params, :spec_href, keyword_init: true) do
     def required_params = params.select(&:required)
     def optional_params = params.reject(&:required)
     def enum_checks(indent) = params.filter_map { |p| p.enum_check(indent) }
@@ -222,6 +226,81 @@ module BiDiGenerate
     end
   end
 
+  # A browser-specific extension to a command, kept out of the shared class so a
+  # non-matching browser never sees it. shared_params are the base command's own
+  # (required) params, forwarded verbatim; vendor_params are the typed extra fields,
+  # composed into the extensible params record's passthrough bag under their exact
+  # wire keys. params_class/result_ref/wire_name mirror the base command.
+  VendorCommand = Struct.new(:method_name, :wire_name, :result_ref, :params_class,
+                             :shared_params, :vendor_params, :spec_href, keyword_init: true) do
+    def def_header(indent)
+      BiDiGenerate.wrap_call("def #{method_name}", shared_params.map(&:sig_part) + vendor_params.map(&:sig_part),
+                             indent)
+    end
+
+    # The full `def … end` method block, fully indented from `indent`. Optional vendor
+    # fields are placed into the passthrough bag only when set (UNSET stays omitted), so
+    # they serialize exactly like a field on the extensible record.
+    def render_lines(indent)
+      body = ' ' * (indent + 2)
+      [*doc_lines(' ' * indent), "#{' ' * indent}#{def_header(indent)}", *extensions_lines(body, indent),
+       params_line(body, indent), execute_line(body, indent), "#{' ' * indent}end"]
+    end
+
+    def doc_lines(pad)
+      lines = ["#{pad}# @api private", "#{pad}# @see #{BiDiGenerate::BIDI_DOC_URL}"]
+      lines << "#{pad}# @see #{spec_href}" if spec_href
+      lines
+    end
+
+    # The extensible passthrough bag, carrying each set vendor field under its exact wire key.
+    def extensions_lines(body, indent)
+      inner = ' ' * (indent + 4)
+      entries = vendor_params.map { |p| "#{inner}'#{p.wire_name}' => #{p.ruby_name}" }.join(",\n")
+      ["#{body}extensions = {", entries, "#{body}}.reject { |_, value| Serialization::UNSET.equal?(value) }"]
+    end
+
+    def params_line(body, indent)
+      kwargs = shared_params.map { |p| "#{p.ruby_name}: #{p.ruby_name}" } + ['extensions: extensions']
+      "#{body}#{BiDiGenerate.wrap_call("params = #{params_class}.new", kwargs, indent + 2)}"
+    end
+
+    def execute_line(body, indent)
+      args = ["cmd: '#{wire_name}'", 'params: params']
+      args << "result: #{result_ref}" if result_ref
+      "#{body}#{BiDiGenerate.wrap_call('execute', args, indent + 2)}"
+    end
+
+    def rbs_signature
+      params = (shared_params.map(&:rbs_part) + vendor_params.map(&:rbs_part)).join(', ')
+      ret = result_ref ? "::Selenium::WebDriver::BiDi::Protocol::#{result_ref}" : 'untyped'
+      "(#{params}) -> #{ret}"
+    end
+  end
+
+  # A namespaced group of browser-specific command extensions (e.g. Firefox's `moz:`
+  # fields), emitted as a subclass of the domain that overrides the extended commands.
+  # A subclass (rather than a runtime-mixed module) keeps the vendor signatures statically
+  # visible to type checkers, and is constructed directly (`<Name>.new(source)`) for a
+  # matching session — no factory or runtime mix-in.
+  VendorModule = Struct.new(:name, :namespace, :parent, :commands, keyword_init: true) do
+    def render(indent)
+      pad = ' ' * indent
+      lines = [
+        "#{pad}# @api private",
+        "#{pad}# #{namespace}: vendor variant of #{parent}, overriding commands with browser-specific params.",
+        "#{pad}# Construct #{name}.new(source) for a matching session; other sessions use #{parent}.",
+        "#{pad}class #{name} < #{parent}"
+      ]
+      commands.each_with_index do |cmd, index|
+        lines << '' unless index.zero?
+        lines.concat(cmd.render_lines(indent + 2))
+      end
+      lines << "#{pad}end"
+      lines.join("\n")
+    end
+  end
+
   # payload_ref is the Protocol-relative class the event's params parse into (nil when
   # non-structured, dispatched raw) — the inbound counterpart to a command's result_ref.
   Event = Struct.new(:wire_name, :event_name, :payload_ref, keyword_init: true) do
@@ -230,28 +309,45 @@ module BiDiGenerate
   end
 
   # constant_name is the SCREAMING_SNAKE hash name; pairs are [symbol_key, wire_value] tuples.
-  Enum = Struct.new(:constant_name, :pairs, keyword_init: true)
+  # spec_href links to the type's definition in the live spec (nil when the schema has none).
+  Enum = Struct.new(:constant_name, :pairs, :spec_href, keyword_init: true)
 
   # ref is the Protocol-relative class path for a nested structured field (nil
   # for a scalar/opaque field); list wraps it in an array. wire_key is the exact
   # JSON payload key (the schema's `wire` name, baked verbatim).
-  FieldIR = Struct.new(:ruby_name, :wire_key, :required, :nullable, :ref, :list, :enum, :primitive, :rbs,
-                       keyword_init: true) do
+  FieldIR = Struct.new(:ruby_name, :wire_key, :required, :nullable, :ref, :list, :enum, :primitive, :scalar, :const,
+                       :rbs, keyword_init: true) do
     # A `Serialization::Record.define` spec entry: `name: 'jsonKey'` shorthand, or
     # `name: {wire_key:, …}` when the field carries JSON facts beyond its name.
     # enum carries the allowed-values constant path, validated at construction.
     def spec_entry(indent = 0)
-      meta = []
-      meta << 'required: false' unless required
-      meta << 'nullable: true' if nullable
-      meta << "ref: '#{ref}'" if ref
-      meta << 'list: true' if list
-      meta << "enum: '#{enum}'" if enum
-      meta << "primitive: '#{primitive}'" if primitive
+      meta = value_facts
       return "#{ruby_name}: '#{wire_key}'" if meta.empty?
 
       meta.unshift("wire_key: '#{wire_key}'")
       BiDiGenerate.wrap_call("#{ruby_name}: ", meta, indent, open: '{', close: '}')
+    end
+
+    # The JSON facts beyond the field's name, in the order Record.define reads them. A
+    # nullable const (`literal / null`) carries `const:` so the runtime rejects a value that
+    # is neither the literal nor null; `const.nil?` means the field has no const at all.
+    def value_facts
+      facts = []
+      facts << 'required: false' unless required
+      facts << 'nullable: true' if nullable
+      facts << "const: #{BiDiGenerate.ruby_literal(const)}" unless const.nil?
+      facts << "ref: '#{ref}'" if ref
+      facts << 'list: true' if list
+      facts << "scalar: #{scalar_literal}" if scalar
+      facts << "enum: '#{enum}'" if enum
+      facts << "primitive: '#{primitive}'" if primitive
+      facts
+    end
+
+    # The `scalar` primitive(s) a bare non-object wire value must match at a scalar-tolerant
+    # union position: a single primitive string, or an array when the union's scalar arms differ.
+    def scalar_literal
+      scalar.is_a?(::Array) ? "[#{scalar.map { |s| "'#{s}'" }.join(', ')}]" : "'#{scalar}'"
     end
 
     # The `self.new` keyword for this field — a user-supplied input carrying the field's
@@ -270,9 +366,10 @@ module BiDiGenerate
 
   # A generated immutable value type (a Serialization::Record.define(...) class). discriminator is the
   # baked variant tag {ruby_name:, wire:, value:} or nil; schema_name/synthetic/owner/
-  # nested drive owner-nesting (see nest_synthetic).
+  # nested drive owner-nesting (see nest_synthetic). spec_href links to the type's
+  # definition in the live spec (nil when the schema has none, e.g. a synthetic type).
   TypeClass = Struct.new(:ruby_name, :fields, :discriminator, :extensible,
-                         :schema_name, :synthetic, :owner, :label, :nested, keyword_init: true) do
+                         :schema_name, :synthetic, :owner, :label, :nested, :spec_href, keyword_init: true) do
     def union? = false
     def nested_types = nested || []
 
@@ -323,7 +420,9 @@ module BiDiGenerate
       parts = []
       parts << "?#{discriminator[:ruby_name]}: #{discriminator[:rbs]}" if discriminator
       parts.concat(fields.map(&:rbs_arg))
-      parts << '?extensions: untyped' if extensible
+      # Match the reader type and the extensible Record impl (which calls `merge!`/`empty?` on it),
+      # so a type checker rejects a non-Hash before it crashes at serialization.
+      parts << '?extensions: Hash[String, untyped]' if extensible
       parts.join(', ')
     end
   end
@@ -347,8 +446,12 @@ module BiDiGenerate
   end
 
   # A generated discriminated union (< Serialization::Union, resolved by lexical scope).
-  # nested holds its synthetic variant records (see nest_synthetic).
-  UnionClass = Struct.new(:ruby_name, :discriminator_wire, :variants, :schema_name, :nested, keyword_init: true) do
+  # nested holds its synthetic variant records (see nest_synthetic). spec_href links to
+  # the union's definition in the live spec (nil when the schema has none). object_only
+  # mirrors the schema's `objectOnly` signal: when true, a non-Hash payload is rejected
+  # rather than passed through (every arm is an object, so it can match no variant).
+  UnionClass = Struct.new(:ruby_name, :discriminator_wire, :variants, :schema_name, :nested, :spec_href, :object_only,
+                          keyword_init: true) do
     def union? = true
     def value_variants = variants.select { |v| v.mode == :value }
     def presence_variants = variants.select { |v| v.mode == :presence }
@@ -366,14 +469,23 @@ module BiDiGenerate
     end
   end
 
-  Module = Struct.new(:name, :ruby_class, :filename, :commands, :events, :enums, :types, keyword_init: true)
+  # spec_href links the domain's module section in the live spec (nil when unknown).
+  Module = Struct.new(:name, :ruby_class, :filename, :commands, :events, :enums, :types, :vendor_modules,
+                      :spec_href, keyword_init: true)
 
   class Schema
     def initialize(schema)
       @types = schema['types']
       @commands = schema['commands']
       @events = schema['events']
+      @domains = schema['domains'] || {}
+      @vendor = schema['vendor'] || {}
       promote_command_params_records!
+    end
+
+    # The domain's `#module-<domain>` spec link, or nil when the schema has none.
+    def domain_href(domain)
+      @domains.dig(domain, 'specHref')
     end
 
     # A command written in CDDL map form carries its params as an *inline* object (rather
@@ -412,6 +524,59 @@ module BiDiGenerate
       @commands.select { |c| c['domain'] == domain }
     end
 
+    # The vendor modules a domain carries, one per namespace (`moz` → module `Moz`). The
+    # schema's `vendor` section names, per namespace, which shared type each vendor extends;
+    # we map that type back to the command that sends it, so the vendor method mirrors the
+    # base command's wire method and result while adding the typed vendor fields. Empty for
+    # any domain (or schema) with no vendor extensions, so non-vendor output is unaffected.
+    def vendor_modules_for(domain)
+      parent = BiDiGenerate.snake_to_class_name(BiDiGenerate.camel_to_snake(domain))
+      groups = Hash.new { |h, k| h[k] = [] }
+      @vendor.each do |namespace, spec|
+        (spec['extends'] || {}).each do |type_name, entry|
+          cmd = @commands.find { |c| c.dig('params', 'ref') == type_name }
+          next unless cmd && cmd['domain'] == domain
+
+          groups[namespace] << build_vendor_command(cmd, type_name, entry, namespace)
+        end
+      end
+      groups.map do |namespace, commands|
+        VendorModule.new(name: BiDiGenerate.snake_to_class_name(namespace), namespace: namespace, parent: parent,
+                         commands: commands)
+      end
+    end
+
+    def build_vendor_command(cmd, type_name, entry, namespace)
+      shared = record_params(@types[type_name]['fields'])
+      taken = shared.map(&:ruby_name)
+      VendorCommand.new(
+        method_name: BiDiGenerate.safe_method_name(BiDiGenerate.camel_to_snake(cmd['name'])),
+        wire_name: cmd['method'],
+        result_ref: cmd['result'] && structured_ref(cmd['result']['ref']),
+        params_class: BiDiGenerate.type_class_name(type_name),
+        shared_params: shared,
+        vendor_params: entry['fields'].map { |field| vendor_param(field, namespace, taken) },
+        spec_href: cmd['specHref']
+      )
+    end
+
+    # A vendor field's ruby name drops its namespace prefix (`moz:permanent` → permanent): the
+    # module already scopes it, so re-encoding the namespace in every identifier is redundant. The
+    # wire key is untouched. Falls back to the prefixed name only if stripping would collide with a
+    # shared param on the same command.
+    def vendor_param(field, namespace, taken)
+      stripped = field['name'].sub(/\A#{Regexp.escape(namespace)}:/, '')
+      ruby_name = BiDiGenerate.safe_field_name(BiDiGenerate.camel_to_snake(stripped))
+      ruby_name = BiDiGenerate.safe_field_name(BiDiGenerate.camel_to_snake(field['name'])) if taken.include?(ruby_name)
+      Param.new(
+        ruby_name: ruby_name,
+        wire_name: field['wire'],
+        required: field['required'],
+        enum: enum_const(field['type']),
+        rbs: rbs_type(field['type'])
+      )
+    end
+
     def type_kind(ref)
       @types[ref]&.fetch('kind', nil)
     end
@@ -443,7 +608,8 @@ module BiDiGenerate
         next unless name.start_with?("#{domain}.")
 
         pairs = type['values'].map { |v| [BiDiGenerate.enum_key(v), v.to_s] }
-        Enum.new(constant_name: BiDiGenerate.screaming_snake(name.sub("#{domain}.", '')), pairs: pairs)
+        Enum.new(constant_name: BiDiGenerate.screaming_snake(name.sub("#{domain}.", '')), pairs: pairs,
+                 spec_href: type['specHref'])
       end
     end
 
@@ -520,29 +686,33 @@ module BiDiGenerate
       nullable = node['nullable'] ? true : false
       if node.key?('list')
         element = resolve(node['list'])
-        return {ref: element[:ref], list: true, nullable: nullable, rbs: nilable("Array[#{element[:rbs]}]", nullable)}
+        return {ref: element[:ref], list: true, nullable: nullable, scalar: element[:scalar],
+                rbs: nilable("Array[#{element[:rbs]}]", nullable)}
       end
       if node.key?('ref')
         named = resolve_named(node['ref'])
-        return {ref: named[:ref], list: named[:list], nullable: nullable, rbs: nilable(named[:rbs], nullable)}
+        return {ref: named[:ref], list: named[:list], nullable: nullable, scalar: named[:scalar],
+                rbs: nilable(named[:rbs], nullable)}
       end
       return resolve_union(node, nullable) if node.key?('union')
 
-      {ref: nil, list: false, nullable: nullable, primitive: checkable_primitive(node),
-       rbs: nilable(scalar_rbs(node), nullable)}
+      {ref: nil, list: false, nullable: nullable, rbs: nilable(scalar_rbs(node), nullable)}
     end
 
     # An inline union of one union-typed arm plus scalars (e.g. a MappingRemoteValue entry,
-    # RemoteValue / string) parses through that arm — its from_json returns a non-Hash value
-    # unchanged, so the scalar siblings pass through. Carry its ref so nested entries are typed;
-    # any other shape (a record arm, multiple structured arms, all scalars) stays opaque.
+    # RemoteValue / string) is carried as that union ref so nested entries are typed. Because
+    # the union is object_only, a bare-scalar sibling would raise there — so the projector's
+    # `scalar` signal (a bare-scalar arm is present) is forwarded, and the runtime passes a
+    # non-object leaf through instead (the map's string keys). Any other shape (a record arm,
+    # multiple structured arms, all scalars) stays opaque.
     def resolve_union(node, nullable)
       refs = node['union'].select { |arm| arm.key?('ref') }
       opaque = {ref: nil, list: false, nullable: nullable, rbs: nilable('untyped', nullable)}
       return opaque unless refs.one? && union_ref?(refs.first['ref'])
 
       named = resolve_named(refs.first['ref'])
-      {ref: named[:ref], list: named[:list], nullable: nullable, rbs: nilable('untyped', nullable)}
+      {ref: named[:ref], list: named[:list], nullable: nullable, scalar: node['scalar'],
+       rbs: nilable('untyped', nullable)}
     end
 
     # True when a ref (following aliases) is a union — the only arm whose from_json tolerates a
@@ -589,7 +759,7 @@ module BiDiGenerate
 
       if inner.key?('list')
         element = resolve(inner['list'])
-        return {ref: element[:ref], list: true, rbs: "Array[#{element[:rbs]}]"}
+        return {ref: element[:ref], list: true, scalar: element[:scalar], rbs: "Array[#{element[:rbs]}]"}
       end
 
       {ref: nil, list: false, rbs: scalar_rbs(inner)}
@@ -605,10 +775,13 @@ module BiDiGenerate
                                 wire: const['wire'], value: const['type']['const'],
                                 rbs: rbs_const(const['type']['const'])}
       fields = type['fields'].reject { |f| baked_discriminator?(f) }.map { |f| field_ir(f) }
+      # Gate the extensions store on `preserveExtras` (extensible AND re-sendable), not raw
+      # `extensible`: only a type you receive and can hand back keeps unknown wire keys. A
+      # received-only extensible type gets no store, so its unknown keys are silently ignored.
       TypeClass.new(ruby_name: BiDiGenerate.type_class_name(name), fields: fields,
-                    discriminator: discriminator, extensible: type['extensible'] ? true : false,
+                    discriminator: discriminator, extensible: type['preserveExtras'] ? true : false,
                     schema_name: name, synthetic: type['synthetic'] ? true : false,
-                    owner: type['owner'], label: type['label'])
+                    owner: type['owner'], label: type['label'], spec_href: type['specHref'])
     end
 
     # A const field is a baked discriminator tag, unless it is also nullable: the spec's
@@ -625,7 +798,41 @@ module BiDiGenerate
       FieldIR.new(ruby_name: ruby_name, wire_key: field['wire'],
                   required: field['required'], nullable: resolved[:nullable],
                   ref: resolved[:ref], list: resolved[:list], enum: enum_const(field['type']),
-                  primitive: resolved[:primitive], rbs: resolved[:rbs])
+                  primitive: leaf_primitive(field['type']), scalar: resolved[:scalar],
+                  const: leaf_const(field['type']), rbs: resolved[:rbs])
+    end
+
+    # The literal value of a const field, following alias chains, so the runtime can reject a
+    # value that is neither the literal nor null (a `literal / null` param such as
+    # emulation.setScriptingEnabled's `enabled`). Nil for any non-const node — const literals are
+    # never nil, so nil unambiguously means "no const" (a null value is carried by `nullable`).
+    def leaf_const(node, seen = {})
+      return node['const'] if node.key?('const')
+      return nil unless node.key?('ref')
+
+      name = node['ref']
+      type = @types[name]
+      return nil if seen[name] || type.nil? || type['kind'] != 'alias'
+
+      seen[name] = true
+      leaf_const(type['type'], seen)
+    end
+
+    # The runtime-checkable scalar primitive of a field, following alias chains so a
+    # scalar hidden behind a named alias (js-uint -> integer, browsingContext.BrowsingContext
+    # -> string) is typed rather than opaque. The projector carries the primitive on the
+    # alias node; this surfaces it onto the field. Nil for a list (its elements are not
+    # scalar-checked), a record/union ref, an enum, a const, or an opaque value.
+    def leaf_primitive(node, seen = {})
+      return node['primitive'] if node.key?('primitive') && CHECKABLE_PRIMITIVES.include?(node['primitive'])
+      return nil unless node.key?('ref')
+
+      name = node['ref']
+      type = @types[name]
+      return nil if seen[name] || type.nil? || type['kind'] != 'alias'
+
+      seen[name] = true
+      leaf_primitive(type['type'], seen)
     end
 
     def union_class(name)
@@ -658,7 +865,8 @@ module BiDiGenerate
       raise "union #{name} selector yielded no dispatch variants" if variants.empty?
 
       UnionClass.new(ruby_name: BiDiGenerate.type_class_name(name),
-                     discriminator_wire: selector['by'], variants: variants, schema_name: name)
+                     discriminator_wire: selector['by'], variants: variants, schema_name: name,
+                     spec_href: @types[name]['specHref'], object_only: @types[name]['objectOnly'] ? true : false)
     end
 
     def discriminated_variants(selector)
@@ -690,8 +898,11 @@ module BiDiGenerate
       variants = consts.map do |ref, const|
         VariantIR.new(mode: :value, value: const['type']['const'], ref: ruby_path(ref), requires: nil)
       end
+      # An alias-union carries bare-scalar arms (input.Origin's "viewport"/"pointer"), so it
+      # is never object_only — those arms must still pass a non-Hash payload through.
       UnionClass.new(ruby_name: BiDiGenerate.type_class_name(name),
-                     discriminator_wire: consts.values.first['wire'], variants: variants, schema_name: name)
+                     discriminator_wire: consts.values.first['wire'], variants: variants, schema_name: name,
+                     spec_href: @types[name]['specHref'], object_only: @types[name]['objectOnly'] ? true : false)
     end
 
     def record_params(fields)
@@ -722,10 +933,6 @@ module BiDiGenerate
     # const, or opaque value) gets no descriptor and is left unchecked — lenient, so a missed
     # check fails open rather than a wrong strict default rejecting valid data.
     CHECKABLE_PRIMITIVES = %w[string number integer boolean].freeze
-
-    def checkable_primitive(node)
-      node['primitive'] if node.key?('primitive') && CHECKABLE_PRIMITIVES.include?(node['primitive'])
-    end
 
     # The leaf of +resolve+: the bare scalar type, before any nullable wrap. An alias's
     # own nullable is intentionally left off — only the referencing node's is applied.
@@ -842,7 +1049,9 @@ module BiDiGenerate
         commands: schema.commands_for(domain).map { |cmd| build_command(schema, cmd) },
         events: schema.events_for(domain).map { |ev| build_event(schema, ev) },
         enums: schema.enums_for(domain),
-        types: nest_synthetic(schema.types_for(domain))
+        types: nest_synthetic(schema.types_for(domain)),
+        vendor_modules: schema.vendor_modules_for(domain),
+        spec_href: schema.domain_href(domain)
       )
     end
   end
@@ -864,7 +1073,8 @@ module BiDiGenerate
       params: params,
       result_ref: cmd['result'] && schema.structured_ref(cmd['result']['ref']),
       params_class: params_class,
-      union_params: params_kind == 'union'
+      union_params: params_kind == 'union',
+      spec_href: cmd['specHref']
     )
   end
 
@@ -891,6 +1101,8 @@ module BiDiGenerate
   end
 
   def self.render(mod, template_path)
+    generated_note = GeneratedNote.render('#', 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb',
+                                          'bazel run //rb/lib/selenium/webdriver:bidi-generate')
     ERB.new(File.read(template_path), trim_mode: '-').result(binding)
   end
 

@@ -29,7 +29,8 @@ module Selenium
         # @api private
         class Record < ::Data
           # Named Field, not Member, to avoid colliding with +::Data#members+.
-          Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required, :primitive)
+          Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required, :primitive,
+                                :scalar, :const)
 
           def self.define(**spec)
             extensible = spec.delete(:extensible) || false
@@ -59,7 +60,8 @@ module Selenium
             Field.new(name: name.to_sym, wire_key: meta.fetch(:wire_key, name.to_s),
                       nullable: meta[:nullable] || false, ref: meta[:ref],
                       list: meta[:list] || false, fixed: meta.fetch(:fixed, UNSET), enum: meta[:enum],
-                      required: meta.fetch(:required, true), primitive: meta[:primitive])
+                      required: meta.fetch(:required, true), primitive: meta[:primitive],
+                      scalar: meta[:scalar], const: meta.fetch(:const, UNSET))
           end
           private_class_method :field
 
@@ -77,9 +79,10 @@ module Selenium
               construct(**attributes)
             end
 
-            # Inbound: builds from the wire. A missing required field raises (in +wire_value+),
-            # enum tokens are mapped back to symbols and an unrecognized one raises (in +read+), and
-            # extra keys are captured (extensible) or ignored (closed) — strict on shape, lenient on extras.
+            # Inbound: builds from the wire. A missing required field is omitted and warned (or
+            # raised in strict mode, in +wire_value+); enum tokens are mapped back to symbols and an
+            # unrecognized one raises (in +read+); an undeclared property is warned, then captured
+            # (extensible) or dropped (closed) — strict on shape, lenient on extras.
             def from_json(json_payload)
               unless json_payload.is_a?(::Hash)
                 raise Error::WebDriverError, "#{name} expected an object on the wire, got #{json_payload.inspect}"
@@ -88,7 +91,9 @@ module Selenium
               attributes = fields.to_h do |f|
                 [f.name, wire_value(f, json_payload)]
               end
-              attributes[:extensions] = extra(json_payload) if extensible?
+              undeclared = extra(json_payload)
+              warn_undeclared(undeclared) unless undeclared.empty?
+              attributes[:extensions] = undeclared if extensible?
               construct(**attributes)
             end
 
@@ -96,9 +101,10 @@ module Selenium
 
             # Checks each field's value: a required field cannot be omitted (UNSET), a non-nullable
             # field cannot be nil (nil is neither a value nor the UNSET omit-sentinel, so it would be
-            # silently dropped on the wire), and an enum field must be in its allowed set. The enum
-            # constant is resolved lazily so a cross-domain enum need not be loaded first. Outbound
-            # only (from +new+); inbound presence/enum are checked separately in +wire_value+/+read+.
+            # silently dropped on the wire), a nullable-const field must carry its literal (not some
+            # other value), and an enum field must be in its allowed set. The enum constant is resolved
+            # lazily so a cross-domain enum need not be loaded first. Outbound only (from +new+);
+            # inbound presence/enum are checked separately in +wire_value+/+read+.
             def validate_values(attributes)
               fields.each do |f|
                 value = attributes[f.name]
@@ -106,9 +112,19 @@ module Selenium
                 raise ::ArgumentError, "#{name}##{f.name} cannot be nil" if value.nil? && !f.nullable
                 next if value.nil? || UNSET.equal?(value)
 
+                validate_const(f, value)
                 check_outbound_shape(f, value)
                 Serialization.validate!("#{name}##{f.name}", value, Protocol.const_get(f.enum)) if f.enum
               end
+            end
+
+            # A nullable constant (`literal / null`) is caller-settable but its only non-null value is
+            # the literal, so a value that is neither the literal nor nil (nil is handled above) is a
+            # local error rather than a wire round-trip. A non-const field carries UNSET here and passes.
+            def validate_const(field, value)
+              return if UNSET.equal?(field.const) || value == field.const
+
+              raise ::ArgumentError, "#{name}##{field.name} must be #{field.const.inspect}, got #{value.inspect}"
             end
 
             # Outbound mirror of check_shape: a list-typed arg must be an array, a scalar-shaped one
@@ -130,7 +146,19 @@ module Selenium
               return read(field, json_payload[field.wire_key]) if json_payload.key?(field.wire_key)
               return UNSET unless field.required
 
-              raise Error::WebDriverError, "#{name}##{field.name} is required but was missing from the response"
+              missing_required(field)
+            end
+
+            # A required field absent from the response is tolerated as omitted (UNSET) and warned, so a
+            # schema ahead of the browser does not block the caller; strict mode (SE_BIDI_STRICT) escalates
+            # to an error for callers who want it. Omitted (UNSET) stays distinct from an explicit null (nil),
+            # which matters for the required-and-nullable fields the schema flags.
+            def missing_required(field)
+              message = "#{name}##{field.name} is required but was missing from the response"
+              raise Error::WebDriverError, message if Serialization.strict?
+
+              WebDriver.logger.warn(message, id: :bidi_missing_required)
+              UNSET
             end
 
             def read(field, raw)
@@ -147,8 +175,18 @@ module Selenium
                 return raw
               end
 
+              read_ref(field, raw)
+            end
+
+            # Reads a ref-typed value into its class. A `scalar` position is an inline union with
+            # a scalar arm collapsed onto its union ref (a map's string keys): a non-object leaf
+            # passes through instead of being handed to the object_only union, but only when it
+            # matches the arm's primitive (+scalar+ carries it). A list recurses per element.
+            def read_ref(field, raw)
               klass = (@refs ||= {})[field.name] ||= Protocol.const_get(field.ref)
-              field.list ? read_list(raw, klass) : klass.from_json(raw)
+              return read_list(field, raw, klass) if field.list
+
+              field.scalar && !raw.is_a?(::Hash) ? scalar_value(field, raw) : klass.from_json(raw)
             end
 
             # A declared list must arrive as an array; a scalar-shaped field (enum or ref, not a
@@ -181,15 +219,63 @@ module Selenium
               (@enums ||= {})[field.name] ||= Protocol.const_get(field.enum)
             end
 
-            # Parses each element, recursing into nested lists (e.g. a map's [key, value] pairs)
-            # so their entries become typed too.
-            def read_list(raw, klass)
-              raw.map { |element| element.is_a?(::Array) ? read_list(element, klass) : klass.from_json(element) }
+            # Parses each element. A `scalar` field is a map encoded as `[key, value]` pairs, so
+            # every element must be a 2-item pair — each is read as one, and a malformed entry is
+            # rejected. Non-scalar lists recurse into nested lists; other elements deserialize.
+            def read_list(field, raw, klass)
+              raw.map do |element|
+                if field.scalar
+                  read_map_entry(field, element, klass)
+                elsif element.is_a?(::Array)
+                  read_list(field, element, klass)
+                else
+                  klass.from_json(element)
+                end
+              end
+            end
+
+            # A map entry is a `[key, value]` pair. The key is `Ref / text` — an object key
+            # deserializes, a bare-string key passes through once validated against the arm's
+            # primitive. The value is the object-only Ref and always deserializes, so a bare scalar
+            # there is rejected (object_only holds at the value position). A non-pair element is a
+            # malformed entry and is rejected outright.
+            def read_map_entry(field, element, klass)
+              unless element.is_a?(::Array) && element.size == 2
+                raise Error::WebDriverError,
+                      "#{name}##{field.name} expected a [key, value] pair, got #{element.inspect}"
+              end
+
+              key, value = element
+              key = key.is_a?(::Hash) ? klass.from_json(key) : scalar_value(field, key)
+              [key, klass.from_json(value)]
+            end
+
+            # A bare scalar at a scalar-tolerant union position must match one of the union's
+            # scalar-arm primitives (+scalar+ is a primitive name or an array of them); a
+            # wrong-typed scalar (a number where a string is expected) is a wire error, not
+            # something to pass through. An unrecognized primitive (none in PRIMITIVE_TYPES) is
+            # left unchecked, matching the lenient default elsewhere.
+            def scalar_value(field, value)
+              expected = Array(field.scalar).flat_map { |primitive| PRIMITIVE_TYPES[primitive] || [] }
+              return value if expected.empty? || expected.any? { |type| value.is_a?(type) }
+
+              raise Error::WebDriverError,
+                    "#{name}##{field.name} expected #{Array(field.scalar).join(' or ')}, got #{value.inspect}"
             end
 
             def extra(json_payload)
               known = (@wire_keys ||= fields.map(&:wire_key))
               json_payload.except(*known)
+            end
+
+            # Forward-compat signal: a property the type does not model is tolerated (retained on an
+            # extensible type, dropped on a closed one) and warned so schema drift is visible. Tagged
+            # +:bidi_undeclared_property+ so a caller can silence it via +logger.ignore+.
+            def warn_undeclared(undeclared)
+              undeclared.each_key do |key|
+                WebDriver.logger.warn("#{name} received an undeclared property: #{key.inspect}",
+                                      id: :bidi_undeclared_property)
+              end
             end
           end
 

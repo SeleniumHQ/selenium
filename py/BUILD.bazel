@@ -75,11 +75,11 @@ compile_pip_requirements(
     ],
 )
 
-SE_VERSION = "4.46.0.202606161656"
+SE_VERSION = "4.47.0.202607110055"
 
 BROWSER_VERSIONS = [
     "v149",
-    "v147",
+    "v150",
     "v148",
 ]
 
@@ -118,6 +118,18 @@ copy_file(
     name = "manager-windows",
     src = "//common/manager:selenium-manager-windows",
     out = "selenium/webdriver/common/windows/selenium-manager.exe",
+)
+
+copy_file(
+    name = "manager-sbom",
+    src = "//common/manager:selenium-manager-sbom",
+    out = "selenium/webdriver/common/selenium-manager.cdx.json",
+)
+
+copy_file(
+    name = "manager-notice",
+    src = "//common/manager:selenium-manager-notice",
+    out = "selenium/webdriver/common/selenium-manager-THIRD-PARTY-NOTICES.txt",
 )
 
 copy_file(
@@ -309,6 +321,8 @@ py_library(
     data = [
         ":manager-linux",
         ":manager-macos",
+        ":manager-notice",
+        ":manager-sbom",
         ":manager-windows",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
@@ -590,6 +604,8 @@ pkg_files(
     excludes = [
         ":manager-linux",
         ":manager-macos",
+        ":manager-notice",
+        ":manager-sbom",
         ":manager-windows",
     ],
     strip_prefix = strip_prefix.from_pkg(),
@@ -703,10 +719,18 @@ py_binary(
     deps = [requirement("inflection")],
 )
 
+copy_file(
+    name = "license_header_local",
+    src = "//scripts:license_header.txt",
+    out = "license_header.txt",
+)
+
 py_binary(
     name = "generate_bidi",
     srcs = ["generate_bidi.py"],
+    data = [":license_header_local"],
     srcs_version = "PY3",
+    deps = ["//scripts:generated_note"],
 )
 
 [generate_devtools(
@@ -777,6 +801,9 @@ py_library(
 )
 
 BIDI_TESTS = glob(["test/selenium/webdriver/common/**/*bidi*_tests.py"])
+
+# Tests that have bidi and classic implementations.
+BIDI_IMPLEMENTATIONS = []
 
 # Test files that only run against browsers supporting the given feature.
 # Each group is split into its own sub-suite so that changing the underlying
@@ -1013,19 +1040,12 @@ FEATURE_SUITE_DEFS = {
     for browser in DEFAULT_BROWSER_TESTS
 ]
 
-# Generate test-<browser>-bidi-common targets
+# Generate test-<browser>-bidi targets
 [
     py_test_suite(
-        name = "test-%s-bidi-common" % browser,
+        name = "test-%s-bidi" % browser,
         size = "large",
-        srcs = glob(
-            [
-                "test/selenium/webdriver/common/**/*.py",
-                "test/selenium/webdriver/support/**/*.py",
-            ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
-                      BROWSER_TESTS[browser].get("extra_excludes", []),
-        ),
+        srcs = BIDI_TESTS + BIDI_IMPLEMENTATIONS,
         args = [
             "--instafail",
             "--bidi",
@@ -1044,65 +1064,6 @@ FEATURE_SUITE_DEFS = {
     for browser in DEFAULT_BROWSER_TESTS
     if BROWSER_TESTS[browser].get("bidi", False)
 ]
-
-# Generate test-<browser>-bidi-actions targets
-[
-    py_test_suite(
-        name = "test-%s-bidi-actions" % browser,
-        size = "large",
-        srcs = ACTIONS_TESTS,
-        args = [
-            "--instafail",
-            "--bidi",
-        ] + BROWSERS[browser]["args"],
-        data = BROWSERS[browser]["data"],
-        env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
-        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
-        test_suffix = "%s-bidi-actions" % browser,
-        deps = [
-            ":init-tree",
-            ":webserver",
-        ] + BROWSER_TESTS[browser]["actions_deps"] + TEST_DEPS,
-    )
-    for browser in DEFAULT_BROWSER_TESTS
-    if BROWSER_TESTS[browser].get("bidi", False)
-]
-
-# Generate test-<browser>-bidi-<feature> targets
-[
-    py_test_suite(
-        name = "test-%s-bidi-%s" % (browser, feature),
-        size = "large",
-        srcs = FEATURE_SUITE_DEFS[feature][0],
-        args = [
-            "--instafail",
-            "--bidi",
-        ] + BROWSERS[browser]["args"],
-        data = BROWSERS[browser]["data"],
-        env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
-        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
-        test_suffix = "%s-bidi-%s" % (browser, feature),
-        deps = [
-            ":init-tree",
-            ":webserver",
-            FEATURE_SUITE_DEFS[feature][1],
-        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
-    )
-    for browser in DEFAULT_BROWSER_TESTS
-    for feature in FEATURE_SUITE_DEFS
-    if BROWSER_TESTS[browser].get("bidi", False)
-]
-
-# Aggregate test-<browser>-bidi = bidi-common + bidi-actions + bidi-features
-[test_suite(
-    name = "test-%s-bidi" % browser,
-    tests = [
-        ":test-%s-bidi-common" % browser,
-        ":test-%s-bidi-actions" % browser,
-    ] + [":test-%s-bidi-%s" % (browser, f) for f in FEATURE_SUITE_DEFS],
-) for browser in DEFAULT_BROWSER_TESTS if BROWSER_TESTS[browser].get("bidi", False)]
 
 # Generate test-<browser>-remote-common targets (chrome and firefox only)
 [
@@ -1450,7 +1411,7 @@ py_console_script_binary(
     script = "sphinx-build",
     deps = [
         ":selenium",
-        requirement("sphinx-material"),
+        requirement("pydata_sphinx_theme"),
     ],
 )
 

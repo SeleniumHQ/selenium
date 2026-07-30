@@ -28,6 +28,8 @@ module Selenium
 
         def self.to_symbol: (String name, untyped value, untyped enum) -> untyped
 
+        def self.strict?: () -> bool
+
         class Record < ::Data
           def self.define: (**untyped spec) -> singleton(Record)
 
@@ -60,13 +62,19 @@ module Selenium
 
             def validate_values: (Hash[Symbol, untyped] attributes) -> void
 
+            def validate_const: (untyped field, untyped value) -> void
+
             def check_outbound_shape: (untyped field, untyped value) -> void
 
             def fixed?: (untyped field) -> bool
 
             def wire_value: (untyped field, Hash[untyped, untyped] json_payload) -> untyped
 
+            def missing_required: (untyped field) -> untyped
+
             def read: (untyped field, untyped raw) -> untyped
+
+            def read_ref: (untyped field, untyped raw) -> untyped
 
             def check_shape: (untyped field, untyped raw) -> void
 
@@ -74,9 +82,15 @@ module Selenium
 
             def enum_hash: (untyped field) -> untyped
 
-            def read_list: (untyped raw, untyped klass) -> untyped
+            def read_list: (untyped field, untyped raw, untyped klass) -> untyped
+
+            def read_map_entry: (untyped field, untyped element, untyped klass) -> untyped
+
+            def scalar_value: (untyped field, untyped value) -> untyped
 
             def extra: (Hash[untyped, untyped] json_payload) -> Hash[untyped, untyped]
+
+            def warn_undeclared: (Hash[untyped, untyped] undeclared) -> void
           end
 
           interface _Serializable
@@ -100,6 +114,8 @@ module Selenium
           def self.presence: (Hash[String, Array[String]] rules) -> Hash[String, Array[String]]
 
           def self.fallback: (String path) -> String
+
+          def self.object_only: () -> bool
 
           def self.from_json: (untyped json_payload) -> untyped
 

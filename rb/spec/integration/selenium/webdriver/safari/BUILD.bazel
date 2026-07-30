@@ -4,7 +4,6 @@ load("//rb/spec:tests.bzl", "rb_integration_test")
     rb_integration_test(
         name = file[:-8],
         srcs = [file],
-        # No need to run in other browsers.
         browsers = [
             "safari",
             "safari-preview",

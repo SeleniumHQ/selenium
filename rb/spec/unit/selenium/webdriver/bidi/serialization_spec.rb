@@ -81,6 +81,25 @@ module Selenium
               expect { BrowsingContext::Locator.from_json(payload) }
                 .to raise_error(Error::WebDriverError, /variant not in this Selenium's BiDi schema/)
             end
+
+            it 'raises when an object-only union receives a bare scalar (no arm can match)' do
+              expect { Script::RemoteValue.from_json('not-an-object') }
+                .to raise_error(Error::WebDriverError, /RemoteValue expected an object/)
+            end
+
+            it 'passes a bare scalar through a union that has a scalar arm (input.Origin)' do
+              expect(Input::Origin.from_json('viewport')).to eq('viewport')
+            end
+
+            it 'keeps a map string key while typing its object value (object-only value union)' do
+              parsed = Script::ObjectRemoteValue.from_json(
+                'type' => 'object', 'value' => [['k', {'type' => 'number', 'value' => 2}]]
+              )
+              key, value = parsed.value.first
+
+              expect(key).to eq('k') # a bare-string key survives, not rejected by the object-only union
+              expect(value).to be_a(Script::NumberValue)
+            end
           end
 
           describe 'nested structured fields' do
@@ -124,6 +143,45 @@ module Selenium
               expect(value).to be_a(Script::NumberValue)
               expect(value.value).to eq(2)
             end
+
+            # The outbound mirror of the map-key case: a bare-string key serializes through the
+            # scalar-tolerant union untouched while its object value is typed, and round-trips back.
+            it 'serializes and round-trips a map LocalValue whose key is a bare string' do
+              obj = Script::ObjectLocalValue.new(value: [['k', Script::StringValue.new(value: 'x')]])
+
+              expect(obj.as_json).to eq(
+                'type' => 'object',
+                'value' => [['k', {'type' => 'string', 'value' => 'x'}]]
+              )
+              expect(Script::LocalValue.from_json(obj.as_json)).to eq(obj)
+            end
+
+            # A scalar-tolerant position still validates the scalar arm's type: the map entry is
+            # `RemoteValue / text`, so a non-string bare value is a wire error, not passed through.
+            it 'rejects a wrong-typed scalar at a map key position instead of passing it through' do
+              wire = {'type' => 'object', 'value' => [[42, {'type' => 'number', 'value' => 2}]]}
+
+              expect { Script::ObjectRemoteValue.from_json(wire) }
+                .to raise_error(Error::WebDriverError, /value expected string, got 42/)
+            end
+
+            # Scalar tolerance is the key's alone: the value is the object-only RemoteValue union,
+            # so a bare-scalar value is rejected rather than passed through — object_only holds here.
+            it 'rejects a bare-scalar map value against the object-only value union' do
+              wire = {'type' => 'object', 'value' => [['k', 'bare string, not an object']]}
+
+              expect { Script::ObjectRemoteValue.from_json(wire) }
+                .to raise_error(Error::WebDriverError, /expected an object on the wire/)
+            end
+
+            # A map is `[key, value]` pairs; a malformed entry that is not a 2-item pair is a wire
+            # error, not something to pass through the scalar-tolerant path.
+            it 'rejects a malformed map entry that is not a [key, value] pair' do
+              wire = {'type' => 'object', 'value' => [['orphan-key']]}
+
+              expect { Script::ObjectRemoteValue.from_json(wire) }
+                .to raise_error(Error::WebDriverError, /expected a \[key, value\] pair/)
+            end
           end
 
           describe 'optional + nullable fields' do
@@ -141,15 +199,102 @@ module Selenium
               expect(BrowsingContext::SetBypassCSPParameters.new(bypass: true).as_json).to eq('bypass' => true)
               expect(BrowsingContext::SetBypassCSPParameters.new(bypass: nil).as_json).to eq('bypass' => nil)
             end
+
+            it 'rejects a value that is neither the literal nor null, before it reaches the wire' do
+              expect { BrowsingContext::SetBypassCSPParameters.new(bypass: false) }
+                .to raise_error(ArgumentError, /bypass must be true/)
+              expect { Emulation::SetScriptingEnabledParameters.new(enabled: true) }
+                .to raise_error(ArgumentError, /enabled must be false/)
+            end
           end
 
           describe 'extensible records' do
             it 'captures unknown keys and merges them back on serialization' do
-              parsed = Script::SharedReference.from_json('sharedId' => 's1', 'webdriverValue' => 42)
+              parsed = nil
+              expect { parsed = Script::SharedReference.from_json('sharedId' => 's1', 'webdriverValue' => 42) }
+                .to have_warning(:bidi_undeclared_property)
 
               expect(parsed.shared_id).to eq('s1')
               expect(parsed.extensions).to eq('webdriverValue' => 42)
               expect(parsed.as_json).to eq('sharedId' => 's1', 'webdriverValue' => 42)
+            end
+
+            # A re-sendable type (reachable from a command's params, e.g. a cookie filter) keeps
+            # unknown properties so a received-then-resent payload round-trips them.
+            it 'preserves an unknown key on a re-sendable type across a receive/re-send round trip' do
+              parsed = nil
+              expect { parsed = Storage::CookieFilter.from_json('name' => 'sid', 'x-vendor' => 'keep-me') }
+                .to have_warning(:bidi_undeclared_property)
+
+              expect(parsed.extensions).to eq('x-vendor' => 'keep-me')
+              expect(parsed.as_json).to eq('name' => 'sid', 'x-vendor' => 'keep-me')
+            end
+
+            # network.Cookie is extensible but received-only (not reachable from any command's
+            # params), so preserveExtras is false: unknown keys are ignored, not stored/echoed.
+            it 'drops an unknown key on an extensible-but-received-only type on re-serialize' do
+              wire = Network::Cookie.new(**valid_cookie_attrs).as_json.merge('x-vendor' => 'drop-me')
+              parsed = nil
+              expect { parsed = Network::Cookie.from_json(wire) }.to have_warning(:bidi_undeclared_property)
+
+              expect(parsed).not_to respond_to(:extensions)
+              expect(parsed.as_json).not_to include('x-vendor')
+            end
+
+            it 'warns on and drops an unknown key on a non-extensible type' do
+              wire = {'type' => 'password', 'username' => 'u', 'password' => 'p', 'x-vendor' => 'v'}
+              parsed = nil
+              expect { parsed = Network::AuthCredentials.from_json(wire) }.to have_warning(:bidi_undeclared_property)
+
+              expect(parsed).not_to respond_to(:extensions)
+            end
+          end
+
+          describe 'webExtension.install Firefox (moz:) vendor extension' do
+            let(:extension) { WebExtension::ExtensionPath.new(path: '/tmp/ext') }
+
+            # Construct the moz vendor subclass directly, with execute stubbed to capture the
+            # params the vendor install would send.
+            def moz_install(**kwargs)
+              captured = nil
+              connection = Object.new
+              connection.define_singleton_method(:send_cmd) { |**| {} }
+              domain = WebExtension::Moz.new(connection)
+              domain.define_singleton_method(:execute) { |params:, **| captured = params }
+              domain.install(extension_data: extension, **kwargs)
+              captured
+            end
+
+            it 'composes typed moz: options into the extensible params under their exact wire keys' do
+              params = moz_install(allow_private_browsing: true, permanent: false)
+
+              expect(params.as_json).to eq(
+                'extensionData' => {'type' => 'path', 'path' => '/tmp/ext'},
+                'moz:allowPrivateBrowsing' => true,
+                'moz:permanent' => false
+              )
+            end
+
+            it 'omits vendor options left unset' do
+              params = moz_install(permanent: true)
+
+              expect(params.as_json).to eq(
+                'extensionData' => {'type' => 'path', 'path' => '/tmp/ext'},
+                'moz:permanent' => true
+              )
+            end
+
+            it 'keeps moz: off the shared install so non-Firefox sessions never see it' do
+              shared = WebExtension.instance_method(:install).parameters.map(&:last)
+
+              expect(shared).to eq([:extension_data])
+            end
+
+            # #1140 makes InstallParameters extensible, so a not-yet-typed vendor key still rides along.
+            it 'passes an unknown vendor key through the extensions bag' do
+              params = WebExtension::InstallParameters.new(extension_data: extension, extensions: {'moz:future' => 1})
+
+              expect(params.as_json).to include('moz:future' => 1)
             end
           end
 
@@ -266,11 +411,6 @@ module Selenium
             # tripping the required-presence check on the others.
             let(:cookie_wire) { Network::Cookie.new(**valid_cookie_attrs).as_json }
 
-            it 'raises when a required field is missing from the response' do
-              expect { Network::Cookie.from_json('name' => 'sid') }
-                .to raise_error(Error::WebDriverError, /Cookie#value is required but was missing/)
-            end
-
             it 'raises when a non-nullable field arrives as explicit null' do
               expect { Network::Cookie.from_json(cookie_wire.merge('name' => nil)) }
                 .to raise_error(Error::WebDriverError, /Cookie#name received null but is not nullable/)
@@ -315,6 +455,41 @@ module Selenium
               parsed = Bluetooth::BluetoothManufacturerData.from_json('key' => 5, 'data' => 'x')
 
               expect(parsed.key).to eq(5)
+            end
+
+            # Signal 3: an inline literal choice the projector now types as `string`
+            # (scrollbarType = "classic" / "overlay" / null), previously opaque.
+            it 'raises when an inline-enum scalar field arrives as the wrong primitive' do
+              expect { Emulation::SetScrollbarTypeOverrideParameters.from_json('scrollbarType' => 123) }
+                .to raise_error(Error::WebDriverError, /scrollbar_type expected string/)
+            end
+
+            # Signal 3: a scalar hidden behind an alias (size -> js-uint -> integer) now carries
+            # its leaf primitive, so a wrong-typed value is rejected instead of passing opaque.
+            it 'raises when an alias-typed integer field (js-uint) arrives as a string' do
+              expect { Network::Cookie.from_json(cookie_wire.merge('size' => 'big')) }
+                .to raise_error(Error::WebDriverError, /size expected integer/)
+            end
+          end
+
+          # RequestDeviceInfo is a minimal record: a required `id` and a required-and-nullable `name`.
+          describe 'inbound required-field tolerance' do
+            it 'tolerates a missing required-nullable field as omitted (UNSET, not null) and warns' do
+              parsed = nil
+              expect { parsed = Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1') }
+                .to have_warning(:bidi_missing_required)
+              explicit = Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1', 'name' => nil)
+
+              expect(parsed.name).to equal(Serialization::UNSET)
+              expect(explicit.name).to be_nil
+            end
+
+            it 'escalates a missing required field to an error in strict mode (SE_BIDI_STRICT)' do
+              allow(ENV).to receive(:fetch).and_call_original
+              allow(ENV).to receive(:fetch).with('SE_BIDI_STRICT', '').and_return('true')
+
+              expect { Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1') }
+                .to raise_error(Error::WebDriverError, /RequestDeviceInfo#name is required but was missing/)
             end
           end
         end

@@ -52,7 +52,7 @@ module Selenium
 
         def bidi: -> BiDi
 
-        def transport: -> BiDi::Transport
+        def connection: -> untyped
 
         def cancel_fedcm_dialog: -> nil
 

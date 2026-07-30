@@ -27,14 +27,18 @@ module Selenium
 
         let(:bidi) { driver.bidi }
 
-        it 'creates an user context' do
+        it 'creates a user context',
+           pending_if: {browser: %i[safari safari_preview],
+                        reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
           browser = described_class.new(bidi)
           user_context = browser.create_user_context
           expect(user_context).not_to be_nil
           expect(user_context['userContext']).to be_a String
         end
 
-        it 'gets user contexts' do
+        it 'gets user contexts',
+           pending_if: {browser: %i[safari safari_preview],
+                        reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
           browser = described_class.new(bidi)
           created_context_id = browser.create_user_context['userContext']
           all_context_ids = browser.user_contexts['userContexts'].map { |c| c['userContext'] }
@@ -51,21 +55,27 @@ module Selenium
           expect(all_ids_after_removal).not_to include(context_id_to_remove)
         end
 
-        it 'throws an error when removing the default user context' do
+        it 'throws an error when removing the default user context',
+           pending_if: {browser: %i[safari safari_preview],
+                        reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
           browser = described_class.new(bidi)
           expect {
             browser.remove_user_context('default')
           }.to raise_error(Error::WebDriverError, /user context cannot be removed/)
         end
 
-        it 'throws an error when removing a non-existent user context' do
+        it 'throws an error when removing a non-existent user context',
+           pending_if: {browser: %i[safari safari_preview],
+                        reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
           browser = described_class.new(bidi)
           expect {
             browser.remove_user_context('fake_context')
           }.to raise_error(Error::WebDriverError)
         end
 
-        it 'get windows' do
+        it 'gets windows',
+           pending_if: {browser: %i[safari safari_preview],
+                        reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
           browser = described_class.new(bidi)
           windows = browser.windows
           active_window = windows.first

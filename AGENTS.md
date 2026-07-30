@@ -14,7 +14,7 @@ The repository README is aimed at contributors; end-user docs live elsewhere.
 - If `.local/agent/skills/` exists, inspect its `*/SKILL.md` files and treat them as additional user-defined skills.
 
 ## Invariants (don't violate unless explicitly asked)
-- Maintain API/ABI compatibility - users upgrade by changing only version number
+- Maintain API/ABI compatibility by default (users upgrade by changing only the version number); public functionality may be removed only after it has gone through the [Deprecation policy](#deprecation-policy) below
 - Avoid repo-wide refactors/formatting; prefer small, reversible diffs
 
 ## Toolchain
@@ -25,7 +25,7 @@ The repository README is aimed at contributors; end-user docs live elsewhere.
 ## Execution model
 - Use `bazel query` to explore build graph before reading files
 - Attempt to execute Bazel commands directly. If prevented due to network/toolchain restrictions within the sandbox, fall back to suggesting copy/paste commands for the user on a separate line.
-- When the default output directory is restricted or when working in a git worktree, isolate build output with `--output_base`. It is a startup flag, so it goes *before* the command, and anchor it to the worktree root so it resolves the same from any directory: `bazel --output_base="$(git rev-parse --show-toplevel)/.local/bazel-out" build //...` (not after `build`/`test`/`query`).
+- When the default output directory is restricted or when working in a git worktree, isolate build output with `--output_base`. It is a startup flag, so it goes *before* the command, and anchor it to the worktree root so it resolves the same from any directory: `bazel --output_base="$(git rev-parse --show-toplevel)/.local/output-base" build //...` (not after `build`/`test`/`query`).
 
 ## Repo layout
 Bindings (see `AGENTS.md` in each directory for language-specific details):

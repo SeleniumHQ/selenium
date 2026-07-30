@@ -121,9 +121,10 @@ desc 'Verify Ruby packages are published on RubyGems'
 task :verify do
   patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?
 
-  SeleniumRake.verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-webdriver/versions/#{ruby_version}.json")
+  base = 'https://rubygems.org/api/v2/rubygems'
+  SeleniumRake.verify_package_published("#{base}/selenium-webdriver/versions/#{ruby_version}.json")
   unless patch_release
-    SeleniumRake.verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-devtools/versions/#{devtools_version}.json")
+    SeleniumRake.verify_package_published("#{base}/selenium-devtools/versions/#{devtools_version}.json")
   end
 end
 
@@ -187,8 +188,10 @@ task :lint do |_task, arguments|
   )
 end
 
-desc 'Sync gem checksums from Gemfile.lock to MODULE.bazel (use force to re-download all)'
+desc 'Reconcile Gemfile.lock and sync gem checksums to MODULE.bazel (use force to re-download all)'
 task :pin, [:force] do |_task, arguments|
+  Bazel.execute('run', [], '//rb:bundle-lock')
+
   gemfile_lock = 'rb/Gemfile.lock'
   module_bazel = 'MODULE.bazel'
   force = arguments[:force] == 'force'

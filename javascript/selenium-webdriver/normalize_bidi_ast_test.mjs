@@ -290,6 +290,24 @@ describe('dedupeDefs', () => {
     assert.equal(out.length, 1)
     assert.equal(out[0].Properties[0].Name, 'a')
   })
+
+  it('folds a //= choice addition into the retained base group', () => {
+    const addition = { ...def('x.Ext', [field('b', ['text'])]), IsChoiceAddition: true }
+    const ast = [def('x.Ext', [field('a', ['text'])]), addition]
+    const out = dedupeDefs(ast)
+    assert.equal(out.length, 1)
+    assert.deepEqual(
+      out[0].Properties.map((p) => p.Name),
+      ['a', 'b'],
+    )
+  })
+
+  it('does not mutate the base def when folding', () => {
+    const base = def('x.Ext', [field('a', ['text'])])
+    const addition = { ...def('x.Ext', [field('b', ['text'])]), IsChoiceAddition: true }
+    dedupeDefs([base, addition])
+    assert.equal(base.Properties.length, 1)
+  })
 })
 
 describe('normalizeAst', () => {

@@ -367,4 +367,42 @@ class RelativeLocatorTest extends JupiterTestBase {
         .isThrownBy(() -> driver.findElement(with(By.id("rect4")).near(rect)))
         .withMessageContaining("Cannot locate an element using");
   }
+
+  @Test
+  void shouldFindCellThatSharesACollapsedBorderWithTheAnchorCell() {
+    String url =
+        appServer.create(
+            new Page()
+                .withDoctype()
+                .withTitle("Collapsed Borders")
+                .withStyles(
+                    " table {\n"
+                        + "      border-collapse: collapse;\n"
+                        + "      table-layout: fixed;\n"
+                        + "      width: 450px;\n"
+                        + "    }\n"
+                        + "    td, th {\n"
+                        + "      border: 1px solid black;\n"
+                        + "      box-sizing: border-box;\n"
+                        + "      width: 150px;\n"
+                        + "      height: 40px;\n"
+                        + "      padding: 4px;\n"
+                        + "    }")
+                .withBody(
+                    "<table>\n"
+                        + "    <tr><th id=\"company\">Company</th><th"
+                        + " id=\"contact\">Contact</th><th id=\"country\">Country</th></tr>\n"
+                        + "    <tr><td id=\"alfreds\">Alfreds Futterkiste</td><td"
+                        + " id=\"maria\">Maria Anders</td><td id=\"germany\">Germany</td></tr>\n"
+                        + "    <tr><td id=\"centro\">Centro comercial Moctezuma</td><td"
+                        + " id=\"francisco\">Francisco Chang</td><td"
+                        + " id=\"mexico\">Mexico</td></tr>\n"
+                        + "  </table>"));
+    driver.get(url);
+
+    WebElement cell =
+        driver.findElement(with(tagName("td")).toRightOf(By.id("alfreds")).below(By.id("contact")));
+
+    assertThat(cell.getAttribute("id")).isEqualTo("maria");
+  }
 }

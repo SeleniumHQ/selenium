@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,17 +17,25 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require "fileutils"
+require "rbconfig"
 
-module Selenium
-  module WebDriver
-    module DriverExtensions
-      module HasBiDi
-        include _Driver
+# Find the rb directory - use BUILD_WORKSPACE_DIRECTORY if in Bazel
+root = if ENV['BUILD_WORKSPACE_DIRECTORY']
+         File.join(ENV['BUILD_WORKSPACE_DIRECTORY'], 'rb')
+       else
+         File.expand_path("../..", __dir__)
+       end
 
-        @bidi: untyped
+Dir.chdir(root)
 
-        def bidi: () -> untyped
-      end
-    end
-  end
-end
+ENV["BUNDLE_GEMFILE"] ||= File.join(root, "Gemfile")
+ENV["BUNDLE_PATH"] ||= File.join(root, ".bundle")
+ENV["BUNDLE_DISABLE_SHARED_GEMS"] ||= "1"
+
+FileUtils.mkdir_p(ENV["BUNDLE_PATH"])
+
+# The bundle subcommand (e.g. "lock" or "update") and any flags are supplied by
+# the caller so a single script backs both //rb:bundle-lock and //rb:bundle-update.
+ruby = RbConfig.ruby
+exec ruby, "-S", "bundle", *ARGV

@@ -1176,7 +1176,8 @@ disownDataParameters = DisownDataParameters''',
             return self._request_handlers.add_handler(url_patterns, event)
         if callable(callback) and event not in LEGACY_REQUEST_HANDLER_EVENTS:
             if not isinstance(event, str) or looks_like_url_glob(event):
-                return self._request_handlers.add_handler(event, callback)
+                patterns = event if event is not None else url_patterns
+                return self._request_handlers.add_handler(patterns, callback)
         canonical_event = self._canonical_request_handler_event(event)
         phase_map = {
             "before_request": "beforeRequestSent",

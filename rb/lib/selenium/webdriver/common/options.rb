@@ -75,6 +75,8 @@ module Selenium
 
         @options = opts
         @options[:browser_name] = self.class::BROWSER
+
+        enable_bidi! if @options[:web_socket_url]
       end
 
       #
@@ -92,6 +94,12 @@ module Selenium
         name, value = name.first if value.nil? && name.is_a?(Hash)
         @options[name] = value
       end
+
+      #
+      # Enables WebDriver BiDi by requesting the W3C webSocketUrl capability.
+      #
+      # @return [Boolean]
+      #
 
       def enable_bidi!
         @options[:web_socket_url] = true

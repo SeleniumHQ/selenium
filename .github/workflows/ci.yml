@@ -67,7 +67,7 @@ jobs:
       java: ${{ steps.read.outputs.java }}
       grid: ${{ steps.read.outputs.grid }}
       py: ${{ steps.read.outputs.py }}
-      rb_targets: ${{ steps.read.outputs.rb_targets }}
+      rb: ${{ steps.read.outputs.rb }}
       dotnet: ${{ steps.read.outputs.dotnet }}
       rust: ${{ steps.read.outputs.rust }}
     steps:
@@ -91,17 +91,24 @@ jobs:
           process_binding() {
             local pattern=$1 tag=$2
             local lang_targets
-            lang_targets=$(echo "$targets" | tr ' ' '\n' | awk -v p="^${pattern}[:/]" '$0 ~ p' | tr '\n' ' ' | sed 's/ *$//')
+            lang_targets=$(echo "$targets" | tr ' ' '\n' | awk -v p="^${pattern}[:/]" '$0 ~ p')
             if [ -n "$lang_targets" ]; then
-              echo "${tag}_targets=$lang_targets" >> "$GITHUB_OUTPUT"
+              echo "$tag=true" >> "$GITHUB_OUTPUT"
+              echo "$lang_targets" > "bazel-targets-${tag}.txt"
             fi
           }
           check_binding "//java" "java"
           check_binding "openqa/selenium/grid" "grid"
-          check_binding "//py" "py"
           check_binding "//dotnet" "dotnet"
           check_binding "//rust" "rust"
           process_binding "//rb" "rb"
+          process_binding "//py" "py"
+      - name: Upload target files
+        uses: actions/upload-artifact@v7
+        with:
+          name: targets
+          path: bazel-targets-*.txt
+          if-no-files-found: ignore
   dotnet:
     name: .NET
     needs: read-targets
@@ -130,9 +137,7 @@ jobs:
     name: Ruby
     needs: read-targets
     uses: ./.github/workflows/ci-ruby.yml
-    if: needs.read-targets.outputs.rb_targets != ''
-    with:
-      targets: ${{ needs.read-targets.outputs.rb_targets }}
+    if: needs.read-targets.outputs.rb != ''
 
   rust:
     name: Rust

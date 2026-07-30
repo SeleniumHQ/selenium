@@ -20,12 +20,12 @@ BROWSERS = {
             "WD_SPEC_DRIVER": "chrome",
         } | select({
             "@selenium//common:use_pinned_linux_chrome": {
-                "CHROME_BINARY": "$(location @linux_chrome//:chrome-linux64/chrome)",
-                "CHROMEDRIVER_BINARY": "$(location @linux_chromedriver//:chromedriver)",
+                "CHROME_BINARY": "$(rlocationpath @linux_chrome//:chrome-linux64/chrome)",
+                "CHROMEDRIVER_BINARY": "$(rlocationpath @linux_chromedriver//:chromedriver)",
             },
             "@selenium//common:use_pinned_macos_chrome": {
-                "CHROME_BINARY": "$(location @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
-                "CHROMEDRIVER_BINARY": "$(location @mac_chromedriver//:chromedriver)",
+                "CHROME_BINARY": "$(rlocationpath @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
+                "CHROMEDRIVER_BINARY": "$(rlocationpath @mac_chromedriver//:chromedriver)",
             },
             "//conditions:default": {},
         }) | select({
@@ -45,12 +45,12 @@ BROWSERS = {
             "WD_BROWSER_VERSION": "beta",
         } | select({
             "@selenium//common:use_pinned_linux_chrome": {
-                "CHROME_BINARY": "$(location @linux_beta_chrome//:chrome-linux64/chrome)",
-                "CHROMEDRIVER_BINARY": "$(location @linux_beta_chromedriver//:chromedriver)",
+                "CHROME_BINARY": "$(rlocationpath @linux_beta_chrome//:chrome-linux64/chrome)",
+                "CHROMEDRIVER_BINARY": "$(rlocationpath @linux_beta_chromedriver//:chromedriver)",
             },
             "@selenium//common:use_pinned_macos_chrome": {
-                "CHROME_BINARY": "$(location @mac_beta_chrome//:Chrome.app)/Contents/MacOS/Chrome",
-                "CHROMEDRIVER_BINARY": "$(location @mac_beta_chromedriver//:chromedriver)",
+                "CHROME_BINARY": "$(rlocationpath @mac_beta_chrome//:Chrome.app)/Contents/MacOS/Chrome",
+                "CHROMEDRIVER_BINARY": "$(rlocationpath @mac_beta_chromedriver//:chromedriver)",
             },
             "//conditions:default": {},
         }) | select({
@@ -69,12 +69,12 @@ BROWSERS = {
             "WD_SPEC_DRIVER": "edge",
         } | select({
             "@selenium//common:use_pinned_linux_edge": {
-                "EDGE_BINARY": "$(location @linux_edge//:opt/microsoft/msedge/microsoft-edge)",
-                "MSEDGEDRIVER_BINARY": "$(location @linux_edgedriver//:msedgedriver)",
+                "EDGE_BINARY": "$(rlocationpath @linux_edge//:opt/microsoft/msedge/microsoft-edge)",
+                "MSEDGEDRIVER_BINARY": "$(rlocationpath @linux_edgedriver//:msedgedriver)",
             },
             "@selenium//common:use_pinned_macos_edge": {
-                "EDGE_BINARY": "$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft\\ Edge",
-                "MSEDGEDRIVER_BINARY": "$(location @mac_edgedriver//:msedgedriver)",
+                "EDGE_BINARY": "$(rlocationpath @mac_edge//:Edge.app)/Contents/MacOS/Microsoft\\ Edge",
+                "MSEDGEDRIVER_BINARY": "$(rlocationpath @mac_edgedriver//:msedgedriver)",
             },
             "//conditions:default": {},
         }) | select({
@@ -92,12 +92,12 @@ BROWSERS = {
             "WD_SPEC_DRIVER": "firefox",
         } | select({
             "@selenium//common:use_pinned_linux_firefox": {
-                "FIREFOX_BINARY": "$(location @linux_firefox//:firefox/firefox)",
-                "GECKODRIVER_BINARY": "$(location @linux_geckodriver//:geckodriver)",
+                "FIREFOX_BINARY": "$(rlocationpath @linux_firefox//:firefox/firefox)",
+                "GECKODRIVER_BINARY": "$(rlocationpath @linux_geckodriver//:geckodriver)",
             },
             "@selenium//common:use_pinned_macos_firefox": {
-                "FIREFOX_BINARY": "$(location @mac_firefox//:Firefox.app)/Contents/MacOS/firefox",
-                "GECKODRIVER_BINARY": "$(location @mac_geckodriver//:geckodriver)",
+                "FIREFOX_BINARY": "$(rlocationpath @mac_firefox//:Firefox.app)/Contents/MacOS/firefox",
+                "GECKODRIVER_BINARY": "$(rlocationpath @mac_geckodriver//:geckodriver)",
             },
             "//conditions:default": {},
         }) | select({
@@ -117,12 +117,12 @@ BROWSERS = {
             "WD_BROWSER_VERSION": "beta",
         } | select({
             "@selenium//common:use_pinned_linux_firefox": {
-                "FIREFOX_BINARY": "$(location @linux_beta_firefox//:firefox/firefox)",
-                "GECKODRIVER_BINARY": "$(location @linux_geckodriver//:geckodriver)",
+                "FIREFOX_BINARY": "$(rlocationpath @linux_beta_firefox//:firefox/firefox)",
+                "GECKODRIVER_BINARY": "$(rlocationpath @linux_geckodriver//:geckodriver)",
             },
             "@selenium//common:use_pinned_macos_firefox": {
-                "FIREFOX_BINARY": "$(location @mac_beta_firefox//:Firefox.app)/Contents/MacOS/firefox",
-                "GECKODRIVER_BINARY": "$(location @mac_geckodriver//:geckodriver)",
+                "FIREFOX_BINARY": "$(rlocationpath @mac_beta_firefox//:Firefox.app)/Contents/MacOS/firefox",
+                "GECKODRIVER_BINARY": "$(rlocationpath @mac_geckodriver//:geckodriver)",
             },
             "//conditions:default": {},
         }) | select({
@@ -135,6 +135,7 @@ BROWSERS = {
         "deps": ["//rb/lib/selenium/webdriver:ie"],
         "tags": [],
         "target_compatible_with": ["@platforms//os:windows"],
+        "classic": False,
         "env": {
             "WD_REMOTE_BROWSER": "ie",
             "WD_SPEC_DRIVER": "ie",
@@ -159,6 +160,8 @@ BROWSERS = {
             "exclusive-if-local",  # Safari cannot run in parallel.
         ],
         "target_compatible_with": ["@platforms//os:macos"],
+        "classic": False,
+        "bidi": True,
         "env": {
             "WD_REMOTE_BROWSER": "safari-preview",
             "WD_SPEC_DRIVER": "safari-preview",
@@ -166,21 +169,14 @@ BROWSERS = {
     },
 }
 
-DEFAULT_BROWSERS = [b for b in BROWSERS.keys() if b not in ("ie", "safari-preview")]
-
 # Tags listed here apply only to the local target of the listed browsers.
 _BROWSER_TAG_FILTERS = {
     "os-sensitive": ["chrome", "edge", "firefox", "safari"],
     "se-manager": ["chrome", "edge", "firefox", "safari"],
 }
 
-# Input tags that act as control signals (e.g. "bidi" requests a bidi variant). Stripped
-# from universal_tags so they don't leak onto local/remote targets — the bidi variant
-# emits "bidi" explicitly where it belongs.
-_CONTROL_TAGS = ["bidi"]
-
 def _split_filtered_tags(tags, browser):
-    universal_tags = [t for t in tags if t not in _BROWSER_TAG_FILTERS and t not in _CONTROL_TAGS]
+    universal_tags = [t for t in tags if t not in _BROWSER_TAG_FILTERS]
     local_tags = [t for t in tags if browser in _BROWSER_TAG_FILTERS.get(t, [])]
     return universal_tags, local_tags
 
@@ -189,10 +185,11 @@ def rb_integration_test(
         srcs,
         deps = [],
         data = [],
-        browsers = DEFAULT_BROWSERS,
+        browsers = BROWSERS,
         tags = [],
-        bidi_only = False,
-        no_grid = False):
+        bidi = False,
+        classic = True,
+        grid = True):
     # Generate a library target that is used by //rb/spec:spec to expose all tests to //rb:rubocop.
     rb_library(
         name = name,
@@ -201,13 +198,17 @@ def rb_integration_test(
     )
 
     for browser in browsers:
+        generate_classic = BROWSERS[browser].get("classic", True)
+        generate_bidi = BROWSERS[browser].get("bidi", False)
+
         universal_tags, local_tags = _split_filtered_tags(tags, browser)
 
         # Family groups beta/preview variants with their stable counterpart so
         # e.g. `--test_tag_filters=chrome` matches chrome and chrome-beta targets.
         family = browser.split("-")[0]
         family_tags = [browser, family] if family != browser else [browser]
-        if not bidi_only:
+
+        if classic and generate_classic:
             # Generate a test target for local browser execution.
             rb_test(
                 name = "{}-{}".format(name, browser),
@@ -224,7 +225,7 @@ def rb_integration_test(
             )
 
             # Generate a test target for remote browser execution (Grid).
-            if not no_grid:
+            if grid:
                 rb_test(
                     name = "{}-{}-remote".format(name, browser),
                     size = "large",
@@ -247,8 +248,7 @@ def rb_integration_test(
                     target_compatible_with = BROWSERS[browser]["target_compatible_with"],
                 )
 
-        # Generate a test target for bidi browser execution on browsers that opt in.
-        if ("bidi" in tags or bidi_only) and BROWSERS[browser].get("bidi", False):
+        if bidi and generate_bidi:
             rb_test(
                 name = "{}-{}-bidi".format(name, browser),
                 size = "large",

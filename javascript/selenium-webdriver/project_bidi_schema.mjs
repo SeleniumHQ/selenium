@@ -21,18 +21,41 @@
  * The normalizer has already removed the awkward CDDL shapes, so this is a
  * straight mapping into a small vocabulary:
  *
- *   type node:  { kind: 'record', fields: [field], map?, extensible? }
- *             | { kind: 'enum',   values: [string] }
- *             | { kind: 'union',  variants: [ref], selector }
- *             | { kind: 'alias',  type }
+ *   type node:  { kind: 'record', fields: [field], map?, extensible?, preserveExtras?, specHref? }
+ *             | { kind: 'enum',   values: [string], specHref? }
+ *             | { kind: 'union',  variants: [ref], selector, objectOnly?, specHref? }
+ *             | { kind: 'alias',  type, specHref? }
  *   selector:   { by, variants: [{ value, ref }], default? }   // discriminated
  *             | { ordered: [{ ref, requires: [key] }] }        // structural, spec order
  *             | { correlated: true }                           // resolved by request id, not the payload
  *   field:      { name, wire, required, type }
- *   type ref:   { primitive } | { const } | { ref } | { enum } | { list } | { map, extensible? } | { union }
+ *   type ref:   { primitive } | { const } | { ref } | { enum, primitive? } | { list } | { map, extensible? } | { union, scalar? }
  *               any ref may also carry `nullable: true` (a `/ null` alternative). On a
  *               record node, `map` is the value type of `* key => value` entries and
  *               `extensible: true` marks an open `* text => any` record.
+ *
+ * `specHref` (present only when known) is the URL of the element's definition in the
+ * live spec — a binding can render it as a doc-comment link. It is carried on each
+ * type node, on each `commands[]` / `events[]` entry, and (as `{specHref}`) per domain
+ * in the schema's `domains` map. Two anchor sources are joined: the readable prose
+ * section (`#type-…` / `#command-…` / `#event-…` / `#module-…`) where the core spec
+ * has one, falling back to the webref CDDL production (`#cddl-type-…`) otherwise. It
+ * points at the editor's draft, so for an older generated artifact the target drifts
+ * from the pinned source; synthetic types (and anything neither source covers) omit it.
+ *
+ * Three derived signals let a binding validate the wire boundary without re-deriving
+ * anything itself:
+ *   `objectOnly: true`   — a union all of whose arms are object (record) types, so a
+ *                          non-object payload is a schema violation, not a scalar arm.
+ *   `preserveExtras: true` — an `extensible` type that can also be *sent* (reachable
+ *                          from a command's params), so unknown properties received on
+ *                          the wire must be stored and echoed back rather than dropped.
+ *   an inline `enum` ref carries the `primitive` its literals share, so even a scalar
+ *   the normalizer did not hoist to a named enum is typed rather than opaque.
+ *   `scalar` on an inline `union` ref marks a union with a bare-scalar arm (a map entry's
+ *   `RemoteValue / text`) and carries that arm's primitive: a binding collapsing it onto its
+ *   object_only ref arm passes a non-object payload (the string keys) through, but only when
+ *   it matches the primitive — a wrong-typed scalar is still rejected.
  *
  * Types the normalizer synthesized for anonymous CDDL constructs additionally
  * carry `{ synthetic: true, owner, label }`: `owner` is the type the construct
@@ -81,9 +104,56 @@ const typeList = (t) => (Array.isArray(t) ? t : t === undefined || t === null ? 
 const isLiteral = (e) => e && typeof e === 'object' && e.Type === 'literal'
 const isRef = (e) => e && typeof e === 'object' && e.Type === 'group' && typeof e.Value === 'string'
 
+// An occurrence with no upper bound (`*` / `+`). The parser emits Infinity; the AST's
+// JSON round-trip renders that as null, so treat both as unbounded.
+const isUnbounded = (occ) => !!occ && (occ.m === null || occ.m === Infinity)
+
 // A `null` keyword or a `nil` prelude ref in a union means the value may be null.
 const isNullAlt = (e) =>
   e === 'null' || (e && typeof e === 'object' && e.Type === 'group' && PRELUDE[e.Value] === 'null')
+
+// The primitive a set of literal values shares (all strings → string, etc.), or
+// undefined when they are mixed. Used to type an inline literal choice.
+function literalPrimitive(values) {
+  if (values.every((v) => typeof v === 'string')) return 'string'
+  if (values.every((v) => typeof v === 'boolean')) return 'boolean'
+  if (values.every((v) => Number.isInteger(v))) return 'integer'
+  if (values.every((v) => typeof v === 'number')) return 'number'
+  return undefined
+}
+
+// An inline literal choice (e.g. `("classic" / "overlay") / null`) the normalizer did
+// not hoist to a named enum. Carry the literals' shared primitive so the scalar is
+// typed rather than opaque — a binding can then reject a wrong-primitive wire value.
+function enumNode(entries) {
+  const values = entries.map((e) => e.Value)
+  const node = { enum: values }
+  const primitive = literalPrimitive(values)
+  if (primitive) node.primitive = primitive
+  return node
+}
+
+// The primitive a bare-scalar union arm accepts: a `{ primitive }` arm directly, or the
+// value type of a `{ const }` arm. Undefined for an object / list / ref arm.
+function scalarArmPrimitive(arm) {
+  if (arm.primitive !== undefined) return arm.primitive
+  if (arm.const !== undefined) return literalPrimitive([arm.const])
+  return undefined
+}
+
+// An inline union of projected arms. `scalar` marks a union that has a bare-scalar arm (a
+// primitive or a const) alongside object arms — e.g. a map entry's `RemoteValue / text` —
+// and carries that arm's primitive (or the array of primitives when the scalar arms differ).
+// A binding that collapses such a union onto its object (object_only) ref arm must still let
+// a non-object payload through here, but only when it matches this primitive — a wrong-typed
+// scalar is still a wire error. Derived once, in the schema, rather than re-detected per binding.
+function unionNode(arms) {
+  const node = { union: arms }
+  const primitives = [...new Set(arms.map(scalarArmPrimitive).filter((p) => p !== undefined))]
+  if (primitives.length === 1) node.scalar = primitives[0]
+  else if (primitives.length > 1) node.scalar = primitives
+  return node
+}
 
 function projectRef(type) {
   const all = typeList(type)
@@ -95,8 +165,8 @@ function projectRef(type) {
   const node =
     entries.length > 1
       ? entries.every(isLiteral)
-        ? { enum: entries.map((e) => e.Value) }
-        : { union: entries.map(projectEntry) }
+        ? enumNode(entries)
+        : unionNode(entries.map(projectEntry))
       : projectEntry(entries[0])
   if (entries.length < all.length) node.nullable = true // a `null` alternative means the value may be null
   return node
@@ -115,7 +185,7 @@ function projectEntry(e) {
     // An inline group that only wraps anonymous ref(s) — e.g. a union arm
     // `{ DateLocalValue }` — is that ref (or a union of them), not a record.
     const refs = unionMemberRefs(e)
-    if (refs) return refs.length === 1 ? { ref: refs[0] } : { union: refs.map((r) => ({ ref: r })) }
+    if (refs) return refs.length === 1 ? { ref: refs[0] } : unionNode(refs.map((r) => ({ ref: r })))
     return {
       record: e.Properties.flat()
         .filter((p) => p?.Name)
@@ -132,7 +202,19 @@ function projectEntry(e) {
 }
 
 function projectField(prop) {
-  return { name: prop.Name, wire: prop.Name, required: (prop.Occurrence?.n ?? 1) >= 1, type: projectRef(prop.Type) }
+  const field = {
+    name: prop.Name,
+    wire: prop.Name,
+    required: (prop.Occurrence?.n ?? 1) >= 1,
+    type: projectRef(prop.Type),
+  }
+  // Provenance stamped by a vendor overlay (generate_bidi.mjs). Carried on the field so
+  // extractVendor can route it out of the shared schema; stripped there before it ships.
+  if (prop['x-selenium-vendor']) {
+    field.vendor = prop['x-selenium-vendor']
+    field.via = prop['x-selenium-vendor-via']
+  }
+  return field
 }
 
 // A group whose members are all anonymous refs (a top-level `a // b // c`
@@ -176,20 +258,21 @@ function projectType(def) {
 }
 
 /**
- * Project a CDDL group into a record. A property with `Occurrence.m === null` is
- * an unbounded entry (`* key => value`), not a scalar field: `* text => any` marks
- * the record extensible, `* text => T` becomes a typed map, and an unbounded group
- * spread is folded in. Everything else is a normal field.
+ * Project a CDDL group into a record. A property with an unbounded occurrence (`*`/`+`)
+ * is a map/spread entry, not a scalar field: `* text => any` marks the record extensible,
+ * `* text => T` becomes a typed map, and an unbounded group spread is folded in. Everything
+ * else is a normal field.
  */
 function projectRecord(def) {
   const record = { kind: 'record', fields: [] }
   for (const prop of (def.Properties ?? []).flat()) {
     if (!prop || typeof prop !== 'object') continue
-    // `m === null` is overloaded in this parser: a key-typed entry is a map
-    // (`* text => value`); an anonymous entry is a structural spread; everything
-    // else is just an optional field (the `?` quantifier). Only the first two
-    // are not real fields.
-    if (prop.Occurrence?.m === null && (!prop.Name || prop.Name in PRIMITIVES || prop.Name in PRELUDE)) {
+    // An unbounded upper bound is overloaded in this parser: a key-typed entry is a map
+    // (`* text => value`); an anonymous entry is a structural spread; everything else is
+    // just an optional field (the `?` quantifier). Only the first two are not real fields.
+    // The parser emits the bound as Infinity; the AST's JSON round-trip turns it into null,
+    // so accept either rather than depending on that coercion.
+    if (isUnbounded(prop.Occurrence) && (!prop.Name || prop.Name in PRIMITIVES || prop.Name in PRELUDE)) {
       if (prop.Name in PRIMITIVES || prop.Name in PRELUDE) {
         const value = projectRef(prop.Type)
         if (value.primitive === 'any') record.extensible = true
@@ -231,6 +314,66 @@ function unionLeaves(ref, types, seen = new Set()) {
   if (t.kind === 'union') return t.variants.flatMap((v) => unionLeaves(v, types, seen))
   if (t.kind === 'alias' && t.type?.ref) return unionLeaves(t.type.ref, types, seen)
   return []
+}
+
+// Whether a union variant is an object (record) type — following aliases and nested
+// unions to their leaves. An enum, or an alias to a primitive/list/map (or an inline
+// union arm with a scalar member), is not an object. `objectOnly` is true for a union
+// only when every variant is one, so a non-object payload is a schema violation there.
+function variantIsObject(ref, types, seen = new Set()) {
+  if (seen.has(ref)) return true // a cycle bottoms out in records; treat as object
+  seen.add(ref)
+  const t = types[ref]
+  if (!t) return false
+  if (t.kind === 'record') return true
+  if (t.kind === 'union') return t.variants.every((v) => variantIsObject(v, types, seen))
+  if (t.kind === 'alias') {
+    if (t.type?.ref) return variantIsObject(t.type.ref, types, seen)
+    if (t.type?.union) return t.type.union.every((a) => a.ref !== undefined && variantIsObject(a.ref, types, seen))
+    return false // alias to a primitive / list / map / const
+  }
+  return false // enum
+}
+
+// The type-name refs a projected ref node points at, recursing through list / map /
+// inline union / inline record. (checkSchema has an equivalent local walk for its own
+// referential checks; this module-level one feeds the reachability closure below.)
+function refNames(node) {
+  if (!node) return []
+  if (node.ref) return [node.ref]
+  if (node.list) return refNames(node.list)
+  if (node.map) return refNames(node.map)
+  if (node.union) return node.union.flatMap(refNames)
+  if (node.record) return node.record.flatMap((f) => refNames(f.type))
+  return []
+}
+
+// The type-name refs a type *node* (record / union / alias) points at: a record's
+// field and map value types, a union's variants, an alias's target.
+function typeRefNames(node) {
+  if (node.kind === 'record') {
+    const refs = node.fields.flatMap((f) => refNames(f.type))
+    if (node.map) refs.push(...refNames(node.map))
+    return refs
+  }
+  if (node.kind === 'union') return node.variants
+  if (node.kind === 'alias') return refNames(node.type)
+  return []
+}
+
+// The set of types that can be *sent*: reachable from some command's params, through
+// fields, lists, unions, maps, and nested records/aliases. Results and events are not
+// roots — a type reached only through them is received-only. `preserveExtras` gates the
+// extras store on this, so only a type you can hand back keeps unknown wire properties.
+function reSendableTypes(commands, types) {
+  const reachable = new Set()
+  const visit = (name) => {
+    if (!name || reachable.has(name) || !types[name]) return
+    reachable.add(name)
+    for (const r of typeRefNames(types[name])) visit(r)
+  }
+  for (const c of commands) if (c.params?.ref) visit(c.params.ref)
+  return reachable
 }
 
 // The constant value a record pins on wire key `k`, as `{ value }` (a string or
@@ -375,12 +518,64 @@ function correlatedUnions(types) {
 }
 
 /**
+ * Build a `{ typeName: specHref }` map from one or more webref definition indexes
+ * (`ed/dfns/<spec>.json`, each `{ spec, dfns: [...] }`). Only `cddl-type` entries are
+ * used, keyed by their `linkingText` — which is exactly the dotted schema type name
+ * (e.g. `session.CapabilityRequest`). The `href` is already absolute (per-spec origin),
+ * so indexes from different specs merge without a base-URL table; first index wins on
+ * the rare cross-spec name clash. Types the index does not cover simply get no entry.
+ * @param {object[]} dfnsDocs Parsed webref dfns documents.
+ * @returns {Object<string,string>} Map from schema type name to its spec-definition URL.
+ */
+export function buildSpecHrefs(dfnsDocs) {
+  const hrefs = {}
+  for (const doc of dfnsDocs ?? [])
+    for (const dfn of doc?.dfns ?? []) {
+      const name = dfn.type === 'cddl-type' ? dfn.linkingText?.[0] : undefined
+      if (name && dfn.href && !(name in hrefs)) hrefs[name] = dfn.href
+    }
+  return hrefs
+}
+
+/**
+ * Compose the spec-link maps the projector attaches, from the webref CDDL indexes
+ * (all merged specs) and the core spec's prose-anchor index (see
+ * extract_bidi_anchors.mjs). All maps are lowercase-keyed for a case-insensitive
+ * join (the prose anchors carry casing quirks that do not match schema names
+ * exactly). Returns:
+ *   types    — every CDDL type's `#cddl-type-*` anchor, upgraded to the readable
+ *              `#type-<domain>-<Name>` prose section where the core spec has one.
+ *   commands — `#command-<domain>-<name>` prose sections (core spec).
+ *   events   — `#event-<domain>-<name>` prose sections (core spec).
+ *   domains  — `#module-<domain>` prose sections (core spec).
+ * The prose scheme is a core-BiDi convention; adjacent specs (Permissions, Web
+ * Bluetooth, …) keep the CDDL fallback. Anything absent gets no entry (fail-closed).
+ * @param {object[]} dfnsDocs Parsed webref dfns documents.
+ * @param {{modules?:object,types?:object,commands?:object,events?:object}} [anchors] Prose-anchor index.
+ * @returns {{types:object,commands:object,events:object,domains:object}}
+ */
+export function buildSpecLinks(dfnsDocs, anchors = {}) {
+  const types = {}
+  for (const [name, href] of Object.entries(buildSpecHrefs(dfnsDocs))) types[name.toLowerCase()] = href
+  Object.assign(types, anchors.types ?? {}) // the prose section wins over the CDDL production
+  return {
+    types,
+    commands: { ...(anchors.commands ?? {}) },
+    events: { ...(anchors.events ?? {}) },
+    domains: { ...(anchors.modules ?? {}) },
+  }
+}
+
+/**
  * Build the flat, binding-neutral schema from the raw AST and command/event model.
  * @param {object[]} ast The parsed CDDL AST (array of definition nodes).
  * @param {object} model The binding-neutral command/event model (per-domain).
- * @returns {{schemaVersion: number, commands: object[], events: object[], types: object}} The schema.
+ * @param {{types?:object,commands?:object,events?:object,domains?:object}} [links] Optional
+ *   spec-link maps (see buildSpecLinks). When given, each type/command/event with a known URL
+ *   carries it as `specHref`, and linked domains are collected in the schema's `domains` map.
+ * @returns {{schemaVersion: number, commands: object[], events: object[], types: object, domains: object}} The schema.
  */
-export function projectSchema(ast, model) {
+export function projectSchema(ast, model, links = {}) {
   const types = {}
   for (const def of normalizeAst(ast)) {
     if (!def?.Name) continue
@@ -394,6 +589,11 @@ export function projectSchema(ast, model) {
       node.owner = def['x-selenium-owner']
       node.label = def['x-selenium-label']
     }
+    // Link to the type's definition in the live spec, when the index covers it —
+    // the readable prose section where one exists, else the CDDL production.
+    // Synthetic types have no spec definition and are (correctly) never in it.
+    const typeHref = links.types?.[def.Name.toLowerCase()]
+    if (typeHref) node.specHref = typeHref
     types[def.Name] = node
   }
   for (const [name, node] of Object.entries(types))
@@ -401,25 +601,101 @@ export function projectSchema(ast, model) {
   // Override the result-grouping unions: they are dispatched by request id, so a
   // payload selector for them is meaningless (and would be empty/ambiguous).
   for (const name of correlatedUnions(types)) types[name].selector = { correlated: true }
+  // A first-class union whose every arm is an object rejects a non-object payload
+  // instead of passing it through. (An alias-union like input.Origin, which carries
+  // bare-string arms, is intentionally left unflagged so those arms still pass through.)
+  for (const node of Object.values(types))
+    if (node.kind === 'union' && node.variants.every((v) => variantIsObject(v, types))) node.objectOnly = true
 
   const commands = []
   const events = []
   const envelopeParams = commandEnvelopeParams(types)
+  // Commands and events link to their own prose section (`#command-*` / `#event-*`),
+  // keyed by the wire method; domains to their `#module-*` section. Present-only-when-known.
+  const link = (map, key) => (typeof key === 'string' ? map?.[key.toLowerCase()] : undefined)
   for (const [domain, entry] of Object.entries(model)) {
-    for (const c of entry.commands ?? [])
-      commands.push({
+    for (const c of entry.commands ?? []) {
+      const cmd = {
         domain,
         method: c.method,
         name: c.name,
         // Prefer the envelope's params (it captures inline params the model drops).
         params: typeRef(envelopeParams.get(c.method) ?? c.params),
         result: typeRef(c.result),
-      })
-    for (const e of entry.events ?? [])
-      events.push({ domain, method: e.method, name: e.name, params: typeRef(envelopeParams.get(e.method) ?? e.params) })
+      }
+      const href = link(links.commands, c.method)
+      if (href) cmd.specHref = href
+      commands.push(cmd)
+    }
+    for (const e of entry.events ?? []) {
+      const ev = { domain, method: e.method, name: e.name, params: typeRef(envelopeParams.get(e.method) ?? e.params) }
+      const href = link(links.events, e.method)
+      if (href) ev.specHref = href
+      events.push(ev)
+    }
   }
 
-  return { schemaVersion: 1, commands, events, types }
+  // An extensible type keeps unknown wire properties only when it is also re-sendable
+  // (reachable from a command's params) — a type you receive and can hand back, so its
+  // extras must round-trip. A received-only extensible type drops them.
+  const reSendable = reSendableTypes(commands, types)
+  for (const [name, node] of Object.entries(types))
+    if (node.extensible && reSendable.has(name)) node.preserveExtras = true
+
+  // Per-domain module links, for a binding that emits one class/namespace per domain.
+  const domains = {}
+  for (const domain of Object.keys(model)) {
+    const href = link(links.domains, domain)
+    if (href) domains[domain] = { specHref: href }
+  }
+
+  // Partition vendor-tagged fields out of the shared, browser-neutral schema into a namespaced
+  // `vendor` section. The shared `types` are then exactly what upstream emits (spec-only); a
+  // binding that reads only `types`/`commands`/`events` never sees vendor fields.
+  const vendor = extractVendor(types)
+  const schema = { schemaVersion: 1, commands, events, types, domains }
+  if (Object.keys(vendor).length) schema.vendor = vendor
+  return schema
+}
+
+/**
+ * Move every vendor-tagged field out of the shared `types` and into a `{ <namespace>: { extends:
+ * { <targetType>: { via, fields } } } }` structure. A field's `via` names the spec extension point
+ * it flowed through; the field having resolved into a real shared record (via the `//=` fold and
+ * group flatten) is what proves the merge happened — this only re-routes the output. The pure
+ * extension-point anchor type (e.g. `webExtension.InstallParametersExtension`), left with no
+ * spec fields once its vendor fields move out, is dropped from the shared schema.
+ * With no vendor tags present this returns `{}` and mutates nothing, so output is unchanged.
+ * @param {object} types The projected `types` map (mutated in place).
+ * @returns {object} The vendor section, empty when there are no vendor fields.
+ */
+function extractVendor(types) {
+  const vendor = {}
+  const anchors = new Set()
+  for (const [typeName, node] of Object.entries(types)) {
+    if (node.kind !== 'record' || !Array.isArray(node.fields)) continue
+    const kept = []
+    for (const field of node.fields) {
+      if (!field.vendor) {
+        kept.push(field)
+        continue
+      }
+      anchors.add(field.via)
+      // The extension point's own type carries a copy of its fields; drop that copy (the anchor
+      // itself is removed below) and route only the copy that resolved into a real target type.
+      if (field.via === typeName) continue
+      const { vendor: ns, via, ...clean } = field
+      const bucket = (vendor[ns] ??= { extends: {} })
+      const entry = (bucket.extends[typeName] ??= { via, fields: [] })
+      entry.fields.push(clean)
+    }
+    node.fields = kept
+  }
+  for (const name of anchors) {
+    const anchor = types[name]
+    if (anchor && anchor.kind === 'record' && (anchor.fields?.length ?? 0) === 0) delete types[name]
+  }
+  return vendor
 }
 
 /**
@@ -591,16 +867,31 @@ async function main() {
   }
 
   const { values: args } = parseArgs({
-    options: { ast: { type: 'string' }, model: { type: 'string' }, 'dump-schema': { type: 'string' } },
+    options: {
+      ast: { type: 'string' },
+      model: { type: 'string' },
+      'dump-schema': { type: 'string' },
+      // Repeatable: one webref dfns index per merged spec. Optional — omitting them
+      // (and --anchors) yields a schema with no specHref links (fully backward compatible).
+      dfns: { type: 'string', multiple: true },
+      // The core spec's prose-anchor index (see extract_bidi_anchors.mjs). Optional;
+      // upgrades type links to prose sections and adds command/event/domain links.
+      anchors: { type: 'string' },
+    },
   })
   if (!args.ast || !args.model || !args['dump-schema']) {
-    console.error('Usage: project_bidi_schema.mjs --ast <ast.json> --model <model.json> --dump-schema <out.json>')
+    console.error(
+      'Usage: project_bidi_schema.mjs --ast <ast.json> --model <model.json> --dump-schema <out.json>' +
+        ' [--dfns <dfns.json> ...] [--anchors <anchors.json>]',
+    )
     process.exit(1)
   }
 
   const ast = JSON.parse(readFileSync(resolveInput(args.ast), 'utf8'))
   const model = JSON.parse(readFileSync(resolveInput(args.model), 'utf8'))
-  const schema = projectSchema(ast, model)
+  const dfnsDocs = (args.dfns ?? []).map((p) => JSON.parse(readFileSync(resolveInput(p), 'utf8')))
+  const anchors = args.anchors ? JSON.parse(readFileSync(resolveInput(args.anchors), 'utf8')) : {}
+  const schema = projectSchema(ast, model, buildSpecLinks(dfnsDocs, anchors))
 
   // Generation is the gate: a broken or incomplete schema fails the build.
   const errors = [...checkSchema(schema), ...checkCompleteness(ast, schema)]
@@ -611,8 +902,12 @@ async function main() {
   }
 
   writeFileSync(resolve(args['dump-schema']), JSON.stringify(schema, null, 2) + '\n', 'utf8')
+  const prose = (u) => (u && !u.includes('#cddl-') ? 1 : 0)
+  const linkedTypes = Object.values(schema.types).filter((t) => t.specHref)
+  const proseTypes = linkedTypes.filter((t) => prose(t.specHref)).length
   console.log(
-    `  ${schema.commands.length} commands, ${schema.events.length} events, ${Object.keys(schema.types).length} types → ${args['dump-schema']}`,
+    `  ${schema.commands.length} commands, ${schema.events.length} events, ${Object.keys(schema.types).length} types` +
+      ` (${linkedTypes.length} spec-linked, ${proseTypes} prose) → ${args['dump-schema']}`,
   )
 }
 
