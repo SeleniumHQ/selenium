@@ -36,6 +36,7 @@ import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.webDriverExceptionResponder;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.internal.Debug;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
@@ -71,6 +73,30 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 class RemoteWebDriverUnitTest {
 
   private static final String ELEMENT_KEY = "element-6066-11e4-a52e-4f735466cecf";
+
+  @Test
+  void advertisesRemoteUrlWhenStartingRemoteSession() {
+    RemoteWebDriver driver =
+        new RemoteWebDriver(
+            WebDriverFixture.prepareExecutorMock(echoCapabilities),
+            new ImmutableCapabilities("browserName", "chrome"),
+            ClientConfig.defaultConfig().baseUri(URI.create("http://grid.example:4444/wd/hub")));
+
+    assertThat(driver.getCapabilities().getCapability("se:remoteUrl"))
+        .isEqualTo("http://grid.example:4444/wd/hub");
+  }
+
+  @Test
+  void doesNotAdvertiseRemoteUrlForLocalSession() {
+    // Local drivers (e.g. ChromeDriver) construct with ClientConfig.defaultConfig(), whose baseUri
+    // is null, so no se:remoteUrl is added even though the executor targets a driver-service URL.
+    RemoteWebDriver driver =
+        new RemoteWebDriver(
+            WebDriverFixture.prepareExecutorMock(echoCapabilities),
+            new ImmutableCapabilities("browserName", "chrome"));
+
+    assertThat(driver.getCapabilities().getCapability("se:remoteUrl")).isNull();
+  }
 
   @Test
   void canHandleGetCommand() {

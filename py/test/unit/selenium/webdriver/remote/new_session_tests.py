@@ -34,8 +34,38 @@ def test_converts_proxy_type_value_to_lowercase_for_w3c(mocker):
     proxy = Proxy({"proxyType": ProxyType.MANUAL, "httpProxy": "foo"})
     options.proxy = proxy
     WebDriver(options=options)
-    expected_params = {"capabilities": {"firstMatch": [{}], "alwaysMatch": w3c_caps}}
-    mock.assert_called_with(Command.NEW_SESSION, expected_params)
+    command, params = mock.call_args[0]
+    assert command == Command.NEW_SESSION
+    always_match = params["capabilities"]["alwaysMatch"]
+    always_match.pop("se:remoteUrl", None)
+    assert params["capabilities"]["firstMatch"] == [{}]
+    assert always_match == w3c_caps
+
+
+def test_advertises_remote_url_for_remote_session(mocker):
+    mock = mocker.patch("selenium.webdriver.remote.webdriver.WebDriver.execute")
+    driver = WebDriver(command_executor="http://remote.example:4444", options=ArgOptions())
+    command, params = mock.call_args[0]
+    assert command == Command.NEW_SESSION
+    assert driver._remote_url() is not None
+    assert params["capabilities"]["alwaysMatch"]["se:remoteUrl"] == driver._remote_url()
+
+
+def test_does_not_advertise_remote_url_for_local_driver(mocker):
+    mock = mocker.patch("selenium.webdriver.remote.webdriver.WebDriver.execute")
+
+    class LocalLikeDriver(WebDriver):
+        def __init__(self, **kwargs):
+            # Local drivers (ChromeDriver, etc.) set ``service`` before start_session runs,
+            # so the actual new-session payload must omit se:remoteUrl.
+            self.service = object()
+            super().__init__(**kwargs)
+
+    driver = LocalLikeDriver(command_executor="http://remote.example:4444", options=ArgOptions())
+    command, params = mock.call_args[0]
+    assert command == Command.NEW_SESSION
+    assert driver._remote_url() is None
+    assert "se:remoteUrl" not in params["capabilities"]["alwaysMatch"]
 
 
 def test_works_as_context_manager(mocker):

@@ -391,6 +391,9 @@ class WebDriver(BaseWebDriver):
         Args:
             capabilities: A capabilities dict to start the session with.
         """
+        remote_url = self._remote_url()
+        if remote_url:
+            capabilities = {**capabilities, "se:remoteUrl": remote_url}
         caps = _create_caps(capabilities)
         try:
             response = self.execute(Command.NEW_SESSION, caps)["value"]
@@ -400,6 +403,13 @@ class WebDriver(BaseWebDriver):
             if hasattr(self, "service") and self.service is not None:
                 self.service.stop()
             raise
+
+    def _remote_url(self) -> str | None:
+        """The address used to reach the Grid, advertised as ``se:remoteUrl`` (None for local drivers)."""
+        if getattr(self, "service", None) is not None:
+            return None
+        client_config = getattr(self.command_executor, "client_config", None)
+        return getattr(client_config, "remote_server_addr", None) or None
 
     def _wrap_value(self, value):
         if isinstance(value, dict):
