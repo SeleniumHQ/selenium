@@ -14,9 +14,9 @@
 // for the specific language governing permissions and limitations
 // under the License.
 
-use selenium_manager::config::{OS, ARCH, str_to_os};
-use selenium_manager::config::OS::{LINUX, MACOS, WINDOWS};
 use selenium_manager::config::ARCH::{ARM64, ARMV7, X32, X64};
+use selenium_manager::config::OS::{LINUX, MACOS, WINDOWS};
+use selenium_manager::config::{ARCH, OS, str_to_os};
 
 use rstest::rstest;
 

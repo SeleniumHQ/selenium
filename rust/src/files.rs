@@ -675,6 +675,7 @@ pub fn collect_files_from_cache<F: Fn(&DirEntry) -> bool>(
         .sort_by_file_name()
         .into_iter()
         .filter_map(|entry| entry.ok())
+        .filter(|entry| entry.file_type().is_file())
         .filter(|entry| filter(entry))
         .map(|entry| entry.path().to_owned())
         .collect()

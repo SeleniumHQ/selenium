@@ -340,8 +340,7 @@ impl SeleniumManager for ChromeManager {
                 };
 
                 let driver_ttl = self.get_ttl();
-                if should_cache_driver_version(driver_ttl, major_browser_version, &driver_version)
-                {
+                if should_cache_driver_version(driver_ttl, major_browser_version, &driver_version) {
                     metadata.drivers.push(create_driver_metadata(
                         major_browser_version,
                         self.driver_name,

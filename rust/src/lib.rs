@@ -1966,6 +1966,9 @@ pub fn format_three_args(string: &str, arg1: &str, arg2: &str, arg3: &str) -> St
 // ----------------------------------------------------------
 
 fn get_index_version(full_version: &str, index: usize) -> Result<String, Error> {
+    if full_version.is_empty() {
+        return Err(anyhow!(format!("Wrong version: {}", full_version)));
+    }
     let version_vec: Vec<&str> = full_version.split('.').collect();
     Ok(version_vec
         .get(index)
