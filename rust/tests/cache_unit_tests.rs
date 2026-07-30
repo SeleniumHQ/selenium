@@ -22,7 +22,6 @@ use selenium_manager::metadata::{
 };
 use selenium_manager::SeleniumManager;
 
-use rstest::rstest;
 use std::fs;
 use std::path::PathBuf;
 use tempfile::tempdir;

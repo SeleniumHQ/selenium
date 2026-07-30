@@ -176,6 +176,7 @@ pub fn str_to_os(os: &str) -> Result<OS, Error> {
     }
 }
 
+/// Processor architecture families used by the manager.
 #[allow(dead_code)]
 #[allow(clippy::upper_case_acronyms)]
 pub enum ARCH {
@@ -186,6 +187,7 @@ pub enum ARCH {
 }
 
 impl ARCH {
+    /// Returns the known string aliases for this architecture.
     pub fn to_str_vector(&self) -> Vec<&str> {
         match self {
             ARCH::X32 => vec![ARCH_X86, "i386", "x32", "i686"],
@@ -195,6 +197,7 @@ impl ARCH {
         }
     }
 
+    /// Checks whether the given architecture string matches this family.
     pub fn is(&self, arch: &str) -> bool {
         self.to_str_vector()
             .contains(&arch.to_ascii_lowercase().as_str())

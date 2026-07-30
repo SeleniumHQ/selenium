@@ -253,7 +253,7 @@ impl SeleniumManager for EdgeManager {
                     read_version_from_link(self.get_http_client(), &driver_url, self.get_logger())?;
 
                 let driver_ttl = self.get_ttl();
-                if should_cache_driver_version(driver_ttl, major_browser_version, &driver_version)
+                if should_cache_driver_version(driver_ttl, major_browser_version.as_str(), &driver_version)
                 {
                     metadata.drivers.push(create_driver_metadata(
                         major_browser_version.as_str(),
