@@ -386,7 +386,7 @@ describe('unionSelector', () => {
   })
 })
 
-describe('schema signals (objectOnly / preserveExtras / enum primitive)', () => {
+describe('schema signals (objectOnly / extensible / enum primitive)', () => {
   const rec = (name, typeConst) => group(name, [field('type', [lit(typeConst)])])
   const union = (name, refs) => ({
     Type: 'variable',
@@ -430,7 +430,10 @@ describe('schema signals (objectOnly / preserveExtras / enum primitive)', () => 
     assert.equal(s.types['x.Origin'].objectOnly, undefined)
   })
 
-  it('marks an extensible type reachable from command params as preserveExtras, but not a result-only one', () => {
+  it('marks every extensible type extensible, regardless of send/receive reachability', () => {
+    // Extensibility is the whole signal: a type reachable only through a command's result
+    // keeps its extras store just as one reachable through params does (ADR 17786, decision 9 —
+    // "retain extras only where they can be sent back" was considered and rejected).
     const ast = [
       group('x.SetParams', [field('cfg', [ref('x.Config')])]),
       group('x.Config', [field('text', ['any'], { n: 0, m: null })]),
@@ -439,10 +442,8 @@ describe('schema signals (objectOnly / preserveExtras / enum primitive)', () => 
     ]
     const model = { x: { commands: [{ method: 'x.set', name: 'set', params: 'x.SetParams', result: 'x.GetResult' }] } }
     const s = projectSchema(ast, model)
-    assert.equal(s.types['x.Config'].extensible, true)
-    assert.equal(s.types['x.Config'].preserveExtras, true) // reachable through the command's params
-    assert.equal(s.types['x.Info'].extensible, true)
-    assert.equal(s.types['x.Info'].preserveExtras, undefined) // reachable only through the result
+    assert.equal(s.types['x.Config'].extensible, true) // reachable through the command's params
+    assert.equal(s.types['x.Info'].extensible, true) // reachable only through the result
     assert.deepEqual(checkSchema(s), [])
   })
 
