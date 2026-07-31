@@ -138,8 +138,8 @@ importers:
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.7.0(supports-color@10.2.2))
       cddl:
-        specifier: ^0.21.0
-        version: 0.21.0
+        specifier: ^0.21.1
+        version: 0.21.1
       cddl2ts:
         specifier: ^0.10.0
         version: 0.10.0
@@ -1433,6 +1433,10 @@ packages:
 
   cddl@0.21.0:
     resolution: {integrity: sha512-/2lnDcCA/7DRDChH2szAW4tKzZeqYFQKhw2nGqi6WqBr7N9mx2yObATLnc01pqG9pXJrw3auT1X5O58azNBTMQ==}
+    hasBin: true
+
+  cddl@0.21.1:
+    resolution: {integrity: sha512-Sv4ZR4ZDODrcCaOjedZ2dxOIcVBcahQm/z/jbVonBO2hRbUvTpJiCq1syM5h4ZTWst0Ld2wOZP26voYXeZr4Dg==}
     hasBin: true
 
   chalk@4.1.2:
@@ -5638,6 +5642,11 @@ snapshots:
       yargs: 18.0.0
 
   cddl@0.21.0:
+    dependencies:
+      camelcase: 9.0.0
+      yargs: 18.0.0
+
+  cddl@0.21.1:
     dependencies:
       camelcase: 9.0.0
       yargs: 18.0.0

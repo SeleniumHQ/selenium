@@ -182,11 +182,20 @@ describe('projectType (list / union / alias defs)', () => {
           Name: 'x.F',
           PropertyType: [{ Type: 'range', Value: { Min: { Value: 0.1 }, Max: { Value: 2 } } }],
         },
+        {
+          // `(0.0..1.0)` — integral bounds, but the `IsFloat` marker makes it a number range.
+          Type: 'variable',
+          Name: 'x.W',
+          PropertyType: [
+            { Type: 'range', Value: { Min: { Value: 0, IsFloat: true }, Max: { Value: 1, IsFloat: true } } },
+          ],
+        },
       ],
       {},
     )
     assert.deepEqual(s.types['x.U'], { kind: 'alias', type: { primitive: 'integer' } })
     assert.deepEqual(s.types['x.F'], { kind: 'alias', type: { primitive: 'number' } })
+    assert.deepEqual(s.types['x.W'], { kind: 'alias', type: { primitive: 'number' } })
   })
 
   it('unwraps a control-operator (.default / .ge) wrapped field type to its inner type', () => {
@@ -446,15 +455,14 @@ describe('schema signals (objectOnly / preserveExtras / enum primitive)', () => 
     assert.deepEqual(checkSchema(s), [])
   })
 
-  it('types an inline (non-hoisted) literal choice with the primitive its literals share', () => {
-    // A nullable literal choice (`("classic" / "overlay") / null`) the normalizer leaves
-    // inline — carry `primitive: string` so the scalar is typed rather than opaque.
+  it('hoists a nullable literal choice to a named enum, referenced with the null preserved', () => {
+    // A nullable literal choice (`("classic" / "overlay") / null`) is hoisted (normalize_bidi_ast)
+    // to a named enum and referenced with the null kept on the field — a nullable enum ref, not an
+    // inline enum carrying a primitive.
     const s = projectSchema([group('x.R', [field('kind', [lit('classic'), lit('overlay'), 'null'])])], {})
-    assert.deepEqual(s.types['x.R'].fields[0].type, {
-      enum: ['classic', 'overlay'],
-      primitive: 'string',
-      nullable: true,
-    })
+    assert.deepEqual(s.types['x.R'].fields[0].type, { ref: 'x.RKind', nullable: true })
+    assert.equal(s.types['x.RKind'].kind, 'enum')
+    assert.deepEqual(s.types['x.RKind'].values, ['classic', 'overlay'])
     assert.deepEqual(checkSchema(s), [])
   })
 

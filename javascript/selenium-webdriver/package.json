@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "cddl": "^0.21.0",
+    "cddl": "^0.21.1",
     "cddl2ts": "^0.10.0",
     "clean-jsdoc-theme": "^4.3.3",
     "eslint": "^10.7.0",

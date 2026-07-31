@@ -48,6 +48,11 @@ module Selenium
             landscape_secondary: 'landscape-secondary'
           }.freeze
 
+          SET_SCROLLBAR_TYPE_OVERRIDE_PARAMETERS_SCROLLBAR_TYPE = {
+            classic: 'classic',
+            overlay: 'overlay'
+          }.freeze
+
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetforcedcolorsmodethemeoverrideparameters
@@ -88,12 +93,12 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationgeolocationcoordinates
           GeolocationCoordinates = Serialization::Record.define(
-            latitude: {wire_key: 'latitude', primitive: 'integer'},
-            longitude: {wire_key: 'longitude', primitive: 'integer'},
+            latitude: {wire_key: 'latitude', primitive: 'number'},
+            longitude: {wire_key: 'longitude', primitive: 'number'},
             accuracy: {wire_key: 'accuracy', required: false, primitive: 'number'},
             altitude: {wire_key: 'altitude', required: false, nullable: true, primitive: 'number'},
             altitude_accuracy: {wire_key: 'altitudeAccuracy', required: false, nullable: true, primitive: 'number'},
-            heading: {wire_key: 'heading', required: false, nullable: true, primitive: 'integer'},
+            heading: {wire_key: 'heading', required: false, nullable: true, primitive: 'number'},
             speed: {wire_key: 'speed', required: false, nullable: true, primitive: 'number'}
           )
 
@@ -185,7 +190,11 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetscrollbartypeoverrideparameters
           SetScrollbarTypeOverrideParameters = Serialization::Record.define(
-            scrollbar_type: {wire_key: 'scrollbarType', nullable: true, primitive: 'string'},
+            scrollbar_type: {
+              wire_key: 'scrollbarType',
+              nullable: true,
+              enum: 'Emulation::SET_SCROLLBAR_TYPE_OVERRIDE_PARAMETERS_SCROLLBAR_TYPE'
+            },
             contexts: {wire_key: 'contexts', required: false, list: true},
             user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
@@ -319,6 +328,11 @@ module Selenium
             contexts: Serialization::UNSET,
             user_contexts: Serialization::UNSET
           )
+            Serialization.validate!(
+              'scrollbarType',
+              scrollbar_type,
+              Emulation::SET_SCROLLBAR_TYPE_OVERRIDE_PARAMETERS_SCROLLBAR_TYPE
+            )
             params = SetScrollbarTypeOverrideParameters.new(
               scrollbar_type: scrollbar_type,
               contexts: contexts,

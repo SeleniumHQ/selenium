@@ -378,6 +378,25 @@ module Selenium
             end
           end
 
+          describe 'outbound primitive validation' do
+            it 'rejects a wrong-typed primitive at construction, so an invalid object cannot exist' do
+              expect { BrowsingContext::NavigateParameters.new(context: 'c', url: 123) }
+                .to raise_error(ArgumentError, /NavigateParameters#url expected string/)
+            end
+
+            it 'rejects a float for an integer field, mirroring the wire integer/number split' do
+              expect { Emulation::ScreenArea.new(width: 5.0, height: 5) }
+                .to raise_error(ArgumentError, /ScreenArea#width expected integer/)
+            end
+
+            it 'accepts either an integer or a float for a number field' do
+              klass = Emulation::GeolocationCoordinates
+
+              expect(klass.new(latitude: 0, longitude: 0, accuracy: 1.5).accuracy).to eq(1.5)
+              expect(klass.new(latitude: 0, longitude: 0, accuracy: 2).accuracy).to eq(2)
+            end
+          end
+
           describe 'enum symbol coercion' do
             it 'takes an idiomatic symbol and serializes the wire token (kebab included)' do
               params = Bluetooth::SimulateAdapterParameters.new(context: 'c', state: :powered_off)
@@ -403,6 +422,19 @@ module Selenium
               expect(params.as_json).to include('phases' => %w[beforeRequestSent authRequired])
               expect(Network::AddInterceptParameters.from_json(params.as_json).phases)
                 .to eq(%i[before_request_sent auth_required])
+            end
+
+            # A nullable inline literal choice (scrollbarType = "classic" / "overlay" / null) is
+            # hoisted to a named enum, so it validates as a closed vocabulary in both directions
+            # (and still admits null) rather than passing any string through as it did when opaque.
+            it 'validates a hoisted nullable inline enum, still admitting null' do
+              klass = Emulation::SetScrollbarTypeOverrideParameters
+
+              expect(klass.new(scrollbar_type: :overlay).as_json).to eq('scrollbarType' => 'overlay')
+              expect(klass.new(scrollbar_type: nil).as_json).to eq('scrollbarType' => nil)
+              expect { klass.new(scrollbar_type: :banana) }.to raise_error(ArgumentError, /must be one of/)
+              expect { klass.from_json('scrollbarType' => 'banana') }
+                .to raise_error(Error::WebDriverError, /received an unknown value/)
             end
           end
 
@@ -455,13 +487,6 @@ module Selenium
               parsed = Bluetooth::BluetoothManufacturerData.from_json('key' => 5, 'data' => 'x')
 
               expect(parsed.key).to eq(5)
-            end
-
-            # Signal 3: an inline literal choice the projector now types as `string`
-            # (scrollbarType = "classic" / "overlay" / null), previously opaque.
-            it 'raises when an inline-enum scalar field arrives as the wrong primitive' do
-              expect { Emulation::SetScrollbarTypeOverrideParameters.from_json('scrollbarType' => 123) }
-                .to raise_error(Error::WebDriverError, /scrollbar_type expected string/)
             end
 
             # Signal 3: a scalar hidden behind an alias (size -> js-uint -> integer) now carries
