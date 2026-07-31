@@ -50,7 +50,8 @@ module Selenium
         def binary
           @binary ||= begin
             if (location = ENV.fetch('SE_MANAGER_PATH', nil))
-              WebDriver.logger.debug("Selenium Manager set by ENV['SE_MANAGER_PATH']: #{location}")
+              WebDriver.logger.debug("Selenium Manager set by ENV['SE_MANAGER_PATH']: #{location}",
+                                     id: :selenium_manager)
             end
             location ||= platform_location
 

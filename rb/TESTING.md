@@ -182,6 +182,35 @@ From `spec_support/helpers.rb`:
 | `wait_for_element(locator)` | Wait for element to appear. |
 | `wait_for_alert` | Wait for alert presence. |
 
+## Asserting Log Output
+
+Every `WebDriver.logger` call should include an `id:` symbol (e.g. `logger.warn(msg, id: :safari_bidi)`).
+To assert on logging content (and hide it from test logs), do not stub the logger, instead use one of
+the [custom matchers](spec/rspec_matchers.rb): `have_error`, `have_warning`, `have_info`, and
+`have_deprecated`.
+
+```ruby
+expect { SeleniumManager.binary }.to have_info(:selenium_manager)      # id was logged, at info level
+expect { save_screenshot(png_path) }.not_to have_warning(:screenshot)  # id was not logged
+```
+
+The match is the exact set of ids at that severity — an unexpected entry fails rather than slipping by
+— so assert several entries by passing the full set, e.g. `have_warning(%i[general specific])`.
+
+The id is provided so you don't have to assert on specific text, but if the message comes from an
+external source, you can assert on the contents as well:
+
+```ruby
+expect { navigate }.to have_error(:ws, /This is fine!/)
+```
+
+Deprecations (`logger.deprecate`) are asserted with `have_deprecated`:
+
+```ruby
+WebDriver.logger.deprecate('Old thing', 'New thing', id: :old_thing)   # lib
+expect { call_old_thing }.to have_deprecated(:old_thing)               # spec
+```
+
 ## Debugging
 
 ### Interactive REPL

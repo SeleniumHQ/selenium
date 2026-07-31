@@ -37,7 +37,6 @@ module Selenium
           before do
             allow(Platform).to receive(:assert_executable)
             allow(WebDriver.logger).to receive(:debug?).and_return(false)
-            allow(WebDriver.logger).to receive(:warn)
           end
 
           it 'uses default port and nil path' do
@@ -126,26 +125,22 @@ module Selenium
             end
 
             it 'preserves conflicting --log args with value and warns' do
-              service = described_class.new(args: ['--log', 'info'])
+              service = nil
+
+              expect { service = described_class.new(args: ['--log', 'info']) }.to have_warning(:se_debug)
 
               expect(service.extra_args).not_to include('-v')
               expect(service.extra_args).to include('--log')
               expect(service.extra_args).to include('info')
-              expect(WebDriver.logger).to have_received(:warn).with(
-                'SE_DEBUG is set; preserving user-specified geckodriver --log setting instead of adding -v',
-                id: :se_debug
-              )
             end
 
             it 'preserves conflicting --log= args and warns' do
-              service = described_class.new(args: ['--log=info'])
+              service = nil
+
+              expect { service = described_class.new(args: ['--log=info']) }.to have_warning(:se_debug)
 
               expect(service.extra_args).not_to include('-v')
               expect(service.extra_args).to include('--log=info')
-              expect(WebDriver.logger).to have_received(:warn).with(
-                'SE_DEBUG is set; preserving user-specified geckodriver --log setting instead of adding -v',
-                id: :se_debug
-              )
             end
 
             it 'does not remove next arg if --log has no value' do
@@ -163,12 +158,11 @@ module Selenium
 
               allow(ServiceManager).to receive(:new).with(service).and_return(manager)
 
-              service.launch
+              expect { service.launch }.to have_warning(:se_debug)
 
               expect(service.extra_args).not_to include('-v')
               expect(service.extra_args).to include('--log')
               expect(service.extra_args).to include('trace')
-              expect(WebDriver.logger).to have_received(:warn).once
             end
           end
         end
