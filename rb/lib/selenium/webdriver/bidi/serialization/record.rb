@@ -81,8 +81,8 @@ module Selenium
 
             # Inbound: builds from the wire. A missing required field is omitted and warned (or
             # raised in strict mode, in +wire_value+); enum tokens are mapped back to symbols and an
-            # unrecognized one raises (in +read+); an undeclared property is warned, then captured
-            # (extensible) or dropped (closed) — strict on shape, lenient on extras.
+            # unrecognized one raises (in +read+); an undeclared property is captured silently
+            # (extensible) or warned and dropped (closed) — strict on shape, lenient on extras.
             def from_json(json_payload)
               unless json_payload.is_a?(::Hash)
                 raise Error::WebDriverError, "#{name} expected an object on the wire, got #{json_payload.inspect}"
@@ -92,8 +92,11 @@ module Selenium
                 [f.name, wire_value(f, json_payload)]
               end
               undeclared = extra(json_payload)
-              warn_undeclared(undeclared) unless undeclared.empty?
-              attributes[:extensions] = undeclared if extensible?
+              if extensible?
+                attributes[:extensions] = undeclared # the spec sanctions these extras; preserve them silently
+              else
+                warn_undeclared(undeclared) unless undeclared.empty?
+              end
               construct(**attributes)
             end
 
@@ -268,9 +271,9 @@ module Selenium
               json_payload.except(*known)
             end
 
-            # Forward-compat signal: a property the type does not model is tolerated (retained on an
-            # extensible type, dropped on a closed one) and warned so schema drift is visible. Tagged
-            # +:bidi_undeclared_property+ so a caller can silence it via +logger.ignore+.
+            # Forward-compat signal: a property a closed type does not model is dropped and warned so
+            # schema drift is visible (an extensible type keeps its extras silently — the spec sanctions
+            # them). Tagged +:bidi_undeclared_property+ so a caller can silence it via +logger.ignore+.
             def warn_undeclared(undeclared)
               undeclared.each_key do |key|
                 WebDriver.logger.warn("#{name} received an undeclared property: #{key.inspect}",
@@ -301,8 +304,23 @@ module Selenium
                 value = Serialization.to_wire(value, Protocol.const_get(f.enum)) if f.enum
                 payload[f.wire_key] = Serializable.as_json(value)
               end
-              payload.merge!(extensions) if self.class.extensible? && !extensions.empty?
+              merge_extensions!(payload) if self.class.extensible? && !extensions.empty?
               payload
+            end
+
+            private
+
+            # Merge the passthrough extras onto the wire, erroring rather than letting an extra whose
+            # key is a declared field's wire key silently clobber that typed value — an extra is by
+            # definition a field the spec does not declare. The single gate every outbound path
+            # funnels through: +new+, +with+, and in-place +extensions+ mutation.
+            def merge_extensions!(payload)
+              collisions = extensions.keys & self.class.fields.map(&:wire_key)
+              unless collisions.empty?
+                raise ::ArgumentError, "#{self.class.name} extensions shadow declared fields: #{collisions.join(', ')}"
+              end
+
+              payload.merge!(extensions)
             end
           end
         end

@@ -432,8 +432,8 @@ describe('schema signals (objectOnly / extensible / enum primitive)', () => {
 
   it('marks every extensible type extensible, regardless of send/receive reachability', () => {
     // Extensibility is the whole signal: a type reachable only through a command's result
-    // keeps its extras store just as one reachable through params does (ADR 17786, decision 9 —
-    // "retain extras only where they can be sent back" was considered and rejected).
+    // keeps its extras store just as one reachable through params does. Send-reachability
+    // ("retain extras only where they can be sent back") is deliberately not a factor.
     const ast = [
       group('x.SetParams', [field('cfg', [ref('x.Config')])]),
       group('x.Config', [field('text', ['any'], { n: 0, m: null })]),

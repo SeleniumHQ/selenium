@@ -209,10 +209,12 @@ module Selenium
           end
 
           describe 'extensible records' do
-            it 'captures unknown keys and merges them back on serialization' do
+            # The spec sanctions extras on an extensible type, so they are captured silently — no
+            # undeclared-property warning, unlike a closed type.
+            it 'captures unknown keys silently and merges them back on serialization' do
               parsed = nil
               expect { parsed = Script::SharedReference.from_json('sharedId' => 's1', 'webdriverValue' => 42) }
-                .to have_warning(:bidi_undeclared_property)
+                .not_to have_warning(:bidi_undeclared_property)
 
               expect(parsed.shared_id).to eq('s1')
               expect(parsed.extensions).to eq('webdriverValue' => 42)
@@ -220,11 +222,11 @@ module Selenium
             end
 
             # An extensible type keeps unknown properties so a received-then-resent payload
-            # round-trips them. Extensibility alone is the trigger (ADR 17786, decision 9).
+            # round-trips them. Extensibility alone is the trigger.
             it 'preserves an unknown key on an extensible type across a receive/re-send round trip' do
               parsed = nil
               expect { parsed = Storage::CookieFilter.from_json('name' => 'sid', 'x-vendor' => 'keep-me') }
-                .to have_warning(:bidi_undeclared_property)
+                .not_to have_warning(:bidi_undeclared_property)
 
               expect(parsed.extensions).to eq('x-vendor' => 'keep-me')
               expect(parsed.as_json).to eq('name' => 'sid', 'x-vendor' => 'keep-me')
@@ -232,14 +234,23 @@ module Selenium
 
             # network.Cookie is extensible but received-only (not reachable from any command's
             # params); it still preserves and echoes an unknown key, because extensibility — not
-            # send-reachability — is what sanctions the extra field (ADR 17786, decision 9).
+            # send-reachability — is what sanctions the extra field.
             it 'preserves an unknown key on an extensible received-only type across re-serialize' do
               wire = Network::Cookie.new(**valid_cookie_attrs).as_json.merge('x-vendor' => 'keep-me')
               parsed = nil
-              expect { parsed = Network::Cookie.from_json(wire) }.to have_warning(:bidi_undeclared_property)
+              expect { parsed = Network::Cookie.from_json(wire) }.not_to have_warning(:bidi_undeclared_property)
 
               expect(parsed.extensions).to eq('x-vendor' => 'keep-me')
               expect(parsed.as_json).to include('x-vendor' => 'keep-me')
+            end
+
+            # An extra is by definition a field the spec does not declare, so an extensions key that
+            # collides with a declared wire key would silently clobber a typed, validated value on the
+            # wire. Reject it at the merge instead — the single gate every outbound path funnels through.
+            it 'rejects an extension that shadows a declared field on serialize' do
+              cookie = Network::Cookie.new(**valid_cookie_attrs, extensions: {'name' => 'clobber'})
+
+              expect { cookie.as_json }.to raise_error(ArgumentError, /extensions shadow declared fields: name/)
             end
 
             it 'warns on and drops an unknown key on a non-extensible type' do
