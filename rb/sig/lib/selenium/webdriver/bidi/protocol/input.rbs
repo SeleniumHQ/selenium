@@ -119,7 +119,7 @@ module Selenium
             attr_reader twist: untyped
             attr_reader altitude_angle: untyped
             attr_reader azimuth_angle: untyped
-            def self.new: (?type: String, button: Integer, ?width: Integer, ?height: Integer, ?pressure: Integer, ?tangential_pressure: Integer, ?twist: Integer, ?altitude_angle: Numeric, ?azimuth_angle: Numeric) -> instance
+            def self.new: (?type: String, button: Integer, ?width: Integer, ?height: Integer, ?pressure: Numeric, ?tangential_pressure: Numeric, ?twist: Integer, ?altitude_angle: Numeric, ?azimuth_angle: Numeric) -> instance
           end
 
           class PointerMoveAction < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -135,7 +135,7 @@ module Selenium
             attr_reader twist: untyped
             attr_reader altitude_angle: untyped
             attr_reader azimuth_angle: untyped
-            def self.new: (?type: String, x: Numeric, y: Numeric, ?duration: Integer, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::Origin, ?width: Integer, ?height: Integer, ?pressure: Integer, ?tangential_pressure: Integer, ?twist: Integer, ?altitude_angle: Numeric, ?azimuth_angle: Numeric) -> instance
+            def self.new: (?type: String, x: Numeric, y: Numeric, ?duration: Integer, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::Origin, ?width: Integer, ?height: Integer, ?pressure: Numeric, ?tangential_pressure: Numeric, ?twist: Integer, ?altitude_angle: Numeric, ?azimuth_angle: Numeric) -> instance
           end
 
           class WheelScrollAction < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -157,7 +157,7 @@ module Selenium
             attr_reader twist: untyped
             attr_reader altitude_angle: untyped
             attr_reader azimuth_angle: untyped
-            def self.new: (?width: Integer, ?height: Integer, ?pressure: Integer, ?tangential_pressure: Integer, ?twist: Integer, ?altitude_angle: Numeric, ?azimuth_angle: Numeric) -> instance
+            def self.new: (?width: Integer, ?height: Integer, ?pressure: Numeric, ?tangential_pressure: Numeric, ?twist: Integer, ?altitude_angle: Numeric, ?azimuth_angle: Numeric) -> instance
           end
 
           class Origin < ::Selenium::WebDriver::BiDi::Serialization::Union

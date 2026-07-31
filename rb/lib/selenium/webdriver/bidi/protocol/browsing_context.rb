@@ -211,7 +211,7 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextimageformat
           ImageFormat = Serialization::Record.define(
             type: {wire_key: 'type', primitive: 'string'},
-            quality: {wire_key: 'quality', required: false, primitive: 'integer'}
+            quality: {wire_key: 'quality', required: false, primitive: 'number'}
           )
 
           # @api private

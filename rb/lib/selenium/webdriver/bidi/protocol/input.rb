@@ -197,8 +197,8 @@ module Selenium
             button: {wire_key: 'button', primitive: 'integer'},
             width: {wire_key: 'width', required: false, primitive: 'integer'},
             height: {wire_key: 'height', required: false, primitive: 'integer'},
-            pressure: {wire_key: 'pressure', required: false, primitive: 'integer'},
-            tangential_pressure: {wire_key: 'tangentialPressure', required: false, primitive: 'integer'},
+            pressure: {wire_key: 'pressure', required: false, primitive: 'number'},
+            tangential_pressure: {wire_key: 'tangentialPressure', required: false, primitive: 'number'},
             twist: {wire_key: 'twist', required: false, primitive: 'integer'},
             altitude_angle: {wire_key: 'altitudeAngle', required: false, primitive: 'number'},
             azimuth_angle: {wire_key: 'azimuthAngle', required: false, primitive: 'number'}
@@ -215,8 +215,8 @@ module Selenium
             origin: {wire_key: 'origin', required: false, ref: 'Input::Origin'},
             width: {wire_key: 'width', required: false, primitive: 'integer'},
             height: {wire_key: 'height', required: false, primitive: 'integer'},
-            pressure: {wire_key: 'pressure', required: false, primitive: 'integer'},
-            tangential_pressure: {wire_key: 'tangentialPressure', required: false, primitive: 'integer'},
+            pressure: {wire_key: 'pressure', required: false, primitive: 'number'},
+            tangential_pressure: {wire_key: 'tangentialPressure', required: false, primitive: 'number'},
             twist: {wire_key: 'twist', required: false, primitive: 'integer'},
             altitude_angle: {wire_key: 'altitudeAngle', required: false, primitive: 'number'},
             azimuth_angle: {wire_key: 'azimuthAngle', required: false, primitive: 'number'}
@@ -241,8 +241,8 @@ module Selenium
           PointerCommonProperties = Serialization::Record.define(
             width: {wire_key: 'width', required: false, primitive: 'integer'},
             height: {wire_key: 'height', required: false, primitive: 'integer'},
-            pressure: {wire_key: 'pressure', required: false, primitive: 'integer'},
-            tangential_pressure: {wire_key: 'tangentialPressure', required: false, primitive: 'integer'},
+            pressure: {wire_key: 'pressure', required: false, primitive: 'number'},
+            tangential_pressure: {wire_key: 'tangentialPressure', required: false, primitive: 'number'},
             twist: {wire_key: 'twist', required: false, primitive: 'integer'},
             altitude_angle: {wire_key: 'altitudeAngle', required: false, primitive: 'number'},
             azimuth_angle: {wire_key: 'azimuthAngle', required: false, primitive: 'number'}

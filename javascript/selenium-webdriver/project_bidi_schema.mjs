@@ -195,8 +195,12 @@ function projectEntry(e) {
   if (e.Type === 'array') return { list: projectRef(e.Values?.[0]?.Type) }
   if (e.Type === 'map') return { map: projectRef(e.ValueType ?? e.Values?.[0]?.Type), extensible: true }
   if (e.Type === 'range') {
-    const intRange = Number.isInteger(e.Value?.Min?.Value) && Number.isInteger(e.Value?.Max?.Value)
-    return { primitive: intRange ? 'integer' : 'number' } // e.g. js-uint (0..MAX) vs scale (0.1..2)
+    // A bound written as a float (`1.0`) parses to an integer `Value` carrying an `IsFloat`
+    // marker; consult it so `(0.0..1.0)` is a number range, not — as its integral bounds alone
+    // would read — an integer one. A bound with no marker falls back to its value's integralness.
+    const intBound = (b) => b && !b.IsFloat && Number.isInteger(b.Value)
+    const intRange = intBound(e.Value?.Min) && intBound(e.Value?.Max)
+    return { primitive: intRange ? 'integer' : 'number' } // e.g. js-uint (0..MAX) vs latitude (-90.0..90.0)
   }
   return { primitive: PRIMITIVES[e.Type] ?? 'unknown' }
 }

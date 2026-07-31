@@ -182,11 +182,20 @@ describe('projectType (list / union / alias defs)', () => {
           Name: 'x.F',
           PropertyType: [{ Type: 'range', Value: { Min: { Value: 0.1 }, Max: { Value: 2 } } }],
         },
+        {
+          // `(0.0..1.0)` — integral bounds, but the `IsFloat` marker makes it a number range.
+          Type: 'variable',
+          Name: 'x.W',
+          PropertyType: [
+            { Type: 'range', Value: { Min: { Value: 0, IsFloat: true }, Max: { Value: 1, IsFloat: true } } },
+          ],
+        },
       ],
       {},
     )
     assert.deepEqual(s.types['x.U'], { kind: 'alias', type: { primitive: 'integer' } })
     assert.deepEqual(s.types['x.F'], { kind: 'alias', type: { primitive: 'number' } })
+    assert.deepEqual(s.types['x.W'], { kind: 'alias', type: { primitive: 'number' } })
   })
 
   it('unwraps a control-operator (.default / .ge) wrapped field type to its inner type', () => {

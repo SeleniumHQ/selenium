@@ -129,7 +129,7 @@ module Selenium
           class ImageFormat < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: String
             attr_reader quality: untyped
-            def self.new: (type: String, ?quality: Integer) -> instance
+            def self.new: (type: String, ?quality: Numeric) -> instance
           end
 
           class ClipRectangle < ::Selenium::WebDriver::BiDi::Serialization::Union

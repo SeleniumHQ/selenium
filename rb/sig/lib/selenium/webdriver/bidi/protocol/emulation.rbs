@@ -52,14 +52,14 @@ module Selenium
           end
 
           class GeolocationCoordinates < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader latitude: Integer
-            attr_reader longitude: Integer
+            attr_reader latitude: Numeric
+            attr_reader longitude: Numeric
             attr_reader accuracy: untyped
             attr_reader altitude: untyped
             attr_reader altitude_accuracy: untyped
             attr_reader heading: untyped
             attr_reader speed: untyped
-            def self.new: (latitude: Integer, longitude: Integer, ?accuracy: Numeric, ?altitude: Numeric?, ?altitude_accuracy: Numeric?, ?heading: Integer?, ?speed: Numeric?) -> instance
+            def self.new: (latitude: Numeric, longitude: Numeric, ?accuracy: Numeric, ?altitude: Numeric?, ?altitude_accuracy: Numeric?, ?heading: Numeric?, ?speed: Numeric?) -> instance
           end
 
           class GeolocationPositionError < ::Selenium::WebDriver::BiDi::Serialization::Record
