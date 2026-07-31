@@ -102,9 +102,10 @@ module Selenium
             # Checks each field's value: a required field cannot be omitted (UNSET), a non-nullable
             # field cannot be nil (nil is neither a value nor the UNSET omit-sentinel, so it would be
             # silently dropped on the wire), a nullable-const field must carry its literal (not some
-            # other value), and an enum field must be in its allowed set. The enum constant is resolved
-            # lazily so a cross-domain enum need not be loaded first. Outbound only (from +new+);
-            # inbound presence/enum are checked separately in +wire_value+/+read+.
+            # other value), a primitive field must be the matching Ruby type, and an enum field must be
+            # in its allowed set. The enum constant is resolved lazily so a cross-domain enum need not be
+            # loaded first. Outbound only (from +new+); inbound presence/primitive/enum are checked
+            # separately in +wire_value+/+read+.
             def validate_values(attributes)
               fields.each do |f|
                 value = attributes[f.name]
@@ -114,6 +115,7 @@ module Selenium
 
                 validate_const(f, value)
                 check_outbound_shape(f, value)
+                check_outbound_primitive(f, value) unless f.list
                 Serialization.validate!("#{name}##{f.name}", value, Protocol.const_get(f.enum)) if f.enum
               end
             end
@@ -135,6 +137,17 @@ module Selenium
 
               kind = field.list ? 'a list' : 'a single value'
               raise ::ArgumentError, "#{name}##{field.name} expected #{kind}, got #{value.inspect}"
+            end
+
+            # Outbound mirror of check_primitive: a primitive-typed arg (`string`/`integer`/…) must be
+            # the matching Ruby type, so a caller mistake (a string width, a float count) is a local
+            # ArgumentError here rather than a rejection the browser reports a round-trip later. A field
+            # with no primitive descriptor (enum, ref, opaque) passes; lists are skipped, as inbound does.
+            def check_outbound_primitive(field, value)
+              expected = PRIMITIVE_TYPES[field.primitive]
+              return if expected.nil? || expected.any? { |type| value.is_a?(type) }
+
+              raise ::ArgumentError, "#{name}##{field.name} expected #{field.primitive}, got #{value.inspect}"
             end
 
             def fixed?(field)

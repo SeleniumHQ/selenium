@@ -378,6 +378,25 @@ module Selenium
             end
           end
 
+          describe 'outbound primitive validation' do
+            it 'rejects a wrong-typed primitive at construction, so an invalid object cannot exist' do
+              expect { BrowsingContext::NavigateParameters.new(context: 'c', url: 123) }
+                .to raise_error(ArgumentError, /NavigateParameters#url expected string/)
+            end
+
+            it 'rejects a float for an integer field, mirroring the wire integer/number split' do
+              expect { Emulation::ScreenArea.new(width: 5.0, height: 5) }
+                .to raise_error(ArgumentError, /ScreenArea#width expected integer/)
+            end
+
+            it 'accepts either an integer or a float for a number field' do
+              klass = Emulation::GeolocationCoordinates
+
+              expect(klass.new(latitude: 0, longitude: 0, accuracy: 1.5).accuracy).to eq(1.5)
+              expect(klass.new(latitude: 0, longitude: 0, accuracy: 2).accuracy).to eq(2)
+            end
+          end
+
           describe 'enum symbol coercion' do
             it 'takes an idiomatic symbol and serializes the wire token (kebab included)' do
               params = Bluetooth::SimulateAdapterParameters.new(context: 'c', state: :powered_off)
