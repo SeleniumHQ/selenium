@@ -460,6 +460,8 @@ class WebDriver(BaseWebDriver):
         Example:
             `driver.execute_cdp_cmd("Network.getResponseBody", {"requestId": requestId})`
         """
+        if self.caps["browserName"].lower() == "firefox":
+            raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
         return self.execute("executeCdpCommand", {"cmd": cmd, "params": cmd_args})["value"]
 
     def execute(
@@ -1181,6 +1183,8 @@ class WebDriver(BaseWebDriver):
 
     @asynccontextmanager
     async def bidi_connection(self):
+        if self.caps["browserName"].lower() == "firefox":
+            raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
         global cdp
         import_cdp()
         if self.caps.get("se:cdp"):
