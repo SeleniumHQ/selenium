@@ -32,8 +32,10 @@ typed payload, and each data type a typed object. A caller creates them to send 
 
 1. **Represent payloads as typed objects, not raw maps.** Parameters, results, and event payloads must be
    typed objects: an enum is the language's closed-vocabulary type, and each variant of a union is a
-   distinct type. Where the spec marks a type extensible, the object also carries an untyped map for the
-   fields the spec does not declare; a non-extensible type does not.
+   distinct type, though variants with identical fields may share a single type that records which variant a
+   value is. Where the spec marks a type extensible, the object also carries an untyped map for the fields
+   the spec does not declare; a non-extensible type does not. A key the type declares must never appear in
+   that map.
 2. **Mirror the spec's command and field names.** Method and field names must follow the spec command
    and its wire keys, in the language's idiom.
 3. **Preserve a numeric value's full range and precision.** The native type chosen for a numeric value must
@@ -47,9 +49,9 @@ typed payload, and each data type a typed object. A caller creates them to send 
      is expected. A primitive matches by JSON kind, not language representation: `number` admits any JSON
      number, while `integer` rejects fractional or float-encoded values (including a whole-valued `5.0`).
    - **by vocabulary**: an enum value outside its defined set, a nullable constant set to anything other
-     than its literal or `null`, an unresolvable variant of a closed union (such as `script.RemoteValue`),
-     or a payload that fails to select any variant (e.g., a missing discriminator or insufficient structural
-     fields).
+     than its literal or `null`, a closed-union discriminator the spec does not declare (such as an unknown
+     `script.RemoteValue` type), or a payload that fails to select any variant (e.g., a missing
+     discriminator or insufficient structural fields).
 
 ### Outbound
 
@@ -113,7 +115,9 @@ reason would otherwise fail one of the validations above.
   value-type set is near-complete), and the carrier is a permanent cost, an unknown branch every exhaustive
   match must handle. Its one merit is recoverability: a consumer can re-derive "throw on unknown" on top of
   a carrier, but not the reverse. That does not outweigh the cost, and a binding that wants a carrier can
-  still layer one on top.
+  still layer one on top. This covers only a carrier for a discriminator the spec does not declare; a shared
+  carrier for a declared variant a binding has not modeled distinctly is the decision-1 representation
+  choice, not this behavior.
 - **Enforce required-ness inbound too** (decision 8). Error on a missing required field as the outbound path
   does. Rejected: the remote end is not ours to control, so a browser lagging a newly-required field would
   cost the caller the whole message until Selenium regenerated and shipped a fix, a hard block over a value
