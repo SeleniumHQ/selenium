@@ -113,11 +113,18 @@ module Selenium
                 raise ::ArgumentError, "#{name}##{f.name} cannot be nil" if value.nil? && !f.nullable
                 next if value.nil? || UNSET.equal?(value)
 
-                validate_const(f, value)
-                check_outbound_shape(f, value)
-                check_outbound_primitive(f, value) unless f.list
-                Serialization.validate!("#{name}##{f.name}", value, Protocol.const_get(f.enum)) if f.enum
+                validate_present(f, value)
               end
+            end
+
+            # Checks a field that carries an actual value (neither omitted nor nil): a nullable-const
+            # field against its literal, list/scalar shape, primitive type (lists excepted, as inbound
+            # does), and enum membership (resolved lazily so a cross-domain enum need not load first).
+            def validate_present(field, value)
+              validate_const(field, value)
+              check_outbound_shape(field, value)
+              check_outbound_primitive(field, value) unless field.list
+              Serialization.validate!("#{name}##{field.name}", value, Protocol.const_get(field.enum)) if field.enum
             end
 
             # A nullable constant (`literal / null`) is caller-settable but its only non-null value is
