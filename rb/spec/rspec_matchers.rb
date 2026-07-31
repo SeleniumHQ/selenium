@@ -62,9 +62,10 @@ LEVELS.each do |level, severity|
       true
     end
 
-    # Ids logged on a single line, whether tagged singly (`[:foo]`) or with several (`[:foo, :bar]`).
+    # Ids logged on a single line, whether tagged singly (`[:foo]`) or with several (`[:foo, :bar]`),
+    # including ids whose Symbol#inspect renders quoted (`[:"needs-quoting"]`).
     def ids_in(line)
-      (line[/\[:[^\]]*\]/] || '').scan(/:(\w+)/).flatten.map(&:to_sym)
+      (line[/\[:[^\]]*\]/] || '').scan(/:"([^"]+)"|:(\w+)/).flatten.compact.map(&:to_sym)
     end
 
     # Suppresses logging output to stderr while capturing it, so an expected entry does not pollute

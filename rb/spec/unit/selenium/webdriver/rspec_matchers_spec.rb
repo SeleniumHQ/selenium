@@ -46,6 +46,10 @@ module Selenium
           .to have_warning(%i[general specific], /boom/)
       end
 
+      it 'matches an id whose inspect form is quoted' do
+        expect { WebDriver.logger.warn('m', id: :'needs-quoting') }.to have_warning(:'needs-quoting')
+      end
+
       it 'only matches at the named severity' do
         expect { WebDriver.logger.warn('m', id: :warned) }.not_to have_info(:warned)
       end
