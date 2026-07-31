@@ -41,7 +41,8 @@ typed payload, and each data type a typed object. A caller creates them to send 
 3. **Preserve a numeric value's full range and precision.** The native type chosen for a numeric value must
    cover the full range the spec declares for it, with no narrowing or lossy conversion. BiDi integers stay
    within the JS safe-integer range (`js-int`/`js-uint`, `±(2^53 − 1)`): too wide for a 32-bit integer,
-   though a 64-bit integer or a double holds them exactly.
+   though a 64-bit integer or a double holds them exactly. A field with a narrower declared range may use a
+   narrower native type that still covers it.
 4. **Hold a value strictly to its declared type, with no coercion.** A value must be a valid instance of its
    declared type; the layer must treat it as invalid when it fails:
    - **structurally**: a `null` in a non-nullable field, an incorrect primitive type, a cardinality
@@ -77,8 +78,11 @@ older than the one the binding validates against.
 9. **Tolerate an undeclared field.** If the type is declared extensible, the layer must preserve the
    field in the type's map (decision 1). If it is not, the layer must log a warning that an undeclared field
    was received, and drop it.
-10. **Preserve received values faithfully.** Every value the object holds, a declared field or a retained
-    extra alike, must be exactly what the wire carried, with no normalization or lossy re-encoding.
+10. **Preserve received values faithfully.** Fidelity is of the value, not its byte-form: a binding may hold
+    any value it parses, a declared field or a retained extra alike, in an ergonomic native type (a 64-bit
+    integer for a `js-int`, a date object for a date), provided it loses nothing and can reproduce what the
+    wire carried. It must not truncate, round, re-case, or otherwise normalize a value beyond
+    recovery.
 
 An error response must error for the provided reason, an unrecognized error code included, even if that
 reason would otherwise fail one of the validations above.
