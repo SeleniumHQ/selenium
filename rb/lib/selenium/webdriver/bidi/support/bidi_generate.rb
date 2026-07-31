@@ -775,11 +775,11 @@ module BiDiGenerate
                                 wire: const['wire'], value: const['type']['const'],
                                 rbs: rbs_const(const['type']['const'])}
       fields = type['fields'].reject { |f| baked_discriminator?(f) }.map { |f| field_ir(f) }
-      # Gate the extensions store on `preserveExtras` (extensible AND re-sendable), not raw
-      # `extensible`: only a type you receive and can hand back keeps unknown wire keys. A
-      # received-only extensible type gets no store, so its unknown keys are silently ignored.
+      # Every extensible type gets the extensions store: an undeclared wire key is preserved
+      # and echoed back on any type the spec marks extensible, whether or not it is re-sendable
+      # (ADR 17786, decision 9 — extensibility alone is the signal, not send-reachability).
       TypeClass.new(ruby_name: BiDiGenerate.type_class_name(name), fields: fields,
-                    discriminator: discriminator, extensible: type['preserveExtras'] ? true : false,
+                    discriminator: discriminator, extensible: type['extensible'] ? true : false,
                     schema_name: name, synthetic: type['synthetic'] ? true : false,
                     owner: type['owner'], label: type['label'], spec_href: type['specHref'])
     end

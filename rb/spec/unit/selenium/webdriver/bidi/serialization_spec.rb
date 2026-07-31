@@ -219,9 +219,9 @@ module Selenium
               expect(parsed.as_json).to eq('sharedId' => 's1', 'webdriverValue' => 42)
             end
 
-            # A re-sendable type (reachable from a command's params, e.g. a cookie filter) keeps
-            # unknown properties so a received-then-resent payload round-trips them.
-            it 'preserves an unknown key on a re-sendable type across a receive/re-send round trip' do
+            # An extensible type keeps unknown properties so a received-then-resent payload
+            # round-trips them. Extensibility alone is the trigger (ADR 17786, decision 9).
+            it 'preserves an unknown key on an extensible type across a receive/re-send round trip' do
               parsed = nil
               expect { parsed = Storage::CookieFilter.from_json('name' => 'sid', 'x-vendor' => 'keep-me') }
                 .to have_warning(:bidi_undeclared_property)
@@ -231,14 +231,15 @@ module Selenium
             end
 
             # network.Cookie is extensible but received-only (not reachable from any command's
-            # params), so preserveExtras is false: unknown keys are ignored, not stored/echoed.
-            it 'drops an unknown key on an extensible-but-received-only type on re-serialize' do
-              wire = Network::Cookie.new(**valid_cookie_attrs).as_json.merge('x-vendor' => 'drop-me')
+            # params); it still preserves and echoes an unknown key, because extensibility — not
+            # send-reachability — is what sanctions the extra field (ADR 17786, decision 9).
+            it 'preserves an unknown key on an extensible received-only type across re-serialize' do
+              wire = Network::Cookie.new(**valid_cookie_attrs).as_json.merge('x-vendor' => 'keep-me')
               parsed = nil
               expect { parsed = Network::Cookie.from_json(wire) }.to have_warning(:bidi_undeclared_property)
 
-              expect(parsed).not_to respond_to(:extensions)
-              expect(parsed.as_json).not_to include('x-vendor')
+              expect(parsed.extensions).to eq('x-vendor' => 'keep-me')
+              expect(parsed.as_json).to include('x-vendor' => 'keep-me')
             end
 
             it 'warns on and drops an unknown key on a non-extensible type' do

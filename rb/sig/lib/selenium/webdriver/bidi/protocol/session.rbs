@@ -140,7 +140,8 @@ module Selenium
               attr_reader proxy: untyped
               attr_reader unhandled_prompt_behavior: untyped
               attr_reader web_socket_url: untyped
-              def self.new: (accept_insecure_certs: bool, browser_name: String, browser_version: String, platform_name: String, set_window_rect: bool, user_agent: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?web_socket_url: String) -> instance
+              attr_reader extensions: Hash[String, untyped]
+              def self.new: (accept_insecure_certs: bool, browser_name: String, browser_version: String, platform_name: String, set_window_rect: bool, user_agent: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?web_socket_url: String, ?extensions: Hash[String, untyped]) -> instance
             end
           end
 

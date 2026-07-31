@@ -150,7 +150,8 @@ module Selenium
             http_only: {wire_key: 'httpOnly', primitive: 'boolean'},
             secure: {wire_key: 'secure', primitive: 'boolean'},
             same_site: {wire_key: 'sameSite', enum: 'Network::SAME_SITE'},
-            expiry: {wire_key: 'expiry', required: false, primitive: 'integer'}
+            expiry: {wire_key: 'expiry', required: false, primitive: 'integer'},
+            extensible: true
           )
 
           # @api private
