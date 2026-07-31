@@ -19,6 +19,9 @@
 
 require 'websocket'
 
+WebSocket.should_raise = true
+WebSocket.max_frame_size = 100 * 1024 * 1024
+
 module Selenium
   module WebDriver
     class WebSocketConnection
@@ -109,7 +112,10 @@ module Selenium
           raise e, "WebSocket is closed (#{e.class}: #{e.message})"
         end
 
-        wait.until { @messages_mtx.synchronize { messages.delete(id) } }
+        wait.until do
+          @messages_mtx.synchronize { messages.delete(id) } ||
+            (raise Error::WebDriverError, "WebSocket listener thread is dead" unless @socket_thread&.alive?)
+        end
       end
 
       private
@@ -144,7 +150,11 @@ module Selenium
             end
           end
         rescue *CONNECTION_ERRORS, WebSocket::Error => e
-          WebDriver.logger.debug "WebSocket listener closed: #{e.class}: #{e.message}", id: :ws
+          if e.is_a?(WebSocket::Error)
+            WebDriver.logger.warn "WebSocket listener closed due to error: #{e.class}: #{e.message}", id: :ws
+          else
+            WebDriver.logger.debug "WebSocket listener closed: #{e.class}: #{e.message}", id: :ws
+          end
         end
       end
 
