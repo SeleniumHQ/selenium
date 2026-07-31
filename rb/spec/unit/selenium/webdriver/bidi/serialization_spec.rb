@@ -423,6 +423,19 @@ module Selenium
               expect(Network::AddInterceptParameters.from_json(params.as_json).phases)
                 .to eq(%i[before_request_sent auth_required])
             end
+
+            # A nullable inline literal choice (scrollbarType = "classic" / "overlay" / null) is
+            # hoisted to a named enum, so it validates as a closed vocabulary in both directions
+            # (and still admits null) rather than passing any string through as it did when opaque.
+            it 'validates a hoisted nullable inline enum, still admitting null' do
+              klass = Emulation::SetScrollbarTypeOverrideParameters
+
+              expect(klass.new(scrollbar_type: :overlay).as_json).to eq('scrollbarType' => 'overlay')
+              expect(klass.new(scrollbar_type: nil).as_json).to eq('scrollbarType' => nil)
+              expect { klass.new(scrollbar_type: :banana) }.to raise_error(ArgumentError, /must be one of/)
+              expect { klass.from_json('scrollbarType' => 'banana') }
+                .to raise_error(Error::WebDriverError, /received an unknown value/)
+            end
           end
 
           describe 'inbound shape validation' do
@@ -474,13 +487,6 @@ module Selenium
               parsed = Bluetooth::BluetoothManufacturerData.from_json('key' => 5, 'data' => 'x')
 
               expect(parsed.key).to eq(5)
-            end
-
-            # Signal 3: an inline literal choice the projector now types as `string`
-            # (scrollbarType = "classic" / "overlay" / null), previously opaque.
-            it 'raises when an inline-enum scalar field arrives as the wrong primitive' do
-              expect { Emulation::SetScrollbarTypeOverrideParameters.from_json('scrollbarType' => 123) }
-                .to raise_error(Error::WebDriverError, /scrollbar_type expected string/)
             end
 
             # Signal 3: a scalar hidden behind an alias (size -> js-uint -> integer) now carries
