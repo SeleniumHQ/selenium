@@ -1,4 +1,4 @@
-load("@rules_ruby//ruby:defs.bzl", "rb_library", "rb_test")
+load("@rules_ruby//ruby:defs.bzl", "rb_test")
 load(
     "//common:browsers.bzl",
     "COMMON_TAGS",
@@ -190,13 +190,6 @@ def rb_integration_test(
         bidi = False,
         classic = True,
         grid = True):
-    # Generate a library target that is used by //rb/spec:spec to expose all tests to //rb:rubocop.
-    rb_library(
-        name = name,
-        srcs = srcs,
-        visibility = ["//rb:__subpackages__"],
-    )
-
     for browser in browsers:
         generate_classic = BROWSERS[browser].get("classic", True)
         generate_bidi = BROWSERS[browser].get("bidi", False)
