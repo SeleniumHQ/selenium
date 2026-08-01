@@ -43,8 +43,9 @@ typed payload, and each data type a typed object. A caller creates them to send 
    within the JS safe-integer range (`js-int`/`js-uint`, `±(2^53 − 1)`): too wide for a 32-bit integer,
    though a 64-bit integer or a double holds them exactly. A field with a narrower declared range may use a
    narrower native type that still covers it.
-4. **Hold a value strictly to its declared type, with no coercion.** A value must be a valid instance of its
-   declared type; the layer must treat it as invalid when it fails:
+4. **Hold a value strictly to its declared type, with no coercion.** This is a definition, not a behavior of
+   its own: the outbound (decision 5) and inbound (decision 7) decisions are what enforce it. A value must be
+   a valid instance of its declared type; the layer must treat it as invalid when it fails:
    - **structurally**: a `null` in a non-nullable field, an incorrect primitive type, a cardinality
      mismatch (a list where a single value is declared, or vice versa), or a non-object where a typed object
      is expected. A primitive matches by JSON kind, not language representation: `number` admits any JSON
