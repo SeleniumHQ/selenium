@@ -25,12 +25,12 @@ module Selenium
       after { reset_driver! if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome }
 
       it_behaves_like 'driver that can be started concurrently', skip_if: [
-        {browser: %i[safari safari_preview]},
+        {browser_family: :safari},
         {browser: :firefox, reason: 'https://github.com/SeleniumHQ/selenium/issues/15451'},
         {driver: :remote, rbe: true, reason: 'Cannot start 2+ drivers at once.'}
       ]
 
-      it 'creates default capabilities', skip_if: {browser: %i[safari safari_preview]} do
+      it 'creates default capabilities', skip_if: {browser_family: :safari} do
         reset_driver! do |driver|
           caps = driver.capabilities
           expect(caps.proxy).to be_nil
@@ -147,7 +147,7 @@ module Selenium
         end
 
         it 'raises if invalid locator',
-           skip_if: {browser: %i[safari safari_preview], reason: 'Safari TimeoutError'} do
+           skip_if: {browser_family: :safari, reason: 'Safari TimeoutError'} do
           driver.navigate.to url_for('xhtmlTest.html')
           expect {
             driver.find_element(xpath: '*?//-')
@@ -196,7 +196,7 @@ module Selenium
           expect(near.map { |e| e.attribute('id') }).to eq(%w[topRight bottomRight center top bottom])
         end
 
-        it 'finds near another within custom distance', pending_if: {browser: %i[safari safari_preview]} do
+        it 'finds near another within custom distance', pending_if: {browser_family: :safari} do
           driver.navigate.to url_for('relative_locators.html')
 
           near = driver.find_elements(relative: {tag_name: 'td', near: {id: 'right', distance: 100}})
@@ -353,7 +353,7 @@ module Selenium
         end
 
         # Safari raises TimeoutError instead
-        it 'times out if the callback is not invoked', pending_if: {browser: %i[safari safari_preview]} do
+        it 'times out if the callback is not invoked', pending_if: {browser_family: :safari} do
           expect {
             # Script is expected to be async and explicitly callback, so this should timeout.
             driver.execute_async_script 'return 1 + 2;'

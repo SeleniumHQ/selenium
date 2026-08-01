@@ -111,7 +111,7 @@ module Selenium
               end
 
               it 'errors when option disabled',
-                 skip_if: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
+                 skip_if: {browser_family: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect {
                   multi_disabled.select_by(:text, 'Disabled')
                 }.to raise_exception(Error::UnsupportedOperationError)
@@ -140,7 +140,7 @@ module Selenium
               end
 
               it 'errors when option disabled',
-                 skip_if: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
+                 skip_if: {browser_family: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect { multi_disabled.select_by(:index, 1) }.to raise_exception(Error::UnsupportedOperationError)
               end
 
@@ -167,7 +167,7 @@ module Selenium
               end
 
               it 'errors when option disabled',
-                 skip_if: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
+                 skip_if: {browser_family: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect {
                   multi_disabled.select_by(:value, 'disabled')
                 }.to raise_exception(Error::UnsupportedOperationError)
@@ -202,7 +202,7 @@ module Selenium
               end
 
               it 'errors when option disabled',
-                 skip_if: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
+                 skip_if: {browser_family: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect {
                   single_disabled.select_by(:text, 'Disabled')
                 }.to raise_exception(Error::UnsupportedOperationError)
@@ -229,7 +229,7 @@ module Selenium
               end
 
               it 'errors when option disabled',
-                 skip_if: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
+                 skip_if: {browser_family: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect { single_disabled.select_by(:index, 1) }.to raise_exception(Error::UnsupportedOperationError)
               end
 
@@ -254,7 +254,7 @@ module Selenium
               end
 
               it 'errors when option disabled',
-                 skip_if: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
+                 skip_if: {browser_family: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect {
                   single_disabled.select_by(:value, 'disabled')
                 }.to raise_exception(Error::UnsupportedOperationError)
@@ -353,7 +353,7 @@ module Selenium
           end
 
           it 'raises exception if select contains disabled options',
-             skip_if: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
+             skip_if: {browser_family: :safari, reason: 'Safari raises no exception with disabled'} do
             select = described_class.new(driver.find_element(name: 'multi_disabled'))
 
             expect { select.select_all }.to raise_exception(Error::UnsupportedOperationError)

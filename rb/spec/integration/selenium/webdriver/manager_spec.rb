@@ -79,7 +79,7 @@ module Selenium
           expect(driver.manage.cookie_named('domain')[:domain]).to eq('.saucelabs.com')
         end
 
-        it 'does not allow setting on a different domain', pending_if: {browser: %i[safari safari_preview]} do
+        it 'does not allow setting on a different domain', pending_if: {browser_family: :safari} do
           expect {
             driver.manage.add_cookie name: 'domain',
                                      value: 'different',
@@ -163,7 +163,7 @@ module Selenium
           end
 
           it 'does not allow adding with value None when secure is false',
-             pending_if: [{browser: %i[safari safari_preview]}] do
+             pending_if: [{browser_family: :safari}] do
             expect {
               driver.manage.add_cookie name: 'samesite',
                                        value: 'none-insecure',
