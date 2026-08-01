@@ -38,6 +38,7 @@ rb_binary(
         "bidi/support/templates/error_code.rbs.erb",
         "bidi/support/templates/module.rb.erb",
         "bidi/support/templates/module.rbs.erb",
+        "common/error.rb",
         "//javascript/selenium-webdriver:create-bidi-src_schema",
         "//scripts:generated_note_template.txt",
     ],

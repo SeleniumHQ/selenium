@@ -27,10 +27,10 @@ module Selenium
       end
     end
 
-    # Signatures for the exception classes bidi/error.rb registers from CLASS_NAMES; codes shared
-    # with the classic protocol reopen their existing class.
+    # Signatures for the BiDi-only exception classes bidi/error.rb registers; codes shared with the
+    # classic protocol are already declared in common/error.rbs.
     module Error
-<%- mod.codes.each do |_wire, name| -%>
+<%- mod.new_classes.each do |name| -%>
       class <%= name %> < WebDriverError
       end
 <%- end -%>

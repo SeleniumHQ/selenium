@@ -313,8 +313,10 @@ module BiDiGenerate
   Enum = Struct.new(:constant_name, :pairs, :spec_href, keyword_init: true)
 
   # The generated Protocol::ErrorCode module (filename 'error_code'): `codes` is the [wire, class_name]
-  # pairs in schema order. Rendered through the same emit/render path as the domain modules.
-  ErrorModule = Struct.new(:filename, :codes, keyword_init: true)
+  # pairs in schema order (the full map); `new_classes` is the subset of class names the classic
+  # Error module does not already define (the ones whose RBS this file must declare). Rendered
+  # through the same emit/render path as the domain modules.
+  ErrorModule = Struct.new(:filename, :codes, :new_classes, keyword_init: true)
 
   # ref is the Protocol-relative class path for a nested structured field (nil
   # for a scalar/opaque field); list wraps it in an array. wire_key is the exact
@@ -1147,9 +1149,18 @@ module BiDiGenerate
     codes = error_code_map(schema)
     return if codes.empty?
 
-    mod = ErrorModule.new(filename: 'error_code', codes: codes)
+    mod = ErrorModule.new(filename: 'error_code', codes: codes, new_classes: bidi_only_classes(codes))
     emit([mod], output_dir, 'error_code.rb.erb', 'rb')
     emit([mod], sig_dir(output_dir), 'error_code.rbs.erb', 'rbs')
+  end
+
+  # Class names among `codes` the classic Error module does not already define — the BiDi-only codes
+  # bidi/error.rb registers and whose RBS this file must declare. Shared codes already have RBS in
+  # common/error.rbs, so re-declaring them would duplicate the classic signatures. Only the RBS needs
+  # this split; the emitted map (error_code.rb) stays the full self-contained set.
+  def self.bidi_only_classes(codes)
+    require_relative '../../common/error'
+    codes.filter_map { |_wire, name| name unless ::Selenium::WebDriver::Error.const_defined?(name, false) }
   end
 
   # Renders every module through one template and writes the result into target,
