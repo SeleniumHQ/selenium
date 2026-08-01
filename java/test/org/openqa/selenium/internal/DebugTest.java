@@ -576,5 +576,6 @@ class DebugTest {
     assertThat(Debug.isHandlerCurrentlyInstalled())
         .as("the handler was removed out from under Debug's bookkeeping by something else")
         .isFalse();
+    assertThat(Debug.isHandledBySeleniumDebugHandler("org.openqa.selenium", Level.FINE)).isFalse();
   }
 }

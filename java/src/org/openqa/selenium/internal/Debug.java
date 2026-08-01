@@ -82,8 +82,9 @@ public class Debug {
     return handler != null && handler == installedHandler;
   }
 
-  public static boolean isHandledBySeleniumDebugHandler(String loggerName, Level level) {
-    if (!isHandlerCurrentlyInstalled()) {
+  public static synchronized boolean isHandledBySeleniumDebugHandler(String loggerName, Level level) {
+    Handler handler = installedHandler;
+    if (handler == null || !Arrays.asList(SELENIUM_LOGGER.getHandlers()).contains(handler)) {
       return false;
     }
     boolean withinSeleniumHierarchy =
@@ -91,7 +92,7 @@ public class Debug {
             && (loggerName.equals("org.openqa.selenium")
                 || loggerName.startsWith("org.openqa.selenium."));
     return withinSeleniumHierarchy
-        && level.intValue() >= installedHandler.getLevel().intValue()
+        && level.intValue() >= handler.getLevel().intValue()
         && level.intValue() < Level.INFO.intValue();
   }
 

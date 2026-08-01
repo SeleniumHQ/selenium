@@ -364,6 +364,7 @@ class RetryRequestTest {
   void retryRecordsStayFineWhenSystemPropertyDebuggingIsEnabled() {
     Logger logger = Logger.getLogger(RetryRequest.class.getName());
     Level oldLevel = logger.getLevel();
+    String originalDebugProperty = System.getProperty("selenium.debug");
     List<LogRecord> records = new ArrayList<>();
     Handler handler =
         new Handler() {
@@ -381,17 +382,24 @@ class RetryRequestTest {
     handler.setLevel(Level.ALL);
     logger.setLevel(Level.ALL);
     logger.addHandler(handler);
-    System.setProperty("selenium.debug", "true");
+    System.setProperty("selenium.debug", "false");
     try {
+      System.setProperty("selenium.debug", "true");
       new RetryRequest()
           .andFinally(request -> new HttpResponse().setStatus(HTTP_UNAVAILABLE))
           .execute(new HttpRequest(GET, "/"));
 
       assertThat(records).extracting(LogRecord::getLevel).contains(Level.FINE);
     } finally {
-      System.clearProperty("selenium.debug");
+      System.setProperty("selenium.debug", "false");
+      assertThat(System.getProperty("selenium.debug")).isEqualTo("false");
       logger.removeHandler(handler);
       logger.setLevel(oldLevel);
+      if (originalDebugProperty == null) {
+        System.clearProperty("selenium.debug");
+      } else {
+        System.setProperty("selenium.debug", originalDebugProperty);
+      }
     }
   }
 }
