@@ -370,6 +370,14 @@ def test_as_json_rejects_an_object_outside_a_nested_union():
         UnionField(nested=Rect(width=1, height=2)).as_json()
 
 
+def test_a_unions_variant_classes_are_computed_once_and_cached():
+    # The transitive variant set is fixed by the schema, so it is memoized per class rather than
+    # rebuilt on every outbound validation.
+    first = NestedUnion._variant_classes()
+    assert NestedUnion._variant_classes() is first
+    assert Cat in first  # transitively, via the ObjectOnly arm
+
+
 # --- inbound: required / optional / null ---
 
 

@@ -535,6 +535,7 @@ class Union:
     _FALLBACK: str | None = None
     _DISCRIMINATOR_VALUES: frozenset[Any] | None = None
     _OBJECT_ONLY: bool = False
+    _VARIANT_CLASSES: tuple[type, ...] | None = None  # per-subclass cache; see _variant_classes
 
     @classmethod
     def _variant_classes(cls) -> tuple[type, ...]:
@@ -543,7 +544,14 @@ class Union:
         A union arm may itself be a union (e.g. ``LocalValue`` includes the ``RemoteReference``
         union, whose arms are ``SharedReference``/``RemoteObjectReference``), so a value can be a
         valid member transitively. Inbound dispatch recurses through ``from_json``; this mirrors it.
+
+        Cached per class after the first call: a union's variant set is fixed by the schema, and
+        outbound validation only runs once the value's whole type graph is imported and registered,
+        so the first computation is complete. ``__dict__`` keeps the cache off the shared base class.
         """
+        cached = cls.__dict__.get("_VARIANT_CLASSES")
+        if cached is not None:
+            return cached
         classes: list[type] = []
         seen: set[type] = set()
 
@@ -563,7 +571,8 @@ class Union:
                     classes.append(klass)
 
         collect(cls)
-        return tuple(classes)
+        cls._VARIANT_CLASSES = tuple(classes)
+        return cls._VARIANT_CLASSES
 
     @classmethod
     def validate_outbound(cls, owner: str, name: str, value: Any) -> None:
