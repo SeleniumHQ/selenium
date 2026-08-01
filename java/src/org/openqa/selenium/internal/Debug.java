@@ -73,27 +73,9 @@ public class Debug {
     return isDebugging() ? Level.INFO : Level.FINE;
   }
 
-  public static synchronized boolean isHandlerCurrentlyInstalled() {
+  static synchronized boolean isHandlerCurrentlyInstalled() {
     return installedHandler != null
         && Arrays.asList(SELENIUM_LOGGER.getHandlers()).contains(installedHandler);
-  }
-
-  public static synchronized boolean isOwnHandler(Handler handler) {
-    return handler != null && handler == installedHandler;
-  }
-
-  public static synchronized boolean isHandledBySeleniumDebugHandler(String loggerName, Level level) {
-    Handler handler = installedHandler;
-    if (handler == null || !Arrays.asList(SELENIUM_LOGGER.getHandlers()).contains(handler)) {
-      return false;
-    }
-    boolean withinSeleniumHierarchy =
-        loggerName != null
-            && (loggerName.equals("org.openqa.selenium")
-                || loggerName.startsWith("org.openqa.selenium."));
-    return withinSeleniumHierarchy
-        && level.intValue() >= handler.getLevel().intValue()
-        && level.intValue() < Level.INFO.intValue();
   }
 
   public static boolean isDebugAll() {

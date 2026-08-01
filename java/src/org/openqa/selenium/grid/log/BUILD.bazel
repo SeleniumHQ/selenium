@@ -7,7 +7,6 @@ java_library(
     visibility = [
         "//java/src/org/openqa/selenium/grid:__subpackages__",
         "//java/src/org/openqa/selenium/remote/server:__subpackages__",
-        "//java/test/org/openqa/selenium/grid/log:__pkg__",
     ],
     deps = [
         "//java:auto-service",
