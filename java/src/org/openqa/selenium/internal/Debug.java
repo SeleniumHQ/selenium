@@ -178,35 +178,19 @@ public class Debug {
     }
 
     if (shouldDebug) {
-      // Only run the level-raising bookkeeping on a genuine off->on transition. A call that
-      // reaches here merely to repair a missing handler (loggerConfigured already true) must not
-      // re-run this: doing so would overwrite levelRaisedByDebug/previousLevel with whatever the
-      // level happens to be right now, corrupting the snapshot that turning debug off later needs
-      // to restore the correct pre-debug level.
+      // Capture the original own level on a genuine off->on transition. A repair call must not
+      // overwrite this snapshot with the level it is repairing.
       if (!loggerConfigured) {
         configuredLevel = requestedLevel;
-        // Only raise the level when the logger's EFFECTIVE level is currently LESS verbose than
-        // FINE (higher intValue). A more-verbose effective level (FINER, FINEST, ALL) is left
-        // alone: lowering it would make records like W3CHttpResponseCodec's FINER diagnostics
-        // unloggable while "debugging". This decides off the effective level rather than the
-        // logger's own (possibly null/inherited) level -- a null own level with a more-verbose
-        // level set on a parent logger already means FINER-or-better records are loggable right
-        // now, and forcing this logger's own level to FINE would clobber that inherited
-        // verbosity. What gets snapshotted/restored is still the logger's own level exactly as
-        // before; only the raise/no-raise decision changes.
-        Level currentLevel = SELENIUM_LOGGER.getLevel();
-        levelRaisedByDebug =
-            effectiveLevel(SELENIUM_LOGGER).intValue() > requestedLevel.intValue();
-        if (levelRaisedByDebug) {
-          previousLevel = currentLevel;
-        } else {
-          previousLevel = null;
-        }
+        previousLevel = SELENIUM_LOGGER.getLevel();
+        levelRaisedByDebug = false;
+        levelSetByDebug = null;
       }
 
       if (effectiveLevel(SELENIUM_LOGGER).intValue() > requestedLevel.intValue()) {
         SELENIUM_LOGGER.setLevel(requestedLevel);
         levelSetByDebug = requestedLevel;
+        levelRaisedByDebug = true;
       }
 
       configuredLevel = requestedLevel;

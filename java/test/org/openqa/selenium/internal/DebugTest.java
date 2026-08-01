@@ -21,14 +21,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.ConsoleHandler;
+import java.util.logging.ErrorManager;
+import java.util.logging.Filter;
+import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -167,17 +172,35 @@ class DebugTest {
   }
 
   @Test
-  void configureLoggerLeavesUserHandlersAlone() {
+  void configureLoggerLeavesUserHandlerConfigurationAlone() throws UnsupportedEncodingException {
     Handler userHandler = new ConsoleHandler();
+    Filter userFilter = record -> false;
+    Formatter userFormatter = new SimpleFormatter();
+    ErrorManager userErrorManager = new ErrorManager();
+    userHandler.setLevel(Level.WARNING);
+    userHandler.setFilter(userFilter);
+    userHandler.setFormatter(userFormatter);
+    userHandler.setEncoding("UTF-8");
+    userHandler.setErrorManager(userErrorManager);
     seleniumLogger().addHandler(userHandler);
     try {
       System.setProperty("selenium.debug", "true");
       Debug.configureLogger();
       assertThat(seleniumLogger().getHandlers()).contains(userHandler);
+      assertThat(userHandler.getLevel()).isEqualTo(Level.WARNING);
+      assertThat(userHandler.getFilter()).isSameAs(userFilter);
+      assertThat(userHandler.getFormatter()).isSameAs(userFormatter);
+      assertThat(userHandler.getEncoding()).isEqualTo("UTF-8");
+      assertThat(userHandler.getErrorManager()).isSameAs(userErrorManager);
 
       System.clearProperty("selenium.debug");
       Debug.configureLogger();
       assertThat(seleniumLogger().getHandlers()).contains(userHandler);
+      assertThat(userHandler.getLevel()).isEqualTo(Level.WARNING);
+      assertThat(userHandler.getFilter()).isSameAs(userFilter);
+      assertThat(userHandler.getFormatter()).isSameAs(userFormatter);
+      assertThat(userHandler.getEncoding()).isEqualTo("UTF-8");
+      assertThat(userHandler.getErrorManager()).isSameAs(userErrorManager);
     } finally {
       seleniumLogger().removeHandler(userHandler);
     }
@@ -493,6 +516,33 @@ class DebugTest {
 
         System.clearProperty("selenium.debug");
         Debug.configureLogger();
+      }
+    } finally {
+      parentLogger.setLevel(oldParentLevel);
+    }
+  }
+
+  @Test
+  void configureLoggerRestoresMoreVerboseLevelAfterLateRepair() {
+    Logger parentLogger = Logger.getLogger("org.openqa");
+    Level oldParentLevel = parentLogger.getLevel();
+    parentLogger.setLevel(Level.FINER);
+    try {
+      for (boolean inherited : List.of(false, true)) {
+        seleniumLogger().setLevel(inherited ? null : Level.FINER);
+        System.setProperty("selenium.debug", "true");
+        Debug.configureLogger();
+
+        seleniumLogger().setLevel(Level.INFO);
+        Debug.configureLogger();
+
+        assertThat(seleniumLogger().isLoggable(Level.FINE)).isTrue();
+
+        System.clearProperty("selenium.debug");
+        Debug.configureLogger();
+
+        assertThat(seleniumLogger().getLevel()).isEqualTo(inherited ? null : Level.FINER);
+        assertThat(seleniumLogger().isLoggable(Level.FINER)).isTrue();
       }
     } finally {
       parentLogger.setLevel(oldParentLevel);
