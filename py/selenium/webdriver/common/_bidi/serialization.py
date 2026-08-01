@@ -462,16 +462,35 @@ def _validate_outbound(owner: str, name: str, w: _Wire, value: Any) -> None:
     _validate_outbound_scalar(owner, name, w, value)
 
 
+def _validate_ref_value(owner: str, name: str, klass: Any, value: Any) -> None:
+    """Validate an outbound value against its ref type: a record instance, or a union variant.
+
+    A record ref requires an instance of that record; a union ref requires one of its variants (or a
+    permitted bare scalar). An enum or opaque ref is left permissive, matching the inbound reader.
+    """
+    if isinstance(klass, type) and issubclass(klass, Record):
+        if not isinstance(value, klass):
+            raise BiDiSerializationError(
+                f"{owner}.{name}: expected {klass.__name__}, got {type(value).__name__} {value!r}"
+            )
+    elif isinstance(klass, type) and issubclass(klass, Union):
+        klass.validate_outbound(owner, name, value)
+
+
 def _validate_outbound_map_entry(owner: str, name: str, w: _Wire, element: Any) -> None:
     """Validate one outbound ``[key, value]`` map entry: pair shape, key type, object-only value.
 
-    Mirrors the inbound :func:`_read_map_entry` checks: an object key is a typed record instance and
-    a bare-scalar key must match the arm's ``scalar`` primitive, while the value is always an object.
+    Mirrors the inbound :func:`_read_map_entry` checks: an object key is a valid variant of the ref
+    and a bare-scalar key must match the arm's ``scalar`` primitive, while the value is always a
+    variant object of the ref.
     """
     if not (isinstance(element, list) and len(element) == 2):
         raise BiDiSerializationError(f"{owner}.{name}: expected a [key, value] pair, got {element!r}")
     key, value = element
-    if not isinstance(key, Record):
+    klass = resolve(w.ref)  # type: ignore[arg-type]
+    if isinstance(key, Record):
+        _validate_ref_value(owner, name, klass, key)
+    else:
         scalars = [s for s in (w.scalar if isinstance(w.scalar, list) else [w.scalar]) if s is not None]
         checks = [_PRIMITIVE_CHECKS[s] for s in scalars if s in _PRIMITIVE_CHECKS]
         if checks and not any(check(key) for check in checks):
@@ -482,6 +501,7 @@ def _validate_outbound_map_entry(owner: str, name: str, w: _Wire, element: Any) 
         raise BiDiSerializationError(
             f"{owner}.{name}: map value expected an object, got {type(value).__name__} {value!r}"
         )
+    _validate_ref_value(owner, name, klass, value)
 
 
 def _validate_outbound_scalar(owner: str, name: str, w: _Wire, value: Any) -> None:
@@ -490,13 +510,7 @@ def _validate_outbound_scalar(owner: str, name: str, w: _Wire, value: Any) -> No
     if w.enum is not None:
         return  # enum membership is validated at construction (__post_init__)
     if w.ref is not None:
-        klass = resolve(w.ref)
-        # Records must be passed as instances; unions/enums stay permissive (a union arm may be a
-        # bare scalar or any variant, selected via Union.build rather than checked here).
-        if isinstance(klass, type) and issubclass(klass, Record) and not isinstance(value, klass):
-            raise BiDiSerializationError(
-                f"{owner}.{name}: expected {klass.__name__}, got {type(value).__name__} {value!r}"
-            )
+        _validate_ref_value(owner, name, resolve(w.ref), value)
         return
     if w.primitive is not None:
         check = _PRIMITIVE_CHECKS.get(w.primitive)
@@ -521,6 +535,54 @@ class Union:
     _FALLBACK: str | None = None
     _DISCRIMINATOR_VALUES: frozenset[Any] | None = None
     _OBJECT_ONLY: bool = False
+
+    @classmethod
+    def _variant_classes(cls) -> tuple[type, ...]:
+        """The record classes this union resolves to, recursing through nested union arms.
+
+        A union arm may itself be a union (e.g. ``LocalValue`` includes the ``RemoteReference``
+        union, whose arms are ``SharedReference``/``RemoteObjectReference``), so a value can be a
+        valid member transitively. Inbound dispatch recurses through ``from_json``; this mirrors it.
+        """
+        classes: list[type] = []
+        seen: set[type] = set()
+
+        def collect(union: type[Union]) -> None:
+            if union in seen:
+                return
+            seen.add(union)
+            names = set(union._VARIANTS.values())
+            names.update(variant for variant, _ in union._PRESENCE)
+            if union._FALLBACK is not None:
+                names.add(union._FALLBACK)
+            for n in names:
+                klass = resolve(n)
+                if isinstance(klass, type) and issubclass(klass, Union):
+                    collect(klass)
+                elif isinstance(klass, type):
+                    classes.append(klass)
+
+        collect(cls)
+        return tuple(classes)
+
+    @classmethod
+    def validate_outbound(cls, owner: str, name: str, value: Any) -> None:
+        """Reject an outbound value that is not one of this union's variants (ADR decisions 4-5).
+
+        A variant instance passes. A bare scalar passes only for a union that has a scalar arm,
+        never an object-only one. This mirrors inbound dispatch, which errors on the same values.
+        """
+        if isinstance(value, Record):
+            if not isinstance(value, cls._variant_classes()):
+                raise BiDiSerializationError(
+                    f"{owner}.{name}: {type(value).__name__} is not a variant of {cls.__name__}"
+                )
+            return
+        if cls._OBJECT_ONLY:
+            got = type(value).__name__
+            raise BiDiSerializationError(
+                f"{owner}.{name}: expected an object variant of {cls.__name__}, got {got} {value!r}"
+            )
 
     @classmethod
     def from_json(cls, payload: Any) -> Any:

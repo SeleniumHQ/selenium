@@ -189,6 +189,22 @@ class StringMap(Record):
     )
 
 
+@register("test.NestedUnion")
+class NestedUnion(Union):
+    # An arm that is itself a union (ObjectOnly), plus a direct record arm (Circle): a value can be
+    # a member transitively (like LocalValue including the RemoteReference union).
+    _PRESENCE = (("test.ObjectOnly", ("kind",)), ("test.Circle", ("radius",)))
+
+
+@register("test.UnionField")
+@dataclass(frozen=True)
+class UnionField(Record):
+    # A record with union-typed fields: `obj` is object-only, `shape` is not (it has scalar arms).
+    obj: Any = field(default=UNSET, metadata=meta("obj", ref="test.ObjectOnly"))
+    shape: Any = field(default=UNSET, metadata=meta("shape", ref="test.Shape"))
+    nested: Any = field(default=UNSET, metadata=meta("nested", ref="test.NestedUnion"))
+
+
 # --- UNSET sentinel ---
 
 
@@ -314,6 +330,44 @@ def test_as_json_rejects_a_wrong_typed_map_key():
 def test_as_json_rejects_a_non_object_map_value():
     with pytest.raises(BiDiSerializationError, match=r"StringMap.value: map value expected an object, got str"):
         StringMap(value=[["k", "not-an-object"]]).as_json()
+
+
+def test_as_json_rejects_a_non_variant_object_map_value():
+    with pytest.raises(BiDiSerializationError, match=r"StringMap.value: Circle is not a variant of ObjectOnly"):
+        StringMap(value=[["k", Circle(radius=1)]]).as_json()
+
+
+# --- outbound union fields (ADR decisions 4-5) ---
+
+
+def test_as_json_serializes_a_valid_union_variant():
+    assert UnionField(obj=Cat(meow="hi")).as_json() == {"obj": {"meow": "hi", "kind": "cat"}}
+    assert UnionField(shape=Circle(radius=1)).as_json() == {"shape": {"radius": 1}}
+
+
+def test_as_json_rejects_a_non_variant_object_on_a_union_field():
+    with pytest.raises(BiDiSerializationError, match=r"UnionField.obj: Circle is not a variant of ObjectOnly"):
+        UnionField(obj=Circle(radius=1)).as_json()
+
+
+def test_as_json_rejects_a_scalar_on_an_object_only_union_field():
+    with pytest.raises(BiDiSerializationError, match=r"UnionField.obj: expected an object variant of ObjectOnly"):
+        UnionField(obj="cat").as_json()
+
+
+def test_as_json_allows_a_bare_scalar_on_a_non_object_only_union_field():
+    # Shape has scalar arms (not object-only), so a bare scalar passes as inbound would return it.
+    assert UnionField(shape="whatever").as_json() == {"shape": "whatever"}
+
+
+def test_as_json_accepts_a_transitively_nested_union_variant():
+    # Cat is a variant of ObjectOnly, which is itself an arm of NestedUnion — valid transitively.
+    assert UnionField(nested=Cat(meow="hi")).as_json() == {"nested": {"meow": "hi", "kind": "cat"}}
+
+
+def test_as_json_rejects_an_object_outside_a_nested_union():
+    with pytest.raises(BiDiSerializationError, match=r"UnionField.nested: Rect is not a variant of NestedUnion"):
+        UnionField(nested=Rect(width=1, height=2)).as_json()
 
 
 # --- inbound: required / optional / null ---
