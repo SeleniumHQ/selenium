@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,22 +17,27 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/common/error'
+require 'selenium/webdriver/bidi/protocol/error_code'
 
 module Selenium
   module WebDriver
+    module Error
+      # Register each BiDi-only code as a WebDriverError subclass; shared codes keep their classic class.
+      BiDi::Protocol::ErrorCode::CLASS_NAMES.each_value do |name|
+        const_set(name, Class.new(WebDriverError)) unless const_defined?(name, false)
+      end
+    end
+
     class BiDi
-      class Transport
-        @connection: untyped
-
-        def initialize: (untyped connection) -> void
-
-        def execute: (cmd: String, ?params: untyped, ?result: untyped) -> untyped
-
-        private
-
-        def serialize: (untyped params) -> untyped
-
-        def error_for: (Hash[String, untyped] reply) -> Error::WebDriverError
+      module Protocol
+        module ErrorCode
+          # The exception class for a wire error code, or WebDriverError for an unknown one.
+          def self.for(code)
+            name = code && CLASS_NAMES[code]
+            name ? Error.const_get(name) : Error::WebDriverError
+          end
+        end
       end
     end
   end

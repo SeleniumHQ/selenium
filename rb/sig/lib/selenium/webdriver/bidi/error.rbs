@@ -15,22 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 module Selenium
   module WebDriver
     class BiDi
-      class Transport
-        @connection: untyped
-
-        def initialize: (untyped connection) -> void
-
-        def execute: (cmd: String, ?params: untyped, ?result: untyped) -> untyped
-
-        private
-
-        def serialize: (untyped params) -> untyped
-
-        def error_for: (Hash[String, untyped] reply) -> Error::WebDriverError
+      module Protocol
+        module ErrorCode
+          def self.for: (String? code) -> singleton(::Selenium::WebDriver::Error::WebDriverError)
+        end
       end
     end
   end

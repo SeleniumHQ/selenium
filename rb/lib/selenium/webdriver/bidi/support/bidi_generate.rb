@@ -312,6 +312,10 @@ module BiDiGenerate
   # spec_href links to the type's definition in the live spec (nil when the schema has none).
   Enum = Struct.new(:constant_name, :pairs, :spec_href, keyword_init: true)
 
+  # The generated Protocol::ErrorCode module (filename 'error_code'): `codes` is the [wire, class_name]
+  # pairs in schema order. Rendered through the same emit/render path as the domain modules.
+  ErrorModule = Struct.new(:filename, :codes, keyword_init: true)
+
   # ref is the Protocol-relative class path for a nested structured field (nil
   # for a scalar/opaque field); list wraps it in an array. wire_key is the exact
   # JSON payload key (the schema's `wire` name, baked verbatim).
@@ -611,6 +615,12 @@ module BiDiGenerate
         Enum.new(constant_name: BiDiGenerate.screaming_snake(name.sub("#{domain}.", '')), pairs: pairs,
                  spec_href: type['specHref'])
       end
+    end
+
+    # The protocol-root ErrorCode enum's wire values (e.g. "no such frame"), in schema order.
+    # Used to generate the BiDi-specific Error subclasses. [] when the schema has no ErrorCode.
+    def error_codes
+      @types.dig('ErrorCode', 'values') || []
     end
 
     # Structured value classes (records + discriminated unions) declared under
@@ -1113,6 +1123,33 @@ module BiDiGenerate
 
     emit(modules, output_dir, 'module.rb.erb', 'rb')
     emit(modules, sig_dir(output_dir), 'module.rbs.erb', 'rbs')
+    emit_error_module(schema, output_dir)
+  end
+
+  # The ErrorCode wire values mapped to their Ruby exception class names (schema order), e.g.
+  # "no such node" => "NoSuchNodeError". This is the schema->Ruby translation: the generated file
+  # carries the Ruby names, and a hand-written pass turns them into WebDriverError subclasses under
+  # the shared Error namespace. Self-contained — no reference to the classic error module.
+  def self.error_code_map(schema)
+    schema.error_codes.map { |code| [code, error_class_name(code)] }
+  end
+
+  # WebDriver error-code string -> exception class name, matching Error.for_error's convention
+  # ("no such node" -> NoSuchNodeError). The Error suffix is normalized (not doubled) for a code
+  # already ending in "error" ("unknown error" -> UnknownError).
+  def self.error_class_name(code)
+    "#{code.split.map(&:capitalize).join.sub(/Error$/, '')}Error"
+  end
+
+  # Writes protocol/error_code.rb (+ its .rbs), the Protocol::ErrorCode map, into the same protocol
+  # dir as the generated domain files. Skipped when the schema declares no error codes.
+  def self.emit_error_module(schema, output_dir)
+    codes = error_code_map(schema)
+    return if codes.empty?
+
+    mod = ErrorModule.new(filename: 'error_code', codes: codes)
+    emit([mod], output_dir, 'error_code.rb.erb', 'rb')
+    emit([mod], sig_dir(output_dir), 'error_code.rbs.erb', 'rbs')
   end
 
   # Renders every module through one template and writes the result into target,
