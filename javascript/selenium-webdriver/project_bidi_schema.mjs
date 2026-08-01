@@ -21,7 +21,7 @@
  * The normalizer has already removed the awkward CDDL shapes, so this is a
  * straight mapping into a small vocabulary:
  *
- *   type node:  { kind: 'record', fields: [field], map?, extensible?, preserveExtras?, specHref? }
+ *   type node:  { kind: 'record', fields: [field], map?, extensible?, specHref? }
  *             | { kind: 'enum',   values: [string], specHref? }
  *             | { kind: 'union',  variants: [ref], selector, objectOnly?, specHref? }
  *             | { kind: 'alias',  type, specHref? }
@@ -43,13 +43,10 @@
  * points at the editor's draft, so for an older generated artifact the target drifts
  * from the pinned source; synthetic types (and anything neither source covers) omit it.
  *
- * Three derived signals let a binding validate the wire boundary without re-deriving
+ * Two derived signals let a binding validate the wire boundary without re-deriving
  * anything itself:
  *   `objectOnly: true`   — a union all of whose arms are object (record) types, so a
  *                          non-object payload is a schema violation, not a scalar arm.
- *   `preserveExtras: true` — an `extensible` type that can also be *sent* (reachable
- *                          from a command's params), so unknown properties received on
- *                          the wire must be stored and echoed back rather than dropped.
  *   an inline `enum` ref carries the `primitive` its literals share, so even a scalar
  *   the normalizer did not hoist to a named enum is typed rather than opaque.
  *   `scalar` on an inline `union` ref marks a union with a bare-scalar arm (a map entry's
@@ -339,47 +336,6 @@ function variantIsObject(ref, types, seen = new Set()) {
   return false // enum
 }
 
-// The type-name refs a projected ref node points at, recursing through list / map /
-// inline union / inline record. (checkSchema has an equivalent local walk for its own
-// referential checks; this module-level one feeds the reachability closure below.)
-function refNames(node) {
-  if (!node) return []
-  if (node.ref) return [node.ref]
-  if (node.list) return refNames(node.list)
-  if (node.map) return refNames(node.map)
-  if (node.union) return node.union.flatMap(refNames)
-  if (node.record) return node.record.flatMap((f) => refNames(f.type))
-  return []
-}
-
-// The type-name refs a type *node* (record / union / alias) points at: a record's
-// field and map value types, a union's variants, an alias's target.
-function typeRefNames(node) {
-  if (node.kind === 'record') {
-    const refs = node.fields.flatMap((f) => refNames(f.type))
-    if (node.map) refs.push(...refNames(node.map))
-    return refs
-  }
-  if (node.kind === 'union') return node.variants
-  if (node.kind === 'alias') return refNames(node.type)
-  return []
-}
-
-// The set of types that can be *sent*: reachable from some command's params, through
-// fields, lists, unions, maps, and nested records/aliases. Results and events are not
-// roots — a type reached only through them is received-only. `preserveExtras` gates the
-// extras store on this, so only a type you can hand back keeps unknown wire properties.
-function reSendableTypes(commands, types) {
-  const reachable = new Set()
-  const visit = (name) => {
-    if (!name || reachable.has(name) || !types[name]) return
-    reachable.add(name)
-    for (const r of typeRefNames(types[name])) visit(r)
-  }
-  for (const c of commands) if (c.params?.ref) visit(c.params.ref)
-  return reachable
-}
-
 // The constant value a record pins on wire key `k`, as `{ value }` (a string or
 // `null`), or `{ open: true }` when the field exists but is not constant (a base
 // type acting as the catch-all, e.g. log.GenericLogEntry.type), or null when the
@@ -638,13 +594,6 @@ export function projectSchema(ast, model, links = {}) {
       events.push(ev)
     }
   }
-
-  // An extensible type keeps unknown wire properties only when it is also re-sendable
-  // (reachable from a command's params) — a type you receive and can hand back, so its
-  // extras must round-trip. A received-only extensible type drops them.
-  const reSendable = reSendableTypes(commands, types)
-  for (const [name, node] of Object.entries(types))
-    if (node.extensible && reSendable.has(name)) node.preserveExtras = true
 
   // Per-domain module links, for a binding that emits one class/namespace per domain.
   const domains = {}

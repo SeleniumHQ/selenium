@@ -33,7 +33,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey
           PartitionKey = Serialization::Record.define(
             user_context: {wire_key: 'userContext', required: false, primitive: 'string'},
-            source_origin: {wire_key: 'sourceOrigin', required: false, primitive: 'string'}
+            source_origin: {wire_key: 'sourceOrigin', required: false, primitive: 'string'},
+            extensible: true
           )
 
           # @api private

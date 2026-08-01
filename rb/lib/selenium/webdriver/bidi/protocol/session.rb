@@ -204,7 +204,8 @@ module Selenium
               required: false,
               ref: 'Session::UserPromptHandler'
             },
-            web_socket_url: {wire_key: 'webSocketUrl', required: false, primitive: 'string'}
+            web_socket_url: {wire_key: 'webSocketUrl', required: false, primitive: 'string'},
+            extensible: true
           )
 
           # @api private

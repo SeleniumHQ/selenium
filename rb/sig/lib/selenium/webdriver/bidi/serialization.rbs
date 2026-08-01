@@ -107,6 +107,10 @@ module Selenium
             def self.as_json: (untyped value) -> untyped
 
             def as_json: (*untyped) -> Hash[String, untyped]
+
+            private
+
+            def merge_extensions!: (Hash[String, untyped] payload) -> void
           end
         end
 

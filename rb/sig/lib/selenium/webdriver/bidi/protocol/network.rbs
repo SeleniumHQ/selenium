@@ -89,7 +89,8 @@ module Selenium
             attr_reader secure: bool
             attr_reader same_site: Symbol
             attr_reader expiry: untyped
-            def self.new: (name: String, value: ::Selenium::WebDriver::BiDi::Protocol::Network::BytesValue, domain: String, path: String, size: Integer, http_only: bool, secure: bool, same_site: Symbol, ?expiry: Integer) -> instance
+            attr_reader extensions: Hash[String, untyped]
+            def self.new: (name: String, value: ::Selenium::WebDriver::BiDi::Protocol::Network::BytesValue, domain: String, path: String, size: Integer, http_only: bool, secure: bool, same_site: Symbol, ?expiry: Integer, ?extensions: Hash[String, untyped]) -> instance
           end
 
           class CookieHeader < ::Selenium::WebDriver::BiDi::Serialization::Record
