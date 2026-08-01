@@ -36,6 +36,8 @@ public class Debug {
   private static Handler installedHandler = null;
   private static Level previousLevel = null;
   private static boolean levelRaisedByDebug = false;
+  private static Level configuredLevel = null;
+  private static Level levelSetByDebug = null;
 
   private Debug() {
     // Utility class
@@ -167,7 +169,9 @@ public class Debug {
     // reset, or unrelated code calling removeHandler() directly) can remove it without ever
     // going through configureLogger(), and that divergence must be repaired here rather than
     // silently left until the debug switch itself changes.
-    if (shouldDebug == loggerConfigured && (!shouldDebug || isHandlerCurrentlyInstalled())) {
+    if (shouldDebug == loggerConfigured
+        && (!shouldDebug
+            || (isHandlerCurrentlyInstalled() && requestedLevel.equals(configuredLevel)))) {
       return;
     }
 
@@ -178,6 +182,7 @@ public class Debug {
       // level happens to be right now, corrupting the snapshot that turning debug off later needs
       // to restore the correct pre-debug level.
       if (!loggerConfigured) {
+        configuredLevel = requestedLevel;
         // Only raise the level when the logger's EFFECTIVE level is currently LESS verbose than
         // FINE (higher intValue). A more-verbose effective level (FINER, FINEST, ALL) is left
         // alone: lowering it would make records like W3CHttpResponseCodec's FINER diagnostics
@@ -199,17 +204,20 @@ public class Debug {
 
       if (effectiveLevel(SELENIUM_LOGGER).intValue() > requestedLevel.intValue()) {
         SELENIUM_LOGGER.setLevel(requestedLevel);
+        levelSetByDebug = requestedLevel;
       }
 
-      // Runs unconditionally whenever shouldDebug is true and we reach this point -- both on a
-      // genuine turn-on and on a handler-repair call -- since that's the actual state that needs
-      // fixing in the repair case.
-      Handler handler = new ConsoleHandler();
-      handler.setLevel(Level.FINE);
-      Filter belowInfo = record -> record.getLevel().intValue() < Level.INFO.intValue();
-      handler.setFilter(belowInfo);
-      SELENIUM_LOGGER.addHandler(handler);
-      installedHandler = handler;
+      configuredLevel = requestedLevel;
+      if (isHandlerCurrentlyInstalled()) {
+        installedHandler.setLevel(requestedLevel);
+      } else {
+        Handler handler = new ConsoleHandler();
+        handler.setLevel(requestedLevel);
+        Filter belowInfo = record -> record.getLevel().intValue() < Level.INFO.intValue();
+        handler.setFilter(belowInfo);
+        SELENIUM_LOGGER.addHandler(handler);
+        installedHandler = handler;
+      }
     } else {
       // installedHandler can already be null here if it was removed externally and debugging
       // turned off before any repair call ever ran -- Logger.removeHandler(null) throws NPE per
@@ -220,14 +228,18 @@ public class Debug {
         installedHandler = null;
       }
       // Restore only when Debug itself raised the level AND nothing else changed it since. The
-      // FINE-equality guard keeps the existing "external override while debugging" protection;
+      // The equality guard keeps the existing "external override while debugging" protection;
       // levelRaisedByDebug additionally covers the case where Debug never touched the level at
       // all and so has nothing to restore.
-      if (levelRaisedByDebug && Level.FINE.equals(SELENIUM_LOGGER.getLevel())) {
+      if (levelRaisedByDebug
+          && levelSetByDebug != null
+          && levelSetByDebug.equals(SELENIUM_LOGGER.getLevel())) {
         SELENIUM_LOGGER.setLevel(previousLevel);
       }
       levelRaisedByDebug = false;
       previousLevel = null;
+      configuredLevel = null;
+      levelSetByDebug = null;
     }
 
     loggerConfigured = shouldDebug;

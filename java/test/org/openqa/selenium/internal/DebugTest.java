@@ -33,8 +33,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
+import uk.org.webcompere.systemstubs.jupiter.SystemStub;
+import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 
 @Tag("UnitTests")
+@ExtendWith(SystemStubsExtension.class)
 class DebugTest {
 
   /**
@@ -49,6 +54,8 @@ class DebugTest {
   private String oldDebugProperty;
   private String oldVerboseProperty;
   private Level oldLoggerLevel;
+
+  @SystemStub private EnvironmentVariables environment;
 
   @BeforeEach
   void storeSystemProperties() {
@@ -404,6 +411,29 @@ class DebugTest {
 
     assertThat(rootLogger.getLevel()).isEqualTo(rootLevel);
     assertThat(rootLogger.getHandlers()).containsExactlyElementsOf(rootHandlers);
+  }
+
+  @Test
+  void seDebugConfiguresFineHandlerAndRestoresLoggerLevel() {
+    environment.set("SE_DEBUG", "false");
+    Debug.configureLogger();
+    Level preDebugLevel = seleniumLogger().getLevel();
+    List<Handler> handlersBeforeDebug = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
+
+    environment.set("SE_DEBUG", "true");
+    Debug.configureLogger();
+
+    List<Handler> handlersWhileDebugging = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
+    handlersWhileDebugging.removeAll(handlersBeforeDebug);
+    assertThat(handlersWhileDebugging)
+        .singleElement()
+        .extracting(Handler::getLevel)
+        .isEqualTo(Level.FINE);
+
+    environment.set("SE_DEBUG", "false");
+    Debug.configureLogger();
+
+    assertThat(seleniumLogger().getLevel()).isEqualTo(preDebugLevel);
   }
 
   @Test
