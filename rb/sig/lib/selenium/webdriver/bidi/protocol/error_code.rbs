@@ -27,5 +27,70 @@ module Selenium
         end
       end
     end
+
+    # Signatures for the exception classes bidi/error.rb registers from CLASS_NAMES; codes shared
+    # with the classic protocol reopen their existing class.
+    module Error
+      class InvalidArgumentError < WebDriverError
+      end
+      class InvalidSelectorError < WebDriverError
+      end
+      class InvalidSessionIdError < WebDriverError
+      end
+      class InvalidWebExtensionError < WebDriverError
+      end
+      class MoveTargetOutOfBoundsError < WebDriverError
+      end
+      class NoSuchAlertError < WebDriverError
+      end
+      class NoSuchNetworkCollectorError < WebDriverError
+      end
+      class NoSuchElementError < WebDriverError
+      end
+      class NoSuchFrameError < WebDriverError
+      end
+      class NoSuchHandleError < WebDriverError
+      end
+      class NoSuchHistoryEntryError < WebDriverError
+      end
+      class NoSuchInterceptError < WebDriverError
+      end
+      class NoSuchNetworkDataError < WebDriverError
+      end
+      class NoSuchNodeError < WebDriverError
+      end
+      class NoSuchRequestError < WebDriverError
+      end
+      class NoSuchScreencastError < WebDriverError
+      end
+      class NoSuchScriptError < WebDriverError
+      end
+      class NoSuchStoragePartitionError < WebDriverError
+      end
+      class NoSuchUserContextError < WebDriverError
+      end
+      class NoSuchWebExtensionError < WebDriverError
+      end
+      class SessionNotCreatedError < WebDriverError
+      end
+      class UnableToCaptureScreenError < WebDriverError
+      end
+      class UnableToCloseBrowserError < WebDriverError
+      end
+      class UnableToSetCookieError < WebDriverError
+      end
+      class UnableToSetFileInputError < WebDriverError
+      end
+      class UnavailableNetworkDataError < WebDriverError
+      end
+      class UnderspecifiedStoragePartitionError < WebDriverError
+      end
+      class UnknownCommandError < WebDriverError
+      end
+      class UnknownError < WebDriverError
+      end
+      class UnsupportedOperationError < WebDriverError
+      end
+    end
   end
 end
