@@ -37,7 +37,7 @@ module Selenium
       end
 
       it 'does not close BiDi session if at least one window is opened',
-         pending_if: {browser: %i[safari safari_preview], reason: 'Safari always reports session.status ready: true'} do
+         pending_if: {browser_family: :safari, reason: 'Safari always reports session.status ready: true'} do
         status = driver.bidi.session.status
         expect(status.ready).to be false
         expect(status.message).to be_a String
@@ -54,7 +54,7 @@ module Selenium
       end
 
       it 'closes BiDi session if last window is closed',
-         pending_if: {browser: %i[safari safari_preview], reason: 'Safari always reports session.status ready: true'} do
+         pending_if: {browser_family: :safari, reason: 'Safari always reports session.status ready: true'} do
         status = driver.bidi.session.status
         expect(status.ready).to be false
         expect(status.message).to be_a String

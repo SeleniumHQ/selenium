@@ -66,6 +66,17 @@ module Selenium
           end
         end
 
+        def browser_family
+          case browser
+          when :chrome, :edge
+            :chromium
+          when :safari, :safari_preview
+            :safari
+          else
+            browser
+          end
+        end
+
         def browser_version
           ENV.fetch('WD_BROWSER_VERSION', 'stable')
         end
