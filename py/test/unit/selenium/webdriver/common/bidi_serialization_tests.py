@@ -110,6 +110,14 @@ class Extensible(Record):
     extensions: dict[str, Any] | UnsetType = field(default=UNSET, metadata=meta("extensions"))
 
 
+@register("test.NullableConst")
+@dataclass(frozen=True)
+class NullableConst(Record):
+    # Mirrors the generated shape of a spec ``flag: true / null`` field: a settable, nullable
+    # constant held to its literal-or-null rather than a baked (forced) discriminator.
+    flag: bool | None = field(metadata=meta("flag", required=True, nullable=True, fixed=True))
+
+
 @register("test.Cat")
 @dataclass(frozen=True)
 class Cat(Record):
@@ -475,16 +483,54 @@ def test_an_inbound_enum_value_outside_the_schema_raises():
 # --- extensible records ---
 
 
-def test_an_extensible_record_keeps_and_warns_on_undeclared_properties(caplog):
+def test_an_extensible_record_keeps_undeclared_properties_silently(caplog):
+    # An undeclared field on an extensible type is spec-sanctioned (preserved), not a deviation,
+    # so it is kept without a warning (ADR decision 1/9).
     with caplog.at_level(logging.WARNING):
         result = Extensible.from_json({"known": "k", "extra": "e", "more": 1})
     assert result.extensions == {"extra": "e", "more": 1}
-    assert "'extra'" in caplog.text
-    assert "'more'" in caplog.text
+    assert caplog.records == []
+
+
+def test_strict_inbound_does_not_reject_undeclared_properties_on_an_extensible_record():
+    # Extras are valid on an extensible type, so strict mode must not escalate them to an error.
+    with strict_inbound():
+        result = Extensible.from_json({"known": "k", "extra": "e"})
+    assert result.extensions == {"extra": "e"}
 
 
 def test_an_extensible_record_merges_captured_keys_back_on_serialization():
     assert Extensible(known="k", extensions={"extra": "e"}).as_json() == {"known": "k", "extra": "e"}
+
+
+def test_an_extension_may_not_shadow_a_declared_field_on_serialization():
+    # A key the type declares must never appear in the extras map (ADR decision 1), so an extra
+    # cannot overwrite a declared field on the wire.
+    with pytest.raises(BiDiSerializationError, match=r"shadows declared field 'known'"):
+        Extensible(known="k", extensions={"known": "evil"}).as_json()
+
+
+# --- nullable constants (ADR decision 4, by vocabulary) ---
+
+
+def test_a_nullable_constant_accepts_its_literal_and_null_outbound():
+    assert NullableConst(flag=True).as_json() == {"flag": True}
+    assert NullableConst(flag=None).as_json() == {"flag": None}
+
+
+def test_a_nullable_constant_rejects_a_non_literal_outbound():
+    with pytest.raises(BiDiSerializationError, match=r"flag: False must be True or None"):
+        NullableConst(flag=False)
+
+
+def test_a_nullable_constant_accepts_its_literal_and_null_inbound():
+    assert NullableConst.from_json({"flag": True}) == NullableConst(flag=True)
+    assert NullableConst.from_json({"flag": None}) == NullableConst(flag=None)
+
+
+def test_a_nullable_constant_rejects_a_non_literal_inbound():
+    with pytest.raises(BiDiSerializationError, match=r"flag: False is not the constant True"):
+        NullableConst.from_json({"flag": False})
 
 
 def test_a_closed_record_drops_and_warns_on_undeclared_properties(caplog):

@@ -254,9 +254,15 @@ class Record:
             if f.name == "extensions":
                 continue
             w = _wire_of(f)
-            if w.fixed is not UNSET:
-                continue
             value = getattr(self, f.name)
+            if w.fixed is not UNSET:
+                # A baked discriminator (non-nullable) is forced to its const. A nullable constant
+                # is settable and must be its literal or null (ADR decision 4, by vocabulary).
+                if w.nullable and value is not UNSET and value is not None and value != w.fixed:
+                    raise BiDiSerializationError(
+                        f"{type(self).__name__}.{f.name}: {value!r} must be {w.fixed!r} or None"
+                    )
+                continue
             if value is UNSET:
                 continue
             if value is None:
@@ -280,10 +286,12 @@ class Record:
 
     def as_json(self) -> dict:
         payload: dict = {}
+        declared: set[str] = set()
         for f in _fields(self):
             if f.name == "extensions":
                 continue
             w = _wire_of(f)
+            declared.add(w.wire)
             value = getattr(self, f.name)
             if value is UNSET:
                 # Outbound requires every required field (ADR decision 1). Enforced here at
@@ -297,7 +305,15 @@ class Record:
             _validate_outbound(type(self).__name__, f.name, w, value)
             payload[w.wire] = _as_json(value)
         if self._EXTENSIBLE:
-            payload.update(getattr(self, "extensions", None) or {})
+            extras = getattr(self, "extensions", None) or {}
+            # A key the type declares must never appear in the extras map (ADR decision 1), so an
+            # extra can never shadow a declared field on the wire — whether or not that field is set.
+            shadowed = [k for k in extras if k in declared]
+            if shadowed:
+                raise BiDiSerializationError(
+                    _summarize(type(self).__name__, "extension shadows declared field", shadowed, "not allowed")
+                )
+            payload.update({k: _as_json(v) for k, v in extras.items()})
         return payload
 
     @classmethod
@@ -311,7 +327,9 @@ class Record:
         for f in _fields(cls):
             w = _wire_of(f)
             known.add(w.wire)
-            if w.fixed is not UNSET or f.name == "extensions":
+            # A baked discriminator (non-nullable const) is forced, not read from the wire; a
+            # nullable const is read and held to its literal-or-null like any field (in _read_scalar).
+            if (w.fixed is not UNSET and not w.nullable) or f.name == "extensions":
                 continue
             if w.wire not in payload:
                 if w.required:
@@ -320,16 +338,17 @@ class Record:
                 continue
             kwargs[f.name] = _read_field(cls, f.name, w, payload)
         undeclared = [k for k in payload if k not in known]
-        # Tolerate a payload that lags or runs ahead of this schema (ADR decisions 2.2/2.3): a
-        # missing required field is left unset; an undeclared property is kept only on an
-        # extensible (re-sendable) type, else dropped. Each kind warns at most once per record —
-        # never once per key, so a verbose payload cannot flood the log; strict_inbound raises.
+        # A missing required field is tolerated and left unset (ADR decision 8). An undeclared field
+        # on an extensible type is spec-sanctioned, not a deviation: it is preserved in the extras
+        # map silently (ADR decision 1/9). On a non-extensible type it is a deviation: warn and drop.
+        # Each tolerated kind warns at most once per record — never once per key, so a verbose payload
+        # cannot flood the log; strict_inbound escalates a genuine deviation to an error.
         if missing_required:
             _tolerate(_summarize(cls.__name__, "missing required", missing_required, "left unset"))
-        if undeclared:
-            _tolerate(_summarize(cls.__name__, "undeclared", undeclared, "kept" if cls._EXTENSIBLE else "dropped"))
         if cls._EXTENSIBLE:
             kwargs["extensions"] = {k: payload[k] for k in undeclared}
+        elif undeclared:
+            _tolerate(_summarize(cls.__name__, "undeclared", undeclared, "dropped"))
         return cls(**kwargs)
 
 
@@ -396,6 +415,13 @@ _PRIMITIVE_CHECKS = {
 
 
 def _read_scalar(cls: type, name: str, w: _Wire, raw: Any) -> Any:
+    if w.fixed is not UNSET:
+        # A nullable constant (a non-nullable one is baked and never read): the wire value must be
+        # the literal, else it is invalid (ADR decision 4, by vocabulary). A null took the nullable
+        # path in _read_field before reaching here.
+        if raw != w.fixed:
+            raise BiDiSerializationError(f"{cls.__name__}.{name}: {raw!r} is not the constant {w.fixed!r}")
+        return raw
     if w.enum is not None:
         enum_cls = resolve(w.enum)
         try:

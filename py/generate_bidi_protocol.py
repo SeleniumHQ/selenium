@@ -344,10 +344,10 @@ class Schema:
             schema_name=name,
             fields=fields,
             discriminator=discriminator,
-            # Gate the extensions store on ``preserveExtras`` (extensible AND re-sendable),
-            # not raw ``extensible``: only a type you receive and can hand back keeps unknown
-            # wire keys. A received-only extensible type gets no store — it accepts and ignores.
-            extensible=bool(type_.get("preserveExtras")),
+            # A type the spec marks extensible carries an untyped map for the fields the spec does
+            # not declare (ADR decision 1); every extensible type keeps them, received-only ones
+            # included (ADR decision 9). A non-extensible type gets no store.
+            extensible=bool(type_.get("extensible")),
             spec_href=type_.get("specHref"),
         )
 
@@ -356,7 +356,10 @@ class Schema:
 
     def _field_ir(self, field_: dict) -> FieldIR:
         resolved = self._resolve(field_["type"])
-        const = field_["type"]["const"] if self._baked_discriminator(field_) else _NO_FIXED
+        # Carry a const literal whether or not it is nullable. A non-nullable const is a baked
+        # discriminator (forced, init=False); a nullable const (e.g. ``bypass: true / null``) is a
+        # settable field held to its literal-or-null by the runtime (ADR decision 4, by vocabulary).
+        const = field_["type"].get("const", _NO_FIXED)
         py, refs = self.py_type(field_["type"])
         self._pending_refs |= refs
         return FieldIR(
@@ -810,7 +813,9 @@ def _wire_args(f: FieldIR) -> list[str]:
 def _emit_field(f: FieldIR, optional_default: bool) -> str:
     meta_call = f"meta({', '.join(_wire_args(f))})"
     field_args = []
-    if f.fixed is not _NO_FIXED:
+    # Bake only a non-nullable const (a discriminator): it is forced and not constructor-settable.
+    # A nullable const stays settable so a caller can pass its literal or ``None``.
+    if f.fixed is not _NO_FIXED and not f.nullable:
         field_args += [f"default={lit(f.fixed)}", "init=False"]
     elif optional_default:
         field_args.append("default=UNSET")
