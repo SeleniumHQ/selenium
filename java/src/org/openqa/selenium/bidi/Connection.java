@@ -87,12 +87,14 @@ public class Connection implements Closeable {
    * @param client the HTTP client used to open the underlying web socket; must not be null
    * @param url the URL to open the web socket connection to; must not be null
    */
-  public Connection(HttpClient client, String url) {`n
+  public Connection(HttpClient client, String url) {
     // Reflect the current debug switches before this connection starts logging its wire
     // diagnostics at FINE -- callers that construct a Connection directly (never going through
     // RemoteWebDriver or DriverFinder) would otherwise never trigger the raise. Idempotent and
     // cheap, same pattern as DriverFinder.getBinaryPaths().
-        Require.nonNull("HTTP client", client);`n    Require.nonNull("URL to connect to", url);`n    Debug.configureLogger();
+    Require.nonNull("HTTP client", client);
+    Require.nonNull("URL to connect to", url);
+    Debug.configureLogger();
 
     this.client = client;
     this.socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
@@ -411,4 +413,3 @@ public class Connection implements Closeable {
     }
   }
 }
-

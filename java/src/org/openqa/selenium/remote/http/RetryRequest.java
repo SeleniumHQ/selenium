@@ -23,7 +23,6 @@ import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 import java.net.ConnectException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openqa.selenium.internal.Debug;
 
 public class RetryRequest implements Filter {
 
@@ -49,7 +48,7 @@ public class RetryRequest implements Filter {
 
           // must be a connection failure and check whether we have retries left for this
           if (isConnectionFailure && i < RETRIES_ON_CONNECTION_FAILURE) {
-            LOG.log(Debug.getDebugLogLevel(), "Retry #" + (i + 1) + " on ConnectException", ex);
+            LOG.log(Level.FINE, "Retry #" + (i + 1) + " on ConnectException", ex);
             continue;
           }
 
@@ -64,7 +63,7 @@ public class RetryRequest implements Filter {
 
         // must be a server error and check whether we have retries left for this
         if (isServerError && i < RETRIES_ON_SERVER_ERROR) {
-          LOG.log(Debug.getDebugLogLevel(), "Retry #" + (i + 1) + " on ServerError: " + response.getStatus());
+          LOG.log(Level.FINE, "Retry #" + (i + 1) + " on ServerError: " + response.getStatus());
           continue;
         }
 
@@ -78,4 +77,3 @@ public class RetryRequest implements Filter {
     };
   }
 }
-

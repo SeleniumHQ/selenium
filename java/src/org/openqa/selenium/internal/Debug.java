@@ -24,6 +24,7 @@ import java.util.logging.Filter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 
 /** Used to provide information about whether Selenium is running under debug mode. */
 public class Debug {
@@ -70,56 +71,15 @@ public class Debug {
     return isDebugging() ? Level.INFO : Level.FINE;
   }
 
-  /**
-   * Reports whether {@link #configureLogger()}'s handler is attached to {@code org.openqa.selenium}
-   * right now. Unlike {@link #isDebugging()} or {@link #isDebugAll()}, which read the live system
-   * property/environment variable, this reflects the handler's actual, current installation state
-   * -- the two can genuinely diverge for however long it takes some caller to next invoke {@link
-   * #configureLogger()} after a switch changes, since nothing installs or removes the handler
-   * except that call. This checks the logger's real handler list rather than trusting the {@code
-   * loggerConfigured} bookkeeping flag alone, since something outside this class can remove the
-   * handler without ever going through {@link #configureLogger()} -- e.g. {@code
-   * LogManager.getLogManager().reset()} (routine in embedding scenarios: Spring Boot's {@code
-   * JavaLoggingSystem}, a Log4j-JUL bridge, a container shutdown hook) or a direct {@code
-   * removeHandler()} call by unrelated code -- which would otherwise leave the flag stale-true.
-   *
-   * @return true when a handler installed by {@link #configureLogger()} is currently attached
-   */
   public static synchronized boolean isHandlerCurrentlyInstalled() {
     return installedHandler != null
         && Arrays.asList(SELENIUM_LOGGER.getHandlers()).contains(installedHandler);
   }
 
-  /**
-   * Reports whether {@code handler} is specifically the one {@link #configureLogger()} installed on
-   * {@code org.openqa.selenium} -- not merely whether some handler exists there. A caller that
-   * needs to strip handlers from that logger down to a clean slate (e.g. Grid's logging setup) must
-   * preserve only Debug's own handler, not every handler that happens to be attached to that
-   * logger; this lets such a caller identify exactly the one to keep without this class exposing
-   * the field itself.
-   *
-   * @param handler the handler to check; {@code null} is never Debug's own
-   * @return true when {@code handler} is the exact instance {@link #configureLogger()} installed
-   */
   public static synchronized boolean isOwnHandler(Handler handler) {
     return handler != null && handler == installedHandler;
   }
 
-  /**
-   * Reports whether a log record from {@code loggerName} at {@code level} would already be emitted
-   * by the handler {@link #configureLogger()} installs directly on {@code org.openqa.selenium} --
-   * that handler and its filter together cover exactly {@link Level#FINE}- and {@link
-   * Level#CONFIG}-range records from that logger and its descendants, whenever that handler is
-   * {@linkplain #isHandlerCurrentlyInstalled() currently installed}. A caller further up the logger
-   * hierarchy (e.g. a handler on the root logger, which receives the same record too via normal
-   * handler propagation) can use this to avoid printing it a second time, without disabling
-   * propagation itself -- which would instead silently drop every {@link Level#INFO}-and-above
-   * {@code org.openqa.selenium} record that caller would otherwise print.
-   *
-   * @param loggerName the originating logger's name; {@code null} is never covered
-   * @param level the record's level
-   * @return true when {@link #configureLogger()}'s own handler already covers this record
-   */
   public static boolean isHandledBySeleniumDebugHandler(String loggerName, Level level) {
     if (!isHandlerCurrentlyInstalled()) {
       return false;
@@ -164,6 +124,17 @@ public class Debug {
     return Level.INFO;
   }
 
+  @Nullable
+  private static Level getRequestedLogLevel() {
+    if (isDebugging()) {
+      return Level.FINE;
+    }
+    if (isDebugAll()) {
+      return Level.FINE;
+    }
+    return null;
+  }
+
   /**
    * Reflects the current debug switches ({@code -Dselenium.debug=true}, {@code
    * -Dselenium.webdriver.verbose=true}, {@code SE_DEBUG}) onto the real {@code org.openqa.selenium}
@@ -189,7 +160,8 @@ public class Debug {
    * duplicated.
    */
   public static synchronized void configureLogger() {
-    boolean shouldDebug = isDebugging() || isDebugAll();
+    Level requestedLevel = getRequestedLogLevel();
+    boolean shouldDebug = requestedLevel != null;
     // When shouldDebug is on and already configured, only skip if the handler this method
     // installed is still actually attached -- something outside this class (e.g. a LogManager
     // reset, or unrelated code calling removeHandler() directly) can remove it without ever
@@ -216,13 +188,17 @@ public class Debug {
         // verbosity. What gets snapshotted/restored is still the logger's own level exactly as
         // before; only the raise/no-raise decision changes.
         Level currentLevel = SELENIUM_LOGGER.getLevel();
-        levelRaisedByDebug = effectiveLevel(SELENIUM_LOGGER).intValue() > Level.FINE.intValue();
+        levelRaisedByDebug =
+            effectiveLevel(SELENIUM_LOGGER).intValue() > requestedLevel.intValue();
         if (levelRaisedByDebug) {
           previousLevel = currentLevel;
-          SELENIUM_LOGGER.setLevel(Level.FINE);
         } else {
           previousLevel = null;
         }
+      }
+
+      if (effectiveLevel(SELENIUM_LOGGER).intValue() > requestedLevel.intValue()) {
+        SELENIUM_LOGGER.setLevel(requestedLevel);
       }
 
       // Runs unconditionally whenever shouldDebug is true and we reach this point -- both on a

@@ -41,6 +41,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.TimeoutException;
@@ -354,5 +358,40 @@ class RetryRequestTest {
 
     assertThat(handler.execute(new HttpRequest(GET, "/"))).isSameAs(lastResponse.get());
     assertThat(count).hasValue(3);
+  }
+
+  @Test
+  void retryRecordsStayFineWhenSystemPropertyDebuggingIsEnabled() {
+    Logger logger = Logger.getLogger(RetryRequest.class.getName());
+    Level oldLevel = logger.getLevel();
+    List<LogRecord> records = new ArrayList<>();
+    Handler handler =
+        new Handler() {
+          @Override
+          public void publish(LogRecord record) {
+            records.add(record);
+          }
+
+          @Override
+          public void flush() {}
+
+          @Override
+          public void close() {}
+        };
+    handler.setLevel(Level.ALL);
+    logger.setLevel(Level.ALL);
+    logger.addHandler(handler);
+    System.setProperty("selenium.debug", "true");
+    try {
+      new RetryRequest()
+          .andFinally(request -> new HttpResponse().setStatus(HTTP_UNAVAILABLE))
+          .execute(new HttpRequest(GET, "/"));
+
+      assertThat(records).extracting(LogRecord::getLevel).contains(Level.FINE);
+    } finally {
+      System.clearProperty("selenium.debug");
+      logger.removeHandler(handler);
+      logger.setLevel(oldLevel);
+    }
   }
 }

@@ -370,6 +370,82 @@ class DebugTest {
   }
 
   @Test
+  void configureLoggerRepairRestoresHandlerAndFineLoggabilityWithoutReplacingSnapshot() {
+    Level preDebugLevel = seleniumLogger().getLevel();
+    List<Handler> handlersBeforeDebug = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
+
+    System.setProperty("selenium.debug", "true");
+    Debug.configureLogger();
+
+    List<Handler> handlersWhileDebugging = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
+    handlersWhileDebugging.removeAll(handlersBeforeDebug);
+    seleniumLogger().removeHandler(handlersWhileDebugging.get(0));
+    seleniumLogger().setLevel(Level.INFO);
+
+    Debug.configureLogger();
+
+    assertThat(Debug.isHandlerCurrentlyInstalled()).isTrue();
+    assertThat(seleniumLogger().isLoggable(Level.FINE)).isTrue();
+
+    System.clearProperty("selenium.debug");
+    Debug.configureLogger();
+
+    assertThat(seleniumLogger().getLevel()).isEqualTo(preDebugLevel);
+  }
+
+  @Test
+  void configureLoggerDoesNotChangeRootLoggerForSystemPropertyDebugging() {
+    Logger rootLogger = Logger.getLogger("");
+    Level rootLevel = rootLogger.getLevel();
+    List<Handler> rootHandlers = List.of(rootLogger.getHandlers());
+
+    System.setProperty("selenium.debug", "true");
+    Debug.configureLogger();
+
+    assertThat(rootLogger.getLevel()).isEqualTo(rootLevel);
+    assertThat(rootLogger.getHandlers()).containsExactlyElementsOf(rootHandlers);
+  }
+
+  @Test
+  void configureLoggerLeavesExplicitMoreVerboseLevelsEffective() {
+    for (Level level : List.of(Level.FINER, Level.FINEST, Level.ALL)) {
+      seleniumLogger().setLevel(level);
+      System.setProperty("selenium.debug", "true");
+
+      Debug.configureLogger();
+
+      assertThat(seleniumLogger().getLevel()).isEqualTo(level);
+      assertThat(seleniumLogger().isLoggable(level)).isTrue();
+
+      System.clearProperty("selenium.debug");
+      Debug.configureLogger();
+    }
+  }
+
+  @Test
+  void configureLoggerLeavesInheritedMoreVerboseLevelsEffective() {
+    Logger parentLogger = Logger.getLogger("org.openqa");
+    Level oldParentLevel = parentLogger.getLevel();
+    try {
+      for (Level level : List.of(Level.FINER, Level.FINEST, Level.ALL)) {
+        parentLogger.setLevel(level);
+        seleniumLogger().setLevel(null);
+        System.setProperty("selenium.debug", "true");
+
+        Debug.configureLogger();
+
+        assertThat(seleniumLogger().getLevel()).isNull();
+        assertThat(seleniumLogger().isLoggable(level)).isTrue();
+
+        System.clearProperty("selenium.debug");
+        Debug.configureLogger();
+      }
+    } finally {
+      parentLogger.setLevel(oldParentLevel);
+    }
+  }
+
+  @Test
   void isHandlerCurrentlyInstalledReflectsExternalHandlerRemoval() {
     // isHandlerCurrentlyInstalled() must answer whether Debug's handler is REALLY still attached
     // to org.openqa.selenium, not just whether Debug's own bookkeeping thinks it installed one and
