@@ -401,6 +401,30 @@ class DebugTest {
   }
 
   @Test
+  void configureLoggerRepairsLevelWithoutReplacingItsHandler() {
+    Level preDebugLevel = seleniumLogger().getLevel();
+    List<Handler> handlersBeforeDebug = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
+
+    System.setProperty("selenium.debug", "true");
+    Debug.configureLogger();
+
+    List<Handler> handlersWhileDebugging = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
+    handlersWhileDebugging.removeAll(handlersBeforeDebug);
+    Handler installedHandler = handlersWhileDebugging.get(0);
+    seleniumLogger().setLevel(Level.INFO);
+
+    Debug.configureLogger();
+
+    assertThat(seleniumLogger().getHandlers()).contains(installedHandler);
+    assertThat(seleniumLogger().isLoggable(Level.FINE)).isTrue();
+
+    System.clearProperty("selenium.debug");
+    Debug.configureLogger();
+
+    assertThat(seleniumLogger().getLevel()).isEqualTo(preDebugLevel);
+  }
+
+  @Test
   void configureLoggerDoesNotChangeRootLoggerForSystemPropertyDebugging() {
     Logger rootLogger = Logger.getLogger("");
     Level rootLevel = rootLogger.getLevel();

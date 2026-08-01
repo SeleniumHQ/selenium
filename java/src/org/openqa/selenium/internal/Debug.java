@@ -91,7 +91,7 @@ public class Debug {
             && (loggerName.equals("org.openqa.selenium")
                 || loggerName.startsWith("org.openqa.selenium."));
     return withinSeleniumHierarchy
-        && level.intValue() >= Level.FINE.intValue()
+        && level.intValue() >= installedHandler.getLevel().intValue()
         && level.intValue() < Level.INFO.intValue();
   }
 
@@ -171,7 +171,9 @@ public class Debug {
     // silently left until the debug switch itself changes.
     if (shouldDebug == loggerConfigured
         && (!shouldDebug
-            || (isHandlerCurrentlyInstalled() && requestedLevel.equals(configuredLevel)))) {
+            || (isHandlerCurrentlyInstalled()
+                && requestedLevel.equals(configuredLevel)
+                && effectiveLevel(SELENIUM_LOGGER).intValue() <= requestedLevel.intValue()))) {
       return;
     }
 
@@ -228,7 +230,7 @@ public class Debug {
         installedHandler = null;
       }
       // Restore only when Debug itself raised the level AND nothing else changed it since. The
-      // The equality guard keeps the existing "external override while debugging" protection;
+      // equality guard keeps the existing "external override while debugging" protection;
       // levelRaisedByDebug additionally covers the case where Debug never touched the level at
       // all and so has nothing to restore.
       if (levelRaisedByDebug
