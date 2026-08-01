@@ -158,8 +158,9 @@ def test_a_re_sendable_extensible_type_round_trips_unknown_wire_keys():
     assert cookie.as_json()["vendorSpecific"] == "x"
 
 
-def test_a_received_only_extensible_type_drops_unknown_wire_keys():
-    # network.Cookie is only ever received, never sent back, so unknown keys are ignored, not stored.
+def test_a_received_only_extensible_type_retains_unknown_wire_keys():
+    # network.Cookie is extensible per spec, so it retains unknown keys even though it is only ever
+    # received, never sent back — every extensible type keeps its extras (ADR decision 9).
     cookie = Cookie.from_json(
         {
             "name": "n",
@@ -173,8 +174,7 @@ def test_a_received_only_extensible_type_drops_unknown_wire_keys():
             "vendorSpecific": "x",
         }
     )
-    assert not hasattr(cookie, "extensions")
-    assert "vendorSpecific" not in cookie.as_json()
+    assert cookie.extensions == {"vendorSpecific": "x"}
 
 
 # --- construction ---
