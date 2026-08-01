@@ -39,17 +39,16 @@ typed payload, and each data type a typed object. A caller creates them to send 
 2. **Mirror the spec's command and field names.** Method and field names must follow the spec command
    and its wire keys, in the language's idiom.
 3. **Preserve a numeric value's full range and precision.** The native type chosen for a numeric value must
-   cover the full range the spec declares for it, with no narrowing or lossy conversion. BiDi integers stay
-   within the JS safe-integer range (`js-int`/`js-uint`, `±(2^53 − 1)`): too wide for a 32-bit integer,
-   though a 64-bit integer or a double holds them exactly. A field with a narrower declared range may use a
-   narrower native type that still covers it.
+   cover the full range the spec declares for it, with no narrowing or lossy conversion. BiDi integers exceed
+   a 32-bit integer's range, so a binding must not hold them in one. A field with a narrower declared range
+   may use a narrower native type that still covers it.
 4. **Hold a value strictly to its declared type, with no coercion.** This is a definition, not a behavior of
    its own: the outbound (decision 5) and inbound (decision 7) decisions are what enforce it. A value must be
    a valid instance of its declared type; the layer must treat it as invalid when it fails:
    - **structurally**: a `null` in a non-nullable field, an incorrect primitive type, a cardinality
      mismatch (a list where a single value is declared, or vice versa), or a non-object where a typed object
      is expected. A primitive matches by JSON kind, not language representation: `number` admits any JSON
-     number, while `integer` rejects fractional or float-encoded values (including a whole-valued `5.0`).
+     number, while `integer` rejects a fractional value (`5.7`) but accepts a whole one written `5` or `5.0`.
    - **by vocabulary**: an enum value outside its defined set, a nullable constant set to anything other
      than its literal or `null`, a closed-union discriminator the spec does not declare (such as an unknown
      `script.RemoteValue` type), or a payload that fails to select any variant (e.g., a missing
@@ -85,8 +84,8 @@ older than the one the binding validates against.
     wire carried. It must not truncate, round, re-case, or otherwise normalize a value beyond
     recovery.
 
-An error response must error for the provided reason, an unrecognized error code included, even if that
-reason would otherwise fail one of the validations above.
+An error response (a result the remote returns with an error code) must error for the provided reason, an
+unrecognized error code included, even if that reason would otherwise fail one of the validations above.
 
 ## Considered options
 
@@ -152,6 +151,7 @@ reason would otherwise fail one of the validations above.
   absent on receipt (decision 8); the layer validates what it controls and accepts what it does not.
 - Tolerating absence constrains the type, not just the deserializer: a static binding cannot type an inbound
   field non-null yet leave it *omitted* when missing. A nullable slot suffices for most fields (real data is
-  never `null` there, so `null` marks *omitted*); a required *nullable* field (network `context`/`navigation`,
+  never `null` there, so an *absent* field maps to `null` = *omitted*; a wire-level explicit `null` stays
+  invalid per decision 7); a required *nullable* field (network `context`/`navigation`,
   response sizes, log `text`, ~30 in all) instead needs *omitted* kept distinct from `null`. The trigger is
   schema-detectable (`required ∧ nullable`).
