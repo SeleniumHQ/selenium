@@ -310,17 +310,19 @@ module Selenium
 
             private
 
-            # Merge the passthrough extras onto the wire, erroring rather than letting an extra whose
-            # key is a declared field's wire key silently clobber that typed value — an extra is by
-            # definition a field the spec does not declare. The single gate every outbound path
-            # funnels through: +new+, +with+, and in-place +extensions+ mutation.
+            # Merge the passthrough extras onto the wire, erroring rather than letting an extra whose key
+            # is a declared field's wire key silently clobber that typed value; an extra is by definition
+            # a field the spec does not declare. Keys are stringified first so a symbol key (e.g. `name:`)
+            # cannot slip past the guard and then reappear as a duplicate wire key once serialized. The
+            # single gate every outbound path funnels through: +new+, +with+, and in-place mutation.
             def merge_extensions!(payload)
-              collisions = extensions.keys & self.class.fields.map(&:wire_key)
+              extras = extensions.transform_keys(&:to_s)
+              collisions = extras.keys & self.class.fields.map(&:wire_key)
               unless collisions.empty?
                 raise ::ArgumentError, "#{self.class.name} extensions shadow declared fields: #{collisions.join(', ')}"
               end
 
-              payload.merge!(extensions)
+              payload.merge!(extras)
             end
           end
         end

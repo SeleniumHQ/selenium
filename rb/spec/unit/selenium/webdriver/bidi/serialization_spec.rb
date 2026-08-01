@@ -253,6 +253,14 @@ module Selenium
               expect { cookie.as_json }.to raise_error(ArgumentError, /extensions shadow declared fields: name/)
             end
 
+            # A symbol key stringifies to a declared wire key on serialization, so it must trip the same
+            # guard rather than ride onto the wire as a duplicate of the typed field.
+            it 'rejects a symbol-keyed extension that shadows a declared field on serialize' do
+              cookie = Network::Cookie.new(**valid_cookie_attrs, extensions: {name: 'clobber'})
+
+              expect { cookie.as_json }.to raise_error(ArgumentError, /extensions shadow declared fields: name/)
+            end
+
             it 'warns on and drops an unknown key on a non-extensible type' do
               wire = {'type' => 'password', 'username' => 'u', 'password' => 'p', 'x-vendor' => 'v'}
               parsed = nil
