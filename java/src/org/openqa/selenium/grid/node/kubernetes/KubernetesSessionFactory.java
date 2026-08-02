@@ -41,6 +41,7 @@ import io.fabric8.kubernetes.api.model.PodSpecBuilder;
 import io.fabric8.kubernetes.api.model.PodTemplateSpecBuilder;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder;
+import io.fabric8.kubernetes.api.model.SecurityContext;
 import io.fabric8.kubernetes.api.model.Volume;
 import io.fabric8.kubernetes.api.model.VolumeBuilder;
 import io.fabric8.kubernetes.api.model.VolumeMount;
@@ -834,6 +835,13 @@ public class KubernetesSessionFactory implements SessionFactory {
       containerBuilder.withResources(resourcesBuilder.build());
     }
 
+    // Inherit the Node Pod's container securityContext (e.g. allowPrivilegeEscalation,
+    // capabilities) so browser Pods can satisfy a restricted Pod Security Standard.
+    SecurityContext containerSecurityContext = inheritedPodSpec.getContainerSecurityContext();
+    if (containerSecurityContext != null) {
+      containerBuilder.withSecurityContext(containerSecurityContext);
+    }
+
     return containerBuilder.build();
   }
 
@@ -862,13 +870,22 @@ public class KubernetesSessionFactory implements SessionFactory {
               .build());
     }
 
-    return new ContainerBuilder()
-        .withName("video")
-        .withImage(videoImage)
-        .withImagePullPolicy(imagePullPolicy)
-        .withEnv(envVars)
-        .withVolumeMounts(volumeMounts)
-        .build();
+    ContainerBuilder containerBuilder =
+        new ContainerBuilder()
+            .withName("video")
+            .withImage(videoImage)
+            .withImagePullPolicy(imagePullPolicy)
+            .withEnv(envVars)
+            .withVolumeMounts(volumeMounts);
+
+    // Inherit the Node Pod's container securityContext so the video sidecar also satisfies a
+    // restricted Pod Security Standard (all containers in the Pod must comply).
+    SecurityContext containerSecurityContext = inheritedPodSpec.getContainerSecurityContext();
+    if (containerSecurityContext != null) {
+      containerBuilder.withSecurityContext(containerSecurityContext);
+    }
+
+    return containerBuilder.build();
   }
 
   @Nullable

@@ -29,6 +29,8 @@ import io.fabric8.kubernetes.api.model.PodSpecBuilder;
 import io.fabric8.kubernetes.api.model.PodTemplateSpecBuilder;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder;
+import io.fabric8.kubernetes.api.model.SecurityContext;
+import io.fabric8.kubernetes.api.model.SecurityContextBuilder;
 import io.fabric8.kubernetes.api.model.Toleration;
 import io.fabric8.kubernetes.api.model.TolerationBuilder;
 import io.fabric8.kubernetes.api.model.Volume;
@@ -720,6 +722,87 @@ class KubernetesSessionFactoryTest {
     assertThat(job.getMetadata().getOwnerReferences()).hasSize(1);
     assertThat(job.getMetadata().getOwnerReferences().get(0).getName()).isEqualTo("node-pod-abc");
     assertThat(job.getMetadata().getOwnerReferences().get(0).getUid()).isEqualTo("pod-uid-123");
+  }
+
+  // ---- Container securityContext inheritance ----
+
+  private static InheritedPodSpec containerSecurityContextSpec(SecurityContext securityContext) {
+    return new InheritedPodSpec(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        securityContext);
+  }
+
+  private static SecurityContext restrictedSecurityContext() {
+    return new SecurityContextBuilder()
+        .withAllowPrivilegeEscalation(false)
+        .withNewCapabilities()
+        .withDrop("ALL")
+        .endCapabilities()
+        .build();
+  }
+
+  @Test
+  void imageModeBrowserContainerInheritsContainerSecurityContext() {
+    KubernetesSessionFactory factory =
+        createImageFactory(null, null, containerSecurityContextSpec(restrictedSecurityContext()));
+
+    Job job = factory.buildJobSpec("test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(browser.getSecurityContext()).isNotNull();
+    assertThat(browser.getSecurityContext().getAllowPrivilegeEscalation()).isFalse();
+    assertThat(browser.getSecurityContext().getCapabilities().getDrop()).containsExactly("ALL");
+  }
+
+  @Test
+  void imageModeBrowserContainerHasNoSecurityContextWhenNotInherited() {
+    KubernetesSessionFactory factory = createImageFactory(null, null);
+
+    Job job = factory.buildJobSpec("test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(browser.getSecurityContext()).isNull();
+  }
+
+  @Test
+  void imageModeVideoContainerInheritsContainerSecurityContext() {
+    KubernetesSessionFactory factory =
+        createImageFactory(
+            "selenium/video:latest",
+            null,
+            containerSecurityContextSpec(restrictedSecurityContext()));
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container video =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "video");
+    assertThat(video).isNotNull();
+    assertThat(video.getSecurityContext()).isNotNull();
+    assertThat(video.getSecurityContext().getAllowPrivilegeEscalation()).isFalse();
+    assertThat(video.getSecurityContext().getCapabilities().getDrop()).containsExactly("ALL");
   }
 
   // ---- Browser container env vars ----
