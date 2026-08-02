@@ -87,14 +87,21 @@ module Selenium
             # Outbound mirror of from_json: is +value+ one this union accepts? Any variant is accepted,
             # and a variant that is itself a union recurses (e.g. LocalValue's RemoteReference fallback).
             # A union with a bare-scalar arm (not object_only, e.g. input.Origin's "viewport") also admits
-            # a non-record scalar; an object_only union never does.
+            # a bare primitive; an object (a Hash or another union's record) that matched no variant does not.
             def valid_outbound?(value)
               return true if variant_refs.any? { |ref| variant_accepts?(ref, value) }
 
-              !@object_only && !value.is_a?(Record::Serializable)
+              !@object_only && scalar_arm?(value)
             end
 
             private
+
+            # A bare-scalar arm is a primitive. An object (a Hash, or a typed record from any union) had
+            # to match a variant, so from_json dispatches it rather than passing it through — and here it
+            # is rejected when no variant matched.
+            def scalar_arm?(value)
+              value.is_a?(::String) || value.is_a?(::Numeric) || value == true || value == false
+            end
 
             # Every variant's class name: the discriminated table, the presence paths, and the fallback.
             def variant_refs

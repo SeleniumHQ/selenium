@@ -143,6 +143,8 @@ module Selenium
 
           private
 
+          def self.scalar_arm?: (untyped value) -> bool
+
           def self.variant_refs: () -> Array[String]
 
           def self.variant_accepts?: (String ref, untyped value) -> bool

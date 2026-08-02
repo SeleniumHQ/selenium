@@ -470,6 +470,13 @@ module Selenium
                 .to raise_error(ArgumentError, /PointerMoveAction#origin expected Input::Origin/)
             end
 
+            # A raw Hash is an object that matched no variant, not a bare-scalar arm, so it is rejected
+            # rather than passed through untyped.
+            it 'rejects a raw Hash for a union ref with a scalar arm' do
+              expect { Input::PointerMoveAction.new(x: 0, y: 0, origin: {type: 'element'}) }
+                .to raise_error(ArgumentError, /PointerMoveAction#origin expected Input::Origin/)
+            end
+
             # A ref list validates every element against the ref, so one bad element is rejected even
             # when its siblings are valid variants.
             it 'accepts a list whose every element is a declared variant' do
