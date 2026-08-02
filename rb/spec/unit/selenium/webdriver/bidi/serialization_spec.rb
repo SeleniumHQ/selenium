@@ -417,6 +417,87 @@ module Selenium
             end
           end
 
+          describe 'outbound ref validation' do
+            # A record-typed ref: the value must be an instance of that exact record. A different
+            # record (even a sibling reference type) is a caller error caught before the wire.
+            it 'accepts the declared record for a record-typed ref' do
+              params = Input::SetFilesParameters.new(
+                context: 'c', element: Script::SharedReference.new(shared_id: 's1'), files: []
+              )
+
+              expect(params.element).to be_a(Script::SharedReference)
+            end
+
+            it 'rejects a wrong record for a record-typed ref' do
+              wrong = Script::RemoteObjectReference.new(handle: 'h')
+
+              expect { Input::SetFilesParameters.new(context: 'c', element: wrong, files: []) }
+                .to raise_error(ArgumentError, /SetFilesParameters#element expected Script::SharedReference/)
+            end
+
+            # A union-typed ref accepts any of the union's declared variants (decision 1), so a Cookie
+            # value may be either BytesValue arm.
+            it 'accepts any declared variant for a union-typed ref' do
+              string_cookie = Network::Cookie.new(**valid_cookie_attrs, value: Network::StringValue.new(value: 'YQ=='))
+              base64_cookie = Network::Cookie.new(**valid_cookie_attrs, value: Network::Base64Value.new(value: 'YQ=='))
+
+              expect(string_cookie.value).to be_a(Network::StringValue)
+              expect(base64_cookie.value).to be_a(Network::Base64Value)
+            end
+
+            # A record from a different union with the same wire shape is still not a BytesValue
+            # variant, so it is rejected rather than duck-typed onto the wire.
+            it 'rejects a variant from a different union for a union-typed ref' do
+              expect { Network::Cookie.new(**valid_cookie_attrs, value: Script::StringValue.new(value: 'x')) }
+                .to raise_error(ArgumentError, /Cookie#value expected Network::BytesValue/)
+            end
+
+            # BytesValue is object_only, so a bare scalar cannot match any arm — the outbound mirror of
+            # rejecting a non-object where a typed object is expected (decision 4).
+            it 'rejects a bare scalar for an object-only union ref' do
+              expect { Network::Cookie.new(**valid_cookie_attrs, value: 'plain') }
+                .to raise_error(ArgumentError, /Cookie#value expected Network::BytesValue/)
+            end
+
+            # A union with a bare-scalar arm (input.Origin's "viewport") still admits that scalar, but a
+            # record from another union remains a cross-union mismatch.
+            it 'accepts a bare-scalar arm for a non-object-only union ref' do
+              expect(Input::PointerMoveAction.new(x: 0, y: 0, origin: 'viewport').origin).to eq('viewport')
+            end
+
+            it 'rejects a cross-union variant even where a scalar arm exists' do
+              expect { Input::PointerMoveAction.new(x: 0, y: 0, origin: Script::StringValue.new(value: 'x')) }
+                .to raise_error(ArgumentError, /PointerMoveAction#origin expected Input::Origin/)
+            end
+
+            # A ref list validates every element against the ref, so one bad element is rejected even
+            # when its siblings are valid variants.
+            it 'accepts a list whose every element is a declared variant' do
+              array = Script::ArrayLocalValue.new(value: [Script::StringValue.new(value: 'x'),
+                                                          Script::NumberValue.new(value: 1)])
+
+              expect(array.value.size).to eq(2)
+            end
+
+            it 'validates each element of a ref list, rejecting a non-variant element' do
+              expect { Script::ArrayLocalValue.new(value: [Script::NumberValue.new(value: 1), 42]) }
+                .to raise_error(ArgumentError, /ArrayLocalValue#value expected Script::LocalValue, got 42/)
+            end
+
+            # A scalar-arm map keeps its bare-string key while still typing the value: a wrong-typed
+            # value (not a LocalValue variant) at the value position is rejected before the wire.
+            it 'rejects a non-variant value at a scalar-arm map position' do
+              expect { Script::ObjectLocalValue.new(value: [['k', 'not-a-value']]) }
+                .to raise_error(ArgumentError, /ObjectLocalValue#value expected Script::LocalValue, got "not-a-value"/)
+            end
+
+            # The bare key at a scalar-arm map position must still match the arm's primitive.
+            it 'rejects a wrong-typed bare key at a scalar-arm map position' do
+              expect { Script::ObjectLocalValue.new(value: [[42, Script::StringValue.new(value: 'x')]]) }
+                .to raise_error(ArgumentError, /ObjectLocalValue#value expected string, got 42/)
+            end
+          end
+
           describe 'enum symbol coercion' do
             it 'takes an idiomatic symbol and serializes the wire token (kebab included)' do
               params = Bluetooth::SimulateAdapterParameters.new(context: 'c', state: :powered_off)

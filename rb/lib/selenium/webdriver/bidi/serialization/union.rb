@@ -84,7 +84,28 @@ module Selenium
               raise ::ArgumentError, "invalid combination for #{name}: #{invalid.join(', ')}"
             end
 
+            # Outbound mirror of from_json: is +value+ one this union accepts? Any variant is accepted,
+            # and a variant that is itself a union recurses (e.g. LocalValue's RemoteReference fallback).
+            # A union with a bare-scalar arm (not object_only, e.g. input.Origin's "viewport") also admits
+            # a non-record scalar; an object_only union never does.
+            def valid_outbound?(value)
+              return true if variant_refs.any? { |ref| variant_accepts?(ref, value) }
+
+              !@object_only && !value.is_a?(Record::Serializable)
+            end
+
             private
+
+            # Every variant's class name: the discriminated table, the presence paths, and the fallback.
+            def variant_refs
+              @variant_refs ||= [*@variants&.values, *@presence&.keys, @fallback].compact
+            end
+
+            # A variant that is itself a union recurses; a record variant is matched by instance.
+            def variant_accepts?(ref, value)
+              klass = (@variant_classes ||= {})[ref] ||= Protocol.const_get(ref)
+              klass < Union ? klass.valid_outbound?(value) : value.is_a?(klass)
+            end
 
             # The discriminator value may legitimately be null (e.g. script.NullValue's
             # "null" tag), so it is matched by key presence.
