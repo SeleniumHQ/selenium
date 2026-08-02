@@ -1144,14 +1144,30 @@ module BiDiGenerate
   end
 
   # Writes protocol/error_code.rb (+ its .rbs), the Protocol::ErrorCode map, into the same protocol
-  # dir as the generated domain files. Skipped when the schema declares no error codes.
+  # dir as the generated domain files. With no error codes there is nothing to emit, so any stale
+  # file is removed instead (keeping regeneration a valid fix for the freshness check).
   def self.emit_error_module(schema, output_dir)
     codes = error_code_map(schema)
-    return if codes.empty?
+    if codes.empty?
+      remove_error_module(output_dir)
+      return
+    end
 
     mod = ErrorModule.new(filename: 'error_code', codes: codes, new_classes: bidi_only_classes(codes))
     emit([mod], output_dir, 'error_code.rb.erb', 'rb')
     emit([mod], sig_dir(output_dir), 'error_code.rbs.erb', 'rbs')
+  end
+
+  # Deletes a previously generated error module (source and RBS) so nothing stale lingers when the
+  # schema no longer declares error codes.
+  def self.remove_error_module(output_dir)
+    [File.join(workspace_root, output_dir, 'error_code.rb'),
+     File.join(workspace_root, sig_dir(output_dir), 'error_code.rbs')].each do |path|
+      next unless File.exist?(path)
+
+      File.delete(path)
+      warn "bidi-generate: removed #{path}"
+    end
   end
 
   # Class names among `codes` the classic Error module does not already define — the BiDi-only codes
