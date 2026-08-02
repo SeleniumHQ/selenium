@@ -313,10 +313,7 @@ internal sealed class Broker : IAsyncDisposable
                 }
                 catch (Exception ex)
                 {
-                    if (_logger.IsEnabled(LogEventLevel.Warn))
-                    {
-                        _logger.Warn($"Failed to deserialize and dispatch '{method}' event: {ex.Message}. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
-                    }
+                    _logger.Warn($"Failed to deserialize and dispatch '{method}' event: {ex.Message}. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
                 }
 
                 break;
