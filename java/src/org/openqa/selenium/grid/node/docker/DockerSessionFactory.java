@@ -311,17 +311,47 @@ public class DockerSessionFactory implements SessionFactory {
         .setCapability("se:forwardCdp", forwardCdpPath);
   }
 
-  private Container createBrowserContainer(
-      int port, Capabilities sessionCapabilities, String sessionIdentifier) {
-    Map<String, String> browserContainerEnvVars = new HashMap<>();
+  Map<String, String> createBrowserContainerEnvVars(Capabilities sessionCapabilities) {
+    Map<String, String> envVars = new HashMap<>();
+    boolean recordsInline = videoImage == null && recordVideoForSession(sessionCapabilities);
     // Enable env var to trigger video recording if session capabilities request and external video
     // container is disabled
-    if (videoImage == null && recordVideoForSession(sessionCapabilities)) {
-      browserContainerEnvVars.put("SE_RECORD_VIDEO", "true");
-      browserContainerEnvVars.put("SE_VIDEO_FILE_NAME", "auto");
-      browserContainerEnvVars.put("SE_VIDEO_RECORD_STANDALONE", "true");
+    if (recordsInline) {
+      envVars.put("SE_RECORD_VIDEO", "true");
+      envVars.put("SE_VIDEO_FILE_NAME", "auto");
+      envVars.put("SE_VIDEO_RECORD_STANDALONE", "true");
     }
-    browserContainerEnvVars.putAll(getBrowserContainerEnvVars(sessionCapabilities));
+    envVars.putAll(getBrowserContainerEnvVars(sessionCapabilities));
+    if (recordsInline && isVideoSessionSubfolder()) {
+      envVars.put("SE_VIDEO_SESSION_SUBFOLDER", "true");
+      // The recorder only creates the session subfolder while it owns the file name, so a fixed
+      // name inherited from the Node environment would silently disable it.
+      String configuredFileName = envVars.get("SE_VIDEO_FILE_NAME");
+      if (!"auto".equalsIgnoreCase(configuredFileName)) {
+        LOG.warning(
+            String.format(
+                "SE_VIDEO_SESSION_SUBFOLDER is enabled, ignoring SE_VIDEO_FILE_NAME '%s' so the"
+                    + " recorder can name videos per session",
+                configuredFileName));
+        envVars.put("SE_VIDEO_FILE_NAME", "auto");
+      }
+      if (assetsPath != null) {
+        LOG.fine(
+            String.format(
+                "Inline recording will write to %s/<sessionId>", assetsPath.getHostPath()));
+      }
+    }
+    return envVars;
+  }
+
+  boolean isVideoSessionSubfolder() {
+    return Boolean.parseBoolean(System.getenv("SE_VIDEO_SESSION_SUBFOLDER"));
+  }
+
+  private Container createBrowserContainer(
+      int port, Capabilities sessionCapabilities, String sessionIdentifier) {
+    Map<String, String> browserContainerEnvVars =
+        createBrowserContainerEnvVars(sessionCapabilities);
     long browserContainerShmMemorySize = 2147483648L; // 2GB
 
     // Generate container name: browser-<browserName>-<timestamp>-<uuid>
@@ -348,7 +378,7 @@ public class DockerSessionFactory implements SessionFactory {
     return docker.create(containerConfig);
   }
 
-  private Map<String, String> getBrowserContainerEnvVars(Capabilities sessionRequestCapabilities) {
+  Map<String, String> getBrowserContainerEnvVars(Capabilities sessionRequestCapabilities) {
     Map<String, String> envVars = new HashMap<>();
     // Passing env vars set to the child container
     setEnvVarsToContainer(envVars);
@@ -429,7 +459,7 @@ public class DockerSessionFactory implements SessionFactory {
     return videoContainer;
   }
 
-  private Map<String, String> getVideoContainerEnvVars(
+  Map<String, String> getVideoContainerEnvVars(
       Capabilities sessionRequestCapabilities, String containerIp) {
     Map<String, String> envVars = new HashMap<>();
     // Passing env vars set to the child container
@@ -441,6 +471,9 @@ public class DockerSessionFactory implements SessionFactory {
         ofNullable(getVideoFileName(sessionRequestCapabilities, "se:videoName"))
             .or(() -> ofNullable(getVideoFileName(sessionRequestCapabilities, "se:name")));
     videoName.ifPresent(name -> envVars.put("SE_VIDEO_FILE_NAME", String.format("%s.mp4", name)));
+    // The video container's bind mount is already per-session (assets/<sessionId> -> /videos), so
+    // the recorder must not nest a second session folder inside it.
+    envVars.put("SE_VIDEO_SESSION_SUBFOLDER", "false");
     return envVars;
   }
 
