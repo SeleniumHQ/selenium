@@ -103,7 +103,10 @@ module Selenium
             guards = described_class.new(example)
             guards.add_condition(:foo, false)
 
+            original = ENV.delete('SKIP_PENDING')
             expect(guards.pending_exception_guard).to be_a(Guards::Guard)
+          ensure
+            ENV['SKIP_PENDING'] = original unless original.nil?
           end
 
           it 'returns nil when the active pending guard has no exception clause',
