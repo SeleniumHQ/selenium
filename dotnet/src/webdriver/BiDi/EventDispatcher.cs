@@ -113,7 +113,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     public void DeserializeAndDispatch(string method, ref Utf8JsonReader paramsReader, Dictionary<string, JsonElement>? additionalMessageData = null)
     {
-        if (!_events.TryGetValue(method, out var slot))
+        if (_events.TryGetValue(method, out var slot))
         {
             var eventArgs = (EventArgs)(JsonSerializer.Deserialize(ref paramsReader, slot.JsonTypeInfo)
             ?? throw new BiDiException("Remote end returned null event args in the 'params' property."));
