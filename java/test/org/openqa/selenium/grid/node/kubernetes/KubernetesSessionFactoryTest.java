@@ -135,6 +135,38 @@ class KubernetesSessionFactoryTest {
         caps -> true);
   }
 
+  private static KubernetesSessionFactory createSubfolderImageFactory(
+      String videoImage, String assetsPath) {
+    Tracer tracer = Mockito.mock(Tracer.class);
+    HttpClient.Factory clientFactory = Mockito.mock(HttpClient.Factory.class);
+
+    return new KubernetesSessionFactory(
+        tracer,
+        clientFactory,
+        Duration.ofMinutes(5),
+        Duration.ofSeconds(120),
+        () -> Mockito.mock(KubernetesClient.class),
+        "selenium",
+        "selenium/standalone-chrome:latest",
+        new ImmutableCapabilities("browserName", "chrome"),
+        "IfNotPresent",
+        null,
+        Map.of(),
+        Map.of(),
+        Map.of(),
+        videoImage,
+        assetsPath,
+        InheritedPodSpec.empty(),
+        30L,
+        false,
+        caps -> true) {
+      @Override
+      boolean isVideoSessionSubfolder() {
+        return true;
+      }
+    };
+  }
+
   private static EnvVar findEnvVar(List<EnvVar> envVars, String name) {
     return envVars.stream().filter(e -> name.equals(e.getName())).findFirst().orElse(null);
   }
@@ -706,6 +738,63 @@ class KubernetesSessionFactoryTest {
     EnvVar videoFileName = findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME");
     assertThat(videoFileName).isNotNull();
     assertThat(videoFileName.getValue()).isEqualTo("test-job.mp4");
+  }
+
+  @Test
+  void browserContainerEnablesSessionSubfolderAndDropsJobFileName() {
+    KubernetesSessionFactory factory = createSubfolderImageFactory(null, "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_SESSION_SUBFOLDER"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+    // The recorder derives <name>_<sessionId>.mp4 itself; jobName naming would defeat the subfolder
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("auto");
+  }
+
+  @Test
+  void videoSidecarEnablesSessionSubfolderAndDropsJobFileName() {
+    KubernetesSessionFactory factory =
+        createSubfolderImageFactory("selenium/video:latest", "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container video =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "video");
+    assertThat(video).isNotNull();
+    assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_SESSION_SUBFOLDER"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+    assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_FILE_NAME"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("auto");
+  }
+
+  @Test
+  void noSessionSubfolderEnvVarWhenSessionDoesNotRecord() {
+    KubernetesSessionFactory factory = createSubfolderImageFactory(null, "/opt/selenium/assets");
+
+    Job job = factory.buildJobSpec("test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_SESSION_SUBFOLDER")).isNull();
   }
 
   @Test

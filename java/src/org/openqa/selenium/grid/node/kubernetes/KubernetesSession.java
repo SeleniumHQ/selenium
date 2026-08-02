@@ -97,10 +97,8 @@ public class KubernetesSession extends DefaultActiveSession {
         LOG.log(Level.WARNING, "Failed to close port-forward for session " + getId(), e);
       }
     }
-    // Delete the Job so K8s sends SIGTERM to containers (including video sidecar),
-    // then wait for the Pod to fully terminate before touching video files.
+    // Delete the Job so K8s sends SIGTERM to containers (including video sidecar).
     deleteJob();
-    waitForPodTerminated();
     relocateVideoFiles();
     super.stop();
   }
@@ -178,8 +176,13 @@ public class KubernetesSession extends DefaultActiveSession {
 
   private void relocateVideoFiles() {
     if (assetsPath == null || videoFileName == null) {
+      // Either assets are not kept, or the recorder already wrote the video to its final
+      // per-session location (SE_VIDEO_SESSION_SUBFOLDER / SE_VIDEO_FILE_NAME=auto), so there is
+      // nothing to move and no reason to wait for the Pod.
       return;
     }
+    // The file is only complete once the recorder has been signalled and the Pod has terminated.
+    waitForPodTerminated();
     Path assetsDir = Paths.get(assetsPath);
     // The recorder writes using jobName (set via SE_VIDEO_FILE_NAME at Job creation time).
     // videoFileName is the fully resolved target name (may include caps-derived name + sessionId).
