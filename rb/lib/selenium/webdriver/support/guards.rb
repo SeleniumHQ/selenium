@@ -52,10 +52,16 @@ module Selenium
           if !skipping_guard.nil?
             [:skip, skipping_guard.message]
           elsif !pending_guard.nil? && ENV.fetch('SKIP_PENDING', nil)
-            [:skip, pending_guard.message]
-          elsif !pending_guard.nil?
+            [:skip, "(skipped by SKIP_PENDING) #{pending_guard.message}"]
+          elsif !pending_guard.nil? && !pending_guard.exception?
             [:pending, pending_guard.message]
           end
+        end
+
+        # The deferred `exception:` pending guard, evaluated against the failure after the run, else nil.
+        def pending_exception_guard
+          guard = pending_guard
+          guard if disposition.nil? && guard&.exception?
         end
 
         def satisfied?(guard)
