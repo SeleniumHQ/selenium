@@ -307,7 +307,17 @@ internal sealed class Broker : IAsyncDisposable
             case TypeEvent:
                 if (method is null) throw new BiDiException($"The remote end responded with 'event' message type, but missed required 'method' property. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
 
-                _bidi.EventDispatcher.TryDeserializeAndDispatch(method, ref paramsReader, additionalMessageData);
+                try
+                {
+                    _bidi.EventDispatcher.DeserializeAndDispatch(method, ref paramsReader, additionalMessageData);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger.IsEnabled(LogEventLevel.Warn))
+                    {
+                        _logger.Warn($"Failed to deserialize and dispatch '{method}' event: {ex.Message}. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
+                    }
+                }
 
                 break;
 
