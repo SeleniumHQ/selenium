@@ -15,23 +15,25 @@
 # specific language governing permissions and limitations
 # under the License.
 
+<%= generated_note %>
 
 module Selenium
   module WebDriver
     class BiDi
-      class Transport
-        @connection: untyped
-
-        def initialize: (untyped connection) -> void
-
-        def execute: (cmd: String, ?params: untyped, ?result: untyped) -> untyped
-
-        private
-
-        def serialize: (untyped params) -> untyped
-
-        def error_for: (Hash[String, untyped] reply) -> Error::WebDriverError
+      module Protocol
+        module ErrorCode
+          CLASS_NAMES: Hash[String, String]
+        end
       end
+    end
+
+    # Signatures for the BiDi-only exception classes bidi/error.rb registers; codes shared with the
+    # classic protocol are already declared in common/error.rbs.
+    module Error
+<%- mod.new_classes.each do |name| -%>
+      class <%= name %> < WebDriverError
+      end
+<%- end -%>
     end
   end
 end

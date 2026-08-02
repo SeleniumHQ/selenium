@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,23 +17,20 @@
 # specific language governing permissions and limitations
 # under the License.
 
+<%= generated_note %>
 
 module Selenium
   module WebDriver
     class BiDi
-      class Transport
-        @connection: untyped
-
-        def initialize: (untyped connection) -> void
-
-        def execute: (cmd: String, ?params: untyped, ?result: untyped) -> untyped
-
-        private
-
-        def serialize: (untyped params) -> untyped
-
-        def error_for: (Hash[String, untyped] reply) -> Error::WebDriverError
-      end
-    end
-  end
-end
+      module Protocol
+        # The BiDi ErrorCode enum: each wire value mapped to its Ruby exception class name.
+        # @see <%= BiDiGenerate::BIDI_DOC_URL %>
+        module ErrorCode
+          CLASS_NAMES = {
+            <%= mod.codes.map { |wire, name| "'#{wire}' => '#{name}'" }.join(",\n            ") %>
+          }.freeze
+        end # ErrorCode
+      end # Protocol
+    end # BiDi
+  end # WebDriver
+end # Selenium
