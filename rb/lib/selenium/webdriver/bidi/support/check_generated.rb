@@ -41,14 +41,10 @@ module BiDiGenerate
     exit 1
   end
 
-  # Whether the checked-in protocol/error_code.rb matches what the generator would render now. With
-  # no error codes nothing is generated, so an existing file is stale and must be removed.
+  # Whether the checked-in protocol/error_code.rb matches what the generator would render now.
   def self.error_module_current?(schema, protocol_dir)
-    codes = error_code_map(schema)
+    mod = ErrorModule.new(filename: 'error_code', codes: error_code_map(schema))
     path = File.join(protocol_dir, 'error_code.rb')
-    return !File.exist?(path) if codes.empty?
-
-    mod = ErrorModule.new(filename: 'error_code', codes: codes)
     File.exist?(path) && File.read(path) == render(mod, File.join(__dir__, 'templates', 'error_code.rb.erb'))
   end
 
