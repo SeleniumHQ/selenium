@@ -41,16 +41,12 @@ class DockerSessionFactoryTest {
   private static final Capabilities RECORDING_CAPS =
       new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true);
 
-  /**
-   * Overrides the two environment-backed seams so the tests do not depend on the environment the
-   * test runner happens to have.
-   */
+  /** Stubs the inherited Node environment so the tests do not depend on the test runner's own. */
   private static class TestFactory extends DockerSessionFactory {
 
-    private final boolean sessionSubfolder;
     private final Map<String, String> inheritedEnvVars;
 
-    TestFactory(Image videoImage, boolean sessionSubfolder, Map<String, String> inheritedEnvVars) {
+    TestFactory(Image videoImage, Map<String, String> inheritedEnvVars) {
       super(
           mock(Tracer.class),
           mock(HttpClient.Factory.class),
@@ -70,13 +66,7 @@ class DockerSessionFactoryTest {
           List.of(),
           Map.of(),
           Duration.ofSeconds(10));
-      this.sessionSubfolder = sessionSubfolder;
       this.inheritedEnvVars = inheritedEnvVars;
-    }
-
-    @Override
-    boolean isVideoSessionSubfolder() {
-      return sessionSubfolder;
     }
 
     @Override
@@ -86,68 +76,63 @@ class DockerSessionFactoryTest {
   }
 
   @Test
-  void inlineRecordingKeepsFlatLayoutWhenSubfolderIsDisabled() {
-    DockerSessionFactory factory = new TestFactory(null, false, Map.of());
+  void inlineRecordingAlwaysWritesToASessionSubfolder() {
+    DockerSessionFactory factory = new TestFactory(null, Map.of());
 
     Map<String, String> envVars = factory.createBrowserContainerEnvVars(RECORDING_CAPS);
 
     assertThat(envVars).containsEntry("SE_RECORD_VIDEO", "true");
     assertThat(envVars).containsEntry("SE_VIDEO_RECORD_STANDALONE", "true");
-    assertThat(envVars).containsEntry("SE_VIDEO_FILE_NAME", "auto");
-    assertThat(envVars).doesNotContainKey("SE_VIDEO_SESSION_SUBFOLDER");
-  }
-
-  @Test
-  void inlineRecordingEnablesSessionSubfolder() {
-    DockerSessionFactory factory = new TestFactory(null, true, Map.of());
-
-    Map<String, String> envVars = factory.createBrowserContainerEnvVars(RECORDING_CAPS);
-
     assertThat(envVars).containsEntry("SE_VIDEO_SESSION_SUBFOLDER", "true");
     assertThat(envVars).containsEntry("SE_VIDEO_FILE_NAME", "auto");
   }
 
   @Test
-  void sessionSubfolderForcesRecorderManagedFileName() {
-    // video.sh only creates the session subfolder on its dynamic naming path, so an inherited
-    // fixed name would silently disable the feature.
+  void inlineRecordingOverridesAnInheritedSubfolderOptOut() {
+    // The browser container binds the assets root, so a flat layout would scatter every session's
+    // video into it.
     DockerSessionFactory factory =
-        new TestFactory(null, true, Map.of("SE_VIDEO_FILE_NAME", "video.mp4"));
+        new TestFactory(null, Map.of("SE_VIDEO_SESSION_SUBFOLDER", "false"));
+
+    Map<String, String> envVars = factory.createBrowserContainerEnvVars(RECORDING_CAPS);
+
+    assertThat(envVars).containsEntry("SE_VIDEO_SESSION_SUBFOLDER", "true");
+  }
+
+  @Test
+  void inlineRecordingOverridesAnInheritedFixedFileName() {
+    // video.sh only creates the session subfolder on its dynamic naming path, so a fixed name
+    // would silently disable the subfolder.
+    DockerSessionFactory factory = new TestFactory(null, Map.of("SE_VIDEO_FILE_NAME", "video.mp4"));
 
     Map<String, String> envVars = factory.createBrowserContainerEnvVars(RECORDING_CAPS);
 
     assertThat(envVars).containsEntry("SE_VIDEO_FILE_NAME", "auto");
     assertThat(envVars).containsEntry("SE_VIDEO_SESSION_SUBFOLDER", "true");
-  }
-
-  @Test
-  void inheritedFixedFileNameSurvivesWhenSubfolderIsDisabled() {
-    DockerSessionFactory factory =
-        new TestFactory(null, false, Map.of("SE_VIDEO_FILE_NAME", "video.mp4"));
-
-    Map<String, String> envVars = factory.createBrowserContainerEnvVars(RECORDING_CAPS);
-
-    assertThat(envVars).containsEntry("SE_VIDEO_FILE_NAME", "video.mp4");
   }
 
   @Test
   void noVideoEnvVarsWhenSessionDoesNotRecord() {
-    DockerSessionFactory factory = new TestFactory(null, true, Map.of());
+    DockerSessionFactory factory = new TestFactory(null, Map.of());
 
     Map<String, String> envVars =
         factory.createBrowserContainerEnvVars(new ImmutableCapabilities("browserName", "chrome"));
 
     assertThat(envVars).doesNotContainKey("SE_RECORD_VIDEO");
     assertThat(envVars).doesNotContainKey("SE_VIDEO_SESSION_SUBFOLDER");
+    assertThat(envVars).doesNotContainKey("SE_VIDEO_FILE_NAME");
   }
 
   @Test
-  void videoContainerNeverNestsBecauseItsBindMountIsPerSession() {
+  void videoContainerDoesNotInheritTheSessionSubfolderSetting() {
+    // The video container's bind mount is already per-session, so a "true" inherited from the Node
+    // would nest twice. The value is pinned blank, which nothing inherited can survive, and which
+    // leaves the image's own default in charge.
     Image videoImage = mock(Image.class);
-    DockerSessionFactory factory = new TestFactory(videoImage, true, Map.of());
+    DockerSessionFactory factory = new TestFactory(videoImage, Map.of());
 
     Map<String, String> envVars = factory.getVideoContainerEnvVars(RECORDING_CAPS, "10.0.0.5");
 
-    assertThat(envVars).containsEntry("SE_VIDEO_SESSION_SUBFOLDER", "false");
+    assertThat(envVars).containsEntry("SE_VIDEO_SESSION_SUBFOLDER", "");
   }
 }

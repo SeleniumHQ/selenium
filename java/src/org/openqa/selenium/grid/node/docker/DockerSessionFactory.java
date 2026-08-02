@@ -318,23 +318,24 @@ public class DockerSessionFactory implements SessionFactory {
     // container is disabled
     if (recordsInline) {
       envVars.put("SE_RECORD_VIDEO", "true");
-      envVars.put("SE_VIDEO_FILE_NAME", "auto");
       envVars.put("SE_VIDEO_RECORD_STANDALONE", "true");
     }
     envVars.putAll(getBrowserContainerEnvVars(sessionCapabilities));
-    if (recordsInline && isVideoSessionSubfolder()) {
-      envVars.put("SE_VIDEO_SESSION_SUBFOLDER", "true");
-      // The recorder only creates the session subfolder while it owns the file name, so a fixed
-      // name inherited from the Node environment would silently disable it.
-      String configuredFileName = envVars.get("SE_VIDEO_FILE_NAME");
-      if (!"auto".equalsIgnoreCase(configuredFileName)) {
+    if (recordsInline) {
+      // The browser container binds the assets root, so the recorder has to create the session
+      // folder itself, and it only does that while it owns the file name. Both are enforced over
+      // anything inherited from the Node: a flat layout or a fixed name would scatter every
+      // session's video into the assets root.
+      String inheritedFileName = envVars.get("SE_VIDEO_FILE_NAME");
+      if (inheritedFileName != null && !"auto".equalsIgnoreCase(inheritedFileName)) {
         LOG.warning(
             String.format(
-                "SE_VIDEO_SESSION_SUBFOLDER is enabled, ignoring SE_VIDEO_FILE_NAME '%s' so the"
-                    + " recorder can name videos per session",
-                configuredFileName));
-        envVars.put("SE_VIDEO_FILE_NAME", "auto");
+                "Ignoring SE_VIDEO_FILE_NAME '%s' for inline recording so the recorder can name"
+                    + " videos per session",
+                inheritedFileName));
       }
+      envVars.put("SE_VIDEO_SESSION_SUBFOLDER", "true");
+      envVars.put("SE_VIDEO_FILE_NAME", "auto");
       if (assetsPath != null) {
         LOG.fine(
             String.format(
@@ -342,10 +343,6 @@ public class DockerSessionFactory implements SessionFactory {
       }
     }
     return envVars;
-  }
-
-  boolean isVideoSessionSubfolder() {
-    return Boolean.parseBoolean(System.getenv("SE_VIDEO_SESSION_SUBFOLDER"));
   }
 
   private Container createBrowserContainer(
@@ -472,8 +469,9 @@ public class DockerSessionFactory implements SessionFactory {
             .or(() -> ofNullable(getVideoFileName(sessionRequestCapabilities, "se:name")));
     videoName.ifPresent(name -> envVars.put("SE_VIDEO_FILE_NAME", String.format("%s.mp4", name)));
     // The video container's bind mount is already per-session (assets/<sessionId> -> /videos), so
-    // the recorder must not nest a second session folder inside it.
-    envVars.put("SE_VIDEO_SESSION_SUBFOLDER", "false");
+    // the recorder must not nest a second session folder inside it. Blanking the value stops a
+    // Node-level setting from passing through and leaves the image default in charge.
+    envVars.put("SE_VIDEO_SESSION_SUBFOLDER", "");
     return envVars;
   }
 
