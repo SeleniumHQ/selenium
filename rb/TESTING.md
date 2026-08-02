@@ -179,6 +179,20 @@ it 'something', skip_if: [
 end
 ```
 
+### Exception-Aware Pending
+
+`pending_if`/`except` also accept `exception: {class:, message:}` (`message:` optional — a Regexp matches
+as a pattern, a String matches exactly, like `raise_error`). The example is marked pending only when it
+fails with that exception; a wrong exception, `invalid argument`, assertion failure, or timeout still fails.
+
+```ruby
+it 'does something', pending_if: {browser: :firefox,
+                                  exception: {class: Selenium::WebDriver::Error::WebDriverError,
+                                              message: /\Aunknown command:/},
+                                  reason: 'Firefox does not implement this command'} do
+end
+```
+
 ## Helpers
 
 From `spec_support/helpers.rb`:
