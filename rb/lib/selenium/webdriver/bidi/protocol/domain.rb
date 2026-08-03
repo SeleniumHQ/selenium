@@ -32,6 +32,10 @@ module Selenium
 
           private
 
+          # The connection this domain runs over, so a generated vendor accessor can build its
+          # sibling variant (`Moz.new(connection)`) — construction stays connection-based.
+          def connection = @transport.connection
+
           def execute(cmd:, params: nil, result: nil)
             @transport.execute(cmd: cmd, params: params, result: result)
           end

@@ -67,6 +67,11 @@ module Selenium
               wheel: 'Input::WheelSourceActions'
             )
             object_only
+
+            def self.none(**) = Input::NoneSourceActions.new(**)
+            def self.key(**) = Input::KeySourceActions.new(**)
+            def self.pointer(**) = Input::PointerSourceActions.new(**)
+            def self.wheel(**) = Input::WheelSourceActions.new(**)
           end
 
           # @api private
@@ -98,6 +103,10 @@ module Selenium
               key_up: 'Input::KeyUpAction'
             )
             object_only
+
+            def self.pause(**) = Input::PauseAction.new(**)
+            def self.key_down(**) = Input::KeyDownAction.new(**)
+            def self.key_up(**) = Input::KeyUpAction.new(**)
           end
 
           # @api private
@@ -134,6 +143,11 @@ module Selenium
               pointer_move: 'Input::PointerMoveAction'
             )
             object_only
+
+            def self.pause(**) = Input::PauseAction.new(**)
+            def self.pointer_down(**) = Input::PointerDownAction.new(**)
+            def self.pointer_up(**) = Input::PointerUpAction.new(**)
+            def self.pointer_move(**) = Input::PointerMoveAction.new(**)
           end
 
           # @api private
@@ -155,6 +169,9 @@ module Selenium
               scroll: 'Input::WheelScrollAction'
             )
             object_only
+
+            def self.pause(**) = Input::PauseAction.new(**)
+            def self.scroll(**) = Input::WheelScrollAction.new(**)
           end
 
           # @api private
@@ -257,6 +274,8 @@ module Selenium
               element: 'Input::ElementOrigin'
             )
             scalar_values 'viewport', 'pointer'
+
+            def self.element(**) = Input::ElementOrigin.new(**)
           end
 
           # @api private
@@ -286,6 +305,24 @@ module Selenium
           EVENT_TYPES = {
             'input.fileDialogOpened' => Input::FileDialogInfo
           }.freeze
+
+          def element_origin(**) = ElementOrigin.new(**)
+          def source_actions = SourceActions
+          def none_source_actions(**) = NoneSourceActions.new(**)
+          def key_source_actions(**) = KeySourceActions.new(**)
+          def key_source_action = KeySourceAction
+          def pointer_source_actions(**) = PointerSourceActions.new(**)
+          def pointer_parameters(**) = PointerParameters.new(**)
+          def pointer_source_action = PointerSourceAction
+          def wheel_source_actions(**) = WheelSourceActions.new(**)
+          def wheel_source_action = WheelSourceAction
+          def pause_action(**) = PauseAction.new(**)
+          def key_down_action(**) = KeyDownAction.new(**)
+          def key_up_action(**) = KeyUpAction.new(**)
+          def pointer_up_action(**) = PointerUpAction.new(**)
+          def pointer_down_action(**) = PointerDownAction.new(**)
+          def pointer_move_action(**) = PointerMoveAction.new(**)
+          def wheel_scroll_action(**) = WheelScrollAction.new(**)
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/

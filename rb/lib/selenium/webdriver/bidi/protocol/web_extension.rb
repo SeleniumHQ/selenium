@@ -39,6 +39,10 @@ module Selenium
               path: 'WebExtension::ExtensionPath'
             )
             object_only
+
+            def self.archive_path(**) = WebExtension::ExtensionArchivePath.new(**)
+            def self.base64(**) = WebExtension::ExtensionBase64Encoded.new(**)
+            def self.path(**) = WebExtension::ExtensionPath.new(**)
           end
 
           # @api private
@@ -82,6 +86,12 @@ module Selenium
             extension_data: {wire_key: 'extensionData', ref: 'WebExtension::ExtensionData'},
             extensible: true
           )
+
+          def extension_data = ExtensionData
+          def extension_path(**) = ExtensionPath.new(**)
+          def extension_archive_path(**) = ExtensionArchivePath.new(**)
+          def extension_base64_encoded(**) = ExtensionBase64Encoded.new(**)
+          def moz = Moz.new(connection)
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/

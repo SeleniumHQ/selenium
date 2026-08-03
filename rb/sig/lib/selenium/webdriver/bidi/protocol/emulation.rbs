@@ -31,6 +31,8 @@ module Selenium
 
           SET_SCROLLBAR_TYPE_OVERRIDE_PARAMETERS_SCROLLBAR_TYPE: Hash[Symbol, String]
 
+          type set_geolocation_override_parameters = ::Selenium::WebDriver::BiDi::Protocol::Emulation::SetGeolocationOverrideParameters::Coordinates | ::Selenium::WebDriver::BiDi::Protocol::Emulation::SetGeolocationOverrideParameters::Error
+
           class SetForcedColorsModeThemeOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader theme: Symbol?
             attr_reader contexts: untyped
@@ -149,6 +151,11 @@ module Selenium
             def self.new: (max_touch_points: Integer?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
+          def geolocation_coordinates: (latitude: Numeric, longitude: Numeric, ?accuracy: Numeric, ?altitude: Numeric?, ?altitude_accuracy: Numeric?, ?heading: Numeric?, ?speed: Numeric?) -> GeolocationCoordinates
+          def geolocation_position_error: (?type: String) -> GeolocationPositionError
+          def network_conditions_offline: (?type: String) -> NetworkConditionsOffline
+          def screen_area: (width: Integer, height: Integer) -> ScreenArea
+          def screen_orientation: (natural: Symbol, type: Symbol) -> ScreenOrientation
           def set_forced_colors_mode_theme_override: (theme: Symbol?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
           def set_geolocation_override: (?contexts: Array[String], ?user_contexts: Array[String], ?coordinates: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationCoordinates?, ?error: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationPositionError) -> untyped
           def set_locale_override: (locale: String?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped

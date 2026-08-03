@@ -27,6 +27,12 @@ module Selenium
 
           POINTER_TYPE: Hash[Symbol, String]
 
+          type source_actions = ::Selenium::WebDriver::BiDi::Protocol::Input::NoneSourceActions | ::Selenium::WebDriver::BiDi::Protocol::Input::KeySourceActions | ::Selenium::WebDriver::BiDi::Protocol::Input::PointerSourceActions | ::Selenium::WebDriver::BiDi::Protocol::Input::WheelSourceActions
+          type key_source_action = ::Selenium::WebDriver::BiDi::Protocol::Input::PauseAction | ::Selenium::WebDriver::BiDi::Protocol::Input::KeyDownAction | ::Selenium::WebDriver::BiDi::Protocol::Input::KeyUpAction
+          type pointer_source_action = ::Selenium::WebDriver::BiDi::Protocol::Input::PauseAction | ::Selenium::WebDriver::BiDi::Protocol::Input::PointerDownAction | ::Selenium::WebDriver::BiDi::Protocol::Input::PointerUpAction | ::Selenium::WebDriver::BiDi::Protocol::Input::PointerMoveAction
+          type wheel_source_action = ::Selenium::WebDriver::BiDi::Protocol::Input::PauseAction | ::Selenium::WebDriver::BiDi::Protocol::Input::WheelScrollAction
+          type origin = ::Selenium::WebDriver::BiDi::Protocol::Input::ElementOrigin | "viewport" | "pointer"
+
           class ElementOrigin < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: String
             attr_reader element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference
@@ -35,11 +41,15 @@ module Selenium
 
           class PerformActionsParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
-            attr_reader actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::SourceActions]
-            def self.new: (context: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::SourceActions]) -> instance
+            attr_reader actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::source_actions]
+            def self.new: (context: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::source_actions]) -> instance
           end
 
           class SourceActions < ::Selenium::WebDriver::BiDi::Serialization::Union
+            def self.none: (?type: String, id: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::PauseAction]) -> ::Selenium::WebDriver::BiDi::Protocol::Input::NoneSourceActions
+            def self.key: (?type: String, id: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::key_source_action]) -> ::Selenium::WebDriver::BiDi::Protocol::Input::KeySourceActions
+            def self.pointer: (?type: String, id: String, ?parameters: ::Selenium::WebDriver::BiDi::Protocol::Input::PointerParameters, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::pointer_source_action]) -> ::Selenium::WebDriver::BiDi::Protocol::Input::PointerSourceActions
+            def self.wheel: (?type: String, id: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::wheel_source_action]) -> ::Selenium::WebDriver::BiDi::Protocol::Input::WheelSourceActions
           end
 
           class NoneSourceActions < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -52,19 +62,22 @@ module Selenium
           class KeySourceActions < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: String
             attr_reader id: String
-            attr_reader actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::KeySourceAction]
-            def self.new: (?type: String, id: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::KeySourceAction]) -> instance
+            attr_reader actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::key_source_action]
+            def self.new: (?type: String, id: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::key_source_action]) -> instance
           end
 
           class KeySourceAction < ::Selenium::WebDriver::BiDi::Serialization::Union
+            def self.pause: (?type: String, ?duration: Integer) -> ::Selenium::WebDriver::BiDi::Protocol::Input::PauseAction
+            def self.key_down: (?type: String, value: String) -> ::Selenium::WebDriver::BiDi::Protocol::Input::KeyDownAction
+            def self.key_up: (?type: String, value: String) -> ::Selenium::WebDriver::BiDi::Protocol::Input::KeyUpAction
           end
 
           class PointerSourceActions < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: String
             attr_reader id: String
             attr_reader parameters: untyped
-            attr_reader actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::PointerSourceAction]
-            def self.new: (?type: String, id: String, ?parameters: ::Selenium::WebDriver::BiDi::Protocol::Input::PointerParameters, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::PointerSourceAction]) -> instance
+            attr_reader actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::pointer_source_action]
+            def self.new: (?type: String, id: String, ?parameters: ::Selenium::WebDriver::BiDi::Protocol::Input::PointerParameters, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::pointer_source_action]) -> instance
           end
 
           class PointerParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -73,16 +86,22 @@ module Selenium
           end
 
           class PointerSourceAction < ::Selenium::WebDriver::BiDi::Serialization::Union
+            def self.pause: (?type: String, ?duration: Integer) -> ::Selenium::WebDriver::BiDi::Protocol::Input::PauseAction
+            def self.pointer_down: (?type: String, button: Integer, ?width: Integer, ?height: Integer, ?pressure: Numeric, ?tangential_pressure: Numeric, ?twist: Integer, ?altitude_angle: Numeric, ?azimuth_angle: Numeric) -> ::Selenium::WebDriver::BiDi::Protocol::Input::PointerDownAction
+            def self.pointer_up: (?type: String, button: Integer) -> ::Selenium::WebDriver::BiDi::Protocol::Input::PointerUpAction
+            def self.pointer_move: (?type: String, x: Numeric, y: Numeric, ?duration: Integer, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::origin, ?width: Integer, ?height: Integer, ?pressure: Numeric, ?tangential_pressure: Numeric, ?twist: Integer, ?altitude_angle: Numeric, ?azimuth_angle: Numeric) -> ::Selenium::WebDriver::BiDi::Protocol::Input::PointerMoveAction
           end
 
           class WheelSourceActions < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: String
             attr_reader id: String
-            attr_reader actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::WheelSourceAction]
-            def self.new: (?type: String, id: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::WheelSourceAction]) -> instance
+            attr_reader actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::wheel_source_action]
+            def self.new: (?type: String, id: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::wheel_source_action]) -> instance
           end
 
           class WheelSourceAction < ::Selenium::WebDriver::BiDi::Serialization::Union
+            def self.pause: (?type: String, ?duration: Integer) -> ::Selenium::WebDriver::BiDi::Protocol::Input::PauseAction
+            def self.scroll: (?type: String, x: Integer, y: Integer, delta_x: Integer, delta_y: Integer, ?duration: Integer, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::origin) -> ::Selenium::WebDriver::BiDi::Protocol::Input::WheelScrollAction
           end
 
           class PauseAction < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -135,7 +154,7 @@ module Selenium
             attr_reader twist: untyped
             attr_reader altitude_angle: untyped
             attr_reader azimuth_angle: untyped
-            def self.new: (?type: String, x: Numeric, y: Numeric, ?duration: Integer, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::Origin, ?width: Integer, ?height: Integer, ?pressure: Numeric, ?tangential_pressure: Numeric, ?twist: Integer, ?altitude_angle: Numeric, ?azimuth_angle: Numeric) -> instance
+            def self.new: (?type: String, x: Numeric, y: Numeric, ?duration: Integer, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::origin, ?width: Integer, ?height: Integer, ?pressure: Numeric, ?tangential_pressure: Numeric, ?twist: Integer, ?altitude_angle: Numeric, ?azimuth_angle: Numeric) -> instance
           end
 
           class WheelScrollAction < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -146,7 +165,7 @@ module Selenium
             attr_reader delta_y: Integer
             attr_reader duration: untyped
             attr_reader origin: untyped
-            def self.new: (?type: String, x: Integer, y: Integer, delta_x: Integer, delta_y: Integer, ?duration: Integer, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::Origin) -> instance
+            def self.new: (?type: String, x: Integer, y: Integer, delta_x: Integer, delta_y: Integer, ?duration: Integer, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::origin) -> instance
           end
 
           class PointerCommonProperties < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -161,6 +180,7 @@ module Selenium
           end
 
           class Origin < ::Selenium::WebDriver::BiDi::Serialization::Union
+            def self.element: (?type: String, element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference) -> ::Selenium::WebDriver::BiDi::Protocol::Input::ElementOrigin
           end
 
           class ReleaseActionsParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -185,7 +205,24 @@ module Selenium
 
           EVENT_TYPES: Hash[String, untyped]
 
-          def perform_actions: (context: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::SourceActions]) -> untyped
+          def element_origin: (?type: String, element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference) -> ElementOrigin
+          def source_actions: () -> singleton(SourceActions)
+          def none_source_actions: (?type: String, id: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::PauseAction]) -> NoneSourceActions
+          def key_source_actions: (?type: String, id: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::key_source_action]) -> KeySourceActions
+          def key_source_action: () -> singleton(KeySourceAction)
+          def pointer_source_actions: (?type: String, id: String, ?parameters: ::Selenium::WebDriver::BiDi::Protocol::Input::PointerParameters, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::pointer_source_action]) -> PointerSourceActions
+          def pointer_parameters: (?pointer_type: Symbol) -> PointerParameters
+          def pointer_source_action: () -> singleton(PointerSourceAction)
+          def wheel_source_actions: (?type: String, id: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::wheel_source_action]) -> WheelSourceActions
+          def wheel_source_action: () -> singleton(WheelSourceAction)
+          def pause_action: (?type: String, ?duration: Integer) -> PauseAction
+          def key_down_action: (?type: String, value: String) -> KeyDownAction
+          def key_up_action: (?type: String, value: String) -> KeyUpAction
+          def pointer_up_action: (?type: String, button: Integer) -> PointerUpAction
+          def pointer_down_action: (?type: String, button: Integer, ?width: Integer, ?height: Integer, ?pressure: Numeric, ?tangential_pressure: Numeric, ?twist: Integer, ?altitude_angle: Numeric, ?azimuth_angle: Numeric) -> PointerDownAction
+          def pointer_move_action: (?type: String, x: Numeric, y: Numeric, ?duration: Integer, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::origin, ?width: Integer, ?height: Integer, ?pressure: Numeric, ?tangential_pressure: Numeric, ?twist: Integer, ?altitude_angle: Numeric, ?azimuth_angle: Numeric) -> PointerMoveAction
+          def wheel_scroll_action: (?type: String, x: Integer, y: Integer, delta_x: Integer, delta_y: Integer, ?duration: Integer, ?origin: ::Selenium::WebDriver::BiDi::Protocol::Input::origin) -> WheelScrollAction
+          def perform_actions: (context: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::source_actions]) -> untyped
           def release_actions: (context: String) -> untyped
           def set_files: (context: String, element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference, files: Array[String]) -> untyped
         end

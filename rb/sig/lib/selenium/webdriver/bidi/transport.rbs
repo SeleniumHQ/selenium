@@ -22,6 +22,8 @@ module Selenium
       class Transport
         @connection: untyped
 
+        attr_reader connection: untyped
+
         def initialize: (untyped connection) -> void
 
         def execute: (cmd: String, ?params: untyped, ?result: untyped) -> untyped
