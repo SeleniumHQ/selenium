@@ -437,6 +437,9 @@ describe('schema signals (objectOnly / extensible / enum primitive)', () => {
     const s = projectSchema([origin, group('x.Element', [field('type', [lit('element')]), field('id', ['text'])])], {})
     assert.equal(s.types['x.Origin'].kind, 'alias')
     assert.equal(s.types['x.Origin'].objectOnly, undefined)
+    // The const arms' literals are pinned so a binding can reject a wrong string, not just a wrong primitive.
+    assert.equal(s.types['x.Origin'].type.scalar, 'string')
+    assert.deepEqual(s.types['x.Origin'].type.scalarValues, ['viewport', 'pointer'])
   })
 
   it('marks every extensible type extensible, regardless of send/receive reachability', () => {

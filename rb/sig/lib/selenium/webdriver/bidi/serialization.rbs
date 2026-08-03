@@ -135,6 +135,8 @@ module Selenium
 
           def self.object_only: () -> bool
 
+          def self.scalar_values: (*untyped values) -> Array[untyped]
+
           def self.from_json: (untyped json_payload) -> untyped
 
           def self.build: (**untyped kwargs) -> untyped

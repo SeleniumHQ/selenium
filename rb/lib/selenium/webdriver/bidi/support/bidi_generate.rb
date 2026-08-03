@@ -456,8 +456,10 @@ module BiDiGenerate
   # the union's definition in the live spec (nil when the schema has none). object_only
   # mirrors the schema's `objectOnly` signal: when true, a non-Hash payload is rejected
   # rather than passed through (every arm is an object, so it can match no variant).
+  # scalar_values mirrors the schema's `scalarValues` signal: the exact literals a bare-scalar
+  # arm admits (input.Origin's "viewport" / "pointer"), so outbound rejects any other scalar.
   UnionClass = Struct.new(:ruby_name, :discriminator_wire, :variants, :schema_name, :nested, :spec_href, :object_only,
-                          keyword_init: true) do
+                          :scalar_values, keyword_init: true) do
     def union? = true
     def value_variants = variants.select { |v| v.mode == :value }
     def presence_variants = variants.select { |v| v.mode == :presence }
@@ -472,6 +474,13 @@ module BiDiGenerate
       return head if pairs.empty?
 
       BiDiGenerate.wrap_call("#{head}, ", pairs, indent, open: '{', close: '}')
+    end
+
+    def scalar_values? = !(scalar_values.nil? || scalar_values.empty?)
+
+    # `scalar_values 'viewport', 'pointer'` — the literals a bare-scalar arm admits.
+    def scalar_values_decl
+      "scalar_values #{scalar_values.map { |v| BiDiGenerate.ruby_literal(v) }.join(', ')}"
     end
   end
 
@@ -854,7 +863,15 @@ module BiDiGenerate
       # order); consume it rather than re-deriving and silently depending on emit
       # order. An alias-to-union (only input.Origin) has no selector — its const-string
       # arms aren't first-class types — so it keeps the structural re-derivation.
-      type['kind'] == 'union' ? union_from_selector(name, type['selector']) : union_from_alias(name)
+      klass = type['kind'] == 'union' ? union_from_selector(name, type['selector']) : union_from_alias(name)
+      # A non-object_only union has a bare-scalar arm; only const-literal arms (scalar_values) are
+      # modeled, so the runtime can validate an outbound scalar. A non-object_only union without them
+      # is a shape the generator doesn't yet handle — fail here, at generation, not at a caller's runtime.
+      if !klass.object_only && !klass.scalar_values?
+        raise "non-object_only union #{name} has no scalar_values to validate its bare-scalar arm"
+      end
+
+      klass
     end
 
     # Map a union `selector` to dispatch variants the template renders:
@@ -902,7 +919,8 @@ module BiDiGenerate
     # discriminator; the bare-string arms need no dispatch (Union.from_json returns a
     # non-Hash payload unchanged). So dispatch the ref arms by their const tag.
     def union_from_alias(name)
-      consts = @types[name]['type']['union'].filter_map { |arm| arm['ref'] }.to_h do |ref|
+      spec = @types[name]
+      consts = spec['type']['union'].filter_map { |arm| arm['ref'] }.to_h do |ref|
         const = @types[ref]['fields'].find { |f| f['type'].key?('const') }
         const || raise("alias-union #{name} arm #{ref} has no const discriminator to dispatch on")
         [ref, const]
@@ -911,10 +929,12 @@ module BiDiGenerate
         VariantIR.new(mode: :value, value: const['type']['const'], ref: ruby_path(ref), requires: nil)
       end
       # An alias-union carries bare-scalar arms (input.Origin's "viewport"/"pointer"), so it
-      # is never object_only — those arms must still pass a non-Hash payload through.
+      # is never object_only — those arms must still pass a non-Hash payload through, but only
+      # a value the schema pins in scalarValues (so a stray "banana" is still rejected outbound).
       UnionClass.new(ruby_name: BiDiGenerate.type_class_name(name),
                      discriminator_wire: consts.values.first['wire'], variants: variants, schema_name: name,
-                     spec_href: @types[name]['specHref'], object_only: @types[name]['objectOnly'] ? true : false)
+                     spec_href: spec['specHref'], object_only: spec['objectOnly'] ? true : false,
+                     scalar_values: spec['type']['scalarValues'])
     end
 
     def record_params(fields)

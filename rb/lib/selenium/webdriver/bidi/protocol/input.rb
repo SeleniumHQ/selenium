@@ -256,6 +256,7 @@ module Selenium
             variants(
               element: 'Input::ElementOrigin'
             )
+            scalar_values 'viewport', 'pointer'
           end
 
           # @api private

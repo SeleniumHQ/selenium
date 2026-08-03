@@ -48,6 +48,11 @@ module Selenium
             # object, so a non-Hash payload is a schema violation rather than a scalar arm.
             def object_only = @object_only = true
 
+            # Declared (via the schema's `scalarValues` signal) on a non-object_only union whose
+            # bare-scalar arms are a fixed set of literals (input.Origin's "viewport" / "pointer").
+            # An outbound scalar outside that set matches no arm, so it is a caller error.
+            def scalar_values(*values) = @scalar_values = values
+
             # A non-Hash payload is a bare scalar arm (e.g. input.Origin's "viewport") with no
             # object to dispatch on, so it is returned unchanged — unless every arm is an object
             # (object_only), where a non-Hash cannot match any variant and is a wire error.
@@ -86,8 +91,8 @@ module Selenium
 
             # Outbound mirror of from_json: is +value+ one this union accepts? Any variant is accepted,
             # and a variant that is itself a union recurses (e.g. LocalValue's RemoteReference fallback).
-            # A union with a bare-scalar arm (not object_only, e.g. input.Origin's "viewport") also admits
-            # a bare primitive; an object (a Hash or another union's record) that matched no variant does not.
+            # A non-object_only union (e.g. input.Origin) also admits one of its pinned bare-scalar
+            # literals; an object (a Hash or another union's record) that matched no variant does not.
             def valid_outbound?(value)
               return true if variant_refs.any? { |ref| variant_accepts?(ref, value) }
 
@@ -96,11 +101,11 @@ module Selenium
 
             private
 
-            # A bare-scalar arm is a primitive. An object (a Hash, or a typed record from any union) had
-            # to match a variant, so from_json dispatches it rather than passing it through — and here it
-            # is rejected when no variant matched.
+            # A bare-scalar arm must be one of the literals the schema pinned for this union
+            # (scalar_values, e.g. input.Origin's "viewport" / "pointer"). The generator guarantees a
+            # non-object_only union declares them, so no runtime guard is needed here.
             def scalar_arm?(value)
-              value.is_a?(::String) || value.is_a?(::Numeric) || value == true || value == false
+              @scalar_values.include?(value)
             end
 
             # Every variant's class name: the discriminated table, the presence paths, and the fallback.

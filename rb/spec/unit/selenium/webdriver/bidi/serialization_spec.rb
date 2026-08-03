@@ -459,10 +459,34 @@ module Selenium
                 .to raise_error(ArgumentError, /Cookie#value expected Network::BytesValue/)
             end
 
-            # A union with a bare-scalar arm (input.Origin's "viewport") still admits that scalar, but a
-            # record from another union remains a cross-union mismatch.
-            it 'accepts a bare-scalar arm for a non-object-only union ref' do
+            # A union with a bare-scalar arm (input.Origin's "viewport"/"pointer") admits each of its
+            # declared literals, but a record from another union remains a cross-union mismatch.
+            it 'accepts a declared bare-scalar arm for a non-object-only union ref' do
               expect(Input::PointerMoveAction.new(x: 0, y: 0, origin: 'viewport').origin).to eq('viewport')
+              expect(Input::PointerMoveAction.new(x: 0, y: 0, origin: 'pointer').origin).to eq('pointer')
+            end
+
+            # The object arm is still accepted alongside the scalar arms.
+            it 'accepts the object arm for a scalar-tolerant union ref' do
+              origin = Input::ElementOrigin.new(element: Script::SharedReference.new(shared_id: 's1'))
+
+              expect(Input::PointerMoveAction.new(x: 0, y: 0, origin: origin).origin).to be_a(Input::ElementOrigin)
+            end
+
+            # scalar_values pins the arm's literals ("viewport"/"pointer"), so a string outside that set
+            # matches no arm and is a caller error rather than a value the browser rejects a round-trip later.
+            it 'rejects a bare string that is not one of the union scalar arms' do
+              expect { Input::PointerMoveAction.new(x: 0, y: 0, origin: 'banana') }
+                .to raise_error(ArgumentError, /PointerMoveAction#origin expected Input::Origin/)
+            end
+
+            # A wrong-typed scalar (a number or boolean where the arm is a string literal) is likewise
+            # not one of the declared arms.
+            it 'rejects a wrong-typed scalar for a union ref whose arms are string literals' do
+              expect { Input::PointerMoveAction.new(x: 0, y: 0, origin: 1) }
+                .to raise_error(ArgumentError, /PointerMoveAction#origin expected Input::Origin/)
+              expect { Input::PointerMoveAction.new(x: 0, y: 0, origin: true) }
+                .to raise_error(ArgumentError, /PointerMoveAction#origin expected Input::Origin/)
             end
 
             it 'rejects a cross-union variant even where a scalar arm exists' do
