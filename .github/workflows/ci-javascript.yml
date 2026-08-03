@@ -15,9 +15,10 @@ jobs:
       name: Build
       run: bazel build //javascript/selenium-webdriver
 
+  # Small tests are quick, so run them on every JavaScript change rather than
+  # only on a schedule like the heavier Python/Ruby matrices.
   unit-tests:
     name: Unit Tests
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
