@@ -127,8 +127,9 @@ public class Debug {
    * Level#FINE}; a level already at {@link Level#FINE} or more verbose is left untouched. It also
    * attaches a handler Selenium owns, filtered to exclude {@link Level#INFO} and above. Caller-owned
    * direct or ancestor handlers that accept {@link Level#FINE} can still receive and print FINE
-   * records, so FINE output can be duplicated. Idempotent: repeated calls while the switches are
-   * unchanged do nothing. Reversible: once every switch is off, the
+   * records, so FINE output can be duplicated. Calls are no-ops when the requested configuration
+   * is already consistent, but repair the Selenium-owned handler and FINE loggability after
+   * external divergence. Reversible: once every switch is off, the
    * next call removes exactly the handler this method installed and restores the logger's level to
    * what it was before debugging turned on, only when this method was the one that raised it and
    * unless something else changed the level in the meantime -- that change is left alone rather
