@@ -122,12 +122,62 @@ module Selenium
 
             # Checks a field that carries an actual value (neither omitted nor nil): a nullable-const
             # field against its literal, list/scalar shape, primitive type (lists excepted, as inbound
-            # does), and enum membership (resolved lazily so a cross-domain enum need not load first).
+            # does), ref type, and enum membership (resolved lazily so a cross-domain enum need not load first).
             def validate_present(field, value)
               validate_const(field, value)
               check_outbound_shape(field, value)
               check_outbound_primitive(field, value) unless field.list
+              validate_ref(field, value) if field.ref
               Serialization.validate!("#{name}##{field.name}", value, Protocol.const_get(field.enum)) if field.enum
+            end
+
+            # Outbound mirror of read_ref: a ref-typed value must be the type it declares, so a wrong
+            # record or a value no union variant accepts is a caller error caught here, not a browser
+            # round-trip. Shape is already checked, so a list is an Array.
+            def validate_ref(field, value)
+              klass = (@refs ||= {})[field.name] ||= Protocol.const_get(field.ref)
+              field.list ? validate_ref_list(field, klass, value) : validate_ref_value(field, klass, value)
+            end
+
+            # Mirrors read_list: a scalar field is a [key, value] map, a nested list recurses, otherwise
+            # each element is checked against the ref.
+            def validate_ref_list(field, klass, list)
+              list.each do |element|
+                if field.scalar
+                  validate_ref_entry(field, klass, element)
+                elsif element.is_a?(::Array)
+                  validate_ref_list(field, klass, element)
+                else
+                  validate_ref_value(field, klass, element)
+                end
+              end
+            end
+
+            # A [key, value] map entry: the key may be a variant or a bare scalar, the value is a variant.
+            def validate_ref_entry(field, klass, element)
+              unless element.is_a?(::Array) && element.size == 2
+                raise ::ArgumentError, "#{name}##{field.name} expected a [key, value] pair, got #{element.inspect}"
+              end
+
+              key, value = element
+              key.is_a?(Serializable) ? validate_ref_value(field, klass, key) : check_outbound_scalar(field, key)
+              validate_ref_value(field, klass, value)
+            end
+
+            # A record ref must be an instance of that record; a union ref must be one the union accepts.
+            def validate_ref_value(field, klass, value)
+              return if klass < Union ? klass.valid_outbound?(value) : value.is_a?(klass)
+
+              raise ::ArgumentError, "#{name}##{field.name} expected #{field.ref}, got #{value.inspect}"
+            end
+
+            # Outbound mirror of scalar_value: a bare map key must match one of the arm's primitives.
+            def check_outbound_scalar(field, value)
+              expected = Array(field.scalar).flat_map { |primitive| PRIMITIVE_TYPES[primitive] || [] }
+              return if expected.empty? || expected.any? { |type| value.is_a?(type) }
+
+              raise ::ArgumentError,
+                    "#{name}##{field.name} expected #{Array(field.scalar).join(' or ')}, got #{value.inspect}"
             end
 
             # A nullable constant (`literal / null`) is caller-settable but its only non-null value is
