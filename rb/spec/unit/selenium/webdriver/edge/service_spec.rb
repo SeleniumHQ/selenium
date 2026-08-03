@@ -23,6 +23,8 @@ module Selenium
   module WebDriver
     module Edge
       describe Service do
+        let(:debug_args) { ENV.key?('SE_DEBUG') ? ['--verbose'] : [] }
+
         describe '#new' do
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
 
@@ -54,13 +56,13 @@ module Selenium
           it 'enables chrome logs by default' do
             service = described_class.new
 
-            expect(service.extra_args).to eq ['--enable-chrome-logs']
+            expect(service.extra_args).to eq(['--enable-chrome-logs'] + debug_args)
           end
 
           it 'does not duplicate --enable-chrome-logs when provided' do
             service = described_class.new(args: ['--enable-chrome-logs'])
 
-            expect(service.extra_args).to eq ['--enable-chrome-logs']
+            expect(service.extra_args).to eq(['--enable-chrome-logs'] + debug_args)
           end
 
           it 'uses sets log path to stdout' do
@@ -79,21 +81,22 @@ module Selenium
             service = described_class.chrome(log: '/path/to/log.txt')
 
             expect(service.log).to be_nil
-            expect(service.args).to eq ['--enable-chrome-logs', '--log-path=/path/to/log.txt']
+            expect(service.args).to eq(['--enable-chrome-logs'] + debug_args + ['--log-path=/path/to/log.txt'])
           end
 
           it 'uses provided args' do
             service = described_class.new(args: ['--foo', '--bar'])
 
-            expect(service.extra_args).to eq ['--foo', '--bar', '--enable-chrome-logs']
+            expect(service.extra_args).to eq(['--foo', '--bar', '--enable-chrome-logs'] + debug_args)
           end
 
           context 'when SE_DEBUG is set' do
             around do |example|
+              original_debug = ENV.fetch('SE_DEBUG', nil)
               ENV['SE_DEBUG'] = '1'
               example.run
             ensure
-              ENV.delete('SE_DEBUG')
+              original_debug ? ENV['SE_DEBUG'] = original_debug : ENV.delete('SE_DEBUG')
             end
 
             it 'adds --verbose flag' do
@@ -163,7 +166,7 @@ module Selenium
             service = described_class.chrome(log: '/path/to/log.txt')
 
             expect(service.log).to be_nil
-            expect(service.args).to eq ['--enable-chrome-logs', '--log-path=/path/to/log.txt']
+            expect(service.args).to eq(['--enable-chrome-logs'] + debug_args + ['--log-path=/path/to/log.txt'])
           end
         end
       end

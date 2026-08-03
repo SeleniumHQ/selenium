@@ -34,28 +34,32 @@ module Selenium
       describe 'browser shortcuts' do
         let(:args) { %w[--foo --bar] }
 
+        def debug_args(flag)
+          ENV.key?('SE_DEBUG') ? [flag] : []
+        end
+
         it 'creates Chrome instance' do
           service = described_class.chrome(args: args)
           expect(service).to be_a(Chrome::Service)
-          expect(service.args).to eq(args + %w[--enable-chrome-logs])
+          expect(service.args).to eq(args + %w[--enable-chrome-logs] + debug_args('--verbose'))
         end
 
         it 'creates Edge instance' do
           service = described_class.edge(args: args)
           expect(service).to be_a(Edge::Service)
-          expect(service.args).to eq(args + %w[--enable-chrome-logs])
+          expect(service.args).to eq(args + %w[--enable-chrome-logs] + debug_args('--verbose'))
         end
 
         it 'creates Firefox instance' do
           service = described_class.firefox(args: args)
           expect(service).to be_a(Firefox::Service)
-          expect(service.args).to eq(args + %w[--websocket-port 0])
+          expect(service.args).to eq(args + %w[--websocket-port 0] + debug_args('-v'))
         end
 
         it 'creates IE instance' do
           service = described_class.internet_explorer(args: args)
           expect(service).to be_a(IE::Service)
-          expect(service.args).to eq args
+          expect(service.args).to eq(args + debug_args('--log-level=DEBUG'))
         end
 
         it 'creates Safari instance' do
