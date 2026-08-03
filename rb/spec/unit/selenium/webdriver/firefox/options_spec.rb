@@ -159,6 +159,12 @@ module Selenium
             expect(firefox_options['args']).to eq(['foo'])
             expect(firefox_options['unhandledCapability']).to eq('value')
           end
+
+          it 'normalizes a symbol capability name to a string key' do
+            options.add_firefox_option(:unhandledCapability, 'value')
+
+            expect(options.as_json['moz:firefoxOptions']).to include('unhandledCapability' => 'value')
+          end
         end
 
         describe '#add_preference' do

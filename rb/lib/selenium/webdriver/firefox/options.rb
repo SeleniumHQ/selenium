@@ -117,7 +117,7 @@ module Selenium
         #
 
         def add_firefox_option(name, value)
-          @vendor_options[name] = value
+          @vendor_options[name.to_s] = value
         end
 
         #

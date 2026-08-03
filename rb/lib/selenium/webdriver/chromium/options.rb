@@ -200,7 +200,7 @@ module Selenium
         #
 
         def add_chromium_option(name, value)
-          @vendor_options[name] = value
+          @vendor_options[name.to_s] = value
         end
 
         #

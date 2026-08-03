@@ -218,6 +218,18 @@ module Selenium
             expect(chrome_options['args']).to eq(['foo'])
             expect(chrome_options['unhandledCapability']).to eq('value')
           end
+
+          it 'normalizes a symbol capability name to a string key' do
+            options.add_chromium_option(:unhandledCapability, 'value')
+
+            expect(options.as_json['goog:chromeOptions']).to include('unhandledCapability' => 'value')
+          end
+
+          it 'honors non-camelized special-casing when a symbol name matches prefs' do
+            options.add_chromium_option(:prefs, {'intl.accepted_languages' => 'en-US'})
+
+            expect(options.as_json['goog:chromeOptions']['prefs']).to eq('intl.accepted_languages' => 'en-US')
+          end
         end
 
         describe '#add_preference' do
