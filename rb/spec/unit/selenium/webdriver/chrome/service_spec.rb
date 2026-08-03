@@ -52,10 +52,16 @@ module Selenium
             expect(service.host).to eq Platform.localhost
           end
 
-          it 'does not create args by default' do
+          it 'enables chrome logs by default' do
             service = described_class.new
 
-            expect(service.extra_args).to be_empty
+            expect(service.extra_args).to eq ['--enable-chrome-logs']
+          end
+
+          it 'does not duplicate --enable-chrome-logs when provided' do
+            service = described_class.new(args: ['--enable-chrome-logs'])
+
+            expect(service.extra_args).to eq ['--enable-chrome-logs']
           end
 
           it 'uses sets log path to stdout' do
@@ -74,13 +80,13 @@ module Selenium
             service = described_class.new(log: '/path/to/log.txt')
 
             expect(service.log).to be_nil
-            expect(service.args).to eq ['--log-path=/path/to/log.txt']
+            expect(service.args).to eq ['--enable-chrome-logs', '--log-path=/path/to/log.txt']
           end
 
           it 'uses provided args' do
             service = described_class.new(args: ['--foo', '--bar'])
 
-            expect(service.extra_args).to eq ['--foo', '--bar']
+            expect(service.extra_args).to eq ['--foo', '--bar', '--enable-chrome-logs']
           end
 
           context 'when SE_DEBUG is set' do
