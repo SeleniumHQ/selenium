@@ -111,10 +111,10 @@ public class Debug {
 
   @Nullable
   private static Level getRequestedLogLevel() {
-    if (isDebugging()) {
+    if (isDebugAll()) {
       return Level.FINE;
     }
-    if (isDebugAll()) {
+    if (isDebugging()) {
       return Level.FINE;
     }
     return null;
@@ -125,9 +125,10 @@ public class Debug {
    * -Dselenium.webdriver.verbose=true}, {@code SE_DEBUG}) onto the real {@code org.openqa.selenium}
    * logger: raises it to {@link Level#FINE} when it is currently less verbose than {@link
    * Level#FINE}; a level already at {@link Level#FINE} or more verbose is left untouched. It also
-   * attaches a handler Selenium owns, filtered to leave {@link Level#INFO} and above to the
-   * caller's own handlers so output they already print is never duplicated. Idempotent: repeated
-   * calls while the switches are unchanged do nothing. Reversible: once every switch is off, the
+   * attaches a handler Selenium owns, filtered to exclude {@link Level#INFO} and above. Caller-owned
+   * direct or ancestor handlers that accept {@link Level#FINE} can still receive and print FINE
+   * records, so FINE output can be duplicated. Idempotent: repeated calls while the switches are
+   * unchanged do nothing. Reversible: once every switch is off, the
    * next call removes exactly the handler this method installed and restores the logger's level to
    * what it was before debugging turned on, only when this method was the one that raised it and
    * unless something else changed the level in the meantime -- that change is left alone rather
@@ -140,9 +141,10 @@ public class Debug {
    * SE_DEBUG} environment variable is set it puts the {@code selenium} logger at {@code DEBUG} and
    * attaches an unfiltered {@code StreamHandler} if the logger has none of its own. Two deliberate
    * differences here: Java only raises the level when the logger is currently less verbose than
-   * {@link Level#FINE} (Python sets {@code DEBUG} unconditionally), and Java's handler is filtered
-   * to records below {@link Level#INFO} so output the caller's own handlers already print is never
-   * duplicated.
+   * {@link Level#FINE} (Python sets {@code DEBUG} unconditionally), and Java's Selenium-owned
+   * handler is filtered to records below {@link Level#INFO}. Caller-owned direct or ancestor
+   * handlers accepting {@link Level#FINE} can still print FINE records, so duplicates remain
+   * possible.
    */
   public static synchronized void configureLogger() {
     Level requestedLevel = getRequestedLogLevel();
