@@ -28,7 +28,7 @@ zipp~=3.23
 
 # Linux keyring backend (twine -> keyring -> secretstorage -> cryptography):
 cffi~=2.0
-cryptography~=48.0
+cryptography~=50.0
 jeepney~=0.9
 pycparser~=3.0
 secretstorage~=3.5
