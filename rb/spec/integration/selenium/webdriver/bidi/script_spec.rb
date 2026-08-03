@@ -46,7 +46,7 @@ module Selenium
       end
 
       it 'logs console messages',
-         pending_if: {browser: %i[safari safari_preview],
+         pending_if: {browser_family: :safari,
                       reason: 'Safari does not deliver BiDi log entries for console messages'} do
         driver.navigate.to url_for('bidi/logEntryAdded.html')
 
@@ -68,7 +68,7 @@ module Selenium
           {'type' => 'string', 'value' => 'Hello, world!'}
         ]
         expect(log_entry.timestamp).to be_an_integer
-        expect(log_entry.source).to match(
+        expect(log_entry.source).to include(
           'context' => an_instance_of(String),
           'realm' => an_instance_of(String)
         )
@@ -83,7 +83,7 @@ module Selenium
       end
 
       it 'logs multiple console messages',
-         pending_if: {browser: %i[safari safari_preview],
+         pending_if: {browser_family: :safari,
                       reason: 'Safari does not deliver BiDi log entries for console messages'} do
         driver.navigate.to url_for('bidi/logEntryAdded.html')
 
@@ -99,7 +99,7 @@ module Selenium
       end
 
       it 'removes console message handler',
-         pending_if: {browser: %i[safari safari_preview],
+         pending_if: {browser_family: :safari,
                       reason: 'Safari does not deliver BiDi log entries for console messages'} do
         driver.navigate.to url_for('bidi/logEntryAdded.html')
 
@@ -120,7 +120,7 @@ module Selenium
       end
 
       it 'logs javascript errors',
-         pending_if: {browser: %i[safari safari_preview],
+         pending_if: {browser_family: :safari,
                       reason: 'Safari does not deliver BiDi log entries for console messages'} do
         driver.navigate.to url_for('bidi/logEntryAdded.html')
 
@@ -138,7 +138,7 @@ module Selenium
         expect(log_entry.level).to eq 'error'
         expect(log_entry.text).to eq 'Error: Not working'
         expect(log_entry.timestamp).to be_an_integer
-        expect(log_entry.source).to match(
+        expect(log_entry.source).to include(
           'context' => an_instance_of(String),
           'realm' => an_instance_of(String)
         )

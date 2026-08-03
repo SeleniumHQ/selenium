@@ -85,7 +85,7 @@ module Selenium
           end
 
           it 'accepts user prompts without text',
-             pending_if: {browser: %i[edge chrome],
+             pending_if: {browser_family: :chromium,
                           reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
             driver.navigate.to url_for('alerts.html')
             driver.find_element(id: 'alert').click
@@ -97,7 +97,7 @@ module Selenium
           end
 
           it 'accepts user prompts with text',
-             pending_if: {browser: %i[edge chrome],
+             pending_if: {browser_family: :chromium,
                           reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
             driver.navigate.to url_for('alerts.html')
             driver.find_element(id: 'prompt').click
@@ -109,7 +109,7 @@ module Selenium
           end
 
           it 'rejects user prompts',
-             pending_if: {browser: %i[edge chrome],
+             pending_if: {browser_family: :chromium,
                           reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
             driver.navigate.to url_for('alerts.html')
             driver.find_element(id: 'alert').click
@@ -121,7 +121,7 @@ module Selenium
           end
 
           it 'activates a browser context',
-             pending_if: {browser: %i[safari safari_preview], reason: 'Safari does not focus the activated context'} do
+             pending_if: {browser_family: :safari, reason: 'Safari does not focus the activated context'} do
             window = driver.window_handle
             browsing_context.create(type: :tab)
 

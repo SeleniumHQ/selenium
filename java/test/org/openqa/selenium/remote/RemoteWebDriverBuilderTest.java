@@ -181,6 +181,24 @@ class RemoteWebDriverBuilderTest {
   }
 
   @Test
+  void advertisesRemoteUrlToTheServer() {
+    AtomicReference<Object> seen = new AtomicReference<>();
+
+    RemoteWebDriver.builder()
+        .oneOf(new FirefoxOptions())
+        .address("http://localhost:34576")
+        .connectingWith(
+            config ->
+                req -> {
+                  seen.set(listCapabilities(req).get(0).getCapability("se:remoteUrl"));
+                  return CANNED_SESSION_RESPONSE;
+                })
+        .build();
+
+    assertThat(seen.get()).isEqualTo("http://localhost:34576");
+  }
+
+  @Test
   void doesNotAllowFirstMatchToBeUsedAsAMetadataNameAsItIsConfusing() {
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder();
     assertThatExceptionOfType(IllegalArgumentException.class)
@@ -263,6 +281,35 @@ class RemoteWebDriverBuilderTest {
         .build();
 
     assertThat(seen).hasValue(uri);
+  }
+
+  @Test
+  @NullMarked
+  void doesNotAdvertiseRemoteUrlWhenUsingDriverService() throws IOException {
+    URI uri = URI.create("http://localhost:9898");
+    URL url = uri.toURL();
+
+    DriverService service =
+        new FakeDriverService() {
+          @Override
+          public URL getUrl() {
+            return url;
+          }
+        };
+
+    AtomicReference<Object> seen = new AtomicReference<>();
+    RemoteWebDriver.builder()
+        .oneOf(new FirefoxOptions())
+        .withDriverService(service)
+        .connectingWith(
+            config ->
+                req -> {
+                  seen.set(listCapabilities(req).get(0).getCapability("se:remoteUrl"));
+                  return CANNED_SESSION_RESPONSE;
+                })
+        .build();
+
+    assertThat(seen.get()).isNull();
   }
 
   @Test

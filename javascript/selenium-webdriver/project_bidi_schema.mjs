@@ -21,7 +21,7 @@
  * The normalizer has already removed the awkward CDDL shapes, so this is a
  * straight mapping into a small vocabulary:
  *
- *   type node:  { kind: 'record', fields: [field], map?, extensible?, preserveExtras?, specHref? }
+ *   type node:  { kind: 'record', fields: [field], map?, extensible?, specHref? }
  *             | { kind: 'enum',   values: [string], specHref? }
  *             | { kind: 'union',  variants: [ref], selector, objectOnly?, specHref? }
  *             | { kind: 'alias',  type, specHref? }
@@ -29,7 +29,7 @@
  *             | { ordered: [{ ref, requires: [key] }] }        // structural, spec order
  *             | { correlated: true }                           // resolved by request id, not the payload
  *   field:      { name, wire, required, type }
- *   type ref:   { primitive } | { const } | { ref } | { enum, primitive? } | { list } | { map, extensible? } | { union, scalar? }
+ *   type ref:   { primitive } | { const } | { ref } | { enum, primitive? } | { list } | { map, extensible? } | { union, scalar?, scalarValues? }
  *               any ref may also carry `nullable: true` (a `/ null` alternative). On a
  *               record node, `map` is the value type of `* key => value` entries and
  *               `extensible: true` marks an open `* text => any` record.
@@ -43,19 +43,26 @@
  * points at the editor's draft, so for an older generated artifact the target drifts
  * from the pinned source; synthetic types (and anything neither source covers) omit it.
  *
- * Three derived signals let a binding validate the wire boundary without re-deriving
+ * Two derived signals let a binding validate the wire boundary without re-deriving
  * anything itself:
  *   `objectOnly: true`   — a union all of whose arms are object (record) types, so a
  *                          non-object payload is a schema violation, not a scalar arm.
- *   `preserveExtras: true` — an `extensible` type that can also be *sent* (reachable
- *                          from a command's params), so unknown properties received on
- *                          the wire must be stored and echoed back rather than dropped.
  *   an inline `enum` ref carries the `primitive` its literals share, so even a scalar
  *   the normalizer did not hoist to a named enum is typed rather than opaque.
  *   `scalar` on an inline `union` ref marks a union with a bare-scalar arm (a map entry's
  *   `RemoteValue / text`) and carries that arm's primitive: a binding collapsing it onto its
  *   object_only ref arm passes a non-object payload (the string keys) through, but only when
  *   it matches the primitive — a wrong-typed scalar is still rejected.
+ *   `scalarValues` on a `union` ref pins the exact literals its `{ const }` scalar arms admit
+ *   (input.Origin's "viewport" / "pointer"), so a binding can reject a wrong string, not just a
+ *   wrong primitive — the tightest check the schema affords for a bare-scalar union arm.
+ *
+ * Each structured (`record` / `union`) type additionally carries `outbound` /
+ *   `inbound`: reachable (by a pure `ref` walk) from some command's `params`, and from
+ *   some command's `result` or an event's `params`, respectively. A binding gives a
+ *   send-side accessor only to `outbound` types. Both flags are independent, so all four
+ *   combinations occur — including `(false, false)` for a type in no message (a flattened
+ *   base, an envelope), which correctly gets no accessor.
  *
  * Types the normalizer synthesized for anonymous CDDL constructs additionally
  * carry `{ synthetic: true, owner, label }`: `owner` is the type the construct
@@ -104,6 +111,10 @@ const typeList = (t) => (Array.isArray(t) ? t : t === undefined || t === null ? 
 const isLiteral = (e) => e && typeof e === 'object' && e.Type === 'literal'
 const isRef = (e) => e && typeof e === 'object' && e.Type === 'group' && typeof e.Value === 'string'
 
+// An occurrence with no upper bound (`*` / `+`). The parser emits Infinity; the AST's
+// JSON round-trip renders that as null, so treat both as unbounded.
+const isUnbounded = (occ) => !!occ && (occ.m === null || occ.m === Infinity)
+
 // A `null` keyword or a `nil` prelude ref in a union means the value may be null.
 const isNullAlt = (e) =>
   e === 'null' || (e && typeof e === 'object' && e.Type === 'group' && PRELUDE[e.Value] === 'null')
@@ -142,12 +153,16 @@ function scalarArmPrimitive(arm) {
 // and carries that arm's primitive (or the array of primitives when the scalar arms differ).
 // A binding that collapses such a union onto its object (object_only) ref arm must still let
 // a non-object payload through here, but only when it matches this primitive — a wrong-typed
-// scalar is still a wire error. Derived once, in the schema, rather than re-detected per binding.
+// scalar is still a wire error. `scalarValues` additionally pins the exact literals a `{ const }`
+// scalar arm admits (input.Origin's "viewport" / "pointer"), so a binding can reject a wrong
+// string too, not just a wrong primitive. Derived once, in the schema, not re-detected per binding.
 function unionNode(arms) {
   const node = { union: arms }
   const primitives = [...new Set(arms.map(scalarArmPrimitive).filter((p) => p !== undefined))]
   if (primitives.length === 1) node.scalar = primitives[0]
   else if (primitives.length > 1) node.scalar = primitives
+  const values = arms.filter((a) => a.const !== undefined).map((a) => a.const)
+  if (values.length) node.scalarValues = values
   return node
 }
 
@@ -191,14 +206,30 @@ function projectEntry(e) {
   if (e.Type === 'array') return { list: projectRef(e.Values?.[0]?.Type) }
   if (e.Type === 'map') return { map: projectRef(e.ValueType ?? e.Values?.[0]?.Type), extensible: true }
   if (e.Type === 'range') {
-    const intRange = Number.isInteger(e.Value?.Min?.Value) && Number.isInteger(e.Value?.Max?.Value)
-    return { primitive: intRange ? 'integer' : 'number' } // e.g. js-uint (0..MAX) vs scale (0.1..2)
+    // A bound written as a float (`1.0`) parses to an integer `Value` carrying an `IsFloat`
+    // marker; consult it so `(0.0..1.0)` is a number range, not — as its integral bounds alone
+    // would read — an integer one. A bound with no marker falls back to its value's integralness.
+    const intBound = (b) => b && !b.IsFloat && Number.isInteger(b.Value)
+    const intRange = intBound(e.Value?.Min) && intBound(e.Value?.Max)
+    return { primitive: intRange ? 'integer' : 'number' } // e.g. js-uint (0..MAX) vs latitude (-90.0..90.0)
   }
   return { primitive: PRIMITIVES[e.Type] ?? 'unknown' }
 }
 
 function projectField(prop) {
-  return { name: prop.Name, wire: prop.Name, required: (prop.Occurrence?.n ?? 1) >= 1, type: projectRef(prop.Type) }
+  const field = {
+    name: prop.Name,
+    wire: prop.Name,
+    required: (prop.Occurrence?.n ?? 1) >= 1,
+    type: projectRef(prop.Type),
+  }
+  // Provenance stamped by a vendor overlay (generate_bidi.mjs). Carried on the field so
+  // extractVendor can route it out of the shared schema; stripped there before it ships.
+  if (prop['x-selenium-vendor']) {
+    field.vendor = prop['x-selenium-vendor']
+    field.via = prop['x-selenium-vendor-via']
+  }
+  return field
 }
 
 // A group whose members are all anonymous refs (a top-level `a // b // c`
@@ -242,20 +273,21 @@ function projectType(def) {
 }
 
 /**
- * Project a CDDL group into a record. A property with `Occurrence.m === null` is
- * an unbounded entry (`* key => value`), not a scalar field: `* text => any` marks
- * the record extensible, `* text => T` becomes a typed map, and an unbounded group
- * spread is folded in. Everything else is a normal field.
+ * Project a CDDL group into a record. A property with an unbounded occurrence (`*`/`+`)
+ * is a map/spread entry, not a scalar field: `* text => any` marks the record extensible,
+ * `* text => T` becomes a typed map, and an unbounded group spread is folded in. Everything
+ * else is a normal field.
  */
 function projectRecord(def) {
   const record = { kind: 'record', fields: [] }
   for (const prop of (def.Properties ?? []).flat()) {
     if (!prop || typeof prop !== 'object') continue
-    // `m === null` is overloaded in this parser: a key-typed entry is a map
-    // (`* text => value`); an anonymous entry is a structural spread; everything
-    // else is just an optional field (the `?` quantifier). Only the first two
-    // are not real fields.
-    if (prop.Occurrence?.m === null && (!prop.Name || prop.Name in PRIMITIVES || prop.Name in PRELUDE)) {
+    // An unbounded upper bound is overloaded in this parser: a key-typed entry is a map
+    // (`* text => value`); an anonymous entry is a structural spread; everything else is
+    // just an optional field (the `?` quantifier). Only the first two are not real fields.
+    // The parser emits the bound as Infinity; the AST's JSON round-trip turns it into null,
+    // so accept either rather than depending on that coercion.
+    if (isUnbounded(prop.Occurrence) && (!prop.Name || prop.Name in PRIMITIVES || prop.Name in PRELUDE)) {
       if (prop.Name in PRIMITIVES || prop.Name in PRELUDE) {
         const value = projectRef(prop.Type)
         if (value.primitive === 'any') record.extensible = true
@@ -316,47 +348,6 @@ function variantIsObject(ref, types, seen = new Set()) {
     return false // alias to a primitive / list / map / const
   }
   return false // enum
-}
-
-// The type-name refs a projected ref node points at, recursing through list / map /
-// inline union / inline record. (checkSchema has an equivalent local walk for its own
-// referential checks; this module-level one feeds the reachability closure below.)
-function refNames(node) {
-  if (!node) return []
-  if (node.ref) return [node.ref]
-  if (node.list) return refNames(node.list)
-  if (node.map) return refNames(node.map)
-  if (node.union) return node.union.flatMap(refNames)
-  if (node.record) return node.record.flatMap((f) => refNames(f.type))
-  return []
-}
-
-// The type-name refs a type *node* (record / union / alias) points at: a record's
-// field and map value types, a union's variants, an alias's target.
-function typeRefNames(node) {
-  if (node.kind === 'record') {
-    const refs = node.fields.flatMap((f) => refNames(f.type))
-    if (node.map) refs.push(...refNames(node.map))
-    return refs
-  }
-  if (node.kind === 'union') return node.variants
-  if (node.kind === 'alias') return refNames(node.type)
-  return []
-}
-
-// The set of types that can be *sent*: reachable from some command's params, through
-// fields, lists, unions, maps, and nested records/aliases. Results and events are not
-// roots — a type reached only through them is received-only. `preserveExtras` gates the
-// extras store on this, so only a type you can hand back keeps unknown wire properties.
-function reSendableTypes(commands, types) {
-  const reachable = new Set()
-  const visit = (name) => {
-    if (!name || reachable.has(name) || !types[name]) return
-    reachable.add(name)
-    for (const r of typeRefNames(types[name])) visit(r)
-  }
-  for (const c of commands) if (c.params?.ref) visit(c.params.ref)
-  return reachable
 }
 
 // The constant value a record pins on wire key `k`, as `{ value }` (a string or
@@ -549,6 +540,54 @@ export function buildSpecLinks(dfnsDocs, anchors = {}) {
   }
 }
 
+// Every type name a *type expression* references (the value of a `field.type`, or a
+// list element / map value type), descending through list, map, inline union arms, and
+// inline record fields. Shared by refsOfNode and checkSchema.
+function refsInType(node) {
+  if (!node) return []
+  if (node.ref) return [node.ref]
+  if (node.list) return refsInType(node.list)
+  if (node.map) return refsInType(node.map)
+  if (node.union) return node.union.flatMap(refsInType)
+  if (node.record) return node.record.flatMap((f) => refsInType(f.type))
+  return []
+}
+
+// Every type name a projected *type node* (a named `schema.types` entry) references: a
+// record's field and map-value refs, a union's variant (and selector) refs, an alias's
+// target refs. Composition is already resolved upstream, so this ref adjacency is
+// complete for a reachability walk.
+function refsOfNode(node) {
+  if (!node) return []
+  if (node.kind === 'record') {
+    const refs = node.fields.flatMap((f) => refsInType(f.type))
+    if (node.map) refs.push(...refsInType(node.map))
+    return refs
+  }
+  if (node.kind === 'union') {
+    const refs = [...node.variants]
+    if (node.selector?.variants) refs.push(...node.selector.variants.map((v) => v.ref))
+    if (node.selector?.default) refs.push(node.selector.default)
+    return refs
+  }
+  if (node.kind === 'alias') return refsInType(node.type)
+  return []
+}
+
+// The transitive closure of a set of root type names over refsOfNode. An unknown name
+// (a ref with no type entry) terminates that branch.
+function reachableTypes(roots, types) {
+  const seen = new Set()
+  const stack = [...roots]
+  while (stack.length) {
+    const name = stack.pop()
+    if (seen.has(name) || !types[name]) continue
+    seen.add(name)
+    for (const r of refsOfNode(types[name])) stack.push(r)
+  }
+  return seen
+}
+
 /**
  * Build the flat, binding-neutral schema from the raw AST and command/event model.
  * @param {object[]} ast The parsed CDDL AST (array of definition nodes).
@@ -618,12 +657,18 @@ export function projectSchema(ast, model, links = {}) {
     }
   }
 
-  // An extensible type keeps unknown wire properties only when it is also re-sendable
-  // (reachable from a command's params) — a type you receive and can hand back, so its
-  // extras must round-trip. A received-only extensible type drops them.
-  const reSendable = reSendableTypes(commands, types)
+  // Per-type directionality (see the header block): reachable from a command's params
+  // (outbound) vs from a command's result or an event's params (inbound), closed over
+  // the same ref edges the integrity check walks — no name heuristics.
+  const outboundRoots = commands.map((c) => c.params?.ref).filter(Boolean)
+  const inboundRoots = [...commands.map((c) => c.result?.ref), ...events.map((e) => e.params?.ref)].filter(Boolean)
+  const outboundReach = reachableTypes(outboundRoots, types)
+  const inboundReach = reachableTypes(inboundRoots, types)
   for (const [name, node] of Object.entries(types))
-    if (node.extensible && reSendable.has(name)) node.preserveExtras = true
+    if (node.kind === 'record' || node.kind === 'union') {
+      node.outbound = outboundReach.has(name)
+      node.inbound = inboundReach.has(name)
+    }
 
   // Per-domain module links, for a binding that emits one class/namespace per domain.
   const domains = {}
@@ -632,7 +677,53 @@ export function projectSchema(ast, model, links = {}) {
     if (href) domains[domain] = { specHref: href }
   }
 
-  return { schemaVersion: 1, commands, events, types, domains }
+  // Partition vendor-tagged fields out of the shared, browser-neutral schema into a namespaced
+  // `vendor` section. The shared `types` are then exactly what upstream emits (spec-only); a
+  // binding that reads only `types`/`commands`/`events` never sees vendor fields.
+  const vendor = extractVendor(types)
+  const schema = { schemaVersion: 1, commands, events, types, domains }
+  if (Object.keys(vendor).length) schema.vendor = vendor
+  return schema
+}
+
+/**
+ * Move every vendor-tagged field out of the shared `types` and into a `{ <namespace>: { extends:
+ * { <targetType>: { via, fields } } } }` structure. A field's `via` names the spec extension point
+ * it flowed through; the field having resolved into a real shared record (via the `//=` fold and
+ * group flatten) is what proves the merge happened — this only re-routes the output. The pure
+ * extension-point anchor type (e.g. `webExtension.InstallParametersExtension`), left with no
+ * spec fields once its vendor fields move out, is dropped from the shared schema.
+ * With no vendor tags present this returns `{}` and mutates nothing, so output is unchanged.
+ * @param {object} types The projected `types` map (mutated in place).
+ * @returns {object} The vendor section, empty when there are no vendor fields.
+ */
+function extractVendor(types) {
+  const vendor = {}
+  const anchors = new Set()
+  for (const [typeName, node] of Object.entries(types)) {
+    if (node.kind !== 'record' || !Array.isArray(node.fields)) continue
+    const kept = []
+    for (const field of node.fields) {
+      if (!field.vendor) {
+        kept.push(field)
+        continue
+      }
+      anchors.add(field.via)
+      // The extension point's own type carries a copy of its fields; drop that copy (the anchor
+      // itself is removed below) and route only the copy that resolved into a real target type.
+      if (field.via === typeName) continue
+      const { vendor: ns, via, ...clean } = field
+      const bucket = (vendor[ns] ??= { extends: {} })
+      const entry = (bucket.extends[typeName] ??= { via, fields: [] })
+      entry.fields.push(clean)
+    }
+    node.fields = kept
+  }
+  for (const name of anchors) {
+    const anchor = types[name]
+    if (anchor && anchor.kind === 'record' && (anchor.fields?.length ?? 0) === 0) delete types[name]
+  }
+  return vendor
 }
 
 /**
@@ -645,20 +736,6 @@ export function projectSchema(ast, model, links = {}) {
 export function checkSchema(schema) {
   const errors = []
   const has = (name) => Object.hasOwn(schema.types, name)
-  const refsIn = (node) =>
-    !node
-      ? []
-      : node.ref
-        ? [node.ref]
-        : node.list
-          ? refsIn(node.list)
-          : node.map
-            ? refsIn(node.map)
-            : node.union
-              ? node.union.flatMap(refsIn)
-              : node.record
-                ? node.record.flatMap((f) => refsIn(f.type))
-                : []
   const hasUnknown = (node) =>
     !node
       ? false
@@ -686,7 +763,7 @@ export function checkSchema(schema) {
               ? node.union.some(hasEmptyInlineRecord)
               : false
   const report = (where, node) => {
-    for (const r of refsIn(node)) if (!has(r)) errors.push(`${where}: unresolved type ${r}`)
+    for (const r of refsInType(node)) if (!has(r)) errors.push(`${where}: unresolved type ${r}`)
     if (hasUnknown(node)) errors.push(`${where}: projected to an unknown primitive (unhandled CDDL type)`)
     if (hasEmptyInlineRecord(node)) errors.push(`${where}: projected an empty inline record (dropped type reference)`)
   }
@@ -735,14 +812,14 @@ export function checkSchema(schema) {
     if (node.kind === 'record') {
       const envelopeRoot = envelopeResultUnion(node, schema.types)
       for (const f of node.fields)
-        for (const r of refsIn(f.type))
+        for (const r of refsInType(f.type))
           if (correlated.has(r) && !(f.name === 'result' && f.type.ref === r && r === envelopeRoot))
             leak(`${name}.${f.name}`, r)
-      if (node.map) for (const r of refsIn(node.map)) if (correlated.has(r)) leak(`${name}.*`, r)
+      if (node.map) for (const r of refsInType(node.map)) if (correlated.has(r)) leak(`${name}.*`, r)
     } else if (node.kind === 'union' && !node.selector?.correlated) {
       for (const v of node.variants) if (correlated.has(v)) leak(name, v)
     } else if (node.kind === 'alias') {
-      for (const r of refsIn(node.type)) if (correlated.has(r)) leak(name, r)
+      for (const r of refsInType(node.type)) if (correlated.has(r)) leak(name, r)
     }
   }
   return errors
@@ -881,6 +958,14 @@ export function checkCompleteness(rawAst, schema) {
   // stale and must be removed — so the allowlist cannot silently rot.
   for (const known of KNOWN_INCOMPLETE) {
     if (emitted.has(known)) errors.push(`stale KNOWN_INCOMPLETE entry (now emitted, remove it): ${known}`)
+  }
+  // Every structured type must carry both directionality flags — a missing one means
+  // the pass skipped a node. `(false, false)` is a valid combination (a type in no
+  // message: an envelope, a grouping union, a flattened base), not an error.
+  for (const [name, node] of Object.entries(schema.types)) {
+    if (node.kind !== 'record' && node.kind !== 'union') continue
+    if (typeof node.outbound !== 'boolean' || typeof node.inbound !== 'boolean')
+      errors.push(`${name}: missing directionality flag (inbound/outbound)`)
   }
   return errors
 }

@@ -21,3 +21,9 @@ rb_library(
     name = "rbs_collection_update",
     srcs = ["rbs_collection_update.rb"],
 )
+
+rb_library(
+    name = "generated_note",
+    srcs = ["generated_note.rb"],
+    deps = ["@rules_ruby//ruby/runfiles"],
+)

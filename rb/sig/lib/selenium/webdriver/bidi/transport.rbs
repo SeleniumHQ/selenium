@@ -30,7 +30,7 @@ module Selenium
 
         def serialize: (untyped params) -> untyped
 
-        def error_message: (Hash[String, untyped] reply) -> String
+        def error_for: (Hash[String, untyped] reply) -> Error::WebDriverError
       end
     end
   end

@@ -421,7 +421,27 @@ pub trait SeleniumManager {
             .unwrap_or_default()
     }
 
+    fn detect_browser_in_known_locations(&self) -> Option<PathBuf> {
+        None
+    }
+
     fn detect_browser_path(&mut self) -> Option<PathBuf> {
+        // A driver's binary search is channel-agnostic and finds system browsers, so mirror it only
+        // for the default channel and when the user hasn't asked to skip browsers in the path.
+        if !self.is_browser_version_unstable()
+            && !self.is_skip_browser_in_path()
+            && let Some(browser_path) = self.detect_browser_in_known_locations()
+        {
+            let canon_browser_path = self.canonicalize_path(browser_path);
+            self.get_logger().debug(format!(
+                "{} detected at {}",
+                self.get_browser_name(),
+                canon_browser_path
+            ));
+            self.set_browser_path(canon_browser_path.clone());
+            return Some(Path::new(&canon_browser_path).to_path_buf());
+        }
+
         let browser_version = self.get_browser_version();
         let browser_path = self.get_browser_path_from_version(browser_version);
 
@@ -771,7 +791,8 @@ pub trait SeleniumManager {
     }
 
     fn is_webview2(&self) -> bool {
-        self.get_browser_name().eq(WEBVIEW2_NAME)
+        // Browser selection matches case-insensitively but keeps the original casing (e.g. "WebView2").
+        self.get_browser_name().eq_ignore_ascii_case(WEBVIEW2_NAME)
     }
 
     fn is_browser_version_beta(&self) -> bool {

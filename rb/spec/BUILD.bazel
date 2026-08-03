@@ -7,47 +7,26 @@ rb_library(
     visibility = ["//rb/spec:__subpackages__"],
 )
 
-# List of dependencies can be gathered by running:
-# bazel query 'kind("rb_.* rule", //rb/spec/...) except attr(tags, "browser-test", //rb/spec/...) except //rb/spec:spec' | xargs -I{} echo '"{}",'
-
+# RuboCop lints only what Bazel stages for it, so this bundles every spec's
+# sources. glob() can't cross package boundaries, so each spec package exposes an
+# :all_srcs filegroup; new files in a listed package are covered automatically,
+# a new package needs a line added here.
 rb_library(
     name = "spec",
     testonly = True,
+    data = [
+        "//rb/spec/integration:all_srcs",
+        "//rb/spec/integration/selenium/webdriver:all_srcs",
+        "//rb/spec/integration/selenium/webdriver/bidi:all_srcs",
+        "//rb/spec/integration/selenium/webdriver/chrome:all_srcs",
+        "//rb/spec/integration/selenium/webdriver/edge:all_srcs",
+        "//rb/spec/integration/selenium/webdriver/firefox:all_srcs",
+        "//rb/spec/integration/selenium/webdriver/remote:all_srcs",
+        "//rb/spec/integration/selenium/webdriver/safari:all_srcs",
+    ],
     visibility = ["//rb:__pkg__"],
     deps = [
         "//rb/spec:rspec_matchers",
-        "//rb/spec/integration/selenium/webdriver:action_builder",
-        "//rb/spec/integration/selenium/webdriver:bidi",
-        "//rb/spec/integration/selenium/webdriver:devtools",
-        "//rb/spec/integration/selenium/webdriver:driver",
-        "//rb/spec/integration/selenium/webdriver:element",
-        "//rb/spec/integration/selenium/webdriver:error",
-        "//rb/spec/integration/selenium/webdriver:listener",
-        "//rb/spec/integration/selenium/webdriver:manager",
-        "//rb/spec/integration/selenium/webdriver:navigation",
-        "//rb/spec/integration/selenium/webdriver:select",
-        "//rb/spec/integration/selenium/webdriver:shadow_root",
-        "//rb/spec/integration/selenium/webdriver:spec_helper",
-        "//rb/spec/integration/selenium/webdriver:takes_screenshot",
-        "//rb/spec/integration/selenium/webdriver:target_locator",
-        "//rb/spec/integration/selenium/webdriver:timeout",
-        "//rb/spec/integration/selenium/webdriver:virtual_authenticator",
-        "//rb/spec/integration/selenium/webdriver:window",
-        "//rb/spec/integration/selenium/webdriver/bidi:browsing_context",
-        "//rb/spec/integration/selenium/webdriver/bidi:network",
-        "//rb/spec/integration/selenium/webdriver/bidi:script",
-        "//rb/spec/integration/selenium/webdriver/chrome:driver",
-        "//rb/spec/integration/selenium/webdriver/chrome:options",
-        "//rb/spec/integration/selenium/webdriver/chrome:service",
-        "//rb/spec/integration/selenium/webdriver/edge:driver",
-        "//rb/spec/integration/selenium/webdriver/edge:options",
-        "//rb/spec/integration/selenium/webdriver/edge:service",
-        "//rb/spec/integration/selenium/webdriver/firefox:driver",
-        "//rb/spec/integration/selenium/webdriver/firefox:profile",
-        "//rb/spec/integration/selenium/webdriver/firefox:service",
-        "//rb/spec/integration/selenium/webdriver/remote:driver",
-        "//rb/spec/integration/selenium/webdriver/remote:element",
-        "//rb/spec/integration/selenium/webdriver/safari:driver",
         "//rb/spec/unit",
         "//rb/spec/unit:spec_helper",
     ],

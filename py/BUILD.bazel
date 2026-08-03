@@ -121,6 +121,18 @@ copy_file(
 )
 
 copy_file(
+    name = "manager-sbom",
+    src = "//common/manager:selenium-manager-sbom",
+    out = "selenium/webdriver/common/selenium-manager.cdx.json",
+)
+
+copy_file(
+    name = "manager-notice",
+    src = "//common/manager:selenium-manager-notice",
+    out = "selenium/webdriver/common/selenium-manager-THIRD-PARTY-NOTICES.txt",
+)
+
+copy_file(
     name = "get-attribute",
     src = "//javascript/atoms/fragments:get-attribute-typescript.js",
     out = "selenium/webdriver/remote/getAttribute.js",
@@ -309,6 +321,8 @@ py_library(
     data = [
         ":manager-linux",
         ":manager-macos",
+        ":manager-notice",
+        ":manager-sbom",
         ":manager-windows",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
@@ -590,6 +604,8 @@ pkg_files(
     excludes = [
         ":manager-linux",
         ":manager-macos",
+        ":manager-notice",
+        ":manager-sbom",
         ":manager-windows",
     ],
     strip_prefix = strip_prefix.from_pkg(),
@@ -703,10 +719,18 @@ py_binary(
     deps = [requirement("inflection")],
 )
 
+copy_file(
+    name = "license_header_local",
+    src = "//scripts:license_header.txt",
+    out = "license_header.txt",
+)
+
 py_binary(
     name = "generate_bidi",
     srcs = ["generate_bidi.py"],
+    data = [":license_header_local"],
     srcs_version = "PY3",
+    deps = ["//scripts:generated_note"],
 )
 
 [generate_devtools(

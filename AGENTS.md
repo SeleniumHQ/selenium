@@ -14,7 +14,7 @@ The repository README is aimed at contributors; end-user docs live elsewhere.
 - If `.local/agent/skills/` exists, inspect its `*/SKILL.md` files and treat them as additional user-defined skills.
 
 ## Invariants (don't violate unless explicitly asked)
-- Maintain API/ABI compatibility - users upgrade by changing only version number
+- Maintain API/ABI compatibility by default (users upgrade by changing only the version number); public functionality may be removed only after it has gone through the [Deprecation policy](#deprecation-policy) below
 - Avoid repo-wide refactors/formatting; prefer small, reversible diffs
 
 ## Toolchain

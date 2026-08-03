@@ -41,6 +41,7 @@ import io.fabric8.kubernetes.api.model.PodSpecBuilder;
 import io.fabric8.kubernetes.api.model.PodTemplateSpecBuilder;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder;
+import io.fabric8.kubernetes.api.model.SecurityContext;
 import io.fabric8.kubernetes.api.model.Volume;
 import io.fabric8.kubernetes.api.model.VolumeBuilder;
 import io.fabric8.kubernetes.api.model.VolumeMount;
@@ -489,7 +490,7 @@ public class KubernetesSessionFactory implements SessionFactory {
           String.format("Created session: %s - %s (job: %s)", id, mergedCapabilities, jobName));
       String videoFileName = null;
       if (recordVideoForSession(sessionRequest.getDesiredCapabilities())
-          && !isVideoFileNameAuto()) {
+          && !isRecorderManagedFileName()) {
         videoFileName =
             resolveVideoFileName(jobName, sessionRequest.getDesiredCapabilities(), id) + ".mp4";
       }
@@ -737,13 +738,8 @@ public class KubernetesSessionFactory implements SessionFactory {
     setCapsToEnvVars(sessionCapabilities, envVars);
 
     // Video recording env vars (inline and external use the same naming).
-    // If SE_VIDEO_FILE_NAME is already "auto" from the environment, respect it and let the
-    // recorder handle naming. Otherwise, set it to jobName because sessionId is not yet available.
     if (recordVideoForSession(sessionCapabilities)) {
-      if (!isVideoFileNameAuto()) {
-        envVars.add(
-            new EnvVarBuilder().withName("SE_VIDEO_FILE_NAME").withValue(jobName + ".mp4").build());
-      }
+      addVideoFileNameEnvVars(envVars, jobName);
 
       // Inline video recording: browser container records directly (no sidecar)
       if (isNoVideoSidecar()) {
@@ -754,6 +750,22 @@ public class KubernetesSessionFactory implements SessionFactory {
     }
 
     return envVars;
+  }
+
+  private void addVideoFileNameEnvVars(List<EnvVar> envVars, String jobName) {
+    if (isVideoSessionSubfolder()) {
+      envVars.add(
+          new EnvVarBuilder().withName("SE_VIDEO_SESSION_SUBFOLDER").withValue("true").build());
+      // The recorder creates /videos/<sessionId>/ only while it owns the file name, and /videos is
+      // the same volume as the assets path, so the video lands at its final location.
+      if (!isVideoFileNameAuto()) {
+        envVars.add(new EnvVarBuilder().withName("SE_VIDEO_FILE_NAME").withValue("auto").build());
+      }
+    } else if (!isVideoFileNameAuto()) {
+      // sessionId is not known yet, so the recorder writes jobName.mp4 and the session relocates it
+      envVars.add(
+          new EnvVarBuilder().withName("SE_VIDEO_FILE_NAME").withValue(jobName + ".mp4").build());
+    }
   }
 
   private String resolveVideoFileName(String jobName, Capabilities sessionCapabilities) {
@@ -823,6 +835,13 @@ public class KubernetesSessionFactory implements SessionFactory {
       containerBuilder.withResources(resourcesBuilder.build());
     }
 
+    // Inherit the Node Pod's container securityContext (e.g. allowPrivilegeEscalation,
+    // capabilities) so browser Pods can satisfy a restricted Pod Security Standard.
+    SecurityContext containerSecurityContext = inheritedPodSpec.getContainerSecurityContext();
+    if (containerSecurityContext != null) {
+      containerBuilder.withSecurityContext(containerSecurityContext);
+    }
+
     return containerBuilder.build();
   }
 
@@ -834,10 +853,7 @@ public class KubernetesSessionFactory implements SessionFactory {
         new EnvVarBuilder().withName("DISPLAY_CONTAINER_NAME").withValue("localhost").build());
     envVars.add(
         new EnvVarBuilder().withName("SE_VIDEO_RECORD_STANDALONE").withValue("true").build());
-    if (!isVideoFileNameAuto()) {
-      envVars.add(
-          new EnvVarBuilder().withName("SE_VIDEO_FILE_NAME").withValue(jobName + ".mp4").build());
-    }
+    addVideoFileNameEnvVars(envVars, jobName);
     return envVars;
   }
 
@@ -854,13 +870,22 @@ public class KubernetesSessionFactory implements SessionFactory {
               .build());
     }
 
-    return new ContainerBuilder()
-        .withName("video")
-        .withImage(videoImage)
-        .withImagePullPolicy(imagePullPolicy)
-        .withEnv(envVars)
-        .withVolumeMounts(volumeMounts)
-        .build();
+    ContainerBuilder containerBuilder =
+        new ContainerBuilder()
+            .withName("video")
+            .withImage(videoImage)
+            .withImagePullPolicy(imagePullPolicy)
+            .withEnv(envVars)
+            .withVolumeMounts(volumeMounts);
+
+    // Inherit the Node Pod's container securityContext so the video sidecar also satisfies a
+    // restricted Pod Security Standard (all containers in the Pod must comply).
+    SecurityContext containerSecurityContext = inheritedPodSpec.getContainerSecurityContext();
+    if (containerSecurityContext != null) {
+      containerBuilder.withSecurityContext(containerSecurityContext);
+    }
+
+    return containerBuilder.build();
   }
 
   @Nullable
@@ -905,6 +930,14 @@ public class KubernetesSessionFactory implements SessionFactory {
 
   private boolean isVideoFileNameAuto() {
     return "auto".equalsIgnoreCase(System.getenv("SE_VIDEO_FILE_NAME"));
+  }
+
+  boolean isVideoSessionSubfolder() {
+    return Boolean.parseBoolean(System.getenv("SE_VIDEO_SESSION_SUBFOLDER"));
+  }
+
+  private boolean isRecorderManagedFileName() {
+    return isVideoFileNameAuto() || isVideoSessionSubfolder();
   }
 
   Job buildJobSpecFromTemplate(String jobName, Capabilities sessionCapabilities) {

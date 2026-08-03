@@ -56,6 +56,18 @@ describe('hoistInlineEnums', () => {
     )
   })
 
+  it('hoists a nullable literal choice, keeping the null on the field and out of the enum', () => {
+    const ast = [def('x.T', [field('scrollbarType', [lit('classic'), lit('overlay'), 'null'])])]
+    const out = hoistInlineEnums(ast)
+
+    const enumName = 'x.TScrollbarType'
+    assert.deepEqual(byName(out, 'x.T').Properties[0].Type, [ref(enumName), 'null'])
+    assert.deepEqual(
+      byName(out, enumName).PropertyType.map((e) => e.Value),
+      ['classic', 'overlay'],
+    )
+  })
+
   it('does NOT hoist a single-literal (discriminator) field', () => {
     const ast = [def('x.T', [field('type', [lit('password')])])]
     const out = hoistInlineEnums(ast)
@@ -289,6 +301,24 @@ describe('dedupeDefs', () => {
     const out = dedupeDefs(ast)
     assert.equal(out.length, 1)
     assert.equal(out[0].Properties[0].Name, 'a')
+  })
+
+  it('folds a //= choice addition into the retained base group', () => {
+    const addition = { ...def('x.Ext', [field('b', ['text'])]), IsChoiceAddition: true }
+    const ast = [def('x.Ext', [field('a', ['text'])]), addition]
+    const out = dedupeDefs(ast)
+    assert.equal(out.length, 1)
+    assert.deepEqual(
+      out[0].Properties.map((p) => p.Name),
+      ['a', 'b'],
+    )
+  })
+
+  it('does not mutate the base def when folding', () => {
+    const base = def('x.Ext', [field('a', ['text'])])
+    const addition = { ...def('x.Ext', [field('b', ['text'])]), IsChoiceAddition: true }
+    dedupeDefs([base, addition])
+    assert.equal(base.Properties.length, 1)
   })
 })
 

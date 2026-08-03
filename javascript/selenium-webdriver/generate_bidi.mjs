@@ -28,7 +28,8 @@
 import { parse } from 'cddl'
 import { transform } from 'cddl2ts'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { basename, dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
 
 // ============================================================
@@ -144,7 +145,9 @@ function resolveInputPath(p) {
 async function main() {
   const { values: args } = parseArgs({
     options: {
-      cddl: { type: 'string' },
+      cddl: { type: 'string', multiple: true },
+      'override-cddl': { type: 'string', multiple: true },
+      'vendor-cddl': { type: 'string', multiple: true },
       ast: { type: 'string' },
       model: { type: 'string' },
       'dump-ast': { type: 'string' },
@@ -156,8 +159,20 @@ async function main() {
   })
 
   // One pipeline stage per invocation; the flags select the stage.
-  if (args['dump-ast'] && args.cddl) {
-    writeJson(args['dump-ast'], parseCddl(args.cddl), 'ast')
+  if (args['dump-ast'] && args.cddl?.length) {
+    // The base spec is several CDDL files (webdriver-bidi + the adjacent specs); each
+    // is parsed independently and their definitions concatenated. Top-level CDDL
+    // productions are position-independent (refs resolve by name later), so this equals
+    // parsing one merged file — without a separate merge step or tool. Spec-shaped Selenium
+    // overrides (e.g. #1140) are applied here; vendor overlays are NOT, so this base AST —
+    // which feeds the model and the browser-neutral TypeScript binding — stays vendor-free.
+    const baseAst = args.cddl.flatMap(parseCddl)
+    writeJson(args['dump-ast'], applyOverrides(baseAst, args['override-cddl'] ?? []), 'ast')
+  } else if (args['dump-ast'] && args.ast && args['vendor-cddl']?.length) {
+    // The base AST plus vendor overlays, consumed ONLY by the schema projector. Applying vendor
+    // on this separate path (rather than into the shared base AST) is what keeps the tagged
+    // vendor fields out of cddl2ts and the model — the schema step segregates them into `vendor`.
+    writeJson(args['dump-ast'], applyVendor(readJson(args.ast, 'AST'), args['vendor-cddl']), 'ast')
   } else if (args['dump-model'] && args.ast) {
     writeJson(args['dump-model'], buildModel(readJson(args.ast, 'AST')), 'model', true)
   } else if (args['output-dir'] && args.ast && args.model) {
@@ -165,7 +180,7 @@ async function main() {
   } else {
     console.error(
       'Usage (one stage per invocation):\n' +
-        '  generate_bidi.mjs --cddl <file> --dump-ast <file>\n' +
+        '  generate_bidi.mjs --cddl <file> [--cddl <file>...] --dump-ast <file>\n' +
         '  generate_bidi.mjs --ast <file> --dump-model <file>\n' +
         '  generate_bidi.mjs --ast <file> --model <file> --output-dir <dir> [--enhancements <file>] [--spec-version <v>]',
     )
@@ -183,6 +198,74 @@ function parseCddl(cddlArg) {
   const ast = parse(cddlPath)
   console.log(`  ${ast.length} top-level definitions`)
   return ast
+}
+
+/**
+ * Apply Selenium overlay CDDL (see common/bidi/) to the parsed upstream AST: any
+ * production an overlay defines replaces the identically named upstream one, which is
+ * dropped. Kept here rather than in the shared CDDL merge so the overlay is a
+ * schema-generation concern only — the upstream grammars other bindings consume are
+ * untouched. Overlay defs are appended so downstream normalization treats them like
+ * any other definition.
+ */
+function applyOverrides(ast, overrideArgs) {
+  if (!overrideArgs.length) return ast
+  const overrides = overrideArgs.flatMap((arg) => parseCddl(arg))
+  const names = new Set(overrides.filter((d) => d?.Name).map((d) => d.Name))
+  return [...ast.filter((d) => !(d?.Name && names.has(d.Name))), ...overrides]
+}
+
+/**
+ * Apply Selenium vendor overlay CDDL (see common/bidi/*-extensions.cddl) to the AST.
+ * A vendor overlay extends a spec extension point (e.g. `webExtension.InstallParametersExtension
+ * //= (...)`) with typed browser-specific fields. Unlike a plain override, every field a vendor
+ * overlay contributes is tagged with its provenance — the vendor namespace (from the field's wire
+ * key prefix, e.g. `moz:` → `moz`) and the extension point it flows through — so the projector can
+ * resolve it against the real extension point (the merge genuinely happens) yet route it out of the
+ * shared, browser-neutral schema into a separate `vendor` section. Vendor defs are appended after
+ * overrides so the extension point they extend is already present for the `//=` fold.
+ */
+function applyVendor(ast, vendorArgs) {
+  if (!vendorArgs.length) return ast
+  const vendorDefs = vendorArgs.flatMap((arg) => tagVendorDefs(parseCddl(arg), vendorFileStem(arg)))
+  return [...ast, ...vendorDefs]
+}
+
+function vendorFileStem(cddlArg) {
+  return basename(resolveInputPath(cddlArg)).replace(/\.cddl$/, '')
+}
+
+// The vendor namespace is intrinsic to the field: a `moz:permanent` wire key belongs to `moz`.
+// Fields without a namespaced key fall back to the overlay file's stem.
+function vendorNamespaceOf(wireKey, fallback) {
+  const i = typeof wireKey === 'string' ? wireKey.indexOf(':') : -1
+  return i > 0 ? wireKey.slice(0, i) : fallback
+}
+
+// Stamp `x-selenium-vendor` (namespace) and `x-selenium-vendor-via` (the extension-point def the
+// field extends) onto every named field a vendor overlay def declares. The tags ride through the
+// AST JSON round-trip and normalization (the `//=` fold and group flatten preserve them) so the
+// projector can partition them out of the shared schema by provenance.
+function tagVendorDefs(defs, fileStem) {
+  for (const def of defs) {
+    const via = def.Name
+    const walk = (props) => {
+      for (const p of props ?? []) {
+        if (Array.isArray(p)) {
+          walk(p)
+          continue
+        }
+        if (!p || typeof p !== 'object') continue
+        if (p.Name) {
+          p['x-selenium-vendor'] = vendorNamespaceOf(p.Name, fileStem)
+          p['x-selenium-vendor-via'] = via
+        }
+        if (Array.isArray(p.Properties)) walk(p.Properties)
+      }
+    }
+    walk(def.Properties)
+  }
+  return defs
 }
 
 function readJson(fileArg, label) {
@@ -275,54 +358,87 @@ function loadEnhancements(manifestPath) {
 // ============================================================
 
 /**
- * Remove duplicate export declarations (cddl2ts emits them when the
- * `*-all.cddl` input concatenates local + remote definitions that both
- * define the same shared types) and replace `any` with `unknown`.
+ * Reconcile cddl2ts's per-name declarations and replace `any` with `unknown`.
+ *
+ * cddl2ts emits several declarations for one name in two cases:
+ *   - identical duplicates, when the `*-all.cddl` input concatenates local + remote
+ *     definitions of a shared type — keep the first, drop the rest; and
+ *   - a group that both aliases another (`X = ( Extensible )` → `type X = Extensible`)
+ *     and gains fields via `//=` (→ `interface X { … }`). A type alias and an interface
+ *     of the same name cannot coexist in TS, so fold them into one intersection
+ *     (`type X = Extensible & { … }`) rather than letting the interface's fields drop.
  */
 function postProcessTypes(rawTs) {
-  const seen = new Set()
-  const output = []
+  const clean = (s) =>
+    s.replace(/Record<string, any>/g, 'Record<string, unknown>').replace(/: any([;,)\s\[])/g, ': unknown$1')
+
+  // Split into ordered items: a declaration block { name, kind, lines } or raw { text }.
   const lines = rawTs.split('\n')
+  const items = []
   let i = 0
-
   while (i < lines.length) {
-    const line = lines[i]
-    const match = line.match(/^export (?:type|interface) (\w+)/)
-
-    if (match) {
-      const name = match[1]
-
-      if (seen.has(name)) {
-        // Determine end of this declaration before skipping it.
-        if (line.includes('{') && !line.endsWith('{}') && !line.endsWith('{};')) {
-          // Multi-line block: skip until braces balance back to zero.
-          let depth = (line.match(/\{/g) ?? []).length - (line.match(/\}/g) ?? []).length
-          i++
-          while (i < lines.length && depth > 0) {
-            depth += (lines[i].match(/\{/g) ?? []).length - (lines[i].match(/\}/g) ?? []).length
-            i++
-          }
-        } else {
-          i++ // single-line declaration
-        }
-        // Consume the trailing blank line that follows every declaration.
-        if (i < lines.length && lines[i] === '') i++
-        continue
-      }
-
-      seen.add(name)
+    const m = lines[i].match(/^export (type|interface) (\w+)/)
+    if (!m) {
+      items.push({ text: lines[i] })
+      i++
+      continue
     }
-
-    // Replace any → unknown.
-    const cleaned = line
-      .replace(/Record<string, any>/g, 'Record<string, unknown>')
-      .replace(/: any([;,)\s\[])/g, ': unknown$1')
-
-    output.push(cleaned)
-    i++
+    const start = i
+    if (lines[i].includes('{') && !lines[i].endsWith('{}') && !lines[i].endsWith('{};')) {
+      let depth = (lines[i].match(/\{/g) ?? []).length - (lines[i].match(/\}/g) ?? []).length
+      i++
+      while (i < lines.length && depth > 0) {
+        depth += (lines[i].match(/\{/g) ?? []).length - (lines[i].match(/\}/g) ?? []).length
+        i++
+      }
+    } else {
+      i++
+    }
+    items.push({ name: m[2], kind: m[1], lines: lines.slice(start, i) })
   }
 
-  return output.join('\n')
+  const byName = new Map()
+  for (const it of items) if (it.name) byName.set(it.name, [...(byName.get(it.name) ?? []), it])
+
+  const emitted = new Set()
+  const output = []
+  for (const it of items) {
+    if (!it.name) {
+      output.push(it.text)
+      continue
+    }
+    if (emitted.has(it.name)) continue
+    emitted.add(it.name)
+    output.push(reconcileDecls(it.name, byName.get(it.name)).join('\n'))
+  }
+
+  return clean(output.join('\n'))
+}
+
+/** The lines between an interface's braces, i.e. its member declarations. */
+function interfaceBody(block) {
+  const text = block.lines.join('\n')
+  return text.slice(text.indexOf('{') + 1, text.lastIndexOf('}')).replace(/^\n|\n$/g, '')
+}
+
+/**
+ * Collapse a name's cddl2ts declarations into one. A lone declaration (or identical
+ * duplicates) keeps the first. A `type X = <rhs>` alias plus `interface X { … }`
+ * bodies fold into `type X = <rhs> & { … }` so the interface fields survive.
+ */
+function reconcileDecls(name, blocks) {
+  const alias = blocks.find((b) => b.kind === 'type')
+  const bodies = blocks
+    .filter((b) => b.kind === 'interface')
+    .map(interfaceBody)
+    .filter((b) => b.trim())
+  if (!alias || !bodies.length) return blocks[0].lines
+  const rhs = alias.lines
+    .join('\n')
+    .replace(/^export type \w+\s*=\s*/, '')
+    .replace(/;\s*$/, '')
+    .trim()
+  return [`export type ${name} = ${[rhs, ...bodies.map((b) => `{\n${b}\n}`)].join(' & ')};`]
 }
 
 // ============================================================
@@ -708,23 +824,22 @@ function modelToEvents(model) {
 // Code generation
 // ============================================================
 
-const LICENSE_HEADER = `\
-// Licensed to the Software Freedom Conservancy (SFC) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The SFC licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.`
+// Shared license + note text, copied next to this script by BUILD.bazel — see scripts/*.txt.
+const GENERATOR_DIR = dirname(fileURLToPath(import.meta.url))
+const commentLines = (text) =>
+  text
+    .split('\n')
+    .map((line) => `// ${line}`.trimEnd())
+    .join('\n')
+
+const LICENSE_HEADER = commentLines(readFileSync(join(GENERATOR_DIR, 'license_header.txt'), 'utf8').replace(/\n$/, ''))
+
+const GENERATED_NOTE = commentLines(
+  readFileSync(join(GENERATOR_DIR, 'generated_note_template.txt'), 'utf8')
+    .replace('{generator}', 'javascript/selenium-webdriver/generate_bidi.mjs')
+    .replace('{command}', 'bazel build //javascript/selenium-webdriver:create-bidi-src')
+    .trim(),
+)
 
 // ============================================================
 // Type-map helpers for cross-domain import generation
@@ -791,9 +906,9 @@ function generateDomainFile({
   specVersion,
   typeNameToDomain,
 }) {
-  const parts = [LICENSE_HEADER, '']
+  const parts = [LICENSE_HEADER, '', GENERATED_NOTE]
 
-  parts.push(`// Auto-generated from WebDriver BiDi CDDL spec (v${specVersion}) — DO NOT EDIT MANUALLY`)
+  parts.push(`// Built from the WebDriver BiDi CDDL spec (v${specVersion}).`)
   parts.push(`// Source: https://github.com/w3c/webref/tree/main/ed/cddl`)
   parts.push('')
 

@@ -31,7 +31,7 @@ module Selenium
 
         def execute(cmd:, params: nil, result: nil)
           reply = @connection.send_cmd(method: cmd, params: serialize(params))
-          raise Error::WebDriverError, error_message(reply) if reply['error']
+          raise error_for(reply) if reply['error']
 
           value = reply['result']
           result ? result.from_json(value) : value
@@ -43,8 +43,8 @@ module Selenium
           params&.as_json || {}
         end
 
-        def error_message(reply)
-          "#{reply['error']}: #{reply['message']}\n#{reply['stacktrace']}"
+        def error_for(reply)
+          Protocol::ErrorCode.for(reply['error']).new("#{reply['message']}\n#{reply['stacktrace']}")
         end
       end # Transport
     end # BiDi

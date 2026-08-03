@@ -1,0 +1,4 @@
+exports_files(
+    glob(["*.cddl"]),
+    visibility = ["//javascript/selenium-webdriver:__pkg__"],
+)

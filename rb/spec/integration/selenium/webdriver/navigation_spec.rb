@@ -22,7 +22,7 @@ module Selenium
   module WebDriver
     describe Navigation do
       it 'navigates back and forward',
-         pending_if: {browser: %i[safari safari_preview], bidi: true,
+         pending_if: {browser_family: :safari, bidi: true,
                       reason: 'Safari does not support BiDi browsingContext.traverseHistory'} do
         form_title = 'We Leave From Here'
         result_title = 'We Arrive Here'

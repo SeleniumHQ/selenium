@@ -14,11 +14,26 @@ load("//javascript/selenium-webdriver/private:generate_bidi.bzl", "generate_bidi
 
 npm_link_all_packages(name = "node_modules")
 
+# Copy the shared license + note next to the generator so it can read them as siblings.
+copy_file(
+    name = "license_header_local",
+    src = "//scripts:license_header.txt",
+    out = "license_header.txt",
+)
+
+copy_file(
+    name = "generated_note_local",
+    src = "//scripts:generated_note_template.txt",
+    out = "generated_note_template.txt",
+)
+
 # Generator script that reads the merged CDDL spec and produces one .ts file per BiDi domain.
 js_binary(
     name = "generate_bidi_script",
     data = [
         "generate_bidi.mjs",
+        ":generated_note_local",
+        ":license_header_local",
         ":node_modules/cddl",
         ":node_modules/cddl2ts",
     ],
@@ -69,8 +84,8 @@ mocha_test(
 )
 
 # Generate WebDriver BiDi TypeScript modules from CDDL specification.
-# extra_cddl_files are merged with the primary BiDi spec before generation so that
-# adjacent specs (Permissions, Prefetch, UA Client Hints, Web Bluetooth) are included.
+# extra_cddl_files are parsed alongside the primary BiDi spec so that adjacent specs
+# (Permissions, Prefetch, UA Client Hints, Web Bluetooth) are included.
 generate_bidi_library(
     name = "create-bidi-src",
     cddl_file = "@webdriver_bidi_all_cddl//file:spec.cddl",
@@ -90,11 +105,21 @@ generate_bidi_library(
         "@ua_client_hints_all_cddl//file:spec.cddl",
         "@web_bluetooth_all_cddl//file:spec.cddl",
     ],
+    # The local #1140 extension point (supersedes the upstream closed InstallParameters): spec-
+    # shaped and browser-neutral, it only opens the map. Stays in the shared schema.
+    override_cddl_files = [
+        "//common/bidi:webdriver-bidi-1140.cddl",
+    ],
     # The pinned rendered core spec. The schema step extracts its prose section anchors
     # (#type-/#command-/#event-/#module-) to upgrade type links and add command/event/
     # domain links; adjacent specs keep the webref CDDL fallback.
     spec_html = "@webdriver_bidi_spec_html//file:index.html",
     spec_version = "1.0",
+    # Firefox's vendor fields plugged into that extension point. Provenance-tagged and routed into
+    # the schema's separate `vendor` section, so the shared schema stays exactly what upstream emits.
+    vendor_cddl_files = [
+        "//common/bidi:webextension-install-extensions.cddl",
+    ],
 )
 
 VERSION = "4.47.0-nightly202607110055"
@@ -141,6 +166,8 @@ npm_package(
         ":license",
         ":manager-linux",
         ":manager-macos",
+        ":manager-notice",
+        ":manager-sbom",
         ":manager-windows",
         ":prod-src-files",
         "//javascript/selenium-webdriver/lib/atoms:bidi-mutation-listener",
@@ -306,6 +333,18 @@ copy_file(
     name = "manager-windows",
     src = "//common/manager:selenium-manager-windows",
     out = "bin/windows/selenium-manager.exe",
+)
+
+copy_file(
+    name = "manager-sbom",
+    src = "//common/manager:selenium-manager-sbom",
+    out = "bin/selenium-manager.cdx.json",
+)
+
+copy_file(
+    name = "manager-notice",
+    src = "//common/manager:selenium-manager-notice",
+    out = "bin/selenium-manager-THIRD-PARTY-NOTICES.txt",
 )
 
 copy_to_bin(

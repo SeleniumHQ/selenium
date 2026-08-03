@@ -35,7 +35,7 @@ else
   # Reduce the run command to its bazel invocation
   base_cmd=$(sed -E 's/^.*;[[:space:]]*//; s/ --target_pattern_file=[^[:space:]]+//; s| //[^ ]*||g' <<<"$RUN_CMD")
 fi
-rerun_cmd="$base_cmd --test_env=SE_DEBUG=true --flaky_test_attempts=1 --target_pattern_file=build/failures/_run1.txt"
+rerun_cmd="$base_cmd --test_env=SE_DEBUG=true --test_output=all --flaky_test_attempts=1 --target_pattern_file=build/failures/_run1.txt"
 echo "Rerunning tests: $rerun_cmd"
 set +e
 {

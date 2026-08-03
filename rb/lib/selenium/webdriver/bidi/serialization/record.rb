@@ -29,7 +29,8 @@ module Selenium
         # @api private
         class Record < ::Data
           # Named Field, not Member, to avoid colliding with +::Data#members+.
-          Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required, :primitive, :scalar)
+          Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required, :primitive,
+                                :scalar, :const)
 
           def self.define(**spec)
             extensible = spec.delete(:extensible) || false
@@ -60,7 +61,7 @@ module Selenium
                       nullable: meta[:nullable] || false, ref: meta[:ref],
                       list: meta[:list] || false, fixed: meta.fetch(:fixed, UNSET), enum: meta[:enum],
                       required: meta.fetch(:required, true), primitive: meta[:primitive],
-                      scalar: meta[:scalar])
+                      scalar: meta[:scalar], const: meta.fetch(:const, UNSET))
           end
           private_class_method :field
 
@@ -78,9 +79,10 @@ module Selenium
               construct(**attributes)
             end
 
-            # Inbound: builds from the wire. A missing required field raises (in +wire_value+),
-            # enum tokens are mapped back to symbols and an unrecognized one raises (in +read+), and
-            # extra keys are captured (extensible) or ignored (closed) — strict on shape, lenient on extras.
+            # Inbound: builds from the wire. A missing required field is omitted and warned (or
+            # raised in strict mode, in +wire_value+); enum tokens are mapped back to symbols and an
+            # unrecognized one raises (in +read+); an undeclared property is captured silently
+            # (extensible) or warned and dropped (closed) — strict on shape, lenient on extras.
             def from_json(json_payload)
               unless json_payload.is_a?(::Hash)
                 raise Error::WebDriverError, "#{name} expected an object on the wire, got #{json_payload.inspect}"
@@ -89,7 +91,12 @@ module Selenium
               attributes = fields.to_h do |f|
                 [f.name, wire_value(f, json_payload)]
               end
-              attributes[:extensions] = extra(json_payload) if extensible?
+              undeclared = extra(json_payload)
+              if extensible?
+                attributes[:extensions] = undeclared # the spec sanctions these extras; preserve them silently
+              else
+                warn_undeclared(undeclared) unless undeclared.empty?
+              end
               construct(**attributes)
             end
 
@@ -97,9 +104,11 @@ module Selenium
 
             # Checks each field's value: a required field cannot be omitted (UNSET), a non-nullable
             # field cannot be nil (nil is neither a value nor the UNSET omit-sentinel, so it would be
-            # silently dropped on the wire), and an enum field must be in its allowed set. The enum
-            # constant is resolved lazily so a cross-domain enum need not be loaded first. Outbound
-            # only (from +new+); inbound presence/enum are checked separately in +wire_value+/+read+.
+            # silently dropped on the wire), a nullable-const field must carry its literal (not some
+            # other value), a primitive field must be the matching Ruby type, and an enum field must be
+            # in its allowed set. The enum constant is resolved lazily so a cross-domain enum need not be
+            # loaded first. Outbound only (from +new+); inbound presence/primitive/enum are checked
+            # separately in +wire_value+/+read+.
             def validate_values(attributes)
               fields.each do |f|
                 value = attributes[f.name]
@@ -107,9 +116,77 @@ module Selenium
                 raise ::ArgumentError, "#{name}##{f.name} cannot be nil" if value.nil? && !f.nullable
                 next if value.nil? || UNSET.equal?(value)
 
-                check_outbound_shape(f, value)
-                Serialization.validate!("#{name}##{f.name}", value, Protocol.const_get(f.enum)) if f.enum
+                validate_present(f, value)
               end
+            end
+
+            # Checks a field that carries an actual value (neither omitted nor nil): a nullable-const
+            # field against its literal, list/scalar shape, primitive type (lists excepted, as inbound
+            # does), ref type, and enum membership (resolved lazily so a cross-domain enum need not load first).
+            def validate_present(field, value)
+              validate_const(field, value)
+              check_outbound_shape(field, value)
+              check_outbound_primitive(field, value) unless field.list
+              validate_ref(field, value) if field.ref
+              Serialization.validate!("#{name}##{field.name}", value, Protocol.const_get(field.enum)) if field.enum
+            end
+
+            # Outbound mirror of read_ref: a ref-typed value must be the type it declares, so a wrong
+            # record or a value no union variant accepts is a caller error caught here, not a browser
+            # round-trip. Shape is already checked, so a list is an Array.
+            def validate_ref(field, value)
+              klass = (@refs ||= {})[field.name] ||= Protocol.const_get(field.ref)
+              field.list ? validate_ref_list(field, klass, value) : validate_ref_value(field, klass, value)
+            end
+
+            # Mirrors read_list: a scalar field is a [key, value] map, a nested list recurses, otherwise
+            # each element is checked against the ref.
+            def validate_ref_list(field, klass, list)
+              list.each do |element|
+                if field.scalar
+                  validate_ref_entry(field, klass, element)
+                elsif element.is_a?(::Array)
+                  validate_ref_list(field, klass, element)
+                else
+                  validate_ref_value(field, klass, element)
+                end
+              end
+            end
+
+            # A [key, value] map entry: the key may be a variant or a bare scalar, the value is a variant.
+            def validate_ref_entry(field, klass, element)
+              unless element.is_a?(::Array) && element.size == 2
+                raise ::ArgumentError, "#{name}##{field.name} expected a [key, value] pair, got #{element.inspect}"
+              end
+
+              key, value = element
+              key.is_a?(Serializable) ? validate_ref_value(field, klass, key) : check_outbound_scalar(field, key)
+              validate_ref_value(field, klass, value)
+            end
+
+            # A record ref must be an instance of that record; a union ref must be one the union accepts.
+            def validate_ref_value(field, klass, value)
+              return if klass < Union ? klass.valid_outbound?(value) : value.is_a?(klass)
+
+              raise ::ArgumentError, "#{name}##{field.name} expected #{field.ref}, got #{value.inspect}"
+            end
+
+            # Outbound mirror of scalar_value: a bare map key must match one of the arm's primitives.
+            def check_outbound_scalar(field, value)
+              expected = Array(field.scalar).flat_map { |primitive| PRIMITIVE_TYPES[primitive] || [] }
+              return if expected.empty? || expected.any? { |type| value.is_a?(type) }
+
+              raise ::ArgumentError,
+                    "#{name}##{field.name} expected #{Array(field.scalar).join(' or ')}, got #{value.inspect}"
+            end
+
+            # A nullable constant (`literal / null`) is caller-settable but its only non-null value is
+            # the literal, so a value that is neither the literal nor nil (nil is handled above) is a
+            # local error rather than a wire round-trip. A non-const field carries UNSET here and passes.
+            def validate_const(field, value)
+              return if UNSET.equal?(field.const) || value == field.const
+
+              raise ::ArgumentError, "#{name}##{field.name} must be #{field.const.inspect}, got #{value.inspect}"
             end
 
             # Outbound mirror of check_shape: a list-typed arg must be an array, a scalar-shaped one
@@ -122,6 +199,17 @@ module Selenium
               raise ::ArgumentError, "#{name}##{field.name} expected #{kind}, got #{value.inspect}"
             end
 
+            # Outbound mirror of check_primitive: a primitive-typed arg (`string`/`integer`/…) must be
+            # the matching Ruby type, so a caller mistake (a string width, a float count) is a local
+            # ArgumentError here rather than a rejection the browser reports a round-trip later. A field
+            # with no primitive descriptor (enum, ref, opaque) passes; lists are skipped, as inbound does.
+            def check_outbound_primitive(field, value)
+              expected = PRIMITIVE_TYPES[field.primitive]
+              return if expected.nil? || expected.any? { |type| value.is_a?(type) }
+
+              raise ::ArgumentError, "#{name}##{field.name} expected #{field.primitive}, got #{value.inspect}"
+            end
+
             def fixed?(field)
               !UNSET.equal?(field.fixed)
             end
@@ -131,7 +219,19 @@ module Selenium
               return read(field, json_payload[field.wire_key]) if json_payload.key?(field.wire_key)
               return UNSET unless field.required
 
-              raise Error::WebDriverError, "#{name}##{field.name} is required but was missing from the response"
+              missing_required(field)
+            end
+
+            # A required field absent from the response is tolerated as omitted (UNSET) and warned, so a
+            # schema ahead of the browser does not block the caller; strict mode (SE_BIDI_STRICT) escalates
+            # to an error for callers who want it. Omitted (UNSET) stays distinct from an explicit null (nil),
+            # which matters for the required-and-nullable fields the schema flags.
+            def missing_required(field)
+              message = "#{name}##{field.name} is required but was missing from the response"
+              raise Error::WebDriverError, message if Serialization.strict?
+
+              WebDriver.logger.warn(message, id: :bidi_missing_required)
+              UNSET
             end
 
             def read(field, raw)
@@ -240,6 +340,16 @@ module Selenium
               known = (@wire_keys ||= fields.map(&:wire_key))
               json_payload.except(*known)
             end
+
+            # Forward-compat signal: a property a closed type does not model is dropped and warned so
+            # schema drift is visible (an extensible type keeps its extras silently — the spec sanctions
+            # them). Tagged +:bidi_undeclared_property+ so a caller can silence it via +logger.ignore+.
+            def warn_undeclared(undeclared)
+              undeclared.each_key do |key|
+                WebDriver.logger.warn("#{name} received an undeclared property: #{key.inspect}",
+                                      id: :bidi_undeclared_property)
+              end
+            end
           end
 
           # @api private
@@ -264,8 +374,25 @@ module Selenium
                 value = Serialization.to_wire(value, Protocol.const_get(f.enum)) if f.enum
                 payload[f.wire_key] = Serializable.as_json(value)
               end
-              payload.merge!(extensions) if self.class.extensible? && !extensions.empty?
+              merge_extensions!(payload) if self.class.extensible? && !extensions.empty?
               payload
+            end
+
+            private
+
+            # Merge the passthrough extras onto the wire, erroring rather than letting an extra whose key
+            # is a declared field's wire key silently clobber that typed value; an extra is by definition
+            # a field the spec does not declare. Keys are stringified first so a symbol key (e.g. `name:`)
+            # cannot slip past the guard and then reappear as a duplicate wire key once serialized. The
+            # single gate every outbound path funnels through: +new+, +with+, and in-place mutation.
+            def merge_extensions!(payload)
+              extras = extensions.transform_keys(&:to_s)
+              collisions = extras.keys & self.class.fields.map(&:wire_key)
+              unless collisions.empty?
+                raise ::ArgumentError, "#{self.class.name} extensions shadow declared fields: #{collisions.join(', ')}"
+              end
+
+              payload.merge!(extras)
             end
           end
         end
