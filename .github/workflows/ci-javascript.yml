@@ -1,0 +1,36 @@
+name: CI - JavaScript
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build
+      run: bazel build //javascript/selenium-webdriver
+
+  unit-tests:
+    name: Unit Tests
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        # Oldest and newest supported Node versions (see
+        # javascript/selenium-webdriver/README.md Node Support Policy), pinned to
+        # full versions the pinned rules_nodejs ships
+        # (@rules_nodejs//nodejs/private:node_versions.bzl). Node 26 is supported
+        # but not yet in any rules_nodejs release, so add it here once it is.
+        node-version: ['22.22.0', '24.14.1']
+        os: [ubuntu]
+    with:
+      name: Unit Tests (${{ matrix.node-version }}, ${{ matrix.os }})
+      os: ${{ matrix.os }}
+      node-version: ${{ matrix.node-version }}
+      run: bazel test --local_test_jobs 1 //javascript/selenium-webdriver:small-tests
