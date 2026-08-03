@@ -64,6 +64,16 @@ module Selenium
 
             def validate_present: (untyped field, untyped value) -> void
 
+            def validate_ref: (untyped field, untyped value) -> void
+
+            def validate_ref_list: (untyped field, untyped klass, untyped list) -> void
+
+            def validate_ref_entry: (untyped field, untyped klass, untyped element) -> void
+
+            def validate_ref_value: (untyped field, untyped klass, untyped value) -> void
+
+            def check_outbound_scalar: (untyped field, untyped value) -> void
+
             def validate_const: (untyped field, untyped value) -> void
 
             def check_outbound_shape: (untyped field, untyped value) -> void
@@ -125,11 +135,21 @@ module Selenium
 
           def self.object_only: () -> bool
 
+          def self.scalar_values: (*untyped values) -> Array[untyped]
+
           def self.from_json: (untyped json_payload) -> untyped
 
           def self.build: (**untyped kwargs) -> untyped
 
+          def self.valid_outbound?: (untyped value) -> bool
+
           private
+
+          def self.scalar_arm?: (untyped value) -> bool
+
+          def self.variant_refs: () -> Array[String]
+
+          def self.variant_accepts?: (String ref, untyped value) -> bool
 
           def self.select: (Hash[untyped, untyped] json_payload) -> untyped
 

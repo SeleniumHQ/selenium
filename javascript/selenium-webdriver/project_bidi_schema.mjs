@@ -29,7 +29,7 @@
  *             | { ordered: [{ ref, requires: [key] }] }        // structural, spec order
  *             | { correlated: true }                           // resolved by request id, not the payload
  *   field:      { name, wire, required, type }
- *   type ref:   { primitive } | { const } | { ref } | { enum, primitive? } | { list } | { map, extensible? } | { union, scalar? }
+ *   type ref:   { primitive } | { const } | { ref } | { enum, primitive? } | { list } | { map, extensible? } | { union, scalar?, scalarValues? }
  *               any ref may also carry `nullable: true` (a `/ null` alternative). On a
  *               record node, `map` is the value type of `* key => value` entries and
  *               `extensible: true` marks an open `* text => any` record.
@@ -53,6 +53,9 @@
  *   `RemoteValue / text`) and carries that arm's primitive: a binding collapsing it onto its
  *   object_only ref arm passes a non-object payload (the string keys) through, but only when
  *   it matches the primitive — a wrong-typed scalar is still rejected.
+ *   `scalarValues` on a `union` ref pins the exact literals its `{ const }` scalar arms admit
+ *   (input.Origin's "viewport" / "pointer"), so a binding can reject a wrong string, not just a
+ *   wrong primitive — the tightest check the schema affords for a bare-scalar union arm.
  *
  * Types the normalizer synthesized for anonymous CDDL constructs additionally
  * carry `{ synthetic: true, owner, label }`: `owner` is the type the construct
@@ -143,12 +146,16 @@ function scalarArmPrimitive(arm) {
 // and carries that arm's primitive (or the array of primitives when the scalar arms differ).
 // A binding that collapses such a union onto its object (object_only) ref arm must still let
 // a non-object payload through here, but only when it matches this primitive — a wrong-typed
-// scalar is still a wire error. Derived once, in the schema, rather than re-detected per binding.
+// scalar is still a wire error. `scalarValues` additionally pins the exact literals a `{ const }`
+// scalar arm admits (input.Origin's "viewport" / "pointer"), so a binding can reject a wrong
+// string too, not just a wrong primitive. Derived once, in the schema, not re-detected per binding.
 function unionNode(arms) {
   const node = { union: arms }
   const primitives = [...new Set(arms.map(scalarArmPrimitive).filter((p) => p !== undefined))]
   if (primitives.length === 1) node.scalar = primitives[0]
   else if (primitives.length > 1) node.scalar = primitives
+  const values = arms.filter((a) => a.const !== undefined).map((a) => a.const)
+  if (values.length) node.scalarValues = values
   return node
 }
 
