@@ -69,14 +69,13 @@ LEVELS.each do |level, severity|
     end
 
     # Suppresses logging output to stderr while capturing it, so an expected entry does not pollute
-    # test output and an unexpected one still fails the assertion. SE_DEBUG locks the logger output,
-    # making #output= a no-op, so ensure the lock is removed for the duration of the capture.
+    # test output and an unexpected one still fails the assertion. SE_DEBUG locks the output to block
+    # runtime overrides; the test suite has no such need, so drop the lock and leave it off.
     def capture_log_lines
       default_output = Selenium::WebDriver.logger.io
       io = StringIO.new
 
-      output_forced = Selenium::WebDriver.logger.instance_variable_get(:@output_forced)
-      Selenium::WebDriver.logger.instance_variable_set(:@output_forced, false) if output_forced
+      Selenium::WebDriver.logger.instance_variable_set(:@output_forced, false)
       Selenium::WebDriver.logger.output = io
 
       begin
@@ -85,7 +84,6 @@ LEVELS.each do |level, severity|
         raise e, 'Can not evaluate output when statement raises an exception'
       ensure
         Selenium::WebDriver.logger.output = default_output
-        Selenium::WebDriver.logger.instance_variable_set(:@output_forced, true) if output_forced
       end
 
       io.rewind
