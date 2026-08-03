@@ -121,6 +121,8 @@ module Selenium
               x: {wire_key: 'x', required: false, primitive: 'integer'},
               y: {wire_key: 'y', required: false, primitive: 'integer'}
             )
+
+            def self.normal(**) = Browser::SetClientWindowStateParameters::ClientWindowRectState.new(**)
           end
 
           # @api private
@@ -152,7 +154,12 @@ module Selenium
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
             Denied = Serialization::Record.define(type: {fixed: 'denied'})
+
+            def self.allowed(**) = Browser::DownloadBehavior::Allowed.new(**)
+            def self.denied(**) = Browser::DownloadBehavior::Denied.new(**)
           end
+
+          def download_behavior = DownloadBehavior
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/

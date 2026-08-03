@@ -25,6 +25,9 @@ module Selenium
         class Session < ::Selenium::WebDriver::BiDi::Protocol::Domain
           USER_PROMPT_HANDLER_TYPE: Hash[Symbol, String]
 
+          type proxy_configuration = ::Selenium::WebDriver::BiDi::Protocol::Session::AutodetectProxyConfiguration | ::Selenium::WebDriver::BiDi::Protocol::Session::DirectProxyConfiguration | ::Selenium::WebDriver::BiDi::Protocol::Session::ManualProxyConfiguration | ::Selenium::WebDriver::BiDi::Protocol::Session::PacProxyConfiguration | ::Selenium::WebDriver::BiDi::Protocol::Session::SystemProxyConfiguration
+          type unsubscribe_parameters = ::Selenium::WebDriver::BiDi::Protocol::Session::UnsubscribeByAttributesRequest | ::Selenium::WebDriver::BiDi::Protocol::Session::UnsubscribeByIDRequest
+
           class CapabilitiesRequest < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader always_match: untyped
             attr_reader first_match: untyped
@@ -39,10 +42,15 @@ module Selenium
             attr_reader proxy: untyped
             attr_reader unhandled_prompt_behavior: untyped
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (?accept_insecure_certs: bool, ?browser_name: String, ?browser_version: String, ?platform_name: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?extensions: Hash[String, untyped]) -> instance
+            def self.new: (?accept_insecure_certs: bool, ?browser_name: String, ?browser_version: String, ?platform_name: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::proxy_configuration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?extensions: Hash[String, untyped]) -> instance
           end
 
           class ProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Union
+            def self.autodetect: (?proxy_type: String, ?extensions: Hash[String, untyped]) -> ::Selenium::WebDriver::BiDi::Protocol::Session::AutodetectProxyConfiguration
+            def self.direct: (?proxy_type: String, ?extensions: Hash[String, untyped]) -> ::Selenium::WebDriver::BiDi::Protocol::Session::DirectProxyConfiguration
+            def self.manual: (?proxy_type: String, ?http_proxy: String, ?ssl_proxy: String, socks_proxy: String, socks_version: Integer, ?no_proxy: Array[String], ?extensions: Hash[String, untyped]) -> ::Selenium::WebDriver::BiDi::Protocol::Session::ManualProxyConfiguration
+            def self.pac: (?proxy_type: String, proxy_autoconfig_url: String, ?extensions: Hash[String, untyped]) -> ::Selenium::WebDriver::BiDi::Protocol::Session::PacProxyConfiguration
+            def self.system: (?proxy_type: String, ?extensions: Hash[String, untyped]) -> ::Selenium::WebDriver::BiDi::Protocol::Session::SystemProxyConfiguration
           end
 
           class AutodetectProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -141,7 +149,7 @@ module Selenium
               attr_reader unhandled_prompt_behavior: untyped
               attr_reader web_socket_url: untyped
               attr_reader extensions: Hash[String, untyped]
-              def self.new: (accept_insecure_certs: bool, browser_name: String, browser_version: String, platform_name: String, set_window_rect: bool, user_agent: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?web_socket_url: String, ?extensions: Hash[String, untyped]) -> instance
+              def self.new: (accept_insecure_certs: bool, browser_name: String, browser_version: String, platform_name: String, set_window_rect: bool, user_agent: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::proxy_configuration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?web_socket_url: String, ?extensions: Hash[String, untyped]) -> instance
             end
           end
 
@@ -153,6 +161,17 @@ module Selenium
           class UnsubscribeParameters < ::Selenium::WebDriver::BiDi::Serialization::Union
           end
 
+          def capabilities_request: (?always_match: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequest, ?first_match: Array[::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequest]) -> CapabilitiesRequest
+          def capability_request: (?accept_insecure_certs: bool, ?browser_name: String, ?browser_version: String, ?platform_name: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::proxy_configuration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?extensions: Hash[String, untyped]) -> CapabilityRequest
+          def proxy_configuration: () -> singleton(ProxyConfiguration)
+          def autodetect_proxy_configuration: (?proxy_type: String, ?extensions: Hash[String, untyped]) -> AutodetectProxyConfiguration
+          def direct_proxy_configuration: (?proxy_type: String, ?extensions: Hash[String, untyped]) -> DirectProxyConfiguration
+          def manual_proxy_configuration: (?proxy_type: String, ?http_proxy: String, ?ssl_proxy: String, socks_proxy: String, socks_version: Integer, ?no_proxy: Array[String], ?extensions: Hash[String, untyped]) -> ManualProxyConfiguration
+          def pac_proxy_configuration: (?proxy_type: String, proxy_autoconfig_url: String, ?extensions: Hash[String, untyped]) -> PacProxyConfiguration
+          def system_proxy_configuration: (?proxy_type: String, ?extensions: Hash[String, untyped]) -> SystemProxyConfiguration
+          def user_prompt_handler: (?alert: Symbol, ?before_unload: Symbol, ?confirm: Symbol, ?default: Symbol, ?file: Symbol, ?prompt: Symbol) -> UserPromptHandler
+          def unsubscribe_by_id_request: (subscriptions: Array[String]) -> UnsubscribeByIDRequest
+          def unsubscribe_by_attributes_request: (events: Array[String]) -> UnsubscribeByAttributesRequest
           def end_: () -> untyped
           def new: (capabilities: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilitiesRequest) -> ::Selenium::WebDriver::BiDi::Protocol::Session::NewResult
           def status: () -> ::Selenium::WebDriver::BiDi::Protocol::Session::StatusResult

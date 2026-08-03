@@ -27,6 +27,8 @@ module Selenium
 
           private
 
+          def connection: () -> untyped
+
           def execute: (cmd: String, ?params: untyped, ?result: untyped) -> untyped
         end
       end

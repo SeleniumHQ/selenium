@@ -81,6 +81,9 @@ module Selenium
               storage_key: 'Storage::StorageKeyPartitionDescriptor'
             )
             object_only
+
+            def self.context(**) = Storage::BrowsingContextPartitionDescriptor.new(**)
+            def self.storage_key(**) = Storage::StorageKeyPartitionDescriptor.new(**)
           end
 
           # @api private
@@ -143,6 +146,12 @@ module Selenium
           DeleteCookiesResult = Serialization::Record.define(
             partition_key: {wire_key: 'partitionKey', ref: 'Storage::PartitionKey'}
           )
+
+          def cookie_filter(**) = CookieFilter.new(**)
+          def browsing_context_partition_descriptor(**) = BrowsingContextPartitionDescriptor.new(**)
+          def storage_key_partition_descriptor(**) = StorageKeyPartitionDescriptor.new(**)
+          def partition_descriptor = PartitionDescriptor
+          def partial_cookie(**) = PartialCookie.new(**)
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/

@@ -120,6 +120,9 @@ module Selenium
               base64: 'Network::Base64Value'
             )
             object_only
+
+            def self.string(**) = Network::StringValue.new(**)
+            def self.base64(**) = Network::Base64Value.new(**)
           end
 
           # @api private
@@ -264,6 +267,9 @@ module Selenium
               string: 'Network::UrlPatternString'
             )
             object_only
+
+            def self.pattern(**) = Network::UrlPatternPattern.new(**)
+            def self.string(**) = Network::UrlPatternString.new(**)
           end
 
           # @api private
@@ -365,6 +371,8 @@ module Selenium
               request: {wire_key: 'request', primitive: 'string'},
               action: {wire_key: 'action', enum: 'Network::CONTINUE_WITH_AUTH_NO_CREDENTIALS_ACTION'}
             )
+
+            def self.provide_credentials(**) = Network::ContinueWithAuthParameters::Credentials.new(**)
           end
 
           # @api private
@@ -521,6 +529,17 @@ module Selenium
             'network.responseCompleted' => Network::ResponseCompletedParameters,
             'network.responseStarted' => Network::ResponseStartedParameters
           }.freeze
+
+          def auth_credentials(**) = AuthCredentials.new(**)
+          def bytes_value = BytesValue
+          def string_value(**) = StringValue.new(**)
+          def base64_value(**) = Base64Value.new(**)
+          def cookie_header(**) = CookieHeader.new(**)
+          def header(**) = Header.new(**)
+          def set_cookie_header(**) = SetCookieHeader.new(**)
+          def url_pattern = UrlPattern
+          def url_pattern_pattern(**) = UrlPatternPattern.new(**)
+          def url_pattern_string(**) = UrlPatternString.new(**)
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/

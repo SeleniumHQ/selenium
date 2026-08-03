@@ -217,6 +217,12 @@ module Selenium
             user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
+          def geolocation_coordinates(**) = GeolocationCoordinates.new(**)
+          def geolocation_position_error(**) = GeolocationPositionError.new(**)
+          def network_conditions_offline(**) = NetworkConditionsOffline.new(**)
+          def screen_area(**) = ScreenArea.new(**)
+          def screen_orientation(**) = ScreenOrientation.new(**)
+
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#command-emulation-setForcedColorsModeThemeOverride
