@@ -37,13 +37,13 @@ module Selenium
         it 'creates Chrome instance' do
           service = described_class.chrome(args: args)
           expect(service).to be_a(Chrome::Service)
-          expect(service.args).to eq args
+          expect(service.args).to eq(args + %w[--enable-chrome-logs])
         end
 
         it 'creates Edge instance' do
           service = described_class.edge(args: args)
           expect(service).to be_a(Edge::Service)
-          expect(service.args).to eq args
+          expect(service.args).to eq(args + %w[--enable-chrome-logs])
         end
 
         it 'creates Firefox instance' do
