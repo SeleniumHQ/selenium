@@ -41,6 +41,15 @@ bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.28.0")
 bazel_dep(name = "rules_rs", version = "0.0.96")
 
+# TEST ONLY (do not merge): validate the Windows batch-launcher CRLF fix that
+# makes `require 'bazel/runfiles'` load reliably on Windows. Replace with a
+# normal version bump once the fix lands in a rules_ruby release.
+git_override(
+    module_name = "rules_ruby",
+    commit = "edef652855df0014a879a22cf1e0a6286f9e49a9",
+    remote = "https://github.com/titusfortner/rules_ruby.git",
+)
+
 single_version_override(
     module_name = "rules_jvm_external",
     patch_strip = 1,
