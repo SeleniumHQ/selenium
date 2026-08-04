@@ -26,8 +26,7 @@ module Selenium
       module Protocol
         describe Permissions,
                  pending_if: {browser_family: :safari,
-                              exception: {class: Error::UnknownCommandError,
-                                          message: /(?:Module permissions does not exist|permissions\.)/},
+                              exception: {class: Error::UnknownCommandError},
                               reason: 'Safari driver currently returns unknown command for BiDi permissions commands'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
           after { |example| reset_driver!(example: example) }

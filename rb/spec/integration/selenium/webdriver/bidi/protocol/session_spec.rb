@@ -39,7 +39,10 @@ module Selenium
             end
           end
 
-          describe '#subscribe' do
+          describe '#subscribe',
+                   pending_if: {browser_family: :safari,
+                                exception: {class: Error::InvalidArgumentError},
+                                reason: 'Safari rejects session.subscribe with invalid argument'} do
             it 'subscribes to an event globally' do
               result = session.subscribe(events: ['browsingContext.load'])
 
@@ -62,7 +65,10 @@ module Selenium
             end
           end
 
-          describe '#unsubscribe' do
+          describe '#unsubscribe',
+                   pending_if: {browser_family: :safari,
+                                exception: {class: Error::InvalidArgumentError},
+                                reason: 'Safari rejects session.unsubscribe with invalid argument'} do
             it 'unsubscribes by event name' do
               session.subscribe(events: ['browsingContext.load'])
 

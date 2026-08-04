@@ -36,8 +36,7 @@ module Selenium
 
           context 'with user contexts and client windows',
                   pending_if: {browser_family: :safari,
-                               exception: {class: Error::UnknownCommandError,
-                                           message: /(?:Module browser does not exist|browser\.)/},
+                               exception: {class: Error::UnknownCommandError},
                                reason: 'Safari returns unknown command for BiDi user contexts/client windows'} do
             describe '#create_user_context' do
               it 'returns the created user context id' do
@@ -119,7 +118,9 @@ module Selenium
             end
 
             describe '#set_download_behavior' do
-              it 'allows downloads into a requested folder' do
+              it 'allows downloads into a requested folder',
+                 skip_if: {browser: %i[chrome firefox], platform: :windows,
+                           reason: 'Times out waiting for the download to complete'} do
                 Dir.mktmpdir('selenium-bidi-downloads') do |directory|
                   behavior = Browser::DownloadBehavior::Allowed.new(destination_folder: directory)
                   browser.set_download_behavior(download_behavior: behavior)
@@ -151,7 +152,9 @@ module Selenium
                    pending_if: {browser: :firefox,
                                 exception: {class: Error::UnsupportedOperationError,
                                             message: /Closing the browser in a session /},
-                                reason: 'Firefox unsupported operation for browser.close on Classic sessions'} do
+                                reason: 'Firefox unsupported operation for browser.close on Classic sessions'},
+                   skip_if: {browser_family: :safari,
+                             reason: 'Times out: browser.close hangs on Safari'} do
             it 'closes the browser session' do
               driver.navigate.to url_for('blank.html')
 

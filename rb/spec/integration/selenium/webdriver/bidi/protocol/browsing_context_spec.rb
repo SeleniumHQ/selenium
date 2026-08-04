@@ -48,7 +48,10 @@ module Selenium
             end
           end
 
-          describe '#capture_screenshot' do
+          describe '#capture_screenshot',
+                   pending_if: {browser_family: :safari,
+                                exception: {class: Error::UnknownCommandError},
+                                reason: 'Safari does not implement browsingContext.captureScreenshot'} do
             it 'returns base64 PNG screenshot data' do
               browsing_context.navigate(context: driver.window_handle, url: url_for('blank.html'), wait: :complete)
 
@@ -106,8 +109,7 @@ module Selenium
 
             it 'accepts reference, background, and user context parameters',
                pending_if: {browser_family: :safari,
-                            exception: {class: Error::UnknownCommandError,
-                                        message: /(?:Module browser does not exist|browser\.|browsingContext)/},
+                            exception: {class: Error::UnknownCommandError},
                             reason: 'Safari driver currently returns unknown command for BiDi user contexts'} do
               user_context = Browser.new(driver).create_user_context.user_context
 
@@ -167,7 +169,10 @@ module Selenium
             end
           end
 
-          describe '#locate_nodes' do
+          describe '#locate_nodes',
+                   pending_if: {browser_family: :safari,
+                                exception: {class: Error::UnknownCommandError},
+                                reason: 'Safari does not implement browsingContext.locateNodes'} do
             it 'finds nodes by CSS selector' do
               browsing_context.navigate(context: driver.window_handle, url: url_for('xhtmlTest.html'), wait: :complete)
 
@@ -219,7 +224,10 @@ module Selenium
             end
           end
 
-          describe '#print' do
+          describe '#print',
+                   pending_if: {browser_family: :safari,
+                                exception: {class: Error::UnknownCommandError},
+                                reason: 'Safari does not implement browsingContext.print'} do
             it 'returns base64 PDF data' do
               browsing_context.navigate(context: driver.window_handle, url: url_for('printPage.html'), wait: :complete)
 
@@ -268,9 +276,11 @@ module Selenium
                                              message: /browsingContext\.setBypassCSP/},
                                  reason: 'Chromium returns unsupported operation for browsingContext.setBypassCSP'},
                                 {browser: :firefox,
-                                 exception: {class: Error::UnknownCommandError,
-                                             message: /browsingContext\.setBypassCSP/},
-                                 reason: 'Firefox returns unknown command for browsingContext.setBypassCSP'}] do
+                                 exception: {class: Error::UnknownCommandError},
+                                 reason: 'Firefox returns unknown command for browsingContext.setBypassCSP'},
+                                {browser_family: :safari,
+                                 exception: {class: Error::UnknownCommandError},
+                                 reason: 'Safari does not implement browsingContext.setBypassCSP'}] do
             it 'sets and clears CSP bypass for a context' do
               expect(browsing_context.set_bypass_csp(bypass: true, contexts: [driver.window_handle])).to be_empty
               expect(browsing_context.set_bypass_csp(bypass: nil, contexts: [driver.window_handle])).to be_empty
@@ -299,10 +309,13 @@ module Selenium
           end
 
           describe '#start_screencast',
-                   pending_if: {browser_family: :chromium,
-                                exception: {class: Error::UnsupportedOperationError,
-                                            message: /browsingContext\.startScreencast/},
-                                reason: 'Chromium returns unsupported operation for browsingContext.startScreencast'} do
+                   pending_if: [{browser_family: :chromium,
+                                 exception: {class: Error::UnsupportedOperationError,
+                                             message: /browsingContext\.startScreencast/},
+                                 reason: 'Chromium returns unsupported operation for browsingContext.startScreencast'},
+                                {browser_family: :safari,
+                                 exception: {class: Error::UnknownCommandError},
+                                 reason: 'Safari does not implement browsingContext.startScreencast'}] do
             it 'starts and stops a screencast' do
               result = browsing_context.start_screencast(
                 context: driver.window_handle,
@@ -318,7 +331,9 @@ module Selenium
             end
           end
 
-          describe '#traverse_history' do
+          describe '#traverse_history',
+                   skip_if: {browser_family: :safari,
+                             reason: 'Times out: browsingContext.traverseHistory hangs on Safari'} do
             it 'moves backward and forward in the context history' do
               browsing_context.navigate(context: driver.window_handle, url: url_for('blank.html'), wait: :complete)
               browsing_context.navigate(

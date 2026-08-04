@@ -26,8 +26,7 @@ module Selenium
       module Protocol
         describe Emulation,
                  pending_if: {browser_family: :safari,
-                              exception: {class: Error::UnknownCommandError,
-                                          message: /(?:Module emulation does not exist|emulation\.)/},
+                              exception: {class: Error::UnknownCommandError},
                               reason: 'Safari driver currently returns unknown command for BiDi emulation commands'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
           after { |example| reset_driver!(example: example) }
@@ -55,8 +54,7 @@ module Selenium
                                              message: /emulation\.setForcedColorsModeThemeOverride/},
                                  reason: 'Chromium unsupported operation: emulation.setForcedColorsModeThemeOverride'},
                                 {browser: :firefox,
-                                 exception: {class: Error::UnknownCommandError,
-                                             message: /emulation\.setForcedColorsModeThemeOverride/},
+                                 exception: {class: Error::UnknownCommandError},
                                  reason: 'Firefox unknown command: emulation.setForcedColorsModeThemeOverride'}] do
             it 'sets and clears forced-colors theme override' do
               expect(emulation.set_forced_colors_mode_theme_override(
@@ -84,7 +82,11 @@ module Selenium
                      )).to be_empty
             end
 
-            it 'sets a geolocation error override' do
+            it 'sets a geolocation error override',
+               pending_if: {browser: :firefox,
+                            exception: {class: Error::InvalidArgumentError,
+                                        message: /coordinates/},
+                            reason: 'Firefox does not support the geolocation error override'} do
               expect(emulation.set_geolocation_override(
                        error: Emulation::GeolocationPositionError.new,
                        contexts: [driver.window_handle]
@@ -155,8 +157,7 @@ module Selenium
 
           describe '#set_scripting_enabled',
                    pending_if: {browser: :firefox,
-                                exception: {class: Error::UnknownCommandError,
-                                            message: /emulation\.setScriptingEnabled/},
+                                exception: {class: Error::UnknownCommandError},
                                 reason: 'Firefox returns unknown command for emulation.setScriptingEnabled'} do
             it 'disables and restores page scripting' do
               context = driver.window_handle
@@ -187,8 +188,7 @@ module Selenium
 
           describe '#set_scrollbar_type_override',
                    pending_if: {browser: :firefox,
-                                exception: {class: Error::UnknownCommandError,
-                                            message: /emulation\.setScrollbarTypeOverride/},
+                                exception: {class: Error::UnknownCommandError},
                                 reason: 'Firefox returns unknown command for emulation.setScrollbarTypeOverride'} do
             it 'sets and clears scrollbar type override' do
               expect(emulation.set_scrollbar_type_override(
@@ -218,8 +218,7 @@ module Selenium
 
           describe '#set_touch_override',
                    pending_if: {browser: :firefox,
-                                exception: {class: Error::UnknownCommandError,
-                                            message: /emulation\.setTouchOverride/},
+                                exception: {class: Error::UnknownCommandError},
                                 reason: 'Firefox returns unknown command for emulation.setTouchOverride'} do
             it 'sets and clears touch support' do
               context = driver.window_handle

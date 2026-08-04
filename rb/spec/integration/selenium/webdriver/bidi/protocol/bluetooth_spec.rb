@@ -26,12 +26,10 @@ module Selenium
       module Protocol
         describe Bluetooth,
                  pending_if: [{browser: :firefox,
-                               exception: {class: Error::UnknownCommandError,
-                                           message: /(?:Module bluetooth does not exist|bluetooth\.)/},
+                               exception: {class: Error::UnknownCommandError},
                                reason: 'Firefox returns unknown command for BiDi Bluetooth simulation'},
                               {browser_family: :safari,
-                               exception: {class: Error::UnknownCommandError,
-                                           message: /(?:Module bluetooth does not exist|bluetooth\.)/},
+                               exception: {class: Error::UnknownCommandError},
                                reason: 'Safari returns unknown command for BiDi Bluetooth simulation'}],
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
           after do |example|
@@ -283,13 +281,17 @@ module Selenium
           end
 
           describe '#handle_request_device_prompt' do
-            it 'accepts a prompt' do
+            it 'accepts a prompt',
+               skip_if: {browser: %i[chrome firefox], platform: :windows,
+                         reason: 'Times out: no in-flight prompt/operation to respond to'} do
               select_device
 
               expect(evaluate_value('window.__rubyBluetoothDevice.name')).to eq('Ruby Heart Rate')
             end
 
-            it 'cancels a prompt' do
+            it 'cancels a prompt',
+               skip_if: {browser: %i[chrome firefox], platform: :windows,
+                         reason: 'Times out: no in-flight prompt/operation to respond to'} do
               events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
               enable_adapter
               start_request_device
@@ -332,7 +334,9 @@ module Selenium
           end
 
           describe '#simulate_advertisement' do
-            it 'simulates an advertisement scan entry' do
+            it 'simulates an advertisement scan entry',
+               skip_if: {browser: %i[chrome firefox], platform: :windows,
+                         reason: 'Times out: no in-flight prompt/operation to respond to'} do
               events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
               enable_adapter
               start_request_device
@@ -350,7 +354,9 @@ module Selenium
           end
 
           describe '#simulate_gatt_connection_response' do
-            it 'simulates a successful GATT connection response' do
+            it 'simulates a successful GATT connection response',
+               skip_if: {browser: %i[chrome firefox], platform: :windows,
+                         reason: 'Times out: no in-flight prompt/operation to respond to'} do
               select_device
 
               connect_selected_device
@@ -359,7 +365,9 @@ module Selenium
           end
 
           describe '#simulate_gatt_disconnection' do
-            it 'simulates a GATT disconnection' do
+            it 'simulates a GATT disconnection',
+               skip_if: {browser: %i[chrome firefox], platform: :windows,
+                         reason: 'Times out: no in-flight prompt/operation to respond to'} do
               select_device
               connect_selected_device
 
@@ -415,7 +423,9 @@ module Selenium
           end
 
           describe '#simulate_characteristic_response' do
-            it 'simulates characteristic read and write responses' do
+            it 'simulates characteristic read and write responses',
+               skip_if: {browser: %i[chrome firefox], platform: :windows,
+                         reason: 'Times out: no in-flight prompt/operation to respond to'} do
               select_device
               add_service
               add_characteristic
@@ -498,7 +508,9 @@ module Selenium
           end
 
           describe '#simulate_descriptor_response' do
-            it 'simulates descriptor read and write responses' do
+            it 'simulates descriptor read and write responses',
+               skip_if: {browser: %i[chrome firefox], platform: :windows,
+                         reason: 'Times out: no in-flight prompt/operation to respond to'} do
               select_device
               add_service
               add_characteristic

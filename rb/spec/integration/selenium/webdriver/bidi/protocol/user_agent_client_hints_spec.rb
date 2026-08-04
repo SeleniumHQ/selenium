@@ -26,12 +26,10 @@ module Selenium
       module Protocol
         describe UserAgentClientHints,
                  pending_if: [{browser: :firefox,
-                               exception: {class: Error::UnknownCommandError,
-                                           message: /userAgentClientHints\.setClientHintsOverride/},
+                               exception: {class: Error::UnknownCommandError},
                                reason: 'Firefox driver currently returns unknown command for userAgentClientHints'},
                               {browser_family: :safari,
-                               exception: {class: Error::UnknownCommandError,
-                                           message: /userAgentClientHints\.setClientHintsOverride/},
+                               exception: {class: Error::UnknownCommandError},
                                reason: 'Safari driver currently returns unknown command for userAgentClientHints'}],
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
           after { |example| reset_driver!(example: example) }

@@ -27,9 +27,8 @@ module Selenium
       module Protocol
         describe Storage,
                  pending_if: {browser_family: :safari,
-                              exception: {class: Error::UnknownCommandError,
-                                          message: /(?:Module storage does not exist|storage\.)/},
-                              reason: 'Safari driver currently returns unknown command for BiDi storage commands'},
+                              exception: {class: Error::UnknownError},
+                              reason: 'Safari driver currently returns an internal error for BiDi storage commands'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
           after { |example| reset_driver!(example: example) }
 

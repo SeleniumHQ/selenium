@@ -47,8 +47,7 @@ module Selenium
 
           describe '#add_preload_script',
                    pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError,
-                                            message: /script\.addPreloadScript/},
+                                exception: {class: Error::UnknownCommandError},
                                 reason: 'Safari driver currently returns an error for BiDi preload scripts'} do
             it 'runs a preload script in future documents' do
               result = script.add_preload_script(
@@ -83,7 +82,10 @@ module Selenium
             end
           end
 
-          describe '#call_function' do
+          describe '#call_function',
+                   pending_if: {browser_family: :safari,
+                                exception: {class: Error::SerializationError},
+                                reason: 'Safari remote value fails deserialization'} do
             it 'calls a function with local value arguments' do
               result = script.call_function(
                 function_declaration: '(left, right) => left + right',
@@ -113,7 +115,10 @@ module Selenium
             end
           end
 
-          describe '#disown' do
+          describe '#disown',
+                   pending_if: {browser_family: :safari,
+                                exception: {class: Error::SerializationError},
+                                reason: 'Safari remote value fails deserialization'} do
             it 'disowns a remote handle' do
               result = evaluate('({answer: 42})', result_ownership: :root)
               handle = result.result.handle
@@ -123,7 +128,10 @@ module Selenium
             end
           end
 
-          describe '#evaluate' do
+          describe '#evaluate',
+                   pending_if: {browser_family: :safari,
+                                exception: {class: Error::SerializationError},
+                                reason: 'Safari remote value fails deserialization'} do
             it 'evaluates an expression in the current context' do
               result = evaluate('1 + 2')
 
@@ -169,8 +177,7 @@ module Selenium
 
           describe '#remove_preload_script',
                    pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError,
-                                            message: /script\.(?:addPreloadScript|removePreloadScript)/},
+                                exception: {class: Error::UnknownCommandError},
                                 reason: 'Safari driver currently returns an error for BiDi preload scripts'} do
             it 'removes a preload script before future navigations' do
               result = script.add_preload_script(

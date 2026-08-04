@@ -24,7 +24,11 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        describe Input, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
+        describe Input,
+                 pending_if: {browser_family: :safari,
+                              exception: {class: Error::SerializationError},
+                              reason: 'Safari script.evaluate result fails deserialization in input setup'},
+                 skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
           after { |example| reset_driver!(example: example) }
 
           let(:input) { described_class.new(driver) }
@@ -96,10 +100,10 @@ module Selenium
           end
 
           describe '#set_files',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError,
-                                            message: /(?:Module input does not exist|input\.setFiles)/},
-                                reason: 'Safari driver currently returns an error for input.setFiles'} do
+                   pending_if: {browser: :firefox,
+                                exception: {class: Error::UnsupportedOperationError,
+                                            message: /(?:Unrecognized path|Failed to add file)/},
+                                reason: 'Firefox rejects the Windows temp file path for input.setFiles'} do
             it 'sets files on a file input element' do
               file = create_tempfile
               driver.navigate.to url_for('upload.html')

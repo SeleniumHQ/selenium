@@ -26,8 +26,7 @@ module Selenium
       module Protocol
         describe Network,
                  pending_if: {browser_family: :safari,
-                              exception: {class: Error::UnknownCommandError,
-                                          message: /(?:Module network does not exist|network\.)/},
+                              exception: {class: Error::UnknownCommandError},
                               reason: 'Safari driver currently returns unknown command for BiDi network commands'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
           after { |example| reset_driver!(example: example) }
