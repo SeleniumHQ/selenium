@@ -808,7 +808,8 @@ class KubernetesSessionFactoryTest {
   // ---- Browser container env vars ----
 
   @Test
-  void browserContainerHasVideoFileNameEnvVar() {
+  void browserContainerDoesNotSetVideoFileNameEnvVar() {
+    // The recorder resolves the per-session name itself; the Grid no longer injects a file name.
     KubernetesSessionFactory factory = createImageFactory(null, null);
 
     Job job =
@@ -818,13 +819,11 @@ class KubernetesSessionFactoryTest {
     Container browser =
         KubernetesSessionFactory.findContainerByName(
             job.getSpec().getTemplate().getSpec().getContainers(), "browser");
-    EnvVar videoFileName = findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME");
-    assertThat(videoFileName).isNotNull();
-    assertThat(videoFileName.getValue()).isEqualTo("test-job.mp4");
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME")).isNull();
   }
 
   @Test
-  void browserContainerEnablesSessionSubfolderAndDropsJobFileName() {
+  void browserContainerPassesSubfolderToggleAndDoesNotSetFileName() {
     KubernetesSessionFactory factory = createSubfolderImageFactory(null, "/opt/selenium/assets");
 
     Job job =
@@ -838,15 +837,12 @@ class KubernetesSessionFactoryTest {
         .isNotNull()
         .extracting(EnvVar::getValue)
         .isEqualTo("true");
-    // The recorder derives <name>_<sessionId>.mp4 itself; jobName naming would defeat the subfolder
-    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME"))
-        .isNotNull()
-        .extracting(EnvVar::getValue)
-        .isEqualTo("auto");
+    // The recorder derives the per-session name itself; the Grid no longer injects a file name.
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME")).isNull();
   }
 
   @Test
-  void videoSidecarEnablesSessionSubfolderAndDropsJobFileName() {
+  void videoSidecarPassesSubfolderToggleAndDoesNotSetFileName() {
     KubernetesSessionFactory factory =
         createSubfolderImageFactory("selenium/video:latest", "/opt/selenium/assets");
 
@@ -862,10 +858,7 @@ class KubernetesSessionFactoryTest {
         .isNotNull()
         .extracting(EnvVar::getValue)
         .isEqualTo("true");
-    assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_FILE_NAME"))
-        .isNotNull()
-        .extracting(EnvVar::getValue)
-        .isEqualTo("auto");
+    assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_FILE_NAME")).isNull();
   }
 
   @Test
@@ -1059,10 +1052,7 @@ class KubernetesSessionFactoryTest {
         .isNotNull()
         .extracting(EnvVar::getValue)
         .isEqualTo("localhost");
-    assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_FILE_NAME"))
-        .isNotNull()
-        .extracting(EnvVar::getValue)
-        .isEqualTo("test-job.mp4");
+    assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_FILE_NAME")).isNull();
     assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_RECORD_STANDALONE"))
         .isNotNull()
         .extracting(EnvVar::getValue)
@@ -1152,10 +1142,7 @@ class KubernetesSessionFactoryTest {
         .isNotNull()
         .extracting(EnvVar::getValue)
         .isEqualTo("localhost");
-    assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_FILE_NAME"))
-        .isNotNull()
-        .extracting(EnvVar::getValue)
-        .isEqualTo("test-job.mp4");
+    assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_FILE_NAME")).isNull();
     assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_RECORD_STANDALONE"))
         .isNotNull()
         .extracting(EnvVar::getValue)
@@ -1260,10 +1247,7 @@ class KubernetesSessionFactoryTest {
     Container browser =
         KubernetesSessionFactory.findContainerByName(
             job.getSpec().getTemplate().getSpec().getContainers(), "browser");
-    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME"))
-        .isNotNull()
-        .extracting(EnvVar::getValue)
-        .isEqualTo("test-job.mp4");
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME")).isNull();
     assertThat(findEnvVar(browser.getEnv(), "SE_SCREEN_WIDTH"))
         .isNotNull()
         .extracting(EnvVar::getValue)

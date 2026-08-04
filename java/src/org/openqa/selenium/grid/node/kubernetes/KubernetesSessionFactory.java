@@ -79,8 +79,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
@@ -488,12 +486,6 @@ public class KubernetesSessionFactory implements SessionFactory {
       span.addEvent("Kubernetes driver service created session", attributeMap);
       LOG.fine(
           String.format("Created session: %s - %s (job: %s)", id, mergedCapabilities, jobName));
-      String videoFileName = null;
-      if (recordVideoForSession(sessionRequest.getDesiredCapabilities())
-          && !isRecorderManagedFileName()) {
-        videoFileName =
-            resolveVideoFileName(jobName, sessionRequest.getDesiredCapabilities(), id) + ".mp4";
-      }
       return Either.right(
           new KubernetesSession(
               jobName,
@@ -501,7 +493,6 @@ public class KubernetesSessionFactory implements SessionFactory {
               kubeClient,
               podName,
               assetsPath,
-              videoFileName,
               terminationGracePeriodSeconds,
               portForward,
               tracer,
@@ -737,9 +728,10 @@ public class KubernetesSessionFactory implements SessionFactory {
     // Capabilities set to env vars with higher precedence
     setCapsToEnvVars(sessionCapabilities, envVars);
 
-    // Video recording env vars (inline and external use the same naming).
+    // Video recording env vars. The recorder resolves the per-session name itself once the session
+    // source is reachable, so the Grid only passes the SE_VIDEO_SESSION_SUBFOLDER toggle through.
     if (recordVideoForSession(sessionCapabilities)) {
-      addVideoFileNameEnvVars(envVars, jobName);
+      addVideoSubfolderEnvVar(envVars);
 
       // Inline video recording: browser container records directly (no sidecar)
       if (isNoVideoSidecar()) {
@@ -752,40 +744,12 @@ public class KubernetesSessionFactory implements SessionFactory {
     return envVars;
   }
 
-  private void addVideoFileNameEnvVars(List<EnvVar> envVars, String jobName) {
+  private void addVideoSubfolderEnvVar(List<EnvVar> envVars) {
+    // Pass the subfolder toggle to the recorder; it derives the file name per session on its own.
     if (isVideoSessionSubfolder()) {
       envVars.add(
           new EnvVarBuilder().withName("SE_VIDEO_SESSION_SUBFOLDER").withValue("true").build());
-      // The recorder creates /videos/<sessionId>/ only while it owns the file name, and /videos is
-      // the same volume as the assets path, so the video lands at its final location.
-      if (!isVideoFileNameAuto()) {
-        envVars.add(new EnvVarBuilder().withName("SE_VIDEO_FILE_NAME").withValue("auto").build());
-      }
-    } else if (!isVideoFileNameAuto()) {
-      // sessionId is not known yet, so the recorder writes jobName.mp4 and the session relocates it
-      envVars.add(
-          new EnvVarBuilder().withName("SE_VIDEO_FILE_NAME").withValue(jobName + ".mp4").build());
     }
-  }
-
-  private String resolveVideoFileName(String jobName, Capabilities sessionCapabilities) {
-    return ofNullable(getVideoFileName(sessionCapabilities, "se:videoName"))
-        .or(() -> ofNullable(getVideoFileName(sessionCapabilities, "se:name")))
-        .orElse(jobName);
-  }
-
-  private String resolveVideoFileName(
-      String jobName, Capabilities sessionCapabilities, SessionId sessionId) {
-    String baseName = resolveVideoFileName(jobName, sessionCapabilities);
-    // Append sessionId suffix when the video name came from caps (se:videoName or se:name)
-    // and SE_VIDEO_FILE_NAME_SUFFIX is not explicitly disabled (default: true).
-    boolean nameFromCaps = !baseName.equals(jobName);
-    String suffixEnv = System.getenv("SE_VIDEO_FILE_NAME_SUFFIX");
-    boolean appendSuffix = suffixEnv == null || !suffixEnv.equalsIgnoreCase("false");
-    if (nameFromCaps && appendSuffix) {
-      return baseName + "_" + sessionId;
-    }
-    return baseName;
   }
 
   private Container buildBrowserContainer(String jobName, Capabilities sessionCapabilities) {
@@ -853,7 +817,7 @@ public class KubernetesSessionFactory implements SessionFactory {
         new EnvVarBuilder().withName("DISPLAY_CONTAINER_NAME").withValue("localhost").build());
     envVars.add(
         new EnvVarBuilder().withName("SE_VIDEO_RECORD_STANDALONE").withValue("true").build());
-    addVideoFileNameEnvVars(envVars, jobName);
+    addVideoSubfolderEnvVar(envVars);
     return envVars;
   }
 
@@ -888,56 +852,12 @@ public class KubernetesSessionFactory implements SessionFactory {
     return containerBuilder.build();
   }
 
-  @Nullable
-  private String getVideoFileName(Capabilities sessionRequestCapabilities, String capabilityName) {
-    String trimRegex = getVideoFileNameTrimRegex();
-    Optional<Object> testName =
-        ofNullable(sessionRequestCapabilities.getCapability(capabilityName));
-    if (testName.isPresent()) {
-      String name = testName.get().toString();
-      if (!name.isEmpty()) {
-        name = name.replaceAll(" ", "_").replaceAll(trimRegex, "");
-        if (name.length() > 251) {
-          name = name.substring(0, 251);
-        }
-        return name;
-      }
-    }
-    return null;
-  }
-
-  private String getVideoFileNameTrimRegex() {
-    String defaultRegex = "[^a-zA-Z0-9-_]";
-    String envRegex = System.getenv("SE_VIDEO_FILE_NAME_TRIM_REGEX");
-    if (envRegex == null || envRegex.isEmpty()) {
-      return defaultRegex;
-    }
-    try {
-      Pattern.compile(envRegex);
-      return envRegex;
-    } catch (PatternSyntaxException e) {
-      LOG.warning(
-          String.format(
-              "Invalid SE_VIDEO_FILE_NAME_TRIM_REGEX '%s': %s. Using default: %s",
-              envRegex, e.getMessage(), defaultRegex));
-      return defaultRegex;
-    }
-  }
-
   private boolean isNoVideoSidecar() {
     return videoImage == null || videoImage.equalsIgnoreCase("false");
   }
 
-  private boolean isVideoFileNameAuto() {
-    return "auto".equalsIgnoreCase(System.getenv("SE_VIDEO_FILE_NAME"));
-  }
-
   boolean isVideoSessionSubfolder() {
     return Boolean.parseBoolean(System.getenv("SE_VIDEO_SESSION_SUBFOLDER"));
-  }
-
-  private boolean isRecorderManagedFileName() {
-    return isVideoFileNameAuto() || isVideoSessionSubfolder();
   }
 
   Job buildJobSpecFromTemplate(String jobName, Capabilities sessionCapabilities) {
