@@ -91,7 +91,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows]
-        tag_filters: [chrome-beta, firefox-beta, edge-local]
+        tag_filters: [chrome-beta, firefox-beta, "edge-local,edge-bidi"]
         include:
           - os: macos
             tag_filters: safari-local,safari-preview-bidi
