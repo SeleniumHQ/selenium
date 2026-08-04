@@ -24,7 +24,8 @@ import java.util.function.Predicate;
 import org.jspecify.annotations.Nullable;
 
 public abstract class TypeCoercer<T>
-    implements Predicate<Class<?>>, Function<Type, BiFunction<JsonInput, PropertySetting, @Nullable T>> {
+    implements Predicate<Class<?>>,
+        Function<Type, BiFunction<JsonInput, PropertySetting, @Nullable T>> {
 
   @Override
   public abstract boolean test(Class<?> aClass);

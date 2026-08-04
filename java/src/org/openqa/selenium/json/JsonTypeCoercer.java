@@ -137,7 +137,7 @@ class JsonTypeCoercer {
     this.coercers = Collections.unmodifiableSet(builder);
   }
 
-  @Nullable <T> T coerce(JsonInput json, Type typeOfT, PropertySetting setter) {
+  <T> @Nullable T coerce(JsonInput json, Type typeOfT, PropertySetting setter) {
     BiFunction<JsonInput, PropertySetting, Object> coercer =
         knownCoercers.computeIfAbsent(typeOfT, this::buildCoercer);
 

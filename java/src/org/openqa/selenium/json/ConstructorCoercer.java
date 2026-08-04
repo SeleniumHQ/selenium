@@ -126,7 +126,9 @@ class ConstructorCoercer extends TypeCoercer<Object> {
     List<ConstructorCandidate> candidates = getConstructorCandidates(type);
 
     return (jsonInput, setting) -> {
-      Map<String, Object> properties = coercer.coerce(jsonInput, Json.MAP_TYPE, setting);
+      Map<String, Object> properties =
+          Require.nonNull(
+              "Properties for " + type, coercer.coerce(jsonInput, Json.MAP_TYPE, setting));
       ConstructorCandidate candidate = findConstructor(type, candidates, properties.keySet());
 
       return candidate.create(type, properties, setting);
