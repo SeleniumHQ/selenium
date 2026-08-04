@@ -25,11 +25,22 @@ declare -A families=(
   [firefox]='(firefox/releases/|Firefox%20)[0-9]+'
 )
 
-# New stable Chrome is the lowest pinned major (beta runs ahead); regenerate CDP if its dir is absent.
-chrome_majors=$(majors_for common/repositories.bzl "${families[chrome]}")
+# New stable Chrome is the lowest pinned major (beta runs ahead). Tolerate a no-match (|| true) so a
+# marker/format change in repositories.bzl fails with a clear message, not a bare pipefail exit.
+chrome_majors=$(majors_for common/repositories.bzl "${families[chrome]}") || true
 chrome=${chrome_majors%%$'\n'*}
+if [ -z "$chrome" ]; then
+  echo "::error::Could not parse a stable Chrome major from common/repositories.bzl (pattern: ${families[chrome]})" >&2
+  exit 1
+fi
+echo "Stable Chrome major: v${chrome}"
+
+# Regenerate CDP when the stable Chrome major has no checked-in devtools dir.
 regen_cdp=false
-if [ ! -d "common/devtools/chromium/v${chrome}" ]; then
+if [ -d "common/devtools/chromium/v${chrome}" ]; then
+  echo "DevTools for Chrome v${chrome} already present; skipping CDP regeneration"
+else
+  echo "No DevTools for Chrome v${chrome}; regenerating CDP"
   bazel run //scripts:update_cdp -- --chrome_channel=Stable
   regen_cdp=true
 fi
@@ -45,4 +56,5 @@ done
 output=""
 [ "$major" = true ] && output="major"
 [ "$regen_cdp" = true ] && output="${output:+$output }cdp"
+echo "Update tags: ${output:-none}"
 echo "output=$output" >> "$GITHUB_OUTPUT"
