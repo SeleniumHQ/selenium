@@ -60,12 +60,12 @@ module Selenium
               unless json_payload.is_a?(::Hash)
                 return json_payload unless @object_only
 
-                raise Error::WebDriverError, "#{name} expected an object on the wire, got #{json_payload.inspect}"
+                raise Error::SerializationError, "#{name} expected an object on the wire, got #{json_payload.inspect}"
               end
 
               variant = select(json_payload)
               unless variant
-                raise Error::WebDriverError,
+                raise Error::SerializationError,
                       "#{name} received a variant not in this Selenium's BiDi schema: #{json_payload.inspect}"
               end
               Protocol.const_get(variant).from_json(json_payload)
