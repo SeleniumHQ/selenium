@@ -266,7 +266,8 @@ public class DockerSessionFactory implements SessionFactory {
         // toggle governs the layout the same way as inline recording (no double-nesting special case).
         String hostPath = path.get().getHostPath();
         videoContainer =
-            startVideoContainer(mergedCapabilities, containerIp, hostPath, sessionIdentifier);
+            startVideoContainer(
+                mergedCapabilities, containerIp, hostPath, sessionIdentifier, id.toString());
       }
 
       Dialect downstream =
@@ -396,12 +397,14 @@ public class DockerSessionFactory implements SessionFactory {
       Capabilities sessionCapabilities,
       String browserContainerIp,
       String hostPath,
-      String sessionIdentifier) {
+      String sessionIdentifier,
+      String sessionId) {
     if (videoImage == null || !recordVideoForSession(sessionCapabilities)) {
       return null;
     }
     int videoPort = 9000;
-    Map<String, String> envVars = getVideoContainerEnvVars(sessionCapabilities, browserContainerIp);
+    Map<String, String> envVars =
+        getVideoContainerEnvVars(sessionCapabilities, browserContainerIp, sessionId);
     Map<String, String> volumeBinds = Collections.singletonMap(hostPath, "/videos");
 
     // Generate container name: recorder-<browserName>-<timestamp>-<uuid>
@@ -442,16 +445,19 @@ public class DockerSessionFactory implements SessionFactory {
   }
 
   Map<String, String> getVideoContainerEnvVars(
-      Capabilities sessionRequestCapabilities, String containerIp) {
+      Capabilities sessionRequestCapabilities, String containerIp, String sessionId) {
     Map<String, String> envVars = new HashMap<>();
     // Passing env vars set to the child container
     setEnvVarsToContainer(envVars);
     // Capabilities set to env vars with higher precedence
     setCapsToEnvVars(sessionRequestCapabilities, envVars);
     envVars.put("DISPLAY_CONTAINER_NAME", containerIp);
-    // The video container records session-aware and resolves its own per-session name and subfolder
-    // (both inherited from the Node), and it binds the assets root like inline recording, so the
-    // Grid no longer forces SE_VIDEO_FILE_NAME or blanks SE_VIDEO_SESSION_SUBFOLDER here.
+    // The external video container is started AFTER the session is created, so the Grid knows the
+    // session id and hands it over. The recorder uses it directly for the per-session subfolder
+    // instead of discovering it, so this path never depends on the session source being reachable.
+    // Name and subfolder are still resolved by the recorder (both inherited from the Node), and it
+    // binds the assets root like inline recording.
+    envVars.put("SE_VIDEO_SESSION_ID", sessionId);
     return envVars;
   }
 

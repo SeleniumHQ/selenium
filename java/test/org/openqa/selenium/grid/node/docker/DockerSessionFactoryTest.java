@@ -121,4 +121,17 @@ class DockerSessionFactoryTest {
     assertThat(envVars).doesNotContainKey("SE_VIDEO_SESSION_SUBFOLDER");
     assertThat(envVars).doesNotContainKey("SE_VIDEO_FILE_NAME");
   }
+
+  @Test
+  void externalVideoContainerReceivesTheGridSessionId() {
+    // The external video container is started after the session, so the Grid hands over the session
+    // id for the recorder to use directly for the per-session subfolder.
+    Image videoImage = mock(Image.class);
+    DockerSessionFactory factory = new TestFactory(videoImage, Map.of());
+
+    Map<String, String> envVars =
+        factory.getVideoContainerEnvVars(RECORDING_CAPS, "10.0.0.5", "session-123");
+
+    assertThat(envVars).containsEntry("SE_VIDEO_SESSION_ID", "session-123");
+  }
 }
