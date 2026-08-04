@@ -149,3 +149,8 @@ build:rbe_release --remote_download_toplevel
 
 # RBE
 import %workspace%/.bazelrc.remote
+
+build --action_env=INVALIDATE_ALL_REMOTE_CACHE_ENTRIES=yes-absolutely-1
+build --test_env=INVALIDATE_ALL_REMOTE_CACHE_ENTRIES=yes-absolutely-1
+build --copt=-DINVALIDATE_ALL_REMOTE_CACHE_ENTRIES="yes-absolutely-1"
+build --host_copt=-DINVALIDATE_ALL_REMOTE_CACHE_ENTRIES="yes-absolutely-1"
