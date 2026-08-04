@@ -262,7 +262,9 @@ public class DockerSessionFactory implements SessionFactory {
         // Seems we can store session assets
         String containerPath = path.get().getContainerPath(id);
         saveSessionCapabilities(mergedCapabilities, containerPath);
-        String hostPath = path.get().getHostPath(id);
+        // Bind the assets root (not the per-session path) so the recorder's SE_VIDEO_SESSION_SUBFOLDER
+        // toggle governs the layout the same way as inline recording (no double-nesting special case).
+        String hostPath = path.get().getHostPath();
         videoContainer =
             startVideoContainer(mergedCapabilities, containerIp, hostPath, sessionIdentifier);
       }
@@ -321,27 +323,10 @@ public class DockerSessionFactory implements SessionFactory {
       envVars.put("SE_VIDEO_RECORD_STANDALONE", "true");
     }
     envVars.putAll(getBrowserContainerEnvVars(sessionCapabilities));
-    if (recordsInline) {
-      // The browser container binds the assets root, so the recorder has to create the session
-      // folder itself, and it only does that while it owns the file name. Both are enforced over
-      // anything inherited from the Node: a flat layout or a fixed name would scatter every
-      // session's video into the assets root.
-      String inheritedFileName = envVars.get("SE_VIDEO_FILE_NAME");
-      if (inheritedFileName != null && !"auto".equalsIgnoreCase(inheritedFileName)) {
-        LOG.warning(
-            String.format(
-                "Ignoring SE_VIDEO_FILE_NAME '%s' for inline recording so the recorder can name"
-                    + " videos per session",
-                inheritedFileName));
-      }
-      envVars.put("SE_VIDEO_SESSION_SUBFOLDER", "true");
-      envVars.put("SE_VIDEO_FILE_NAME", "auto");
-      if (assetsPath != null) {
-        LOG.fine(
-            String.format(
-                "Inline recording will write to %s/<sessionId>", assetsPath.getHostPath()));
-      }
-    }
+    // The recorder resolves per-session naming and the subfolder itself once the session source is
+    // reachable, so the Grid no longer forces SE_VIDEO_FILE_NAME=auto or SE_VIDEO_SESSION_SUBFOLDER
+    // here; both are inherited from the Node and honored by the recorder. A fixed name with the
+    // subfolder disabled can collide across concurrent sessions (see the video-recording docs).
     return envVars;
   }
 
@@ -464,34 +449,13 @@ public class DockerSessionFactory implements SessionFactory {
     // Capabilities set to env vars with higher precedence
     setCapsToEnvVars(sessionRequestCapabilities, envVars);
     envVars.put("DISPLAY_CONTAINER_NAME", containerIp);
-    Optional<String> videoName =
-        ofNullable(getVideoFileName(sessionRequestCapabilities, "se:videoName"))
-            .or(() -> ofNullable(getVideoFileName(sessionRequestCapabilities, "se:name")));
-    videoName.ifPresent(name -> envVars.put("SE_VIDEO_FILE_NAME", String.format("%s.mp4", name)));
-    // The video container's bind mount is already per-session (assets/<sessionId> -> /videos), so
-    // the recorder must not nest a second session folder inside it. Blanking the value stops a
-    // Node-level setting from passing through and leaves the image default in charge.
-    envVars.put("SE_VIDEO_SESSION_SUBFOLDER", "");
+    // The video container records session-aware and resolves its own per-session name and subfolder
+    // (both inherited from the Node), and it binds the assets root like inline recording, so the
+    // Grid no longer forces SE_VIDEO_FILE_NAME or blanks SE_VIDEO_SESSION_SUBFOLDER here.
     return envVars;
   }
 
   @Nullable
-  private String getVideoFileName(Capabilities sessionRequestCapabilities, String capabilityName) {
-    Optional<Object> testName =
-        ofNullable(sessionRequestCapabilities.getCapability(capabilityName));
-    if (testName.isPresent()) {
-      String name = testName.get().toString();
-      if (!name.isEmpty()) {
-        name = name.replaceAll(" ", "_").replaceAll("[^a-zA-Z0-9_-]", "");
-        if (name.length() > 251) {
-          name = name.substring(0, 251);
-        }
-        return name;
-      }
-    }
-    return null;
-  }
-
   @Nullable
   private TimeZone getTimeZone(Capabilities sessionRequestCapabilities) {
     Optional<Object> timeZone = ofNullable(sessionRequestCapabilities.getCapability("se:timeZone"));
