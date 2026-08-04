@@ -48,6 +48,8 @@ else
     echo "::error::CDP regeneration did not produce common/devtools/chromium/v${chrome}; refusing to pin Chrome ahead of its DevTools" >&2
     exit 1
   fi
+  # the selenium-devtools version has updated, need to re-resolve the lockfile
+  bazel run //rb:bundle-lock
   regen_cdp=true
 fi
 
