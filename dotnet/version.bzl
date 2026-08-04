@@ -5,7 +5,7 @@ SE_VERSION = "4.47.0-nightly202607110055"
 SUPPORTED_DEVTOOLS_VERSIONS = [
     "v149",
     "v150",
-    "v148",
+    "v151",
 ]
 
 ASSEMBLY_COMPANY = "Selenium Committers"

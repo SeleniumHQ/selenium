@@ -17,14 +17,14 @@
 // under the License.
 // </copyright>
 
-using CurrentCdpVersion = OpenQA.Selenium.DevTools.V150;
+using CurrentCdpVersion = OpenQA.Selenium.DevTools.V151;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 
 [TestFixture]
 public class DevToolsTargetTests : DevToolsTestFixture
 {
-    private const int id = 150;
+    private const int id = 151;
 
     [Test]
     [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
