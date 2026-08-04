@@ -372,6 +372,200 @@
     });
   }
 
+  // ---- DOM mutation quiescence ----------------------------------------------
+  // Backward-looking debounce: the DOM is "settled" when meaningful mutations
+  // have stopped for a settle window. Uses its own observer — runTracked drains
+  // mutObs synchronously via takeRecords(), which would steal records from an
+  // async activity callback.
+  const domPolicy = {
+    settleMs: 100,
+    timeoutMs: 10000,
+    meaningfulAttributes: ['class', 'style', 'hidden', 'open', 'width', 'height', 'src', 'value'],
+    ignoreAttributes: ['data-__webdriver_id', 'data-wd-inert'],
+    quietCyclesForNoise: 4,
+    cadenceCV: 0.3, // coeff. of variation below which a cadence is "regular"
+    treatCssAnimationsAsActivity: true,
+  };
+  const domState = {
+    buffer: [],                // ring of recent meaningful {ts, key, target}
+    fingerprints: new Map(),   // key -> classification state
+    inertNodes: new WeakSet(), // markDomInert targets (sticky)
+    unobservable: [],          // {reason} for closed shadow roots / canvas, etc.
+    lastMeaningfulTs: 0,
+  };
+  const domWaiters = new Set();
+  function bumpDomWaiters() {
+    for (const arm of domWaiters) { try { arm(); } catch (_) { /* not ours */ } }
+  }
+
+  function stableTargetPath(node, maxDepth) {
+    maxDepth = maxDepth || 6;
+    const parts = [];
+    let n = node;
+    while (n && n.nodeType && parts.length < maxDepth) {
+      if (n.nodeType === 1) {
+        let seg = n.tagName ? n.tagName.toLowerCase() : 'node';
+        if (n.id) { parts.unshift(seg + '#' + n.id); break; }
+        parts.unshift(seg);
+        n = n.parentNode;
+      } else {
+        n = n.parentNode; // attribute text/comment change to owning element
+      }
+    }
+    return parts.join('>') || 'document';
+  }
+  function fingerprint(rec) {
+    const p = stableTargetPath(rec.target);
+    if (rec.type === 'childList') return p + '|child';
+    if (rec.type === 'attributes') return p + '|attr|' + rec.attributeName;
+    return p + '|text';
+  }
+  function nodeInert(node) {
+    for (let n = node; n; n = n.parentNode) {
+      if (domState.inertNodes.has(n)) return true;
+      if (n.nodeType === 1 && n.hasAttribute && n.hasAttribute('data-wd-inert')) return true;
+    }
+    return false;
+  }
+  function isIgnoredAttr(rec) {
+    return rec.type === 'attributes'
+      && domPolicy.ignoreAttributes.indexOf(rec.attributeName) !== -1;
+  }
+  function isMeaningful(rec, fp) {
+    if (nodeInert(rec.target)) return false;
+    if (fp && fp.classifiedNoise) return false;
+    switch (rec.type) {
+      case 'childList':
+        return (rec.addedNodes.length + rec.removedNodes.length) > 0;
+      case 'characterData':
+        return true;
+      case 'attributes':
+        return !isIgnoredAttr(rec)
+          && domPolicy.meaningfulAttributes.indexOf(rec.attributeName) !== -1;
+      default:
+        return false;
+    }
+  }
+  function _mean(a) { return a.reduce((s, x) => s + x, 0) / a.length; }
+  function _cv(a) {
+    if (a.length < 2) return Infinity;
+    const m = _mean(a);
+    if (m <= 0) return Infinity;
+    const variance = _mean(a.map((x) => (x - m) * (x - m)));
+    return Math.sqrt(variance) / m;
+  }
+  function updateFingerprint(key, rec, now) {
+    let fp = domState.fingerprints.get(key);
+    if (!fp) {
+      fp = {
+        count: 0, lastTs: 0, intervals: [], valueOnly: true,
+        structuralSeen: false, classifiedNoise: false, lastTarget: null,
+      };
+      domState.fingerprints.set(key, fp);
+    }
+    if (fp.lastTs) { fp.intervals.push(now - fp.lastTs); if (fp.intervals.length > 12) fp.intervals.shift(); }
+    fp.lastTs = now; fp.count++; fp.lastTarget = rec.target;
+    if (rec.type === 'childList' && rec.addedNodes.length !== rec.removedNodes.length) {
+      fp.valueOnly = false; fp.structuralSeen = true; fp.classifiedNoise = false; // re-promote
+    }
+    // Observed inertness: value-only churn on a regular cadence is periodic
+    // noise (a clock, a counter) and stops counting against quiescence.
+    if (fp.valueOnly && !fp.structuralSeen
+        && fp.count >= domPolicy.quietCyclesForNoise
+        && _cv(fp.intervals) <= domPolicy.cadenceCV) {
+      fp.classifiedNoise = true;
+    }
+    return fp;
+  }
+  let domObs = null;
+  function ensureDomObserver() {
+    if (domObs || !global.document) return;
+    const root = global.document.documentElement;
+    if (!root) return; // too early at document_start; retried on DOMContentLoaded
+    domObs = new MutationObserver((records) => {
+      const now = native.now();
+      let meaningful = false;
+      for (const rec of records) {
+        const key = fingerprint(rec);
+        const fp = updateFingerprint(key, rec, now);
+        if (isMeaningful(rec, fp)) {
+          meaningful = true;
+          domState.buffer.push({ ts: now, key, target: rec.target });
+          if (domState.buffer.length > 512) domState.buffer.shift();
+        }
+      }
+      if (meaningful) { domState.lastMeaningfulTs = now; scheduleEmit(); bumpDomWaiters(); }
+    });
+    domObs.observe(root, {
+      childList: true, subtree: true, attributes: true,
+      characterData: true, attributeOldValue: true, characterDataOldValue: true,
+    });
+  }
+  if (global.document) {
+    ensureDomObserver();
+    global.document.addEventListener('DOMContentLoaded', ensureDomObserver, { once: true });
+  }
+
+  // CSS animation activity source — real implementation added with getAnimations.
+  function animationsActive() { return false; }
+
+  function domLastMeaningfulTs() { return domState.lastMeaningfulTs; }
+
+  function getActiveRegions() {
+    const now = native.now();
+    const out = [];
+    for (const [key, fp] of domState.fingerprints) {
+      if (fp.classifiedNoise) continue;
+      if ((now - fp.lastTs) > domPolicy.settleMs) continue; // not currently active
+      out.push({ key, lastAgeMs: now - fp.lastTs, count: fp.count });
+    }
+    return out;
+  }
+
+  function awaitDomSettled(opts) {
+    const o = opts || {};
+    const settleMs = o.settleMs != null ? o.settleMs : domPolicy.settleMs;
+    const timeoutMs = o.timeoutMs != null ? o.timeoutMs : domPolicy.timeoutMs;
+    const requirePendingQuiet = o.requirePendingQuiet !== false;
+    const started = native.now();
+    ensureDomObserver();
+    return new Promise((resolve) => {
+      let settleHandle = null;
+      let deadlineHandle = null;
+      function settledNow() {
+        return (native.now() - domLastMeaningfulTs()) >= settleMs
+          && (!requirePendingQuiet || isQuiet())
+          && !(domPolicy.treatCssAnimationsAsActivity && animationsActive());
+      }
+      function finish(settled) {
+        domWaiters.delete(arm);
+        native.clearTimeout(settleHandle);
+        native.clearTimeout(deadlineHandle);
+        resolve({
+          settled,
+          elapsedMs: native.now() - started,
+          activeRegions: settled ? [] : getActiveRegions(),
+          lastMutationAgeMs: native.now() - domLastMeaningfulTs(),
+          unobservable: domState.unobservable.slice(),
+        });
+      }
+      function arm() {
+        native.clearTimeout(settleHandle);
+        const gap = native.now() - domLastMeaningfulTs();
+        const remaining = Math.max(0, settleMs - gap);
+        // Debounce: (re)arm to re-check when the settle window would elapse; if
+        // still blocked (pending work / animation), keep polling at settleMs.
+        settleHandle = native.setTimeout(() => {
+          if (settledNow()) finish(true);
+          else arm();
+        }, remaining || settleMs);
+      }
+      domWaiters.add(arm);
+      deadlineHandle = native.setTimeout(() => finish(false), timeoutMs);
+      arm();
+    });
+  }
+
   // ---- Public API ----------------------------------------------------------------
   function awaitQuiet(opts) {
     const { timeoutMs = 10000, settleMs = 75 } = opts || {};
@@ -445,6 +639,7 @@
   Object.defineProperty(global, '__quiescence', {
     value: Object.freeze({
       getBlockers, isQuiet, awaitQuiet, setPolicy, markInert, onStateChanged,
+      awaitDomSettled, getActiveRegions,
       /** debug: raw ledger snapshot including inert/ignored entries */
       _snapshot: () => Array.from(ledger.values()).map((e) => ({ ...e, meta: { ...e.meta } })),
     }),
