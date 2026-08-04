@@ -506,8 +506,26 @@
     global.document.addEventListener('DOMContentLoaded', ensureDomObserver, { once: true });
   }
 
-  // CSS animation activity source — real implementation added with getAnimations.
-  function animationsActive() { return false; }
+  // CSS animation activity source. MutationObserver is blind to
+  // animations/transitions (they live at the style/compositor layer), so a
+  // running animation is treated as activity — except infinite-iteration ones,
+  // which are periodic noise (spinners) rather than settling work.
+  function animationsActive(root) {
+    try {
+      if (!global.document || !global.document.getAnimations) return false;
+      const anims = global.document.getAnimations({ subtree: true });
+      for (const a of anims) {
+        if (a.playState !== 'running') continue;
+        const target = a.effect && a.effect.target;
+        if (!target || nodeInert(target)) continue;
+        if (root && root.contains && !root.contains(target)) continue;
+        const timing = a.effect.getTiming ? a.effect.getTiming() : {};
+        if (timing.iterations === Infinity) continue; // spinner-style noise
+        return true;
+      }
+    } catch (_) { /* getAnimations unsupported */ }
+    return false;
+  }
 
   function domLastMeaningfulTs() { return domState.lastMeaningfulTs; }
 
