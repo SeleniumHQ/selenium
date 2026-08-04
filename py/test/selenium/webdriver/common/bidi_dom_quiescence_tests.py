@@ -151,6 +151,45 @@ def test_structural_change_repromotes_noise_region(driver, pages):
     assert regions
 
 
+def test_finite_css_animation_blocks_then_settles(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # CSS animations never fire MutationObserver, so the ledger alone is blind to
+    # them. A finite running animation must count as activity until it finishes.
+    driver.execute_script(
+        "const s = document.createElement('style');"
+        "s.textContent = '@keyframes qmove{from{transform:translateX(0)}to{transform:translateX(100px)}}"
+        " #qbox{width:10px;height:10px;background:red;animation:qmove 1200ms linear}';"
+        "document.head.appendChild(s);"
+        "const d = document.createElement('div'); d.id = 'qbox'; document.body.appendChild(d);"
+    )
+
+    result = _await_dom_settled(driver, settle_ms=200, timeout_ms=5000)
+
+    assert result["settled"] is True
+    # Must have waited out the running animation, not settled on the idle ledger.
+    assert result["elapsedMs"] >= 800
+
+
+def test_infinite_css_animation_is_noise_and_settles(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # An infinite-iteration animation (spinner) is periodic noise: it must not
+    # block quiescence forever.
+    driver.execute_script(
+        "const s = document.createElement('style');"
+        "s.textContent = '@keyframes qspin{to{transform:rotate(360deg)}}"
+        " #qsp{width:10px;height:10px;background:red;animation:qspin 1s linear infinite}';"
+        "document.head.appendChild(s);"
+        "const d = document.createElement('div'); d.id = 'qsp'; document.body.appendChild(d);"
+    )
+
+    result = _await_dom_settled(driver, settle_ms=200, timeout_ms=3000)
+
+    assert result["settled"] is True
+    assert result["elapsedMs"] < 1500  # not blocked by the infinite spinner
+
+
 def test_timeout_reports_active_regions(driver, pages):
     _navigate(driver, pages, "blank.html")
 
