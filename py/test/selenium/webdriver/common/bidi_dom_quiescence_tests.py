@@ -202,3 +202,82 @@ def test_timeout_reports_active_regions(driver, pages):
 
     assert result["settled"] is False
     assert len(result["activeRegions"]) >= 1
+
+
+# ---------------------------------------------------------------------------
+# Region scoping, cooperative annotation, policy, and composition
+# ---------------------------------------------------------------------------
+
+
+def test_root_scoping_ignores_unrelated_churn(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # A footer region churns forever; a scoped wait on #main must still settle.
+    driver.execute_script(
+        "document.body.innerHTML = '<div id=\"main\">ok</div><div id=\"foot\"></div>';"
+        "window.__q_f = setInterval("
+        "  () => document.getElementById('foot').appendChild(document.createElement('span')), 80);"
+    )
+
+    result = _await_dom_settled(driver, root="#main", settle_ms=250, timeout_ms=3000)
+    driver.execute_script("clearInterval(window.__q_f);")
+
+    assert result["settled"] is True
+
+
+def test_mark_dom_inert_is_durable(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # A cooperatively inert region keeps structurally mutating; the annotation
+    # must be durable across ticks (the settle window spans several).
+    driver.execute_script(
+        "document.body.innerHTML = '<div id=\"live\"></div>';"
+        "window.__q_l = setInterval("
+        "  () => document.getElementById('live').appendChild(document.createElement('span')), 80);"
+        "window.__quiescence.markDomInert('#live');"
+    )
+
+    result = _await_dom_settled(driver, settle_ms=300, timeout_ms=3000)
+    driver.execute_script("clearInterval(window.__q_l);")
+
+    assert result["settled"] is True
+
+
+def test_set_dom_policy_can_disable_css_animation_activity(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    driver.execute_script(
+        "const s = document.createElement('style');"
+        "s.textContent = '@keyframes qm2{from{transform:translateX(0)}to{transform:translateX(50px)}}"
+        " #qb2{width:10px;height:10px;background:blue;animation:qm2 1500ms linear}';"
+        "document.head.appendChild(s);"
+        "const d = document.createElement('div'); d.id = 'qb2'; document.body.appendChild(d);"
+        "window.__quiescence.setDomPolicy({treatCssAnimationsAsActivity: false});"
+    )
+
+    result = _await_dom_settled(driver, settle_ms=200, timeout_ms=4000)
+
+    assert result["settled"] is True
+    assert result["elapsedMs"] < 800  # animation no longer counted as activity
+
+
+def test_await_quiet_with_dom_waits_for_animation(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # awaitQuiet({dom: true}) composes pending-work quiescence with DOM settle:
+    # pending work is idle, but a running animation must still hold it busy.
+    driver.execute_script(
+        "const s = document.createElement('style');"
+        "s.textContent = '@keyframes qm3{from{transform:translateX(0)}to{transform:translateX(50px)}}"
+        " #qb3{width:10px;height:10px;background:green;animation:qm3 1000ms linear}';"
+        "document.head.appendChild(s);"
+        "const d = document.createElement('div'); d.id = 'qb3'; document.body.appendChild(d);"
+    )
+
+    result = driver.execute_async_script(
+        "const cb = arguments[arguments.length - 1];"
+        "window.__quiescence.awaitQuiet({dom: true, settleMs: 100, timeoutMs: 5000}).then(cb);"
+    )
+
+    assert result["quiet"] is True
+    assert result["elapsedMs"] >= 700
