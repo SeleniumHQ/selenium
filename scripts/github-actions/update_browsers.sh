@@ -42,6 +42,12 @@ if [ -d "common/devtools/chromium/v${chrome}" ]; then
 else
   echo "No DevTools for Chrome v${chrome}; regenerating CDP"
   bazel run //scripts:update_cdp -- --chrome_channel=Stable
+  # update_cdp resolves the Stable channel itself; verify it produced this major's dir so a Stable
+  # release mid-run can't leave us pinning Chrome ahead of its DevTools (blocks the PR if it did).
+  if [ ! -d "common/devtools/chromium/v${chrome}" ]; then
+    echo "::error::CDP regeneration did not produce common/devtools/chromium/v${chrome}; refusing to pin Chrome ahead of its DevTools" >&2
+    exit 1
+  fi
   regen_cdp=true
 fi
 
