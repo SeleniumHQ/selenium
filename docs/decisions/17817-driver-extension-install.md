@@ -51,10 +51,10 @@ is what we advertise today.
    when BiDi is not enabled. Any existing methods or parameters for installing web extensions in Firefox
    will be deprecated in favor of the new methods.
 
-3. **Enabling BiDi disables the CDP API.** Bindings will pass the arguments for `remote-debugging-pipe`
-   and `enable-unsafe-extension-debugging` when BiDi is enabled to allow users to install web extensions
-   without setting the arguments themselves. This prevents users from accessing the CDP API,
-   so bindings must throw an exception when attempting to use it.
+3. **Enabling BiDi disables the CDP API.** For Chromium sessions, bindings pass the arguments for
+   `remote-debugging-pipe` and `enable-unsafe-extension-debugging` when BiDi is enabled so users can
+   install web extensions without setting the arguments themselves. This prevents users from accessing
+   the CDP API, so bindings must throw an exception when attempting to use it.
 
 ## Considered options
 
