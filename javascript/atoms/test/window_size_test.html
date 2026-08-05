@@ -72,9 +72,11 @@
       var done = assert.async();
       var start = new Date().getTime();
       bot.window.setSize(size);
+      var isIE = bot.userAgent.IE_DOC_9 || bot.userAgent.IE_DOC_PRE9;
       (function poll() {
         var actual = bot.window.getSize();
-        if ((actual.width === size.width && actual.height === size.height) ||
+        if (isIE ||
+            (actual.width === size.width && actual.height === size.height) ||
             new Date().getTime() - start > 2000) {
           verifySize(assert, size);
           done();
