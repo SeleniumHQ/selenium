@@ -1,0 +1,198 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+"""Integration tests for the native element-actionability layer.
+
+Complements the DOM-mutation quiescence oracle (``bidi_dom_quiescence_tests.py``)
+with an element-level layer: is *this element* visible, enabled, editable,
+in view, unobstructed, and not moving. Built natively in
+``window.__quiescence`` rather than vendoring a third-party library (see
+``.local/plans/acquiescence-gap-analysis.md``).
+"""
+
+from selenium.webdriver.common.by import By
+
+
+def _navigate(driver, pages, name):
+    """Navigate to a served page via BiDi, which registers the preload."""
+    driver.browsing_context.navigate(
+        context=driver.current_window_handle,
+        url=pages.url(name),
+        wait="complete",
+    )
+
+
+def _element_state(driver, element):
+    return driver.execute_script("return window.__quiescence.elementState(arguments[0]);", element)
+
+
+# ---------------------------------------------------------------------------
+# Slice A: element state inspector
+# ---------------------------------------------------------------------------
+
+
+def test_display_none_element_is_not_visible(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<div id=\"t\" style=\"display:none\">x</div>';")
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["visible"] is False
+
+
+def test_visibility_hidden_element_is_not_visible(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<div id=\"t\" style=\"visibility:hidden\">x</div>';")
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["visible"] is False
+
+
+def test_zero_size_element_is_not_visible(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<div id=\"t\" style=\"width:0;height:0;overflow:hidden\">x</div>';")
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["visible"] is False
+
+
+def test_opacity_zero_element_is_not_visible(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<div id=\"t\" style=\"opacity:0\">x</div>';")
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["visible"] is False
+
+
+def test_ordinary_element_is_visible_enabled(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<button id=\"t\">go</button>';")
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["visible"] is True
+    assert state["enabled"] is True
+
+
+def test_disabled_button_is_not_enabled(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<button id=\"t\" disabled>go</button>';")
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["enabled"] is False
+
+
+def test_button_in_disabled_fieldset_is_not_enabled(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = '<fieldset disabled><button id=\"t\">go</button></fieldset>';"
+    )
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["enabled"] is False
+
+
+def test_readonly_input_is_not_editable(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<input id=\"t\" readonly value=\"x\">';")
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["editable"] is False
+
+
+def test_plain_input_is_editable(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<input id=\"t\">';")
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["editable"] is True
+
+
+def test_contenteditable_div_is_editable(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<div id=\"t\" contenteditable=\"true\">x</div>';")
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["editable"] is True
+
+
+def test_aria_readonly_div_is_not_editable(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = '<div id=\"t\" contenteditable=\"true\" aria-readonly=\"true\">x</div>';"
+    )
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["editable"] is False
+
+
+def test_indeterminate_checkbox_is_reported(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = '<input id=\"t\" type=\"checkbox\">';"
+        "document.getElementById('t').indeterminate = true;"
+    )
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["indeterminate"] is True
+    assert state["checked"] is False
+
+
+def test_checked_checkbox_is_reported(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<input id=\"t\" type=\"checkbox\" checked>';")
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["checked"] is True
+
+
+def test_element_scrolled_out_of_ancestor_is_not_in_viewport(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = "
+        "'<div id=\"scroller\" style=\"width:100px;height:100px;overflow:auto;position:relative\">"
+        "<div id=\"t\" style=\"position:relative;top:500px;width:20px;height:20px\">x</div></div>';"
+    )
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["inViewport"] is False
+    assert state["visibleRect"] is None
+
+
+def test_element_in_view_reports_visible_rect(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = '<div id=\"t\" style=\"width:20px;height:20px\">x</div>';"
+    )
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["inViewport"] is True
+    assert state["visibleRect"]["width"] > 0
+    assert state["visibleRect"]["height"] > 0
