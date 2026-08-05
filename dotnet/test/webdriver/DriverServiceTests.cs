@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.ComponentModel;
 using System.IO;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
@@ -30,8 +31,6 @@ namespace OpenQA.Selenium.Tests;
 [NonParallelizable]
 public class DriverServiceTests
 {
-    private sealed class StopStartupException : Exception;
-
     private static IEnumerable<TestCaseData> DriverServices()
     {
         yield return new TestCaseData((Func<DriverService>)ChromeDriverService.CreateDefaultService, "SE_CHROMEDRIVER").SetName("Chrome");
@@ -49,19 +48,10 @@ public class DriverServiceTests
         try
         {
             Environment.SetEnvironmentVariable(environmentVariable, expectedPath);
-            DriverService service = createService();
 
-            string actualFileName = null;
-            service.DriverProcessStarting += (_, e) =>
-            {
-                actualFileName = e.DriverServiceProcessStartInfo.FileName;
-
-                // Stop before the (nonexistent) driver is actually launched.
-                throw new StopStartupException();
-            };
-
-            Assert.ThrowsAsync<StopStartupException>(async () => await service.StartAsync());
-            Assert.That(actualFileName, Is.EqualTo(expectedPath));
+            Assert.That(
+                async () => await createService().StartAsync(),
+                Throws.InstanceOf<Win32Exception>().With.Message.Contains(expectedPath));
         }
         finally
         {
