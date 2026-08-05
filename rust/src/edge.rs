@@ -21,7 +21,8 @@ use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
 use crate::files::{BrowserPath, compose_driver_path_in_cache, first_existing_path};
 use crate::metadata::{
-    create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
+    create_driver_metadata, get_driver_version_from_metadata, get_metadata,
+    should_cache_driver_version, write_metadata,
 };
 use crate::{
     BETA, DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, Logger, NIGHTLY,
@@ -281,7 +282,11 @@ impl SeleniumManager for EdgeManager {
                     read_version_from_link(self.get_http_client(), &driver_url, self.get_logger())?;
 
                 let driver_ttl = self.get_ttl();
-                if driver_ttl > 0 && !major_browser_version.is_empty() {
+                if should_cache_driver_version(
+                    driver_ttl,
+                    major_browser_version.as_str(),
+                    &driver_version,
+                ) {
                     metadata.drivers.push(create_driver_metadata(
                         major_browser_version.as_str(),
                         self.driver_name,
