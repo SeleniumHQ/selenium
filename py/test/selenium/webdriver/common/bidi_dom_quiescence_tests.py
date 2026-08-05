@@ -91,8 +91,7 @@ def test_bookkeeping_attributes_are_ignored(driver, pages):
 
     # data-* churn is not layout/content meaningful, so the DOM is "settled".
     driver.execute_script(
-        "window.__q_i = setInterval("
-        "  () => document.body.setAttribute('data-x', String(performance.now())), 50);"
+        "window.__q_i = setInterval(  () => document.body.setAttribute('data-x', String(performance.now())), 50);"
     )
     result = _await_dom_settled(driver, settle_ms=200, timeout_ms=3000)
     driver.execute_script("clearInterval(window.__q_i);")
@@ -133,19 +132,19 @@ def test_structural_change_repromotes_noise_region(driver, pages):
     )
 
     # Wait until the net-zero swap region is classified as periodic noise.
-    WebDriverWait(driver, 5).until(
-        lambda d: not d.execute_script("return window.__quiescence.getActiveRegions();")
-    )
+    WebDriverWait(driver, 5).until(lambda d: not d.execute_script("return window.__quiescence.getActiveRegions();"))
 
     # A structural add on the same region must re-promote it.
     driver.execute_script("document.getElementById('r').appendChild(document.createElement('p'));")
     regions = WebDriverWait(driver, 3).until(
-        lambda d: [
-            r
-            for r in d.execute_script("return window.__quiescence.getActiveRegions();")
-            if "div#r" in r["key"] and "child" in r["key"]
-        ]
-        or False
+        lambda d: (
+            [
+                r
+                for r in d.execute_script("return window.__quiescence.getActiveRegions();")
+                if "div#r" in r["key"] and "child" in r["key"]
+            ]
+            or False
+        )
     )
     driver.execute_script("clearInterval(window.__q_m);")
 
@@ -195,8 +194,7 @@ def test_timeout_reports_active_regions(driver, pages):
     _navigate(driver, pages, "blank.html")
 
     driver.execute_script(
-        "window.__q_c = setInterval("
-        "  () => document.body.appendChild(document.createElement('div')), 80);"
+        "window.__q_c = setInterval(  () => document.body.appendChild(document.createElement('div')), 80);"
     )
     result = _await_dom_settled(driver, settle_ms=200, timeout_ms=1500)
     driver.execute_script("clearInterval(window.__q_c);")
@@ -215,7 +213,7 @@ def test_root_scoping_ignores_unrelated_churn(driver, pages):
 
     # A footer region churns forever; a scoped wait on #main must still settle.
     driver.execute_script(
-        "document.body.innerHTML = '<div id=\"main\">ok</div><div id=\"foot\"></div>';"
+        'document.body.innerHTML = \'<div id="main">ok</div><div id="foot"></div>\';'
         "window.__q_f = setInterval("
         "  () => document.getElementById('foot').appendChild(document.createElement('span')), 80);"
     )
@@ -357,7 +355,7 @@ def test_wait_for_dom_settled_with_css_root(driver, pages):
     _navigate(driver, pages, "blank.html")
 
     driver.execute_script(
-        "document.body.innerHTML = '<div id=\"main\">ok</div><div id=\"foot\"></div>';"
+        'document.body.innerHTML = \'<div id="main">ok</div><div id="foot"></div>\';'
         "window.__q_f = setInterval("
         "  () => document.getElementById('foot').appendChild(document.createElement('span')), 80);"
     )
@@ -372,7 +370,7 @@ def test_wait_for_dom_settled_with_webelement_root(driver, pages):
     _navigate(driver, pages, "blank.html")
 
     driver.execute_script(
-        "document.body.innerHTML = '<div id=\"main\">ok</div><div id=\"foot\"></div>';"
+        'document.body.innerHTML = \'<div id="main">ok</div><div id="foot"></div>\';'
         "window.__q_f = setInterval("
         "  () => document.getElementById('foot').appendChild(document.createElement('span')), 80);"
     )
@@ -388,8 +386,7 @@ def test_wait_for_dom_settled_timeout_reports_active_regions(driver, pages):
     _navigate(driver, pages, "blank.html")
 
     driver.execute_script(
-        "window.__q_c = setInterval("
-        "  () => document.body.appendChild(document.createElement('div')), 80);"
+        "window.__q_c = setInterval(  () => document.body.appendChild(document.createElement('div')), 80);"
     )
 
     result = driver.wait_for_dom_settled(timeout=1.5, settle_ms=0.2, require_pending_quiet=False)

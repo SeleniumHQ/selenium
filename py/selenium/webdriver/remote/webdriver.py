@@ -79,7 +79,7 @@ logger = logging.getLogger(__name__)
 
 cdp = None
 
-_quiescence_preload_source: str | None = None
+_quiescence_source_cache: str | None = None
 
 
 def import_cdp() -> None:
@@ -88,20 +88,25 @@ def import_cdp() -> None:
         cdp = import_module("selenium.webdriver.common.bidi.cdp")
 
 
-def _load_quiescence_preload() -> str:
-    """Load the quiescence polyfill and wrap it as a BiDi preload declaration.
-
-    ``script.addPreloadScript`` expects a function declaration, whereas the
-    polyfill ships as a self-installing IIFE, so it is wrapped in an arrow
-    function. The wrapped source is cached after the first read.
-    """
-    global _quiescence_preload_source
-    if _quiescence_preload_source is None:
+def _quiescence_source() -> str:
+    """Return the quiescence polyfill source (a self-installing IIFE), cached."""
+    global _quiescence_source_cache
+    if _quiescence_source_cache is None:
         data = pkgutil.get_data("selenium.webdriver.common", "quiescence.js")
         if data is None:
             raise WebDriverException("Failed to load quiescence.js preload script")
-        _quiescence_preload_source = "() => {\n" + data.decode("utf-8") + "\n}"
-    return _quiescence_preload_source
+        _quiescence_source_cache = data.decode("utf-8")
+    return _quiescence_source_cache
+
+
+def _load_quiescence_preload() -> str:
+    """Wrap the polyfill as a BiDi preload declaration.
+
+    ``script.addPreloadScript`` expects a function declaration, whereas the
+    polyfill ships as a self-installing IIFE, so it is wrapped in an arrow
+    function.
+    """
+    return "() => {\n" + _quiescence_source() + "\n}"
 
 
 def _create_caps(caps) -> dict:
@@ -568,6 +573,71 @@ class WebDriver(BaseWebDriver):
             self._quiescence_script_id = self.script._add_preload_script(_load_quiescence_preload())
         except Exception as exc:
             logger.debug("Could not register quiescence preload script: %s", exc)
+
+    def wait_for_dom_settled(
+        self,
+        root=None,
+        timeout: float = 10,
+        settle_ms: float = 0.1,
+        require_pending_quiet: bool = True,
+    ) -> dict:
+        """Block until the DOM has stopped meaningfully mutating.
+
+        Backed by the quiescence polyfill's ``awaitDomSettled``: resolves once
+        no meaningful mutation (structural change, content text, layout-affecting
+        attribute, or running CSS animation) has occurred for ``settle_ms``,
+        discounting periodic noise (clocks, spinners) and cooperatively inert
+        regions.
+
+        Args:
+            root: Limit the wait to a subtree. A ``WebElement`` or a CSS
+                selector string; ``None`` waits on the whole document.
+            timeout: Seconds to wait before giving up (returns ``settled=False``
+                with the still-active regions).
+            settle_ms: Seconds of quiet required before declaring settled.
+            require_pending_quiet: Also require the timer/network ledger to be
+                quiet (compose with pending-work quiescence).
+
+        Returns:
+            A dict: ``{settled, elapsedMs, activeRegions, lastMutationAgeMs,
+            unobservable}``.
+
+        Example:
+            `driver.wait_for_dom_settled(root="#results", timeout=5)`
+        """
+        self._ensure_quiescence_preload()
+        # The preload applies to future navigations; if it never ran on the
+        # current document (e.g. only classic get() was used), install it now.
+        if not self.execute_script("return !!window.__quiescence;"):
+            self.execute_script(_quiescence_source())
+
+        # The async script must outlive our own timeout, or the browser aborts
+        # it first. Temporarily widen the script timeout when necessary.
+        needed = timeout + 5
+        previous_script_timeout = None
+        try:
+            current = self.timeouts.script
+            if current is not None and current < needed:
+                previous_script_timeout = current
+                self.timeouts.script = needed
+        except Exception as exc:
+            logger.debug("Could not read/adjust script timeout: %s", exc)
+
+        try:
+            return self.execute_async_script(
+                "const done = arguments[arguments.length - 1];"
+                "window.__quiescence.awaitDomSettled({"
+                "  root: arguments[0], settleMs: arguments[1],"
+                "  timeoutMs: arguments[2], requirePendingQuiet: arguments[3]"
+                "}).then(done);",
+                root,
+                int(settle_ms * 1000),
+                int(timeout * 1000),
+                require_pending_quiet,
+            )
+        finally:
+            if previous_script_timeout is not None:
+                self.timeouts.script = previous_script_timeout
 
     @property
     def title(self) -> str:
