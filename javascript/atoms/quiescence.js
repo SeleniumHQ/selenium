@@ -897,6 +897,21 @@
       tick();
     });
   }
+  /**
+   * "Safe to act on X" = region-quiescent ∧ element-ready. Sequential
+   * composition (settle the document first, then wait for the element) —
+   * the simplest correct reading for v0; the element's containing region
+   * isn't known upfront, so `awaitDomSettled` runs unscoped.
+   */
+  function waitUntilActionable(el, opts) {
+    const o = opts || {};
+    const timeoutMs = o.timeoutMs != null ? o.timeoutMs : 10000;
+    const started = native.now();
+    return awaitDomSettled({ timeoutMs }).then(() => {
+      const remaining = Math.max(0, timeoutMs - (native.now() - started));
+      return waitForInteractionReady(el, Object.assign({}, o, { timeoutMs: remaining }));
+    }).then((result) => Object.assign({}, result, { elapsedMs: native.now() - started }));
+  }
   function elementState(el) {
     const rect = visibleRectOf(el);
     return {
@@ -1021,7 +1036,7 @@
     value: Object.freeze({
       getBlockers, isQuiet, awaitQuiet, setPolicy, markInert, onStateChanged,
       awaitDomSettled, getActiveRegions, markDomInert, setDomPolicy, elementState, isStable,
-      interactionPoint, waitForInteractionReady,
+      interactionPoint, waitForInteractionReady, waitUntilActionable,
       /** debug: raw ledger snapshot including inert/ignored entries */
       _snapshot: () => Array.from(ledger.values()).map((e) => ({ ...e, meta: { ...e.meta } })),
     }),
