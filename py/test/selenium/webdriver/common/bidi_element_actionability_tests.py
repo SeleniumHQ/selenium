@@ -481,8 +481,7 @@ def test_aria_disabled_element_is_not_enabled(driver, pages):
 def test_legend_child_of_disabled_fieldset_stays_enabled(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(
-        "document.body.innerHTML = "
-        "'<fieldset disabled><legend><input id=\"t\" type=\"checkbox\"></legend></fieldset>';"
+        'document.body.innerHTML = \'<fieldset disabled><legend><input id="t" type="checkbox"></legend></fieldset>\';'
     )
 
     state = _element_state(driver, driver.find_element(By.ID, "t"))
@@ -495,5 +494,178 @@ def test_drop_interaction_does_not_require_enabled(driver, pages):
     driver.execute_script("document.body.innerHTML = '<button id=\"t\" disabled>go</button>';")
 
     result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), interaction="drop", timeout_ms=800)
+
+    assert result["ready"] is True
+
+
+# ---------------------------------------------------------------------------
+# Additional coverage parity with acquiescence: edge cases for behavior we
+# already implement but had not exercised.
+# ---------------------------------------------------------------------------
+
+
+def test_ancestor_opacity_zero_hides_descendant(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script('document.body.innerHTML = \'<div style="opacity:0"><span id="t">x</span></div>\';')
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["visible"] is False
+
+
+def test_ancestor_display_none_hides_descendant(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script('document.body.innerHTML = \'<div style="display:none"><span id="t">x</span></div>\';')
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["visible"] is False
+
+
+def test_descendant_visibility_visible_overrides_ancestor_hidden(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = "
+        '\'<div style="visibility:hidden"><span id="t" style="visibility:visible">x</span></div>\';'
+    )
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["visible"] is True
+
+
+def test_details_closed_hides_non_summary_children(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<details><summary>s</summary><p id=\"t\">hidden</p></details>';")
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["visible"] is False
+
+
+def test_details_open_shows_children(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = '<details open><summary>s</summary><p id=\"t\">shown</p></details>';"
+    )
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["visible"] is True
+
+
+def test_unchecked_checkbox_reports_false(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script('document.body.innerHTML = \'<input id="t" type="checkbox">\';')
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["checked"] is False
+
+
+def test_checked_radio_is_reported(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script('document.body.innerHTML = \'<input id="t" type="radio" name="g" checked>\';')
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["checked"] is True
+
+
+def test_pointer_events_none_overlay_does_not_obstruct(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = "
+        '\'<div id="t" style="position:absolute;top:50px;left:50px;width:100px;height:30px">target</div>'
+        '<div id="overlay" style="position:absolute;top:50px;left:50px;width:100px;'
+        "height:30px;z-index:5;pointer-events:none\">covering</div>';"
+    )
+
+    result = _interaction_point(driver, driver.find_element(By.ID, "t"))
+
+    assert result["reason"] is None
+    assert result["obstructedBy"] is None
+
+
+def test_element_far_down_page_reports_notinview(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = "
+        '\'<button id="t" style="position:absolute;top:10000px;width:100px;height:40px">go</button>\';'
+    )
+
+    result = _interaction_point(driver, driver.find_element(By.ID, "t"))
+
+    assert result["reason"] == "notinview"
+
+
+def test_element_far_down_page_becomes_ready_after_window_scroll(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.style.height = '12000px';"
+        "document.body.innerHTML = "
+        '\'<button id="t" style="position:absolute;top:10000px;width:100px;height:40px">go</button>\';'
+    )
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=3000)
+
+    assert result["ready"] is True
+
+
+def test_nested_shadow_dom_hit_test_pierces_two_levels(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    inner = driver.execute_script(
+        "const outerHost = document.createElement('div');"
+        "outerHost.style.cssText = 'position:absolute;top:150px;left:150px;width:80px;height:80px';"
+        "document.body.appendChild(outerHost);"
+        "const outerShadow = outerHost.attachShadow({mode: 'open'});"
+        "const innerHost = document.createElement('div');"
+        "innerHost.style.cssText = 'width:80px;height:80px';"
+        "outerShadow.appendChild(innerHost);"
+        "const innerShadow = innerHost.attachShadow({mode: 'open'});"
+        "const target = document.createElement('div');"
+        "target.style.cssText = 'width:80px;height:80px;background:green';"
+        "innerShadow.appendChild(target);"
+        "return target;"
+    )
+
+    result = _interaction_point(driver, inner)
+
+    assert result["reason"] is None
+    assert result["obstructedBy"] is None
+
+
+def test_obstruction_removed_later_becomes_ready(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = "
+        '\'<div id="t" style="position:absolute;top:50px;left:50px;width:100px;height:30px">target</div>'
+        '<div id="overlay" style="position:absolute;top:50px;left:50px;width:100px;'
+        "height:30px;z-index:5\">covering</div>';"
+        "setTimeout(() => document.getElementById('overlay').remove(), 300);"
+    )
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=3000)
+
+    assert result["ready"] is True
+
+
+def test_element_becomes_ready_after_being_enabled_later(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = '<button id=\"t\" disabled>go</button>';"
+        "setTimeout(() => { document.getElementById('t').disabled = false; }, 300);"
+    )
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=3000)
+
+    assert result["ready"] is True
+
+
+def test_click_interaction_does_not_require_editable(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script('document.body.innerHTML = \'<input id="t" readonly value="x">\';')
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), interaction="click", timeout_ms=800)
 
     assert result["ready"] is True
