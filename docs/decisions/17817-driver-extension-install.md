@@ -97,9 +97,10 @@ These are the alternatives considered and not taken; the accepted choice is the 
 
 - Since the implementation must work with the Grid, bindings will have to convert path or archive to Base64
   before sending to target
-- **The classic fallback is reduced-capability.** Firefox's classic endpoint accepts only `temporary`
-  (the inverse of the new `permanent` option), not `allowPrivateBrowsing`. With BiDi off,
-  `installWebExtension` still installs, but a BiDi-only option raises rather than being silently ignored,
-  so the base install stays backwards-compatible while the BiDi-only extras are gated on BiDi.
+- **The classic fallback cannot disable private browsing.** Firefox's classic endpoint always installs
+  a web extension with private-browsing access and exposes no toggle, so with BiDi off
+  `allowPrivateBrowsing` is effectively always `true`. `allowPrivateBrowsing: true` (or unspecified) is
+  satisfied; explicitly passing `allowPrivateBrowsing: false` raises rather than silently enabling it
+  anyway.
 - Users with CDP implementations wanting to install web extensions must switch to BiDi equivalents or
   make use of the raw CDP endpoint
