@@ -48,6 +48,9 @@ public sealed class SafariDriverService : DriverService
     }
 
     /// <inheritdoc />
+    protected override string DriverServiceEnvironmentVariable => "SE_SAFARIDRIVER";
+
+    /// <inheritdoc />
     protected override DriverOptions GetDefaultDriverOptions()
     {
         return new SafariOptions();

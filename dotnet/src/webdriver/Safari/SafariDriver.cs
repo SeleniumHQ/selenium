@@ -169,10 +169,18 @@ public class SafariDriver : WebDriver
 
         if (service.DriverServicePath == null)
         {
-            DriverFinder finder = new DriverFinder(options);
-            string fullServicePath = await finder.GetDriverPathAsync().ConfigureAwait(false);
-            service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
-            service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
+            if (service.DriverPathFromEnvironment is string environmentDriverPath)
+            {
+                service.DriverServicePath = Path.GetDirectoryName(environmentDriverPath);
+                service.DriverServiceExecutableName = Path.GetFileName(environmentDriverPath);
+            }
+            else
+            {
+                DriverFinder finder = new DriverFinder(options);
+                string fullServicePath = await finder.GetDriverPathAsync().ConfigureAwait(false);
+                service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
+                service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
+            }
         }
 
         try

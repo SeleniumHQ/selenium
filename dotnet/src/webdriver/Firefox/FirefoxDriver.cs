@@ -204,13 +204,21 @@ public class FirefoxDriver : WebDriver
 
         if (service.DriverServicePath == null)
         {
-            DriverFinder finder = new DriverFinder(options);
-            string fullServicePath = await finder.GetDriverPathAsync().ConfigureAwait(false);
-            service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
-            service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
-            string fullBrowserPath = await finder.GetBrowserPathAsync().ConfigureAwait(false);
-            options.BinaryLocation = fullBrowserPath;
-            options.BrowserVersion = null;
+            if (service.DriverPathFromEnvironment is string environmentDriverPath)
+            {
+                service.DriverServicePath = Path.GetDirectoryName(environmentDriverPath);
+                service.DriverServiceExecutableName = Path.GetFileName(environmentDriverPath);
+            }
+            else
+            {
+                DriverFinder finder = new DriverFinder(options);
+                string fullServicePath = await finder.GetDriverPathAsync().ConfigureAwait(false);
+                service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
+                service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
+                string fullBrowserPath = await finder.GetBrowserPathAsync().ConfigureAwait(false);
+                options.BinaryLocation = fullBrowserPath;
+                options.BrowserVersion = null;
+            }
         }
 
         try

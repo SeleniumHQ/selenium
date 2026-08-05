@@ -41,6 +41,9 @@ public sealed class EdgeDriverService : ChromiumDriverService
     }
 
     /// <inheritdoc />
+    protected override string DriverServiceEnvironmentVariable => "SE_EDGEDRIVER";
+
+    /// <inheritdoc />
     protected override DriverOptions GetDefaultDriverOptions()
     {
         return new EdgeOptions();
