@@ -241,3 +241,93 @@ def test_element_becomes_stable_after_transition_ends(driver, pages):
     )
 
     WebDriverWait(driver, 3).until(lambda d: _is_stable(d, d.find_element(By.ID, "t")) or False)
+
+
+# ---------------------------------------------------------------------------
+# Slice C: interaction point + obstruction (hit-testing)
+# ---------------------------------------------------------------------------
+
+
+def _interaction_point(driver, element):
+    return driver.execute_script("return window.__quiescence.interactionPoint(arguments[0]);", element)
+
+
+def test_unobstructed_element_reports_point_with_no_reason(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<button id=\"t\">go</button>';")
+
+    result = _interaction_point(driver, driver.find_element(By.ID, "t"))
+
+    assert result["reason"] is None
+    assert result["obstructedBy"] is None
+    assert result["point"]["x"] > 0
+    assert result["point"]["y"] > 0
+
+
+def test_element_under_overlay_is_obstructed(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = "
+        "'<div id=\"t\" style=\"position:absolute;top:50px;left:50px;width:100px;height:30px\">target</div>"
+        "<div id=\"overlay\" style=\"position:absolute;top:50px;left:50px;width:100px;height:30px;z-index:5\">covering</div>';"
+    )
+
+    result = _interaction_point(driver, driver.find_element(By.ID, "t"))
+
+    assert result["reason"] == "obstructed"
+    assert result["obstructedBy"] == "div#overlay"
+
+
+def test_offscreen_element_reports_notinview(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = "
+        "'<div id=\"t\" style=\"position:fixed;top:-9999px;left:-9999px;width:20px;height:20px\">x</div>';"
+    )
+
+    result = _interaction_point(driver, driver.find_element(By.ID, "t"))
+
+    assert result["reason"] == "notinview"
+    assert result["point"] is None
+
+
+def test_shadow_element_obstructed_by_light_dom_overlay(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    inner = driver.execute_script(
+        "const host = document.createElement('div');"
+        "host.style.cssText = 'position:absolute;top:100px;left:100px;width:50px;height:50px';"
+        "document.body.appendChild(host);"
+        "const sr = host.attachShadow({mode: 'open'});"
+        "const inner = document.createElement('div');"
+        "inner.style.cssText = 'width:50px;height:50px;background:green';"
+        "sr.appendChild(inner);"
+        "const overlay = document.createElement('div'); overlay.id = 'overlay';"
+        "overlay.style.cssText = "
+        "'position:absolute;top:100px;left:100px;width:50px;height:50px;z-index:5';"
+        "document.body.appendChild(overlay);"
+        "return inner;"
+    )
+
+    result = _interaction_point(driver, inner)
+
+    assert result["reason"] == "obstructed"
+    assert result["obstructedBy"] == "div#overlay"
+
+
+def test_open_shadow_element_reports_no_false_obstruction(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    inner = driver.execute_script(
+        "const host = document.createElement('div');"
+        "host.style.cssText = 'position:absolute;top:200px;left:100px;width:50px;height:50px';"
+        "document.body.appendChild(host);"
+        "const sr = host.attachShadow({mode: 'open'});"
+        "const inner = document.createElement('div');"
+        "inner.style.cssText = 'width:50px;height:50px;background:green';"
+        "sr.appendChild(inner);"
+        "return inner;"
+    )
+
+    result = _interaction_point(driver, inner)
+
+    assert result["reason"] is None
+    assert result["obstructedBy"] is None
