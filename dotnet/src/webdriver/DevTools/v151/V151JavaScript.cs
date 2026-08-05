@@ -1,4 +1,4 @@
-// <copyright file="V148JavaScript.cs" company="Selenium Committers">
+// <copyright file="V151JavaScript.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,26 +17,26 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools.V148.Page;
-using OpenQA.Selenium.DevTools.V148.Runtime;
+using OpenQA.Selenium.DevTools.V151.Page;
+using OpenQA.Selenium.DevTools.V151.Runtime;
 
-namespace OpenQA.Selenium.DevTools.V148;
+namespace OpenQA.Selenium.DevTools.V151;
 
 /// <summary>
-/// Class containing the JavaScript implementation for version 148 of the DevTools Protocol.
+/// Class containing the JavaScript implementation for version 151 of the DevTools Protocol.
 /// </summary>
-public class V148JavaScript : JavaScript
+public class V151JavaScript : JavaScript
 {
     private readonly RuntimeAdapter runtime;
     private readonly PageAdapter page;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="V148JavaScript"/> class.
+    /// Initializes a new instance of the <see cref="V151JavaScript"/> class.
     /// </summary>
     /// <param name="runtime">The DevTools Protocol adapter for the Runtime domain.</param>
     /// <param name="page">The DevTools Protocol adapter for the Page domain.</param>
     /// <exception cref="ArgumentNullException">If <paramref name="runtime"/> or <paramref name="page"/> are <see langword="null"/>.</exception>
-    public V148JavaScript(RuntimeAdapter runtime, PageAdapter page)
+    public V151JavaScript(RuntimeAdapter runtime, PageAdapter page)
     {
         ArgumentNullException.ThrowIfNull(runtime);
         ArgumentNullException.ThrowIfNull(page);

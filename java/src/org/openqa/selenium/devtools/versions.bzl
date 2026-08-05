@@ -1,7 +1,7 @@
 CDP_VERSIONS = [
     "v149",
     "v150",
-    "v148",
+    "v151",
 ]
 
 LATEST_CDP_VERSION = "v" + str(max([int(v[1:]) for v in CDP_VERSIONS]))
