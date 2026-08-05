@@ -139,34 +139,9 @@ class KubernetesSessionFactoryTest {
 
   private static KubernetesSessionFactory createSubfolderImageFactory(
       String videoImage, String assetsPath) {
-    Tracer tracer = Mockito.mock(Tracer.class);
-    HttpClient.Factory clientFactory = Mockito.mock(HttpClient.Factory.class);
-
-    return new KubernetesSessionFactory(
-        tracer,
-        clientFactory,
-        Duration.ofMinutes(5),
-        Duration.ofSeconds(120),
-        () -> Mockito.mock(KubernetesClient.class),
-        "selenium",
-        "selenium/standalone-chrome:latest",
-        new ImmutableCapabilities("browserName", "chrome"),
-        "IfNotPresent",
-        null,
-        Map.of(),
-        Map.of(),
-        Map.of(),
-        videoImage,
-        assetsPath,
-        InheritedPodSpec.empty(),
-        30L,
-        false,
-        caps -> true) {
-      @Override
-      boolean isVideoSessionSubfolder() {
-        return true;
-      }
-    };
+    // The per-session subfolder approach is always enabled now, so this is the same as the image
+    // factory (kept as a named helper for the subfolder-focused tests).
+    return createImageFactory(videoImage, assetsPath);
   }
 
   private static EnvVar findEnvVar(List<EnvVar> envVars, String name) {
@@ -808,7 +783,7 @@ class KubernetesSessionFactoryTest {
   // ---- Browser container env vars ----
 
   @Test
-  void browserContainerHasVideoFileNameEnvVar() {
+  void browserContainerUsesAutoVideoFileNameAndSubfolder() {
     KubernetesSessionFactory factory = createImageFactory(null, null);
 
     Job job =
@@ -820,7 +795,13 @@ class KubernetesSessionFactoryTest {
             job.getSpec().getTemplate().getSpec().getContainers(), "browser");
     EnvVar videoFileName = findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME");
     assertThat(videoFileName).isNotNull();
-    assertThat(videoFileName.getValue()).isEqualTo("test-job.mp4");
+    assertThat(videoFileName.getValue()).isEqualTo("auto");
+    // The per-session subfolder approach is always used, with a Pod-name fallback env var.
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_SESSION_SUBFOLDER"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+    assertThat(findEnvVar(browser.getEnv(), "SE_NODE_CONTAINER_NAME")).isNotNull();
   }
 
   @Test
@@ -1062,7 +1043,7 @@ class KubernetesSessionFactoryTest {
     assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_FILE_NAME"))
         .isNotNull()
         .extracting(EnvVar::getValue)
-        .isEqualTo("test-job.mp4");
+        .isEqualTo("auto");
     assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_RECORD_STANDALONE"))
         .isNotNull()
         .extracting(EnvVar::getValue)
@@ -1155,7 +1136,7 @@ class KubernetesSessionFactoryTest {
     assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_FILE_NAME"))
         .isNotNull()
         .extracting(EnvVar::getValue)
-        .isEqualTo("test-job.mp4");
+        .isEqualTo("auto");
     assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_RECORD_STANDALONE"))
         .isNotNull()
         .extracting(EnvVar::getValue)
@@ -1263,7 +1244,7 @@ class KubernetesSessionFactoryTest {
     assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME"))
         .isNotNull()
         .extracting(EnvVar::getValue)
-        .isEqualTo("test-job.mp4");
+        .isEqualTo("auto");
     assertThat(findEnvVar(browser.getEnv(), "SE_SCREEN_WIDTH"))
         .isNotNull()
         .extracting(EnvVar::getValue)
