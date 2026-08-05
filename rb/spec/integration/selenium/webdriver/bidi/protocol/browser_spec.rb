@@ -119,7 +119,7 @@ module Selenium
 
             describe '#set_download_behavior' do
               it 'allows downloads into a requested folder',
-                 skip_if: {browser: %i[chrome firefox], platform: :windows,
+                 skip_if: {browser: %i[chrome edge firefox], platform: :windows,
                            reason: 'Times out waiting for the download to complete'} do
                 Dir.mktmpdir('selenium-bidi-downloads') do |directory|
                   behavior = Browser::DownloadBehavior::Allowed.new(destination_folder: directory)

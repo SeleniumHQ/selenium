@@ -187,9 +187,9 @@ module Selenium
           end
 
           describe '#set_scrollbar_type_override',
-                   pending_if: {browser: :firefox,
+                   pending_if: {browser: %i[edge firefox],
                                 exception: {class: Error::UnknownCommandError},
-                                reason: 'Firefox returns unknown command for emulation.setScrollbarTypeOverride'} do
+                                reason: 'Edge and Firefox return unknown command for setScrollbarTypeOverride'} do
             it 'sets and clears scrollbar type override' do
               expect(emulation.set_scrollbar_type_override(
                        scrollbar_type: :classic,

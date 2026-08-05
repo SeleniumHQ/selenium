@@ -282,7 +282,7 @@ module Selenium
 
           describe '#handle_request_device_prompt' do
             it 'accepts a prompt',
-               skip_if: {browser: %i[chrome firefox], platform: :windows,
+               skip_if: {browser: %i[chrome edge firefox], platform: :windows,
                          reason: 'Times out: no in-flight prompt/operation to respond to'} do
               select_device
 
@@ -290,7 +290,7 @@ module Selenium
             end
 
             it 'cancels a prompt',
-               skip_if: {browser: %i[chrome firefox], platform: :windows,
+               skip_if: {browser: %i[chrome edge firefox], platform: :windows,
                          reason: 'Times out: no in-flight prompt/operation to respond to'} do
               events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
               enable_adapter
@@ -335,7 +335,7 @@ module Selenium
 
           describe '#simulate_advertisement' do
             it 'simulates an advertisement scan entry',
-               skip_if: {browser: %i[chrome firefox], platform: :windows,
+               skip_if: {browser: %i[chrome edge firefox], platform: :windows,
                          reason: 'Times out: no in-flight prompt/operation to respond to'} do
               events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
               enable_adapter
@@ -355,7 +355,7 @@ module Selenium
 
           describe '#simulate_gatt_connection_response' do
             it 'simulates a successful GATT connection response',
-               skip_if: {browser: %i[chrome firefox], platform: :windows,
+               skip_if: {browser: %i[chrome edge firefox], platform: :windows,
                          reason: 'Times out: no in-flight prompt/operation to respond to'} do
               select_device
 
@@ -366,7 +366,7 @@ module Selenium
 
           describe '#simulate_gatt_disconnection' do
             it 'simulates a GATT disconnection',
-               skip_if: {browser: %i[chrome firefox], platform: :windows,
+               skip_if: {browser: %i[chrome edge firefox], platform: :windows,
                          reason: 'Times out: no in-flight prompt/operation to respond to'} do
               select_device
               connect_selected_device
@@ -424,7 +424,7 @@ module Selenium
 
           describe '#simulate_characteristic_response' do
             it 'simulates characteristic read and write responses',
-               skip_if: {browser: %i[chrome firefox], platform: :windows,
+               skip_if: {browser: %i[chrome edge firefox], platform: :windows,
                          reason: 'Times out: no in-flight prompt/operation to respond to'} do
               select_device
               add_service
@@ -509,7 +509,7 @@ module Selenium
 
           describe '#simulate_descriptor_response' do
             it 'simulates descriptor read and write responses',
-               skip_if: {browser: %i[chrome firefox], platform: :windows,
+               skip_if: {browser: %i[chrome edge firefox], platform: :windows,
                          reason: 'Times out: no in-flight prompt/operation to respond to'} do
               select_device
               add_service

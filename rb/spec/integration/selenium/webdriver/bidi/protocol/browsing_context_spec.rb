@@ -271,13 +271,13 @@ module Selenium
           end
 
           describe '#set_bypass_csp',
-                   pending_if: [{browser_family: :chromium,
+                   pending_if: [{browser: :chrome,
                                  exception: {class: Error::UnsupportedOperationError,
                                              message: /browsingContext\.setBypassCSP/},
-                                 reason: 'Chromium returns unsupported operation for browsingContext.setBypassCSP'},
-                                {browser: :firefox,
+                                 reason: 'Chrome returns unsupported operation for browsingContext.setBypassCSP'},
+                                {browser: %i[edge firefox],
                                  exception: {class: Error::UnknownCommandError},
-                                 reason: 'Firefox returns unknown command for browsingContext.setBypassCSP'},
+                                 reason: 'Edge and Firefox return unknown command for browsingContext.setBypassCSP'},
                                 {browser_family: :safari,
                                  exception: {class: Error::UnknownCommandError},
                                  reason: 'Safari does not implement browsingContext.setBypassCSP'}] do
@@ -309,10 +309,13 @@ module Selenium
           end
 
           describe '#start_screencast',
-                   pending_if: [{browser_family: :chromium,
+                   pending_if: [{browser: :chrome,
                                  exception: {class: Error::UnsupportedOperationError,
                                              message: /browsingContext\.startScreencast/},
-                                 reason: 'Chromium returns unsupported operation for browsingContext.startScreencast'},
+                                 reason: 'Chrome returns unsupported operation for browsingContext.startScreencast'},
+                                {browser: :edge,
+                                 exception: {class: Error::UnknownCommandError},
+                                 reason: 'Edge returns unknown command for browsingContext.startScreencast'},
                                 {browser_family: :safari,
                                  exception: {class: Error::UnknownCommandError},
                                  reason: 'Safari does not implement browsingContext.startScreencast'}] do
