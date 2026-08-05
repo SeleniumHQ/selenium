@@ -798,6 +798,44 @@
       sample(frames);
     });
   }
+  function nodePreview(el) {
+    if (!el || el.nodeType !== 1) return '';
+    let s = el.tagName.toLowerCase();
+    if (el.id) return s + '#' + el.id;
+    if (typeof el.className === 'string' && el.className.trim()) {
+      const cls = el.className.trim().split(/\s+/).slice(0, 2).join('.');
+      if (cls) s += '.' + cls;
+    }
+    return s;
+  }
+  /** Composed-tree containment: does `a` (composed-)contain `b`, inclusive? */
+  function composedContains(a, b) {
+    for (let n = b; n; n = composedParent(n)) {
+      if (n === a) return true;
+    }
+    return false;
+  }
+  /**
+   * Interaction point + obstruction (hit-test). No vendored registry needed:
+   * `document.elementsFromPoint()` already performs a composed hit test that
+   * pierces open shadow trees. Closed shadow targets are an out-of-scope,
+   * documented limitation (same posture as the DOM-mutation observer's
+   * closed-shadow handling).
+   */
+  function interactionPoint(el) {
+    const rect = visibleRectOf(el);
+    if (!rect) return { point: null, obstructedBy: null, reason: 'notinview' };
+    const point = { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+    if (!global.document.elementsFromPoint) return { point, obstructedBy: null, reason: null };
+    const hits = global.document.elementsFromPoint(point.x, point.y);
+    const top = hits[0];
+    if (!top || top === el || composedContains(top, el) || composedContains(el, top)) {
+      return { point, obstructedBy: null, reason: null };
+    }
+    const pointerBlocked = global.getComputedStyle(top).pointerEvents === 'none';
+    if (pointerBlocked) return { point, obstructedBy: null, reason: null };
+    return { point, obstructedBy: nodePreview(top), reason: 'obstructed' };
+  }
   function elementState(el) {
     const rect = visibleRectOf(el);
     return {
@@ -922,6 +960,7 @@
     value: Object.freeze({
       getBlockers, isQuiet, awaitQuiet, setPolicy, markInert, onStateChanged,
       awaitDomSettled, getActiveRegions, markDomInert, setDomPolicy, elementState, isStable,
+      interactionPoint,
       /** debug: raw ledger snapshot including inert/ignored entries */
       _snapshot: () => Array.from(ledger.values()).map((e) => ({ ...e, meta: { ...e.meta } })),
     }),
