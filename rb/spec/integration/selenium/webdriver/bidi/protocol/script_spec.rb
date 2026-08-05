@@ -47,8 +47,8 @@ module Selenium
 
           describe '#add_preload_script',
                    pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError},
-                                reason: 'Safari driver currently returns an error for BiDi preload scripts'} do
+                                exception: {class: Error::SerializationError},
+                                reason: 'Safari script.addPreloadScript result fails strict deserialization'} do
             it 'runs a preload script in future documents' do
               result = script.add_preload_script(
                 function_declaration: "() => { window.__ruby_bidi_preload = 'installed'; }"
@@ -177,8 +177,8 @@ module Selenium
 
           describe '#remove_preload_script',
                    pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError},
-                                reason: 'Safari driver currently returns an error for BiDi preload scripts'} do
+                                exception: {class: Error::SerializationError},
+                                reason: 'Safari script.addPreloadScript result fails strict deserialization'} do
             it 'removes a preload script before future navigations' do
               result = script.add_preload_script(
                 function_declaration: '() => { window.__ruby_bidi_removed_preload = true; }'

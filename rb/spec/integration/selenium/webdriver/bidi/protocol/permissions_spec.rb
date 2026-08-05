@@ -68,7 +68,10 @@ module Selenium
               expect(geolocation_permission).to eq('granted')
             end
 
-            it 'accepts embedded origin and user context parameters' do
+            it 'accepts embedded origin and user context parameters',
+               pending_if: {browser_family: :safari,
+                            exception: {class: Error::SerializationError},
+                            reason: 'Safari create_user_context result fails strict deserialization'} do
               browser = Browser.new(driver)
               user_context = browser.create_user_context.user_context
               context = browsing_context.create(type: :tab, user_context: user_context).context

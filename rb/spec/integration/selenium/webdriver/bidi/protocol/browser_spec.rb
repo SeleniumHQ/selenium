@@ -38,7 +38,10 @@ module Selenium
                   pending_if: {browser_family: :safari,
                                exception: {class: Error::UnknownCommandError},
                                reason: 'Safari returns unknown command for BiDi user contexts/client windows'} do
-            describe '#create_user_context' do
+            describe '#create_user_context',
+                     pending_if: {browser_family: :safari,
+                                  exception: {class: Error::SerializationError},
+                                  reason: 'Safari create_user_context result fails strict deserialization'} do
               it 'returns the created user context id' do
                 user_context = create_user_context
 
@@ -75,7 +78,10 @@ module Selenium
               end
             end
 
-            describe '#get_user_contexts' do
+            describe '#get_user_contexts',
+                     pending_if: {browser_family: :safari,
+                                  exception: {class: Error::SerializationError},
+                                  reason: 'Safari create_user_context result fails strict deserialization'} do
               it 'includes newly created user contexts' do
                 user_contexts = Array.new(2) { create_user_context }
                 all_ids = browser.get_user_contexts.user_contexts.map(&:user_context)
@@ -86,7 +92,10 @@ module Selenium
               end
             end
 
-            describe '#remove_user_context' do
+            describe '#remove_user_context',
+                     pending_if: {browser_family: :safari,
+                                  exception: {class: Error::SerializationError},
+                                  reason: 'Safari create_user_context result fails strict deserialization'} do
               it 'removes the requested user context' do
                 user_context = create_user_context
 
@@ -135,7 +144,10 @@ module Selenium
                 end
               end
 
-              it 'accepts a user-context scoped download behavior' do
+              it 'accepts a user-context scoped download behavior',
+                 pending_if: {browser_family: :safari,
+                              exception: {class: Error::SerializationError},
+                              reason: 'Safari create_user_context result fails strict deserialization'} do
                 user_context = create_user_context
                 behavior = Browser::DownloadBehavior::Denied.new
 

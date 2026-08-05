@@ -109,8 +109,8 @@ module Selenium
 
             it 'accepts reference, background, and user context parameters',
                pending_if: {browser_family: :safari,
-                            exception: {class: Error::UnknownCommandError},
-                            reason: 'Safari driver currently returns unknown command for BiDi user contexts'} do
+                            exception: {class: Error::SerializationError},
+                            reason: 'Safari create_user_context result fails strict deserialization'} do
               user_context = Browser.new(driver).create_user_context.user_context
 
               result = browsing_context.create(

@@ -41,8 +41,8 @@ module Selenium
 
           describe '#subscribe',
                    pending_if: {browser_family: :safari,
-                                exception: {class: Error::InvalidArgumentError},
-                                reason: 'Safari rejects session.subscribe with invalid argument'} do
+                                exception: {class: Error::SerializationError},
+                                reason: 'Safari session.subscribe result fails strict deserialization'} do
             it 'subscribes to an event globally' do
               result = session.subscribe(events: ['browsingContext.load'])
 
@@ -67,8 +67,8 @@ module Selenium
 
           describe '#unsubscribe',
                    pending_if: {browser_family: :safari,
-                                exception: {class: Error::InvalidArgumentError},
-                                reason: 'Safari rejects session.unsubscribe with invalid argument'} do
+                                exception: {class: Error::SerializationError},
+                                reason: 'Safari session.unsubscribe result fails strict deserialization'} do
             it 'unsubscribes by event name' do
               session.subscribe(events: ['browsingContext.load'])
 

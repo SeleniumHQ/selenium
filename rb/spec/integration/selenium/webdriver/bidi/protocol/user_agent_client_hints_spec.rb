@@ -82,7 +82,10 @@ module Selenium
               end
             end
 
-            it 'accepts user-context filters' do
+            it 'accepts user-context filters',
+               pending_if: {browser_family: :safari,
+                            exception: {class: Error::SerializationError},
+                            reason: 'Safari create_user_context result fails strict deserialization'} do
               user_context = Browser.new(driver).create_user_context.user_context
 
               expect(user_agent_client_hints.set_client_hints_override(
