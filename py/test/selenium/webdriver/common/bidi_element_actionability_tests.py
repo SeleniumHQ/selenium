@@ -396,3 +396,67 @@ def test_disabled_element_never_becomes_ready(driver, pages):
 
     assert result["ready"] is False
     assert "enabled" in result["reason"]
+
+
+# ---------------------------------------------------------------------------
+# Slice E: composition + driver.wait_until_actionable()
+# ---------------------------------------------------------------------------
+
+
+def test_wait_until_actionable_returns_ready_for_ordinary_button(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<button id=\"t\">go</button>';")
+
+    result = driver.wait_until_actionable(driver.find_element(By.ID, "t"), timeout=2)
+
+    assert result["ready"] is True
+
+
+def test_wait_until_actionable_waits_for_dom_settle_and_element_reveal(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = '<button id=\"t\" style=\"display:none\">go</button>';"
+        "setTimeout(() => { document.getElementById('t').style.display = 'inline-block'; }, 300);"
+    )
+    button = driver.find_element(By.ID, "t")
+
+    result = driver.wait_until_actionable(button, timeout=3)
+
+    assert result["ready"] is True
+    assert result["elapsedMs"] >= 250
+
+
+def test_wait_until_actionable_reports_obstruction_reason(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = "
+        "'<div id=\"t\" style=\"position:absolute;top:50px;left:50px;width:100px;height:30px\">target</div>"
+        "<div id=\"overlay\" style=\"position:absolute;top:50px;left:50px;width:100px;height:30px;z-index:5\">covering</div>';"
+    )
+
+    result = driver.wait_until_actionable(driver.find_element(By.ID, "t"), timeout=1)
+
+    assert result["ready"] is False
+    assert "obstructed" in result["reason"]
+
+
+def test_wait_until_actionable_scrolls_element_into_view(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = "
+        "'<div id=\"scroller\" style=\"width:100px;height:100px;overflow:auto;position:relative\">"
+        "<div id=\"t\" style=\"position:relative;top:500px;width:20px;height:20px\">x</div></div>';"
+    )
+
+    result = driver.wait_until_actionable(driver.find_element(By.ID, "t"), timeout=3)
+
+    assert result["ready"] is True
+
+
+def test_wait_until_actionable_disabled_element_times_out(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<button id=\"t\" disabled>go</button>';")
+
+    result = driver.wait_until_actionable(driver.find_element(By.ID, "t"), timeout=0.5)
+
+    assert result["ready"] is False
