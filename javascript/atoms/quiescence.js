@@ -684,14 +684,28 @@
     }
     return true;
   }
+  function ariaDisabled(el) {
+    for (let n = el; n && n.nodeType === 1; n = composedParent(n)) {
+      const v = n.getAttribute && n.getAttribute('aria-disabled');
+      if (v === 'true') return true;
+      if (v === 'false') return false;
+    }
+    return false;
+  }
   function isEnabled(el) {
     if (!el || el.nodeType !== 1) return true;
+    if (ariaDisabled(el)) return false;
     const formTags = ['BUTTON', 'INPUT', 'SELECT', 'TEXTAREA', 'OPTION', 'OPTGROUP', 'FIELDSET'];
     if (formTags.indexOf(el.tagName) === -1) return true;
     if (el.disabled) return false;
     let node = composedParent(el);
     while (node && node.nodeType === 1) {
-      if ((node.tagName === 'FIELDSET' || node.tagName === 'OPTGROUP' || node.tagName === 'SELECT') && node.disabled) {
+      if (node.tagName === 'FIELDSET' && node.disabled) {
+        // The first <legend> child of a disabled fieldset is exempt from
+        // the disabling (HTML spec: form controls inside it stay enabled).
+        const legend = node.querySelector && node.querySelector(':scope > legend');
+        if (!(legend && legend.contains(el))) return false;
+      } else if ((node.tagName === 'OPTGROUP' || node.tagName === 'SELECT') && node.disabled) {
         return false;
       }
       node = composedParent(node);
@@ -840,7 +854,7 @@
   function reasonFor(state, hit) {
     const preview = nodePreview(state.el);
     if (!state.visible) return 'not visible: ' + preview;
-    if (!state.enabled) return 'not enabled: ' + preview;
+    if (state.requiresEnabled && !state.enabled) return 'not enabled: ' + preview;
     if (hit.reason === 'obstructed') return 'obstructed by ' + hit.obstructedBy;
     if (!state.inViewport) return 'not in viewport: ' + preview;
     if (state.requiresEditable && !state.editable) return 'not editable: ' + preview;
@@ -858,6 +872,8 @@
     const timeoutMs = o.timeoutMs != null ? o.timeoutMs : 10000;
     const autoScroll = o.autoScroll !== false;
     const requiresEditable = interaction === 'type' || interaction === 'clear';
+    // drop/screenshot act on the element regardless of its enabled state.
+    const requiresEnabled = interaction !== 'drop' && interaction !== 'screenshot';
     const started = native.now();
     return new Promise((resolve) => {
       let attempt = 0;
@@ -869,12 +885,13 @@
         const state = elementState(el);
         state.el = el;
         state.requiresEditable = requiresEditable;
+        state.requiresEnabled = requiresEnabled;
         const hit = interactionPoint(el);
         if (hit.reason === 'notinview' && autoScroll && !scrolled) {
           scrolled = true;
           try { el.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (_) { /* ignore */ }
         }
-        const ready = state.visible && state.enabled
+        const ready = state.visible && (!requiresEnabled || state.enabled)
           && (!requiresEditable || state.editable)
           && !hit.obstructedBy && state.inViewport;
         if (ready) {
