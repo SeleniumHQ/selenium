@@ -836,6 +836,67 @@
     if (pointerBlocked) return { point, obstructedBy: null, reason: null };
     return { point, obstructedBy: nodePreview(top), reason: 'obstructed' };
   }
+  const INTERACTION_BACKOFF_MS = [0, 0, 20, 50, 100, 100, 500];
+  function reasonFor(state, hit) {
+    const preview = nodePreview(state.el);
+    if (!state.visible) return 'not visible: ' + preview;
+    if (!state.enabled) return 'not enabled: ' + preview;
+    if (hit.reason === 'obstructed') return 'obstructed by ' + hit.obstructedBy;
+    if (!state.inViewport) return 'not in viewport: ' + preview;
+    if (state.requiresEditable && !state.editable) return 'not editable: ' + preview;
+    return 'not stable: ' + preview;
+  }
+  /**
+   * Polls (backoff, not a fixed interval) element state + hit-testing +
+   * stability until `el` is safe to act on, auto-scrolling into view once if
+   * it starts out of viewport. On timeout, `reason` is a short diagnostic
+   * (not a full nodePreviewer-style report — see the gap analysis).
+   */
+  function waitForInteractionReady(el, opts) {
+    const o = opts || {};
+    const interaction = o.interaction || 'click';
+    const timeoutMs = o.timeoutMs != null ? o.timeoutMs : 10000;
+    const autoScroll = o.autoScroll !== false;
+    const requiresEditable = interaction === 'type' || interaction === 'clear';
+    const started = native.now();
+    return new Promise((resolve) => {
+      let attempt = 0;
+      let scrolled = false;
+      function done(ready, point, reason) {
+        resolve({ ready, interactionPoint: point, reason: reason || null, elapsedMs: native.now() - started });
+      }
+      function tick() {
+        const state = elementState(el);
+        state.el = el;
+        state.requiresEditable = requiresEditable;
+        const hit = interactionPoint(el);
+        if (hit.reason === 'notinview' && autoScroll && !scrolled) {
+          scrolled = true;
+          try { el.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (_) { /* ignore */ }
+        }
+        const ready = state.visible && state.enabled
+          && (!requiresEditable || state.editable)
+          && !hit.obstructedBy && state.inViewport;
+        if (ready) {
+          isStable(el).then((stable) => {
+            if (stable) { done(true, hit.point, null); return; }
+            armNext(state, hit);
+          });
+          return;
+        }
+        armNext(state, hit);
+      }
+      function armNext(state, hit) {
+        if (native.now() - started >= timeoutMs) {
+          done(false, hit.point, reasonFor(state, hit));
+          return;
+        }
+        const delay = INTERACTION_BACKOFF_MS[Math.min(attempt++, INTERACTION_BACKOFF_MS.length - 1)];
+        native.setTimeout(tick, delay);
+      }
+      tick();
+    });
+  }
   function elementState(el) {
     const rect = visibleRectOf(el);
     return {
@@ -960,7 +1021,7 @@
     value: Object.freeze({
       getBlockers, isQuiet, awaitQuiet, setPolicy, markInert, onStateChanged,
       awaitDomSettled, getActiveRegions, markDomInert, setDomPolicy, elementState, isStable,
-      interactionPoint,
+      interactionPoint, waitForInteractionReady,
       /** debug: raw ledger snapshot including inert/ignored entries */
       _snapshot: () => Array.from(ledger.values()).map((e) => ({ ...e, meta: { ...e.meta } })),
     }),
