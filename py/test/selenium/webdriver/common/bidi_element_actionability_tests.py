@@ -331,3 +331,68 @@ def test_open_shadow_element_reports_no_false_obstruction(driver, pages):
 
     assert result["reason"] is None
     assert result["obstructedBy"] is None
+
+
+# ---------------------------------------------------------------------------
+# Slice D: waitForInteractionReady(el, opts)
+# ---------------------------------------------------------------------------
+
+
+def _wait_for_interaction_ready(driver, element, interaction="click", timeout_ms=3000, auto_scroll=True):
+    return driver.execute_async_script(
+        "const done = arguments[arguments.length - 1];"
+        "window.__quiescence.waitForInteractionReady(arguments[0], {"
+        "  interaction: arguments[1], timeoutMs: arguments[2], autoScroll: arguments[3]"
+        "}).then(done);",
+        element,
+        interaction,
+        timeout_ms,
+        auto_scroll,
+    )
+
+
+def test_ready_element_resolves_immediately(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<button id=\"t\">go</button>';")
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=1000)
+
+    assert result["ready"] is True
+    assert result["interactionPoint"]["x"] > 0
+
+
+def test_scrolled_off_element_becomes_ready_after_autoscroll(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = "
+        "'<div id=\"scroller\" style=\"width:100px;height:100px;overflow:auto;position:relative\">"
+        "<div id=\"t\" style=\"position:relative;top:500px;width:20px;height:20px\">x</div></div>';"
+    )
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=3000)
+
+    assert result["ready"] is True
+
+
+def test_obstructed_element_times_out_with_reason(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = "
+        "'<div id=\"t\" style=\"position:absolute;top:50px;left:50px;width:100px;height:30px\">target</div>"
+        "<div id=\"overlay\" style=\"position:absolute;top:50px;left:50px;width:100px;height:30px;z-index:5\">covering</div>';"
+    )
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=800)
+
+    assert result["ready"] is False
+    assert "obstructed" in result["reason"]
+
+
+def test_disabled_element_never_becomes_ready(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<button id=\"t\" disabled>go</button>';")
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=500)
+
+    assert result["ready"] is False
+    assert "enabled" in result["reason"]
