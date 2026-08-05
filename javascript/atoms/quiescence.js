@@ -501,6 +501,30 @@
     global.document.addEventListener('DOMContentLoaded', ensureDomObserver, { once: true });
   }
 
+  // MutationObserver does not pierce shadow boundaries. Hook attachShadow so
+  // open roots are observed too; closed roots are opaque and recorded as
+  // unobservable rather than silently treated as quiet.
+  if (global.Element && global.Element.prototype && global.Element.prototype.attachShadow) {
+    const nativeAttachShadow = global.Element.prototype.attachShadow;
+    global.Element.prototype.attachShadow = function (init) {
+      const shadow = nativeAttachShadow.call(this, init);
+      try {
+        if (init && init.mode === 'open') {
+          ensureDomObserver();
+          if (domObs) {
+            domObs.observe(shadow, {
+              childList: true, subtree: true, attributes: true,
+              characterData: true, attributeOldValue: true, characterDataOldValue: true,
+            });
+          }
+        } else {
+          domState.unobservable.push({ reason: 'closed-shadow', ts: native.now() });
+        }
+      } catch (_) { /* ignore */ }
+      return shadow;
+    };
+  }
+
   // CSS animation activity source. MutationObserver is blind to
   // animations/transitions (they live at the style/compositor layer), so a
   // running animation is treated as activity — except infinite-iteration ones,
