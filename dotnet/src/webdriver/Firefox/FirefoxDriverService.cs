@@ -48,7 +48,7 @@ public sealed class FirefoxDriverService : DriverService
     }
 
     /// <inheritdoc />
-    protected override string DriverServiceEnvironmentVariable => "SE_GECKODRIVER";
+    protected override string DriverServiceEnvironmentVariableName => "SE_GECKODRIVER";
 
     /// <inheritdoc />
     protected override DriverOptions GetDefaultDriverOptions()

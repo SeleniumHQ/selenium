@@ -41,7 +41,7 @@ public sealed class ChromeDriverService : ChromiumDriverService
     }
 
     /// <inheritdoc />
-    protected override string DriverServiceEnvironmentVariable => "SE_CHROMEDRIVER";
+    protected override string DriverServiceEnvironmentVariableName => "SE_CHROMEDRIVER";
 
     /// <inheritdoc />
     protected override DriverOptions GetDefaultDriverOptions()

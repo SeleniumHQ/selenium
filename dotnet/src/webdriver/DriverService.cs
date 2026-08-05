@@ -151,16 +151,16 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
     /// Gets the name of the environment variable used to specify the driver executable location,
     /// or <see langword="null"/> if the service does not support one.
     /// </summary>
-    protected virtual string? DriverServiceEnvironmentVariable => null;
+    protected virtual string? DriverServiceEnvironmentVariableName => null;
 
     /// <summary>
-    /// Gets the driver executable path from <see cref="DriverServiceEnvironmentVariable"/>, or
+    /// Gets the driver executable path from <see cref="DriverServiceEnvironmentVariableName"/>, or
     /// <see langword="null"/> if it is unset. When set, Selenium Manager is not invoked.
     /// </summary>
-    public string? DriverPathFromEnvironment =>
-        this.DriverServiceEnvironmentVariable is string name
+    internal string? DriverPathFromEnvironment =>
+        this.DriverServiceEnvironmentVariableName is string name
         && Environment.GetEnvironmentVariable(name) is string path
-        && path.Length > 0
+        && !string.IsNullOrWhiteSpace(path)
             ? path
             : null;
 
@@ -239,7 +239,7 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
         {
             if (_logger.IsEnabled(LogEventLevel.Debug))
             {
-                _logger.Debug($"Skipping Selenium Manager; using driver from {this.DriverServiceEnvironmentVariable}: {environmentDriverPath}");
+                _logger.Debug($"Skipping Selenium Manager; using driver from {this.DriverServiceEnvironmentVariableName}: {environmentDriverPath}");
             }
 
             this.driverServiceProcess.StartInfo.FileName = environmentDriverPath;
