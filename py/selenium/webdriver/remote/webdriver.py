@@ -639,6 +639,59 @@ class WebDriver(BaseWebDriver):
             if previous_script_timeout is not None:
                 self.timeouts.script = previous_script_timeout
 
+    def wait_until_actionable(
+        self,
+        element: WebElement,
+        interaction: str = "click",
+        timeout: float = 10,
+    ) -> dict:
+        """Block until `element` is safe to act on.
+
+        Composes the DOM-mutation quiescence oracle with an element-level
+        actionability check: resolves once the document has stopped
+        meaningfully mutating *and* the element itself is visible, enabled,
+        (editable, for ``interaction="type"``/``"clear"``), in view,
+        unobstructed, and not moving. Scrolls the element into view once if it
+        starts out of viewport.
+
+        Args:
+            element: The element to check.
+            interaction: The kind of interaction planned (``"click"`` by
+                default; ``"type"``/``"clear"`` additionally require the
+                element to be editable).
+            timeout: Seconds to wait before giving up.
+
+        Returns:
+            A dict: ``{ready, interactionPoint, reason, elapsedMs}``.
+        """
+        self._ensure_quiescence_preload()
+        if not self.execute_script("return !!window.__quiescence;"):
+            self.execute_script(_quiescence_source())
+
+        needed = timeout + 5
+        previous_script_timeout = None
+        try:
+            current = self.timeouts.script
+            if current is not None and current < needed:
+                previous_script_timeout = current
+                self.timeouts.script = needed
+        except Exception as exc:
+            logger.debug("Could not read/adjust script timeout: %s", exc)
+
+        try:
+            return self.execute_async_script(
+                "const done = arguments[arguments.length - 1];"
+                "window.__quiescence.waitUntilActionable(arguments[0], {"
+                "  interaction: arguments[1], timeoutMs: arguments[2]"
+                "}).then(done);",
+                element,
+                interaction,
+                int(timeout * 1000),
+            )
+        finally:
+            if previous_script_timeout is not None:
+                self.timeouts.script = previous_script_timeout
+
     @property
     def title(self) -> str:
         """Returns the title of the current page.
