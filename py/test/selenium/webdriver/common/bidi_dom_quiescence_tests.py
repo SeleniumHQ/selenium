@@ -28,6 +28,7 @@ isolated from the timer/network ledger (a driving ``setInterval`` is itself a
 pending blocker); composition with pending work is covered separately.
 """
 
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -337,3 +338,62 @@ def test_child_frame_churn_does_not_block_parent(driver, pages):
     driver.execute_script("clearInterval(window.__q_if);")
 
     assert result["settled"] is True
+
+
+# ---------------------------------------------------------------------------
+# High-level Python API: driver.wait_for_dom_settled()
+# ---------------------------------------------------------------------------
+
+
+def test_wait_for_dom_settled_returns_settled(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    result = driver.wait_for_dom_settled(timeout=3, settle_ms=0.15)
+
+    assert result["settled"] is True
+
+
+def test_wait_for_dom_settled_with_css_root(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    driver.execute_script(
+        "document.body.innerHTML = '<div id=\"main\">ok</div><div id=\"foot\"></div>';"
+        "window.__q_f = setInterval("
+        "  () => document.getElementById('foot').appendChild(document.createElement('span')), 80);"
+    )
+
+    result = driver.wait_for_dom_settled(root="#main", timeout=3, settle_ms=0.25, require_pending_quiet=False)
+    driver.execute_script("clearInterval(window.__q_f);")
+
+    assert result["settled"] is True
+
+
+def test_wait_for_dom_settled_with_webelement_root(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    driver.execute_script(
+        "document.body.innerHTML = '<div id=\"main\">ok</div><div id=\"foot\"></div>';"
+        "window.__q_f = setInterval("
+        "  () => document.getElementById('foot').appendChild(document.createElement('span')), 80);"
+    )
+    main = driver.find_element(By.ID, "main")
+
+    result = driver.wait_for_dom_settled(root=main, timeout=3, settle_ms=0.25, require_pending_quiet=False)
+    driver.execute_script("clearInterval(window.__q_f);")
+
+    assert result["settled"] is True
+
+
+def test_wait_for_dom_settled_timeout_reports_active_regions(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    driver.execute_script(
+        "window.__q_c = setInterval("
+        "  () => document.body.appendChild(document.createElement('div')), 80);"
+    )
+
+    result = driver.wait_for_dom_settled(timeout=1.5, settle_ms=0.2, require_pending_quiet=False)
+    driver.execute_script("clearInterval(window.__q_c);")
+
+    assert result["settled"] is False
+    assert len(result["activeRegions"]) >= 1
