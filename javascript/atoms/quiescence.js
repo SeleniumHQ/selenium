@@ -762,6 +762,42 @@
     }
     return { x: box.left, y: box.top, width: box.right - box.left, height: box.bottom - box.top };
   }
+  function rectOf(el) {
+    const r = el.getBoundingClientRect();
+    return { x: r.x, y: r.y, width: r.width, height: r.height };
+  }
+  function rectsEqual(a, b) {
+    return a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
+  }
+  /**
+   * Samples `el`'s bounding rect across `opts.frames` (default 2)
+   * requestAnimationFrame callbacks; unstable if it moves. Independent of
+   * `animationsActive()` (region-level, tracked-animation only): a
+   * CSS-transition or JS-driven transform can move an element with no DOM
+   * mutation and no animation the region oracle classifies as "running".
+   */
+  function isStable(el, opts) {
+    const o = opts || {};
+    const frames = o.frames || 2;
+    return new Promise((resolve) => {
+      if (!native.requestAnimationFrame) { resolve(true); return; }
+      const rects = [rectOf(el)];
+      function sample(remaining) {
+        if (remaining <= 0) {
+          for (let i = 1; i < rects.length; i++) {
+            if (!rectsEqual(rects[0], rects[i])) { resolve(false); return; }
+          }
+          resolve(true);
+          return;
+        }
+        native.requestAnimationFrame(() => {
+          rects.push(rectOf(el));
+          sample(remaining - 1);
+        });
+      }
+      sample(frames);
+    });
+  }
   function elementState(el) {
     const rect = visibleRectOf(el);
     return {
@@ -885,7 +921,7 @@
   Object.defineProperty(global, '__quiescence', {
     value: Object.freeze({
       getBlockers, isQuiet, awaitQuiet, setPolicy, markInert, onStateChanged,
-      awaitDomSettled, getActiveRegions, markDomInert, setDomPolicy, elementState,
+      awaitDomSettled, getActiveRegions, markDomInert, setDomPolicy, elementState, isStable,
       /** debug: raw ledger snapshot including inert/ignored entries */
       _snapshot: () => Array.from(ledger.values()).map((e) => ({ ...e, meta: { ...e.meta } })),
     }),
