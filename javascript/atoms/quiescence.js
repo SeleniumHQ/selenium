@@ -393,11 +393,6 @@
     unobservable: [],          // {reason} for closed shadow roots / canvas, etc.
     lastMeaningfulTs: 0,
   };
-  const domWaiters = new Set();
-  function bumpDomWaiters() {
-    for (const arm of domWaiters) { try { arm(); } catch (_) { /* not ours */ } }
-  }
-
   function stableTargetPath(node, maxDepth) {
     maxDepth = maxDepth || 6;
     const parts = [];
@@ -494,7 +489,7 @@
           if (domState.buffer.length > 512) domState.buffer.shift();
         }
       }
-      if (meaningful) { domState.lastMeaningfulTs = now; scheduleEmit(); bumpDomWaiters(); }
+      if (meaningful) { domState.lastMeaningfulTs = now; scheduleEmit(); }
     });
     domObs.observe(root, {
       childList: true, subtree: true, attributes: true,
@@ -527,14 +522,33 @@
     return false;
   }
 
-  function domLastMeaningfulTs() { return domState.lastMeaningfulTs; }
+  function resolveRoot(root) {
+    if (!root) return null;
+    return typeof root === 'string'
+      ? (global.document && global.document.querySelector(root))
+      : root;
+  }
+  function withinRoot(node, root) {
+    if (!root) return true;
+    return !!(node && root.contains && root.contains(node));
+  }
+  function domLastMeaningfulTs(root) {
+    if (!root) return domState.lastMeaningfulTs;
+    for (let i = domState.buffer.length - 1; i >= 0; i--) {
+      const e = domState.buffer[i];
+      if (withinRoot(e.target, root) && !nodeInert(e.target)) return e.ts;
+    }
+    return 0;
+  }
 
-  function getActiveRegions() {
+  function getActiveRegions(root) {
+    const scope = resolveRoot(root);
     const now = native.now();
     const out = [];
     for (const [key, fp] of domState.fingerprints) {
       if (fp.classifiedNoise) continue;
       if ((now - fp.lastTs) > domPolicy.settleMs) continue; // not currently active
+      if (scope && !withinRoot(fp.lastTarget, scope)) continue;
       out.push({ key, lastAgeMs: now - fp.lastTs, count: fp.count });
     }
     return out;
@@ -545,50 +559,52 @@
     const settleMs = o.settleMs != null ? o.settleMs : domPolicy.settleMs;
     const timeoutMs = o.timeoutMs != null ? o.timeoutMs : domPolicy.timeoutMs;
     const requirePendingQuiet = o.requirePendingQuiet !== false;
+    const root = resolveRoot(o.root);
     const started = native.now();
+    // Fixed-cadence poll rather than event-driven re-arm: a mutation outside a
+    // scoped `root` must not reset that root's settle window.
+    const pollMs = Math.min(settleMs, 50);
     ensureDomObserver();
     return new Promise((resolve) => {
-      let settleHandle = null;
+      let pollHandle = null;
       let deadlineHandle = null;
       function settledNow() {
-        return (native.now() - domLastMeaningfulTs()) >= settleMs
+        // Observe for at least one settle window before declaring settled, so
+        // churn that begins just after the call is not missed.
+        return (native.now() - started) >= settleMs
+          && (native.now() - domLastMeaningfulTs(root)) >= settleMs
           && (!requirePendingQuiet || isQuiet())
-          && !(domPolicy.treatCssAnimationsAsActivity && animationsActive());
+          && !(domPolicy.treatCssAnimationsAsActivity && animationsActive(root));
       }
       function finish(settled) {
-        domWaiters.delete(arm);
-        native.clearTimeout(settleHandle);
+        native.clearTimeout(pollHandle);
         native.clearTimeout(deadlineHandle);
         resolve({
           settled,
           elapsedMs: native.now() - started,
-          activeRegions: settled ? [] : getActiveRegions(),
-          lastMutationAgeMs: native.now() - domLastMeaningfulTs(),
+          activeRegions: settled ? [] : getActiveRegions(root),
+          lastMutationAgeMs: native.now() - domLastMeaningfulTs(root),
           unobservable: domState.unobservable.slice(),
         });
       }
-      function arm() {
-        native.clearTimeout(settleHandle);
-        const gap = native.now() - domLastMeaningfulTs();
-        const remaining = Math.max(0, settleMs - gap);
-        // Debounce: (re)arm to re-check when the settle window would elapse; if
-        // still blocked (pending work / animation), keep polling at settleMs.
-        settleHandle = native.setTimeout(() => {
-          if (settledNow()) finish(true);
-          else arm();
-        }, remaining || settleMs);
+      function poll() {
+        if (settledNow()) { finish(true); return; }
+        pollHandle = native.setTimeout(poll, pollMs);
       }
-      domWaiters.add(arm);
       deadlineHandle = native.setTimeout(() => finish(false), timeoutMs);
-      arm();
+      // Defer the first check so the async MutationObserver has flushed any
+      // just-issued records (microtasks run before this timer fires).
+      pollHandle = native.setTimeout(poll, pollMs);
     });
   }
 
   // ---- Public API ----------------------------------------------------------------
   function awaitQuiet(opts) {
-    const { timeoutMs = 10000, settleMs = 75 } = opts || {};
+    const o = opts || {};
+    const timeoutMs = o.timeoutMs != null ? o.timeoutMs : 10000;
+    const settleMs = o.settleMs != null ? o.settleMs : 75;
     const started = native.now();
-    return new Promise((resolve) => {
+    const pending = new Promise((resolve) => {
       let settleHandle = null;
       let deadlineHandle = null;
       let unsub = null;
@@ -615,6 +631,22 @@
       unsub = onStateChanged(() => armSettle());
       deadlineHandle = native.setTimeout(() => finish(false), timeoutMs);
       armSettle();
+    });
+    // Opt-in composition: also require the DOM (optionally under opts.root) to
+    // settle, so a render pipeline (fetch -> mutate -> fetch) or a running
+    // animation holds quiescence even once pending work drains.
+    if (!o.dom) return pending;
+    return pending.then((res) => {
+      if (!res.quiet) return res;
+      const remaining = Math.max(0, timeoutMs - (native.now() - started));
+      return awaitDomSettled({
+        root: o.root, settleMs, timeoutMs: remaining, requirePendingQuiet: true,
+      }).then((dom) => ({
+        quiet: res.quiet && dom.settled,
+        blockers: res.blockers,
+        activeRegions: dom.activeRegions,
+        elapsedMs: native.now() - started,
+      }));
     });
   }
 
@@ -653,11 +685,30 @@
     return { ...policy };
   }
 
+  /**
+   * Cooperative annotation: the app declares a DOM region inert (a live ticker,
+   * an ad, a chat widget). Sticky — never auto-cleared — so ongoing mutations
+   * under it are always discounted. Accepts an element or a CSS selector.
+   */
+  function markDomInert(target) {
+    const node = typeof target === 'string'
+      ? (global.document && global.document.querySelector(target)) : target;
+    if (!node) return false;
+    domState.inertNodes.add(node);
+    scheduleEmit();
+    return true;
+  }
+
+  function setDomPolicy(partial) {
+    Object.assign(domPolicy, partial || {});
+    return { ...domPolicy };
+  }
+
   compileIgnores();
   Object.defineProperty(global, '__quiescence', {
     value: Object.freeze({
       getBlockers, isQuiet, awaitQuiet, setPolicy, markInert, onStateChanged,
-      awaitDomSettled, getActiveRegions,
+      awaitDomSettled, getActiveRegions, markDomInert, setDomPolicy,
       /** debug: raw ledger snapshot including inert/ignored entries */
       _snapshot: () => Array.from(ledger.values()).map((e) => ({ ...e, meta: { ...e.meta } })),
     }),
