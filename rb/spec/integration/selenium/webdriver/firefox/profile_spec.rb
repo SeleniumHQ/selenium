@@ -45,6 +45,12 @@ module Selenium
             end
           end
         end
+
+        it 'ships preferences from an existing profile directory' do
+          reset_driver!(profile: described_class.new(profile.layout_on_disk)) do |driver|
+            expect { wait(5).until { driver.find_element(id: 'oneline') } }.not_to raise_error
+          end
+        end
       end
     end # Firefox
   end # WebDriver
