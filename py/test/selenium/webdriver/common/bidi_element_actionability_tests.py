@@ -48,7 +48,7 @@ def _element_state(driver, element):
 
 def test_display_none_element_is_not_visible(driver, pages):
     _navigate(driver, pages, "blank.html")
-    driver.execute_script("document.body.innerHTML = '<div id=\"t\" style=\"display:none\">x</div>';")
+    driver.execute_script('document.body.innerHTML = \'<div id="t" style="display:none">x</div>\';')
 
     state = _element_state(driver, driver.find_element(By.ID, "t"))
 
@@ -57,7 +57,7 @@ def test_display_none_element_is_not_visible(driver, pages):
 
 def test_visibility_hidden_element_is_not_visible(driver, pages):
     _navigate(driver, pages, "blank.html")
-    driver.execute_script("document.body.innerHTML = '<div id=\"t\" style=\"visibility:hidden\">x</div>';")
+    driver.execute_script('document.body.innerHTML = \'<div id="t" style="visibility:hidden">x</div>\';')
 
     state = _element_state(driver, driver.find_element(By.ID, "t"))
 
@@ -66,7 +66,7 @@ def test_visibility_hidden_element_is_not_visible(driver, pages):
 
 def test_zero_size_element_is_not_visible(driver, pages):
     _navigate(driver, pages, "blank.html")
-    driver.execute_script("document.body.innerHTML = '<div id=\"t\" style=\"width:0;height:0;overflow:hidden\">x</div>';")
+    driver.execute_script('document.body.innerHTML = \'<div id="t" style="width:0;height:0;overflow:hidden">x</div>\';')
 
     state = _element_state(driver, driver.find_element(By.ID, "t"))
 
@@ -75,7 +75,7 @@ def test_zero_size_element_is_not_visible(driver, pages):
 
 def test_opacity_zero_element_is_not_visible(driver, pages):
     _navigate(driver, pages, "blank.html")
-    driver.execute_script("document.body.innerHTML = '<div id=\"t\" style=\"opacity:0\">x</div>';")
+    driver.execute_script('document.body.innerHTML = \'<div id="t" style="opacity:0">x</div>\';')
 
     state = _element_state(driver, driver.find_element(By.ID, "t"))
 
@@ -103,9 +103,7 @@ def test_disabled_button_is_not_enabled(driver, pages):
 
 def test_button_in_disabled_fieldset_is_not_enabled(driver, pages):
     _navigate(driver, pages, "blank.html")
-    driver.execute_script(
-        "document.body.innerHTML = '<fieldset disabled><button id=\"t\">go</button></fieldset>';"
-    )
+    driver.execute_script("document.body.innerHTML = '<fieldset disabled><button id=\"t\">go</button></fieldset>';")
 
     state = _element_state(driver, driver.find_element(By.ID, "t"))
 
@@ -114,7 +112,7 @@ def test_button_in_disabled_fieldset_is_not_enabled(driver, pages):
 
 def test_readonly_input_is_not_editable(driver, pages):
     _navigate(driver, pages, "blank.html")
-    driver.execute_script("document.body.innerHTML = '<input id=\"t\" readonly value=\"x\">';")
+    driver.execute_script('document.body.innerHTML = \'<input id="t" readonly value="x">\';')
 
     state = _element_state(driver, driver.find_element(By.ID, "t"))
 
@@ -132,7 +130,7 @@ def test_plain_input_is_editable(driver, pages):
 
 def test_contenteditable_div_is_editable(driver, pages):
     _navigate(driver, pages, "blank.html")
-    driver.execute_script("document.body.innerHTML = '<div id=\"t\" contenteditable=\"true\">x</div>';")
+    driver.execute_script('document.body.innerHTML = \'<div id="t" contenteditable="true">x</div>\';')
 
     state = _element_state(driver, driver.find_element(By.ID, "t"))
 
@@ -142,7 +140,7 @@ def test_contenteditable_div_is_editable(driver, pages):
 def test_aria_readonly_div_is_not_editable(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(
-        "document.body.innerHTML = '<div id=\"t\" contenteditable=\"true\" aria-readonly=\"true\">x</div>';"
+        'document.body.innerHTML = \'<div id="t" contenteditable="true" aria-readonly="true">x</div>\';'
     )
 
     state = _element_state(driver, driver.find_element(By.ID, "t"))
@@ -153,7 +151,7 @@ def test_aria_readonly_div_is_not_editable(driver, pages):
 def test_indeterminate_checkbox_is_reported(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(
-        "document.body.innerHTML = '<input id=\"t\" type=\"checkbox\">';"
+        'document.body.innerHTML = \'<input id="t" type="checkbox">\';'
         "document.getElementById('t').indeterminate = true;"
     )
 
@@ -165,7 +163,7 @@ def test_indeterminate_checkbox_is_reported(driver, pages):
 
 def test_checked_checkbox_is_reported(driver, pages):
     _navigate(driver, pages, "blank.html")
-    driver.execute_script("document.body.innerHTML = '<input id=\"t\" type=\"checkbox\" checked>';")
+    driver.execute_script('document.body.innerHTML = \'<input id="t" type="checkbox" checked>\';')
 
     state = _element_state(driver, driver.find_element(By.ID, "t"))
 
@@ -176,8 +174,8 @@ def test_element_scrolled_out_of_ancestor_is_not_in_viewport(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(
         "document.body.innerHTML = "
-        "'<div id=\"scroller\" style=\"width:100px;height:100px;overflow:auto;position:relative\">"
-        "<div id=\"t\" style=\"position:relative;top:500px;width:20px;height:20px\">x</div></div>';"
+        '\'<div id="scroller" style="width:100px;height:100px;overflow:auto;position:relative">'
+        '<div id="t" style="position:relative;top:500px;width:20px;height:20px">x</div></div>\';'
     )
 
     state = _element_state(driver, driver.find_element(By.ID, "t"))
@@ -188,9 +186,7 @@ def test_element_scrolled_out_of_ancestor_is_not_in_viewport(driver, pages):
 
 def test_element_in_view_reports_visible_rect(driver, pages):
     _navigate(driver, pages, "blank.html")
-    driver.execute_script(
-        "document.body.innerHTML = '<div id=\"t\" style=\"width:20px;height:20px\">x</div>';"
-    )
+    driver.execute_script('document.body.innerHTML = \'<div id="t" style="width:20px;height:20px">x</div>\';')
 
     state = _element_state(driver, driver.find_element(By.ID, "t"))
 
@@ -206,15 +202,14 @@ def test_element_in_view_reports_visible_rect(driver, pages):
 
 def _is_stable(driver, element):
     return driver.execute_async_script(
-        "const done = arguments[arguments.length - 1];"
-        "window.__quiescence.isStable(arguments[0]).then(done);",
+        "const done = arguments[arguments.length - 1];window.__quiescence.isStable(arguments[0]).then(done);",
         element,
     )
 
 
 def test_stationary_element_is_stable(driver, pages):
     _navigate(driver, pages, "blank.html")
-    driver.execute_script("document.body.innerHTML = '<div id=\"t\" style=\"width:20px;height:20px\">x</div>';")
+    driver.execute_script('document.body.innerHTML = \'<div id="t" style="width:20px;height:20px">x</div>\';')
 
     assert _is_stable(driver, driver.find_element(By.ID, "t")) is True
 
@@ -223,7 +218,7 @@ def test_transitioning_element_is_not_stable(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(
         "document.body.innerHTML = "
-        "'<div id=\"t\" style=\"width:20px;height:20px;transition:transform 1200ms linear\">x</div>';"
+        '\'<div id="t" style="width:20px;height:20px;transition:transform 1200ms linear">x</div>\';'
         "document.getElementById('t').getBoundingClientRect();"
         "document.getElementById('t').style.transform = 'translateX(300px)';"
     )
@@ -235,7 +230,7 @@ def test_element_becomes_stable_after_transition_ends(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(
         "document.body.innerHTML = "
-        "'<div id=\"t\" style=\"width:20px;height:20px;transition:transform 200ms linear\">x</div>';"
+        '\'<div id="t" style="width:20px;height:20px;transition:transform 200ms linear">x</div>\';'
         "document.getElementById('t').getBoundingClientRect();"
         "document.getElementById('t').style.transform = 'translateX(60px)';"
     )
@@ -268,8 +263,9 @@ def test_element_under_overlay_is_obstructed(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(
         "document.body.innerHTML = "
-        "'<div id=\"t\" style=\"position:absolute;top:50px;left:50px;width:100px;height:30px\">target</div>"
-        "<div id=\"overlay\" style=\"position:absolute;top:50px;left:50px;width:100px;height:30px;z-index:5\">covering</div>';"
+        '\'<div id="t" style="position:absolute;top:50px;left:50px;width:100px;height:30px">target</div>'
+        '<div id="overlay" style="position:absolute;top:50px;left:50px;width:100px;'
+        "height:30px;z-index:5\">covering</div>';"
     )
 
     result = _interaction_point(driver, driver.find_element(By.ID, "t"))
@@ -282,7 +278,7 @@ def test_offscreen_element_reports_notinview(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(
         "document.body.innerHTML = "
-        "'<div id=\"t\" style=\"position:fixed;top:-9999px;left:-9999px;width:20px;height:20px\">x</div>';"
+        '\'<div id="t" style="position:fixed;top:-9999px;left:-9999px;width:20px;height:20px">x</div>\';'
     )
 
     result = _interaction_point(driver, driver.find_element(By.ID, "t"))
@@ -365,8 +361,8 @@ def test_scrolled_off_element_becomes_ready_after_autoscroll(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(
         "document.body.innerHTML = "
-        "'<div id=\"scroller\" style=\"width:100px;height:100px;overflow:auto;position:relative\">"
-        "<div id=\"t\" style=\"position:relative;top:500px;width:20px;height:20px\">x</div></div>';"
+        '\'<div id="scroller" style="width:100px;height:100px;overflow:auto;position:relative">'
+        '<div id="t" style="position:relative;top:500px;width:20px;height:20px">x</div></div>\';'
     )
 
     result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=3000)
@@ -378,8 +374,9 @@ def test_obstructed_element_times_out_with_reason(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(
         "document.body.innerHTML = "
-        "'<div id=\"t\" style=\"position:absolute;top:50px;left:50px;width:100px;height:30px\">target</div>"
-        "<div id=\"overlay\" style=\"position:absolute;top:50px;left:50px;width:100px;height:30px;z-index:5\">covering</div>';"
+        '\'<div id="t" style="position:absolute;top:50px;left:50px;width:100px;height:30px">target</div>'
+        '<div id="overlay" style="position:absolute;top:50px;left:50px;width:100px;'
+        "height:30px;z-index:5\">covering</div>';"
     )
 
     result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=800)
@@ -415,23 +412,27 @@ def test_wait_until_actionable_returns_ready_for_ordinary_button(driver, pages):
 def test_wait_until_actionable_waits_for_dom_settle_and_element_reveal(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(
-        "document.body.innerHTML = '<button id=\"t\" style=\"display:none\">go</button>';"
-        "setTimeout(() => { document.getElementById('t').style.display = 'inline-block'; }, 300);"
+        'document.body.innerHTML = \'<button id="t" style="display:none">go</button>\';'
+        # Long enough to outlast the round-trip overhead of wait_until_actionable's
+        # own setup commands (preload check, script-timeout read/adjust) before its
+        # async script even starts polling.
+        "setTimeout(() => { document.getElementById('t').style.display = 'inline-block'; }, 1500);"
     )
     button = driver.find_element(By.ID, "t")
 
-    result = driver.wait_until_actionable(button, timeout=3)
+    result = driver.wait_until_actionable(button, timeout=5)
 
     assert result["ready"] is True
-    assert result["elapsedMs"] >= 250
+    assert result["elapsedMs"] >= 800
 
 
 def test_wait_until_actionable_reports_obstruction_reason(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(
         "document.body.innerHTML = "
-        "'<div id=\"t\" style=\"position:absolute;top:50px;left:50px;width:100px;height:30px\">target</div>"
-        "<div id=\"overlay\" style=\"position:absolute;top:50px;left:50px;width:100px;height:30px;z-index:5\">covering</div>';"
+        '\'<div id="t" style="position:absolute;top:50px;left:50px;width:100px;height:30px">target</div>'
+        '<div id="overlay" style="position:absolute;top:50px;left:50px;width:100px;'
+        "height:30px;z-index:5\">covering</div>';"
     )
 
     result = driver.wait_until_actionable(driver.find_element(By.ID, "t"), timeout=1)
@@ -444,8 +445,8 @@ def test_wait_until_actionable_scrolls_element_into_view(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(
         "document.body.innerHTML = "
-        "'<div id=\"scroller\" style=\"width:100px;height:100px;overflow:auto;position:relative\">"
-        "<div id=\"t\" style=\"position:relative;top:500px;width:20px;height:20px\">x</div></div>';"
+        '\'<div id="scroller" style="width:100px;height:100px;overflow:auto;position:relative">'
+        '<div id="t" style="position:relative;top:500px;width:20px;height:20px">x</div></div>\';'
     )
 
     result = driver.wait_until_actionable(driver.find_element(By.ID, "t"), timeout=3)
