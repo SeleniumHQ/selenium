@@ -90,6 +90,10 @@ These are the alternatives considered and not taken; the accepted choice is the 
 
 - Since the implementation must work with the Grid, bindings will have to convert path or archive to Base64 
   before sending to target
+- **The classic fallback is reduced-capability.** Firefox's classic endpoint supports only `temporary` 
+  (i.e. `permanent`), not `allowPrivateBrowsing`. With BiDi off, `installExtension` still installs, but a 
+  BiDi-only option raises rather than being silently ignored, so the base install stays backwards-compatible 
+  while the BiDi-only extras are gated on BiDi.
 - Users with CDP implementations wanting to install extensions must switch to BiDi equivalents or make use of 
   the raw CDP endpoint
 - **The deprecation applies differently in Java.** Java's existing method is already named
