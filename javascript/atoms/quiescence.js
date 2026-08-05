@@ -622,6 +622,159 @@
     });
   }
 
+  // ---- Element actionability -------------------------------------------------
+  // Complements the region-level oracle above with an element-level question:
+  // is *this* element safe to act on (visible, enabled, editable, in view, not
+  // obstructed, not moving)? Built natively rather than vendored — see
+  // .local/plans/acquiescence-gap-analysis.md. Semantics are ported from (not
+  // imported from — that atom is Closure-style) javascript/atoms/dom.js's
+  // bot.dom.isShown/isEnabled/isEditable, kept in parity with is_displayed()/
+  // is_enabled(), extended with what that atom lacks: contenteditable/
+  // aria-readonly, checked/indeterminate, and in-viewport clipping.
+  function composedParent(node) {
+    if (node.assignedSlot) return node.assignedSlot;
+    const parent = node.parentNode;
+    if (parent && parent.nodeType === 11 && parent.host) return parent.host; // shadow root
+    return parent;
+  }
+  function hiddenByDetails(el) {
+    let child = null;
+    let node = el;
+    while (node) {
+      if (node.tagName === 'DETAILS' && !node.open) {
+        const summary = node.querySelector && node.querySelector('summary');
+        const insideSummary = summary && (summary === child || (child && summary.contains && summary.contains(child)));
+        if (!insideSummary) return true;
+      }
+      child = node;
+      node = composedParent(node);
+    }
+    return false;
+  }
+  function isShown(el) {
+    if (!el || el.nodeType !== 1) return false;
+    if (el.tagName === 'OPTION' || el.tagName === 'OPTGROUP') {
+      const select = el.closest && el.closest('select');
+      if (select) return isShown(select);
+    }
+    if (hiddenByDetails(el)) return false;
+    const ownStyle = global.getComputedStyle(el);
+    if (ownStyle.visibility === 'hidden' || ownStyle.visibility === 'collapse') return false;
+    let node = el;
+    while (node && node.nodeType === 1) {
+      const cs = node === el ? ownStyle : global.getComputedStyle(node);
+      if (cs.display === 'none') return false;
+      if (cs.contentVisibility === 'hidden') return false;
+      if (parseFloat(cs.opacity) === 0) return false;
+      node = composedParent(node);
+    }
+    const rect = el.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return false;
+    node = composedParent(el);
+    while (node && node.nodeType === 1) {
+      const cs = global.getComputedStyle(node);
+      if (cs.overflow === 'hidden' || cs.overflowX === 'hidden' || cs.overflowY === 'hidden') {
+        const ar = node.getBoundingClientRect();
+        if (rect.right <= ar.left || rect.left >= ar.right
+            || rect.bottom <= ar.top || rect.top >= ar.bottom) {
+          return false;
+        }
+      }
+      node = composedParent(node);
+    }
+    return true;
+  }
+  function isEnabled(el) {
+    if (!el || el.nodeType !== 1) return true;
+    const formTags = ['BUTTON', 'INPUT', 'SELECT', 'TEXTAREA', 'OPTION', 'OPTGROUP', 'FIELDSET'];
+    if (formTags.indexOf(el.tagName) === -1) return true;
+    if (el.disabled) return false;
+    let node = composedParent(el);
+    while (node && node.nodeType === 1) {
+      if ((node.tagName === 'FIELDSET' || node.tagName === 'OPTGROUP' || node.tagName === 'SELECT') && node.disabled) {
+        return false;
+      }
+      node = composedParent(node);
+    }
+    return true;
+  }
+  function ariaReadonly(el) {
+    let node = el;
+    while (node && node.nodeType === 1) {
+      const v = node.getAttribute && node.getAttribute('aria-readonly');
+      if (v != null) return v === 'true';
+      node = composedParent(node);
+    }
+    return false;
+  }
+  function isEditable(el) {
+    if (!el || el.nodeType !== 1) return false;
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      return !el.readOnly && isEnabled(el);
+    }
+    if (el.isContentEditable) {
+      return !ariaReadonly(el);
+    }
+    return false;
+  }
+  function readChecked(el) {
+    if (!el || el.nodeType !== 1) return null;
+    const type = (el.getAttribute && el.getAttribute('type') || '').toLowerCase();
+    if (el.tagName === 'INPUT' && (type === 'checkbox' || type === 'radio')) return !!el.checked;
+    const role = el.getAttribute && el.getAttribute('role');
+    const checkableRoles = ['checkbox', 'switch', 'radio', 'menuitemcheckbox', 'menuitemradio'];
+    if (role && checkableRoles.indexOf(role) !== -1) {
+      const v = el.getAttribute('aria-checked');
+      if (v === 'true') return true;
+      if (v === 'mixed') return null;
+      return false;
+    }
+    return null;
+  }
+  function rectIntersect(a, b) {
+    const left = Math.max(a.left, b.left);
+    const top = Math.max(a.top, b.top);
+    const right = Math.min(a.right, b.right);
+    const bottom = Math.min(a.bottom, b.bottom);
+    if (right <= left || bottom <= top) return null;
+    return { left, top, right, bottom };
+  }
+  function isClippingAncestor(cs) {
+    return cs.overflow === 'hidden' || cs.overflow === 'auto' || cs.overflow === 'scroll'
+      || cs.overflowX === 'hidden' || cs.overflowX === 'auto' || cs.overflowX === 'scroll'
+      || cs.overflowY === 'hidden' || cs.overflowY === 'auto' || cs.overflowY === 'scroll';
+  }
+  function visibleRectOf(el) {
+    if (!isShown(el)) return null;
+    const rect = el.getBoundingClientRect();
+    let box = { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom };
+    box = rectIntersect(box, { left: 0, top: 0, right: global.innerWidth, bottom: global.innerHeight });
+    if (!box) return null;
+    let node = composedParent(el);
+    while (node && node.nodeType === 1) {
+      const cs = global.getComputedStyle(node);
+      if (isClippingAncestor(cs)) {
+        const ar = node.getBoundingClientRect();
+        box = rectIntersect(box, { left: ar.left, top: ar.top, right: ar.right, bottom: ar.bottom });
+        if (!box) return null;
+      }
+      node = composedParent(node);
+    }
+    return { x: box.left, y: box.top, width: box.right - box.left, height: box.bottom - box.top };
+  }
+  function elementState(el) {
+    const rect = visibleRectOf(el);
+    return {
+      visible: isShown(el),
+      enabled: isEnabled(el),
+      editable: isEditable(el),
+      checked: readChecked(el),
+      indeterminate: !!el.indeterminate,
+      inViewport: !!rect,
+      visibleRect: rect,
+    };
+  }
+
   // ---- Public API ----------------------------------------------------------------
   function awaitQuiet(opts) {
     const o = opts || {};
@@ -732,7 +885,7 @@
   Object.defineProperty(global, '__quiescence', {
     value: Object.freeze({
       getBlockers, isQuiet, awaitQuiet, setPolicy, markInert, onStateChanged,
-      awaitDomSettled, getActiveRegions, markDomInert, setDomPolicy,
+      awaitDomSettled, getActiveRegions, markDomInert, setDomPolicy, elementState,
       /** debug: raw ledger snapshot including inert/ignored entries */
       _snapshot: () => Array.from(ledger.values()).map((e) => ({ ...e, meta: { ...e.meta } })),
     }),
