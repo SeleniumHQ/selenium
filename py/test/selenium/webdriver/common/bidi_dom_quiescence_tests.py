@@ -281,3 +281,59 @@ def test_await_quiet_with_dom_waits_for_animation(driver, pages):
 
     assert result["quiet"] is True
     assert result["elapsedMs"] >= 700
+
+
+# ---------------------------------------------------------------------------
+# Cross-boundary coverage: shadow DOM and frames
+# ---------------------------------------------------------------------------
+
+
+def test_open_shadow_root_mutation_blocks(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # MutationObserver does not pierce shadow roots; the atom must hook
+    # attachShadow to observe open roots, so churn inside one counts as activity.
+    driver.execute_script(
+        "const host = document.createElement('div'); host.id = 'host';"
+        "document.body.appendChild(host);"
+        "const sr = host.attachShadow({mode: 'open'});"
+        "window.__q_sh = setInterval(() => sr.appendChild(document.createElement('span')), 80);"
+    )
+
+    result = _await_dom_settled(driver, settle_ms=200, timeout_ms=1500)
+    driver.execute_script("clearInterval(window.__q_sh);")
+
+    assert result["settled"] is False
+
+
+def test_closed_shadow_root_is_reported_unobservable(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # A closed shadow root cannot be observed; it must be reported rather than
+    # silently treated as settled.
+    driver.execute_script(
+        "const host = document.createElement('div'); document.body.appendChild(host);"
+        "host.attachShadow({mode: 'closed'});"
+    )
+
+    result = _await_dom_settled(driver, settle_ms=150, timeout_ms=2000)
+
+    assert any(u.get("reason") == "closed-shadow" for u in result["unobservable"])
+
+
+def test_child_frame_churn_does_not_block_parent(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # A child frame is a separate browsing context with its own oracle; churn
+    # inside it must not hold the parent document busy.
+    driver.execute_script(
+        "const f = document.createElement('iframe'); f.id = 'f';"
+        "document.body.appendChild(f);"
+        "const doc = f.contentDocument;"
+        "window.__q_if = setInterval(() => doc.body.appendChild(doc.createElement('span')), 80);"
+    )
+
+    result = _await_dom_settled(driver, settle_ms=200, timeout_ms=3000)
+    driver.execute_script("clearInterval(window.__q_if);")
+
+    assert result["settled"] is True
