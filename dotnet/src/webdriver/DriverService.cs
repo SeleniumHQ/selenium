@@ -237,6 +237,11 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
         }
         else if (this.DriverPathFromEnvironment is string environmentDriverPath)
         {
+            if (_logger.IsEnabled(LogEventLevel.Debug))
+            {
+                _logger.Debug($"Skipping Selenium Manager; using driver from {this.DriverServiceEnvironmentVariable}: {environmentDriverPath}");
+            }
+
             this.driverServiceProcess.StartInfo.FileName = environmentDriverPath;
         }
         else

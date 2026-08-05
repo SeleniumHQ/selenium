@@ -162,20 +162,12 @@ public class InternetExplorerDriver : WebDriver
         ArgumentNullException.ThrowIfNull(service);
         ArgumentNullException.ThrowIfNull(options);
 
-        if (service.DriverServicePath == null)
+        if (service.DriverServicePath == null && service.DriverPathFromEnvironment == null)
         {
-            if (service.DriverPathFromEnvironment is string environmentDriverPath)
-            {
-                service.DriverServicePath = Path.GetDirectoryName(environmentDriverPath);
-                service.DriverServiceExecutableName = Path.GetFileName(environmentDriverPath);
-            }
-            else
-            {
-                DriverFinder finder = new DriverFinder(options);
-                string fullServicePath = await finder.GetDriverPathAsync().ConfigureAwait(false);
-                service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
-                service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
-            }
+            DriverFinder finder = new DriverFinder(options);
+            string fullServicePath = await finder.GetDriverPathAsync().ConfigureAwait(false);
+            service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
+            service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
         }
 
         try

@@ -27,6 +27,7 @@ using OpenQA.Selenium.Safari;
 namespace OpenQA.Selenium.Tests;
 
 [TestFixture]
+[NonParallelizable]
 public class DriverServiceTests
 {
     private static IEnumerable<TestCaseData> DriverServices()
