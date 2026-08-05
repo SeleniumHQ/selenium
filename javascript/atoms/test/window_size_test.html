@@ -69,8 +69,19 @@
         return;
       }
       var size = new goog.math.Size(350, 450);
+      var done = assert.async();
+      var start = new Date().getTime();
       bot.window.setSize(size);
-      verifySize(assert, size);
+      (function poll() {
+        var actual = bot.window.getSize();
+        if ((actual.width === size.width && actual.height === size.height) ||
+            new Date().getTime() - start > 2000) {
+          verifySize(assert, size);
+          done();
+          return;
+        }
+        window.setTimeout(poll, 50);
+      })();
     });
 
     QUnit.test('setSizeUsingGetSize', function(assert) {
