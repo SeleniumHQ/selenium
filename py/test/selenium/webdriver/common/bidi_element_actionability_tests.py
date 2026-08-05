@@ -461,3 +461,39 @@ def test_wait_until_actionable_disabled_element_times_out(driver, pages):
     result = driver.wait_until_actionable(driver.find_element(By.ID, "t"), timeout=0.5)
 
     assert result["ready"] is False
+
+
+# ---------------------------------------------------------------------------
+# Coverage parity with acquiescence: aria-disabled, fieldset/legend exception,
+# and interaction types that don't require "enabled" (drop/screenshot).
+# ---------------------------------------------------------------------------
+
+
+def test_aria_disabled_element_is_not_enabled(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script('document.body.innerHTML = \'<div id="t" role="button" aria-disabled="true">go</div>\';')
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["enabled"] is False
+
+
+def test_legend_child_of_disabled_fieldset_stays_enabled(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = "
+        "'<fieldset disabled><legend><input id=\"t\" type=\"checkbox\"></legend></fieldset>';"
+    )
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["enabled"] is True
+
+
+def test_drop_interaction_does_not_require_enabled(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<button id=\"t\" disabled>go</button>';")
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), interaction="drop", timeout_ms=800)
+
+    assert result["ready"] is True
