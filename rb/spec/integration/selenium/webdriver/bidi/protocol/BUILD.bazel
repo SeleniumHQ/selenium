@@ -14,6 +14,7 @@ filegroup(
         bidi = True,
         classic = False,
         data = ["//common/extensions"],
+        env = {"SE_BIDI_STRICT": "true"},
         tags = ["exclusive-if-local"],
         deps = [
             "//rb/lib/selenium/webdriver:bidi",
