@@ -25,6 +25,7 @@ in view, unobstructed, and not moving. Built natively in
 """
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 def _navigate(driver, pages, name):
@@ -196,3 +197,47 @@ def test_element_in_view_reports_visible_rect(driver, pages):
     assert state["inViewport"] is True
     assert state["visibleRect"]["width"] > 0
     assert state["visibleRect"]["height"] > 0
+
+
+# ---------------------------------------------------------------------------
+# Slice B: `stable` (rect-motion) detection
+# ---------------------------------------------------------------------------
+
+
+def _is_stable(driver, element):
+    return driver.execute_async_script(
+        "const done = arguments[arguments.length - 1];"
+        "window.__quiescence.isStable(arguments[0]).then(done);",
+        element,
+    )
+
+
+def test_stationary_element_is_stable(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<div id=\"t\" style=\"width:20px;height:20px\">x</div>';")
+
+    assert _is_stable(driver, driver.find_element(By.ID, "t")) is True
+
+
+def test_transitioning_element_is_not_stable(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = "
+        "'<div id=\"t\" style=\"width:20px;height:20px;transition:transform 1200ms linear\">x</div>';"
+        "document.getElementById('t').getBoundingClientRect();"
+        "document.getElementById('t').style.transform = 'translateX(300px)';"
+    )
+
+    assert _is_stable(driver, driver.find_element(By.ID, "t")) is False
+
+
+def test_element_becomes_stable_after_transition_ends(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = "
+        "'<div id=\"t\" style=\"width:20px;height:20px;transition:transform 200ms linear\">x</div>';"
+        "document.getElementById('t').getBoundingClientRect();"
+        "document.getElementById('t').style.transform = 'translateX(60px)';"
+    )
+
+    WebDriverWait(driver, 3).until(lambda d: _is_stable(d, d.find_element(By.ID, "t")) or False)
