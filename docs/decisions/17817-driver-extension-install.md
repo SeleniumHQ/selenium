@@ -88,6 +88,3 @@ These are the alternatives considered and not taken; the accepted choice is the 
 
 - Since the implementation must work with the Grid, bindings will have to convert path or archive to Base64
   before sending to target
-- **Vendor-specific options are only made available on that vendor's driver.** Options like Firefox's
-  `permanent` and `allowPrivateBrowsing` are exposed only on that vendor's driver surface, so a session
-  for another browser has no way to pass them — there is nothing to silently drop or raise.
