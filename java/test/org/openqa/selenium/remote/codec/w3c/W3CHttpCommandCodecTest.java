@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.codec.w3c;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.string;
 
 import java.util.Map;
 import java.util.UUID;
@@ -68,6 +67,6 @@ class W3CHttpCommandCodecTest {
   private Map<String, Object> encodeFindElement(String strategy, Object value) {
     HttpRequest request =
         codec.encode(new Command(sessionId, DriverCommand.FIND_ELEMENT(strategy, value)));
-    return json.toType(string(request), MAP_TYPE);
+    return json.toType(request.contentAsString(), MAP_TYPE);
   }
 }
