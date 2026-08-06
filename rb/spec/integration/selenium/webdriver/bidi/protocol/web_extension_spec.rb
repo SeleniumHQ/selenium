@@ -26,9 +26,8 @@ module Selenium
     class BiDi
       module Protocol
         describe WebExtension,
-                 pending_if: {browser_family: :safari,
-                              exception: {class: Error::UnknownCommandError},
-                              reason: 'Safari driver currently returns unsupported for webExtension commands'},
+                 skip_if: {browser_family: :safari,
+                           reason: 'Safari coverage tracked in safari_support_probe_spec.rb'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
           before { reset_driver!(args: chromium_web_extension_args) if GlobalTestEnv.browser_family == :chromium }
 

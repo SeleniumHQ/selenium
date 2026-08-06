@@ -25,7 +25,10 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        describe Browser, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
+        describe Browser,
+                 skip_if: {browser_family: :safari,
+                           reason: 'Safari coverage tracked in safari_support_probe_spec.rb'},
+                 skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
           after { |example| reset_driver!(example: example) }
 
           let(:browser) { described_class.new(driver) }
@@ -34,14 +37,8 @@ module Selenium
             browser.create_user_context.user_context
           end
 
-          context 'with user contexts and client windows',
-                  pending_if: {browser_family: :safari,
-                               exception: {class: Error::UnknownCommandError},
-                               reason: 'Safari returns unknown command for BiDi user contexts/client windows'} do
-            describe '#create_user_context',
-                     pending_if: {browser_family: :safari,
-                                  exception: {class: Error::SerializationError},
-                                  reason: 'Safari create_user_context result fails strict deserialization'} do
+          context 'with user contexts and client windows' do
+            describe '#create_user_context' do
               it 'returns the created user context id' do
                 user_context = create_user_context
 
@@ -78,10 +75,7 @@ module Selenium
               end
             end
 
-            describe '#get_user_contexts',
-                     pending_if: {browser_family: :safari,
-                                  exception: {class: Error::SerializationError},
-                                  reason: 'Safari create_user_context result fails strict deserialization'} do
+            describe '#get_user_contexts' do
               it 'includes newly created user contexts' do
                 user_contexts = Array.new(2) { create_user_context }
                 all_ids = browser.get_user_contexts.user_contexts.map(&:user_context)
@@ -92,10 +86,7 @@ module Selenium
               end
             end
 
-            describe '#remove_user_context',
-                     pending_if: {browser_family: :safari,
-                                  exception: {class: Error::SerializationError},
-                                  reason: 'Safari create_user_context result fails strict deserialization'} do
+            describe '#remove_user_context' do
               it 'removes the requested user context' do
                 user_context = create_user_context
 
@@ -144,10 +135,7 @@ module Selenium
                 end
               end
 
-              it 'accepts a user-context scoped download behavior',
-                 pending_if: {browser_family: :safari,
-                              exception: {class: Error::SerializationError},
-                              reason: 'Safari create_user_context result fails strict deserialization'} do
+              it 'accepts a user-context scoped download behavior' do
                 user_context = create_user_context
                 behavior = Browser::DownloadBehavior::Denied.new
 
@@ -164,9 +152,7 @@ module Selenium
                    pending_if: {browser: :firefox,
                                 exception: {class: Error::UnsupportedOperationError,
                                             message: /Closing the browser in a session /},
-                                reason: 'Firefox unsupported operation for browser.close on Classic sessions'},
-                   skip_if: {browser_family: :safari,
-                             reason: 'Times out: browser.close hangs on Safari'} do
+                                reason: 'Firefox unsupported operation for browser.close on Classic sessions'} do
             it 'closes the browser session' do
               driver.navigate.to url_for('blank.html')
 

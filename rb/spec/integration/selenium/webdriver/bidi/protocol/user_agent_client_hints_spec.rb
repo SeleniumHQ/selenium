@@ -25,12 +25,11 @@ module Selenium
     class BiDi
       module Protocol
         describe UserAgentClientHints,
-                 pending_if: [{browser: :firefox,
-                               exception: {class: Error::UnknownCommandError},
-                               reason: 'Firefox driver currently returns unknown command for userAgentClientHints'},
-                              {browser_family: :safari,
-                               exception: {class: Error::UnknownCommandError},
-                               reason: 'Safari driver currently returns unknown command for userAgentClientHints'}],
+                 pending_if: {browser: :firefox,
+                              exception: {class: Error::UnknownCommandError},
+                              reason: 'Firefox driver currently returns unknown command for userAgentClientHints'},
+                 skip_if: {browser_family: :safari,
+                           reason: 'Safari coverage tracked in safari_support_probe_spec.rb'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
           after { |example| reset_driver!(example: example) }
 
@@ -82,10 +81,7 @@ module Selenium
               end
             end
 
-            it 'accepts user-context filters',
-               pending_if: {browser_family: :safari,
-                            exception: {class: Error::SerializationError},
-                            reason: 'Safari create_user_context result fails strict deserialization'} do
+            it 'accepts user-context filters' do
               user_context = Browser.new(driver).create_user_context.user_context
 
               expect(user_agent_client_hints.set_client_hints_override(

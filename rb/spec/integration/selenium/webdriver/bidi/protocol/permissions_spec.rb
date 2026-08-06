@@ -25,9 +25,8 @@ module Selenium
     class BiDi
       module Protocol
         describe Permissions,
-                 pending_if: {browser_family: :safari,
-                              exception: {class: Error::UnknownCommandError},
-                              reason: 'Safari driver currently returns unknown command for BiDi permissions commands'},
+                 skip_if: {browser_family: :safari,
+                           reason: 'Safari coverage tracked in safari_support_probe_spec.rb'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
           after { |example| reset_driver!(example: example) }
 
@@ -68,10 +67,7 @@ module Selenium
               expect(geolocation_permission).to eq('granted')
             end
 
-            it 'accepts embedded origin and user context parameters',
-               pending_if: {browser_family: :safari,
-                            exception: {class: Error::SerializationError},
-                            reason: 'Safari create_user_context result fails strict deserialization'} do
+            it 'accepts embedded origin and user context parameters' do
               browser = Browser.new(driver)
               user_context = browser.create_user_context.user_context
               context = browsing_context.create(type: :tab, user_context: user_context).context

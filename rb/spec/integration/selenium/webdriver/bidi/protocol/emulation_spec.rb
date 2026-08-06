@@ -25,9 +25,8 @@ module Selenium
     class BiDi
       module Protocol
         describe Emulation,
-                 pending_if: {browser_family: :safari,
-                              exception: {class: Error::UnknownCommandError},
-                              reason: 'Safari driver currently returns unknown command for BiDi emulation commands'},
+                 skip_if: {browser_family: :safari,
+                           reason: 'Safari coverage tracked in safari_support_probe_spec.rb'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
           after { |example| reset_driver!(example: example) }
 

@@ -128,10 +128,7 @@ module Selenium
             end
           end
 
-          describe '#evaluate',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::SerializationError},
-                                reason: 'Safari remote value fails deserialization'} do
+          describe '#evaluate' do
             it 'evaluates an expression in the current context' do
               result = evaluate('1 + 2')
 
@@ -140,7 +137,10 @@ module Selenium
               expect(result.realm).to be_a(String)
             end
 
-            it 'awaits promises and accepts serialization options' do
+            it 'awaits promises and accepts serialization options',
+               pending_if: {browser_family: :safari,
+                            exception: {class: Error::SerializationError},
+                            reason: 'Safari remote value fails deserialization'} do
               result = evaluate(
                 'Promise.resolve({name: "ruby", nested: {hidden: true}})',
                 await_promise: true,

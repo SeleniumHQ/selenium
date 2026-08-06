@@ -25,12 +25,11 @@ module Selenium
     class BiDi
       module Protocol
         describe Bluetooth,
-                 pending_if: [{browser: :firefox,
-                               exception: {class: Error::UnknownCommandError},
-                               reason: 'Firefox returns unknown command for BiDi Bluetooth simulation'},
-                              {browser_family: :safari,
-                               exception: {class: Error::UnknownCommandError},
-                               reason: 'Safari returns unknown command for BiDi Bluetooth simulation'}],
+                 pending_if: {browser: :firefox,
+                              exception: {class: Error::UnknownCommandError},
+                              reason: 'Firefox returns unknown command for BiDi Bluetooth simulation'},
+                 skip_if: {browser_family: :safari,
+                           reason: 'Safari coverage tracked in safari_support_probe_spec.rb'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
           after do |example|
             next if example.metadata[:skip] || example.skip
@@ -280,10 +279,7 @@ module Selenium
             )
           end
 
-          describe '#handle_request_device_prompt',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::SerializationError},
-                                reason: 'Safari subscribe/evaluate setup fails strict deserialization'} do
+          describe '#handle_request_device_prompt' do
             it 'accepts a prompt',
                skip_if: {browser: %i[chrome edge firefox], platform: :windows,
                          reason: 'Times out: no in-flight prompt/operation to respond to'} do
@@ -336,10 +332,7 @@ module Selenium
             end
           end
 
-          describe '#simulate_advertisement',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::SerializationError},
-                                reason: 'Safari subscribe/evaluate setup fails strict deserialization'} do
+          describe '#simulate_advertisement' do
             it 'simulates an advertisement scan entry',
                skip_if: {browser: %i[chrome edge firefox], platform: :windows,
                          reason: 'Times out: no in-flight prompt/operation to respond to'} do
@@ -359,10 +352,7 @@ module Selenium
             end
           end
 
-          describe '#simulate_gatt_connection_response',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::SerializationError},
-                                reason: 'Safari subscribe/evaluate setup fails strict deserialization'} do
+          describe '#simulate_gatt_connection_response' do
             it 'simulates a successful GATT connection response',
                skip_if: {browser: %i[chrome edge firefox], platform: :windows,
                          reason: 'Times out: no in-flight prompt/operation to respond to'} do
@@ -373,10 +363,7 @@ module Selenium
             end
           end
 
-          describe '#simulate_gatt_disconnection',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::SerializationError},
-                                reason: 'Safari subscribe/evaluate setup fails strict deserialization'} do
+          describe '#simulate_gatt_disconnection' do
             it 'simulates a GATT disconnection',
                skip_if: {browser: %i[chrome edge firefox], platform: :windows,
                          reason: 'Times out: no in-flight prompt/operation to respond to'} do
@@ -434,10 +421,7 @@ module Selenium
             end
           end
 
-          describe '#simulate_characteristic_response',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::SerializationError},
-                                reason: 'Safari subscribe/evaluate setup fails strict deserialization'} do
+          describe '#simulate_characteristic_response' do
             it 'simulates characteristic read and write responses',
                skip_if: {browser: %i[chrome edge firefox], platform: :windows,
                          reason: 'Times out: no in-flight prompt/operation to respond to'} do
@@ -522,10 +506,7 @@ module Selenium
             end
           end
 
-          describe '#simulate_descriptor_response',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::SerializationError},
-                                reason: 'Safari subscribe/evaluate setup fails strict deserialization'} do
+          describe '#simulate_descriptor_response' do
             it 'simulates descriptor read and write responses',
                skip_if: {browser: %i[chrome edge firefox], platform: :windows,
                          reason: 'Times out: no in-flight prompt/operation to respond to'} do
