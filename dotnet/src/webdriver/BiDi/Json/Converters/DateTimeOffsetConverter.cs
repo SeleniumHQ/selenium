@@ -22,7 +22,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class DateTimeOffsetConverter : JsonConverter<DateTimeOffset>
+public class DateTimeOffsetConverter : JsonConverter<DateTimeOffset>
 {
     public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
@@ -35,7 +35,7 @@ internal class DateTimeOffsetConverter : JsonConverter<DateTimeOffset>
     }
 }
 
-internal class DateTimeOffsetSecondsConverter : JsonConverter<DateTimeOffset>
+public class DateTimeOffsetSecondsConverter : JsonConverter<DateTimeOffset>
 {
     public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

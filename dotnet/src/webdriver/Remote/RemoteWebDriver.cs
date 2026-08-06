@@ -21,7 +21,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using OpenQA.Selenium.DevTools;
-using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Remote;
 
@@ -60,8 +59,6 @@ namespace OpenQA.Selenium.Remote;
 /// </example>
 public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
 {
-    private static readonly ILogger _logger = OpenQA.Selenium.Internal.Logging.Log.GetLogger(typeof(RemoteWebDriver));
-
     /// <summary>
     /// The name of the Selenium grid remote DevTools end point capability.
     /// </summary>
@@ -426,10 +423,7 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
     {
         if (this.Capabilities.GetCapability(CapabilityType.BrowserName) is "firefox")
         {
-            if (_logger.IsEnabled(LogEventLevel.Warn))
-            {
-                _logger.Warn("CDP support for Firefox is deprecated and will be removed in future versions. Please switch to WebDriver BiDi.");
-            }
+            throw new WebDriverException("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.");
         }
 
         return GetDevToolsSession(new DevToolsOptions() { ProtocolVersion = DevToolsSession.AutoDetectDevToolsProtocolVersion });
@@ -443,9 +437,11 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
     [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
     public DevToolsSession GetDevToolsSession(DevToolsOptions options)
     {
-        if (options is null)
+        ArgumentNullException.ThrowIfNull(options);
+
+        if (this.Capabilities.GetCapability(CapabilityType.BrowserName) is "firefox")
         {
-            throw new ArgumentNullException(nameof(options));
+            throw new WebDriverException("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.");
         }
 
         if (this.devToolsSession == null)

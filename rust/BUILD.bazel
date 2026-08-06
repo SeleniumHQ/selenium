@@ -1,4 +1,4 @@
-load("@crates//:defs.bzl", "all_crate_deps")
+load("@crates//:defs.bzl", "aliases", "all_crate_deps")
 load("//rust:defs.bzl", "rust_binary", "rust_library", "rust_test", "rustfmt_config")
 
 rustfmt_config(
@@ -71,13 +71,26 @@ filegroup(
     ],
 )
 
+alias(
+    name = "rust",
+    actual = ":selenium_manager",
+    visibility = ["//visibility:public"],
+)
+
 rust_binary(
     # Yes, this name is very similar to the library. Note the dash
     # instead of an underscore
     name = "selenium-manager",
     srcs = ["src/main.rs"],
+    aliases = aliases(),
     edition = "2024",
-    version = "0.4.42-nightly",
+    # clap's `#[clap(about)]` derives the CLI description from
+    # CARGO_PKG_DESCRIPTION. Cargo sets this from Cargo.toml automatically, but
+    # the Bazel build must supply it explicitly. Keep in sync with rust/Cargo.toml.
+    rustc_env = {
+        "CARGO_PKG_DESCRIPTION": "Selenium Manager is a CLI tool that automatically manages the browser/driver resources required by Selenium.",
+    },
+    version = "0.4.47-nightly",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium_manager",
@@ -91,6 +104,11 @@ rust_library(
         ["src/**/*.rs"],
         exclude = ["main.rs"],
     ),
+    aliases = aliases(),
+    compile_data = [
+        "src/resources/rules.md",
+        "src/resources/skills.md",
+    ],
     crate_features = select({
         "//common:stamp": [],
         "//conditions:default": ["avoid_stats"],
@@ -105,6 +123,8 @@ filegroup(
     srcs = [
         "Cargo.lock",
         "Cargo.toml",
+        "src/resources/rules.md",
+        "src/resources/skills.md",
         ":selenium_manager_rs_srcs",
     ],
     visibility = ["//visibility:public"],
@@ -118,6 +138,7 @@ filegroup(
 rust_test(
     name = "unit",
     size = "small",
+    aliases = aliases(),
     crate = ":selenium_manager",
     edition = "2024",
     tags = ["no-sandbox"],

@@ -28,6 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.internal.Require;
 
 public class CdpVersionFinder {
@@ -96,6 +97,22 @@ public class CdpVersionFinder {
   /**
    * Takes a `browserVersion` from a {@link org.openqa.selenium.Capabilities} instance and returns
    * the matching CDP version.
+   *
+   * @param browserVersion A version of browser that we need to find the closest CDP version for
+   * @return closest available CDP version for given browser version - or {@link NoOpCdpInfo} if
+   *     none was found
+   */
+  public CdpInfo findMatchingVersion(String browserVersion) {
+    return match(browserVersion).orElseGet(() -> new NoOpCdpInfo(browserVersion, infos));
+  }
+
+  /**
+   * Takes a `browserVersion` from a {@link org.openqa.selenium.Capabilities} instance and returns
+   * the matching CDP version.
+   *
+   * @param browserVersion A version of browser that we need to find a closest CDP version for
+   * @return closest available CDP version for given browser version - or {@link Optional#empty()}
+   *     if none was found
    */
   public Optional<CdpInfo> match(String browserVersion) {
     Require.nonNull("Browser version", browserVersion);

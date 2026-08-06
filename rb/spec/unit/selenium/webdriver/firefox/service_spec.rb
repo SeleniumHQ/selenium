@@ -25,6 +25,7 @@ module Selenium
       describe Service do
         describe '#new' do
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
+          let(:debug_args) { ENV.key?('SE_DEBUG') ? ['-v'] : [] }
 
           before do
             allow(Platform).to receive(:assert_executable)
@@ -52,7 +53,7 @@ module Selenium
           it 'creates websocket args by default' do
             service = described_class.new
 
-            expect(service.extra_args.count).to eq 2
+            expect(service.extra_args.count).to eq(2 + debug_args.size)
           end
 
           it 'uses sets log path to stdout' do
@@ -89,7 +90,7 @@ module Selenium
             it 'does not uses websocket-port' do
               service = described_class.new(args: ['--connect-existing'])
               expect(service.extra_args).not_to include('--websocket-port')
-              expect(service.extra_args).to eq(['--connect-existing'])
+              expect(service.extra_args).to eq(['--connect-existing'] + debug_args)
             end
           end
 
@@ -97,16 +98,17 @@ module Selenium
             it 'does not add websocket-port' do
               service = described_class.new(args: ['--websocket-port=1234'])
               expect(service.extra_args).not_to include('--websocket-port=0')
-              expect(service.extra_args).to eq(['--websocket-port=1234'])
+              expect(service.extra_args).to eq(['--websocket-port=1234'] + debug_args)
             end
           end
 
           context 'when SE_DEBUG is set' do
             around do |example|
+              original_debug = ENV.fetch('SE_DEBUG', nil)
               ENV['SE_DEBUG'] = '1'
               example.run
             ensure
-              ENV.delete('SE_DEBUG')
+              original_debug ? ENV['SE_DEBUG'] = original_debug : ENV.delete('SE_DEBUG')
             end
 
             it 'adds -v flag' do
@@ -115,26 +117,45 @@ module Selenium
               expect(service.extra_args).to include('-v')
             end
 
-            it 'removes conflicting --log args with value' do
-              service = described_class.new(args: ['--log', 'info'])
+            it 'preserves conflicting --log args with value and warns' do
+              service = nil
 
-              expect(service.extra_args).to include('-v')
-              expect(service.extra_args).not_to include('--log')
-              expect(service.extra_args).not_to include('info')
+              expect { service = described_class.new(args: ['--log', 'info']) }.to have_warning(:se_debug)
+
+              expect(service.extra_args).not_to include('-v')
+              expect(service.extra_args).to include('--log')
+              expect(service.extra_args).to include('info')
             end
 
-            it 'removes conflicting --log= args' do
-              service = described_class.new(args: ['--log=info'])
+            it 'preserves conflicting --log= args and warns' do
+              service = nil
 
-              expect(service.extra_args).to include('-v')
-              expect(service.extra_args).not_to include('--log=info')
+              expect { service = described_class.new(args: ['--log=info']) }.to have_warning(:se_debug)
+
+              expect(service.extra_args).not_to include('-v')
+              expect(service.extra_args).to include('--log=info')
             end
 
             it 'does not remove next arg if --log has no value' do
               service = described_class.new(args: ['--log', '--other-flag'])
 
-              expect(service.extra_args).to include('-v')
+              expect(service.extra_args).not_to include('-v')
+              expect(service.extra_args).to include('--log')
               expect(service.extra_args).to include('--other-flag')
+            end
+
+            it 'preserves conflicting --log args added after initialization' do
+              service = described_class.new(path: service_path)
+              manager = instance_double(ServiceManager, start: nil)
+              service.args.push('--log', 'trace')
+
+              allow(ServiceManager).to receive(:new).with(service).and_return(manager)
+
+              expect { service.launch }.to have_warning(:se_debug)
+
+              expect(service.extra_args).not_to include('-v')
+              expect(service.extra_args).to include('--log')
+              expect(service.extra_args).to include('trace')
             end
           end
         end
@@ -157,7 +178,7 @@ module Selenium
           it 'is not created when :url is provided' do
             expect {
               driver.new(url: 'http://example.com:4321')
-            }.to raise_error(ArgumentError, "Can't initialize Selenium::WebDriver::Firefox::Driver with :url")
+            }.to raise_error(ArgumentError, /Can't set the server URL for/)
           end
 
           it 'is created when :url is not provided' do
@@ -176,28 +197,6 @@ module Selenium
             driver.new(service: service)
 
             expect(described_class).not_to have_received(:new)
-          end
-
-          context 'with a path env variable' do
-            let(:service) { described_class.new }
-            let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
-
-            before do
-              ENV['SE_GECKODRIVER'] = service_path
-            end
-
-            after { ENV.delete('SE_GECKODRIVER') }
-
-            it 'uses the path from the environment' do
-              expect(service.executable_path).to match(/geckodriver/)
-            end
-
-            it 'updates the path after setting the environment variable' do
-              ENV['SE_GECKODRIVER'] = '/foo/bar'
-              service.executable_path = service_path
-
-              expect(service.executable_path).to match(/geckodriver/)
-            end
           end
         end
       end

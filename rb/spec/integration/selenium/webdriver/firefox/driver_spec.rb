@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      describe Driver, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :firefox}] do
+      describe Driver, skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :firefox}] do
         let(:extensions) { '../../../../../../common/extensions/' }
 
         describe '#print_options' do
@@ -44,8 +44,8 @@ module Selenium
                                      page: {width: 30})).to include(magic_number)
           end
 
-          it 'prints full page', except: [{platform: :macosx,
-                                           reason: 'showing half resolution of what expected'}] do
+          it 'prints full page', pending_if: [{platform: :macosx,
+                                               reason: 'showing half resolution of what expected'}] do
             viewport_width = driver.execute_script('return window.innerWidth;')
             viewport_height = driver.execute_script('return window.innerHeight;')
 
@@ -106,9 +106,9 @@ module Selenium
             expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
           end
 
-          it 'install and uninstall signed directory', except: {browser: :firefox,
-                                                                platform: :windows,
-                                                                reason: 'signature must be different for windows,
+          it 'install and uninstall signed directory', pending_if: {browser: :firefox,
+                                                                    platform: :windows,
+                                                                    reason: 'signature must be different for windows,
                                                                 skipping everywhere until Firefox 127 is released'} do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example-signed/", __dir__)
             id = driver.install_addon(ext)
@@ -140,9 +140,10 @@ module Selenium
           end
         end
 
-        it 'can get and set context' do
-          reset_driver!(args: ['-remote-allow-system-access'],
-                        prefs: {'browser.download.dir': 'foo/bar'}) do |driver|
+        it 'can get and set context',
+           skip_if: {driver: :remote, reason: 'system access cannot be granted per-session on Grid'} do
+          service = WebDriver::Service.firefox(args: ['--allow-system-access'])
+          reset_driver!(service: service, prefs: {'browser.download.dir': 'foo/bar'}) do |driver|
             expect(driver.context).to eq 'content'
 
             driver.context = 'chrome'

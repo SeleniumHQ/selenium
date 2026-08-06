@@ -20,6 +20,7 @@ package org.openqa.selenium.redis;
 import io.lettuce.core.KeyValue;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
+import io.lettuce.core.SetArgs;
 import io.lettuce.core.api.StatefulRedisConnection;
 import java.io.Closeable;
 import java.net.URI;
@@ -79,6 +80,69 @@ public class GridRedisClient implements Closeable {
 
   public List<String> getKeysByPattern(String pattern) {
     return connection.sync().keys(pattern);
+  }
+
+  public void set(String key, String value) {
+    connection.sync().set(key, value);
+  }
+
+  public void setWithTtl(String key, String value, long ttlMillis) {
+    connection.sync().set(key, value, SetArgs.Builder.px(ttlMillis));
+  }
+
+  /** Returns true if the key was set (caller won the race), false if already present. */
+  public boolean setIfAbsent(String key, String value, long ttlMillis) {
+    String result = connection.sync().set(key, value, SetArgs.Builder.nx().px(ttlMillis));
+    return "OK".equals(result);
+  }
+
+  /** Returns true if the key was set (no TTL variant). */
+  public boolean setIfAbsent(String key, String value) {
+    String result = connection.sync().set(key, value, SetArgs.Builder.nx());
+    return "OK".equals(result);
+  }
+
+  public void expire(String key, long ttlMillis) {
+    connection.sync().pexpire(key, ttlMillis);
+  }
+
+  /** Appends a value to the tail of the list stored at {@code key}. */
+  public void rpush(String key, String value) {
+    connection.sync().rpush(key, value);
+  }
+
+  /** Prepends a value to the head of the list stored at {@code key}. */
+  public void lpush(String key, String value) {
+    connection.sync().lpush(key, value);
+  }
+
+  /** Returns the elements of the list stored at {@code key} within the inclusive range. */
+  public List<String> lrange(String key, long start, long stop) {
+    return connection.sync().lrange(key, start, stop);
+  }
+
+  /**
+   * Removes all occurrences of {@code value} from the list stored at {@code key}, returning the
+   * number of elements removed. Used as an atomic "claim" primitive: a return value greater than 0
+   * means this caller won the race to remove the element.
+   */
+  public long lrem(String key, String value) {
+    return connection.sync().lrem(key, 0, value);
+  }
+
+  /** Returns the number of elements in the list stored at {@code key}. */
+  public long llen(String key) {
+    return connection.sync().llen(key);
+  }
+
+  @Nullable
+  public Long getAsLong(String key) {
+    String value = connection.sync().get(key);
+    return value == null ? null : Long.parseLong(value);
+  }
+
+  public long incr(String key) {
+    return connection.sync().incr(key);
   }
 
   public boolean isOpen() {

@@ -35,8 +35,10 @@ public class SendingRemoteHttpRequestEventArgs : EventArgs
     /// <exception cref="ArgumentNullException">If <paramref name="method"/>, <paramref name="fullUrl"/> are null.</exception>
     public SendingRemoteHttpRequestEventArgs(string method, string fullUrl, string? requestBody)
     {
-        this.Method = method ?? throw new ArgumentNullException(nameof(method));
-        this.FullUrl = fullUrl ?? throw new ArgumentNullException(nameof(fullUrl));
+        ArgumentNullException.ThrowIfNull(method);
+        ArgumentNullException.ThrowIfNull(fullUrl);
+        this.Method = method;
+        this.FullUrl = fullUrl;
         this.RequestBody = requestBody;
     }
 

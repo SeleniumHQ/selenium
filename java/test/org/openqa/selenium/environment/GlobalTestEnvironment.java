@@ -17,21 +17,24 @@
 
 package org.openqa.selenium.environment;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 
 /** Used to hold a TestEnvironment in a static class-level field. */
 public class GlobalTestEnvironment {
   private static final Logger LOG = Logger.getLogger(GlobalTestEnvironment.class.getName());
 
-  private static TestEnvironment environment;
+  @Nullable private static TestEnvironment environment = null;
 
   public static boolean isSetUp() {
     return environment != null;
   }
 
   public static TestEnvironment get() {
-    return environment;
+    return requireNonNull(environment, "Environment not created");
   }
 
   public static synchronized TestEnvironment getOrCreate(boolean needsSecureServer) {

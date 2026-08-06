@@ -16,10 +16,13 @@
 # under the License.
 
 import http.server
+import json
+import logging
 import os
 import socketserver
 import sys
 import threading
+import time
 import types
 from dataclasses import dataclass
 from pathlib import Path
@@ -27,6 +30,7 @@ from pathlib import Path
 import pytest
 import rich.console
 import rich.traceback
+import urllib3
 
 try:
     from python.runfiles import Runfiles  # only exists when using bazel
@@ -39,6 +43,8 @@ from selenium.webdriver.common.utils import free_port
 from selenium.webdriver.remote.server import Server
 from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.webserver import SimpleWebServer
+
+logger = logging.getLogger(__name__)
 
 drivers = (
     "chrome",
@@ -119,6 +125,14 @@ def pytest_addoption(parser):
         help="Driver to run tests against ({})".format(", ".join(drivers)),
     )
     parser.addoption(
+        "--browser",
+        action="append",
+        choices=drivers,
+        dest="drivers",
+        metavar="BROWSER",
+        help="Browser to run tests against (alias for --driver)",
+    )
+    parser.addoption(
         "--browser-binary",
         action="store",
         dest="binary",
@@ -180,6 +194,63 @@ def pytest_generate_tests(metafunc):
 selenium_driver = None
 
 
+def _resolve_bazel_path(path):
+    """Resolve a path through Bazel Rlocation if the given path does not exist on disk.
+
+    When running under Bazel, paths from ctx.expand_location are relative to
+    the execroot (e.g. 'external/+ext+repo/binary') which may not resolve from
+    the test process CWD. Rlocation maps them to their absolute runfiles location.
+    """
+    if not path:
+        return path
+    cleaned = path.strip("'")
+    if Path(cleaned).exists():
+        return path
+    if Runfiles is not None and cleaned.startswith("external/"):
+        r = Runfiles.Create()
+        resolved = r.Rlocation(cleaned.removeprefix("external/"))
+        if resolved:
+            return resolved
+    return path
+
+
+# Maps the test driver name to its (browserName, vendor options key).
+_GRID_VENDOR_OPTIONS = {
+    "chrome": ("chrome", "goog:chromeOptions"),
+    "edge": ("MicrosoftEdge", "ms:edgeOptions"),
+    "firefox": ("firefox", "moz:firefoxOptions"),
+}
+
+
+def _pinned_grid_args(config):
+    """Pin the driver and browser in a driver-configuration so the Grid node skips Selenium Manager.
+
+    Returns an empty list when nothing is pinned, keeping the default Selenium Manager behavior.
+    """
+    drivers_opt = config.option.drivers or []
+    driver = next((d for d in drivers_opt if d.lower() in _GRID_VENDOR_OPTIONS), None)
+    executable = config.option.executable  # --driver-binary
+    binary = config.option.binary  # --browser-binary
+    if not (driver and executable and binary):
+        return []
+
+    driver_path = _resolve_bazel_path(executable).strip("'")
+    browser_path = _resolve_bazel_path(binary).strip("'")
+    browser_name, vendor_key = _GRID_VENDOR_OPTIONS[driver.lower()]
+    stereotype = json.dumps({"browserName": browser_name, vendor_key: {"binary": browser_path}})
+    return [
+        "--enable-managed-downloads",
+        "true",
+        "--detect-drivers",
+        "false",
+        "--driver-configuration",
+        f"display-name={driver}",
+        "max-sessions=1",
+        f"webdriver-executable={driver_path}",
+        f"stereotype={stereotype}",
+    ]
+
+
 def get_extensions_location():
     """Locate the test extensions directory.
 
@@ -230,6 +301,9 @@ class SupportedBidiDrivers(ContainerProtocol):
 
 
 class Driver:
+    DRIVER_START_RETRIES = 3
+    DRIVER_START_INTERVAL = 1
+
     def __init__(self, driver_class, request):
         self.driver_class = driver_class
         self._request = request
@@ -280,7 +354,7 @@ class Driver:
     @property
     def browser_path(self):
         if self._request.config.option.binary:
-            return self._request.config.option.binary
+            return _resolve_bazel_path(self._request.config.option.binary)
         return None
 
     @property
@@ -292,7 +366,7 @@ class Driver:
     @property
     def driver_path(self):
         if self._request.config.option.executable:
-            return self._request.config.option.executable
+            return _resolve_bazel_path(self._request.config.option.executable)
         return None
 
     @property
@@ -389,9 +463,25 @@ class Driver:
         if self.is_remote:
             kwargs["command_executor"] = self._server.status_url.removesuffix("/status")
             return webdriver.Remote(**kwargs)
-        if self.driver_path is not None:
-            kwargs["service"] = self.service
-        return getattr(webdriver, self.driver_class)(**kwargs)
+        return self._start_local_driver(kwargs)
+
+    def _start_local_driver(self, kwargs):
+        for attempt in range(1, self.DRIVER_START_RETRIES + 1):
+            if self.driver_path is not None:
+                kwargs["service"] = self.service
+            try:
+                return getattr(webdriver, self.driver_class)(**kwargs)
+            except (WebDriverException, urllib3.exceptions.HTTPError, OSError) as e:
+                if attempt == self.DRIVER_START_RETRIES:
+                    raise
+                logger.warning(
+                    "%s failed to start (attempt %s/%s); retrying. Error: %s",
+                    self.driver_class,
+                    attempt,
+                    self.DRIVER_START_RETRIES,
+                    e,
+                )
+                time.sleep(self.DRIVER_START_INTERVAL)
 
     def stop_driver(self):
         driver_to_stop = self._driver
@@ -523,7 +613,7 @@ def server(request):
         # under Wayland, so we use XWayland instead.
         remote_env["MOZ_ENABLE_WAYLAND"] = "0"
 
-    server = Server(env=remote_env, startup_timeout=60)
+    server = Server(env=remote_env, startup_timeout=60, args=_pinned_grid_args(request.config) or None)
 
     repo_root = Path(__file__).parent.parent  # py/conftest.py -> py/ -> selenium/
     jar_path = "java/src/org/openqa/selenium/grid/selenium_server_deploy.jar"
@@ -535,13 +625,17 @@ def server(request):
         # Found in bazel-bin relative to repo root (pytest from anywhere)
         server.path = str(repo_root / "bazel-bin" / jar_path)
 
-    if Runfiles is not None:
+    java_location_env = os.environ.get("SE_BAZEL_JAVA_LOCATION")
+    if Runfiles is not None and java_location_env:
         # Find bazel's Java
         r = Runfiles.Create()
-        java_location_txt = r.Rlocation("_main/" + os.environ.get("SE_BAZEL_JAVA_LOCATION"))
+        java_location_txt = r.Rlocation("_main/" + java_location_env)
         try:
             rel_path = Path(java_location_txt).read_text().strip().removeprefix("external/")
-            server.java_path = r.Rlocation(rel_path)
+            java_path = r.Rlocation(rel_path)
+            if sys.platform == "win32" and java_path and os.path.exists(java_path):
+                java_path = os.path.realpath(java_path)
+            server.java_path = java_path
         except Exception:
             pass
 
@@ -570,7 +664,7 @@ def edge_service():
 
 @pytest.fixture
 def driver_executable(request):
-    return request.config.option.executable
+    return _resolve_bazel_path(request.config.option.executable)
 
 
 @pytest.fixture

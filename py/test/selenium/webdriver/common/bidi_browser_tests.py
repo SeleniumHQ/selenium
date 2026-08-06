@@ -20,7 +20,7 @@ import os
 import pytest
 
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.bidi.browser import ClientWindowInfo, ClientWindowState
+from selenium.webdriver.common.bidi.browser import ClientWindowInfo, ClientWindowNamedState
 from selenium.webdriver.common.bidi.browsing_context import ReadinessState
 from selenium.webdriver.common.bidi.session import UserPromptHandler, UserPromptHandlerType
 from selenium.webdriver.common.by import By
@@ -100,10 +100,11 @@ def test_raises_exception_when_removing_default_user_context(driver):
 
 
 def test_client_window_state_constants(driver):
-    assert ClientWindowState.FULLSCREEN == "fullscreen"
-    assert ClientWindowState.MAXIMIZED == "maximized"
-    assert ClientWindowState.MINIMIZED == "minimized"
-    assert ClientWindowState.NORMAL == "normal"
+    """Test ClientWindowNamedState constants."""
+    assert ClientWindowNamedState.FULLSCREEN == "fullscreen"
+    assert ClientWindowNamedState.MAXIMIZED == "maximized"
+    assert ClientWindowNamedState.MINIMIZED == "minimized"
+    assert ClientWindowNamedState.NORMAL == "normal"
 
 
 def test_create_user_context_with_accept_insecure_certs(driver):
@@ -177,7 +178,7 @@ def test_create_user_context_with_manual_proxy_all_params(driver, proxy_server):
         # Visit a site that should be proxied
         driver.get("http://example.com/")
 
-        body_text = driver.find_element("tag name", "body").text
+        body_text = driver.find_element(By.TAG_NAME, "body").text
         assert "proxied response" in body_text.lower()
 
     finally:

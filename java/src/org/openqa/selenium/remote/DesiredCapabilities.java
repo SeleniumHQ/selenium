@@ -96,7 +96,7 @@ public class DesiredCapabilities extends MutableCapabilities {
    * @return DesiredCapabilities after the merge
    */
   @Override
-  public DesiredCapabilities merge(@Nullable Capabilities extraCapabilities) {
+  public DesiredCapabilities merge(Capabilities extraCapabilities) {
     Optional.ofNullable(extraCapabilities)
         .ifPresent(caps -> caps.asMap().forEach(this::setCapability));
     return this;

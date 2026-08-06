@@ -32,8 +32,10 @@ public class WebDriverExceptionEventArgs : EventArgs
     /// <exception cref="ArgumentNullException">If <paramref name="driver"/> or <paramref name="thrownException"/> are <see langword="null"/>.</exception>
     public WebDriverExceptionEventArgs(IWebDriver driver, Exception thrownException)
     {
-        this.Driver = driver ?? throw new ArgumentNullException(nameof(driver));
-        this.ThrownException = thrownException ?? throw new ArgumentNullException(nameof(thrownException));
+        ArgumentNullException.ThrowIfNull(driver);
+        ArgumentNullException.ThrowIfNull(thrownException);
+        this.Driver = driver;
+        this.ThrownException = thrownException;
     }
 
     /// <summary>

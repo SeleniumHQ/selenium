@@ -26,6 +26,7 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -105,7 +106,7 @@ class HandleSessionReadTimeoutTest {
     // The Node reports sessionTimeout = 5 min (300 s) via /se/grid/node/status.
     long nodeSessionTimeoutMs = 300_000L;
 
-    AtomicReference<Duration> capturedTimeout = new AtomicReference<>();
+    AtomicReference<@Nullable Duration> capturedTimeout = new AtomicReference<>();
     HttpClient.Factory factory =
         config -> {
           Duration rt = config.readTimeout();
@@ -140,7 +141,7 @@ class HandleSessionReadTimeoutTest {
     // Node reports a 10-min (600 s) session timeout — operator has extended it.
     long nodeSessionTimeoutMs = 600_000L;
 
-    AtomicReference<Duration> capturedTimeout = new AtomicReference<>();
+    AtomicReference<@Nullable Duration> capturedTimeout = new AtomicReference<>();
     HttpClient.Factory factory =
         config -> {
           Duration rt = config.readTimeout();
@@ -174,7 +175,7 @@ class HandleSessionReadTimeoutTest {
     // Node reports a 10-min (600 s) session timeout.
     long nodeSessionTimeoutMs = 600_000L;
 
-    AtomicReference<Duration> capturedTimeout = new AtomicReference<>();
+    AtomicReference<@Nullable Duration> capturedTimeout = new AtomicReference<>();
     HttpClient.Factory factory =
         config -> {
           Duration rt = config.readTimeout();
@@ -199,8 +200,7 @@ class HandleSessionReadTimeoutTest {
   /**
    * Registers a session in a local SessionMap and executes one GET command through HandleSession.
    */
-  private void runSingleRequest(HttpClient.Factory factory, URI nodeUri, Capabilities caps)
-      throws Exception {
+  private void runSingleRequest(HttpClient.Factory factory, URI nodeUri, Capabilities caps) {
     Tracer tracer = DefaultTestTracer.createTracer();
     LocalSessionMap sessions = new LocalSessionMap(tracer, new GuavaEventBus());
 

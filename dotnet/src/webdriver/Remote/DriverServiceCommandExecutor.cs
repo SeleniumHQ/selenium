@@ -50,7 +50,8 @@ public class DriverServiceCommandExecutor : ICommandExecutor
     /// <exception cref="ArgumentNullException">If <paramref name="driverService"/> is <see langword="null"/>.</exception>
     public DriverServiceCommandExecutor(DriverService driverService, TimeSpan commandTimeout, bool enableKeepAlive)
     {
-        this.service = driverService ?? throw new ArgumentNullException(nameof(driverService));
+        ArgumentNullException.ThrowIfNull(driverService);
+        this.service = driverService;
         this.HttpExecutor = new HttpCommandExecutor(driverService.ServiceUrl, commandTimeout, enableKeepAlive);
     }
 
@@ -63,8 +64,10 @@ public class DriverServiceCommandExecutor : ICommandExecutor
     /// <exception cref="ArgumentNullException">If <paramref name="service"/> or <paramref name="commandExecutor"/> are <see langword="null"/>.</exception>
     public DriverServiceCommandExecutor(DriverService service, HttpCommandExecutor commandExecutor)
     {
-        this.service = service ?? throw new ArgumentNullException(nameof(service));
-        this.HttpExecutor = commandExecutor ?? throw new ArgumentNullException(nameof(commandExecutor));
+        ArgumentNullException.ThrowIfNull(service);
+        ArgumentNullException.ThrowIfNull(commandExecutor);
+        this.service = service;
+        this.HttpExecutor = commandExecutor;
     }
 
     /// <summary>

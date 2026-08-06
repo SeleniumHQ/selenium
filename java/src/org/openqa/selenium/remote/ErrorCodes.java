@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.InvalidArgumentException;
@@ -53,8 +54,15 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
-/** Defines common error codes for the wire protocol. */
-@Deprecated(forRemoval = true)
+/**
+ * Defines common error codes for the wire protocol.
+ *
+ * @deprecated The JSON Wire Protocol is no longer used; use {@link ErrorCodec} for mapping between
+ *     W3C states and exceptions. Removal is tracked by <a
+ *     href="https://github.com/SeleniumHQ/selenium/issues/17638">#17638</a> and is gated on
+ *     providing a replacement extensibility seam for downstream consumers.
+ */
+@Deprecated
 public class ErrorCodes {
 
   public static final String SUCCESS_STRING = "success";
@@ -288,7 +296,7 @@ public class ErrorCodes {
     }
   }
 
-  public String toState(Integer status) {
+  public String toState(@Nullable Integer status) {
     if (status == null) {
       return toState(UNHANDLED_ERROR);
     }
@@ -349,6 +357,7 @@ public class ErrorCodes {
    * @return The exception type that corresponds to the provided status code or {@code null} if
    *     {@code statusCode == 0}.
    */
+  @Nullable
   public Class<? extends WebDriverException> getExceptionType(int statusCode) {
     if (SUCCESS == statusCode) {
       return null;
@@ -375,7 +384,7 @@ public class ErrorCodes {
     return onlyElement(possibleMatches, WebDriverException.class);
   }
 
-  public int toStatusCode(Throwable e) {
+  public int toStatusCode(@Nullable Throwable e) {
     if (e == null) {
       return SUCCESS;
     }
@@ -390,7 +399,7 @@ public class ErrorCodes {
     return onlyElement(possibleMatches, UNHANDLED_ERROR);
   }
 
-  public boolean isMappableError(Throwable rootCause) {
+  public boolean isMappableError(@Nullable Throwable rootCause) {
     if (rootCause == null) {
       return false;
     }

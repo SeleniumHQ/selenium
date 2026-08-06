@@ -91,10 +91,7 @@ public class WebSocketConnection
     /// <exception cref="TimeoutException">Thrown when the connection is not established within the startup timeout.</exception>
     public virtual async Task Start(string url)
     {
-        if (url is null)
-        {
-            throw new ArgumentNullException(nameof(url));
-        }
+        ArgumentNullException.ThrowIfNull(url);
 
         this.Log($"Opening connection to URL {url}", DevToolsSessionLogLevel.Trace);
         bool connected = false;
@@ -159,10 +156,7 @@ public class WebSocketConnection
     /// <returns>The task object representing the asynchronous operation.</returns>
     public virtual async Task SendData(string data)
     {
-        if (data is null)
-        {
-            throw new ArgumentNullException(nameof(data));
-        }
+        ArgumentNullException.ThrowIfNull(data);
 
         ArraySegment<byte> messageBuffer = new ArraySegment<byte>(Encoding.UTF8.GetBytes(data));
         this.Log($"SEND >>> {data}");

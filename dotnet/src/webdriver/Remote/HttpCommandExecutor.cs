@@ -112,6 +112,11 @@ public class HttpCommandExecutor : ICommandExecutor
     public string UserAgent { get; set; }
 
     /// <summary>
+    /// Gets the address of the remote end this executor connects to.
+    /// </summary>
+    internal Uri RemoteServerUri => this.remoteServerUri;
+
+    /// <summary>
     /// Gets the repository of objects containing information about commands.
     /// </summary>
     /// <exception cref="ArgumentNullException">If the value is set to <see langword="null"/>.</exception>
@@ -374,10 +379,7 @@ public class HttpCommandExecutor : ICommandExecutor
     {
         public HttpRequestInfo(Uri serverUri, Command commandToExecute, HttpCommandInfo commandInfo)
         {
-            if (commandInfo is null)
-            {
-                throw new ArgumentNullException(nameof(commandInfo));
-            }
+            ArgumentNullException.ThrowIfNull(commandInfo);
 
             this.FullUri = commandInfo.CreateCommandUri(serverUri, commandToExecute);
             this.HttpMethod = commandInfo.Method;
@@ -393,7 +395,8 @@ public class HttpCommandExecutor : ICommandExecutor
     {
         public HttpResponseInfo(string body, string? contentType, HttpStatusCode statusCode)
         {
-            this.Body = body ?? throw new ArgumentNullException(nameof(body));
+            ArgumentNullException.ThrowIfNull(body);
+            this.Body = body;
             this.ContentType = contentType;
             this.StatusCode = statusCode;
         }
@@ -413,12 +416,10 @@ public class HttpCommandExecutor : ICommandExecutor
         public DiagnosticsHttpHandler(HttpMessageHandler messageHandler, ILogger logger)
             : base(messageHandler)
         {
-            if (messageHandler is null)
-            {
-                throw new ArgumentNullException(nameof(messageHandler));
-            }
+            ArgumentNullException.ThrowIfNull(messageHandler);
 
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            ArgumentNullException.ThrowIfNull(logger);
+            _logger = logger;
         }
 
         /// <summary>

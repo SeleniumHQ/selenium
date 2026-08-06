@@ -48,41 +48,41 @@
     "binaries": [
       {
         "kind": "archive",
-        "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.11/actionlint_1.7.11_linux_arm64.tar.gz",
+        "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_arm64.tar.gz",
         "file": "actionlint",
-        "sha256": "21bc0dfb57a913fe175298c2a9e906ee630f747cb66d0a934d0d4b69f4ee1235",
+        "sha256": "325e971b6ba9bfa504672e29be93c24981eeb1c07576d730e9f7c8805afff0c6",
         "os": "linux",
         "cpu": "arm64"
       },
       {
         "kind": "archive",
-        "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.11/actionlint_1.7.11_linux_amd64.tar.gz",
+        "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz",
         "file": "actionlint",
-        "sha256": "900919a84f2229bac68ca9cd4103ea297abc35e9689ebb842c6e34a3d1b01b0a",
+        "sha256": "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8",
         "os": "linux",
         "cpu": "x86_64"
       },
       {
         "kind": "archive",
-        "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.11/actionlint_1.7.11_darwin_arm64.tar.gz",
+        "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_darwin_arm64.tar.gz",
         "file": "actionlint",
-        "sha256": "a21ba7366d8329e7223faee0ed69eb13da27fe8acabb356bb7eb0b7f1e1cb6d8",
+        "sha256": "aba9ced2dee8d27fecca3dc7feb1a7f9a52caefa1eb46f3271ea66b6e0e6953f",
         "os": "macos",
         "cpu": "arm64"
       },
       {
         "kind": "archive",
-        "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.11/actionlint_1.7.11_darwin_amd64.tar.gz",
+        "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_darwin_amd64.tar.gz",
         "file": "actionlint",
-        "sha256": "17ffc17fed8f0258ef6ad4aed932d3272464c7ef7d64e1cb0d65aa97c9752107",
+        "sha256": "5b44c3bc2255115c9b69e30efc0fecdf498fdb63c5d58e17084fd5f16324c644",
         "os": "macos",
         "cpu": "x86_64"
       },
       {
         "kind": "archive",
-        "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.11/actionlint_1.7.11_windows_amd64.zip",
+        "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_windows_amd64.zip",
         "file": "actionlint.exe",
-        "sha256": "5414b7124a91f4b5abee62e5c9d84802237734f8d15b9b7032732a32c3ebffa3",
+        "sha256": "6e7241b51e6817ea6a047693d8e6fed13b31819c9a0dd6c5a726e1592d22f6e9",
         "os": "windows",
         "cpu": "x86_64"
       }
@@ -92,41 +92,41 @@
     "binaries": [
       {
         "kind": "archive",
-        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.1/ruff-aarch64-unknown-linux-musl.tar.gz",
+        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.21/ruff-aarch64-unknown-linux-musl.tar.gz",
         "file": "ruff-aarch64-unknown-linux-musl/ruff",
-        "sha256": "05a41b8b7c068633b27e8f9149c70154ac2090e61d48e5ea9983de769593d29c",
+        "sha256": "2ec7c0077431f96f74c3c72aea6505e902bc2ff47127653c8de1389ee30a3cb3",
         "os": "linux",
         "cpu": "arm64"
       },
       {
         "kind": "archive",
-        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.1/ruff-x86_64-unknown-linux-musl.tar.gz",
+        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.21/ruff-x86_64-unknown-linux-musl.tar.gz",
         "file": "ruff-x86_64-unknown-linux-musl/ruff",
-        "sha256": "c8d04b4f6ce053809d98d1ef99f897c52e6204708bb157551ede7fbab505fea2",
+        "sha256": "7e157ff9a2e13676118c587e6db0ec02d040e415b21014346d230e64789c0e78",
         "os": "linux",
         "cpu": "x86_64"
       },
       {
         "kind": "archive",
-        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.1/ruff-aarch64-apple-darwin.tar.gz",
+        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.21/ruff-aarch64-apple-darwin.tar.gz",
         "file": "ruff-aarch64-apple-darwin/ruff",
-        "sha256": "196f6d4bd380f4a03f9d2d3bcfe17b991145a110f5fc9f5999521cd5e5335e1c",
+        "sha256": "0452f9d5da6e8051d332cf21ae82a608d8e2cfeec5a71a46ffa9e50adbb2381d",
         "os": "macos",
         "cpu": "arm64"
       },
       {
         "kind": "archive",
-        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.1/ruff-x86_64-apple-darwin.tar.gz",
+        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.21/ruff-x86_64-apple-darwin.tar.gz",
         "file": "ruff-x86_64-apple-darwin/ruff",
-        "sha256": "55fd4437b4b6b0c75793525c980bb1d49d9723044edbdd7dcc962cb595d26d51",
+        "sha256": "7e6ff3bd585b5b7c47634c957ac84fb5806d3c7ab4ef0e5ec1c53ce272f489da",
         "os": "macos",
         "cpu": "x86_64"
       },
       {
         "kind": "archive",
-        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.1/ruff-x86_64-pc-windows-msvc.zip",
+        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.21/ruff-x86_64-pc-windows-msvc.zip",
         "file": "ruff-x86_64-pc-windows-msvc/ruff.exe",
-        "sha256": "4bd4d5bb5b3c3fa44a4c3d4748dc03f9fbd53808ff2d3adda75e50b1ec1374e2",
+        "sha256": "035c59abfd7bd1102e0b656f5771e6ae7a712a45ef54b5ab575541c7ff7d1eb0",
         "os": "windows",
         "cpu": "x86_64"
       }

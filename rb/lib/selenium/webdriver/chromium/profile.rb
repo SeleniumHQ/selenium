@@ -28,6 +28,12 @@ module Selenium
         include ProfileHelper
 
         def initialize(model = nil)
+          WebDriver.logger.deprecate(
+            'Chromium::Profile (including Chrome::Profile and Edge::Profile)',
+            "Options#add_argument('--user-data-dir=...'), Options#add_preference, and Options#add_extension",
+            id: :chromium_profile
+          )
+
           @model = verify_model(model)
           @extensions = []
           @encoded_extensions = []

@@ -26,9 +26,12 @@ import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 
 @Tag("UnitTests")
@@ -60,21 +63,31 @@ class EdgeDriverServiceTest {
   void logLevelLastWins() {
     EdgeDriverService.Builder builderMock = spy(EdgeDriverService.Builder.class);
 
-    List<String> silentLast = List.of("--port=1", "--log-level=OFF");
+    List<String> silentLast = expected("--port=1", "--enable-chrome-logs", "--log-level=OFF");
     builderMock.withLoglevel(ChromiumDriverLogLevel.ALL).usingPort(1).withSilent(true).build();
     verify(builderMock).createDriverService(any(), anyInt(), any(), eq(silentLast), any());
 
-    List<String> silentFirst = List.of("--port=1", "--log-level=DEBUG");
+    List<String> silentFirst = expected("--port=1", "--enable-chrome-logs", "--log-level=DEBUG");
     builderMock.withSilent(true).withLoglevel(ChromiumDriverLogLevel.DEBUG).usingPort(1).build();
     verify(builderMock).createDriverService(any(), anyInt(), any(), eq(silentFirst), any());
 
-    List<String> verboseLast = List.of("--port=1", "--log-level=ALL");
+    List<String> verboseLast = expected("--port=1", "--enable-chrome-logs", "--log-level=ALL");
     builderMock.withLoglevel(ChromiumDriverLogLevel.OFF).usingPort(1).withVerbose(true).build();
     verify(builderMock).createDriverService(any(), anyInt(), any(), eq(verboseLast), any());
 
-    List<String> verboseFirst = List.of("--port=1", "--log-level=INFO");
+    List<String> verboseFirst = expected("--port=1", "--enable-chrome-logs", "--log-level=INFO");
     builderMock.withVerbose(true).withLoglevel(ChromiumDriverLogLevel.INFO).usingPort(1).build();
     verify(builderMock).createDriverService(any(), anyInt(), any(), eq(verboseFirst), any());
+  }
+
+  @Test
+  void enablesChromeLogsByDefault() {
+    EdgeDriverService.Builder builderMock = spy(EdgeDriverService.Builder.class);
+
+    builderMock.usingPort(1).build();
+    verify(builderMock)
+        .createDriverService(
+            any(), anyInt(), any(), eq(expected("--port=1", "--enable-chrome-logs")), any());
   }
 
   // Setting these to false makes no sense; we're just going to ignore it.
@@ -82,8 +95,18 @@ class EdgeDriverServiceTest {
   void ignoreFalseLogging() {
     EdgeDriverService.Builder builderMock = spy(EdgeDriverService.Builder.class);
 
-    List<String> falseSilent = List.of("--port=1", "--log-level=DEBUG");
+    List<String> falseSilent = expected("--port=1", "--enable-chrome-logs", "--log-level=DEBUG");
     builderMock.withLoglevel(ChromiumDriverLogLevel.DEBUG).usingPort(1).withSilent(false).build();
     verify(builderMock).createDriverService(any(), anyInt(), any(), eq(falseSilent), any());
+  }
+
+  // --enable-chrome-logs is only passed on non-Windows platforms; drop it from the expected args
+  // when the tests run on Windows so they stay correct there.
+  private static List<String> expected(String... args) {
+    List<String> result = new ArrayList<>(Arrays.asList(args));
+    if (Platform.getCurrent().is(Platform.WINDOWS)) {
+      result.remove("--enable-chrome-logs");
+    }
+    return result;
   }
 }

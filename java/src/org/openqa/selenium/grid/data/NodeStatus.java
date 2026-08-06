@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.data;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
+import static org.openqa.selenium.remote.http.jdk.JdkHttpClient.maskUrlCredentials;
 
 import java.net.URI;
 import java.time.Duration;
@@ -165,6 +166,10 @@ public class NodeStatus {
 
   public URI getExternalUri() {
     return externalUri;
+  }
+
+  public String getMaskedUri() {
+    return maskUrlCredentials(externalUri);
   }
 
   public Set<Slot> getSlots() {

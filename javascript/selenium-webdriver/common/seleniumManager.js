@@ -90,7 +90,7 @@ function binaryPaths(args) {
   try {
     output = JSON.parse(spawnResult.stdout.toString())
   } catch (e) {
-    throw new Error(`Error executing command for ${smBinary} with ${args}: ${e.toString()}`)
+    throw new Error(`Error executing command for ${smBinary} with ${args}: ${e.toString()}`, { cause: e })
   }
 
   logOutput(output)

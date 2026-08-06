@@ -20,12 +20,14 @@ package org.openqa.selenium.bidi.log;
 import static java.util.Collections.emptyList;
 
 import java.util.List;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
 /**
  * @see <a href="https://w3c.github.io/webdriver-bidi/#type-script-StackTrace">BiDi spec</a>
  */
+@Beta
 public class StackTrace {
 
   private final List<StackFrame> callFrames;

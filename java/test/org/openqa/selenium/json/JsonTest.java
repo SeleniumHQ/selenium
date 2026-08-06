@@ -18,7 +18,6 @@
 package org.openqa.selenium.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.byLessThan;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
@@ -133,6 +132,24 @@ class JsonTest {
   }
 
   @Test
+  void shouldThrowWhenDuplicateFieldNamesExistWithFieldSetting() {
+    String raw = "{\"value\": \"test\"}";
+
+    ParentFieldBean parent = new Json().toType(raw, ParentFieldBean.class, BY_FIELD);
+    assertThat(parent.value).isEqualTo("test");
+
+    assertThatThrownBy(() -> new Json().toType(raw, ChildFieldBean.class, BY_FIELD))
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Unable to parse: " + raw)
+        .cause()
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith(
+            "Duplicate JSON field name detected while collecting field writers:"
+                + " FieldWriter(org.openqa.selenium.json.JsonTest$ChildFieldBean.value) vs"
+                + " FieldWriter(org.openqa.selenium.json.JsonTest$ParentFieldBean.value)");
+  }
+
+  @Test
   void settingFinalFieldsShouldWork() {
     Map<String, String> map = Map.of("theName", "fishy");
 
@@ -175,16 +192,12 @@ class JsonTest {
   }
 
   @Test
-  void canNotPopulateAnObjectOfAClassWithNoDefaultConstructor() {
+  void canPopulateAnObjectOfAClassWithANamedConstructor() {
     String raw = "{\"value\": \"time\"}";
 
-    assertThatExceptionOfType(JsonException.class)
-        .isThrownBy(() -> new Json().toType(raw, NoDefaultConstructor.class))
-        .withMessage("Unable to parse: {\"value\": \"time\"}")
-        .havingCause()
-        .isInstanceOf(JsonException.class)
-        .withMessageStartingWith(
-            "Unable to find type coercer for class %s", NoDefaultConstructor.class.getTypeName());
+    NoDefaultConstructor bean = new Json().toType(raw, NoDefaultConstructor.class);
+
+    assertThat(bean.getValue()).isEqualTo("time");
   }
 
   @Test
@@ -659,6 +672,14 @@ class JsonTest {
     public void setBean(SimpleBean bean) {
       this.bean = bean;
     }
+  }
+
+  public static class ParentFieldBean {
+    String value;
+  }
+
+  public static class ChildFieldBean extends ParentFieldBean {
+    String value;
   }
 
   public static class JsonAware {

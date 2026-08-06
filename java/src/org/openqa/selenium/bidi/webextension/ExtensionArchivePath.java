@@ -18,12 +18,14 @@
 package org.openqa.selenium.bidi.webextension;
 
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
 /**
  * @see <a
  *     href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-webextensionextensionarchivepath">BiDi
  *     spec</a>
  */
+@Beta
 public class ExtensionArchivePath implements ExtensionData {
   private final String path;
 

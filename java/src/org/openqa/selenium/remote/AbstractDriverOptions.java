@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Objects.requireNonNull;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_VERSION;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
@@ -34,7 +36,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
@@ -58,7 +59,7 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
     Map<String, Number> timeouts = getTimeouts();
     timeouts.put("implicit", timeout.toMillis());
 
-    setCapability(TIMEOUTS, Collections.unmodifiableMap(timeouts));
+    setCapability(TIMEOUTS, unmodifiableMap(timeouts));
     return self();
   }
 
@@ -66,7 +67,7 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
     Map<String, Number> timeouts = getTimeouts();
     timeouts.put("pageLoad", timeout.toMillis());
 
-    setCapability(TIMEOUTS, Collections.unmodifiableMap(timeouts));
+    setCapability(TIMEOUTS, unmodifiableMap(timeouts));
     return self();
   }
 
@@ -74,7 +75,7 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
     Map<String, Number> timeouts = getTimeouts();
     timeouts.put("script", timeout.toMillis());
 
-    setCapability(TIMEOUTS, Collections.unmodifiableMap(timeouts));
+    setCapability(TIMEOUTS, unmodifiableMap(timeouts));
     return self();
   }
 
@@ -109,7 +110,6 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
     return self();
   }
 
-  @NonNull
   @SuppressWarnings("unchecked")
   private DO self() {
     return (DO) this;
@@ -125,7 +125,7 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
   protected abstract Set<String> getExtraCapabilityNames();
 
   @Override
-  public Object getCapability(String capabilityName) {
+  public @Nullable Object getCapability(String capabilityName) {
     Require.nonNull("Capability name", capabilityName);
 
     if (getExtraCapabilityNames().contains(capabilityName)) {
@@ -140,8 +140,9 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
   @Override
   public Map<String, Object> asMap() {
     Map<String, Object> toReturn = new TreeMap<>(super.asMap());
-    getExtraCapabilityNames().forEach(name -> toReturn.put(name, getCapability(name)));
-    return Collections.unmodifiableMap(toReturn);
+    getExtraCapabilityNames()
+        .forEach(name -> toReturn.put(name, requireNonNull(getCapability(name))));
+    return unmodifiableMap(toReturn);
   }
 
   private Map<String, Number> getTimeouts() {

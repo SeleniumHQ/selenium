@@ -97,9 +97,9 @@ public class RemoteWebDriverBuilder {
   private final Map<String, Object> metadata = new TreeMap<>();
   private HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
   private ClientConfig clientConfig = ClientConfig.defaultConfig();
-  private URI remoteHost = null;
-  private DriverService driverService;
-  private Credentials credentials = null;
+  private @Nullable URI remoteHost = null;
+  private @Nullable DriverService driverService;
+  private @Nullable Credentials credentials = null;
   private Augmenter augmenter = new Augmenter();
 
   RemoteWebDriverBuilder() {
@@ -308,8 +308,7 @@ public class RemoteWebDriverBuilder {
               @Override
               public <T> java.net.http.HttpResponse<T> sendNative(
                   java.net.http.HttpRequest request,
-                  java.net.http.HttpResponse.BodyHandler<T> handler)
-                  throws java.io.IOException, InterruptedException {
+                  java.net.http.HttpResponse.BodyHandler<T> handler) {
                 throw new UnsupportedOperationException("sendNative is not supported");
               }
             };
@@ -457,6 +456,7 @@ public class RemoteWebDriverBuilder {
     return clientConfig.baseUri();
   }
 
+  @Nullable
   private DriverService startDriverServiceIfNecessary() {
     if (driverService == null) {
       return null;
@@ -526,11 +526,27 @@ public class RemoteWebDriverBuilder {
         .collect(Collectors.toSet());
   }
 
+  // If any requested capability sets se:remoteUrl explicitly, auto-injection is suppressed for the
+  // whole payload to preserve that value and avoid an alwaysMatch/firstMatch overlap. When several
+  // first-match alternatives are supplied and only some set it, the others do not receive the
+  // client-reachable URL; that multi-alternative case is intentionally not supported.
+  private boolean hasExplicitRemoteUrl() {
+    return additionalCapabilities.containsKey("se:remoteUrl")
+        || requestedCapabilities.stream()
+            .anyMatch(caps -> caps.getCapabilityNames().contains("se:remoteUrl"));
+  }
+
   private NewSessionPayload getPayload() {
     Map<String, Object> roughPayload = new TreeMap<>(metadata);
 
+    Map<String, Object> alwaysMatch = new TreeMap<>(additionalCapabilities);
+    URI baseUri = getBaseUri();
+    if (baseUri != null && driverService == null && !hasExplicitRemoteUrl()) {
+      alwaysMatch.put("se:remoteUrl", baseUri.toString());
+    }
+
     Map<String, Object> w3cCaps = new TreeMap<>();
-    w3cCaps.put("alwaysMatch", additionalCapabilities);
+    w3cCaps.put("alwaysMatch", alwaysMatch);
     if (!requestedCapabilities.isEmpty()) {
       w3cCaps.put("firstMatch", requestedCapabilities);
     }

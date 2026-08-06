@@ -16,7 +16,7 @@ jobs:
       pull-requests: write  # for actions/stale to close stale PRs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v9
+      - uses: actions/stale@v10
         with:
           stale-issue-message: 'This issue is stale because it has been open 180 days with no activity. Remove stale label or comment or this will be closed in 14 days.'
           close-issue-message: 'This issue was closed because it has been stalled for 14 days with no activity.'
@@ -25,21 +25,21 @@ jobs:
           days-before-stale: 180
           days-before-close: 14
           exempt-all-milestones: true
-      - uses: actions/stale@v9
+      - uses: actions/stale@v10
         with:
           close-issue-message: 'This issue was closed because we did not receive any additional information after 14 days.'
           stale-issue-label: 'J-awaiting answer'
           days-before-stale: -1
           days-before-close: 14
           labels-to-add-when-unstale: 'A-needs-triaging'
-      - uses: actions/stale@v9
+      - uses: actions/stale@v10
         with:
           close-issue-message: 'This issue was closed because we did not receive any additional information after 14 days.'
           stale-issue-label: 'J-logging'
           days-before-stale: -1
           days-before-close: 14
           labels-to-add-when-unstale: 'A-needs-triaging'
-      - uses: actions/stale@v9
+      - uses: actions/stale@v10
         with:
           close-issue-message: 'This issue was closed because we did not receive any additional information after 14 days.'
           stale-issue-label: 'J-issue-template'

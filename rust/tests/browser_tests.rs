@@ -19,8 +19,13 @@ use crate::common::{assert_output, get_selenium_manager, get_stdout};
 
 use exitcode::DATAERR;
 use rstest::rstest;
+use selenium_manager::SeleniumManager;
+use selenium_manager::chrome::ChromeManager;
+use selenium_manager::edge::EdgeManager;
 use std::env::consts::ARCH;
 use std::env::consts::OS;
+#[cfg(unix)]
+use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
 
 mod common;
@@ -168,4 +173,157 @@ fn invalid_browser_path_test() {
     .assert()
     .code(DATAERR)
     .failure();
+}
+
+#[cfg(unix)]
+fn create_fake_browser(version: &str) -> std::path::PathBuf {
+    let tmp = std::env::temp_dir().join(format!("fake-chrome-{}", version.replace('.', "-")));
+    let script = format!("#!/bin/sh\necho 'Google Chrome {}'\n", version);
+    std::fs::write(&tmp, script).expect("Unable to write fake browser script");
+    std::fs::set_permissions(&tmp, std::fs::Permissions::from_mode(0o755))
+        .expect("Unable to set executable bit");
+    tmp
+}
+
+#[test]
+#[cfg(unix)]
+fn browser_path_version_mismatch_test() {
+    let fake_browser = create_fake_browser("131.0.6778.264");
+    let mut cmd = get_selenium_manager();
+    let stdout = cmd
+        .args([
+            "--browser",
+            "chrome",
+            "--browser-path",
+            fake_browser.to_str().unwrap(),
+            "--browser-version",
+            "999.0.0.0",
+            "--debug",
+        ])
+        .assert()
+        .get_output()
+        .stdout
+        .clone();
+    let stdout_str = std::str::from_utf8(&stdout).unwrap();
+    // The mismatch is always reported, either as ERROR (no cached driver) or WARN (fallback used)
+    assert!(
+        stdout_str.contains("131.0.6778.264"),
+        "Should mention detected version"
+    );
+    assert!(
+        stdout_str.contains("999.0.0.0"),
+        "Should mention requested version"
+    );
+}
+
+#[test]
+#[cfg(unix)]
+fn browser_path_major_version_mismatch_test() {
+    let fake_browser = create_fake_browser("131.0.6778.264");
+    let mut cmd = get_selenium_manager();
+    let stdout = cmd
+        .args([
+            "--browser",
+            "chrome",
+            "--browser-path",
+            fake_browser.to_str().unwrap(),
+            "--browser-version",
+            "999",
+            "--debug",
+        ])
+        .assert()
+        .get_output()
+        .stdout
+        .clone();
+    let stdout_str = std::str::from_utf8(&stdout).unwrap();
+    // Major-only version mismatch must also be reported
+    assert!(
+        stdout_str.contains("131.0.6778.264"),
+        "Should mention detected version"
+    );
+    assert!(
+        stdout_str.contains("999"),
+        "Should mention requested version"
+    );
+}
+
+#[test]
+fn chrome_matches_chromedriver_binary_names() {
+    let manager = ChromeManager::new().unwrap();
+    assert_eq!(
+        manager.get_browser_names_in_path(),
+        vec!["chrome", "google-chrome", "chromium", "chromium-browser"]
+    );
+}
+
+#[test]
+fn chrome_detect_browser_in_known_locations_is_linux_only() {
+    let mut manager = ChromeManager::new().unwrap();
+    manager.config.os = "macos".to_string();
+    assert!(manager.detect_browser_in_known_locations().is_none());
+}
+
+#[test]
+fn edge_matches_msedgedriver_binary_names() {
+    let manager = EdgeManager::new().unwrap();
+    assert_eq!(
+        manager.get_browser_names_in_path(),
+        vec!["edge", "microsoft-edge", "microsoft-edge-stable"]
+    );
+}
+
+#[test]
+fn edge_detect_browser_in_known_locations_is_linux_only() {
+    let mut manager = EdgeManager::new().unwrap();
+    manager.config.os = "macos".to_string();
+    assert!(manager.detect_browser_in_known_locations().is_none());
+}
+
+#[rstest]
+#[case("webview2")]
+#[case("WebView2")]
+fn edge_webview2_is_not_treated_as_edge_browser(#[case] name: String) {
+    let mut manager = EdgeManager::new_with_name(name.clone()).unwrap();
+    assert_eq!(manager.get_browser_names_in_path(), vec![name.as_str()]);
+    manager.config.os = "linux".to_string();
+    assert!(manager.detect_browser_in_known_locations().is_none());
+}
+
+#[test]
+fn chrome_known_locations_include_opt_install_dirs() {
+    use selenium_manager::chrome::{CHROME_KNOWN_DIRS, CHROME_KNOWN_NAMES};
+    assert!(CHROME_KNOWN_DIRS.contains(&"/opt/google/chrome"));
+    assert!(CHROME_KNOWN_DIRS.contains(&"/opt/chromium.org/chromium"));
+    assert!(CHROME_KNOWN_NAMES.contains(&"chrome"));
+}
+
+#[test]
+fn edge_known_locations_include_opt_install_dir() {
+    use selenium_manager::edge::{EDGE_KNOWN_DIRS, EDGE_KNOWN_NAMES};
+    assert!(EDGE_KNOWN_DIRS.contains(&"/opt/microsoft/msedge"));
+    assert!(EDGE_KNOWN_NAMES.contains(&"msedge"));
+}
+
+#[test]
+fn first_existing_path_searches_name_major() {
+    use selenium_manager::files::first_existing_path;
+    use std::fs;
+
+    let base = tempfile::tempdir().unwrap();
+    let dir_a = base.path().join("a");
+    let dir_b = base.path().join("b");
+    fs::create_dir_all(&dir_a).unwrap();
+    fs::create_dir_all(&dir_b).unwrap();
+    // "wanted" only exists in the later dir; "other" only in the earlier dir.
+    fs::write(dir_a.join("other"), "").unwrap();
+    fs::write(dir_b.join("wanted"), "").unwrap();
+
+    let dirs = [dir_a.to_str().unwrap(), dir_b.to_str().unwrap()];
+    // Name-major: "wanted" is tried across every dir before "other", so it wins despite
+    // "other" sitting in an earlier directory.
+    assert_eq!(
+        first_existing_path(&dirs, &["wanted", "other"]),
+        Some(dir_b.join("wanted"))
+    );
+    assert!(first_existing_path(&dirs, &["missing"]).is_none());
 }

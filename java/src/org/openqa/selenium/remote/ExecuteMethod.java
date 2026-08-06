@@ -21,14 +21,12 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElse;
 
 import java.util.Map;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
  * An encapsulation of {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(String,
  * Object...)}.
  */
-@NullMarked
 public interface ExecuteMethod {
   /**
    * Execute the given command on the remote webdriver server. Any exceptions will be thrown by the

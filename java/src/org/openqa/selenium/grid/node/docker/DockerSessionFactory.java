@@ -106,6 +106,7 @@ public class DockerSessionFactory implements SessionFactory {
   private final Map<String, Object> hostConfig;
   private final List<String> hostConfigKeys;
   private final Map<String, String> groupingLabels;
+  private final Duration stopGracePeriod;
 
   public DockerSessionFactory(
       Tracer tracer,
@@ -124,7 +125,8 @@ public class DockerSessionFactory implements SessionFactory {
       Predicate<Capabilities> predicate,
       Map<String, Object> hostConfig,
       List<String> hostConfigKeys,
-      Map<String, String> groupingLabels) {
+      Map<String, String> groupingLabels,
+      Duration stopGracePeriod) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
@@ -142,6 +144,7 @@ public class DockerSessionFactory implements SessionFactory {
     this.hostConfig = Require.nonNull("Container host config", hostConfig);
     this.hostConfigKeys = Require.nonNull("Browser container host config keys", hostConfigKeys);
     this.groupingLabels = Require.nonNull("Container grouping labels", groupingLabels);
+    this.stopGracePeriod = Require.nonNull("Container stop grace period", stopGracePeriod);
   }
 
   @Override
@@ -289,7 +292,9 @@ public class DockerSessionFactory implements SessionFactory {
               downstream,
               result.getDialect(),
               Instant.now(),
-              assetsPath));
+              assetsPath,
+              stopGracePeriod,
+              stopGracePeriod));
     }
   }
 
@@ -306,17 +311,44 @@ public class DockerSessionFactory implements SessionFactory {
         .setCapability("se:forwardCdp", forwardCdpPath);
   }
 
-  private Container createBrowserContainer(
-      int port, Capabilities sessionCapabilities, String sessionIdentifier) {
-    Map<String, String> browserContainerEnvVars = new HashMap<>();
+  Map<String, String> createBrowserContainerEnvVars(Capabilities sessionCapabilities) {
+    Map<String, String> envVars = new HashMap<>();
+    boolean recordsInline = videoImage == null && recordVideoForSession(sessionCapabilities);
     // Enable env var to trigger video recording if session capabilities request and external video
     // container is disabled
-    if (videoImage == null && recordVideoForSession(sessionCapabilities)) {
-      browserContainerEnvVars.put("SE_RECORD_VIDEO", "true");
-      browserContainerEnvVars.put("SE_VIDEO_FILE_NAME", "auto");
-      browserContainerEnvVars.put("SE_VIDEO_RECORD_STANDALONE", "true");
+    if (recordsInline) {
+      envVars.put("SE_RECORD_VIDEO", "true");
+      envVars.put("SE_VIDEO_RECORD_STANDALONE", "true");
     }
-    browserContainerEnvVars.putAll(getBrowserContainerEnvVars(sessionCapabilities));
+    envVars.putAll(getBrowserContainerEnvVars(sessionCapabilities));
+    if (recordsInline) {
+      // The browser container binds the assets root, so the recorder has to create the session
+      // folder itself, and it only does that while it owns the file name. Both are enforced over
+      // anything inherited from the Node: a flat layout or a fixed name would scatter every
+      // session's video into the assets root.
+      String inheritedFileName = envVars.get("SE_VIDEO_FILE_NAME");
+      if (inheritedFileName != null && !"auto".equalsIgnoreCase(inheritedFileName)) {
+        LOG.warning(
+            String.format(
+                "Ignoring SE_VIDEO_FILE_NAME '%s' for inline recording so the recorder can name"
+                    + " videos per session",
+                inheritedFileName));
+      }
+      envVars.put("SE_VIDEO_SESSION_SUBFOLDER", "true");
+      envVars.put("SE_VIDEO_FILE_NAME", "auto");
+      if (assetsPath != null) {
+        LOG.fine(
+            String.format(
+                "Inline recording will write to %s/<sessionId>", assetsPath.getHostPath()));
+      }
+    }
+    return envVars;
+  }
+
+  private Container createBrowserContainer(
+      int port, Capabilities sessionCapabilities, String sessionIdentifier) {
+    Map<String, String> browserContainerEnvVars =
+        createBrowserContainerEnvVars(sessionCapabilities);
     long browserContainerShmMemorySize = 2147483648L; // 2GB
 
     // Generate container name: browser-<browserName>-<timestamp>-<uuid>
@@ -343,7 +375,7 @@ public class DockerSessionFactory implements SessionFactory {
     return docker.create(containerConfig);
   }
 
-  private Map<String, String> getBrowserContainerEnvVars(Capabilities sessionRequestCapabilities) {
+  Map<String, String> getBrowserContainerEnvVars(Capabilities sessionRequestCapabilities) {
     Map<String, String> envVars = new HashMap<>();
     // Passing env vars set to the child container
     setEnvVarsToContainer(envVars);
@@ -424,7 +456,7 @@ public class DockerSessionFactory implements SessionFactory {
     return videoContainer;
   }
 
-  private Map<String, String> getVideoContainerEnvVars(
+  Map<String, String> getVideoContainerEnvVars(
       Capabilities sessionRequestCapabilities, String containerIp) {
     Map<String, String> envVars = new HashMap<>();
     // Passing env vars set to the child container
@@ -436,6 +468,10 @@ public class DockerSessionFactory implements SessionFactory {
         ofNullable(getVideoFileName(sessionRequestCapabilities, "se:videoName"))
             .or(() -> ofNullable(getVideoFileName(sessionRequestCapabilities, "se:name")));
     videoName.ifPresent(name -> envVars.put("SE_VIDEO_FILE_NAME", String.format("%s.mp4", name)));
+    // The video container's bind mount is already per-session (assets/<sessionId> -> /videos), so
+    // the recorder must not nest a second session folder inside it. Blanking the value stops a
+    // Node-level setting from passing through and leaves the image default in charge.
+    envVars.put("SE_VIDEO_SESSION_SUBFOLDER", "");
     return envVars;
   }
 
@@ -466,7 +502,7 @@ public class DockerSessionFactory implements SessionFactory {
       }
     }
     String envTz = System.getenv("TZ");
-    if (List.of(TimeZone.getAvailableIDs()).contains(envTz)) {
+    if (envTz != null && List.of(TimeZone.getAvailableIDs()).contains(envTz)) {
       return TimeZone.getTimeZone(envTz);
     }
     return null;

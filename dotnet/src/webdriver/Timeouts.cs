@@ -43,7 +43,8 @@ internal class Timeouts : ITimeouts
     /// <param name="driver">The driver that is currently in use</param>
     public Timeouts(WebDriver driver)
     {
-        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        ArgumentNullException.ThrowIfNull(driver);
+        this.driver = driver;
     }
 
     /// <summary>

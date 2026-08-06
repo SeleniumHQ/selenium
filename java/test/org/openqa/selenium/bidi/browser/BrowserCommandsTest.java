@@ -22,16 +22,17 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.bidi.browser.DownloadBehavior.allowed;
 import static org.openqa.selenium.bidi.browser.DownloadBehavior.denied;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.detect;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,28 +48,32 @@ import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 class BrowserCommandsTest extends JupiterTestBase {
 
+  private static final Logger LOG = Logger.getLogger(BrowserCommandsTest.class.getName());
   private final Path tmpDir =
-      TemporaryFilesystem.getDefaultTmpFS().createTempDir("downloads", "test").toPath();
+      TemporaryFilesystem.getDefaultTmpFS()
+          .createTempDir("selenium-", "-BrowserCommandsTest")
+          .toPath();
   private Browser browser;
 
   @BeforeEach
   final void setUp() {
     browser = new Browser(driver);
+    LOG.info(() -> "Created temp dir: " + tmpDir.toAbsolutePath());
   }
 
   @AfterEach
   final void resetDownloadBehavior() {
-    if (detect() != FIREFOX) {
+    if (browser != null) {
       browser.setDownloadBehavior(new SetDownloadBehaviorParameters(null));
     }
   }
 
   @AfterEach
   final void deleteTempDir() {
+    LOG.info(() -> "Deleting temp dir: " + tmpDir.toAbsolutePath());
     TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(tmpDir.toFile());
   }
 
@@ -133,7 +138,6 @@ class BrowserCommandsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(FIREFOX)
   void canSetDownloadBehaviorAllowed() {
     browser.setDownloadBehavior(new SetDownloadBehaviorParameters(allowed(tmpDir)));
 
@@ -143,12 +147,11 @@ class BrowserCommandsTest extends JupiterTestBase {
 
     driver.findElement(By.id("file-1")).click();
 
-    assertFileIsDownloaded("file_1.txt");
+    assertFileIsDownloaded("file_1.*\\.txt");
   }
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(FIREFOX)
   void canSetDownloadBehaviorDenied() throws InterruptedException {
     browser.setDownloadBehavior(new SetDownloadBehaviorParameters(denied()));
 
@@ -168,7 +171,6 @@ class BrowserCommandsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(FIREFOX)
   void canSetDownloadBehaviorWithUserContext() throws InterruptedException {
     String userContext = browser.createUserContext();
 
@@ -189,7 +191,7 @@ class BrowserCommandsTest extends JupiterTestBase {
 
         driver.findElement(By.id("file-1")).click();
 
-        assertFileIsDownloaded("file_1.txt");
+        assertFileIsDownloaded("file_1.*\\.txt");
 
         List<String> initialFiles = files(tmpDir);
         assertThat(initialFiles).contains("file_1.txt");
@@ -211,17 +213,17 @@ class BrowserCommandsTest extends JupiterTestBase {
     }
   }
 
-  private void assertFileIsDownloaded(String file) {
-    FileIsFound fileIsFound = new FileIsFound(tmpDir, file);
+  private void assertFileIsDownloaded(String filenameRegex) {
+    FileIsFound fileIsFound = new FileIsFound(tmpDir, Pattern.compile(filenameRegex));
     new WebDriverWait(driver, ofSeconds(5)).withMessage(fileIsFound).until(fileIsFound);
   }
 
   private static final class FileIsFound implements Function<WebDriver, Boolean>, Supplier<String> {
     private final Path dir;
-    private final String expectedFileName;
+    private final Pattern expectedFileName;
     private List<String> foundFiles;
 
-    private FileIsFound(Path dir, String expectedFileName) {
+    private FileIsFound(Path dir, Pattern expectedFileName) {
       this.dir = dir;
       this.expectedFileName = expectedFileName;
     }
@@ -229,7 +231,28 @@ class BrowserCommandsTest extends JupiterTestBase {
     @Override
     public Boolean apply(WebDriver driver) {
       foundFiles = files(dir);
-      return foundFiles.contains(expectedFileName);
+      Optional<String> result =
+          foundFiles.stream().filter(f -> expectedFileName.matcher(f).matches()).findAny();
+      if (result.isPresent()) {
+        LOG.info(
+            () ->
+                "Found file: "
+                    + result.get()
+                    + " in temp dir: "
+                    + dir.toAbsolutePath()
+                    + ". All found files: "
+                    + foundFiles);
+      } else {
+        LOG.info(
+            () ->
+                "Not found file: "
+                    + expectedFileName
+                    + " in temp dir: "
+                    + dir.toAbsolutePath()
+                    + ". All found files: "
+                    + foundFiles);
+      }
+      return result.isPresent();
     }
 
     @Override

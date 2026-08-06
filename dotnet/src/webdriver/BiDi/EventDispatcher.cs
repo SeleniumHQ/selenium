@@ -18,145 +18,237 @@
 // </copyright>
 
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
-using System.Threading.Channels;
-using OpenQA.Selenium.BiDi.Session;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
 
 internal sealed class EventDispatcher : IAsyncDisposable
 {
-    private readonly ILogger _logger = Internal.Logging.Log.GetLogger<EventDispatcher>();
+    private static readonly ILogger _logger = Internal.Logging.Log.GetLogger<EventDispatcher>();
 
-    private readonly Func<ISessionModule> _sessionProvider;
+    private readonly Func<ImmutableArray<string>, Session.SubscribeOptions?, CancellationToken, Task<Session.SubscribeResult>> _wireSubscribe;
+    private readonly Func<ImmutableArray<Session.Subscription>, Session.UnsubscribeByIdOptions?, CancellationToken, Task<Session.UnsubscribeResult>> _wireUnsubscribe;
+    private readonly IBiDi _bidi;
 
-    private readonly ConcurrentDictionary<string, EventRegistration> _eventRegistrations = new();
+    private readonly ConcurrentDictionary<string, EventSlot> _events = new();
 
-    private readonly ConcurrentDictionary<Task, byte> _runningHandlers = new();
-
-    private readonly Channel<PendingEvent> _pendingEvents = Channel.CreateUnbounded<PendingEvent>(new()
+    public EventDispatcher(
+        Func<ImmutableArray<string>, Session.SubscribeOptions?, CancellationToken, Task<Session.SubscribeResult>> wireSubscribe,
+        Func<ImmutableArray<Session.Subscription>, Session.UnsubscribeByIdOptions?, CancellationToken, Task<Session.UnsubscribeResult>> wireUnsubscribe,
+        IBiDi bidi)
     {
-        SingleReader = true,
-        SingleWriter = true
-    });
-
-    private readonly Task _eventEmitterTask;
-
-    public EventDispatcher(Func<ISessionModule> sessionProvider)
-    {
-        _sessionProvider = sessionProvider;
-        _eventEmitterTask = Task.Run(ProcessEventsAwaiterAsync);
+        _wireSubscribe = wireSubscribe;
+        _wireUnsubscribe = wireUnsubscribe;
+        _bidi = bidi;
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
+    public Task<ISubscription> SubscribeAsync<TEventArgs>(
+        EventDescriptor<TEventArgs> descriptor,
+        Func<TEventArgs, ValueTask> handler,
+        ImmutableArray<BrowsingContext.BrowsingContext>? contexts = null,
+        Func<TEventArgs, bool>? filter = null,
+        CancellationToken cancellationToken = default)
         where TEventArgs : EventArgs
     {
-        var registration = _eventRegistrations.GetOrAdd(eventName, _ => new EventRegistration(jsonTypeInfo));
-
-        var subscribeResult = await _sessionProvider().SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
-
-        registration.AddHandler(eventHandler);
-
-        return new Subscription(subscribeResult.Subscription, this, eventHandler);
+        return SubscribeAsync<TEventArgs>([descriptor], handler, contexts, filter, cancellationToken);
     }
 
-    public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
+    public async Task<ISubscription> SubscribeAsync<TEventArgs>(
+        IEnumerable<EventDescriptor> descriptors,
+        Func<TEventArgs, ValueTask> handler,
+        ImmutableArray<BrowsingContext.BrowsingContext>? contexts = null,
+        Func<TEventArgs, bool>? filter = null,
+        CancellationToken cancellationToken = default)
+        where TEventArgs : EventArgs
     {
-        if (_eventRegistrations.TryGetValue(subscription.EventHandler.EventName, out var registration))
+        var (subscribeResult, slots) = await SubscribeCoreAsync(descriptors, contexts, null, cancellationToken).ConfigureAwait(false);
+
+        ISubscriptionSink subscription = null!;
+        subscription = new Subscription<TEventArgs>(
+            ct => UnsubscribeAsync(subscribeResult, slots, subscription, ct),
+            handler,
+            filter);
+
+        foreach (var slot in slots)
         {
-            await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
-            registration.RemoveHandler(subscription.EventHandler);
+            slot.Add(subscription);
         }
+
+        return (ISubscription)subscription;
     }
 
-    public void EnqueueEvent(string method, EventArgs eventArgs)
+    public Task<EventStream<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
+        EventDescriptor<TEventArgs> descriptor,
+        ImmutableArray<BrowsingContext.BrowsingContext>? contexts = null,
+        Func<TEventArgs, bool>? filter = null,
+        CancellationToken cancellationToken = default)
+        where TEventArgs : EventArgs
     {
-        _pendingEvents.Writer.TryWrite(new PendingEvent(method, eventArgs));
+        return SubscribeReaderAsync<TEventArgs>([descriptor], contexts, filter, cancellationToken);
     }
 
-    private async Task ProcessEventsAwaiterAsync()
+    public async Task<EventStream<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
+        IEnumerable<EventDescriptor> descriptors,
+        ImmutableArray<BrowsingContext.BrowsingContext>? contexts = null,
+        Func<TEventArgs, bool>? filter = null,
+        CancellationToken cancellationToken = default)
+        where TEventArgs : EventArgs
     {
-        var reader = _pendingEvents.Reader;
-        while (await reader.WaitToReadAsync().ConfigureAwait(false))
+        var (subscribeResult, slots) = await SubscribeCoreAsync(descriptors, contexts, null, cancellationToken).ConfigureAwait(false);
+
+        ISubscriptionSink subscription = null!;
+        subscription = new EventStream<TEventArgs>(
+            ct => UnsubscribeAsync(subscribeResult, slots, subscription, ct),
+            filter);
+
+        foreach (var slot in slots)
         {
-            while (reader.TryRead(out var result))
+            slot.Add(subscription);
+        }
+
+        return (EventStream<TEventArgs>)subscription;
+    }
+
+    public void DeserializeAndDispatch(string method, ref Utf8JsonReader paramsReader, Dictionary<string, JsonElement>? additionalMessageData = null)
+    {
+        if (_events.TryGetValue(method, out var slot))
+        {
+            var eventArgs = (EventArgs)(JsonSerializer.Deserialize(ref paramsReader, slot.JsonTypeInfo)
+            ?? throw new BiDiException("Remote end returned null event args in the 'params' property."));
+
+            eventArgs.BiDi = _bidi;
+
+            if (additionalMessageData is not null)
+                eventArgs.AdditionalMessageData = AdditionalData.FromDictionary(additionalMessageData);
+
+            foreach (var subscription in slot.GetSnapshot())
             {
-                if (_eventRegistrations.TryGetValue(result.Method, out var registration))
+                try
                 {
-                    foreach (var handler in registration.GetHandlers()) // copy-on-write array, safe to iterate
-                    {
-                        var runningHandlerTask = InvokeHandlerAsync(handler, result.EventArgs);
-                        if (!runningHandlerTask.IsCompleted)
-                        {
-                            _runningHandlers.TryAdd(runningHandlerTask, 0);
-                            _ = runningHandlerTask.ContinueWith(static (t, state) => ((ConcurrentDictionary<Task, byte>)state!).TryRemove(t, out _),
-                                _runningHandlers, TaskContinuationOptions.ExecuteSynchronously);
-                        }
-                    }
+                    subscription.Deliver(eventArgs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"Failed to deliver '{method}' event to subscription: {ex.Message}");
+                    subscription.Complete(ex);
                 }
             }
         }
     }
 
-    private async Task InvokeHandlerAsync(EventHandler handler, EventArgs eventArgs)
+    public async Task CompleteAllAsync(Exception? error)
     {
-        try
+        foreach (var slot in _events.Values)
         {
-            await handler.InvokeAsync(eventArgs).ConfigureAwait(false);
-        }
-        catch (Exception ex)
-        {
-            if (_logger.IsEnabled(LogEventLevel.Error))
+            foreach (var subscription in slot.GetSnapshot())
             {
-                _logger.Error($"Unhandled error processing BiDi event handler: {ex}");
+                subscription.Complete(error);
+            }
+        }
+
+        foreach (var slot in _events.Values)
+        {
+            foreach (var subscription in slot.GetSnapshot())
+            {
+                try
+                {
+                    await subscription.DisposeAsync().ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Warn($"Subscription disposal failed during shutdown: {ex.Message}");
+                }
             }
         }
     }
 
     public async ValueTask DisposeAsync()
     {
-        _pendingEvents.Writer.Complete();
-
-        await _eventEmitterTask.ConfigureAwait(false);
-
-        await Task.WhenAll(_runningHandlers.Keys).ConfigureAwait(false);
-
-        GC.SuppressFinalize(this);
+        await CompleteAllAsync(null).ConfigureAwait(false);
     }
 
-    public bool TryGetJsonTypeInfo(string eventName, [NotNullWhen(true)] out JsonTypeInfo? jsonTypeInfo)
+    private async Task<(Session.Subscription SubscribeResult, EventSlot[] Slots)> SubscribeCoreAsync(
+        IEnumerable<EventDescriptor> descriptors,
+        ImmutableArray<BrowsingContext.BrowsingContext>? contexts,
+        ImmutableArray<Browser.UserContext>? userContexts,
+        CancellationToken cancellationToken)
     {
-        if (_eventRegistrations.TryGetValue(eventName, out var registration))
+        var uniqueNames = new HashSet<string>();
+        var names = new List<string>();
+        var slots = new List<EventSlot>();
+
+        foreach (var descriptor in descriptors)
         {
-            jsonTypeInfo = registration.TypeInfo;
-            return true;
+            if (uniqueNames.Add(descriptor.Name))
+            {
+                names.Add(descriptor.Name);
+                slots.Add(GetOrCreateSlot(descriptor));
+            }
         }
 
-        jsonTypeInfo = null;
-        return false;
+        if (names.Count == 0)
+        {
+            throw new ArgumentException("At least one event descriptor must be provided.", nameof(descriptors));
+        }
+
+        var subscribeResult = await _wireSubscribe([.. names], new() { Contexts = contexts, UserContexts = userContexts }, cancellationToken)
+            .ConfigureAwait(false);
+
+        return (subscribeResult.Subscription, slots.ToArray());
     }
 
-    private readonly record struct PendingEvent(string Method, EventArgs EventArgs);
-
-    private sealed class EventRegistration(JsonTypeInfo typeInfo)
+    private EventSlot GetOrCreateSlot(EventDescriptor descriptor)
     {
+        return _events.GetOrAdd(descriptor.Name, _ =>
+        {
+            if (descriptor.JsonTypeInfo is null)
+            {
+                throw new InvalidOperationException($"Event '{descriptor.Name}' does not have registration metadata.");
+            }
+
+            return new EventSlot(descriptor.JsonTypeInfo);
+        });
+    }
+
+    private async ValueTask UnsubscribeAsync(Session.Subscription subscriptionId, EventSlot[] slots, ISubscriptionSink subscription, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _wireUnsubscribe([subscriptionId], null, cancellationToken).ConfigureAwait(false);
+        }
+        finally
+        {
+            foreach (var slot in slots)
+            {
+                slot.Remove(subscription);
+            }
+        }
+    }
+
+    private sealed class EventSlot
+    {
+        public JsonTypeInfo JsonTypeInfo { get; }
+
         private readonly object _lock = new();
-        private volatile EventHandler[] _handlers = [];
+        private volatile ISubscriptionSink[] _subscriptions = [];
 
-        public JsonTypeInfo TypeInfo { get; } = typeInfo;
-
-        public EventHandler[] GetHandlers() => _handlers;
-
-        public void AddHandler(EventHandler handler)
+        public EventSlot(JsonTypeInfo jsonTypeInfo)
         {
-            lock (_lock) _handlers = [.. _handlers, handler];
+            JsonTypeInfo = jsonTypeInfo;
         }
 
-        public void RemoveHandler(EventHandler handler)
+        public ISubscriptionSink[] GetSnapshot() => _subscriptions;
+
+        public void Add(ISubscriptionSink subscription)
         {
-            lock (_lock) _handlers = Array.FindAll(_handlers, h => h != handler);
+            lock (_lock) _subscriptions = [.. _subscriptions, subscription];
+        }
+
+        public void Remove(ISubscriptionSink subscription)
+        {
+            lock (_lock) _subscriptions = Array.FindAll(_subscriptions, s => s != subscription);
         }
     }
 }

@@ -17,6 +17,7 @@
 
 import base64
 import os
+from collections.abc import Callable
 from unittest.mock import patch
 from urllib import parse
 
@@ -27,9 +28,19 @@ from urllib3.util import Retry, Timeout
 
 from selenium import __version__
 from selenium.webdriver import Proxy
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
+from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.proxy import ProxyType
+from selenium.webdriver.edge.options import Options as EdgeOptions
+from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
 from selenium.webdriver.remote.client_config import AuthType
 from selenium.webdriver.remote.remote_connection import ClientConfig, RemoteConnection
+from selenium.webdriver.remote.webdriver import get_remote_connection
+from selenium.webdriver.safari.options import Options as SafariOptions
+from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 
 
 @pytest.fixture
@@ -606,3 +617,47 @@ def test_proxy_auth_with_multiple_special_characters():
 
         assert conn.proxy_headers == expected_headers
         assert conn.proxy_headers["proxy-authorization"] == f"Basic {expected_auth}"
+
+
+@pytest.mark.parametrize(
+    ("options", "prepare_options", "expected_handler"),
+    [
+        pytest.param(ChromeOptions(), None, ChromeRemoteConnection, id="chrome"),
+        pytest.param(EdgeOptions(), None, EdgeRemoteConnection, id="edge"),
+        pytest.param(FirefoxOptions(), None, FirefoxRemoteConnection, id="firefox"),
+        pytest.param(SafariOptions(), None, SafariRemoteConnection, id="safari"),
+        pytest.param(
+            SafariOptions(),
+            lambda o: setattr(o, "use_technology_preview", True),
+            SafariRemoteConnection,
+            id="safari-technology-preview",
+        ),
+        pytest.param(
+            EdgeOptions(),
+            lambda o: setattr(o, "use_webview", True),
+            EdgeRemoteConnection,
+            id="edge-webview2",
+        ),
+    ],
+)
+def test_get_remote_connection_selects_browser_specific_handler(
+    options: BaseOptions,
+    prepare_options: Callable[[BaseOptions], None] | None,
+    expected_handler: type[RemoteConnection],
+) -> None:
+    """Test that each browserName, including variant capabilities, selects its RemoteConnection handler.
+
+    Args:
+        options: Browser options whose emitted browserName drives handler selection.
+        prepare_options: Callable that mutates the options to enable a variant, or None for none.
+        expected_handler: RemoteConnection subclass the selection is expected to resolve to.
+    """
+    if prepare_options:
+        prepare_options(options)
+    conn = get_remote_connection(
+        options.to_capabilities(),
+        command_executor="http://localhost:4444",
+        keep_alive=True,
+        ignore_local_proxy=True,
+    )
+    assert type(conn) is expected_handler

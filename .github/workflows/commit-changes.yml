@@ -17,14 +17,10 @@ on:
         type: string
         default: ''
       push-branch:
-        description: Branch to push to (defaults to current branch, uses force push)
+        description: Branch to force push to; if unset, pushes to the checked-out branch without force
         required: false
         type: string
         default: ''
-    outputs:
-      changes-committed:
-        description: Whether changes were committed and pushed
-        value: ${{ jobs.commit.outputs.committed }}
     secrets:
       SELENIUM_CI_TOKEN:
         required: false
@@ -33,64 +29,35 @@ jobs:
   commit:
     name: Commit Changes
     runs-on: ubuntu-latest
-    outputs:
-      committed: ${{ steps.commit.outputs.committed }}
     permissions:
       contents: write
       actions: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.ref || github.ref }}
           token: ${{ secrets.SELENIUM_CI_TOKEN || github.token }}
       - name: Download patch
-        id: download
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.artifact-name }}
         continue-on-error: true
       - name: Apply and commit
-        id: commit
         run: |
-          if [ "$DOWNLOAD_OUTCOME" != "success" ]; then
-            echo "::notice::Artifact not found (may not have been uploaded)"
-            echo "committed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          if [ -f changes.patch ] && [ -s changes.patch ]; then
-            if ! git apply --index changes.patch; then
-              echo "::error::Failed to apply patch"
-              echo "committed=false" >> "$GITHUB_OUTPUT"
-              exit 1
-            fi
-            git config --local user.email "selenium-ci@users.noreply.github.com"
-            git config --local user.name "Selenium CI Bot"
-            if ! git commit -m "$COMMIT_MESSAGE"; then
-              echo "::error::Failed to commit changes"
-              echo "committed=false" >> "$GITHUB_OUTPUT"
-              exit 1
-            fi
+          git config --local user.email "selenium-ci@users.noreply.github.com"
+          git config --local user.name "Selenium CI Bot"
+          if [ -s changes.patch ]; then
+            git apply --index changes.patch
+            git commit -m "$COMMIT_MESSAGE"
             if [ -n "$PUSH_BRANCH" ]; then
-              if ! git push origin HEAD:"$PUSH_BRANCH" --force; then
-                echo "::error::Failed to push to $PUSH_BRANCH"
-                echo "committed=false" >> "$GITHUB_OUTPUT"
-                exit 1
-              fi
+              git push --force origin HEAD:"$PUSH_BRANCH"
             else
-              if ! git push; then
-                echo "::error::Failed to push"
-                echo "committed=false" >> "$GITHUB_OUTPUT"
-                exit 1
-              fi
+              git push
             fi
-            echo "::notice::Changes committed and pushed"
-            echo "committed=true" >> "$GITHUB_OUTPUT"
           else
-            echo "::notice::No changes to commit"
-            echo "committed=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No changes.patch found or patch is empty; skipping commit and push."
           fi
         env:
-          DOWNLOAD_OUTCOME: ${{ steps.download.outcome }}
           COMMIT_MESSAGE: ${{ inputs.commit-message }}
           PUSH_BRANCH: ${{ inputs.push-branch }}

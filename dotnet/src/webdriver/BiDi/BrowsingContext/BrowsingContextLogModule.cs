@@ -21,41 +21,9 @@ using OpenQA.Selenium.BiDi.Log;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContextLogModule(BrowsingContext context, ILogModule logModule) : IBrowsingContextLogModule
+internal sealed class BrowsingContextLogModule(BrowsingContext context, EventDispatcher dispatcher) : IBrowsingContextLogModule
 {
-    public Task<Subscription> OnEntryAddedAsync(Func<LogEntryEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
-
-        return logModule.OnEntryAddedAsync(
-            e => HandleEntryAddedAsync(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context),
-            cancellationToken);
-    }
-
-    public Task<Subscription> OnEntryAddedAsync(Action<LogEntryEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
-
-        return logModule.OnEntryAddedAsync(
-            e => HandleEntryAdded(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context),
-            cancellationToken);
-    }
-
-    private async Task HandleEntryAddedAsync(LogEntryEventArgs e, Func<LogEntryEventArgs, Task> handler)
-    {
-        if (context.Equals(e.Source.Context))
-        {
-            await handler(e).ConfigureAwait(false);
-        }
-    }
-
-    private void HandleEntryAdded(LogEntryEventArgs e, Action<LogEntryEventArgs> handler)
-    {
-        if (context.Equals(e.Source.Context))
-        {
-            handler(e);
-        }
-    }
+    public IEventSource<EntryAddedEventArgs> EntryAdded => _entryAdded ??= new ContextEventSource<EntryAddedEventArgs>(
+        dispatcher, LogEvent.EntryAdded, context, e => context.Equals(e.Source.Context));
+    private ContextEventSource<EntryAddedEventArgs>? _entryAdded;
 }

@@ -17,12 +17,11 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Runtime.CompilerServices;
 using Moq;
-using NUnit.Framework;
+using OpenQA.Selenium.Support.UI;
 
-namespace OpenQA.Selenium.Support.UI;
+namespace OpenQA.Selenium.Support.Tests.UI;
 
 [TestFixture]
 public class DefaultWaitTests

@@ -21,8 +21,7 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    describe Script, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
-                     only: {browser: %i[chrome edge firefox]} do
+    describe Script, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
       after { |example| reset_driver!(example: example) }
 
       # Helper to match the expected pattern of `script.StackFrame` objects.
@@ -46,7 +45,9 @@ module Selenium
         end
       end
 
-      it 'logs console messages' do
+      it 'logs console messages',
+         pending_if: {browser_family: :safari,
+                      reason: 'Safari does not deliver BiDi log entries for console messages'} do
         driver.navigate.to url_for('bidi/logEntryAdded.html')
 
         log_entries = []
@@ -67,22 +68,23 @@ module Selenium
           {'type' => 'string', 'value' => 'Hello, world!'}
         ]
         expect(log_entry.timestamp).to be_an_integer
-        expect(log_entry.source).to match(
+        expect(log_entry.source).to include(
           'context' => an_instance_of(String),
           'realm' => an_instance_of(String)
         )
         # Stack traces on console messages are optional.
         expect(log_entry.stack_trace).to be_nil.or match(
-          # Some browsers include stack traces from parts of the runtime, so we
-          # just check the first frames that come from user code.
+          # Some browsers include stack traces from parts of the runtime, and
+          # Firefox beta may only report the first user-code frame here.
           'callFrames' => start_with(
-            a_stack_frame('functionName' => 'helloWorld'),
-            a_stack_frame('functionName' => 'onclick')
+            a_stack_frame('functionName' => 'helloWorld')
           )
         )
       end
 
-      it 'logs multiple console messages' do
+      it 'logs multiple console messages',
+         pending_if: {browser_family: :safari,
+                      reason: 'Safari does not deliver BiDi log entries for console messages'} do
         driver.navigate.to url_for('bidi/logEntryAdded.html')
 
         log_entries = []
@@ -96,7 +98,9 @@ module Selenium
         expect(log_entries.size).to eq(2)
       end
 
-      it 'removes console message handler' do
+      it 'removes console message handler',
+         pending_if: {browser_family: :safari,
+                      reason: 'Safari does not deliver BiDi log entries for console messages'} do
         driver.navigate.to url_for('bidi/logEntryAdded.html')
 
         log_entries = []
@@ -115,7 +119,9 @@ module Selenium
         expect(log_entries.size).to eq(3)
       end
 
-      it 'logs javascript errors' do
+      it 'logs javascript errors',
+         pending_if: {browser_family: :safari,
+                      reason: 'Safari does not deliver BiDi log entries for console messages'} do
         driver.navigate.to url_for('bidi/logEntryAdded.html')
 
         log_entries = []
@@ -132,7 +138,7 @@ module Selenium
         expect(log_entry.level).to eq 'error'
         expect(log_entry.text).to eq 'Error: Not working'
         expect(log_entry.timestamp).to be_an_integer
-        expect(log_entry.source).to match(
+        expect(log_entry.source).to include(
           'context' => an_instance_of(String),
           'realm' => an_instance_of(String)
         )

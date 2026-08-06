@@ -210,6 +210,7 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
     private final Channel clientChannel;
     private final HttpRequest upgradeRequest;
     private boolean tunnelEstablished = false;
+    private boolean rejectionForwarded = false;
 
     NodeUpgradeResponseHandler(Channel clientChannel, HttpRequest upgradeRequest) {
       this.clientChannel = clientChannel;
@@ -243,8 +244,23 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
 
         if (resp.status().code() != 101) {
           LOG.warning("Node rejected WebSocket upgrade: " + resp.status());
-          ctx.close();
-          clientChannel.close();
+          rejectionForwarded = true;
+
+          // Forward the rejection as a proper HTTP response so the client's WebSocket
+          // handshake fails cleanly (instead of seeing a raw TCP close that manifests
+          // as "IOException: HTTP/1.1 header parser received no bytes").
+          DefaultFullHttpResponse errorResponse =
+              new DefaultFullHttpResponse(
+                  HttpVersion.HTTP_1_1, resp.status(), Unpooled.EMPTY_BUFFER);
+          errorResponse.headers().set(HttpHeaderNames.CONNECTION, "close");
+          clientChannel.config().setAutoRead(true);
+          clientChannel
+              .writeAndFlush(errorResponse)
+              .addListener(
+                  f -> {
+                    clientChannel.close();
+                    ctx.close();
+                  });
           return;
         }
 
@@ -339,7 +355,7 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-      if (!tunnelEstablished) {
+      if (!tunnelEstablished && !rejectionForwarded) {
         LOG.warning("Node channel closed before tunnel was established");
         clientChannel.close();
       }
@@ -363,7 +379,7 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
    * the TCP connection without sending a FIN or RST (common with AWS ALB, k8s ingress-nginx at
    * their default 60 s idle timeout).
    */
-  private static final class IdleCloseHandler extends ChannelInboundHandlerAdapter {
+  static final class IdleCloseHandler extends ChannelInboundHandlerAdapter {
 
     private final Channel peer;
 
@@ -374,6 +390,18 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
       if (evt instanceof IdleStateEvent) {
+        // Read-idle while backpressure has paused this channel is expected, not a sign of a
+        // dropped connection: the peer's outbound buffer crossed its high-water mark, the
+        // TcpTunnelHandler set autoRead=false on this side, and bytes will not be read again
+        // until the peer drains. Skip the close so a sustained slow consumer does not get the
+        // tunnel torn down underneath it.
+        if (!ctx.channel().config().isAutoRead()) {
+          LOG.log(
+              Level.FINE,
+              "TCP tunnel read-idle on {0} ignored: reads paused by backpressure",
+              ctx.channel());
+          return;
+        }
         LOG.log(
             Level.FINE,
             "TCP tunnel read-idle timeout on {0}, closing both channels",

@@ -57,7 +57,7 @@ def free_port() -> int:
     return port
 
 
-def find_connectable_ip(host: str | bytes | bytearray | None, port: int | None = None) -> str | None:
+def find_connectable_ip(host: str | bytes | None, port: int | None = None) -> str | None:
     """Resolve a hostname to an IP, preferring IPv4 addresses.
 
     We prefer IPv4 so that we don't change behavior from previous IPv4-only

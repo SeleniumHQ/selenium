@@ -33,6 +33,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
@@ -56,8 +57,8 @@ public class NettyAppServer implements AppServer {
   private static final Config sslConfig =
       new MapConfig(singletonMap("server", singletonMap("https-self-signed", true)));
   private static final Logger LOG = Logger.getLogger(NettyAppServer.class.getName());
-  private Server<?> server;
-  private Server<?> secure;
+  private @Nullable Server<?> server;
+  private @Nullable Server<?> secure;
   private final RetryPolicy<Object> retryPolicy =
       RetryPolicy.builder()
           .withMaxAttempts(5)
@@ -165,7 +166,9 @@ public class NettyAppServer implements AppServer {
 
   @Override
   public void stop() {
-    server.stop();
+    if (server != null) {
+      server.stop();
+    }
     if (secure != null) {
       secure.stop();
     }
@@ -231,6 +234,7 @@ public class NettyAppServer implements AppServer {
     return AppServer.detectHostname();
   }
 
+  @Nullable
   @Override
   public String getAlternateHostName() {
     return AppServer.detectAlternateHostname();

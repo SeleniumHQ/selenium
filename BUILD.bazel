@@ -1,6 +1,8 @@
 load("@aspect_rules_js//npm:defs.bzl", "npm_link_package")
 load("@buildifier_prebuilt//:rules.bzl", "buildifier")
 load("@npm//:defs.bzl", "npm_link_all_packages")
+load("@package_metadata//licenses/rules:license.bzl", "license")
+load("@package_metadata//rules:package_metadata.bzl", "package_metadata")
 load("//common:browsers.bzl", "chrome_data", "firefox_data")
 load("//java:browsers.bzl", "chrome_jvm_flags", "firefox_jvm_flags")
 load("//java:defs.bzl", "artifact", "java_binary")
@@ -19,6 +21,24 @@ filegroup(
         "NOTICE",
     ],
     visibility = ["//visibility:public"],
+)
+
+package_metadata(
+    name = "package_metadata",
+    attributes = [
+        ":apache2",
+    ],
+    purl = "pkg:bazel/{}@{}".format(
+        module_name(),
+        module_version(),
+    ) if module_version() else "pkg:bazel/{}".format(module_name()),
+    visibility = ["//visibility:public"],
+)
+
+license(
+    name = "apache2",
+    kind = "@package_metadata//licenses/spdx:Apache-2.0",
+    text = "LICENSE",
 )
 
 filegroup(
@@ -96,6 +116,27 @@ platform(
         "@platforms//os:osx",
         "@platforms//cpu:x86_64",
     ],
+)
+
+platform(
+    name = "local_linux_gnu",
+    constraint_values = [
+        "@llvm//constraints/libc:gnu.2.28",
+    ],
+    parents = ["@platforms//host"],
+)
+
+platform(
+    name = "local_windows_gnullvm",
+    constraint_values = [
+        # alias -> @llvm//constraints/windows/abi:gnullvm
+        "@rules_rs//rs/platforms/constraints:windows_gnullvm",
+        # rules_rs 0.0.90 (via llvm 0.8.3) requires the CRT to be selected
+        # explicitly; the gnullvm Rust toolchain targets msvcrt, while the crt
+        # constraint otherwise defaults to ucrt and no toolchain would match.
+        "@llvm//constraints/windows/crt:msvcrt",
+    ],
+    parents = ["@platforms//host"],
 )
 
 buildifier(

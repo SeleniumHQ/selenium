@@ -7,9 +7,10 @@ require 'net/http'
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v143:v143.publish
-  //java/src/org/openqa/selenium/devtools/v144:v144.publish
-  //java/src/org/openqa/selenium/devtools/v145:v145.publish
+  //java/src/org/openqa/selenium/devtools/v149:v149.publish
+  //java/src/org/openqa/selenium/devtools/v150:v150.publish
+  //java/src/org/openqa/selenium/devtools/v151:v151.publish
+  //java/src/org/openqa/selenium/devtools/latest:latest.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
   //java/src/org/openqa/selenium/grid/node/kubernetes:kubernetes.publish
@@ -100,7 +101,9 @@ end
 
 def trigger_sonatype_publish(token)
   puts 'Triggering Sonatype upload with automatic publishing...'
-  uri = URI('https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.seleniumhq?publishing_type=automatic')
+  url = 'https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/' \
+        'org.seleniumhq?publishing_type=automatic'
+  uri = URI(url)
 
   req = Net::HTTP::Post.new(uri)
   req['Authorization'] = "Basic #{token}"
@@ -188,6 +191,22 @@ task :release do |_task, arguments|
   args = arguments.to_a
   nightly = args.delete('nightly')
 
+  unless nightly
+    already_published = begin
+      Rake::Task['java:verify'].invoke
+      true
+    rescue StandardError
+      false
+    ensure
+      Rake::Task['java:verify'].reenable
+    end
+
+    if already_published
+      puts 'Java packages already published — skipping release.'
+      next
+    end
+  end
+
   Rake::Task['java:check_credentials'].invoke(*(nightly ? ['nightly'] : []))
 
   ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
@@ -222,15 +241,15 @@ end
 
 desc 'Verify Java packages are published on Maven Central'
 task :verify do
-  SeleniumRake.verify_package_published("https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java/#{java_version}/selenium-java-#{java_version}.pom")
+  base = 'https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java'
+  SeleniumRake.verify_package_published("#{base}/#{java_version}/selenium-java-#{java_version}.pom")
 end
 
 desc 'Install jars to local m2 directory'
 task :install do
   java_release_targets.each do |p|
     Bazel.execute('run',
-                  ['--stamp',
-                   '--define',
+                  ['--define',
                    "maven_repo=file://#{Dir.home}/.m2/repository",
                    '--define',
                    'gpg_sign=false'],
@@ -293,10 +312,20 @@ task :update do
 
   versions = output.scan(/(\S+) \[\S+ -> (\S+)\]/).to_h
   versions.each do |artifact, version|
-    if artifact.match?('graphql')
+    if artifact.match?('graphql') && version.match?(/\A(\d{6}-|0\.0\.0-)/)
+      # Maven Central indexes non-stable date-based artifacts that sort as "latest" which breaks for graphql
       # https://github.com/graphql-java/graphql-java/discussions/3187
-      puts 'WARNING — Cannot automatically update graphql'
-      next
+      # Fall back to calling maven directly for this
+      version = maven_stable_release(artifact)
+      next if version.nil?
+    end
+    if artifact.start_with?('net.bytebuddy:') && version.match?(/-jdk\d/)
+      # Byte Buddy publishes -jdkN compat variants alongside regular releases; Maven sorts those
+      # variants as newer than the regular release. Selenium targets Java 8+ so we want the
+      # regular release without the JDK suffix.
+      # https://github.com/SeleniumHQ/selenium/issues/17355
+      version = maven_stable_release(artifact)
+      next if version.nil?
     end
     content.sub!(/#{Regexp.escape(artifact)}:([\d.-]+(?:[-.]?[A-Za-z0-9]+)*)/, "#{artifact}:#{version}")
   end
@@ -304,6 +333,23 @@ task :update do
 
   Rake::Task['java:pin'].reenable
   Rake::Task['java:pin'].invoke
+end
+
+def maven_stable_release(artifact)
+  require 'rexml/document'
+  group_id, artifact_id = artifact.split(':', 2)
+  group_path = group_id.tr('.', '/')
+  uri = URI("https://repo1.maven.org/maven2/#{group_path}/#{artifact_id}/maven-metadata.xml")
+  xml = Net::HTTP.start(uri.host, uri.port, use_ssl: true, open_timeout: 5, read_timeout: 10) do |http|
+    http.get(uri.request_uri).body
+  end
+  doc = REXML::Document.new(xml)
+  versions = doc.elements.to_a('metadata/versioning/versions/version').map(&:text)
+  stable = versions.grep(/\A\d+\.\d+(\.\d+)*\z/)
+  stable.max_by { |v| Gem::Version.new(v) }
+rescue StandardError => e
+  puts "WARNING — Failed to fetch stable release for #{artifact}: #{e.message}"
+  nil
 end
 
 desc 'Pin Maven dependencies'

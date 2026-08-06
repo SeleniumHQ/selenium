@@ -1,0 +1,39 @@
+diff --git a/ruby/private/utils.bzl b/ruby/private/utils.bzl
+index bfc02aba..f10b2abf 100644
+--- a/ruby/private/utils.bzl
++++ b/ruby/private/utils.bzl
+@@ -14,6 +14,7 @@ source "$(grep -sm1 "^$f " "$0.exe.runfiles_manifest" | cut -f2- -d' ')" 2>/dev/
+ """
+
+ # https://github.com/aspect-build/bazel-lib/blob/ddac9c46c3bff4cf8d0118a164c75390dbec2da9/lib/windows_utils.bzl
++# Normalized to CRLF; cmd.exe can't reliably find batch labels in LF-only .cmd files.
+ BATCH_RLOCATION_FUNCTION = r"""
+ rem Usage of rlocation function:
+ rem        call :rlocation <runfile_path> <abs_path>
+@@ -76,7 +77,7 @@ set %~2=!abs_path!
+ exit /b 0
+ :rlocation_end
+ :: End of rlocation
+-"""
++""".replace("\r\n", "\n").replace("\n", "\r\n")
+
+ def is_windows(ctx):
+     windows_constraint = ctx.attr._windows_constraint[platform_common.ConstraintValueInfo]
+@@ -95,14 +96,16 @@ def convert_env_to_script(ctx, env):
+     environment = []
+     if is_windows(ctx):
+         export_command = "set"
++        newline = "\r\n"  # keep the generated .cmd CRLF; see BATCH_RLOCATION_FUNCTION
+     else:
+         export_command = "export"
++        newline = "\n"
+
+     for (name, value) in env.items():
+         command = "{command} {name}={value}".format(command = export_command, name = name, value = value)
+         environment.append(command)
+
+-    return "\n".join(environment)
++    return newline.join(environment)
+
+ def normalize_path(ctx, path):
+     """Converts path to an OS-specific equivalent.

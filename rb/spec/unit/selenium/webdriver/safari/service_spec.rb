@@ -94,7 +94,7 @@ module Selenium
           it 'is not created when :url is provided' do
             expect {
               driver.new(url: 'http://example.com:4321')
-            }.to raise_error(ArgumentError, "Can't initialize Selenium::WebDriver::Safari::Driver with :url")
+            }.to raise_error(ArgumentError, /Can't set the server URL for/)
           end
 
           it 'is created when :url is not provided' do
@@ -113,28 +113,6 @@ module Selenium
             driver.new(service: service)
 
             expect(described_class).not_to have_received(:new)
-          end
-
-          context 'with a path env variable' do
-            let(:service) { described_class.new }
-            let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
-
-            before do
-              ENV['SE_SAFARIDRIVER'] = service_path
-            end
-
-            after { ENV.delete('SE_SAFARIDRIVER') }
-
-            it 'uses the path from the environment' do
-              expect(service.executable_path).to match(/safaridriver/)
-            end
-
-            it 'updates the path after setting the environment variable' do
-              ENV['SE_SAFARIDRIVER'] = '/foo/bar'
-              service.executable_path = service_path
-
-              expect(service.executable_path).to match(/safaridriver/)
-            end
           end
         end
       end

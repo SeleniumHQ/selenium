@@ -1,0 +1,102 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+<%= generated_note %>
+
+module Selenium
+  module WebDriver
+    class BiDi
+      module Protocol
+        class <%= mod.ruby_class %> < ::Selenium::WebDriver::BiDi::Protocol::Domain
+<%- unless mod.events.empty? -%>
+          EVENTS: Hash[Symbol, String]
+
+<%- end -%>
+<%- mod.enums.each do |enum| -%>
+          <%= enum.constant_name %>: Hash[Symbol, String]
+
+<%- end -%>
+<%- mod.types.select(&:union?).each do |union| -%>
+          type <%= BiDiGenerate.camel_to_snake(union.ruby_name) %> = <%= union.rbs_value_type %>
+<%- end -%>
+<%- if mod.types.any?(&:union?) -%>
+
+<%- end -%>
+<%- mod.types.each do |type| -%>
+<%- if type.union? -%>
+          class <%= type.ruby_name %> < ::Selenium::WebDriver::BiDi::Serialization::Union
+<%- type.nested_types.each do |nested| -%>
+            class <%= nested.ruby_name %> < ::Selenium::WebDriver::BiDi::Serialization::Record
+<%- nested.rbs_readers.each do |reader| -%>
+              attr_reader <%= reader %>
+<%- end -%>
+              def self.new: (<%= nested.rbs_new_args %>) -> instance
+            end
+<%- end -%>
+<%- type.rbs_variant_factories.each do |factory| -%>
+            <%= factory %>
+<%- end -%>
+          end
+
+<%- else -%>
+          class <%= type.ruby_name %> < ::Selenium::WebDriver::BiDi::Serialization::Record
+<%- type.rbs_readers.each do |reader| -%>
+            attr_reader <%= reader %>
+<%- end -%>
+            def self.new: (<%= type.rbs_new_args %>) -> instance
+<%- type.nested_types.each do |nested| -%>
+
+            class <%= nested.ruby_name %> < ::Selenium::WebDriver::BiDi::Serialization::Record
+<%- nested.rbs_readers.each do |reader| -%>
+              attr_reader <%= reader %>
+<%- end -%>
+              def self.new: (<%= nested.rbs_new_args %>) -> instance
+            end
+<%- end -%>
+          end
+
+<%- end -%>
+<%- end -%>
+<%- unless mod.events.empty? -%>
+          EVENT_TYPES: Hash[String, untyped]
+
+<%- end -%>
+<%- mod.accessors.each do |accessor| -%>
+<%- if accessor.vendor? -%>
+          def <%= accessor.method_name %>: () -> <%= accessor.type_name %>
+<%- elsif accessor.union? -%>
+          def <%= accessor.method_name %>: () -> singleton(<%= accessor.type_name %>)
+<%- else -%>
+          def <%= accessor.method_name %>: (<%= accessor.rbs_args %>) -> <%= accessor.type_name %>
+<%- end -%>
+<%- end -%>
+<%- mod.commands.each do |cmd| -%>
+          def <%= cmd.method_name %>: <%= cmd.rbs_signature %>
+<%- end -%>
+<%- mod.vendor_modules.each do |vendor_module| -%>
+
+          class <%= vendor_module.name %> < ::Selenium::WebDriver::BiDi::Protocol::<%= mod.ruby_class %>
+<%- vendor_module.commands.each do |cmd| -%>
+            def <%= cmd.method_name %>: <%= cmd.rbs_signature %>
+<%- end -%>
+          end
+<%- end -%>
+        end
+      end
+    end
+  end
+end

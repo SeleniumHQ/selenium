@@ -25,17 +25,17 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 
 /** A bad implementation of URL Templates, but enough for our needs. */
 public class UrlTemplate {
 
-  private static final Pattern GROUP_NAME = Pattern.compile("(\\{\\p{Alnum}+\\})");
-  private final Function<String, UrlTemplate.Match> compiled;
+  private static final Pattern GROUP_NAME = Pattern.compile("(\\{\\p{Alnum}+})");
+  private final Function<String, UrlTemplate.@Nullable Match> compiled;
 
   public UrlTemplate(String template) {
-    if (template == null || template.isEmpty()) {
-      throw new IllegalArgumentException("Template must not be 0 length");
-    }
+    Require.nonEmpty("Template", template);
 
     // ^ start of string
     StringBuilder regex = new StringBuilder("^");
@@ -132,7 +132,7 @@ public class UrlTemplate {
   /**
    * @return A {@link Match} with all parameters filled if successful, null otherwise.
    */
-  public UrlTemplate.Match match(String matchAgainst) {
+  public UrlTemplate.@Nullable Match match(@Nullable String matchAgainst) {
     if (matchAgainst == null) {
       return null;
     }
@@ -141,21 +141,27 @@ public class UrlTemplate {
   }
 
   /**
-   * @return A {@link Match} with all parameters filled if successful, null otherwise. Remove
-   *     subPath from matchAgainst before matching.
+   * Matches a URL against this template after stripping a leading prefix.
+   *
+   * <p>The {@code prefix} is treated literally (not as a regex) and stripped from the start of
+   * {@code matchAgainst} before matching, unless it is empty or {@code "/"}.
+   *
+   * @param matchAgainst the URL (or path) to match against this template
+   * @param prefix a literal prefix to strip from {@code matchAgainst} before matching
+   * @return a {@link Match} with all parameters filled if successful, {@code null} otherwise
    */
-  public UrlTemplate.Match match(String matchAgainst, String prefix) {
+  public UrlTemplate.@Nullable Match match(@Nullable String matchAgainst, @Nullable String prefix) {
     if (matchAgainst == null || prefix == null) {
       return null;
     }
     if (!prefix.isEmpty() && !prefix.equals("/")) {
-      matchAgainst = matchAgainst.replaceFirst(prefix, "");
+      matchAgainst = matchAgainst.replaceFirst(Pattern.quote(prefix), "");
     }
     return match(matchAgainst);
   }
 
   @SuppressWarnings("InnerClassMayBeStatic")
-  public class Match {
+  public static final class Match {
     private final String url;
     private final Map<String, String> parameters;
 

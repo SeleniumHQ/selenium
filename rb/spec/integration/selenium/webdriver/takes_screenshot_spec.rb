@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe TakesScreenshot, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+    describe TakesScreenshot, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       before do
         driver.navigate.to url_for('xhtmlTest.html')
       end
@@ -35,21 +35,14 @@ module Selenium
 
       it 'warns if extension of provided path is not png' do
         jpg_path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.jpg"
-        message = 'name used for saved screenshot does not match file type. ' \
-                  'It should end with .png extension'
-        allow(WebDriver.logger).to receive(:warn)
 
-        save_screenshots_and_assert(jpg_path)
-
-        expect(WebDriver.logger).to have_received(:warn).with(message, id: :screenshot).twice
+        expect { save_screenshot_and_assert(driver, jpg_path) }.to have_warning(:screenshot)
+        expect { save_screenshot_and_assert(element, jpg_path) }.to have_warning(:screenshot)
       end
 
       it 'does not warn if extension of provided path is png' do
-        allow(WebDriver.logger).to receive(:warn)
-
-        save_screenshots_and_assert(path)
-
-        expect(WebDriver.logger).not_to have_received(:warn)
+        expect { save_screenshot_and_assert(driver, path) }.not_to have_warning(:screenshot)
+        expect { save_screenshot_and_assert(element, path) }.not_to have_warning(:screenshot)
       end
 
       it 'returns in the specified format' do
@@ -93,9 +86,9 @@ module Selenium
           expect(height).to be <= viewport_height
         end
 
-        it 'takes full page screenshot', except: [{platform: :macosx,
-                                                   reason: 'showing half resolution of what expected'}],
-                                         exclusive: {browser: :firefox} do
+        it 'takes full page screenshot', pending_if: [{platform: :macosx,
+                                                       reason: 'showing half resolution of what expected'}],
+                                         skip_unless: {browser: :firefox} do
           viewport_width = driver.execute_script('return window.innerWidth;')
           viewport_height = driver.execute_script('return window.innerHeight;')
 
@@ -106,8 +99,9 @@ module Selenium
           expect(height).to be > viewport_height
         end
 
-        it 'does not take full page screenshot', only: {browser: %i[chrome edge safari safari_preview],
-                                                        reason: 'these browsers do not implement this feature'} do
+        it 'does not take full page screenshot',
+           pending_unless: {browser: %i[chrome edge safari safari_preview],
+                            reason: 'these browsers do not implement this feature'} do
           expect {
             driver.save_screenshot path, full_page: true
           }.to raise_exception(Error::UnsupportedOperationError, /Full Page Screenshots are not supported/)

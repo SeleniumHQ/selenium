@@ -19,10 +19,11 @@ use crate::config::ARCH::{ARM64, X32};
 use crate::config::ManagerConfig;
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
-use crate::files::{BrowserPath, compose_driver_path_in_cache};
+use crate::files::{BrowserPath, compose_driver_path_in_cache, first_existing_path};
 use crate::logger::Logger;
 use crate::metadata::{
-    create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
+    create_driver_metadata, get_driver_version_from_metadata, get_metadata,
+    should_cache_driver_version, write_metadata,
 };
 use crate::{
     BETA, DASH_DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
@@ -41,6 +42,20 @@ use std::sync::mpsc::{Receiver, Sender};
 
 pub const CHROME_NAME: &str = "chrome";
 pub const CHROMEDRIVER_NAME: &str = "chromedriver";
+
+// Directories and names chromedriver searches to locate Chrome/Chromium on Linux (chrome_finder.cc).
+pub const CHROME_KNOWN_DIRS: &[&str] = &[
+    "/usr/local/sbin",
+    "/usr/local/bin",
+    "/usr/sbin",
+    "/usr/bin",
+    "/sbin",
+    "/bin",
+    "/opt/google/chrome",
+    "/opt/chromium.org/chromium",
+];
+pub const CHROME_KNOWN_NAMES: &[&str] =
+    &["chrome", "google-chrome", "chromium", "chromium-browser"];
 const DRIVER_URL: &str = "https://chromedriver.storage.googleapis.com/";
 const LATEST_RELEASE: &str = "LATEST_RELEASE";
 const CFT_URL: &str = "https://googlechromelabs.github.io/chrome-for-testing/";
@@ -171,12 +186,16 @@ impl ChromeManager {
     }
 
     fn request_good_driver_version_from_online(&mut self) -> Result<String, Error> {
-        let browser_or_driver_version = if self.get_driver_version().is_empty() {
-            self.get_browser_version()
+        let version_for_filtering = if self.is_driver_version_specific() {
+            self.get_driver_version().to_string()
         } else {
-            self.get_driver_version()
+            let browser_or_driver_version = if self.get_driver_version().is_empty() {
+                self.get_browser_version()
+            } else {
+                self.get_driver_version()
+            };
+            self.get_major_version(browser_or_driver_version)?
         };
-        let version_for_filtering = self.get_major_version(browser_or_driver_version)?;
         self.log.trace(format!(
             "Driver version used to request CfT: {version_for_filtering}"
         ));
@@ -190,11 +209,15 @@ impl ChromeManager {
             .filter(|r| r.version.starts_with(version_for_filtering.as_str()))
             .collect();
         if filtered_versions.is_empty() {
-            return Err(anyhow!(format_three_args(
-                UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
-                self.get_driver_name(),
-                &version_for_filtering,
-                &MIN_CHROMEDRIVER_VERSION_CFT.to_string(),
+            return Err(anyhow!(format!(
+                "{}. Check available versions at {}",
+                format_three_args(
+                    UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
+                    self.get_driver_name(),
+                    version_for_filtering.as_str(),
+                    &MIN_CHROMEDRIVER_VERSION_CFT.to_string(),
+                ),
+                CFT_URL
             )));
         }
 
@@ -220,7 +243,20 @@ impl SeleniumManager for ChromeManager {
     }
 
     fn get_browser_names_in_path(&self) -> Vec<&str> {
-        vec![self.get_browser_name(), "chromium-browser", "chromium"]
+        vec![
+            self.get_browser_name(),
+            "google-chrome",
+            "chromium",
+            "chromium-browser",
+        ]
+    }
+
+    fn detect_browser_in_known_locations(&self) -> Option<PathBuf> {
+        // chromedriver's fixed directory search (chrome_finder.cc) is Linux-only.
+        if !LINUX.is(self.get_os()) {
+            return None;
+        }
+        first_existing_path(CHROME_KNOWN_DIRS, CHROME_KNOWN_NAMES)
     }
 
     fn get_http_client(&self) -> &Client {
@@ -331,8 +367,7 @@ impl SeleniumManager for ChromeManager {
                 };
 
                 let driver_ttl = self.get_ttl();
-                if driver_ttl > 0 && !major_browser_version.is_empty() && !driver_version.is_empty()
-                {
+                if should_cache_driver_version(driver_ttl, major_browser_version, &driver_version) {
                     metadata.drivers.push(create_driver_metadata(
                         major_browser_version,
                         self.driver_name,
@@ -588,6 +623,10 @@ impl SeleniumManager for ChromeManager {
         _browser_version: &str,
     ) -> Result<Option<&str>, Error> {
         Ok(None)
+    }
+
+    fn get_browser_versions_url(&self) -> &str {
+        CFT_URL
     }
 
     fn is_download_browser(&self) -> bool {

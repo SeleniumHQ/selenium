@@ -35,11 +35,15 @@ suite(
       await driver.quit()
     })
 
-    function delay(ms) {
-      return new Promise((resolve) => setTimeout(resolve, ms))
-    }
-
     describe('script()', function () {
+      async function waitForLogEntry(getLogEntry, message) {
+        await driver.wait(() => getLogEntry() != null, 5000, message)
+      }
+
+      async function waitForLogText(logs, text) {
+        await driver.wait(() => logs.includes(text), 5000, `Timed out waiting for console log "${text}"`)
+      }
+
       it('can listen to console log', async function () {
         let log = null
         const handler = await driver.script().addConsoleMessageHandler((logEntry) => {
@@ -48,8 +52,7 @@ suite(
 
         await driver.get(Pages.logEntryAdded)
         await driver.findElement({ id: 'consoleLog' }).click()
-
-        await delay(3000)
+        await waitForLogEntry(() => log, 'Timed out waiting for console log entry')
 
         assert.equal(log.text, 'Hello, world!')
         assert.equal(log.realm, null)
@@ -68,8 +71,7 @@ suite(
 
         await driver.get(Pages.logEntryAdded)
         await driver.findElement({ id: 'jsException' }).click()
-
-        await delay(3000)
+        await waitForLogEntry(() => log, 'Timed out waiting for JavaScript error log entry')
 
         assert.equal(log.text, 'Error: Not working')
         assert.equal(log.type, 'javascript')
@@ -99,6 +101,7 @@ suite(
         await element.click()
         let revealed = driver.findElement({ id: 'revealed' })
         await driver.wait(until.elementIsVisible(revealed), 5000)
+        await waitForLogEntry(() => message, 'Timed out waiting for DOM mutation')
 
         assert.strictEqual(message['attribute_name'], 'style')
         assert.strictEqual(message['current_value'], '')
@@ -132,27 +135,33 @@ suite(
         })
 
         await driver.get(Pages.logEntryAdded)
-
-        await delay(3000)
+        await waitForLogEntry(() => log, 'Timed out waiting for pinned script log entry')
 
         assert.equal(log.text, 'Hello!')
       })
 
       it('can unpin script', async function () {
-        const id = await driver.script().pin("() => { console.log('Hello!'); }")
+        const id = await driver.script().pin("() => { console.log('Hello'); }")
+        await driver.script().pin("() => { console.log('World'); }")
 
-        let count = 0
+        const logs = []
         await driver.script().addConsoleMessageHandler((logEntry) => {
-          count++
+          logs.push(logEntry.text)
         })
 
         await driver.get(Pages.logEntryAdded)
+        await waitForLogText(logs, 'Hello')
+        await waitForLogText(logs, 'World')
+        assert.ok(logs.includes('Hello'), `[${logs}] should contain "Hello"`)
+        assert.ok(logs.includes('World'), `[${logs}] should contain "World"`)
 
         await driver.script().unpin(id)
 
+        logs.length = 0
         await driver.get(Pages.logEntryAdded)
-
-        assert.equal(count, 1)
+        await waitForLogText(logs, 'World')
+        assert.ok(logs.includes('World'), `[${logs}] should contain "World"`)
+        assert.ok(!logs.includes('Hello'), `[${logs}] should not contain "Hello"`)
       })
     })
   },

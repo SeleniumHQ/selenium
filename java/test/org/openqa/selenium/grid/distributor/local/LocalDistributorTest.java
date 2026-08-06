@@ -44,6 +44,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -293,7 +294,7 @@ class LocalDistributorTest {
             Map.of(),
             Map.of());
 
-    List<Callable<SessionId>> callables = new ArrayList<>();
+    List<Callable<@Nullable SessionId>> callables = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
       callables.add(
           () -> {

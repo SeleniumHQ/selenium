@@ -188,7 +188,7 @@ public class RedisBackedSessionMap extends SessionMap {
               : JSON.toType(rawStereotype, Capabilities.class);
 
       String rawStart = connection.get(startKey(id));
-      Instant start = JSON.toType(rawStart, Instant.class);
+      Instant start = rawStart == null ? Instant.EPOCH : JSON.toType(rawStart, Instant.class);
 
       CAPABILITIES.accept(span, caps);
       CAPABILITIES_EVENT.accept(attributeMap, caps);

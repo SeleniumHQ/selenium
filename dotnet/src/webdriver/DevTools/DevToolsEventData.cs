@@ -32,8 +32,10 @@ public class DevToolsEventData
     /// <exception cref="ArgumentNullException">If<paramref name="eventArgsType"/> or <paramref name="invoker"/> is <see langword="null"/>.</exception>
     public DevToolsEventData(Type eventArgsType, Action<object?> invoker)
     {
-        EventArgsType = eventArgsType ?? throw new ArgumentNullException(nameof(eventArgsType));
-        EventInvoker = invoker ?? throw new ArgumentNullException(nameof(invoker));
+        ArgumentNullException.ThrowIfNull(eventArgsType);
+        ArgumentNullException.ThrowIfNull(invoker);
+        EventArgsType = eventArgsType;
+        EventInvoker = invoker;
     }
 
     /// <summary>

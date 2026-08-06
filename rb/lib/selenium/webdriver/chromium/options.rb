@@ -49,7 +49,9 @@ module Selenium
         #   options = Selenium::WebDriver::Chrome::Options.new(args: ['start-maximized', 'user-data-dir=/tmp/temp_profile'])
         #   driver = Selenium::WebDriver.for(:chrome, options: options)
         #
-        # @param [Profile] profile An instance of a Chrome::Profile Class
+        # @param [Profile] profile (Deprecated) An instance of a Chrome::Profile class.
+        #   Use {#add_argument} with `--user-data-dir=...`, {#add_preference}, and
+        #   {#add_extension} instead.
         # @param [Hash] opts the pre-defined options to create the Chrome::Options with
         # @option opts [Array] encoded_extensions List of extensions that do not need to be Base64 encoded
         # @option opts [Array<String>] args List of command-line arguments to use when starting Chrome
@@ -84,6 +86,7 @@ module Selenium
           @logging_prefs = options.delete(:logging_prefs) || {}
           @encoded_extensions = @options.delete(:encoded_extensions) || []
           @extensions = []
+          @vendor_options = {}
           @options.delete(:extensions).each { |ext| validate_extension(ext) }
         end
 
@@ -183,6 +186,24 @@ module Selenium
         end
 
         #
+        # Add a Chromium-specific capability nested in the browser options object
+        # (e.g. `goog:chromeOptions` / `ms:edgeOptions`) that is not yet exposed
+        # through a dedicated method. This is the escape hatch for legitimate
+        # vendor capabilities the bindings do not model.
+        #
+        # @example Set an option not handled by other methods
+        #   options = Selenium::WebDriver::Chrome::Options.new
+        #   options.add_chromium_option('unhandledCapability', 'value')
+        #
+        # @param [String, Symbol] name Name of the capability, as expected by the driver
+        # @param [Object] value Value of the capability
+        #
+
+        def add_chromium_option(name, value)
+          @vendor_options[name.to_s] = value
+        end
+
+        #
         # Enables mobile browser use on Android.
         #
         # @see https://chromedriver.chromium.org/getting-started/getting-started---android
@@ -207,6 +228,7 @@ module Selenium
           enable_logging(browser_options) unless @logging_prefs.empty?
 
           options = browser_options[self.class::KEY]
+          options.merge!(@vendor_options)
           options['binary'] ||= binary_path if binary_path
 
           if @profile

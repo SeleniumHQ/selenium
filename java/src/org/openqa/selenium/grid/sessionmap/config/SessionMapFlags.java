@@ -49,6 +49,21 @@ public class SessionMapFlags implements HasRoles {
   @ConfigValue(section = "sessions", name = "hostname", example = "\"localhost\"")
   private String sessionServerHost;
 
+  @Parameter(
+      names = "--sessions-scheme",
+      description = "URI scheme for the session map server (e.g. \"redis\", \"http\").")
+  @ConfigValue(section = "sessions", name = "scheme", example = "\"redis\"")
+  private String sessionServerScheme;
+
+  @Parameter(
+      names = "--sessions-implementation",
+      description = "Full classname of the non-default session map implementation.")
+  @ConfigValue(
+      section = "sessions",
+      name = "implementation",
+      example = "\"org.openqa.selenium.grid.sessionmap.redis.RedisBackedSessionMap\"")
+  private String sessionMapImplementation;
+
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(SESSION_MAP_ROLE);
