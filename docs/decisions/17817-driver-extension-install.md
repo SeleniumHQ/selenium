@@ -34,13 +34,10 @@ is what we advertise today.
       The method returns a `WebExtension` object which wraps the id.
    * **Uninstall behavior:** accepts the `WebExtension` object rather than a raw id.
 
-2. **Backwards compatible**. These methods must also support WebDriver-Classic functionality for Firefox
-   when BiDi is not enabled. Any existing methods or parameters for installing web extensions in Firefox
-   will be deprecated in favor of the new methods.
-
-3. **The methods are always present; on Chrome they require BiDi.** They are never conditionally hidden
-   per session. Chrome has no classic install path, so `installWebExtension` raises there when BiDi is
-   not enabled.
+2. **Backwards compatible**. On Firefox these methods fall back to the WebDriver-Classic endpoint when
+   BiDi is not enabled, and the existing classic install methods and parameters are deprecated in favor
+   of them. Chrome has no classic install path to preserve, so there `installWebExtension` requires BiDi
+   and raises when it is not enabled rather than being conditionally hidden.
 
 ## Considered options
 
@@ -88,8 +85,9 @@ These are the alternatives considered and not taken; the accepted choice is the 
 
 - Since the implementation must work with the Grid, bindings will have to convert path or archive to Base64
   before sending to target
-- **The classic fallback cannot disable private browsing.** Firefox's classic endpoint always installs
-  a web extension with private-browsing access and exposes no toggle, so `allowPrivateBrowsing: true`
-  (or unspecified) is satisfied on a non-BiDi session. Because the classic `/moz/addon/install` payload
-  cannot represent the option, a binding must validate `allowPrivateBrowsing: false` and throw before
-  delegating to classic, rather than silently installing with private-browsing access anyway.
+- **A vendor option the target can't honor raises; it is never silently dropped.** `permanent` and
+  `allowPrivateBrowsing` are Firefox-only, so a binding raises if either is passed on Chrome. And on a
+  non-BiDi Firefox session, the classic `/moz/addon/install` endpoint always installs with
+  private-browsing access and cannot represent `allowPrivateBrowsing: false`, so a binding validates and
+  raises before delegating to classic rather than installing with access anyway (`true` or unspecified is
+  satisfied by the classic default).
