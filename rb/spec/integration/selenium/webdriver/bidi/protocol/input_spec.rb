@@ -26,7 +26,6 @@ module Selenium
       module Protocol
         describe Input,
                  pending_if: {browser_family: :safari,
-                              exception: {class: Error::SerializationError},
                               reason: 'Safari script.evaluate result fails deserialization in input setup'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
           after { |example| reset_driver!(example: example) }

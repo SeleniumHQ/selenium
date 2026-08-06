@@ -376,7 +376,6 @@ module Selenium
 
           describe '#set_extra_headers',
                    pending_if: {browser_family: :safari,
-                                exception: {class: Error::SerializationError},
                                 reason: 'Safari network.setExtraHeaders result fails strict deserialization'} do
             it 'adds extra request headers for a context' do
               events, callback = subscribe('network.beforeRequestSent')

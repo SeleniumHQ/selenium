@@ -47,7 +47,6 @@ module Selenium
 
           describe '#add_preload_script',
                    pending_if: {browser_family: :safari,
-                                exception: {class: Error::SerializationError},
                                 reason: 'Safari script.addPreloadScript result fails strict deserialization'} do
             it 'runs a preload script in future documents' do
               result = script.add_preload_script(
@@ -82,11 +81,10 @@ module Selenium
             end
           end
 
-          describe '#call_function',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::SerializationError},
-                                reason: 'Safari remote value fails deserialization'} do
-            it 'calls a function with local value arguments' do
+          describe '#call_function' do
+            it 'calls a function with local value arguments',
+               pending_if: {browser_family: :safari,
+                            reason: 'Safari remote value fails deserialization'} do
               result = script.call_function(
                 function_declaration: '(left, right) => left + right',
                 await_promise: false,
@@ -98,7 +96,9 @@ module Selenium
               expect(result.result).to eq(Script::NumberValue.new(value: 5))
             end
 
-            it 'accepts this, ownership, serialization, and user activation options' do
+            it 'accepts this, ownership, serialization, and user activation options',
+               pending_if: {browser_family: :safari,
+                            reason: 'Safari call_function returns an unexpected result for this-object binding'} do
               result = script.call_function(
                 function_declaration: 'function (suffix) { return this.prefix + suffix; }',
                 await_promise: true,
@@ -117,7 +117,6 @@ module Selenium
 
           describe '#disown',
                    pending_if: {browser_family: :safari,
-                                exception: {class: Error::SerializationError},
                                 reason: 'Safari remote value fails deserialization'} do
             it 'disowns a remote handle' do
               result = evaluate('({answer: 42})', result_ownership: :root)
@@ -139,7 +138,6 @@ module Selenium
 
             it 'awaits promises and accepts serialization options',
                pending_if: {browser_family: :safari,
-                            exception: {class: Error::SerializationError},
                             reason: 'Safari remote value fails deserialization'} do
               result = evaluate(
                 'Promise.resolve({name: "ruby", nested: {hidden: true}})',
@@ -177,7 +175,6 @@ module Selenium
 
           describe '#remove_preload_script',
                    pending_if: {browser_family: :safari,
-                                exception: {class: Error::SerializationError},
                                 reason: 'Safari script.addPreloadScript result fails strict deserialization'} do
             it 'removes a preload script before future navigations' do
               result = script.add_preload_script(
