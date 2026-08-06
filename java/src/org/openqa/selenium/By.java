@@ -242,7 +242,7 @@ public abstract class By {
       super(
           "name",
           Require.argument("Name", name).nonNull("Cannot find elements when name text is null."),
-          String.format("*[name='%s']", name.replace("'", "\\'")));
+          "*[name='" + name.replace("'", "\\'").replace("%", "%%") + "']");
 
       this.name = name;
     }
@@ -448,8 +448,8 @@ public abstract class By {
 
     private String cssEscape(String using) {
       using = CSS_ESCAPE.matcher(using).replaceAll("\\\\$1");
-      if (!using.isEmpty() && Character.isDigit(using.charAt(0))) {
-        using = "\\" + (30 + Integer.parseInt(using.substring(0, 1))) + " " + using.substring(1);
+      if (!using.isEmpty() && using.charAt(0) >= '0' && using.charAt(0) <= '9') {
+        using = "\\" + (30 + (using.charAt(0) - '0')) + " " + using.substring(1);
       }
       return using;
     }
