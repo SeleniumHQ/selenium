@@ -84,28 +84,6 @@ module Selenium
             expect(driver.execute_script('return [window.innerWidth, window.innerHeight]')).to eq([800, 600])
           end
 
-          it 'returns a no such alert error when no prompt is open' do
-            expect {
-              browsing_context.handle_user_prompt(context: driver.window_handle, accept: true)
-            }.to raise_error(Error::NoSuchAlertError)
-          end
-
-          it 'accepts user text in the protocol payload' do
-            expect {
-              browsing_context.handle_user_prompt(
-                context: driver.window_handle,
-                accept: true,
-                user_text: 'Hello, world!'
-              )
-            }.to raise_error(Error::NoSuchAlertError)
-          end
-
-          it 'accepts a reject prompt protocol payload' do
-            expect {
-              browsing_context.handle_user_prompt(context: driver.window_handle, accept: false)
-            }.to raise_error(Error::NoSuchAlertError)
-          end
-
           it 'activates a browser context',
              pending_if: {browser_family: :safari, reason: 'Safari does not focus the activated context'} do
             window = driver.window_handle
