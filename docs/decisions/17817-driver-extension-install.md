@@ -35,9 +35,12 @@ is what we advertise today.
    * **Uninstall behavior:** accepts the `WebExtension` object rather than a raw id.
 
 2. **Backwards compatible**. On Firefox these methods fall back to the WebDriver-Classic endpoint when
-   BiDi is not enabled, and the existing classic install methods and parameters are deprecated in favor
-   of them. Chrome has no classic install path to preserve, so there `installWebExtension` requires BiDi
-   and raises when it is not enabled rather than being conditionally hidden.
+   BiDi is not enabled, so no existing capability is lost; the existing classic install methods and
+   parameters are deprecated in favor of them.
+
+3. **Raise when the target cannot honor the request.** When a browser or transport cannot fulfill a
+   request, it raises rather than silently doing less — such as `installWebExtension` on Chrome without
+   BiDi.
 
 ## Considered options
 
@@ -85,9 +88,6 @@ These are the alternatives considered and not taken; the accepted choice is the 
 
 - Since the implementation must work with the Grid, bindings will have to convert path or archive to Base64
   before sending to target
-- **A vendor option the target can't honor raises; it is never silently dropped.** `permanent` and
-  `allowPrivateBrowsing` are Firefox-only, so a binding raises if either is passed on Chrome. And on a
-  non-BiDi Firefox session, the classic `/moz/addon/install` endpoint always installs with
-  private-browsing access and cannot represent `allowPrivateBrowsing: false`, so a binding validates and
-  raises before delegating to classic rather than installing with access anyway (`true` or unspecified is
-  satisfied by the classic default).
+- **Vendor-specific options are only made available on that vendor's driver.** Options like Firefox's
+  `permanent` and `allowPrivateBrowsing` are exposed only on that vendor's driver surface, so a session
+  for another browser has no way to pass them — there is nothing to silently drop or raise.
