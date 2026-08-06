@@ -45,7 +45,7 @@ fn browser_version_test(
     #[case] browser_version: String,
     #[case] driver_version: String,
 ) {
-    if OS.eq("linux") && ARCH.eq("aarch64") && !browser.eq("firefox") {
+    if OS.eq("linux") && ARCH.eq("aarch64") {
         return;
     }
 

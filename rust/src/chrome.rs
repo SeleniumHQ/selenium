@@ -28,7 +28,7 @@ use crate::metadata::{
 use crate::{
     BETA, DASH_DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
     SeleniumManager, UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG, create_http_client,
-    format_three_args,
+    format_four_args,
 };
 use anyhow::Error;
 use anyhow::anyhow;
@@ -211,10 +211,11 @@ impl ChromeManager {
         if filtered_versions.is_empty() {
             return Err(anyhow!(format!(
                 "{}. Check available versions at {}",
-                format_three_args(
+                format_four_args(
                     UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
                     self.get_driver_name(),
                     version_for_filtering.as_str(),
+                    self.get_arch(),
                     &MIN_CHROMEDRIVER_VERSION_CFT.to_string(),
                 ),
                 CFT_URL

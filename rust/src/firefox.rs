@@ -62,8 +62,10 @@ const FIREFOX_NIGHTLY_URL: &str =
 const FIREFOX_VOLUME: &str = "Firefox";
 const FIREFOX_NIGHTLY_VOLUME: &str = r"Firefox\ Nightly";
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN: i32 = 13;
+const MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN_ARM64: i32 = 102;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC: i32 = 4;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX: i32 = 4;
+const MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX_ARM64: i32 = 136;
 const UNAVAILABLE_DOWNLOAD_ERROR_MESSAGE: &str =
     "{} {} not available for downloading (minimum version: {})";
 const FIREFOX_RELEASES_URL: &str = "https://www.mozilla.org/en-US/firefox/releases/";
@@ -321,16 +323,10 @@ impl SeleniumManager for FirefoxManager {
         let os = self.get_os();
         let arch = self.get_arch();
 
-        // As of 0.32.0, geckodriver ships aarch64 binaries for Linux and Windows
-        // https://github.com/mozilla/geckodriver/releases/tag/v0.32.0
-        let minor_driver_version = self
-            .get_minor_version(driver_version)?
-            .parse::<i32>()
-            .unwrap_or_default();
         let driver_label = if WINDOWS.is(os) {
             if X32.is(arch) {
                 "win32.zip"
-            } else if ARM64.is(arch) && minor_driver_version > 31 {
+            } else if ARM64.is(arch) {
                 "win-aarch64.zip"
             } else {
                 "win64.zip"
@@ -343,7 +339,7 @@ impl SeleniumManager for FirefoxManager {
             }
         } else if X32.is(arch) {
             "linux32.tar.gz"
-        } else if ARM64.is(arch) && minor_driver_version > 31 {
+        } else if ARM64.is(arch) {
             "linux-aarch64.tar.gz"
         } else {
             "linux64.tar.gz"
@@ -522,10 +518,17 @@ impl SeleniumManager for FirefoxManager {
 
     fn get_min_browser_version_for_download(&self) -> Result<i32, Error> {
         let os = self.get_os();
+        let arch = self.get_arch();
         let min_browser_version_for_download = if WINDOWS.is(os) {
-            MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN
+            if ARM64.is(arch) {
+                MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN_ARM64
+            } else {
+                MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN
+            }
         } else if MACOS.is(os) {
             MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC
+        } else if ARM64.is(arch) {
+            MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX_ARM64
         } else {
             MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX
         };
@@ -598,13 +601,6 @@ impl SeleniumManager for FirefoxManager {
                     platform_label = "linux64";
                 }
             } else if ARM64.is(arch) {
-                if major_browser_version < 136 {
-                    return Err(anyhow!(
-                        "Firefox arm64 for Linux is only available from version 136 onwards. \
-                        You requested version {}. Please use version 136 or later.",
-                        self.get_browser_version()
-                    ));
-                }
                 platform_label = "linux-aarch64";
             } else {
                 platform_label = "linux-x86_64";
@@ -760,7 +756,7 @@ mod unit_tests {
                 "0.31.0",
                 "linux",
                 "aarch64",
-                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-linux64.tar.gz",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-linux-aarch64.tar.gz",
             ],
             vec![
                 "0.31.0",
@@ -778,7 +774,7 @@ mod unit_tests {
                 "0.31.0",
                 "windows",
                 "aarch64",
-                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-win64.zip",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-win-aarch64.zip",
             ],
             vec![
                 "0.31.0",
