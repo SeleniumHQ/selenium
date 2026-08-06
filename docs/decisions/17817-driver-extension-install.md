@@ -12,19 +12,6 @@ Chromium takes web extensions through capabilities applied at session creation. 
 honoring that path in Chrome 137 (Chrome for Testing and unbranded Chromium still do), so installing
 after the session starts is now a requirement.
 
-Chromium can connect to BiDi over either an inherited pipe or a debugging port. Selenium's CDP API
-only works through the debugging port, but for security reasons Chromium does not allow installing a
-web extension over BiDi through the debugging port, only through the inherited pipe. That leaves two
-options:
-
-1. Require the user to pass arguments in capabilities to switch to the pipe before web extensions can be
-   installed.
-2. Switch Selenium's default connection to the inherited pipe, which removes support for the CDP API
-   (Decision 3).
-
-Over the pipe it is still possible to send CDP commands through the vendored `goog/cdp/execute`
-endpoint, but no asynchronous behavior (events) is supported.
-
 WebDriver BiDi specifies web extension install and uninstall, which both Firefox and Chromium
 implement. Most bindings already expose the BiDi module for it, and pointing users at that module
 is what we advertise today.
@@ -50,11 +37,6 @@ is what we advertise today.
 2. **Backwards compatible**. These methods must also support WebDriver-Classic functionality for Firefox
    when BiDi is not enabled. Any existing methods or parameters for installing web extensions in Firefox
    will be deprecated in favor of the new methods.
-
-3. **Enabling BiDi disables the CDP API.** For Chromium sessions, bindings pass the arguments for
-   `remote-debugging-pipe` and `enable-unsafe-extension-debugging` when BiDi is enabled so users can
-   install web extensions without setting the arguments themselves. This prevents users from accessing
-   the CDP API, so bindings must throw an exception when attempting to use it.
 
 ## Considered options
 
@@ -102,5 +84,3 @@ These are the alternatives considered and not taken; the accepted choice is the 
   (or unspecified) is satisfied on a non-BiDi session. Because the classic `/moz/addon/install` payload
   cannot represent the option, a binding must validate `allowPrivateBrowsing: false` and throw before
   delegating to classic, rather than silently installing with private-browsing access anyway.
-- Users with CDP implementations wanting to install web extensions must switch to BiDi equivalents or
-  make use of the raw CDP endpoint
