@@ -38,6 +38,10 @@ is what we advertise today.
    when BiDi is not enabled. Any existing methods or parameters for installing web extensions in Firefox
    will be deprecated in favor of the new methods.
 
+3. **The methods are always present; on Chrome they require BiDi.** They are never conditionally hidden
+   per session. Chrome has no classic install path, so `installWebExtension` raises there when BiDi is
+   not enabled.
+
 ## Considered options
 
 These are the alternatives considered and not taken; the accepted choice is the decision above.
@@ -51,6 +55,11 @@ These are the alternatives considered and not taken; the accepted choice is the 
 - **A dedicated `webExtensions` namespace** — consistent with `network` / `script`, with room to grow,
   but two methods make that seem excessive, especially when the precedent from Firefox is to have the
   method on the driver directly
+
+**Conditional availability**
+- **Expose the method only where it works** — hide it on a Chrome session without BiDi rather than
+  raising. Not taken: Java cannot conditionally implement the interface, and doing it only in a binding
+  that can (Ruby) would make it the odd one out; a uniform surface that raises a clear error is simpler.
 
 **Naming**
 - **`installExtension` returning `Extension`** — shorter and reuses the name Java already ships, but
