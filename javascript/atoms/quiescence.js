@@ -29,7 +29,9 @@
  *   window.__quiescence.markInert(handle)      -> boolean  (in-page cooperative annotation)
  *   window.__quiescence.onStateChanged(cb)     -> unsubscribe fn
  *
- * Blocker classes tracked in v0: timeout, interval, raf, fetch, xhr, websocket.
+ * Blocker classes tracked in v0: timeout, interval, raf, fetch, xhr,
+ * websocket, resource (outstanding subresource loads: images, media, frames,
+ * objects, dynamically inserted scripts and stylesheets).
  * Observed-inertness is implemented for intervals and rAF loops: a periodic
  * task that completes N consecutive invocations with no DOM mutation, no
  * network dispatch, and no Web Storage write is reclassified as provisionally
@@ -44,6 +46,13 @@
  *    rAF effects are not tracked in v0.
  *  - Promise reactions are not tracked (undecidable from script level without
  *    async-context hooks); microtasks drain within the settle window anyway.
+ *  - Resource tracking: loading="lazy" images are never tracked (they fetch
+ *    on viewport proximity with no observable start edge); scripts and
+ *    stylesheets already in flight at DOMContentLoaded, and cross-origin
+ *    frames already loading at that point, are missed (no introspectable
+ *    completion state, so tracking them could produce a never-settling
+ *    entry); media settles at first renderable data or `suspend`, not full
+ *    buffering.
  *
  * Must run before any page script (BiDi script.addPreloadScript, or CDP
  * Page.addScriptToEvaluateOnNewDocument).
@@ -87,6 +96,9 @@
     countOpenSockets: true,
     // Whether pending rAF counts at all (some suites only care about data).
     countRaf: true,
+    // Whether outstanding subresource loads (img/media/iframe/object/script/
+    // stylesheet) count as blockers.
+    countResourceLoads: true,
   };
   let compiledIgnores = [];
   function compileIgnores() {
@@ -134,6 +146,8 @@
         return policy.countRaf;
       case 'websocket':
         return policy.countOpenSockets;
+      case 'resource':
+        return policy.countResourceLoads;
       default: // fetch, xhr
         return true;
     }
@@ -372,6 +386,135 @@
     });
   }
 
+  // ---- Subresource loading ---------------------------------------------------
+  // Outstanding element-driven loads (img/media/iframe/object/script/
+  // stylesheet) are ledger entries until their load/error (media: first
+  // renderable data or suspend) events fire. Detection is edge-triggered:
+  // insertions and src/href/data changes seen by the DOM observer, a
+  // DOMContentLoaded sweep for parser-created elements still in flight, and a
+  // src setter hook for detached loads (`new Image().src = ...` fetches
+  // without ever entering the DOM).
+  const RESOURCE_KIND_BY_TAG = {
+    IMG: 'img', VIDEO: 'media', AUDIO: 'media', IFRAME: 'iframe',
+    OBJECT: 'object', SCRIPT: 'script', LINK: 'stylesheet',
+  };
+  const RESOURCE_SELECTOR = 'img,video,audio,iframe,object,script[src],link[rel]';
+  const MEDIA_SETTLE_EVENTS = ['loadeddata', 'suspend', 'error', 'abort', 'emptied'];
+  const NETWORK_LOADING = 2;
+  const resourceLedgerByEl = new WeakMap();
+  // Script elements only ever fetch once (re-inserting a moved script does not
+  // refetch), so each is tracked at most once to avoid a never-settling entry.
+  const startedScripts = new WeakSet();
+  function isStylesheetLink(el) {
+    return el.relList ? el.relList.contains('stylesheet')
+      : /(^|\s)stylesheet(\s|$)/i.test(el.rel || '');
+  }
+  function resourcePending(el, kind, atSweep) {
+    switch (kind) {
+      case 'img':
+        return !!(el.getAttribute('src') || el.getAttribute('srcset'))
+          && !el.complete && el.loading !== 'lazy';
+      case 'media':
+        return el.networkState === NETWORK_LOADING;
+      case 'iframe':
+        if (!el.getAttribute('src')) return false;
+        if (atSweep) {
+          // Only same-origin frames are introspectable at sweep time; a
+          // cross-origin frame is skipped rather than risking an entry for
+          // one that already finished (its load event will never re-fire).
+          try {
+            const doc = el.contentDocument;
+            return !!doc && doc.readyState !== 'complete';
+          } catch (_) { return false; }
+        }
+        return true; // edge-triggered: the load/error is still to come
+      case 'script':
+        if (atSweep || startedScripts.has(el)) return false;
+        if (!el.getAttribute('src') || !el.isConnected) return false;
+        startedScripts.add(el);
+        return true;
+      case 'stylesheet':
+        return !atSweep && isStylesheetLink(el) && !!el.getAttribute('href')
+          && el.isConnected && !el.sheet;
+      case 'object':
+        return !atSweep && !!el.getAttribute('data') && el.isConnected;
+      default:
+        return false;
+    }
+  }
+  function trackResource(el, atSweep) {
+    if (!policy.countResourceLoads) return;
+    const kind = el.tagName && RESOURCE_KIND_BY_TAG[el.tagName];
+    if (!kind) return;
+    // A src/href/data change aborts the previous load (its events may never
+    // fire), so any prior entry for this element is retired first.
+    const previous = resourceLedgerByEl.get(el);
+    if (previous !== undefined) { remove(previous); resourceLedgerByEl.delete(el); }
+    if (!resourcePending(el, kind, !!atSweep)) return;
+    const url = String(el.currentSrc || el.src || el.href || el.data || '');
+    const id = add('resource', { kind, url }, { ignored: urlIgnored(url) });
+    resourceLedgerByEl.set(el, id);
+    const settle = () => {
+      if (resourceLedgerByEl.get(el) === id) resourceLedgerByEl.delete(el);
+      remove(id);
+    };
+    const events = kind === 'media' ? MEDIA_SETTLE_EVENTS : ['load', 'error'];
+    for (const ev of events) el.addEventListener(ev, settle, { once: true });
+  }
+  function scanRecordsForResources(records) {
+    if (!policy.countResourceLoads) return;
+    for (const rec of records) {
+      if (rec.type === 'attributes') {
+        const attr = rec.attributeName;
+        // Scripts never refetch on src change; retracking one would stick.
+        if ((attr === 'src' || attr === 'srcset' || attr === 'href' || attr === 'data')
+            && rec.target.tagName !== 'SCRIPT') {
+          trackResource(rec.target);
+        }
+      } else if (rec.type === 'childList') {
+        for (const node of rec.addedNodes) {
+          if (node.nodeType !== 1) continue;
+          if (RESOURCE_KIND_BY_TAG[node.tagName]) trackResource(node);
+          if (node.querySelectorAll) {
+            for (const el of node.querySelectorAll(RESOURCE_SELECTOR)) trackResource(el);
+          }
+        }
+      }
+    }
+  }
+  function sweepPendingResources() {
+    if (!policy.countResourceLoads) return;
+    const doc = global.document;
+    if (!doc || !doc.querySelectorAll) return;
+    // Only kinds whose "still loading" state is introspectable — a done
+    // script/stylesheet is indistinguishable from a pending one after the
+    // fact, and a stale entry would hold the ledger until timeout.
+    for (const el of doc.querySelectorAll('img,video,audio,iframe')) trackResource(el, true);
+  }
+  if (global.document) {
+    if (global.document.readyState === 'loading') {
+      global.document.addEventListener('DOMContentLoaded', sweepPendingResources, { once: true });
+    } else {
+      sweepPendingResources();
+    }
+  }
+  function hookSrcSetter(ctor) {
+    if (!ctor || !ctor.prototype) return;
+    const desc = Object.getOwnPropertyDescriptor(ctor.prototype, 'src');
+    if (!desc || !desc.set || !desc.configurable) return;
+    Object.defineProperty(ctor.prototype, 'src', {
+      configurable: true,
+      enumerable: desc.enumerable,
+      get: desc.get,
+      set(value) {
+        desc.set.call(this, value);
+        try { trackResource(this); } catch (_) { /* tracking must never break the page */ }
+      },
+    });
+  }
+  hookSrcSetter(global.HTMLImageElement);
+  hookSrcSetter(global.HTMLMediaElement);
+
   // ---- DOM mutation quiescence ----------------------------------------------
   // Backward-looking debounce: the DOM is "settled" when meaningful mutations
   // have stopped for a settle window. Uses its own observer — runTracked drains
@@ -478,6 +621,7 @@
     const root = global.document.documentElement;
     if (!root) return; // too early at document_start; retried on DOMContentLoaded
     domObs = new MutationObserver((records) => {
+      scanRecordsForResources(records);
       const now = native.now();
       let meaningful = false;
       for (const rec of records) {

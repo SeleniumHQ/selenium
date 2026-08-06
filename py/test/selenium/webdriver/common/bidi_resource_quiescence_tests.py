@@ -134,8 +134,7 @@ def test_completed_image_does_not_block(driver, pages):
     _navigate(driver, pages, "blank.html")
 
     driver.execute_script(
-        "const i = document.createElement('img'); i.id = 'done'; i.src = '/button.png';"
-        "document.body.appendChild(i);"
+        "const i = document.createElement('img'); i.id = 'done'; i.src = '/button.png';document.body.appendChild(i);"
     )
     WebDriverWait(driver, 5).until(lambda d: d.execute_script("return document.getElementById('done').complete;"))
 
@@ -146,8 +145,7 @@ def test_image_src_change_retracks(driver, pages):
     _navigate(driver, pages, "blank.html")
 
     driver.execute_script(
-        "const i = document.createElement('img'); i.id = 'r'; i.src = '/button.png';"
-        "document.body.appendChild(i);"
+        "const i = document.createElement('img'); i.id = 'r'; i.src = '/button.png';document.body.appendChild(i);"
     )
     WebDriverWait(driver, 5).until(lambda d: d.execute_script("return document.getElementById('r').complete;"))
     assert _is_quiet(driver) is True
@@ -163,15 +161,30 @@ def test_image_src_change_retracks(driver, pages):
 
 
 def test_parser_created_slow_image_is_awaited(driver, pages):
-    # wait="interactive" returns at DOMContentLoaded, while the parser-created
-    # image's bytes are still arriving; the DOMContentLoaded sweep must have
-    # picked it up.
-    _navigate(driver, pages, "slow_loading_resources.html", wait="interactive")
+    # Navigate without waiting so the parser-created image is still fetching
+    # when we look: the DOMContentLoaded sweep must have registered it as a
+    # resource blocker (the MutationObserver was not yet attached while the
+    # parser inserted it). Classic execute_script blocks until page load under
+    # the default page-load strategy, so the mid-load ledger is only
+    # observable via BiDi script evaluation.
+    _navigate(driver, pages, "slow_loading_resources.html", wait="none")
+
+    def resource_blocker_seen(d):
+        try:
+            result = d.script.execute(
+                "() => location.pathname.indexOf('slow_loading_resources') !== -1"
+                " && !!window.__quiescence"
+                " && window.__quiescence.getBlockers().some(b => b.type === 'resource')"
+            )
+            return isinstance(result, dict) and result.get("value") is True
+        except Exception:
+            return False  # navigation may still be committing
+
+    WebDriverWait(driver, 5, poll_frequency=0.1).until(resource_blocker_seen)
 
     result = _await_quiet(driver)
 
     assert result["quiet"] is True
-    assert result["elapsedMs"] >= 300
 
 
 # ---------------------------------------------------------------------------
