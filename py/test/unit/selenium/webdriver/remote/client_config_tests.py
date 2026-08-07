@@ -17,12 +17,33 @@
 
 import pytest
 
+from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.webdriver.remote.client_config import ClientConfig
+
+PROXY = "http://proxy.internal:3128"
 
 
 @pytest.fixture
 def config():
     return ClientConfig(remote_server_addr="http://localhost:4444")
+
+
+@pytest.fixture
+def system_proxy_env(monkeypatch):
+    """Clear every proxy variable, then set only ``http_proxy``."""
+
+    def setup(no_proxy=None):
+        for name in ("http_proxy", "HTTP_PROXY", "https_proxy", "HTTPS_PROXY", "no_proxy", "NO_PROXY"):
+            monkeypatch.delenv(name, raising=False)
+        monkeypatch.setenv("http_proxy", PROXY)
+        if no_proxy is not None:
+            monkeypatch.setenv("no_proxy", no_proxy)
+
+    return setup
+
+
+def system_config(remote_server_addr="http://localhost:4444"):
+    return ClientConfig(remote_server_addr=remote_server_addr, proxy=Proxy(raw={"proxyType": ProxyType.SYSTEM}))
 
 
 def test_websocket_max_message_size_defaults_to_none(config):
@@ -37,3 +58,91 @@ def test_websocket_max_message_size_can_be_set(config):
 def test_websocket_max_message_size_via_constructor():
     cfg = ClientConfig(remote_server_addr="http://localhost:4444", websocket_max_message_size=2**26)
     assert cfg.websocket_max_message_size == 2**26
+
+
+@pytest.mark.parametrize(
+    "no_proxy",
+    [
+        "example.com,",
+        ",example.com",
+        "example.com,,other.com",
+        "example.com, ,other.com",
+        ",",
+        "",
+    ],
+    ids=[
+        "trailing-comma",
+        "leading-comma",
+        "doubled-comma",
+        "whitespace-only-entry",
+        "bare-comma",
+        "empty-value",
+    ],
+)
+def test_empty_no_proxy_entries_do_not_bypass_the_proxy(system_proxy_env, no_proxy):
+    """An empty entry must be ignored, not treated as matching every host."""
+    system_proxy_env(no_proxy)
+    assert system_config().get_proxy_url() == PROXY
+
+
+@pytest.mark.parametrize(
+    ("no_proxy", "server"),
+    [
+        ("foo.com", "http://myfoo.com.example.org:4444"),
+        ("example.com", "http://notexample.common.org:4444"),
+        ("localhost", "http://localhosting.org:4444"),
+    ],
+)
+def test_no_proxy_entry_does_not_match_on_a_bare_substring(system_proxy_env, no_proxy, server):
+    """A bypass entry must match a whole host or a dot-delimited suffix of it."""
+    system_proxy_env(no_proxy)
+    assert system_config(server).get_proxy_url() == PROXY
+
+
+@pytest.mark.parametrize(
+    ("no_proxy", "server"),
+    [
+        ("example.com", "http://example.com:4444"),
+        ("example.com", "http://sub.example.com:4444"),
+        (".example.com", "http://sub.example.com:4444"),
+        ("localhost", "http://localhost:4444"),
+        ("other.com,example.com", "http://example.com:4444"),
+        ("other.com, example.com", "http://example.com:4444"),
+        ("example.com,", "http://example.com:4444"),
+        ("EXAMPLE.COM", "http://example.com:4444"),
+        ("127.0.0.1", "http://127.0.0.1:4444"),
+        ("::1", "http://[::1]:4444"),
+        ("[::1]", "http://[::1]:4444"),
+    ],
+)
+def test_matching_no_proxy_entry_bypasses_the_proxy(system_proxy_env, no_proxy, server):
+    system_proxy_env(no_proxy)
+    assert system_config(server).get_proxy_url() is None
+
+
+def test_no_proxy_wildcard_bypasses_every_host(system_proxy_env):
+    system_proxy_env("*")
+    assert system_config().get_proxy_url() is None
+
+
+def test_no_proxy_entry_written_as_a_url_matches_only_its_host(system_proxy_env):
+    system_proxy_env("http://example.com")
+    assert system_config("http://example.com:4444").get_proxy_url() is None
+    assert system_config("http://localhost:4444").get_proxy_url() == PROXY
+
+
+def test_no_proxy_url_entry_matches_an_ipv6_host(system_proxy_env):
+    """An IPv6 literal is bracketed in a netloc but not in a hostname."""
+    system_proxy_env("http://[::1]")
+    assert system_config("http://[::1]:4444").get_proxy_url() is None
+
+
+def test_no_proxy_ipv6_url_entry_with_a_port_matches_only_that_port(system_proxy_env):
+    system_proxy_env("http://[::1]:4444")
+    assert system_config("http://[::1]:4444").get_proxy_url() is None
+    assert system_config("http://[::1]:5555").get_proxy_url() == PROXY
+
+
+def test_proxy_is_used_when_no_proxy_is_unset(system_proxy_env):
+    system_proxy_env()
+    assert system_config().get_proxy_url() == PROXY
