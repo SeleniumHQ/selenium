@@ -78,9 +78,11 @@ internal sealed class Broker : IAsyncDisposable
 
         var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        using var cts = cancellationToken.CanBeCanceled
-            ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
+        using CancellationTokenSource? cts = cancellationToken.CanBeCanceled
+            ? null
             : new CancellationTokenSource(DefaultCommandTimeout);
+
+        var effectiveToken = cts?.Token ?? cancellationToken;
 
         var sendBuffer = RentBuffer();
 
@@ -129,9 +131,9 @@ internal sealed class Broker : IAsyncDisposable
         var commandInfo = new CommandInfo(tcs, descriptor.ResultTypeInfo);
         _pendingCommands[id] = commandInfo;
 
-        using var ctsRegistration = cts.Token.Register(() =>
+        using var ctsRegistration = effectiveToken.Register(() =>
         {
-            tcs.TrySetCanceled(cts.Token);
+            tcs.TrySetCanceled(effectiveToken);
             _pendingCommands.TryRemove(id, out _);
         });
 
@@ -146,7 +148,7 @@ internal sealed class Broker : IAsyncDisposable
 #endif
             }
 
-            await _transport.SendAsync(sendBuffer.WrittenMemory, cts.Token).ConfigureAwait(false);
+            await _transport.SendAsync(sendBuffer.WrittenMemory, effectiveToken).ConfigureAwait(false);
         }
         catch
         {
