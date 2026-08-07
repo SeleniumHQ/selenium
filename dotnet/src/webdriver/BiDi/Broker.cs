@@ -82,8 +82,7 @@ internal sealed class Broker : IAsyncDisposable
             ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
             : new CancellationTokenSource();
 
-        var timeout = options?.Timeout ?? DefaultCommandTimeout;
-        cts.CancelAfter(timeout);
+        cts.CancelAfter(DefaultCommandTimeout);
 
         var sendBuffer = RentBuffer();
 

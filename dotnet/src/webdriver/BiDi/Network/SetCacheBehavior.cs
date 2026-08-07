@@ -33,8 +33,7 @@ public sealed record ContextSetCacheBehaviorOptions : CommandOptions
 {
     internal static SetCacheBehaviorOptions WithContext(ContextSetCacheBehaviorOptions? options, BrowsingContext.BrowsingContext context) => new()
     {
-        Contexts = [context],
-        Timeout = options?.Timeout
+        Contexts = [context]
     };
 }
 
