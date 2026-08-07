@@ -1987,9 +1987,49 @@ pub fn format_three_args(string: &str, arg1: &str, arg2: &str, arg3: &str) -> St
 // ----------------------------------------------------------
 
 fn get_index_version(full_version: &str, index: usize) -> Result<String, Error> {
+    if full_version.is_empty() {
+        return Err(anyhow!(format!("Wrong version: {}", full_version)));
+    }
     let version_vec: Vec<&str> = full_version.split('.').collect();
     Ok(version_vec
         .get(index)
         .ok_or(anyhow!(format!("Wrong version: {}", full_version)))?
         .to_string())
+}
+
+#[cfg(test)]
+mod index_version_tests {
+    use super::*;
+
+    #[test]
+    fn get_index_version_major() {
+        assert_eq!(get_index_version("120.0.6099.109", 0).unwrap(), "120");
+    }
+
+    #[test]
+    fn get_index_version_minor() {
+        assert_eq!(get_index_version("120.0.6099.109", 1).unwrap(), "0");
+    }
+
+    #[test]
+    fn get_index_version_patch() {
+        assert_eq!(get_index_version("120.0.6099.109", 2).unwrap(), "6099");
+    }
+
+    #[test]
+    fn get_index_version_single_component() {
+        assert_eq!(get_index_version("115", 0).unwrap(), "115");
+    }
+
+    #[test]
+    fn get_index_version_out_of_bounds_errors() {
+        let result = get_index_version("115", 1);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn get_index_version_empty_string_errors() {
+        let result = get_index_version("", 0);
+        assert!(result.is_err());
+    }
 }

@@ -1,4 +1,4 @@
-// <copyright file="V148Domains.cs" company="Selenium Committers">
+// <copyright file="V151Domains.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,38 +17,38 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.DevTools.V148;
+namespace OpenQA.Selenium.DevTools.V151;
 
 /// <summary>
-/// Class containing the domain implementation for version 148 of the DevTools Protocol.
+/// Class containing the domain implementation for version 151 of the DevTools Protocol.
 /// </summary>
-public class V148Domains : DevToolsDomains
+public class V151Domains : DevToolsDomains
 {
     private readonly DevToolsSessionDomains domains;
-    private readonly Lazy<V148Network> network;
-    private readonly Lazy<V148JavaScript> javaScript;
-    private readonly Lazy<V148Target> target;
-    private readonly Lazy<V148Log> log;
+    private readonly Lazy<V151Network> network;
+    private readonly Lazy<V151JavaScript> javaScript;
+    private readonly Lazy<V151Target> target;
+    private readonly Lazy<V151Log> log;
 
     /// <summary>
-    /// Initializes a new instance of the V148Domains class.
+    /// Initializes a new instance of the V151Domains class.
     /// </summary>
     /// <param name="session">The DevToolsSession to use with this set of domains.</param>
     /// <exception cref="ArgumentNullException">If <paramref name="session"/> is <see langword="null"/>.</exception>
-    public V148Domains(DevToolsSession session)
+    public V151Domains(DevToolsSession session)
     {
         ArgumentNullException.ThrowIfNull(session);
         this.domains = new DevToolsSessionDomains(session);
-        this.network = new Lazy<V148Network>(() => new V148Network(domains.Network, domains.Fetch));
-        this.javaScript = new Lazy<V148JavaScript>(() => new V148JavaScript(domains.Runtime, domains.Page));
-        this.target = new Lazy<V148Target>(() => new V148Target(domains.Target));
-        this.log = new Lazy<V148Log>(() => new V148Log(domains.Log));
+        this.network = new Lazy<V151Network>(() => new V151Network(domains.Network, domains.Fetch));
+        this.javaScript = new Lazy<V151JavaScript>(() => new V151JavaScript(domains.Runtime, domains.Page));
+        this.target = new Lazy<V151Target>(() => new V151Target(domains.Target));
+        this.log = new Lazy<V151Log>(() => new V151Log(domains.Log));
     }
 
     /// <summary>
     /// Gets the DevTools Protocol version for which this class is valid.
     /// </summary>
-    public static int DevToolsVersion => 148;
+    public static int DevToolsVersion => 151;
 
     /// <summary>
     /// Gets the version-specific domains for the DevTools session. This value must be cast to a version specific type to be at all useful.

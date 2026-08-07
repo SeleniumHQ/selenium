@@ -60,6 +60,15 @@ single_version_override(
     ],
 )
 
+# Patch support for bazel-contrib/rules_ruby#393 remove in next rules_ruby release
+single_version_override(
+    module_name = "rules_ruby",
+    patch_strip = 1,
+    patches = [
+        "//third_party/bazel:rules_ruby_windows_batch_crlf.patch",
+    ],
+)
+
 multitool = use_extension("@rules_multitool//multitool:extension.bzl", "multitool")
 multitool.hub(lockfile = "//:multitool.lock.json")
 use_repo(multitool, "multitool")
@@ -76,7 +85,7 @@ linter.configure(
 linter.register(name = "rust-rustfmt")
 
 node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node")
-node.toolchain(node_version = "22.22.0")
+node.toolchain(node_version_from_nvmrc = "//:.nvmrc")
 
 pnpm = use_extension(
     "@aspect_rules_js//npm:extensions.bzl",

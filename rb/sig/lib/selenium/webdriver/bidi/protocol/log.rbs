@@ -27,7 +27,11 @@ module Selenium
 
           LEVEL: Hash[Symbol, String]
 
+          type entry = ::Selenium::WebDriver::BiDi::Protocol::Log::ConsoleLogEntry | ::Selenium::WebDriver::BiDi::Protocol::Log::JavascriptLogEntry | ::Selenium::WebDriver::BiDi::Protocol::Log::GenericLogEntry
+
           class Entry < ::Selenium::WebDriver::BiDi::Serialization::Union
+            def self.console: (?type: String, level: Symbol, source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source, text: String?, timestamp: Integer, ?stack_trace: ::Selenium::WebDriver::BiDi::Protocol::Script::StackTrace, method_: String, args: Array[::Selenium::WebDriver::BiDi::Protocol::Script::remote_value]) -> ::Selenium::WebDriver::BiDi::Protocol::Log::ConsoleLogEntry
+            def self.javascript: (?type: String, level: Symbol, source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source, text: String?, timestamp: Integer, ?stack_trace: ::Selenium::WebDriver::BiDi::Protocol::Script::StackTrace) -> ::Selenium::WebDriver::BiDi::Protocol::Log::JavascriptLogEntry
           end
 
           class BaseLogEntry < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -57,8 +61,8 @@ module Selenium
             attr_reader timestamp: Integer
             attr_reader stack_trace: untyped
             attr_reader method_: String
-            attr_reader args: Array[::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue]
-            def self.new: (?type: String, level: Symbol, source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source, text: String?, timestamp: Integer, ?stack_trace: ::Selenium::WebDriver::BiDi::Protocol::Script::StackTrace, method_: String, args: Array[::Selenium::WebDriver::BiDi::Protocol::Script::RemoteValue]) -> instance
+            attr_reader args: Array[::Selenium::WebDriver::BiDi::Protocol::Script::remote_value]
+            def self.new: (?type: String, level: Symbol, source: ::Selenium::WebDriver::BiDi::Protocol::Script::Source, text: String?, timestamp: Integer, ?stack_trace: ::Selenium::WebDriver::BiDi::Protocol::Script::StackTrace, method_: String, args: Array[::Selenium::WebDriver::BiDi::Protocol::Script::remote_value]) -> instance
           end
 
           class JavascriptLogEntry < ::Selenium::WebDriver::BiDi::Serialization::Record

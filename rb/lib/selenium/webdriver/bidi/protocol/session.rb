@@ -79,6 +79,12 @@ module Selenium
               system: 'Session::SystemProxyConfiguration'
             )
             object_only
+
+            def self.autodetect(**) = Session::AutodetectProxyConfiguration.new(**)
+            def self.direct(**) = Session::DirectProxyConfiguration.new(**)
+            def self.manual(**) = Session::ManualProxyConfiguration.new(**)
+            def self.pac(**) = Session::PacProxyConfiguration.new(**)
+            def self.system(**) = Session::SystemProxyConfiguration.new(**)
           end
 
           # @api private
@@ -223,6 +229,18 @@ module Selenium
             )
             object_only
           end
+
+          def capabilities_request(**) = CapabilitiesRequest.new(**)
+          def capability_request(**) = CapabilityRequest.new(**)
+          def proxy_configuration = ProxyConfiguration
+          def autodetect_proxy_configuration(**) = AutodetectProxyConfiguration.new(**)
+          def direct_proxy_configuration(**) = DirectProxyConfiguration.new(**)
+          def manual_proxy_configuration(**) = ManualProxyConfiguration.new(**)
+          def pac_proxy_configuration(**) = PacProxyConfiguration.new(**)
+          def system_proxy_configuration(**) = SystemProxyConfiguration.new(**)
+          def user_prompt_handler(**) = UserPromptHandler.new(**)
+          def unsubscribe_by_id_request(**) = UnsubscribeByIDRequest.new(**)
+          def unsubscribe_by_attributes_request(**) = UnsubscribeByAttributesRequest.new(**)
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/

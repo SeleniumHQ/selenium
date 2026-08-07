@@ -25,6 +25,11 @@ module Selenium
       #
       # @api private
       class Transport
+        # The websocket the transport sends over. Exposed so a domain can build a sibling
+        # domain (e.g. a vendor variant) over the same connection without Transport ever
+        # becoming a public constructor argument.
+        attr_reader :connection
+
         def initialize(connection)
           @connection = connection
         end

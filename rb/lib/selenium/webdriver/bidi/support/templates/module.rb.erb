@@ -78,6 +78,12 @@ module Selenium
             # @see <%= BiDiGenerate::BIDI_DOC_URL %>
             <%= nested.define_assignment(nested.ruby_name, 12) %>
 <%- end -%>
+<%- unless type.variant_factories.empty? -%>
+
+<%- type.variant_factories.each do |factory| -%>
+            <%= factory %>
+<%- end -%>
+<%- end -%>
           end
 
 <%- else -%>
@@ -100,9 +106,21 @@ module Selenium
           EVENT_TYPES = {
             <%= mod.events.map(&:type_entry).join(",\n            ") %>
           }.freeze
-<%- unless mod.commands.empty? -%>
+<%- if !mod.commands.empty? || !mod.accessors.empty? -%>
 
 <%- end -%>
+<%- end -%>
+<%- mod.accessors.each do |accessor| -%>
+<%- if accessor.vendor? -%>
+          def <%= accessor.method_name %> = <%= accessor.type_name %>.new(connection)
+<%- elsif accessor.union? -%>
+          def <%= accessor.method_name %> = <%= accessor.type_name %>
+<%- else -%>
+          def <%= accessor.method_name %>(**) = <%= accessor.type_name %>.new(**)
+<%- end -%>
+<%- end -%>
+<%- if !mod.accessors.empty? && !mod.commands.empty? -%>
+
 <%- end -%>
 <%- mod.commands.each_with_index do |cmd, index| -%>
 <%- unless index.zero? -%>

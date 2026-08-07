@@ -23,7 +23,12 @@ module Selenium
     class BiDi
       module Protocol
         class WebExtension < ::Selenium::WebDriver::BiDi::Protocol::Domain
+          type extension_data = ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionArchivePath | ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionBase64Encoded | ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionPath
+
           class ExtensionData < ::Selenium::WebDriver::BiDi::Serialization::Union
+            def self.archive_path: (?type: String, path: String) -> ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionArchivePath
+            def self.base64: (?type: String, value: String) -> ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionBase64Encoded
+            def self.path: (?type: String, path: String) -> ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionPath
           end
 
           class ExtensionPath < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -55,16 +60,21 @@ module Selenium
           end
 
           class InstallParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData
+            attr_reader extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::extension_data
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData, ?extensions: Hash[String, untyped]) -> instance
+            def self.new: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::extension_data, ?extensions: Hash[String, untyped]) -> instance
           end
 
-          def install: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData) -> ::Selenium::WebDriver::BiDi::Protocol::WebExtension::InstallResult
+          def extension_data: () -> singleton(ExtensionData)
+          def extension_path: (?type: String, path: String) -> ExtensionPath
+          def extension_archive_path: (?type: String, path: String) -> ExtensionArchivePath
+          def extension_base64_encoded: (?type: String, value: String) -> ExtensionBase64Encoded
+          def moz: () -> Moz
+          def install: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::extension_data) -> ::Selenium::WebDriver::BiDi::Protocol::WebExtension::InstallResult
           def uninstall: (extension: String) -> untyped
 
           class Moz < ::Selenium::WebDriver::BiDi::Protocol::WebExtension
-            def install: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionData, ?allow_private_browsing: bool, ?permanent: bool) -> ::Selenium::WebDriver::BiDi::Protocol::WebExtension::InstallResult
+            def install: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::extension_data, ?allow_private_browsing: bool, ?permanent: bool) -> ::Selenium::WebDriver::BiDi::Protocol::WebExtension::InstallResult
           end
         end
       end

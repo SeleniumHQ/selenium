@@ -313,6 +313,57 @@ experimental domain Accessibility
       # Updated node data.
       array of AXNode nodes
 
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# A domain for ad-related metrics and data.
+experimental domain Ads
+  depends on Network
+  depends on Page
+  depends on Runtime
+
+  # Ad frame data.
+  type AdFrameData extends object
+    properties
+      # The DevTools frame token.
+      Page.FrameId frameId
+      # The initial origin of the frame. To minimize the payload size, this is
+      # only sent once per frame.
+      optional string initialOrigin
+      # The network bytes of the frame.
+      number networkBytes
+      # The CPU time of the frame, in milliseconds.
+      number cpuTime
+
+  # Ad metrics for a page.
+  type AdMetrics extends object
+    properties
+      # The viewport ad density by area, represented as a percentage (an integer
+      # between 0 and 100).
+      integer viewportAdDensityByArea
+      # The time-weighted average of the viewport ad density by area, measured
+      # across the duration of the page.
+      number averageViewportAdDensityByArea
+      # The number of ads currently visible within the viewport.
+      integer viewportAdCount
+      # The time-weighted average of the viewport ad count, measured across the
+      # duration of the page.
+      number averageViewportAdCount
+      # The total ad CPU usage, in milliseconds.
+      number totalAdCpuTime
+      # The total ad network bytes.
+      number totalAdNetworkBytes
+      # The list of ad frames that have been updated since the last event.
+      array of AdFrameData updateAdFrames
+      # The list of ad frame IDs that have been removed since the last event.
+      array of Page.FrameId removeAdFrames
+
+  # Retrieves ad metrics for the current page.
+  command getAdMetrics
+    returns
+      AdMetrics metrics
+
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -827,6 +878,7 @@ experimental domain Audits
       WriteErrorNonSecureContext
       WriteErrorNonStringIdField
       WriteErrorNonStringInMatchDestList
+      WriteErrorInvalidMatchDestList
       WriteErrorNonStringMatchField
       WriteErrorNonTokenTypeField
       WriteErrorRequestAborted
@@ -857,6 +909,10 @@ experimental domain Audits
       ValidationFailedInvalidLength
       ValidationFailedSignatureMismatch
       ValidationFailedIntegrityMismatch
+      SignatureBaseUnknownDerivedComponent
+      SignatureBaseMissingHeader
+      SignatureBaseInvalidUnencodedDigest
+      SignatureBaseUnsupportedComponent
 
   type UnencodedDigestError extends string
     enum
@@ -936,10 +992,15 @@ experimental domain Audits
       FormInputHasWrongButWellIntendedAutocompleteValueError
       ResponseWasBlockedByORB
       NavigationEntryMarkedSkippable
+      BackUINavigationWouldSkipAd
       AutofillAndManualTextPolicyControlledFeaturesInfo
       AutofillPolicyControlledFeatureInfo
       ManualTextPolicyControlledFeatureInfo
       FormModelContextParameterMissingTitleAndDescription
+      FormModelContextMissingToolName
+      FormModelContextMissingToolDescription
+      FormModelContextRequiredParameterMissingName
+      FormModelContextParameterMissingName
 
   # Depending on the concrete errorType, different properties are set.
   type GenericIssueDetails extends object
@@ -1062,6 +1123,73 @@ experimental domain Audits
       InvalidAccountsResponse
       NoReturningUserFromFetchedAccounts
 
+  type EmailVerificationRequestIssueDetails extends object
+    properties
+      EmailVerificationRequestIssueReason emailVerificationRequestIssueReason
+
+  # Represents the failure reason when an email verification request fails.
+  # Should be updated alongside EmailVerificationRequestResult in
+  # third_party/blink/public/mojom/devtools/inspector_issue.mojom.
+  type EmailVerificationRequestIssueReason extends string
+    enum
+      InvalidEmail
+      DnsFetchFailed
+      DnsInvalidRecord
+      WellKnownHttpNotFound
+      WellKnownNoResponse
+      WellKnownInvalidResponse
+      WellKnownListEmpty
+      WellKnownInvalidContentType
+      WellKnownMissingIssuanceEndpoint
+      WellKnownIssuanceEndpointCrossOrigin
+      WellKnownUnsupportedSigningAlgorithm
+      TokenHttpNotFound
+      TokenNoResponse
+      TokenInvalidResponse
+      TokenInvalidContentType
+      TokenMalformedSdJwt
+      TokenInvalidSdJwt
+      KeyBindingSigningFailed
+      RpOriginIsOpaque
+      WellKnownMissingAccountsEndpoint
+      UserLoggedOut
+      WellKnownAccountsEndpointCrossOrigin
+      AccountsHttpNotFound
+      AccountsNoResponse
+      AccountsInvalidResponse
+      AccountsInvalidContentType
+      AccountsEmptyList
+      EmailVerificationWellKnownHttpNotFound
+      EmailVerificationWellKnownNoResponse
+      EmailVerificationWellKnownInvalidResponse
+      EmailVerificationWellKnownInvalidContentType
+      JwksHttpNotFound
+      JwksInvalidResponse
+      TokenVerificationSdJwtUnsupportedHeaderAlg
+      TokenVerificationSdJwtInvalidTyp
+      TokenVerificationSdJwtMissingIss
+      TokenVerificationSdJwtMissingIat
+      TokenVerificationSdJwtMissingCnf
+      TokenVerificationSdJwtMissingEmail
+      TokenVerificationSdJwtInvalidIssuedAt
+      TokenVerificationSdJwtInvalidIssuer
+      TokenVerificationSdJwtJwksMissingKeys
+      TokenVerificationSdJwtSignatureFailed
+      TokenVerificationSdJwtInvalidEmailVerified
+      TokenVerificationSdJwtInvalidEmail
+      TokenVerificationSdJwtInvalidHolderKey
+      TokenVerificationKbInvalidTyp
+      TokenVerificationKbMissingAud
+      TokenVerificationKbMissingNonce
+      TokenVerificationKbMissingIat
+      TokenVerificationKbMissingSdHash
+      TokenVerificationKbInvalidIssuedAt
+      TokenVerificationKbInvalidAudience
+      TokenVerificationKbInvalidNonce
+      TokenVerificationKbInvalidSdHash
+      TokenVerificationKbMissingCnf
+      TokenVerificationKbSignatureFailed
+
   # This issue tracks client hints related issues. It's used to deprecate old
   # features, encourage the use of new ones, and provide general guidance.
   type ClientHintIssueDetails extends object
@@ -1177,6 +1305,8 @@ experimental domain Audits
       FontSizeTooSmall
       FontSizeTooLarge
       InvalidSizeValue
+      NonSecureContext
+      MissingTransientUserActivation
 
   # This issue warns about improper usage of the <permission> element.
   type PermissionElementIssueDetails extends object
@@ -1245,6 +1375,7 @@ experimental domain Audits
       PermissionElementIssue
       PerformanceIssue
       SelectivePermissionsInterventionIssue
+      EmailVerificationRequestIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -1280,6 +1411,7 @@ experimental domain Audits
       optional PermissionElementIssueDetails permissionElementIssueDetails
       optional PerformanceIssueDetails performanceIssueDetails
       optional SelectivePermissionsInterventionIssueDetails selectivePermissionsInterventionIssueDetails
+      optional EmailVerificationRequestIssueDetails emailVerificationRequestIssueDetails
 
   # A unique id for a DevTools inspector issue. Allows other entities (e.g.
   # exceptions, CDP message, console messages, etc.) to reference an issue.
@@ -2188,6 +2320,18 @@ experimental domain CSS
       # Specificity of the selector.
       experimental optional Specificity specificity
 
+  # Contribution of an individual simple selector to specificity.
+  experimental type SpecificityComponent extends object
+    properties
+      # The simple selector text that contributes to specificity.
+      string text
+      # The a component contribution.
+      integer a
+      # The b component contribution.
+      integer b
+      # The c component contribution.
+      integer c
+
   # Specificity:
   # https://drafts.csswg.org/selectors/#specificity-rules
   experimental type Specificity extends object
@@ -2199,6 +2343,8 @@ experimental domain CSS
       integer b
       # The c component, which represents the number of type selectors and pseudo-elements.
       integer c
+      # Per-simple-selector contributions used to explain this specificity.
+      experimental optional array of SpecificityComponent components
 
   # Selector list data.
   type SelectorList extends object
@@ -2444,7 +2590,10 @@ experimental domain CSS
   experimental type CSSContainerQuery extends object
     properties
       # Container query text.
-      string text
+      # Contains the query part without the container name for a single query.
+      # Deprecated in favor of conditionText which contains the full prelude
+      # after @container.
+      deprecated string text
       # The associated rule header range in the enclosing stylesheet (if
       # available).
       optional SourceRange range
@@ -2460,6 +2609,8 @@ experimental domain CSS
       optional boolean queriesScrollState
       # true if the query contains anchored() queries.
       optional boolean queriesAnchored
+      # CSSContainerRule.conditionText
+      string conditionText
 
   # CSS Supports at-rule descriptor.
   experimental type CSSSupports extends object
@@ -2629,6 +2780,7 @@ experimental domain CSS
         font-face
         font-feature-values
         font-palette-values
+        counter-style
       # Subsection of font-feature-values, if this is a subsection.
       optional enum subsection
         # LINT.IfChange(FontVariantAlternatesFeatureType)
@@ -3032,7 +3184,17 @@ experimental domain CSS
       CSSMedia media
 
   # Modifies the expression of a container query.
-  experimental command setContainerQueryText
+  # Deprecated. Use setContainerQueryConditionText instead.
+  experimental deprecated command setContainerQueryText
+    parameters
+      DOM.StyleSheetId styleSheetId
+      SourceRange range
+      string text
+    returns
+      # The resulting CSS container query rule after modification.
+      CSSContainerQuery containerQuery
+
+  experimental command setContainerQueryConditionText
     parameters
       DOM.StyleSheetId styleSheetId
       SourceRange range
@@ -3414,7 +3576,7 @@ domain DOM
       after
       expand-icon
       picker-icon
-      interest-hint
+      interest-button
       marker
       backdrop
       column
@@ -3446,8 +3608,11 @@ domain DOM
       file-selector-button
       details-content
       picker
+      select-listbox
       permission-icon
       overscroll-area-parent
+      overscroll-backdrop
+      skeleton
 
   # Shadow root type.
   type ShadowRootType extends string
@@ -4185,6 +4350,11 @@ domain DOM
       # If true, opens the popover and keeps it open. If false, closes the
       # popover if it was previously force-opened.
       boolean enable
+      # Optional ID of the element invoking this popover, used to establish the implicit anchor.
+      # If not provided, it will fall back to the first invoker in the document, preferring
+      # elements with a popovertarget attribute over those with a commandfor attribute. Note that
+      # if there are multiple invokers, this is just an estimate.
+      optional BackendNodeId invokerNodeId
     returns
       # List of popovers that were closed in order to respect popover stacking order.
       array of NodeId nodeIds
@@ -5359,7 +5529,6 @@ domain Emulation
       PressureSource source
       optional PressureMetadata metadata
 
-  # TODO: OBSOLETE: To remove when setPressureDataOverride is merged.
   # Provides a given pressure state that will be processed and eventually be
   # delivered to PressureObserver users. |source| must have been previously
   # overridden by setPressureSourceOverrideEnabled.
@@ -5367,15 +5536,6 @@ domain Emulation
     parameters
       PressureSource source
       PressureState state
-
-  # Provides a given pressure data set that will be processed and eventually be
-  # delivered to PressureObserver users. |source| must have been previously
-  # overridden by setPressureSourceOverrideEnabled.
-  experimental command setPressureDataOverride
-    parameters
-      PressureSource source
-      PressureState state
-      optional number ownContributionEstimate
 
   # Overrides the Idle state.
   command setIdleOverride
@@ -5635,8 +5795,6 @@ experimental domain Extensions
       managed
 
   # Runs an extension default action.
-  # Available if the client is connected using the --remote-debugging-pipe
-  # flag and the --enable-unsafe-extension-debugging flag is set.
   command triggerAction
     parameters
       # Extension id.
@@ -5646,9 +5804,7 @@ experimental domain Extensions
 
   # Installs an unpacked extension from the filesystem similar to
   # --load-extension CLI flags. Returns extension ID once the extension
-  # has been installed. Available if the client is connected using the
-  # --remote-debugging-pipe flag and the --enable-unsafe-extension-debugging
-  # flag is set.
+  # has been installed.
   command loadUnpacked
     parameters
       # Absolute file path.
@@ -5674,15 +5830,11 @@ experimental domain Extensions
       boolean enabled
 
   # Gets a list of all unpacked extensions.
-  # Available if the client is connected using the --remote-debugging-pipe flag
-  # and the --enable-unsafe-extension-debugging flag is set.
   command getExtensions
     returns
       array of ExtensionInfo extensions
 
   # Uninstalls an unpacked extension (others not supported) from the profile.
-  # Available if the client is connected using the --remote-debugging-pipe flag
-  # and the --enable-unsafe-extension-debugging.
   command uninstall
     parameters
       # Extension id.
@@ -8055,14 +8207,6 @@ domain Network
       None
       # The cookie should have been blocked by 3PCD but is exempted by explicit user setting.
       UserSetting
-      # The cookie should have been blocked by 3PCD but is exempted by metadata mitigation.
-      TPCDMetadata
-      # The cookie should have been blocked by 3PCD but is exempted by Deprecation Trial mitigation.
-      TPCDDeprecationTrial
-      # The cookie should have been blocked by 3PCD but is exempted by Top-level Deprecation Trial mitigation.
-      TopLevelTPCDDeprecationTrial
-      # The cookie should have been blocked by 3PCD but is exempted by heuristics mitigation.
-      TPCDHeuristics
       # The cookie should have been blocked by 3PCD but is exempted by Enterprise Policy.
       EnterprisePolicy
       # The cookie should have been blocked by 3PCD but is exempted by Storage Access API.
@@ -8374,6 +8518,8 @@ domain Network
       optional integer packetQueueLength
       # WebRTC packetReordering feature.
       optional boolean packetReordering
+      # True to emulate internet disconnection.
+      optional boolean offline
 
   # Activates emulation of network conditions. This command is deprecated in favor of the emulateNetworkConditionsByRule
   # and overrideNetworkState commands, which can be used together to the same effect.
@@ -8401,8 +8547,11 @@ domain Network
   # explicitly modify `navigator` behavior.
   experimental command emulateNetworkConditionsByRule
     parameters
-      # True to emulate internet disconnection.
-      boolean offline
+      # True to emulate internet disconnection. Deprecated, use the offline property in matchedNetworkConditions
+      # or emulateOfflineServiceWorker instead.
+      deprecated optional boolean offline
+      # True to emulate offline service worker.
+      optional boolean emulateOfflineServiceWorker
       # Configure conditions for matching requests. If multiple entries match a request, the first entry wins.  Global
       # conditions can be configured by leaving the urlPattern for the conditions empty. These global conditions are
       # also applied for throttling of p2p connections.
@@ -9474,6 +9623,7 @@ domain Network
       Success
       KeyError
       SigningError
+      TransientSigningError
       ServerRequestedTermination
       InvalidSessionId
       InvalidChallenge
@@ -9539,6 +9689,7 @@ domain Network
       InvalidFederatedSessionProviderFailedToRestoreKey
       FailedToUnwrapKey
       SessionDeletedDuringRefresh
+      CrossOriginRegistrationSiteNotIncluded
 
   # Details about a failed device bound session network request.
   experimental type DeviceBoundSessionFailedRequest extends object
@@ -9578,6 +9729,8 @@ domain Network
         RefreshQuotaExceeded
         FatalError
         SigningQuotaExceeded
+        RefreshedAsWaiter
+        TransientSigningError
       # If there was a fetch attempt, the result of that.
       optional DeviceBoundSessionFetchResult fetchResult
       # The session display if there was a newly created session. This is populated
@@ -9602,6 +9755,7 @@ domain Network
         ServerRequested
         InvalidSessionParams
         RefreshFatalError
+        DevTools
 
   # Session event details specific to challenges.
   experimental type ChallengeEventDetails extends object
@@ -9645,6 +9799,11 @@ domain Network
     parameters
       # Whether to enable or disable events.
       boolean enable
+
+  # Deletes a device bound session.
+  experimental command deleteDeviceBoundSession
+    parameters
+      DeviceBoundSessionKey key
 
   # Fetches the schemeful site for a specific origin.
   experimental command fetchSchemefulSite
@@ -9694,12 +9853,6 @@ domain Network
     parameters
       # Whether 3pc restriction is enabled.
       boolean enableThirdPartyCookieRestriction
-
-      # Whether 3pc grace period exception should be enabled; false by default.
-      boolean disableThirdPartyCookieMetadata
-
-      # Whether 3pc heuristics exceptions should be enabled; false by default.
-      boolean disableThirdPartyCookieHeuristics
 
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
@@ -9910,6 +10063,36 @@ experimental domain Overlay
       optional DOM.RGBA contentColor
       # The content box highlight outline color (default: transparent).
       optional DOM.RGBA outlineColor
+
+  # Supported display cutout shapes.
+  type DisplayCutoutShape extends string
+    enum
+      pill
+      notch
+      circle
+      rectangle
+
+  # Configuration for a display cutout.
+  type DisplayCutoutConfig extends object
+    properties
+      # A rectangle representing the cutout bounds.
+      DOM.Rect rect
+      # Shape used to draw the cutout.
+      DisplayCutoutShape shape
+      # Border radius for rounded cutout shapes.
+      optional integer borderRadius
+      # Upper shoulder radius for notch cutout shapes.
+      optional integer upperRadius
+      # Lower transition radius for notch cutout shapes.
+      optional integer lowerRadius
+      # Center x coordinate for circle cutout shapes.
+      optional integer cx
+      # Center y coordinate for circle cutout shapes.
+      optional integer cy
+      # Radius for circle cutout shapes.
+      optional integer radius
+      # The cutout fill color (default: black).
+      optional DOM.RGBA contentColor
 
   # Configuration for Window Controls Overlay
   type WindowControlsOverlayConfig extends object
@@ -10178,6 +10361,12 @@ experimental domain Overlay
     parameters
       # hinge data, null means hideHinge
       optional HingeConfig hingeConfig
+
+  # Add a display cutout overlay.
+  command setShowDisplayCutout
+    parameters
+      # display cutout data, null means hide display cutout
+      optional DisplayCutoutConfig displayCutoutConfig
 
   # Show elements in isolation mode with overlays.
   command setShowIsolatedElements
@@ -10487,7 +10676,6 @@ domain Page
       digital-credentials-get
       direct-sockets
       direct-sockets-multicast
-      direct-sockets-private
       display-capture
       document-domain
       encrypted-media
@@ -10538,12 +10726,14 @@ domain Page
       sub-apps
       summarizer
       sync-xhr
+      tools
       translator
       unload
       usb
       usb-unrestricted
       vertical-scroll
       web-app-installation
+      webnn
       web-printing
       web-share
       window-management
@@ -11009,6 +11199,13 @@ domain Page
       # Whether or not universal access should be granted to the isolated world. This is a powerful
       # option, use with caution.
       optional boolean grantUniveralAccess
+      # An optional content security policy to set for the isolated world.
+      # If omitted, any existing CSP for the world will be cleared.
+      # Note that clearing or updating the CSP does not immediately affect the active
+      # context in the same document because LocalDOMWindow caches the
+      # ContentSecurityPolicy object. The change takes effect on subsequent
+      # navigations when a new window context is created.
+      optional string contentSecurityPolicy
     returns
       # Execution context of the isolated world.
       Runtime.ExecutionContextId executionContextId
@@ -11988,6 +12185,7 @@ domain Page
       EmbedderExtensionMessaging
       EmbedderExtensionMessagingForOpenPort
       EmbedderExtensionSentMessageToCachedFrame
+      EmbedderExtensionFrame
       RequestedByWebViewClient
       PostMessageByWebViewClient
       CacheControlNoStoreDeviceBoundSessionTerminated
@@ -12449,6 +12647,7 @@ experimental domain Preload
       BrowsingDataRemoved
       PrerenderHostReused
       FormSubmitWhenPrerendering
+      CrossDocumentRestart
 
   # Fired when a preload enabled state is updated.
   event preloadEnabledStateUpdated
@@ -12491,6 +12690,7 @@ experimental domain Preload
       PrefetchIneligibleRetryAfter
       PrefetchIsPrivacyDecoy
       PrefetchIsStale
+      PrefetchNotEligibleBlockedByConnectionAllowlist
       PrefetchNotEligibleBrowserContextOffTheRecord
       PrefetchNotEligibleDataSaverEnabled
       PrefetchNotEligibleExistingProxy
@@ -12515,6 +12715,7 @@ experimental domain Preload
       # The prefetch finished successfully but was never used.
       PrefetchSuccessfulButNotUsed
       PrefetchNotUsedProbeFailed
+      PrefetchCancelledOnUserNavigation
 
   # Fired when a prefetch attempt is updated.
   event prefetchStatusUpdated
@@ -12921,7 +13122,6 @@ experimental domain SmartCardEmulation
       shutdown
 
       # Maps to SCARD_E_UNKNOWN_CARD.
-      # TODO(crbug.com/472114998): Rename Mojo's kUnknownError to kUnknownCard to match.
       unknown-card
 
       # Error code that is not mapped in this enum.
@@ -14062,18 +14262,24 @@ domain Target
       string url
       # Whether the target has an attached client.
       boolean attached
+      # Id of the parent target, if any. For example, "iframe" target may have a "page" parent.
+      optional TargetID parentId
       # Opener target Id
       optional TargetID openerId
       # Whether the target has access to the originating window.
       experimental boolean canAccessOpener
       # Frame id of originating window (is only set if target has an opener).
       experimental optional Page.FrameId openerFrameId
-      # Id of the parent frame, only present for the "iframe" targets.
+      # Id of the parent frame, present for "iframe" and "worker" targets. For nested workers,
+      # this is the "ancestor" frame that created the first worker in the nested chain.
       experimental optional Page.FrameId parentFrameId
       experimental optional Browser.BrowserContextID browserContextId
       # Provides additional details for specific target types. For example, for
       # the type of "page", this may be set to "prerender".
       experimental optional string subtype
+      # Embedder-specific target metadata. This is only set for targets of
+      # type "tab".
+      experimental optional object embedderData
 
   # A filter used by target query/discovery/auto-attach operations.
   experimental type FilterEntry extends object
@@ -14208,13 +14414,11 @@ domain Target
       # present in the tab UI strip. Cannot be created with `forTab: true`, `newWindow: true` or
       # `background: false`. The life-time of the tab is limited to the life-time of the session.
       experimental optional boolean hidden
-      # If specified, the option is used to determine if the new target should
-      # be focused or not. By default, the focus behavior depends on the
-      # value of the background field. For example, background=false and focus=false
-      # will result in the target tab being opened but the browser window remain
-      # unchanged (if it was in the background, it will remain in the background)
-      # and background=false with focus=undefined will result in the window being focused.
-      # Using background: true and focus: true is not supported and will result in an error.
+      # If specified, determines whether the new target should be focused.
+      # By default, the focus behavior depends on the `background` parameter:
+      # - If `background` is false (default) and `focus` is omitted, the new target is focused and the browser window is brought to the foreground.
+      # - If `background` is false and `focus` is false, the target is opened but the browser window's focus remains unchanged (e.g., if the window was in the background, it stays there).
+      # - If `background` is true, setting `focus` to true is not supported and will result in an error.
       experimental optional boolean focus
     returns
       # The id of the page opened.
@@ -14384,8 +14588,8 @@ domain Target
       # This can be the page or tab target ID.
       TargetID targetId
       # The id of the panel we want DevTools to open initially. Currently
-      # supported panels are elements, console, network, sources, resources
-      # and performance.
+      # supported panels are elements, console, network, sources, resources,
+      # timeline, chrome-recorder, heap-profiler, lighthouse, and security.
       optional string panelId
     returns
       # The targetId of DevTools page target.
@@ -14552,6 +14756,17 @@ domain Tracing
       experimental optional binary perfettoConfig
       # Backend type (defaults to `auto`)
       experimental optional TracingBackend tracingBackend
+      # Maximum width and height (in pixels) of each captured screenshot.
+      # Only used when the `disabled-by-default-devtools.screenshot` category is
+      # enabled. Defaults to 500. The combined memory footprint of screenshots
+      # (`screenshotMaxSize` * `screenshotMaxSize` * 4 * `screenshotMaxCount`)
+      # is clamped to the existing per-session budget.
+      experimental optional integer screenshotMaxSize
+      # Maximum number of screenshots captured during a single tracing session.
+      # Only used when the `disabled-by-default-devtools.screenshot` category is
+      # enabled. Defaults to 450. Clamped together with `screenshotMaxSize` to
+      # stay within the per-session screenshot memory budget.
+      experimental optional integer screenshotMaxCount
 
   experimental event bufferUsage
     parameters
@@ -15047,13 +15262,15 @@ experimental domain WebMCP
     properties
       # A hint indicating that the tool does not modify any state.
       optional boolean readOnly
+      # A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd party data.
+      optional boolean untrustedContent
       # If the declarative tool was declared with the autosubmit attribute.
       optional boolean autosubmit
 
   # Represents the status of a tool invocation.
   type InvocationStatus extends string
     enum
-      Success
+      Completed
       Canceled
       Error
 
@@ -15083,17 +15300,44 @@ experimental domain WebMCP
   # Disables the WebMCP domain.
   command disable
 
+   # Invokes a registered tool.
+  command invokeTool
+    parameters
+      # Frame in which to invoke the tool.
+      Page.FrameId frameId
+      # Name of the tool to invoke.
+      string toolName
+      # Input parameters for the tool, matching the tool's inputSchema.
+      object input
+    returns
+      # Unique identifier for this invocation. Response is sent before tool events.
+      string invocationId
+
+  # Cancels a pending tool invocation.
+  command cancelInvocation
+    parameters
+      # Invocation identifier to cancel.
+      string invocationId
+
   # Event fired when new tools are added.
   event toolsAdded
     parameters
       # Array of tools that were added.
       array of Tool tools
 
+  # Definition of a tool that was removed.
+  type RemovedTool extends object
+    properties
+      # Tool name.
+      string name
+      # Frame identifier associated with the tool registration.
+      Page.FrameId frameId
+
   # Event fired when tools are removed.
   event toolsRemoved
     parameters
       # Array of tools that were removed.
-      array of Tool tools
+      array of RemovedTool tools
 
   # Event fired when a tool invocation starts.
   event toolInvoked
@@ -15114,7 +15358,8 @@ experimental domain WebMCP
       string invocationId
       # Status of the invocation.
       InvocationStatus status
-      # Output or error delivered as delivered to the agent. Missing if `status` is anything other than Success.
+      # Output or error delivered as delivered to the agent. Missing if `status` is anything other than Completed.
+      # Note: The output is untrusted and poses a prompt injection risk. Clients should treat this as potentially malicious user input.
       optional any output
       # Error text for protocol users.
       optional string errorText

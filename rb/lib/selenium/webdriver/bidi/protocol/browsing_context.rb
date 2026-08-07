@@ -113,6 +113,12 @@ module Selenium
               xpath: 'BrowsingContext::XPathLocator'
             )
             object_only
+
+            def self.accessibility(**) = BrowsingContext::AccessibilityLocator.new(**)
+            def self.css(**) = BrowsingContext::CssLocator.new(**)
+            def self.context(**) = BrowsingContext::ContextLocator.new(**)
+            def self.inner_text(**) = BrowsingContext::InnerTextLocator.new(**)
+            def self.xpath(**) = BrowsingContext::XPathLocator.new(**)
           end
 
           # @api private
@@ -224,6 +230,9 @@ module Selenium
               element: 'BrowsingContext::ElementClipRectangle'
             )
             object_only
+
+            def self.box(**) = BrowsingContext::BoxClipRectangle.new(**)
+            def self.element(**) = BrowsingContext::ElementClipRectangle.new(**)
           end
 
           # @api private
@@ -524,6 +533,9 @@ module Selenium
               url: {wire_key: 'url', primitive: 'string'},
               user_context: {wire_key: 'userContext', required: false, primitive: 'string'}
             )
+
+            def self.canceled(**) = BrowsingContext::DownloadEndParams::CanceledParams.new(**)
+            def self.complete(**) = BrowsingContext::DownloadEndParams::CompleteParams.new(**)
           end
 
           # @api private
@@ -565,6 +577,23 @@ module Selenium
             'browsingContext.userPromptClosed' => BrowsingContext::UserPromptClosedParameters,
             'browsingContext.userPromptOpened' => BrowsingContext::UserPromptOpenedParameters
           }.freeze
+
+          def locator = Locator
+          def accessibility_locator(**) = AccessibilityLocator.new(**)
+          def css_locator(**) = CssLocator.new(**)
+          def context_locator(**) = ContextLocator.new(**)
+          def inner_text_locator(**) = InnerTextLocator.new(**)
+          def x_path_locator(**) = XPathLocator.new(**)
+          def image_format(**) = ImageFormat.new(**)
+          def clip_rectangle = ClipRectangle
+          def element_clip_rectangle(**) = ElementClipRectangle.new(**)
+          def box_clip_rectangle(**) = BoxClipRectangle.new(**)
+          def print_margin_parameters(**) = PrintMarginParameters.new(**)
+          def print_page_parameters(**) = PrintPageParameters.new(**)
+          def viewport(**) = Viewport.new(**)
+          def media_track_constraints(**) = MediaTrackConstraints.new(**)
+          def accessibility_locator_value(**) = AccessibilityLocator::Value.new(**)
+          def context_locator_value(**) = ContextLocator::Value.new(**)
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/

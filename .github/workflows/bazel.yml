@@ -32,7 +32,7 @@ on:
         type: boolean
         default: false
       node-version:
-        description: Custom Node version to install
+        description: Custom Node version to use
         required: false
         type: string
         default: ''
@@ -91,11 +91,17 @@ on:
         required: false
         type: boolean
         default: false
+    outputs:
+      output:
+        description: Value the run script writes to $GITHUB_OUTPUT as "output=..."; empty when unused
+        value: ${{ jobs.bazel.outputs.output }}
 
 jobs:
   bazel:
     name: ${{ inputs.name }}
     runs-on: ${{ contains(inputs.os, '-') && inputs.os || format('{0}-latest', inputs.os) }}
+    outputs:
+      output: ${{ steps.run-bazel.outputs.output }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
@@ -182,11 +188,9 @@ jobs:
       - name: Set Ruby version
         if: inputs.ruby-version != ''
         run: echo '${{ inputs.ruby-version }}' > rb/.ruby-version
-      - name: Setup Node
+      - name: Set Node version
         if: inputs.node-version != ''
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ inputs.node-version }}
+        run: echo '${{ inputs.node-version }}' > .nvmrc
       - name: Setup Bazel with caching
         continue-on-error: true
         timeout-minutes: 10

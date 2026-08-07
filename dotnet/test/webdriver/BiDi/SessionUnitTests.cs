@@ -34,7 +34,8 @@ class SessionUnitTests
     public async Task SetUp()
     {
         _transport = new FakeTransport();
-        _bidi = await Selenium.BiDi.BiDi.ConnectAsync(new Uri("ws://fake"), opts => opts.UseTransport(() => _transport));
+        _bidi = await Selenium.BiDi.BiDi.ConnectAsync(new Uri("ws://fake"), opts =>
+            opts.UseTransport(_ => (_, _) => Task.FromResult<ITransport>(_transport)));
     }
 
     [TearDown]

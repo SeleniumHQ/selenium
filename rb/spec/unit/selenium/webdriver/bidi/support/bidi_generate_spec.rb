@@ -44,4 +44,40 @@ module BiDiGenerate
       expect(BiDiGenerate.enum_key('dedicated-worker')).to eq('dedicated_worker')
     end
   end
+
+  describe '.check_accessor_collisions!' do
+    def accessor(name)
+      BiDiGenerate::Accessor.new(method_name: name, type_name: 'T', union: false)
+    end
+
+    def command(name)
+      BiDiGenerate::Command.new(wire_name: "x.#{name}", method_name: name, params: [], result_ref: nil,
+                                params_class: nil, union_params: false, spec_href: nil)
+    end
+
+    def mod(accessors:, commands: [])
+      BiDiGenerate::Module.new(name: 'x', ruby_class: 'X', filename: 'x', commands: commands, events: [],
+                               enums: [], types: [], accessors: accessors, vendor_modules: [], spec_href: nil)
+    end
+
+    it 'passes when accessor names are unique and unshadowed' do
+      expect { BiDiGenerate.check_accessor_collisions!(mod(accessors: [accessor('extension_path')])) }
+        .not_to raise_error
+    end
+
+    it 'fails when an accessor shadows a command method' do
+      expect { BiDiGenerate.check_accessor_collisions!(mod(accessors: [accessor('foo')], commands: [command('foo')])) }
+        .to raise_error(/collides with a command method/)
+    end
+
+    it 'fails when an accessor shadows an inherited method' do
+      expect { BiDiGenerate.check_accessor_collisions!(mod(accessors: [accessor('hash')])) }
+        .to raise_error(/collides with an inherited method/)
+    end
+
+    it 'fails when two accessors share a name' do
+      expect { BiDiGenerate.check_accessor_collisions!(mod(accessors: [accessor('dupe'), accessor('dupe')])) }
+        .to raise_error(/collides with the accessor/)
+    end
+  end
 end

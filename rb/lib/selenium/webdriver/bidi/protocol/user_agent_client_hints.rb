@@ -64,6 +64,9 @@ module Selenium
             user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
+          def client_hints_metadata(**) = ClientHintsMetadata.new(**)
+          def brand_version(**) = BrandVersion.new(**)
+
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def set_client_hints_override(

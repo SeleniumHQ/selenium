@@ -50,6 +50,8 @@ module Selenium
             def self.new: (client_hints: ::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::ClientHintsMetadata?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
+          def client_hints_metadata: (?brands: Array[::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::BrandVersion], ?full_version_list: Array[::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::BrandVersion], ?platform: String, ?platform_version: String, ?architecture: String, ?model: String, ?mobile: bool, ?bitness: String, ?wow64: bool, ?form_factors: Array[String]) -> ClientHintsMetadata
+          def brand_version: (brand: String, version: String) -> BrandVersion
           def set_client_hints_override: (client_hints: ::Selenium::WebDriver::BiDi::Protocol::UserAgentClientHints::ClientHintsMetadata?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
         end
       end

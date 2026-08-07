@@ -41,6 +41,8 @@ module Selenium
 
           DESCRIPTOR_EVENT_GENERATED_PARAMETERS_TYPE: Hash[Symbol, String]
 
+          type handle_request_device_prompt_parameters = ::Selenium::WebDriver::BiDi::Protocol::Bluetooth::HandleRequestDevicePromptParameters::AcceptParameters | ::Selenium::WebDriver::BiDi::Protocol::Bluetooth::HandleRequestDevicePromptParameters::CancelParameters
+
           class BluetoothManufacturerData < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader key: Integer
             attr_reader data: String
@@ -87,6 +89,8 @@ module Selenium
               attr_reader prompt: String
               def self.new: (?accept: bool, context: String, prompt: String) -> instance
             end
+            def self.true: (?accept: bool, context: String, prompt: String, device: String) -> ::Selenium::WebDriver::BiDi::Protocol::Bluetooth::HandleRequestDevicePromptParameters::AcceptParameters
+            def self.false: (?accept: bool, context: String, prompt: String) -> ::Selenium::WebDriver::BiDi::Protocol::Bluetooth::HandleRequestDevicePromptParameters::CancelParameters
           end
 
           class SimulateAdapterParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -223,6 +227,10 @@ module Selenium
 
           EVENT_TYPES: Hash[String, untyped]
 
+          def bluetooth_manufacturer_data: (key: Integer, data: String) -> BluetoothManufacturerData
+          def characteristic_properties: (?broadcast: bool, ?read: bool, ?write_without_response: bool, ?write: bool, ?notify: bool, ?indicate: bool, ?authenticated_signed_writes: bool, ?extended_properties: bool) -> CharacteristicProperties
+          def scan_record: (?name: String, ?uuids: Array[String], ?appearance: Numeric, ?manufacturer_data: Array[::Selenium::WebDriver::BiDi::Protocol::Bluetooth::BluetoothManufacturerData]) -> ScanRecord
+          def simulate_advertisement_scan_entry_parameters: (device_address: String, rssi: Numeric, scan_record: ::Selenium::WebDriver::BiDi::Protocol::Bluetooth::ScanRecord) -> SimulateAdvertisementScanEntryParameters
           def handle_request_device_prompt: (context: String, prompt: String, accept: bool, ?device: String) -> untyped
           def simulate_adapter: (context: String, state: Symbol, ?le_supported: bool) -> untyped
           def disable_simulation: (context: String) -> untyped
