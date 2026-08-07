@@ -111,6 +111,8 @@ def test_no_proxy_entry_does_not_match_on_a_bare_substring(system_proxy_env, no_
         ("example.com,", "http://example.com:4444"),
         ("EXAMPLE.COM", "http://example.com:4444"),
         ("127.0.0.1", "http://127.0.0.1:4444"),
+        ("::1", "http://[::1]:4444"),
+        ("[::1]", "http://[::1]:4444"),
     ],
 )
 def test_matching_no_proxy_entry_bypasses_the_proxy(system_proxy_env, no_proxy, server):
@@ -127,6 +129,18 @@ def test_no_proxy_entry_written_as_a_url_matches_only_its_host(system_proxy_env)
     system_proxy_env("http://example.com")
     assert system_config("http://example.com:4444").get_proxy_url() is None
     assert system_config("http://localhost:4444").get_proxy_url() == PROXY
+
+
+def test_no_proxy_url_entry_matches_an_ipv6_host(system_proxy_env):
+    """An IPv6 literal is bracketed in a netloc but not in a hostname."""
+    system_proxy_env("http://[::1]")
+    assert system_config("http://[::1]:4444").get_proxy_url() is None
+
+
+def test_no_proxy_ipv6_url_entry_with_a_port_matches_only_that_port(system_proxy_env):
+    system_proxy_env("http://[::1]:4444")
+    assert system_config("http://[::1]:4444").get_proxy_url() is None
+    assert system_config("http://[::1]:5555").get_proxy_url() == PROXY
 
 
 def test_proxy_is_used_when_no_proxy_is_unset(system_proxy_env):

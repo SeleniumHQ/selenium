@@ -44,7 +44,8 @@ def _no_proxy_entry_matches(entry: str, hostname: str, netloc: str) -> bool:
         entry: A single entry from ``no_proxy``, either a bare host
             (optionally with a port, optionally dot-prefixed) or a full URL.
         hostname: Lower-cased host of the remote server address, without a port.
-        netloc: Lower-cased host of the remote server address, with any port.
+        netloc: Lower-cased host of the remote server address, with any port and
+            without the brackets an IPv6 literal is written with.
 
     Returns:
         True if the proxy should be bypassed for this host.
@@ -53,7 +54,8 @@ def _no_proxy_entry_matches(entry: str, hostname: str, netloc: str) -> bool:
     # the host as a scheme, so only entries that name a scheme are parsed.
     if "://" in entry:
         entry = parse.urlparse(entry).netloc
-    entry = entry.strip().lstrip(".").lower()
+    # An IPv6 literal is bracketed in a netloc but not in a hostname.
+    entry = entry.strip().lstrip(".").lower().replace("[", "").replace("]", "")
     if not entry:
         return False
     return any(host == entry or host.endswith(f".{entry}") for host in (hostname, netloc))
@@ -164,7 +166,7 @@ class ClientConfig:
             _no_proxy = os.environ.get("no_proxy", os.environ.get("NO_PROXY"))
             if _no_proxy:
                 hostname = (remote_add.hostname or "").lower()
-                netloc = remote_add.netloc.lower()
+                netloc = remote_add.netloc.lower().replace("[", "").replace("]", "")
                 for entry in map(str.strip, _no_proxy.split(",")):
                     if entry == "*":
                         return None
