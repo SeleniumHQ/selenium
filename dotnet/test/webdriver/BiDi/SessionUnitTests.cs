@@ -45,14 +45,6 @@ class SessionUnitTests
     }
 
     [Test]
-    public void ShouldRespectCommandTimeout()
-    {
-        Assert.That(
-            () => _bidi.StatusAsync(new() { Timeout = TimeSpan.FromMilliseconds(1) }),
-            Throws.InstanceOf<TaskCanceledException>());
-    }
-
-    [Test]
     public void ShouldRespectCancellationToken()
     {
         using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(1));
