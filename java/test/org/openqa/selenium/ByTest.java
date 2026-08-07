@@ -148,4 +148,40 @@ class ByTest {
     assertThat(arabicBlob).containsEntry("using", "css selector").containsEntry("value", ".٥foo");
     assertThat(arabicBlob.get("value")).isNotEqualTo(asciiBlob.get("value"));
   }
+
+  @Test
+  void ensureNameContainingPercentDoesNotThrowAndIsTreatedAsLiteral() {
+    By by = By.name("50%off");
+
+    Json json = new Json();
+    Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
+
+    assertThat(blob)
+        .containsEntry("using", "css selector")
+        .containsEntry("value", "*[name='50%off']");
+  }
+
+  @Test
+  void ensureNameContainingFormatSpecifierIsNotDoubleFormatted() {
+    By by = By.name("foo%sbar");
+
+    Json json = new Json();
+    Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
+
+    assertThat(blob)
+        .containsEntry("using", "css selector")
+        .containsEntry("value", "*[name='foo%sbar']");
+  }
+
+  @Test
+  void ensureNameContainingBackslashIsEscapedAsLiteral() {
+    By by = By.name("a\\b");
+
+    Json json = new Json();
+    Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
+
+    assertThat(blob)
+        .containsEntry("using", "css selector")
+        .containsEntry("value", "*[name='a\\\\b']");
+  }
 }

@@ -242,7 +242,7 @@ public abstract class By {
       super(
           "name",
           Require.argument("Name", name).nonNull("Cannot find elements when name text is null."),
-          String.format("*[name='%s']", name.replace("'", "\\'")));
+          "*[name='" + name.replace("\\", "\\\\").replace("'", "\\'").replace("%", "%%") + "']");
 
       this.name = name;
     }
