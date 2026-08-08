@@ -60,10 +60,18 @@ module Selenium
           it 'permissions is unimplemented on Safari',
              pending_if: {browser_family: :safari, exception: {class: Error::UnknownCommandError},
                           reason: 'when green, unblock permissions_spec.rb'} do
+            context = driver.window_handle
+            BrowsingContext.new(driver).navigate(context: context, url: url_for('blank.html'), wait: :complete)
+            origin = Script.new(driver).evaluate(
+              expression: 'window.location.origin',
+              target: Script::ContextTarget.new(context: context),
+              await_promise: false
+            ).result.value
+
             result = Permissions.new(driver).set_permission(
               descriptor: Permissions::PermissionDescriptor.new(name: 'geolocation'),
               state: :granted,
-              origin: url_for('blank.html')
+              origin: origin
             )
             expect(result).to be_empty
           end

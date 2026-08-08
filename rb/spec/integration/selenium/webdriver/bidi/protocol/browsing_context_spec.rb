@@ -318,8 +318,10 @@ module Selenium
 
           describe '#set_viewport' do
             it 'sets the viewport size and device pixel ratio',
-               pending_if: {browser_family: :safari,
-                            reason: 'Safari accepts browsingContext.setViewport but does not resize the window'} do
+               pending_if: [{browser_family: :safari,
+                             reason: 'Safari accepts browsingContext.setViewport but does not resize the window'},
+                            {browser: :firefox, platform: :linux,
+                             reason: 'Firefox accepts setViewport but does not resize the window on Linux'}] do
               browsing_context.set_viewport(
                 context: driver.window_handle,
                 viewport: BrowsingContext::Viewport.new(width: 800, height: 600),

@@ -126,8 +126,13 @@ module Selenium
               target: target,
               await_promise: await_promise,
               user_activation: user_activation
-            ).result
-            result.respond_to?(:value) ? result.value : nil
+            )
+            if result.is_a?(Script::EvaluateResultException)
+              raise Error::WebDriverError, "script.evaluate raised: #{result.exception_details.text}"
+            end
+
+            value = result.result
+            value.respond_to?(:value) ? value.value : nil
           end
 
           def start_request_device
@@ -160,8 +165,8 @@ module Selenium
           end
 
           def select_device
-            events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
             enable_adapter
+            events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
             start_request_device
 
             expect(bluetooth.simulate_advertisement(
@@ -281,18 +286,18 @@ module Selenium
 
           describe '#handle_request_device_prompt' do
             it 'accepts a prompt',
-               skip_if: {browser: %i[chrome edge firefox], platform: :windows,
-                         reason: 'Times out: no in-flight prompt/operation to respond to'} do
+               skip_if: {browser_family: :chromium, platform: :windows,
+                         reason: 'Times out: no in-flight prompt/operation to respond to on Windows'} do
               select_device
 
               expect(evaluate_value('window.__rubyBluetoothDevice.name')).to eq('Ruby Heart Rate')
             end
 
             it 'cancels a prompt',
-               skip_if: {browser: %i[chrome edge firefox], platform: :windows,
-                         reason: 'Times out: no in-flight prompt/operation to respond to'} do
-              events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
+               skip_if: {browser_family: :chromium, platform: :windows,
+                         reason: 'Times out: no in-flight prompt/operation to respond to on Windows'} do
               enable_adapter
+              events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
               start_request_device
 
               expect(bluetooth.simulate_advertisement(
@@ -334,10 +339,10 @@ module Selenium
 
           describe '#simulate_advertisement' do
             it 'simulates an advertisement scan entry',
-               skip_if: {browser: %i[chrome edge firefox], platform: :windows,
-                         reason: 'Times out: no in-flight prompt/operation to respond to'} do
-              events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
+               skip_if: {browser_family: :chromium, platform: :windows,
+                         reason: 'Times out: no in-flight prompt/operation to respond to on Windows'} do
               enable_adapter
+              events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
               start_request_device
 
               expect(bluetooth.simulate_advertisement(
@@ -354,8 +359,8 @@ module Selenium
 
           describe '#simulate_gatt_connection_response' do
             it 'simulates a successful GATT connection response',
-               skip_if: {browser: %i[chrome edge firefox], platform: :windows,
-                         reason: 'Times out: no in-flight prompt/operation to respond to'} do
+               skip_if: {browser_family: :chromium, platform: :windows,
+                         reason: 'Times out: no in-flight prompt/operation to respond to on Windows'} do
               select_device
 
               connect_selected_device
@@ -365,8 +370,8 @@ module Selenium
 
           describe '#simulate_gatt_disconnection' do
             it 'simulates a GATT disconnection',
-               skip_if: {browser: %i[chrome edge firefox], platform: :windows,
-                         reason: 'Times out: no in-flight prompt/operation to respond to'} do
+               skip_if: {browser_family: :chromium, platform: :windows,
+                         reason: 'Times out: no in-flight prompt/operation to respond to on Windows'} do
               select_device
               connect_selected_device
 
@@ -423,8 +428,8 @@ module Selenium
 
           describe '#simulate_characteristic_response' do
             it 'simulates characteristic read and write responses',
-               skip_if: {browser: %i[chrome edge firefox], platform: :windows,
-                         reason: 'Times out: no in-flight prompt/operation to respond to'} do
+               skip_if: {browser_family: :chromium, platform: :windows,
+                         reason: 'Times out: no in-flight prompt/operation to respond to on Windows'} do
               select_device
               add_service
               add_characteristic
@@ -508,8 +513,8 @@ module Selenium
 
           describe '#simulate_descriptor_response' do
             it 'simulates descriptor read and write responses',
-               skip_if: {browser: %i[chrome edge firefox], platform: :windows,
-                         reason: 'Times out: no in-flight prompt/operation to respond to'} do
+               skip_if: {browser_family: :chromium, platform: :windows,
+                         reason: 'Times out: no in-flight prompt/operation to respond to on Windows'} do
               select_device
               add_service
               add_characteristic

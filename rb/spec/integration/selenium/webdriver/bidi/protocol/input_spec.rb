@@ -99,7 +99,7 @@ module Selenium
           end
 
           describe '#set_files',
-                   pending_if: {browser: :firefox,
+                   pending_if: {browser: :firefox, platform: :windows,
                                 exception: {class: Error::UnsupportedOperationError,
                                             message: /(?:Unrecognized path|Failed to add file)/},
                                 reason: 'Firefox rejects the Windows temp file path for input.setFiles'} do
