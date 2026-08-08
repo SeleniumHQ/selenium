@@ -131,6 +131,54 @@ fn invalid_geckodriver_version_test() {
 }
 
 #[rstest]
+#[case("chrome")]
+#[case("edge")]
+fn unsupported_on_linux_arm64_test(#[case] browser: String) {
+    let mut cmd = get_selenium_manager();
+    let result = cmd
+        .args([
+            "--browser",
+            &browser,
+            "--os",
+            "linux",
+            "--arch",
+            "arm64",
+            "--debug",
+        ])
+        .assert()
+        .try_success();
+
+    assert_output(&mut cmd, result, vec!["not supported yet"], DATAERR);
+}
+
+#[test]
+fn firefox_below_min_version_on_linux_arm64_test() {
+    let mut cmd = get_selenium_manager();
+    let result = cmd
+        .args([
+            "--browser",
+            "firefox",
+            "--browser-version",
+            "121",
+            "--os",
+            "linux",
+            "--arch",
+            "arm64",
+            "--force-browser-download",
+            "--debug",
+        ])
+        .assert()
+        .try_success();
+
+    assert_output(
+        &mut cmd,
+        result,
+        vec!["not available for download"],
+        DATAERR,
+    );
+}
+
+#[rstest]
 #[case(
     "windows",
     "chrome",

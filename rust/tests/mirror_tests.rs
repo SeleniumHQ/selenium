@@ -21,14 +21,13 @@ mod common;
 
 #[test]
 fn mirror_test() {
+    if is_linux_arm64() {
+        return;
+    }
     let mut cmd = get_selenium_manager();
     cmd.args([
         "--browser",
-        if is_linux_arm64() {
-            "firefox"
-        } else {
-            "chrome"
-        },
+        "chrome",
         "--driver-mirror-url",
         "https://registry.npmmirror.com/-/binary/chromedriver/",
         "--browser-version",
