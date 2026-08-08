@@ -19,8 +19,10 @@ feed) are out of scope, as is any ergonomic sugar over these types that a higher
 
 ## Decision
 
-The spec fixes the layer's baseline: spec strings reach the wire verbatim, an *omitted* field stays
-distinct from an explicit `null`, and a union resolves by the rule the spec declares. What it leaves open,
+In this record, "the spec" is the declared schema the layer validates against, which includes all relevant
+published WebDriver BiDi specifications and any vendor-defined extensions. The spec fixes the layer's
+baseline: spec strings reach the wire verbatim, an *omitted* field stays distinct from an explicit `null`,
+and a union resolves by the rule the spec declares. What it leaves open,
 this record decides in three parts. The first is the typed **representation** the layer exposes; the other
 two are behavior observable at the wire boundary: what it sends **outbound**, and what it receives
 **inbound**.
