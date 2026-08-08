@@ -82,14 +82,14 @@ impl Props {
 }
 
 fn sanitize_os(os: &str) -> String {
-    match str_to_os(os) {
+    match str_to_os(os.trim()) {
         Ok(parsed_os) => parsed_os.to_str_vector()[0].to_string(),
         Err(_) => STATS_OTHER.to_string(),
     }
 }
 
 fn sanitize_language_binding(language_binding: &str) -> String {
-    let lang = language_binding.to_ascii_lowercase();
+    let lang = language_binding.trim().to_ascii_lowercase();
     if VALID_LANGUAGE_BINDINGS.contains(&lang.as_str()) {
         lang
     } else {
@@ -152,6 +152,7 @@ mod tests {
         assert_eq!(sanitize_os("WIN"), "windows");
         assert_eq!(sanitize_os("mac"), "macos");
         assert_eq!(sanitize_os("gnu/linux"), "linux");
+        assert_eq!(sanitize_os("WIN "), "windows");
         assert_eq!(sanitize_os(XSS_PAYLOAD), STATS_OTHER);
         assert_eq!(sanitize_os(""), STATS_OTHER);
     }
@@ -170,6 +171,7 @@ mod tests {
     #[test]
     fn language_binding_is_vetted() {
         assert_eq!(sanitize_language_binding("Java"), "java");
+        assert_eq!(sanitize_language_binding("Java "), "java");
         assert_eq!(sanitize_language_binding("csharp"), "csharp");
         assert_eq!(sanitize_language_binding("cobol"), STATS_OTHER);
         assert_eq!(sanitize_language_binding(XSS_PAYLOAD), STATS_OTHER);
