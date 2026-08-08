@@ -199,11 +199,11 @@ fn browser_path_version_mismatch_test() {
     // The mismatch is always reported, either as ERROR (no cached driver) or WARN (fallback used)
     assert!(
         stdout_str.contains("131.0.6778.264"),
-        "Should mention detected version"
+        "Should mention detected version; got:\n{stdout_str}"
     );
     assert!(
         stdout_str.contains("999.0.0.0"),
-        "Should mention requested version"
+        "Should mention requested version; got:\n{stdout_str}"
     );
 }
 
@@ -230,11 +230,11 @@ fn browser_path_major_version_mismatch_test() {
     // Major-only version mismatch must also be reported
     assert!(
         stdout_str.contains("131.0.6778.264"),
-        "Should mention detected version"
+        "Should mention detected version; got:\n{stdout_str}"
     );
     assert!(
         stdout_str.contains("999"),
-        "Should mention requested version"
+        "Should mention requested version; got:\n{stdout_str}"
     );
 }
 
