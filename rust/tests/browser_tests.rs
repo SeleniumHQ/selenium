@@ -130,25 +130,26 @@ fn invalid_geckodriver_version_test() {
     );
 }
 
-#[rstest]
-#[case("chrome")]
-#[case("edge")]
-fn unsupported_on_linux_arm64_test(#[case] browser: String) {
-    let mut cmd = get_selenium_manager();
-    let result = cmd
-        .args([
-            "--browser",
-            &browser,
-            "--os",
-            "linux",
-            "--arch",
-            "arm64",
-            "--debug",
-        ])
-        .assert()
-        .try_success();
+#[test]
+fn chrome_is_unsupported_on_linux_arm64() {
+    let mut manager = ChromeManager::new().unwrap();
+    manager.config.os = "linux".to_string();
+    manager.config.arch = "aarch64".to_string();
+    let error = manager
+        .request_latest_browser_version_from_online("")
+        .unwrap_err();
+    assert!(error.to_string().contains("not supported yet"));
+}
 
-    assert_output(&mut cmd, result, vec!["not supported yet"], DATAERR);
+#[test]
+fn edge_is_unsupported_on_linux_arm64() {
+    let mut manager = EdgeManager::new().unwrap();
+    manager.config.os = "linux".to_string();
+    manager.config.arch = "aarch64".to_string();
+    let error = manager
+        .request_latest_browser_version_from_online("")
+        .unwrap_err();
+    assert!(error.to_string().contains("not supported yet"));
 }
 
 #[test]
