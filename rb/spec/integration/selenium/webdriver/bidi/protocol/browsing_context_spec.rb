@@ -318,10 +318,8 @@ module Selenium
 
           describe '#set_viewport' do
             it 'sets the viewport size and device pixel ratio',
-               pending_if: [{browser_family: :safari,
-                             reason: 'Safari accepts browsingContext.setViewport but does not resize the window'},
-                            {browser: :firefox, platform: :linux,
-                             reason: 'Firefox accepts setViewport but does not resize the window on Linux'}] do
+               pending_if: {browser_family: :safari,
+                            reason: 'Safari accepts browsingContext.setViewport but does not resize the window'} do
               browsing_context.set_viewport(
                 context: driver.window_handle,
                 viewport: BrowsingContext::Viewport.new(width: 800, height: 600),
@@ -351,7 +349,10 @@ module Selenium
                                  reason: 'Edge returns unknown command for browsingContext.startScreencast'},
                                 {browser_family: :safari,
                                  exception: {class: Error::UnknownCommandError},
-                                 reason: 'Safari does not implement browsingContext.startScreencast'}] do
+                                 reason: 'Safari does not implement browsingContext.startScreencast'},
+                                {browser: :firefox, platform: :linux,
+                                 exception: {class: Error::UnknownError, message: /startScreencast/},
+                                 reason: 'Firefox startScreencast fails with NS_ERROR_FAILURE on Linux'}] do
             it 'starts and stops a screencast' do
               result = browsing_context.start_screencast(
                 context: driver.window_handle,
