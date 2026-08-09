@@ -151,6 +151,11 @@ module Selenium
           end
 
           describe '#handle_user_prompt' do
+            chromium_prompt_pending = {
+              browser_family: :chromium,
+              reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'
+            }.freeze
+
             it 'returns a no such alert error when no prompt is open' do
               expect {
                 browsing_context.handle_user_prompt(context: driver.window_handle, accept: true)
@@ -158,8 +163,7 @@ module Selenium
             end
 
             it 'accepts user prompts without text',
-               pending_if: {browser_family: :chromium,
-                            reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
+               pending_if: chromium_prompt_pending do
               driver.navigate.to url_for('alerts.html')
               driver.find_element(id: 'alert').click
               wait_for_alert
@@ -170,8 +174,7 @@ module Selenium
             end
 
             it 'accepts user prompts with text',
-               pending_if: {browser_family: :chromium,
-                            reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
+               pending_if: chromium_prompt_pending do
               driver.navigate.to url_for('alerts.html')
               driver.find_element(id: 'prompt').click
               wait_for_alert
@@ -186,8 +189,7 @@ module Selenium
             end
 
             it 'rejects user prompts',
-               pending_if: {browser_family: :chromium,
-                            reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
+               pending_if: chromium_prompt_pending do
               driver.navigate.to url_for('alerts.html')
               driver.find_element(id: 'alert').click
               wait_for_alert

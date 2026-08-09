@@ -45,9 +45,18 @@ module Selenium
             )
           end
 
-          describe '#add_preload_script',
-                   pending_if: {browser_family: :safari,
-                                reason: 'Safari script.addPreloadScript result fails strict deserialization'} do
+          # Safari's BiDi returns malformed remote values under strict deserialization; shared by the
+          # examples that read a remote value back or install a preload script.
+          safari_remote_value = {
+            browser_family: :safari,
+            reason: 'Safari remote value fails deserialization'
+          }.freeze
+          safari_preload = {
+            browser_family: :safari,
+            reason: 'Safari script.addPreloadScript result fails strict deserialization'
+          }.freeze
+
+          describe '#add_preload_script', pending_if: safari_preload do
             it 'runs a preload script in future documents' do
               result = script.add_preload_script(
                 function_declaration: "() => { window.__ruby_bidi_preload = 'installed'; }"
@@ -83,8 +92,7 @@ module Selenium
 
           describe '#call_function' do
             it 'calls a function with local value arguments',
-               pending_if: {browser_family: :safari,
-                            reason: 'Safari remote value fails deserialization'} do
+               pending_if: safari_remote_value do
               result = script.call_function(
                 function_declaration: '(left, right) => left + right',
                 await_promise: false,
@@ -115,9 +123,7 @@ module Selenium
             end
           end
 
-          describe '#disown',
-                   pending_if: {browser_family: :safari,
-                                reason: 'Safari remote value fails deserialization'} do
+          describe '#disown', pending_if: safari_remote_value do
             it 'disowns a remote handle' do
               result = evaluate('({answer: 42})', result_ownership: :root)
               handle = result.result.handle
@@ -137,8 +143,7 @@ module Selenium
             end
 
             it 'awaits promises and accepts serialization options',
-               pending_if: {browser_family: :safari,
-                            reason: 'Safari remote value fails deserialization'} do
+               pending_if: safari_remote_value do
               result = evaluate(
                 'Promise.resolve({name: "ruby", nested: {hidden: true}})',
                 await_promise: true,
@@ -173,9 +178,7 @@ module Selenium
             end
           end
 
-          describe '#remove_preload_script',
-                   pending_if: {browser_family: :safari,
-                                reason: 'Safari script.addPreloadScript result fails strict deserialization'} do
+          describe '#remove_preload_script', pending_if: safari_preload do
             it 'removes a preload script before future navigations' do
               result = script.add_preload_script(
                 function_declaration: '() => { window.__ruby_bidi_removed_preload = true; }'
