@@ -4,6 +4,7 @@ projectFilesBackup/
 .svn
 .credentials.dat
 .ijwb
+/java-libs
 mockpiframe.log
 mockpiframe.log.lck
 junitvmwatcher*.properties
