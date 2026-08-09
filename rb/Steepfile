@@ -49,8 +49,6 @@ target :lib do
     'lib/selenium/webdriver/common/child_process.rb',
     # Ignore due to Net::HTTP not being found on line 49
     'lib/selenium/webdriver/chromium/driver.rb',
-    # Ignore due to positional argument error with TCPServer rescue on line 69
-    'lib/selenium/webdriver/common/socket_lock.rb',
     # Ignore due to is_a? bot error on line 70
     'lib/selenium/webdriver/remote/driver.rb',
     # Ignore due to line 118 causing an error with URI & Net::HTTP
