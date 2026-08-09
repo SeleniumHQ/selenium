@@ -30,6 +30,41 @@ module Selenium
       SOCKET_LOCK_TIMEOUT = 45
       STOP_TIMEOUT = 20
 
+      @running = []
+      @running_mutex = Mutex.new
+      @exit_hook_pid = nil
+
+      class << self
+        #
+        # Stops every service still running in this process.
+        #
+
+        def stop_running
+          @running_mutex.synchronize { @running.dup }.each(&:stop)
+        end
+
+        #
+        # Tracks a started service so it can be stopped at exit. One exit hook covers
+        # all of them, so a service that has been stopped is not held onto.
+        #
+
+        def track(manager)
+          @running_mutex.synchronize do
+            unless @exit_hook_pid == Process.pid
+              @exit_hook_pid = Process.pid
+              @running.clear # anything inherited through a fork belongs to the parent
+              Platform.exit_hook { stop_running }
+            end
+
+            @running << manager
+          end
+        end
+
+        def untrack(manager)
+          @running_mutex.synchronize { @running.delete(manager) }
+        end
+      end
+
       #
       # End users should use a class method for the desired driver, rather than using this directly.
       #
@@ -50,7 +85,7 @@ module Selenium
       def start
         raise "already started: #{uri.inspect} #{@executable_path.inspect}" if process_running?
 
-        Platform.exit_hook { stop } # make sure we don't leave the server running
+        self.class.track(self) # make sure we don't leave the server running
 
         socket_lock.locked do
           find_free_port
@@ -69,6 +104,7 @@ module Selenium
         nil # noop
       ensure
         stop_process
+        self.class.untrack(self)
       end
 
       def uri
