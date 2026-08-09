@@ -35,11 +35,11 @@ module Selenium
 
       @process: untyped
 
-      @socket_lock: untyped
+      @port_lock: untyped
 
       START_TIMEOUT: Integer
 
-      SOCKET_LOCK_TIMEOUT: Integer
+      PORT_LOCK_TIMEOUT: Integer
 
       STOP_TIMEOUT: Integer
 
@@ -77,7 +77,7 @@ module Selenium
 
       def cannot_connect_error_text: () -> String
 
-      def socket_lock: () -> untyped
+      def port_lock: () -> untyped
     end
   end
 end
