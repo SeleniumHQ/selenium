@@ -41,6 +41,13 @@ module Selenium
         instance_double(SocketLock).tap { |lock| allow(lock).to receive(:locked).and_yield }
       end
 
+      # The tracking list and the pid that armed the exit hook outlive an example, so a
+      # later one would otherwise see the hook as already armed.
+      before do
+        described_class.instance_variable_set(:@running, [])
+        described_class.instance_variable_set(:@exit_hook_pid, nil)
+      end
+
       after { described_class.stop_running }
 
       describe '.track' do
@@ -55,7 +62,7 @@ module Selenium
 
           2.times { build_manager.start }
 
-          expect(Platform).to have_received(:exit_hook).at_most(:once)
+          expect(Platform).to have_received(:exit_hook).exactly(:once)
         end
       end
 
@@ -75,6 +82,15 @@ module Selenium
           described_class.stop_running
 
           expect(manager).to have_received(:stop_process)
+        end
+
+        it 'leaves a service inherited through a fork to the parent' do
+          manager.start
+          described_class.instance_variable_set(:@exit_hook_pid, Process.pid - 1)
+
+          described_class.stop_running
+
+          expect(manager).not_to have_received(:stop_process)
         end
       end
     end

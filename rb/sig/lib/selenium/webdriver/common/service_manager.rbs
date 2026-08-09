@@ -55,6 +55,8 @@ module Selenium
 
       def self.untrack: (ServiceManager manager) -> void
 
+      def self.claim_for_this_process: () -> void
+
       def initialize: (untyped config) -> void
 
       def start: () -> untyped

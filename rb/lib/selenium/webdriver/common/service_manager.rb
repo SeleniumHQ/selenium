@@ -40,7 +40,10 @@ module Selenium
         #
 
         def stop_running
-          @running_mutex.synchronize { @running.dup }.each(&:stop)
+          @running_mutex.synchronize {
+            claim_for_this_process
+            @running.dup
+          }.each(&:stop)
         end
 
         #
@@ -50,18 +53,25 @@ module Selenium
 
         def track(manager)
           @running_mutex.synchronize do
-            unless @exit_hook_pid == Process.pid
-              @exit_hook_pid = Process.pid
-              @running.clear # anything inherited through a fork belongs to the parent
-              Platform.exit_hook { stop_running }
-            end
-
+            claim_for_this_process
             @running << manager
           end
         end
 
         def untrack(manager)
           @running_mutex.synchronize { @running.delete(manager) }
+        end
+
+        private
+
+        # Services tracked before a fork belong to the parent, which stops them itself.
+        # The exit hook is armed here rather than at load so a child gets one of its own.
+        def claim_for_this_process
+          return if @exit_hook_pid == Process.pid
+
+          @exit_hook_pid = Process.pid
+          @running.clear
+          Platform.exit_hook { stop_running }
         end
       end
 
