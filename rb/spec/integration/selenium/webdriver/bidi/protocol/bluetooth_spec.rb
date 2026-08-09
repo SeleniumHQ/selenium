@@ -31,6 +31,13 @@ module Selenium
                  skip_if: {browser_family: :safari,
                            reason: 'Safari coverage tracked in safari_support_probe_spec.rb'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
+          # Shared by every device-response example: they drive the Web Bluetooth JS chooser, which never
+          # completes on Chromium in CI (navigator.bluetooth undefined on Linux, times out elsewhere).
+          chromium_device_response_skip = {
+            browser_family: :chromium,
+            reason: 'chromium bluetooth device-response: undefined on Linux, times out elsewhere'
+          }.freeze
+
           after do |example|
             next if example.metadata[:skip] || example.skip
 
@@ -289,16 +296,14 @@ module Selenium
 
           describe '#handle_request_device_prompt' do
             it 'accepts a prompt',
-               skip_if: {browser_family: :chromium,
-                         reason: 'chromium bluetooth device-response: undefined on Linux, times out elsewhere'} do
+               skip_if: chromium_device_response_skip do
               select_device
 
               expect(evaluate_value('window.__rubyBluetoothDevice.name')).to eq('Ruby Heart Rate')
             end
 
             it 'cancels a prompt',
-               skip_if: {browser_family: :chromium,
-                         reason: 'chromium bluetooth device-response: undefined on Linux, times out elsewhere'} do
+               skip_if: chromium_device_response_skip do
               enable_adapter
               events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
               start_request_device
@@ -342,8 +347,7 @@ module Selenium
 
           describe '#simulate_advertisement' do
             it 'simulates an advertisement scan entry',
-               skip_if: {browser_family: :chromium,
-                         reason: 'chromium bluetooth device-response: undefined on Linux, times out elsewhere'} do
+               skip_if: chromium_device_response_skip do
               enable_adapter
               events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
               start_request_device
@@ -362,8 +366,7 @@ module Selenium
 
           describe '#simulate_gatt_connection_response' do
             it 'simulates a successful GATT connection response',
-               skip_if: {browser_family: :chromium,
-                         reason: 'chromium bluetooth device-response: undefined on Linux, times out elsewhere'} do
+               skip_if: chromium_device_response_skip do
               select_device
 
               connect_selected_device
@@ -373,8 +376,7 @@ module Selenium
 
           describe '#simulate_gatt_disconnection' do
             it 'simulates a GATT disconnection',
-               skip_if: {browser_family: :chromium,
-                         reason: 'chromium bluetooth device-response: undefined on Linux, times out elsewhere'} do
+               skip_if: chromium_device_response_skip do
               select_device
               connect_selected_device
 
@@ -431,8 +433,7 @@ module Selenium
 
           describe '#simulate_characteristic_response' do
             it 'simulates characteristic read and write responses',
-               skip_if: {browser_family: :chromium,
-                         reason: 'chromium bluetooth device-response: undefined on Linux, times out elsewhere'} do
+               skip_if: chromium_device_response_skip do
               select_device
               add_service
               add_characteristic
@@ -516,8 +517,7 @@ module Selenium
 
           describe '#simulate_descriptor_response' do
             it 'simulates descriptor read and write responses',
-               skip_if: {browser_family: :chromium,
-                         reason: 'chromium bluetooth device-response: undefined on Linux, times out elsewhere'} do
+               skip_if: chromium_device_response_skip do
               select_device
               add_service
               add_characteristic
