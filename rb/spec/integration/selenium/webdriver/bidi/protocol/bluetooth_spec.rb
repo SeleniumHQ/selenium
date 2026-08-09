@@ -31,13 +31,6 @@ module Selenium
                  skip_if: {browser_family: :safari,
                            reason: 'Safari coverage tracked in safari_support_probe_spec.rb'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          # Shared by every device-response example: they drive the Web Bluetooth JS chooser, which never
-          # completes on Chromium in CI (navigator.bluetooth undefined on Linux, times out elsewhere).
-          chromium_device_response_skip = {
-            browser_family: :chromium,
-            reason: 'chromium bluetooth device-response: undefined on Linux, times out elsewhere'
-          }.freeze
-
           after do |example|
             next if example.metadata[:skip] || example.skip
 
@@ -294,37 +287,6 @@ module Selenium
             )
           end
 
-          describe '#handle_request_device_prompt' do
-            it 'accepts a prompt',
-               skip_if: chromium_device_response_skip do
-              select_device
-
-              expect(evaluate_value('window.__rubyBluetoothDevice.name')).to eq('Ruby Heart Rate')
-            end
-
-            it 'cancels a prompt',
-               skip_if: chromium_device_response_skip do
-              enable_adapter
-              events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
-              start_request_device
-
-              expect(bluetooth.simulate_advertisement(
-                       context: driver.window_handle,
-                       scan_entry: scan_entry
-                     )).to be_empty
-
-              prompt = request_device_prompt(events)
-              bluetooth.handle_request_device_prompt(
-                context: driver.window_handle,
-                prompt: prompt['prompt'],
-                accept: false
-              )
-              expect(evaluate_value('window.__rubyBluetoothDevicePromise', await_promise: true)).to start_with('ERROR:')
-            ensure
-              unsubscribe('bluetooth.requestDevicePromptUpdated', callback) if callback
-            end
-          end
-
           describe '#simulate_adapter' do
             it 'simulates a powered-on adapter' do
               expect(enable_adapter).to be_empty
@@ -342,49 +304,6 @@ module Selenium
           describe '#simulate_preconnected_peripheral' do
             it 'simulates a preconnected peripheral' do
               expect(simulate_preconnected_device).to be_empty
-            end
-          end
-
-          describe '#simulate_advertisement' do
-            it 'simulates an advertisement scan entry',
-               skip_if: chromium_device_response_skip do
-              enable_adapter
-              events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
-              start_request_device
-
-              expect(bluetooth.simulate_advertisement(
-                       context: driver.window_handle,
-                       scan_entry: scan_entry
-                     )).to be_empty
-
-              prompt = request_device_prompt(events)
-              expect(advertised_device(prompt)['id']).to be_a(String)
-            ensure
-              unsubscribe('bluetooth.requestDevicePromptUpdated', callback) if callback
-            end
-          end
-
-          describe '#simulate_gatt_connection_response' do
-            it 'simulates a successful GATT connection response',
-               skip_if: chromium_device_response_skip do
-              select_device
-
-              connect_selected_device
-              expect(evaluate_value('window.__rubyBluetoothDevice.gatt.connected')).to be(true)
-            end
-          end
-
-          describe '#simulate_gatt_disconnection' do
-            it 'simulates a GATT disconnection',
-               skip_if: chromium_device_response_skip do
-              select_device
-              connect_selected_device
-
-              expect(bluetooth.simulate_gatt_disconnection(
-                       context: driver.window_handle,
-                       address: address
-                     )).to be_empty
-              wait.until { evaluate_value('window.__rubyBluetoothDevice.gatt.connected') == false }
             end
           end
 
@@ -431,65 +350,6 @@ module Selenium
             end
           end
 
-          describe '#simulate_characteristic_response' do
-            it 'simulates characteristic read and write responses',
-               skip_if: chromium_device_response_skip do
-              select_device
-              add_service
-              add_characteristic
-              connect_selected_device
-              store_primary_service
-              store_characteristic
-
-              events, callback = subscribe('bluetooth.characteristicEventGenerated')
-              evaluate_value(
-                <<~JS
-                  (() => {
-                    window.__rubyBluetoothReadPromise = window.__rubyBluetoothCharacteristic.readValue()
-                      .then(value => Array.from(new Uint8Array(value.buffer)).join(','))
-                      .catch(error => `ERROR:${error.name}`);
-                    return 'started';
-                  })()
-                JS
-              )
-              wait.until { events.find { |event| event['type'] == 'read' } }
-              expect(bluetooth.simulate_characteristic_response(
-                       context: driver.window_handle,
-                       address: address,
-                       service_uuid: service_uuid,
-                       characteristic_uuid: characteristic_uuid,
-                       type: :read,
-                       code: 0,
-                       data: [1, 2, 3]
-                     )).to be_empty
-              expect(evaluate_value('window.__rubyBluetoothReadPromise', await_promise: true)).to eq('1,2,3')
-
-              evaluate_value(
-                <<~JS
-                  (() => {
-                    window.__rubyBluetoothWritePromise = window.__rubyBluetoothCharacteristic
-                      .writeValueWithResponse(new Uint8Array([4, 5]))
-                      .then(() => 'written')
-                      .catch(error => `ERROR:${error.name}`);
-                    return 'started';
-                  })()
-                JS
-              )
-              wait.until { events.find { |event| event['type'] == 'write-with-response' } }
-              expect(bluetooth.simulate_characteristic_response(
-                       context: driver.window_handle,
-                       address: address,
-                       service_uuid: service_uuid,
-                       characteristic_uuid: characteristic_uuid,
-                       type: :write,
-                       code: 0
-                     )).to be_empty
-              expect(evaluate_value('window.__rubyBluetoothWritePromise', await_promise: true)).to eq('written')
-            ensure
-              unsubscribe('bluetooth.characteristicEventGenerated', callback) if callback
-            end
-          end
-
           describe '#simulate_descriptor' do
             it 'adds and removes a descriptor' do
               simulate_preconnected_device
@@ -515,67 +375,200 @@ module Selenium
             end
           end
 
-          describe '#simulate_descriptor_response' do
-            it 'simulates descriptor read and write responses',
-               skip_if: chromium_device_response_skip do
-              select_device
-              add_service
-              add_characteristic
-              add_descriptor
-              connect_selected_device
-              store_primary_service
-              store_characteristic
-              store_descriptor
+          # These commands can only be exercised by driving the Web Bluetooth JS chooser, which never
+          # completes on Chromium in CI (navigator.bluetooth undefined on Linux, times out elsewhere).
+          context 'when driving the Web Bluetooth chooser (device-response commands)',
+                  skip_if: {browser_family: :chromium,
+                            reason: 'chromium bluetooth device-response: undefined on Linux, times out elsewhere'} do
+            describe '#handle_request_device_prompt' do
+              it 'accepts a prompt' do
+                select_device
 
-              events, callback = subscribe('bluetooth.descriptorEventGenerated')
-              evaluate_value(
-                <<~JS
-                  (() => {
-                    window.__rubyBluetoothDescriptorReadPromise = window.__rubyBluetoothDescriptor.readValue()
-                      .then(value => Array.from(new Uint8Array(value.buffer)).join(','))
-                      .catch(error => `ERROR:${error.name}`);
-                    return 'started';
-                  })()
-                JS
-              )
-              wait.until { events.find { |event| event['type'] == 'read' } }
-              expect(bluetooth.simulate_descriptor_response(
-                       context: driver.window_handle,
-                       address: address,
-                       service_uuid: service_uuid,
-                       characteristic_uuid: characteristic_uuid,
-                       descriptor_uuid: descriptor_uuid,
-                       type: :read,
-                       code: 0,
-                       data: [1, 2]
-                     )).to be_empty
-              expect(evaluate_value('window.__rubyBluetoothDescriptorReadPromise', await_promise: true)).to eq('1,2')
+                expect(evaluate_value('window.__rubyBluetoothDevice.name')).to eq('Ruby Heart Rate')
+              end
 
-              evaluate_value(
-                <<~JS
-                  (() => {
-                    window.__rubyBluetoothDescriptorWritePromise = window.__rubyBluetoothDescriptor
-                      .writeValue(new Uint8Array([6, 7]))
-                      .then(() => 'written')
-                      .catch(error => `ERROR:${error.name}`);
-                    return 'started';
-                  })()
-                JS
-              )
-              wait.until { events.find { |event| event['type'] == 'write' } }
-              expect(bluetooth.simulate_descriptor_response(
-                       context: driver.window_handle,
-                       address: address,
-                       service_uuid: service_uuid,
-                       characteristic_uuid: characteristic_uuid,
-                       descriptor_uuid: descriptor_uuid,
-                       type: :write,
-                       code: 0
-                     )).to be_empty
-              expect(evaluate_value('window.__rubyBluetoothDescriptorWritePromise',
-                                    await_promise: true)).to eq('written')
-            ensure
-              unsubscribe('bluetooth.descriptorEventGenerated', callback) if callback
+              it 'cancels a prompt' do
+                enable_adapter
+                events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
+                start_request_device
+
+                expect(bluetooth.simulate_advertisement(
+                         context: driver.window_handle,
+                         scan_entry: scan_entry
+                       )).to be_empty
+
+                prompt = request_device_prompt(events)
+                bluetooth.handle_request_device_prompt(
+                  context: driver.window_handle,
+                  prompt: prompt['prompt'],
+                  accept: false
+                )
+                expect(evaluate_value('window.__rubyBluetoothDevicePromise', await_promise: true))
+                  .to start_with('ERROR:')
+              ensure
+                unsubscribe('bluetooth.requestDevicePromptUpdated', callback) if callback
+              end
+            end
+
+            describe '#simulate_advertisement' do
+              it 'simulates an advertisement scan entry' do
+                enable_adapter
+                events, callback = subscribe('bluetooth.requestDevicePromptUpdated')
+                start_request_device
+
+                expect(bluetooth.simulate_advertisement(
+                         context: driver.window_handle,
+                         scan_entry: scan_entry
+                       )).to be_empty
+
+                prompt = request_device_prompt(events)
+                expect(advertised_device(prompt)['id']).to be_a(String)
+              ensure
+                unsubscribe('bluetooth.requestDevicePromptUpdated', callback) if callback
+              end
+            end
+
+            describe '#simulate_gatt_connection_response' do
+              it 'simulates a successful GATT connection response' do
+                select_device
+
+                connect_selected_device
+                expect(evaluate_value('window.__rubyBluetoothDevice.gatt.connected')).to be(true)
+              end
+            end
+
+            describe '#simulate_gatt_disconnection' do
+              it 'simulates a GATT disconnection' do
+                select_device
+                connect_selected_device
+
+                expect(bluetooth.simulate_gatt_disconnection(
+                         context: driver.window_handle,
+                         address: address
+                       )).to be_empty
+                wait.until { evaluate_value('window.__rubyBluetoothDevice.gatt.connected') == false }
+              end
+            end
+
+            describe '#simulate_characteristic_response' do
+              it 'simulates characteristic read and write responses' do
+                select_device
+                add_service
+                add_characteristic
+                connect_selected_device
+                store_primary_service
+                store_characteristic
+
+                events, callback = subscribe('bluetooth.characteristicEventGenerated')
+                evaluate_value(
+                  <<~JS
+                    (() => {
+                      window.__rubyBluetoothReadPromise = window.__rubyBluetoothCharacteristic.readValue()
+                        .then(value => Array.from(new Uint8Array(value.buffer)).join(','))
+                        .catch(error => `ERROR:${error.name}`);
+                      return 'started';
+                    })()
+                  JS
+                )
+                wait.until { events.find { |event| event['type'] == 'read' } }
+                expect(bluetooth.simulate_characteristic_response(
+                         context: driver.window_handle,
+                         address: address,
+                         service_uuid: service_uuid,
+                         characteristic_uuid: characteristic_uuid,
+                         type: :read,
+                         code: 0,
+                         data: [1, 2, 3]
+                       )).to be_empty
+                expect(evaluate_value('window.__rubyBluetoothReadPromise', await_promise: true)).to eq('1,2,3')
+
+                evaluate_value(
+                  <<~JS
+                    (() => {
+                      window.__rubyBluetoothWritePromise = window.__rubyBluetoothCharacteristic
+                        .writeValueWithResponse(new Uint8Array([4, 5]))
+                        .then(() => 'written')
+                        .catch(error => `ERROR:${error.name}`);
+                      return 'started';
+                    })()
+                  JS
+                )
+                wait.until { events.find { |event| event['type'] == 'write-with-response' } }
+                expect(bluetooth.simulate_characteristic_response(
+                         context: driver.window_handle,
+                         address: address,
+                         service_uuid: service_uuid,
+                         characteristic_uuid: characteristic_uuid,
+                         type: :write,
+                         code: 0
+                       )).to be_empty
+                expect(evaluate_value('window.__rubyBluetoothWritePromise', await_promise: true)).to eq('written')
+              ensure
+                unsubscribe('bluetooth.characteristicEventGenerated', callback) if callback
+              end
+            end
+
+            describe '#simulate_descriptor_response' do
+              it 'simulates descriptor read and write responses' do
+                select_device
+                add_service
+                add_characteristic
+                add_descriptor
+                connect_selected_device
+                store_primary_service
+                store_characteristic
+                store_descriptor
+
+                events, callback = subscribe('bluetooth.descriptorEventGenerated')
+                evaluate_value(
+                  <<~JS
+                    (() => {
+                      window.__rubyBluetoothDescriptorReadPromise = window.__rubyBluetoothDescriptor.readValue()
+                        .then(value => Array.from(new Uint8Array(value.buffer)).join(','))
+                        .catch(error => `ERROR:${error.name}`);
+                      return 'started';
+                    })()
+                  JS
+                )
+                wait.until { events.find { |event| event['type'] == 'read' } }
+                expect(bluetooth.simulate_descriptor_response(
+                         context: driver.window_handle,
+                         address: address,
+                         service_uuid: service_uuid,
+                         characteristic_uuid: characteristic_uuid,
+                         descriptor_uuid: descriptor_uuid,
+                         type: :read,
+                         code: 0,
+                         data: [1, 2]
+                       )).to be_empty
+                expect(evaluate_value('window.__rubyBluetoothDescriptorReadPromise', await_promise: true)).to eq('1,2')
+
+                evaluate_value(
+                  <<~JS
+                    (() => {
+                      window.__rubyBluetoothDescriptorWritePromise = window.__rubyBluetoothDescriptor
+                        .writeValue(new Uint8Array([6, 7]))
+                        .then(() => 'written')
+                        .catch(error => `ERROR:${error.name}`);
+                      return 'started';
+                    })()
+                  JS
+                )
+                wait.until { events.find { |event| event['type'] == 'write' } }
+                expect(bluetooth.simulate_descriptor_response(
+                         context: driver.window_handle,
+                         address: address,
+                         service_uuid: service_uuid,
+                         characteristic_uuid: characteristic_uuid,
+                         descriptor_uuid: descriptor_uuid,
+                         type: :write,
+                         code: 0
+                       )).to be_empty
+                expect(evaluate_value('window.__rubyBluetoothDescriptorWritePromise',
+                                      await_promise: true)).to eq('written')
+              ensure
+                unsubscribe('bluetooth.descriptorEventGenerated', callback) if callback
+              end
             end
           end
         end

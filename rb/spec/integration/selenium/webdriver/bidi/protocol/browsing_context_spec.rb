@@ -151,52 +151,48 @@ module Selenium
           end
 
           describe '#handle_user_prompt' do
-            chromium_prompt_pending = {
-              browser_family: :chromium,
-              reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'
-            }.freeze
-
             it 'returns a no such alert error when no prompt is open' do
               expect {
                 browsing_context.handle_user_prompt(context: driver.window_handle, accept: true)
               }.to raise_error(Error::NoSuchAlertError)
             end
 
-            it 'accepts user prompts without text',
-               pending_if: chromium_prompt_pending do
-              driver.navigate.to url_for('alerts.html')
-              driver.find_element(id: 'alert').click
-              wait_for_alert
-              browsing_context.handle_user_prompt(context: driver.window_handle, accept: true)
-              wait_for_no_alert
+            context 'when a prompt is open',
+                    pending_if: {browser_family: :chromium,
+                                 reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
+              it 'accepts user prompts without text' do
+                driver.navigate.to url_for('alerts.html')
+                driver.find_element(id: 'alert').click
+                wait_for_alert
+                browsing_context.handle_user_prompt(context: driver.window_handle, accept: true)
+                wait_for_no_alert
 
-              expect(driver.title).to eq('Testing Alerts')
-            end
+                expect(driver.title).to eq('Testing Alerts')
+              end
 
-            it 'accepts user prompts with text',
-               pending_if: chromium_prompt_pending do
-              driver.navigate.to url_for('alerts.html')
-              driver.find_element(id: 'prompt').click
-              wait_for_alert
-              browsing_context.handle_user_prompt(
-                context: driver.window_handle,
-                accept: true,
-                user_text: 'Hello, world!'
-              )
-              wait_for_no_alert
+              it 'accepts user prompts with text' do
+                driver.navigate.to url_for('alerts.html')
+                driver.find_element(id: 'prompt').click
+                wait_for_alert
+                browsing_context.handle_user_prompt(
+                  context: driver.window_handle,
+                  accept: true,
+                  user_text: 'Hello, world!'
+                )
+                wait_for_no_alert
 
-              expect(driver.title).to eq('Testing Alerts')
-            end
+                expect(driver.title).to eq('Testing Alerts')
+              end
 
-            it 'rejects user prompts',
-               pending_if: chromium_prompt_pending do
-              driver.navigate.to url_for('alerts.html')
-              driver.find_element(id: 'alert').click
-              wait_for_alert
-              browsing_context.handle_user_prompt(context: driver.window_handle, accept: false)
-              wait_for_no_alert
+              it 'rejects user prompts' do
+                driver.navigate.to url_for('alerts.html')
+                driver.find_element(id: 'alert').click
+                wait_for_alert
+                browsing_context.handle_user_prompt(context: driver.window_handle, accept: false)
+                wait_for_no_alert
 
-              expect(driver.title).to eq('Testing Alerts')
+                expect(driver.title).to eq('Testing Alerts')
+              end
             end
           end
 
