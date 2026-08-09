@@ -319,6 +319,7 @@ module Selenium
           describe '#set_viewport' do
             it 'sets the viewport size and device pixel ratio',
                pending_if: {browser_family: :safari,
+                            exception: {class: RSpec::Expectations::ExpectationNotMetError},
                             reason: 'Safari accepts browsingContext.setViewport but does not resize the window'} do
               browsing_context.set_viewport(
                 context: driver.window_handle,
