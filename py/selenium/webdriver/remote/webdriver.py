@@ -150,31 +150,22 @@ def get_remote_connection(
 
 def create_matches(options: list[BaseOptions]) -> dict:
     capabilities: dict[str, Any] = {"capabilities": {}}
-    opts = []
-    for opt in options:
-        opts.append(opt.to_capabilities())
-    opts_size = len(opts)
-    samesies = {}
+    opts = [opt.to_capabilities() for opt in options]
 
-    # Can not use bitwise operations on the dicts or lists due to
-    # https://bugs.python.org/issue38210
-    for i in range(opts_size):
-        min_index = i
-        if i + 1 < opts_size:
-            first_keys = opts[min_index].keys()
-
-            for kys in first_keys:
-                if kys in opts[i + 1].keys():
-                    if opts[min_index][kys] == opts[i + 1][kys]:
-                        samesies.update({kys: opts[min_index][kys]})
-
-    always = {}
-    for k, v in samesies.items():
-        always[k] = v
+    # alwaysMatch holds only the capabilities that are present with an identical value in
+    # *every* option set; everything else stays in the per-option firstMatch entries. A
+    # candidate key must appear in every set, so it must appear in the first one; values
+    # may be dicts/lists and so are compared with ``==`` rather than placed in a set
+    # (see https://bugs.python.org/issue38210).
+    always: dict[str, Any] = {}
+    if opts:
+        for key, value in opts[0].items():
+            if all(key in opt and opt[key] == value for opt in opts[1:]):
+                always[key] = value
 
     for opt_dict in opts:
-        for k in always:
-            del opt_dict[k]
+        for key in always:
+            del opt_dict[key]
 
     capabilities["capabilities"]["alwaysMatch"] = always
     capabilities["capabilities"]["firstMatch"] = opts
@@ -389,12 +380,20 @@ class WebDriver(BaseWebDriver):
         """Creates a new session with the desired capabilities.
 
         Args:
-            capabilities: A capabilities dict to start the session with.
+            capabilities: Either a flat capabilities dict (from a single options
+                object) or an already-formed W3C ``{"capabilities": {...}}`` object
+                (produced by ``create_matches`` when a list of options is supplied).
         """
         remote_url = self._remote_url()
-        if remote_url:
-            capabilities = {**capabilities, "se:remoteUrl": remote_url}
-        caps = _create_caps(capabilities)
+        inner = capabilities.get("capabilities")
+        if isinstance(inner, dict) and ("alwaysMatch" in inner or "firstMatch" in inner):
+            caps = copy.deepcopy(capabilities)
+            if remote_url:
+                caps["capabilities"].setdefault("alwaysMatch", {})["se:remoteUrl"] = remote_url
+        else:
+            if remote_url:
+                capabilities = {**capabilities, "se:remoteUrl": remote_url}
+            caps = _create_caps(capabilities)
         try:
             response = self.execute(Command.NEW_SESSION, caps)["value"]
             self.session_id = response.get("sessionId")
