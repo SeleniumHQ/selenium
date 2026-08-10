@@ -78,6 +78,19 @@ module Selenium
             def self.new: (locale: String?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
+          class SetMediaFeaturesOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
+            attr_reader features: Array[::Selenium::WebDriver::BiDi::Protocol::Emulation::MediaFeature]?
+            attr_reader contexts: untyped
+            attr_reader user_contexts: untyped
+            def self.new: (features: Array[::Selenium::WebDriver::BiDi::Protocol::Emulation::MediaFeature]?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
+          end
+
+          class MediaFeature < ::Selenium::WebDriver::BiDi::Serialization::Record
+            attr_reader name: String
+            attr_reader value: String
+            def self.new: (name: String, value: String) -> instance
+          end
+
           class SetNetworkConditionsParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader network_conditions: ::Selenium::WebDriver::BiDi::Protocol::Emulation::NetworkConditionsOffline?
             attr_reader contexts: untyped
@@ -123,6 +136,13 @@ module Selenium
             def self.new: (user_agent: String?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
+          class SetViewportMetaOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
+            attr_reader viewport_meta: bool?
+            attr_reader contexts: untyped
+            attr_reader user_contexts: untyped
+            def self.new: (viewport_meta: bool?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
+          end
+
           class SetScriptingEnabledParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader enabled: bool?
             attr_reader contexts: untyped
@@ -153,12 +173,14 @@ module Selenium
 
           def geolocation_coordinates: (latitude: Numeric, longitude: Numeric, ?accuracy: Numeric, ?altitude: Numeric?, ?altitude_accuracy: Numeric?, ?heading: Numeric?, ?speed: Numeric?) -> GeolocationCoordinates
           def geolocation_position_error: (?type: String) -> GeolocationPositionError
+          def media_feature: (name: String, value: String) -> MediaFeature
           def network_conditions_offline: (?type: String) -> NetworkConditionsOffline
           def screen_area: (width: Integer, height: Integer) -> ScreenArea
           def screen_orientation: (natural: Symbol, type: Symbol) -> ScreenOrientation
           def set_forced_colors_mode_theme_override: (theme: Symbol?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
           def set_geolocation_override: (?contexts: Array[String], ?user_contexts: Array[String], ?coordinates: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationCoordinates?, ?error: ::Selenium::WebDriver::BiDi::Protocol::Emulation::GeolocationPositionError) -> untyped
           def set_locale_override: (locale: String?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
+          def set_media_features_override: (features: Array[::Selenium::WebDriver::BiDi::Protocol::Emulation::MediaFeature]?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
           def set_network_conditions: (network_conditions: ::Selenium::WebDriver::BiDi::Protocol::Emulation::NetworkConditionsOffline?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
           def set_screen_orientation_override: (screen_orientation: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenOrientation?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
           def set_screen_settings_override: (screen_area: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenArea?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
@@ -167,6 +189,7 @@ module Selenium
           def set_timezone_override: (timezone: String?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
           def set_touch_override: (max_touch_points: Integer?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
           def set_user_agent_override: (user_agent: String?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
+          def set_viewport_meta_override: (viewport_meta: bool?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
         end
       end
     end
