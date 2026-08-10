@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::BiDi::Transport
   
-    &mdash; Documentation by YARD 0.9.44
+    &mdash; Documentation by YARD 0.9.45
   
 </title>
 
@@ -120,6 +120,38 @@ command's params, sends it, and parses the reply into its declared type.</p>
 
 
 
+  <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#connection-instance_method" title="#connection (instance method)">#<strong>connection</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'><p>The websocket the transport sends over.</p></div></span>
+  
+</li>
+
+    
+  </ul>
+
 
 
 
@@ -212,12 +244,12 @@ command's params, sends it, and parses the reply into its declared type.</p>
       <pre class="lines">
 
 
-28
-29
-30</pre>
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/transport.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/transport.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_connection'>connection</span><span class='rparen'>)</span>
   <span class='ivar'>@connection</span> <span class='op'>=</span> <span class='id identifier rubyid_connection'>connection</span>
@@ -228,6 +260,58 @@ command's params, sends it, and parses the reply into its declared type.</p>
 </div>
   
 </div>
+
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id=""></span>
+      <div class="method_details first">
+  <h3 class="signature first" id="connection-instance_method">
+  
+    #<strong>connection</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>The websocket the transport sends over. Exposed so a domain can build a sibling
+domain (e.g. a vendor variant) over the same connection without Transport ever
+becoming a public constructor argument.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+31
+32
+33</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/transport.rb', line 31</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_connection'>connection</span>
+  <span class='ivar'>@connection</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
 
   <div id="instance_method_details" class="method_details_list">
@@ -255,19 +339,6 @@ command's params, sends it, and parses the reply into its declared type.</p>
 </div>
 <div class="tags">
   
-<p class="tag_title">Raises:</p>
-<ul class="raise">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">Error::WebDriverError</a></span></tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
 
 </div><table class="source_code">
   <tr>
@@ -275,20 +346,20 @@ command's params, sends it, and parses the reply into its declared type.</p>
       <pre class="lines">
 
 
-32
-33
-34
-35
-36
 37
-38</pre>
+38
+39
+40
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/transport.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/transport.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span><span class='comma'>,</span> <span class='label'>params:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>result:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_reply'>reply</span> <span class='op'>=</span> <span class='ivar'>@connection</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='label'>method:</span> <span class='id identifier rubyid_cmd'>cmd</span><span class='comma'>,</span> <span class='label'>params:</span> <span class='id identifier rubyid_serialize'>serialize</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_error_message'>error_message</span><span class='lparen'>(</span><span class='id identifier rubyid_reply'>reply</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_reply'>reply</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>error</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='id identifier rubyid_error_for'>error_for</span><span class='lparen'>(</span><span class='id identifier rubyid_reply'>reply</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_reply'>reply</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>error</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
 
   <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='id identifier rubyid_reply'>reply</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>result</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_result'>result</span> <span class='op'>?</span> <span class='id identifier rubyid_result'>result</span><span class='period'>.</span><span class='id identifier rubyid_from_json'>from_json</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_value'>value</span>
@@ -303,9 +374,9 @@ command's params, sends it, and parses the reply into its declared type.</p>
 </div>
 
       <div id="footer">
-  Generated on Sat Jul 11 00:50:21 2026 by
+  Generated on Mon Aug 10 18:03:11 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.44 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.11).
 </div>
 
     </div>

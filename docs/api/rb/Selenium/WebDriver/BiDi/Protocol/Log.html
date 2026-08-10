@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::BiDi::Protocol::Log
   
-    &mdash; Documentation by YARD 0.9.44
+    &mdash; Documentation by YARD 0.9.45
   
 </title>
 
@@ -122,6 +122,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#module-log" target="_parent" title="https://w3c.github.io/webdriver-bidi/#module-log">https://w3c.github.io/webdriver-bidi/#module-log</a></li>
+    
   </ul>
 
 </div><h2>Defined Under Namespace</h2>
@@ -177,6 +179,13 @@
 <div class="tags">
   
 
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-loglevel" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-loglevel">https://w3c.github.io/webdriver-bidi/#cddl-type-loglevel</a></li>
+    
+  </ul>
+
 </div>
         </dt>
         <dd><pre class="code"><span class='lbrace'>{</span>
@@ -205,6 +214,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-logbaselogentry" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-logbaselogentry">https://w3c.github.io/webdriver-bidi/#cddl-type-logbaselogentry</a></li>
+    
   </ul>
 
 </div>
@@ -213,7 +224,7 @@
   <span class='label'>level:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>level</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>enum:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Log::LEVEL</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>source:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>source</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Script::Source</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>text:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>text</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>timestamp:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>timestamp:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>stack_trace:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>stackTrace</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Script::StackTrace</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
@@ -236,6 +247,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-loggenericlogentry" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-loggenericlogentry">https://w3c.github.io/webdriver-bidi/#cddl-type-loggenericlogentry</a></li>
+    
   </ul>
 
 </div>
@@ -244,7 +257,7 @@
   <span class='label'>level:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>level</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>enum:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Log::LEVEL</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>source:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>source</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Script::Source</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>text:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>text</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>timestamp:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>timestamp:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>stack_trace:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>stackTrace</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Script::StackTrace</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>type:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>type</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
@@ -268,6 +281,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-logconsolelogentry" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-logconsolelogentry">https://w3c.github.io/webdriver-bidi/#cddl-type-logconsolelogentry</a></li>
+    
   </ul>
 
 </div>
@@ -277,7 +292,7 @@
   <span class='label'>level:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>level</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>enum:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Log::LEVEL</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>source:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>source</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Script::Source</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>text:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>text</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>timestamp:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>timestamp:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>stack_trace:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>stackTrace</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Script::StackTrace</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>method_:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>method</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>args:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>args</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Script::RemoteValue</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='rbrace'>}</span>
@@ -302,6 +317,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-logjavascriptlogentry" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-logjavascriptlogentry">https://w3c.github.io/webdriver-bidi/#cddl-type-logjavascriptlogentry</a></li>
+    
   </ul>
 
 </div>
@@ -311,7 +328,7 @@
   <span class='label'>level:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>level</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>enum:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Log::LEVEL</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>source:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>source</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Script::Source</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>text:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>text</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>timestamp:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>timestamp:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>stack_trace:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>stackTrace</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Script::StackTrace</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
@@ -367,9 +384,9 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Jul 11 00:50:22 2026 by
+  Generated on Mon Aug 10 18:03:11 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.44 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.11).
 </div>
 
     </div>

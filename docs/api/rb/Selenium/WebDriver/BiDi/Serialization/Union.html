@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::BiDi::Serialization::Union
   
-    &mdash; Documentation by YARD 0.9.44
+    &mdash; Documentation by YARD 0.9.45
   
 </title>
 
@@ -223,7 +223,29 @@ Subclassed (never instantiated) — each union holds its own dispatch table.</p>
   <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>A non-Hash payload is a bare scalar arm (e.g. input.Origin's &quot;viewport&quot;) with no object to dispatch on, so it is returned unchanged.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>A non-Hash payload is a bare scalar arm (e.g. input.Origin's &quot;viewport&quot;) with no object to dispatch on, so it is returned unchanged — unless every arm is an object (object_only), where a non-Hash cannot match any variant and is a wire error.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#object_only-class_method" title="object_only (class method)">.<strong>object_only</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'><p>Declared (via the schema's <code>objectOnly</code> signal) on a union whose every arm is an object, so a non-Hash payload is a schema violation rather than a scalar arm.</p></div></span>
   
 </li>
 
@@ -246,6 +268,50 @@ Subclassed (never instantiated) — each union holds its own dispatch table.</p>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#scalar_values-class_method" title="scalar_values (class method)">.<strong>scalar_values</strong>(*values)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'><p>Declared (via the schema's <code>scalarValues</code> signal) on a non-object_only union whose bare-scalar arms are a fixed set of literals (input.Origin's &quot;viewport&quot; / &quot;pointer&quot;).</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#valid_outbound%3F-class_method" title="valid_outbound? (class method)">.<strong>valid_outbound?</strong>(value)  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'><p>Outbound mirror of from_json: is <code>value</code> one this union accepts? Any variant is accepted, and a variant that is itself a union recurses (e.g. LocalValue's RemoteReference fallback).</p></div></span>
   
 </li>
 
@@ -327,21 +393,21 @@ is a caller error (unlike an unknown inbound value), so it fails loudly.</p>
       <pre class="lines">
 
 
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76</pre>
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/union.rb', line 65</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/union.rb', line 79</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_build'>build</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_variant'>variant</span> <span class='op'>=</span> <span class='id identifier rubyid_outbound_variant'>outbound_variant</span><span class='lparen'>(</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span> <span class='op'>||</span>
@@ -460,8 +526,9 @@ inbound payload tag (a wire string) can be matched to the symbol-keyed table.</p
   <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>A non-Hash payload is a bare scalar arm (e.g. input.Origin's &quot;viewport&quot;) with
-no object to dispatch on, so it is returned unchanged.</p>
+<p>A non-Hash payload is a bare scalar arm (e.g. input.Origin's &quot;viewport&quot;) with no
+object to dispatch on, so it is returned unchanged — unless every arm is an object
+(object_only), where a non-Hash cannot match any variant and is a wire error.</p>
 
   </div>
 </div>
@@ -474,22 +541,30 @@ no object to dispatch on, so it is returned unchanged.</p>
       <pre class="lines">
 
 
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58</pre>
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/union.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/union.rb', line 59</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_from_json'>from_json</span><span class='lparen'>(</span><span class='id identifier rubyid_json_payload'>json_payload</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='id identifier rubyid_json_payload'>json_payload</span> <span class='kw'>unless</span> <span class='id identifier rubyid_json_payload'>json_payload</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>Hash</span><span class='rparen'>)</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_json_payload'>json_payload</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>Hash</span><span class='rparen'>)</span>
+    <span class='kw'>return</span> <span class='id identifier rubyid_json_payload'>json_payload</span> <span class='kw'>unless</span> <span class='ivar'>@object_only</span>
+
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'> expected an object on the wire, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_json_payload'>json_payload</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
   <span class='id identifier rubyid_variant'>variant</span> <span class='op'>=</span> <span class='id identifier rubyid_select'>select</span><span class='lparen'>(</span><span class='id identifier rubyid_json_payload'>json_payload</span><span class='rparen'>)</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_variant'>variant</span>
@@ -498,6 +573,46 @@ no object to dispatch on, so it is returned unchanged.</p>
   <span class='kw'>end</span>
   <span class='const'><span class='object_link'><a href="../Protocol.html" title="Selenium::WebDriver::BiDi::Protocol (module)">Protocol</a></span></span><span class='period'>.</span><span class='id identifier rubyid_const_get'>const_get</span><span class='lparen'>(</span><span class='id identifier rubyid_variant'>variant</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_from_json'>from_json</span><span class='lparen'>(</span><span class='id identifier rubyid_json_payload'>json_payload</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="object_only-class_method">
+  
+    .<strong>object_only</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>Declared (via the schema's <code>objectOnly</code> signal) on a union whose every arm is an
+object, so a non-Hash payload is a schema violation rather than a scalar arm.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+49</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/union.rb', line 49</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_object_only'>object_only</span> <span class='op'>=</span> <span class='ivar'>@object_only</span> <span class='op'>=</span> <span class='kw'>true</span></pre>
     </td>
   </tr>
 </table>
@@ -537,6 +652,110 @@ no object to dispatch on, so it is returned unchanged.</p>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/union.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_presence'>presence</span><span class='lparen'>(</span><span class='id identifier rubyid_rules'>rules</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='ivar'>@presence</span> <span class='op'>=</span> <span class='id identifier rubyid_rules'>rules</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="scalar_values-class_method">
+  
+    .<strong>scalar_values</strong>(*values)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>Declared (via the schema's <code>scalarValues</code> signal) on a non-object_only union whose
+bare-scalar arms are a fixed set of literals (input.Origin's &quot;viewport&quot; / &quot;pointer&quot;).
+An outbound scalar outside that set matches no arm, so it is a caller error.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+54</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/union.rb', line 54</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_scalar_values'>scalar_values</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_values'>values</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='ivar'>@scalar_values</span> <span class='op'>=</span> <span class='id identifier rubyid_values'>values</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="valid_outbound?-class_method">
+  
+    .<strong>valid_outbound?</strong>(value)  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>Outbound mirror of from_json: is <code>value</code> one this union accepts? Any variant is accepted,
+and a variant that is itself a union recurses (e.g. LocalValue's RemoteReference fallback).
+A non-object_only union (e.g. input.Origin) also admits one of its pinned bare-scalar
+literals; an object (a Hash or another union's record) that matched no variant does not.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+96
+97
+98
+99
+100</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/union.rb', line 96</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_valid_outbound?'>valid_outbound?</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id identifier rubyid_variant_refs'>variant_refs</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_ref'>ref</span><span class='op'>|</span> <span class='id identifier rubyid_variant_accepts?'>variant_accepts?</span><span class='lparen'>(</span><span class='id identifier rubyid_ref'>ref</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+
+  <span class='op'>!</span><span class='ivar'>@object_only</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_scalar_arm?'>scalar_arm?</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -586,9 +805,9 @@ no object to dispatch on, so it is returned unchanged.</p>
 </div>
 
       <div id="footer">
-  Generated on Sat Jul 11 00:50:24 2026 by
+  Generated on Mon Aug 10 18:03:14 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.44 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.11).
 </div>
 
     </div>

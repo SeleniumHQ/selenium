@@ -6,7 +6,7 @@
 <title>
   Class: BiDiGenerate::TypeClass
   
-    &mdash; Documentation by YARD 0.9.44
+    &mdash; Documentation by YARD 0.9.45
   
 </title>
 
@@ -112,7 +112,8 @@
 </p>
 <p>A generated immutable value type (a Serialization::Record.define(...) class). discriminator is the
 baked variant tag wire:, value: or nil; schema_name/synthetic/owner/
-nested drive owner-nesting (see nest_synthetic).</p>
+nested drive owner-nesting (see nest_synthetic). spec_href links to the type's
+definition in the live spec (nil when the schema has none, e.g. a synthetic type).</p>
 
   </div>
 </div>
@@ -204,6 +205,31 @@ nested drive owner-nesting (see nest_synthetic).</p>
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#inbound-instance_method" title="#inbound (instance method)">#<strong>inbound</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute inbound.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#label-instance_method" title="#label (instance method)">#<strong>label</strong>  &#x21d2; Object </a>
     
 
@@ -247,6 +273,31 @@ nested drive owner-nesting (see nest_synthetic).</p>
 
   
     <span class="summary_desc"><div class='inline'><p>Returns the value of attribute nested.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#outbound-instance_method" title="#outbound (instance method)">#<strong>outbound</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute outbound.</p></div></span>
   
 </li>
 
@@ -322,6 +373,31 @@ nested drive owner-nesting (see nest_synthetic).</p>
 
   
     <span class="summary_desc"><div class='inline'><p>Returns the value of attribute schema_name.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#spec_href-instance_method" title="#spec_href (instance method)">#<strong>spec_href</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute spec_href.</p></div></span>
   
 </li>
 
@@ -569,12 +645,12 @@ nested drive owner-nesting (see nest_synthetic).</p>
       <pre class="lines">
 
 
-274
-275
-276</pre>
+377
+378
+379</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 274</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 377</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_discriminator'>discriminator</span>
   <span class='ivar'>@discriminator</span>
@@ -626,12 +702,12 @@ nested drive owner-nesting (see nest_synthetic).</p>
       <pre class="lines">
 
 
-274
-275
-276</pre>
+377
+378
+379</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 274</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 377</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_extensible'>extensible</span>
   <span class='ivar'>@extensible</span>
@@ -683,15 +759,72 @@ nested drive owner-nesting (see nest_synthetic).</p>
       <pre class="lines">
 
 
-274
-275
-276</pre>
+377
+378
+379</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 274</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 377</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fields'>fields</span>
   <span class='ivar'>@fields</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="inbound=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="inbound-instance_method">
+  
+    #<strong>inbound</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute inbound</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the current value of inbound</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+377
+378
+379</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 377</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_inbound'>inbound</span>
+  <span class='ivar'>@inbound</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -740,12 +873,12 @@ nested drive owner-nesting (see nest_synthetic).</p>
       <pre class="lines">
 
 
-274
-275
-276</pre>
+377
+378
+379</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 274</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 377</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_label'>label</span>
   <span class='ivar'>@label</span>
@@ -797,15 +930,72 @@ nested drive owner-nesting (see nest_synthetic).</p>
       <pre class="lines">
 
 
-274
-275
-276</pre>
+377
+378
+379</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 274</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 377</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_nested'>nested</span>
   <span class='ivar'>@nested</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="outbound=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="outbound-instance_method">
+  
+    #<strong>outbound</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute outbound</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the current value of outbound</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+377
+378
+379</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 377</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_outbound'>outbound</span>
+  <span class='ivar'>@outbound</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -854,12 +1044,12 @@ nested drive owner-nesting (see nest_synthetic).</p>
       <pre class="lines">
 
 
-274
-275
-276</pre>
+377
+378
+379</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 274</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 377</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_owner'>owner</span>
   <span class='ivar'>@owner</span>
@@ -911,12 +1101,12 @@ nested drive owner-nesting (see nest_synthetic).</p>
       <pre class="lines">
 
 
-274
-275
-276</pre>
+377
+378
+379</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 274</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 377</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ruby_name'>ruby_name</span>
   <span class='ivar'>@ruby_name</span>
@@ -968,15 +1158,72 @@ nested drive owner-nesting (see nest_synthetic).</p>
       <pre class="lines">
 
 
-274
-275
-276</pre>
+377
+378
+379</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 274</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 377</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_schema_name'>schema_name</span>
   <span class='ivar'>@schema_name</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="spec_href=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="spec_href-instance_method">
+  
+    #<strong>spec_href</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute spec_href</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the current value of spec_href</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+377
+378
+379</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 377</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_spec_href'>spec_href</span>
+  <span class='ivar'>@spec_href</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1025,12 +1272,12 @@ nested drive owner-nesting (see nest_synthetic).</p>
       <pre class="lines">
 
 
-274
-275
-276</pre>
+377
+378
+379</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 274</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 377</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_synthetic'>synthetic</span>
   <span class='ivar'>@synthetic</span>
@@ -1078,12 +1325,12 @@ indent a long field hash wraps itself against.</p>
       <pre class="lines">
 
 
-293
-294
-295</pre>
+396
+397
+398</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 293</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 396</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_define_assignment'>define_assignment</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_indent'>indent</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="../BiDiGenerate.html" title="BiDiGenerate (module)">BiDiGenerate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_wrap_call'><span class='object_link'><a href="../BiDiGenerate.html#wrap_call-class_method" title="BiDiGenerate.wrap_call (method)">wrap_call</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'> = Serialization::Record.define</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_define_entries'>define_entries</span><span class='lparen'>(</span><span class='id identifier rubyid_indent'>indent</span> <span class='op'>+</span> <span class='int'>2</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_indent'>indent</span><span class='rparen'>)</span>
@@ -1122,16 +1369,16 @@ first, then the fields, then the extensible flag.</p>
       <pre class="lines">
 
 
-281
-282
-283
-284
-285
-286
-287</pre>
+384
+385
+386
+387
+388
+389
+390</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 281</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 384</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_define_entries'>define_entries</span><span class='lparen'>(</span><span class='id identifier rubyid_entry_indent'>entry_indent</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_entries'>entries</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -1173,17 +1420,17 @@ first, then the fields, then the extensible flag.</p>
       <pre class="lines">
 
 
-297
-298
-299
-300
-301
-302
-303
-304</pre>
+400
+401
+402
+403
+404
+405
+406
+407</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 297</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 400</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_discriminator_entry'>discriminator_entry</span>
   <span class='id identifier rubyid_literal'>literal</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../BiDiGenerate.html" title="BiDiGenerate (module)">BiDiGenerate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_ruby_literal'><span class='object_link'><a href="../BiDiGenerate.html#ruby_literal-class_method" title="BiDiGenerate.ruby_literal (method)">ruby_literal</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_discriminator'>discriminator</span><span class='lbracket'>[</span><span class='symbol'>:value</span><span class='rbracket'>]</span><span class='rparen'>)</span>
@@ -1226,10 +1473,10 @@ first, then the fields, then the extensible flag.</p>
       <pre class="lines">
 
 
-277</pre>
+380</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 277</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 380</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_nested_types'>nested_types</span> <span class='op'>=</span> <span class='id identifier rubyid_nested'>nested</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='rbracket'>]</span></pre>
     </td>
@@ -1269,22 +1516,26 @@ to its const.</p>
       <pre class="lines">
 
 
-322
-323
-324
-325
-326
-327
-328</pre>
+425
+426
+427
+428
+429
+430
+431
+432
+433</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 322</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 425</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rbs_new_args'>rbs_new_args</span>
   <span class='id identifier rubyid_parts'>parts</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_parts'>parts</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>?</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_discriminator'>discriminator</span><span class='lbracket'>[</span><span class='symbol'>:ruby_name</span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_discriminator'>discriminator</span><span class='lbracket'>[</span><span class='symbol'>:rbs</span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_discriminator'>discriminator</span>
   <span class='id identifier rubyid_parts'>parts</span><span class='period'>.</span><span class='id identifier rubyid_concat'>concat</span><span class='lparen'>(</span><span class='id identifier rubyid_fields'>fields</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:rbs_arg</span><span class='rparen'>)</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_parts'>parts</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>?extensions: untyped</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_extensible'>extensible</span>
+  <span class='comment'># Match the reader type and the extensible Record impl (which calls `merge!`/`empty?` on it),
+</span>  <span class='comment'># so a type checker rejects a non-Hash before it crashes at serialization.
+</span>  <span class='id identifier rubyid_parts'>parts</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>?extensions: Hash[String, untyped]</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_extensible'>extensible</span>
   <span class='id identifier rubyid_parts'>parts</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>, </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -1322,16 +1573,16 @@ the extensible passthrough.</p>
       <pre class="lines">
 
 
-309
-310
-311
-312
-313
-314
-315</pre>
+412
+413
+414
+415
+416
+417
+418</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 309</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 412</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rbs_readers'>rbs_readers</span>
   <span class='id identifier rubyid_readers'>readers</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -1386,10 +1637,10 @@ the extensible passthrough.</p>
       <pre class="lines">
 
 
-276</pre>
+379</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 276</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 379</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_union?'>union?</span> <span class='op'>=</span> <span class='kw'>false</span></pre>
     </td>
@@ -1402,9 +1653,9 @@ the extensible passthrough.</p>
 </div>
 
       <div id="footer">
-  Generated on Sat Jul 11 00:50:24 2026 by
+  Generated on Mon Aug 10 18:03:14 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.44 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.11).
 </div>
 
     </div>

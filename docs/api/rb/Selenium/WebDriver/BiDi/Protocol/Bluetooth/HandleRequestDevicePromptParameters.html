@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::BiDi::Protocol::Bluetooth::HandleRequestDevicePromptParameters
   
-    &mdash; Documentation by YARD 0.9.44
+    &mdash; Documentation by YARD 0.9.45
   
 </title>
 
@@ -122,6 +122,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothhandlerequestdevicepromptparameters" target="_parent" title="https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothhandlerequestdevicepromptparameters">https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothhandlerequestdevicepromptparameters</a></li>
+    
   </ul>
 
 </div>
@@ -159,8 +161,8 @@
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
   <span class='label'>accept:</span> <span class='lbrace'>{</span><span class='label'>fixed:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>prompt:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>prompt</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>device:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>device</span><span class='tstring_end'>&#39;</span></span>
+  <span class='label'>prompt:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>prompt</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>device:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>device</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="CancelParameters-constant" class="">CancelParameters =
@@ -189,7 +191,7 @@
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
   <span class='label'>accept:</span> <span class='lbrace'>{</span><span class='label'>fixed:</span> <span class='kw'>false</span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>prompt:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>prompt</span><span class='tstring_end'>&#39;</span></span>
+  <span class='label'>prompt:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>prompt</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
     </dl>
@@ -201,6 +203,62 @@
 
 
 
+  
+    <h2>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#false-class_method" title="false (class method)">.<strong>false</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#true-class_method" title="true (class method)">.<strong>true</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
+
 
   
   
@@ -209,18 +267,102 @@
   
   
   
-  <h2>Method Summary</h2>
+  
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../../Serialization/Union.html" title="Selenium::WebDriver::BiDi::Serialization::Union (class)">Serialization::Union</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../../Serialization/Union.html#build-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.build (method)">build</a></span>, <span class='object_link'><a href="../../Serialization/Union.html#discriminator-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.discriminator (method)">discriminator</a></span>, <span class='object_link'><a href="../../Serialization/Union.html#fallback-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.fallback (method)">fallback</a></span>, <span class='object_link'><a href="../../Serialization/Union.html#from_json-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.from_json (method)">from_json</a></span>, <span class='object_link'><a href="../../Serialization/Union.html#presence-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.presence (method)">presence</a></span>, <span class='object_link'><a href="../../Serialization/Union.html#variants-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.variants (method)">variants</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../../Serialization/Union.html#build-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.build (method)">build</a></span>, <span class='object_link'><a href="../../Serialization/Union.html#discriminator-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.discriminator (method)">discriminator</a></span>, <span class='object_link'><a href="../../Serialization/Union.html#fallback-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.fallback (method)">fallback</a></span>, <span class='object_link'><a href="../../Serialization/Union.html#from_json-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.from_json (method)">from_json</a></span>, <span class='object_link'><a href="../../Serialization/Union.html#object_only-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.object_only (method)">object_only</a></span>, <span class='object_link'><a href="../../Serialization/Union.html#presence-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.presence (method)">presence</a></span>, <span class='object_link'><a href="../../Serialization/Union.html#scalar_values-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.scalar_values (method)">scalar_values</a></span>, <span class='object_link'><a href="../../Serialization/Union.html#valid_outbound%3F-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.valid_outbound? (method)">valid_outbound?</a></span>, <span class='object_link'><a href="../../Serialization/Union.html#variants-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.variants (method)">variants</a></span></p>
 
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="false-class_method">
+  
+    .<strong>false</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+155</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/bluetooth.rb', line 155</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='kw'>false</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Bluetooth.html" title="Selenium::WebDriver::BiDi::Protocol::Bluetooth (class)">Bluetooth</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::Bluetooth::HandleRequestDevicePromptParameters (class)">HandleRequestDevicePromptParameters</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#CancelParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::Bluetooth::HandleRequestDevicePromptParameters::CancelParameters (constant)">CancelParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="true-class_method">
+  
+    .<strong>true</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+154</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/bluetooth.rb', line 154</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='kw'>true</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Bluetooth.html" title="Selenium::WebDriver::BiDi::Protocol::Bluetooth (class)">Bluetooth</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::Bluetooth::HandleRequestDevicePromptParameters (class)">HandleRequestDevicePromptParameters</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#AcceptParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::Bluetooth::HandleRequestDevicePromptParameters::AcceptParameters (constant)">AcceptParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
 </div>
 
       <div id="footer">
-  Generated on Sat Jul 11 00:50:24 2026 by
+  Generated on Mon Aug 10 18:03:14 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.44 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.11).
 </div>
 
     </div>

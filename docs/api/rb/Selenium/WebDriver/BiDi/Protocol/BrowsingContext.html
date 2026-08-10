@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::BiDi::Protocol::BrowsingContext
   
-    &mdash; Documentation by YARD 0.9.44
+    &mdash; Documentation by YARD 0.9.45
   
 </title>
 
@@ -122,6 +122,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#module-browsingContext" target="_parent" title="https://w3c.github.io/webdriver-bidi/#module-browsingContext">https://w3c.github.io/webdriver-bidi/#module-browsingContext</a></li>
+    
   </ul>
 
 </div><h2>Defined Under Namespace</h2>
@@ -190,6 +192,13 @@
 <div class="tags">
   
 
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#type-browsingContext-ReadinessState" target="_parent" title="https://w3c.github.io/webdriver-bidi/#type-browsingContext-ReadinessState">https://w3c.github.io/webdriver-bidi/#type-browsingContext-ReadinessState</a></li>
+    
+  </ul>
+
 </div>
         </dt>
         <dd><pre class="code"><span class='lbrace'>{</span>
@@ -211,6 +220,13 @@
 </div>
 <div class="tags">
   
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#type-browsingContext-UserPromptType" target="_parent" title="https://w3c.github.io/webdriver-bidi/#type-browsingContext-UserPromptType">https://w3c.github.io/webdriver-bidi/#type-browsingContext-UserPromptType</a></li>
+    
+  </ul>
 
 </div>
         </dt>
@@ -234,6 +250,13 @@
 </div>
 <div class="tags">
   
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcreatetype" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcreatetype">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcreatetype</a></li>
+    
+  </ul>
 
 </div>
         </dt>
@@ -324,18 +347,20 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#type-browsingContext-Info" target="_parent" title="https://w3c.github.io/webdriver-bidi/#type-browsingContext-Info">https://w3c.github.io/webdriver-bidi/#type-browsingContext-Info</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
   <span class='label'>children:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>children</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::Info</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>client_window:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>clientWindow</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>original_opener:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>originalOpener</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>client_window:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>clientWindow</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>original_opener:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>originalOpener</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>url:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>url</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>user_context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>parent:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>parent</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='rbrace'>}</span>
+  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>parent:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>parent</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="AccessibilityLocator-constant" class="">AccessibilityLocator =
@@ -356,6 +381,8 @@
   <ul class="see">
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextaccessibilitylocator" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextaccessibilitylocator">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextaccessibilitylocator</a></li>
     
   </ul>
 
@@ -385,6 +412,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcsslocator" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcsslocator">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcsslocator</a></li>
+    
   </ul>
 
 </div>
@@ -412,6 +441,8 @@
   <ul class="see">
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcontextlocator" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcontextlocator">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcontextlocator</a></li>
     
   </ul>
 
@@ -441,6 +472,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextinnertextlocator" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextinnertextlocator">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextinnertextlocator</a></li>
+    
   </ul>
 
 </div>
@@ -450,7 +483,7 @@
   <span class='label'>value:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>value</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>ignore_case:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ignoreCase</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>boolean</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>match_type:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>matchType</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>enum:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::INNER_TEXT_LOCATOR_MATCH_TYPE</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>max_depth:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>maxDepth</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span>
+  <span class='label'>max_depth:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>maxDepth</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="XPathLocator-constant" class="">XPathLocator =
@@ -471,6 +504,8 @@
   <ul class="see">
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextxpathlocator" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextxpathlocator">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextxpathlocator</a></li>
     
   </ul>
 
@@ -500,16 +535,18 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextbasenavigationinfo" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextbasenavigationinfo">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextbasenavigationinfo</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>navigation:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>navigation</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>timestamp:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>navigation:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>navigation</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>timestamp:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>url:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>url</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span>
+  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="NavigationInfo-constant" class="">NavigationInfo =
@@ -531,16 +568,18 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#type-browsingContext-NavigationInfo" target="_parent" title="https://w3c.github.io/webdriver-bidi/#type-browsingContext-NavigationInfo">https://w3c.github.io/webdriver-bidi/#type-browsingContext-NavigationInfo</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>navigation:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>navigation</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>timestamp:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>navigation:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>navigation</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>timestamp:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>url:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>url</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span>
+  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="ActivateParameters-constant" class="">ActivateParameters =
@@ -562,11 +601,13 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextactivateparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextactivateparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextactivateparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
-        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span><span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></pre></dd>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span><span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='rparen'>)</span></pre></dd>
       
         <dt id="CaptureScreenshotParameters-constant" class="">CaptureScreenshotParameters =
           <div class="docstring">
@@ -587,12 +628,14 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcapturescreenshotparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcapturescreenshotparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcapturescreenshotparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>origin:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>origin</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>enum:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::CAPTURE_SCREENSHOT_PARAMETERS_ORIGIN</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>format:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>format</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::ImageFormat</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>clip:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>clip</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::ClipRectangle</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
@@ -617,13 +660,15 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextimageformat" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextimageformat">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextimageformat</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
   <span class='label'>type:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>type</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>quality:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>quality</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
+  <span class='label'>quality:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>quality</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>number</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="ElementClipRectangle-constant" class="">ElementClipRectangle =
@@ -644,6 +689,8 @@
   <ul class="see">
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextelementcliprectangle" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextelementcliprectangle">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextelementcliprectangle</a></li>
     
   </ul>
 
@@ -672,6 +719,8 @@
   <ul class="see">
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextboxcliprectangle" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextboxcliprectangle">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextboxcliprectangle</a></li>
     
   </ul>
 
@@ -704,6 +753,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcapturescreenshotresult" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcapturescreenshotresult">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcapturescreenshotresult</a></li>
+    
   </ul>
 
 </div>
@@ -729,12 +780,14 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcloseparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcloseparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcloseparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>prompt_unload:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>promptUnload</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>boolean</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
@@ -757,15 +810,17 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcreateparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcreateparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcreateparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
   <span class='label'>type:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>type</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>enum:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::CREATE_TYPE</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>reference_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>referenceContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>reference_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>referenceContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>background:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>background</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>boolean</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span>
+  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="CreateResult-constant" class="">CreateResult =
@@ -787,13 +842,15 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcreateresult" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcreateresult">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcreateresult</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="GetTreeParameters-constant" class="">GetTreeParameters =
@@ -815,13 +872,15 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextgettreeparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextgettreeparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextgettreeparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>max_depth:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>maxDepth</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>root:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>root</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span>
+  <span class='label'>max_depth:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>maxDepth</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>root:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>root</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="GetTreeResult-constant" class="">GetTreeResult =
@@ -842,6 +901,8 @@
   <ul class="see">
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextgettreeresult" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextgettreeresult">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextgettreeresult</a></li>
     
   </ul>
 
@@ -870,12 +931,14 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontexthandleuserpromptparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontexthandleuserpromptparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontexthandleuserpromptparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>accept:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>accept</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>boolean</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>user_text:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userText</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
@@ -899,14 +962,16 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextlocatenodesparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextlocatenodesparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextlocatenodesparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>locator:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>locator</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::Locator</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>max_node_count:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>maxNodeCount</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>max_node_count:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>maxNodeCount</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>serialization_options:</span> <span class='lbrace'>{</span>
     <span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>serializationOptions</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
     <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span>
@@ -933,6 +998,8 @@
   <ul class="see">
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextlocatenodesresult" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextlocatenodesresult">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextlocatenodesresult</a></li>
     
   </ul>
 
@@ -961,12 +1028,14 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextnavigateparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextnavigateparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextnavigateparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>url:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>url</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>wait:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>wait</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>enum:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::READINESS_STATE</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
@@ -990,12 +1059,14 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextnavigateresult" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextnavigateresult">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextnavigateresult</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>navigation:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>navigation</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>navigation:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>navigation</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>url:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>url</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
@@ -1018,12 +1089,14 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextprintparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextprintparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextprintparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>background:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>background</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>boolean</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>margin:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>margin</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::PrintMarginParameters</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>orientation:</span> <span class='lbrace'>{</span>
@@ -1056,6 +1129,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextprintmarginparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextprintmarginparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextprintmarginparameters</a></li>
+    
   </ul>
 
 </div>
@@ -1086,6 +1161,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextprintpageparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextprintpageparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextprintpageparameters</a></li>
+    
   </ul>
 
 </div>
@@ -1114,6 +1191,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextprintresult" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextprintresult">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextprintresult</a></li>
+    
   </ul>
 
 </div>
@@ -1139,12 +1218,14 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextreloadparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextreloadparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextreloadparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>ignore_cache:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ignoreCache</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>boolean</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>wait:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>wait</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>enum:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::READINESS_STATE</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
@@ -1168,12 +1249,14 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextsetbypasscspparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextsetbypasscspparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextsetbypasscspparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>bypass:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>bypass</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>bypass:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>bypass</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>const:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>contexts:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>contexts</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>user_contexts:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContexts</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
@@ -1197,12 +1280,14 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextsetviewportparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextsetviewportparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextsetviewportparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>viewport:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>viewport</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::Viewport</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>device_pixel_ratio:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>devicePixelRatio</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>number</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>user_contexts:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContexts</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='rbrace'>}</span>
@@ -1227,11 +1312,16 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextviewport" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextviewport">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextviewport</a></li>
+    
   </ul>
 
 </div>
         </dt>
-        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span><span class='label'>width:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>width</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>height:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>height</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></pre></dd>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
+  <span class='label'>width:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>width</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>height:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>height</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
+<span class='rparen'>)</span></pre></dd>
       
         <dt id="StartScreencastParameters-constant" class="">StartScreencastParameters =
           <div class="docstring">
@@ -1252,12 +1342,14 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstartscreencastparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstartscreencastparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstartscreencastparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>mime_type:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>mimeType</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>video:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>video</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::MediaTrackConstraints</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>audio:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>audio</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>boolean</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
@@ -1282,14 +1374,16 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextmediatrackconstraints" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextmediatrackconstraints">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextmediatrackconstraints</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>width:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>width</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>height:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>height</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>frame_rate:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>frameRate</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span>
+  <span class='label'>width:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>width</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>height:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>height</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>frame_rate:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>frameRate</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="StartScreencastResult-constant" class="">StartScreencastResult =
@@ -1311,12 +1405,14 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstartscreencastresult" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstartscreencastresult">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstartscreencastresult</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>screencast:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>screencast</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>screencast:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>screencast</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>path:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>path</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
@@ -1339,11 +1435,15 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstopscreencastparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstopscreencastparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstopscreencastparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
-        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span><span class='label'>screencast:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>screencast</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></pre></dd>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
+  <span class='label'>screencast:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>screencast</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
+<span class='rparen'>)</span></pre></dd>
       
         <dt id="StopScreencastResult-constant" class="">StopScreencastResult =
           <div class="docstring">
@@ -1363,6 +1463,8 @@
   <ul class="see">
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstopscreencastresult" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstopscreencastresult">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstopscreencastresult</a></li>
     
   </ul>
 
@@ -1392,11 +1494,16 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontexttraversehistoryparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontexttraversehistoryparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontexttraversehistoryparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
-        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span><span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>delta:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>delta</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></pre></dd>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>delta:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>delta</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
+<span class='rparen'>)</span></pre></dd>
       
         <dt id="HistoryUpdatedParameters-constant" class="">HistoryUpdatedParameters =
           <div class="docstring">
@@ -1417,15 +1524,17 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontexthistoryupdatedparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontexthistoryupdatedparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontexthistoryupdatedparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>timestamp:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>timestamp:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>url:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>url</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span>
+  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="DownloadWillBeginParams-constant" class="">DownloadWillBeginParams =
@@ -1447,18 +1556,20 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextdownloadwillbeginparams" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextdownloadwillbeginparams">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextdownloadwillbeginparams</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>download:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>download</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>download:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>download</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>suggested_filename:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>suggestedFilename</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>navigation:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>navigation</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>timestamp:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>navigation:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>navigation</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nullable:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>timestamp:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>url:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>url</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span>
+  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="UserPromptClosedParameters-constant" class="">UserPromptClosedParameters =
@@ -1480,15 +1591,17 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextuserpromptclosedparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextuserpromptclosedparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextuserpromptclosedparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>accepted:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>accepted</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>boolean</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>type:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>type</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>enum:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::USER_PROMPT_TYPE</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>user_text:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userText</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
@@ -1511,16 +1624,18 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextuserpromptopenedparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextuserpromptopenedparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextuserpromptopenedparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>handler:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>handler</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>enum:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Session::USER_PROMPT_HANDLER_TYPE</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>message:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>message</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>type:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>type</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>enum:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::USER_PROMPT_TYPE</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>default_value:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>defaultValue</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
@@ -1577,7 +1692,73 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#accessibility_locator-instance_method" title="#accessibility_locator (instance method)">#<strong>accessibility_locator</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#accessibility_locator_value-instance_method" title="#accessibility_locator_value (instance method)">#<strong>accessibility_locator_value</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#activate-instance_method" title="#activate (instance method)">#<strong>activate</strong>(context:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#box_clip_rectangle-instance_method" title="#box_clip_rectangle (instance method)">#<strong>box_clip_rectangle</strong>  &#x21d2; Object </a>
     
 
     
@@ -1621,6 +1802,28 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#clip_rectangle-instance_method" title="#clip_rectangle (instance method)">#<strong>clip_rectangle</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#close-instance_method" title="#close (instance method)">#<strong>close</strong>(context:, prompt_unload: Serialization::UNSET)  &#x21d2; Object </a>
     
 
@@ -1643,7 +1846,95 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#context_locator-instance_method" title="#context_locator (instance method)">#<strong>context_locator</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#context_locator_value-instance_method" title="#context_locator_value (instance method)">#<strong>context_locator_value</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#create-instance_method" title="#create (instance method)">#<strong>create</strong>(type:, reference_context: Serialization::UNSET, background: Serialization::UNSET, user_context: Serialization::UNSET)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#css_locator-instance_method" title="#css_locator (instance method)">#<strong>css_locator</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#element_clip_rectangle-instance_method" title="#element_clip_rectangle (instance method)">#<strong>element_clip_rectangle</strong>  &#x21d2; Object </a>
     
 
     
@@ -1709,7 +2000,95 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#image_format-instance_method" title="#image_format (instance method)">#<strong>image_format</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#inner_text_locator-instance_method" title="#inner_text_locator (instance method)">#<strong>inner_text_locator</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#locate_nodes-instance_method" title="#locate_nodes (instance method)">#<strong>locate_nodes</strong>(context:, locator:, max_node_count: Serialization::UNSET, serialization_options: Serialization::UNSET, start_nodes: Serialization::UNSET)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#locator-instance_method" title="#locator (instance method)">#<strong>locator</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#media_track_constraints-instance_method" title="#media_track_constraints (instance method)">#<strong>media_track_constraints</strong>  &#x21d2; Object </a>
     
 
     
@@ -1754,6 +2133,50 @@
   <span class="summary_signature">
     
       <a href="#print-instance_method" title="#print (instance method)">#<strong>print</strong>(context:, background: Serialization::UNSET, margin: Serialization::UNSET, orientation: Serialization::UNSET, page: Serialization::UNSET, page_ranges: Serialization::UNSET, scale: Serialization::UNSET, shrink_to_fit: Serialization::UNSET)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#print_margin_parameters-instance_method" title="#print_margin_parameters (instance method)">#<strong>print_margin_parameters</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#print_page_parameters-instance_method" title="#print_page_parameters (instance method)">#<strong>print_page_parameters</strong>  &#x21d2; Object </a>
     
 
     
@@ -1904,6 +2327,50 @@
 </li>
 
       
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#viewport-instance_method" title="#viewport (instance method)">#<strong>viewport</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#x_path_locator-instance_method" title="#x_path_locator (instance method)">#<strong>x_path_locator</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
     </ul>
     
   
@@ -1933,7 +2400,85 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="activate-instance_method">
+  <h3 class="signature first" id="accessibility_locator-instance_method">
+  
+    #<strong>accessibility_locator</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+582</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 582</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_accessibility_locator'>accessibility_locator</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#AccessibilityLocator-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::AccessibilityLocator (constant)">AccessibilityLocator</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="accessibility_locator_value-instance_method">
+  
+    #<strong>accessibility_locator_value</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+595</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 595</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_accessibility_locator_value'>accessibility_locator_value</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#AccessibilityLocator-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::AccessibilityLocator (constant)">AccessibilityLocator</a></span></span><span class='op'>::</span><span class='const'>Value</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="activate-instance_method">
   
     #<strong>activate</strong>(context:)  &#x21d2; <tt>Object</tt> 
   
@@ -1959,6 +2504,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browsingContext-activate" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browsingContext-activate">https://w3c.github.io/webdriver-bidi/#command-browsingContext-activate</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -1967,18 +2514,57 @@
       <pre class="lines">
 
 
-511
-512
-513
-514</pre>
+601
+602
+603
+604</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 511</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 601</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_activate'>activate</span><span class='lparen'>(</span><span class='label'>context:</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#ActivateParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ActivateParameters (constant)">ActivateParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>context:</span> <span class='id identifier rubyid_context'>context</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browsingContext.activate</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>params:</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="box_clip_rectangle-instance_method">
+  
+    #<strong>box_clip_rectangle</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+590</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 590</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_box_clip_rectangle'>box_clip_rectangle</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#BoxClipRectangle-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::BoxClipRectangle (constant)">BoxClipRectangle</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
   </tr>
 </table>
@@ -2011,6 +2597,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browsingContext-captureScreenshot" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browsingContext-captureScreenshot">https://w3c.github.io/webdriver-bidi/#command-browsingContext-captureScreenshot</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -2019,23 +2607,23 @@
       <pre class="lines">
 
 
-518
-519
-520
-521
-522
-523
-524
-525
-526
-527
-528
-529
-530
-531</pre>
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 518</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 609</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_capture_screenshot'>capture_screenshot</span><span class='lparen'>(</span>
   <span class='label'>context:</span><span class='comma'>,</span>
@@ -2051,6 +2639,45 @@
     <span class='label'>result:</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext (class)">BrowsingContext</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#CaptureScreenshotResult-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CaptureScreenshotResult (constant)">CaptureScreenshotResult</a></span></span>
   <span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="clip_rectangle-instance_method">
+  
+    #<strong>clip_rectangle</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+588</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 588</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_clip_rectangle'>clip_rectangle</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="BrowsingContext/ClipRectangle.html" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ClipRectangle (class)">ClipRectangle</a></span></span></pre>
     </td>
   </tr>
 </table>
@@ -2083,6 +2710,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browsingContext-close" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browsingContext-close">https://w3c.github.io/webdriver-bidi/#command-browsingContext-close</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -2091,18 +2720,96 @@
       <pre class="lines">
 
 
-535
-536
-537
-538</pre>
+627
+628
+629
+630</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 535</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 627</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span><span class='lparen'>(</span><span class='label'>context:</span><span class='comma'>,</span> <span class='label'>prompt_unload:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#CloseParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CloseParameters (constant)">CloseParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>context:</span> <span class='id identifier rubyid_context'>context</span><span class='comma'>,</span> <span class='label'>prompt_unload:</span> <span class='id identifier rubyid_prompt_unload'>prompt_unload</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browsingContext.close</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>params:</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="context_locator-instance_method">
+  
+    #<strong>context_locator</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+584</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 584</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_context_locator'>context_locator</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#ContextLocator-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ContextLocator (constant)">ContextLocator</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="context_locator_value-instance_method">
+  
+    #<strong>context_locator_value</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+596</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 596</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_context_locator_value'>context_locator_value</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#ContextLocator-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ContextLocator (constant)">ContextLocator</a></span></span><span class='op'>::</span><span class='const'>Value</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
   </tr>
 </table>
@@ -2135,6 +2842,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browsingContext-create" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browsingContext-create">https://w3c.github.io/webdriver-bidi/#command-browsingContext-create</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -2143,24 +2852,24 @@
       <pre class="lines">
 
 
-542
-543
-544
-545
-546
-547
-548
-549
-550
-551
-552
-553
-554
-555
-556</pre>
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 542</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 635</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span>
   <span class='label'>type:</span><span class='comma'>,</span>
@@ -2177,6 +2886,84 @@
   <span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browsingContext.create</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>params:</span> <span class='id identifier rubyid_params'>params</span><span class='comma'>,</span> <span class='label'>result:</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext (class)">BrowsingContext</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#CreateResult-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CreateResult (constant)">CreateResult</a></span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="css_locator-instance_method">
+  
+    #<strong>css_locator</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+583</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 583</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_css_locator'>css_locator</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#CssLocator-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CssLocator (constant)">CssLocator</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="element_clip_rectangle-instance_method">
+  
+    #<strong>element_clip_rectangle</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+589</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 589</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_element_clip_rectangle'>element_clip_rectangle</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#ElementClipRectangle-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ElementClipRectangle (constant)">ElementClipRectangle</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
   </tr>
 </table>
@@ -2209,6 +2996,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browsingContext-getTree" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browsingContext-getTree">https://w3c.github.io/webdriver-bidi/#command-browsingContext-getTree</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -2217,13 +3006,13 @@
       <pre class="lines">
 
 
-560
-561
-562
-563</pre>
+654
+655
+656
+657</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 560</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 654</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get_tree'>get_tree</span><span class='lparen'>(</span><span class='label'>max_depth:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span> <span class='label'>root:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#GetTreeParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::GetTreeParameters (constant)">GetTreeParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>max_depth:</span> <span class='id identifier rubyid_max_depth'>max_depth</span><span class='comma'>,</span> <span class='label'>root:</span> <span class='id identifier rubyid_root'><span class='object_link'><a href="../../../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='rparen'>)</span>
@@ -2261,6 +3050,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browsingContext-handleUserPrompt" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browsingContext-handleUserPrompt">https://w3c.github.io/webdriver-bidi/#command-browsingContext-handleUserPrompt</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -2269,18 +3060,96 @@
       <pre class="lines">
 
 
-567
-568
-569
-570</pre>
+662
+663
+664
+665</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 567</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 662</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_handle_user_prompt'>handle_user_prompt</span><span class='lparen'>(</span><span class='label'>context:</span><span class='comma'>,</span> <span class='label'>accept:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span> <span class='label'>user_text:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#HandleUserPromptParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::HandleUserPromptParameters (constant)">HandleUserPromptParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>context:</span> <span class='id identifier rubyid_context'>context</span><span class='comma'>,</span> <span class='label'>accept:</span> <span class='id identifier rubyid_accept'>accept</span><span class='comma'>,</span> <span class='label'>user_text:</span> <span class='id identifier rubyid_user_text'>user_text</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browsingContext.handleUserPrompt</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>params:</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="image_format-instance_method">
+  
+    #<strong>image_format</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+587</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 587</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_image_format'>image_format</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#ImageFormat-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ImageFormat (constant)">ImageFormat</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="inner_text_locator-instance_method">
+  
+    #<strong>inner_text_locator</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+585</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 585</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_inner_text_locator'>inner_text_locator</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#InnerTextLocator-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::InnerTextLocator (constant)">InnerTextLocator</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
   </tr>
 </table>
@@ -2313,6 +3182,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browsingContext-locateNodes" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browsingContext-locateNodes">https://w3c.github.io/webdriver-bidi/#command-browsingContext-locateNodes</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -2321,25 +3192,25 @@
       <pre class="lines">
 
 
-574
-575
-576
-577
-578
-579
-580
-581
-582
-583
-584
-585
-586
-587
-588
-589</pre>
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 574</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 670</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_locate_nodes'>locate_nodes</span><span class='lparen'>(</span>
   <span class='label'>context:</span><span class='comma'>,</span>
@@ -2357,6 +3228,84 @@
   <span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browsingContext.locateNodes</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>params:</span> <span class='id identifier rubyid_params'>params</span><span class='comma'>,</span> <span class='label'>result:</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext (class)">BrowsingContext</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#LocateNodesResult-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::LocateNodesResult (constant)">LocateNodesResult</a></span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="locator-instance_method">
+  
+    #<strong>locator</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+581</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 581</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_locator'>locator</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="BrowsingContext/Locator.html" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Locator (class)">Locator</a></span></span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="media_track_constraints-instance_method">
+  
+    #<strong>media_track_constraints</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+594</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 594</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_media_track_constraints'>media_track_constraints</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#MediaTrackConstraints-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::MediaTrackConstraints (constant)">MediaTrackConstraints</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
   </tr>
 </table>
@@ -2389,6 +3338,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browsingContext-navigate" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browsingContext-navigate">https://w3c.github.io/webdriver-bidi/#command-browsingContext-navigate</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -2397,14 +3348,14 @@
       <pre class="lines">
 
 
-593
-594
-595
-596
-597</pre>
+690
+691
+692
+693
+694</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 593</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 690</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_navigate'>navigate</span><span class='lparen'>(</span><span class='label'>context:</span><span class='comma'>,</span> <span class='label'>url:</span><span class='comma'>,</span> <span class='label'>wait:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='period'>.</span><span class='id identifier rubyid_validate!'><span class='object_link'><a href="../Serialization.html#validate!-class_method" title="Selenium::WebDriver::BiDi::Serialization.validate! (method)">validate!</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>wait</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_wait'>wait</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext (class)">BrowsingContext</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#READINESS_STATE-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::READINESS_STATE (constant)">READINESS_STATE</a></span></span><span class='rparen'>)</span>
@@ -2443,6 +3394,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browsingContext-print" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browsingContext-print">https://w3c.github.io/webdriver-bidi/#command-browsingContext-print</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -2451,32 +3404,32 @@
       <pre class="lines">
 
 
-601
-602
-603
-604
-605
-606
-607
-608
-609
-610
-611
-612
-613
-614
-615
-616
-617
-618
-619
-620
-621
-622
-623</pre>
+699
+700
+701
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 601</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 699</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_print'>print</span><span class='lparen'>(</span>
   <span class='label'>context:</span><span class='comma'>,</span>
@@ -2501,6 +3454,84 @@
   <span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browsingContext.print</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>params:</span> <span class='id identifier rubyid_params'>params</span><span class='comma'>,</span> <span class='label'>result:</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext (class)">BrowsingContext</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#PrintResult-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintResult (constant)">PrintResult</a></span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="print_margin_parameters-instance_method">
+  
+    #<strong>print_margin_parameters</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+591</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 591</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_print_margin_parameters'>print_margin_parameters</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#PrintMarginParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintMarginParameters (constant)">PrintMarginParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="print_page_parameters-instance_method">
+  
+    #<strong>print_page_parameters</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+592</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 592</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_print_page_parameters'>print_page_parameters</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#PrintPageParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintPageParameters (constant)">PrintPageParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
   </tr>
 </table>
@@ -2533,6 +3564,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browsingContext-reload" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browsingContext-reload">https://w3c.github.io/webdriver-bidi/#command-browsingContext-reload</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -2541,14 +3574,14 @@
       <pre class="lines">
 
 
-627
-628
-629
-630
-631</pre>
+726
+727
+728
+729
+730</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 627</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 726</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reload'>reload</span><span class='lparen'>(</span><span class='label'>context:</span><span class='comma'>,</span> <span class='label'>ignore_cache:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span> <span class='label'>wait:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='period'>.</span><span class='id identifier rubyid_validate!'><span class='object_link'><a href="../Serialization.html#validate!-class_method" title="Selenium::WebDriver::BiDi::Serialization.validate! (method)">validate!</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>wait</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_wait'>wait</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext (class)">BrowsingContext</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#READINESS_STATE-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::READINESS_STATE (constant)">READINESS_STATE</a></span></span><span class='rparen'>)</span>
@@ -2587,6 +3620,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browsingContext-setBypassCSP" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browsingContext-setBypassCSP">https://w3c.github.io/webdriver-bidi/#command-browsingContext-setBypassCSP</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -2595,13 +3630,13 @@
       <pre class="lines">
 
 
-635
-636
-637
-638</pre>
+735
+736
+737
+738</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 635</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 735</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_bypass_csp'>set_bypass_csp</span><span class='lparen'>(</span><span class='label'>bypass:</span><span class='comma'>,</span> <span class='label'>contexts:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span> <span class='label'>user_contexts:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#SetBypassCSPParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::SetBypassCSPParameters (constant)">SetBypassCSPParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>bypass:</span> <span class='id identifier rubyid_bypass'>bypass</span><span class='comma'>,</span> <span class='label'>contexts:</span> <span class='id identifier rubyid_contexts'>contexts</span><span class='comma'>,</span> <span class='label'>user_contexts:</span> <span class='id identifier rubyid_user_contexts'>user_contexts</span><span class='rparen'>)</span>
@@ -2639,6 +3674,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browsingContext-setViewport" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browsingContext-setViewport">https://w3c.github.io/webdriver-bidi/#command-browsingContext-setViewport</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -2647,23 +3684,23 @@
       <pre class="lines">
 
 
-642
-643
-644
-645
-646
-647
-648
-649
-650
-651
-652
-653
-654
-655</pre>
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+756</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 642</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 743</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_viewport'>set_viewport</span><span class='lparen'>(</span>
   <span class='label'>context:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span>
@@ -2711,6 +3748,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browsingContext-startScreencast" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browsingContext-startScreencast">https://w3c.github.io/webdriver-bidi/#command-browsingContext-startScreencast</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -2719,22 +3758,22 @@
       <pre class="lines">
 
 
-659
-660
-661
-662
-663
-664
-665
-666
-667
-668
-669
-670
-671</pre>
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 659</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 761</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start_screencast'>start_screencast</span><span class='lparen'>(</span>
   <span class='label'>context:</span><span class='comma'>,</span>
@@ -2781,6 +3820,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browsingContext-stopScreencast" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browsingContext-stopScreencast">https://w3c.github.io/webdriver-bidi/#command-browsingContext-stopScreencast</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -2789,17 +3830,17 @@
       <pre class="lines">
 
 
-675
-676
-677
-678
-679
-680
-681
-682</pre>
+778
+779
+780
+781
+782
+783
+784
+785</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 675</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 778</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop_screencast'>stop_screencast</span><span class='lparen'>(</span><span class='label'>screencast:</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#StopScreencastParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::StopScreencastParameters (constant)">StopScreencastParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>screencast:</span> <span class='id identifier rubyid_screencast'>screencast</span><span class='rparen'>)</span>
@@ -2841,6 +3882,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browsingContext-traverseHistory" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browsingContext-traverseHistory">https://w3c.github.io/webdriver-bidi/#command-browsingContext-traverseHistory</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -2849,13 +3892,13 @@
       <pre class="lines">
 
 
-686
-687
-688
-689</pre>
+790
+791
+792
+793</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 686</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 790</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_traverse_history'>traverse_history</span><span class='lparen'>(</span><span class='label'>context:</span><span class='comma'>,</span> <span class='label'>delta:</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#TraverseHistoryParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::TraverseHistoryParameters (constant)">TraverseHistoryParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>context:</span> <span class='id identifier rubyid_context'>context</span><span class='comma'>,</span> <span class='label'>delta:</span> <span class='id identifier rubyid_delta'>delta</span><span class='rparen'>)</span>
@@ -2866,14 +3909,92 @@
 </table>
 </div>
     
+      <div class="method_details ">
+  <h3 class="signature " id="viewport-instance_method">
+  
+    #<strong>viewport</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+593</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 593</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_viewport'>viewport</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#Viewport-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Viewport (constant)">Viewport</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="x_path_locator-instance_method">
+  
+    #<strong>x_path_locator</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+586</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 586</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_x_path_locator'>x_path_locator</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#XPathLocator-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::XPathLocator (constant)">XPathLocator</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Sat Jul 11 00:50:25 2026 by
+  Generated on Mon Aug 10 18:03:15 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.44 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.11).
 </div>
 
     </div>

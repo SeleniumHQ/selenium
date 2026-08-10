@@ -6,7 +6,7 @@
 <title>
   Class: BiDiGenerate::UnionClass
   
-    &mdash; Documentation by YARD 0.9.44
+    &mdash; Documentation by YARD 0.9.45
   
 </title>
 
@@ -111,7 +111,12 @@
   You should avoid using this class if possible, as it may be removed or be changed in the future.
 </p>
 <p>A generated discriminated union (&lt; Serialization::Union, resolved by lexical scope).
-nested holds its synthetic variant records (see nest_synthetic).</p>
+nested holds its synthetic variant records (see nest_synthetic). spec_href links to
+the union's definition in the live spec (nil when the schema has none). object_only
+mirrors the schema's <code>objectOnly</code> signal: when true, a non-Hash payload is rejected
+rather than passed through (every arm is an object, so it can match no variant).
+scalar_values mirrors the schema's <code>scalarValues</code> signal: the exact literals a bare-scalar
+arm admits (input.Origin's &quot;viewport&quot; / &quot;pointer&quot;), so outbound rejects any other scalar.</p>
 
   </div>
 </div>
@@ -153,6 +158,31 @@ nested holds its synthetic variant records (see nest_synthetic).</p>
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#inbound-instance_method" title="#inbound (instance method)">#<strong>inbound</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute inbound.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#nested-instance_method" title="#nested (instance method)">#<strong>nested</strong>  &#x21d2; Object </a>
     
 
@@ -171,6 +201,56 @@ nested holds its synthetic variant records (see nest_synthetic).</p>
 
   
     <span class="summary_desc"><div class='inline'><p>Returns the value of attribute nested.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#object_only-instance_method" title="#object_only (instance method)">#<strong>object_only</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute object_only.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#outbound-instance_method" title="#outbound (instance method)">#<strong>outbound</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute outbound.</p></div></span>
   
 </li>
 
@@ -203,6 +283,31 @@ nested holds its synthetic variant records (see nest_synthetic).</p>
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#scalar_values-instance_method" title="#scalar_values (instance method)">#<strong>scalar_values</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute scalar_values.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#schema_name-instance_method" title="#schema_name (instance method)">#<strong>schema_name</strong>  &#x21d2; Object </a>
     
 
@@ -221,6 +326,56 @@ nested holds its synthetic variant records (see nest_synthetic).</p>
 
   
     <span class="summary_desc"><div class='inline'><p>Returns the value of attribute schema_name.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#spec_href-instance_method" title="#spec_href (instance method)">#<strong>spec_href</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute spec_href.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#variant_arg_sigs-instance_method" title="#variant_arg_sigs (instance method)">#<strong>variant_arg_sigs</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute variant_arg_sigs.</p></div></span>
   
 </li>
 
@@ -354,6 +509,94 @@ nested holds its synthetic variant records (see nest_synthetic).</p>
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#rbs_value_type-instance_method" title="#rbs_value_type (instance method)">#<strong>rbs_value_type</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'><p>The union's RBS <em>value</em> type — the concrete types a value of this union can actually be: each variant record, plus any bare-scalar arm (input.Origin's &quot;viewport&quot;/&quot;pointer&quot;).</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#rbs_variant_factories-instance_method" title="#rbs_variant_factories (instance method)">#<strong>rbs_variant_factories</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'><p>RBS for variant_factories: the variant record's own typed <code>new</code> signature (threaded in as variant_arg_sigs at build time), so a call is checked against the record's fields rather than an opaque splat; the return type pins the concrete variant.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#scalar_values%3F-instance_method" title="#scalar_values? (instance method)">#<strong>scalar_values?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#scalar_values_decl-instance_method" title="#scalar_values_decl (instance method)">#<strong>scalar_values_decl</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'><p><code>scalar_values 'viewport', 'pointer'</code> — the literals a bare-scalar arm admits.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#union%3F-instance_method" title="#union? (instance method)">#<strong>union?</strong>  &#x21d2; Boolean </a>
     
 
@@ -391,6 +634,28 @@ nested holds its synthetic variant records (see nest_synthetic).</p>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#variant_factories-instance_method" title="#variant_factories (instance method)">#<strong>variant_factories</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'><p>A class-method factory per discriminated variant, so a caller builds the right variant record without naming its class or repeating the discriminator: <code>ExtensionData.path(path: '/x')</code> returns <code>ExtensionPath.new(path: '/x')</code>.</p></div></span>
   
 </li>
 
@@ -446,15 +711,72 @@ nested holds its synthetic variant records (see nest_synthetic).</p>
       <pre class="lines">
 
 
-351
-352
-353</pre>
+461
+462
+463</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 351</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 461</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_discriminator_wire'>discriminator_wire</span>
   <span class='ivar'>@discriminator_wire</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="inbound=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="inbound-instance_method">
+  
+    #<strong>inbound</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute inbound</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the current value of inbound</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+461
+462
+463</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 461</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_inbound'>inbound</span>
+  <span class='ivar'>@inbound</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -503,15 +825,129 @@ nested holds its synthetic variant records (see nest_synthetic).</p>
       <pre class="lines">
 
 
-351
-352
-353</pre>
+461
+462
+463</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 351</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 461</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_nested'>nested</span>
   <span class='ivar'>@nested</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="object_only=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="object_only-instance_method">
+  
+    #<strong>object_only</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute object_only</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the current value of object_only</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+461
+462
+463</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 461</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_object_only'>object_only</span>
+  <span class='ivar'>@object_only</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="outbound=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="outbound-instance_method">
+  
+    #<strong>outbound</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute outbound</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the current value of outbound</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+461
+462
+463</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 461</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_outbound'>outbound</span>
+  <span class='ivar'>@outbound</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -560,15 +996,72 @@ nested holds its synthetic variant records (see nest_synthetic).</p>
       <pre class="lines">
 
 
-351
-352
-353</pre>
+461
+462
+463</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 351</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 461</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ruby_name'>ruby_name</span>
   <span class='ivar'>@ruby_name</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="scalar_values=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="scalar_values-instance_method">
+  
+    #<strong>scalar_values</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute scalar_values</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the current value of scalar_values</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+461
+462
+463</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 461</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_scalar_values'>scalar_values</span>
+  <span class='ivar'>@scalar_values</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -617,15 +1110,129 @@ nested holds its synthetic variant records (see nest_synthetic).</p>
       <pre class="lines">
 
 
-351
-352
-353</pre>
+461
+462
+463</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 351</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 461</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_schema_name'>schema_name</span>
   <span class='ivar'>@schema_name</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="spec_href=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="spec_href-instance_method">
+  
+    #<strong>spec_href</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute spec_href</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the current value of spec_href</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+461
+462
+463</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 461</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_spec_href'>spec_href</span>
+  <span class='ivar'>@spec_href</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="variant_arg_sigs=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="variant_arg_sigs-instance_method">
+  
+    #<strong>variant_arg_sigs</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute variant_arg_sigs</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the current value of variant_arg_sigs</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+461
+462
+463</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 461</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_variant_arg_sigs'>variant_arg_sigs</span>
+  <span class='ivar'>@variant_arg_sigs</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -674,12 +1281,12 @@ nested holds its synthetic variant records (see nest_synthetic).</p>
       <pre class="lines">
 
 
-351
-352
-353</pre>
+461
+462
+463</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 351</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 461</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_variants'>variants</span>
   <span class='ivar'>@variants</span>
@@ -725,16 +1332,16 @@ long) carrying the inbound wire-&gt;symbol map for string-tagged variants.</p>
       <pre class="lines">
 
 
-360
-361
-362
-363
-364
-365
-366</pre>
+505
+506
+507
+508
+509
+510
+511</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 360</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 505</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_discriminator_decl'>discriminator_decl</span><span class='lparen'>(</span><span class='id identifier rubyid_indent'>indent</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_pairs'>pairs</span> <span class='op'>=</span> <span class='id identifier rubyid_value_variants'>value_variants</span><span class='period'>.</span><span class='id identifier rubyid_filter_map'>filter_map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:discriminator_pair</span><span class='rparen'>)</span>
@@ -776,10 +1383,10 @@ long) carrying the inbound wire-&gt;symbol map for string-tagged variants.</p>
       <pre class="lines">
 
 
-355</pre>
+467</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 355</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 467</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fallback_variant'>fallback_variant</span> <span class='op'>=</span> <span class='id identifier rubyid_variants'>variants</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_mode'>mode</span> <span class='op'>==</span> <span class='symbol'>:fallback</span> <span class='rbrace'>}</span></pre>
     </td>
@@ -815,10 +1422,10 @@ long) carrying the inbound wire-&gt;symbol map for string-tagged variants.</p>
       <pre class="lines">
 
 
-356</pre>
+468</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 356</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 468</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_nested_types'>nested_types</span> <span class='op'>=</span> <span class='id identifier rubyid_nested'>nested</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='rbracket'>]</span></pre>
     </td>
@@ -854,12 +1461,212 @@ long) carrying the inbound wire-&gt;symbol map for string-tagged variants.</p>
       <pre class="lines">
 
 
-354</pre>
+466</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 354</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 466</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_presence_variants'>presence_variants</span> <span class='op'>=</span> <span class='id identifier rubyid_variants'>variants</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_mode'>mode</span> <span class='op'>==</span> <span class='symbol'>:presence</span> <span class='rbrace'>}</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="rbs_value_type-instance_method">
+  
+    #<strong>rbs_value_type</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>The union's RBS <em>value</em> type — the concrete types a value of this union can actually be:
+each variant record, plus any bare-scalar arm (input.Origin's &quot;viewport&quot;/&quot;pointer&quot;). The
+union class itself has no instances, so this alias (not the class) is what a field, param,
+or result of the union is typed to, letting a variant pass where the union is expected.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+496
+497
+498
+499
+500
+501</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 496</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_rbs_value_type'>rbs_value_type</span>
+  <span class='id identifier rubyid_refs'>refs</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_value_variants'>value_variants</span> <span class='op'>+</span> <span class='id identifier rubyid_presence_variants'>presence_variants</span> <span class='op'>+</span> <span class='lbracket'>[</span><span class='id identifier rubyid_fallback_variant'>fallback_variant</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:ref</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span>
+  <span class='id identifier rubyid_parts'>parts</span> <span class='op'>=</span> <span class='id identifier rubyid_refs'>refs</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_ref'>ref</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>::Selenium::WebDriver::BiDi::Protocol::</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ref'>ref</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_parts'>parts</span> <span class='op'>+=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_scalar_values'>scalar_values</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>String</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span> <span class='op'>:</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_parts'>parts</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>untyped</span><span class='tstring_end'>&#39;</span></span> <span class='op'>:</span> <span class='id identifier rubyid_parts'>parts</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> | </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="rbs_variant_factories-instance_method">
+  
+    #<strong>rbs_variant_factories</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>RBS for variant_factories: the variant record's own typed <code>new</code> signature (threaded in
+as variant_arg_sigs at build time), so a call is checked against the record's fields
+rather than an opaque splat; the return type pins the concrete variant.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+484
+485
+486
+487
+488
+489
+490</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 484</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_rbs_variant_factories'>rbs_variant_factories</span>
+  <span class='id identifier rubyid_value_variants'>value_variants</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_variant'>variant</span><span class='op'>|</span>
+    <span class='id identifier rubyid_args'>args</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_variant_arg_sigs'>variant_arg_sigs</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="../BiDiGenerate.html" title="BiDiGenerate (module)">BiDiGenerate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_enum_key'><span class='object_link'><a href="../BiDiGenerate.html#enum_key-class_method" title="BiDiGenerate.enum_key (method)">enum_key</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_variant'>variant</span><span class='period'>.</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>**untyped</span><span class='tstring_end'>&#39;</span></span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>def self.</span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../BiDiGenerate.html" title="BiDiGenerate (module)">BiDiGenerate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_enum_key'><span class='object_link'><a href="../BiDiGenerate.html#enum_key-class_method" title="BiDiGenerate.enum_key (method)">enum_key</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_variant'>variant</span><span class='period'>.</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'>: (</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_args'>args</span><span class='embexpr_end'>}</span><span class='tstring_content'>) </span><span class='tstring_end'>&quot;</span></span> \
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>-&gt; ::Selenium::WebDriver::BiDi::Protocol::</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_variant'>variant</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="scalar_values?-instance_method">
+  
+    #<strong>scalar_values?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+513</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 513</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_scalar_values?'>scalar_values?</span> <span class='op'>=</span> <span class='op'>!</span><span class='lparen'>(</span><span class='id identifier rubyid_scalar_values'>scalar_values</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='id identifier rubyid_scalar_values'>scalar_values</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="scalar_values_decl-instance_method">
+  
+    #<strong>scalar_values_decl</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p><code>scalar_values 'viewport', 'pointer'</code> — the literals a bare-scalar arm admits.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+516
+517
+518</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 516</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_scalar_values_decl'>scalar_values_decl</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>scalar_values </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_scalar_values'>scalar_values</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="../BiDiGenerate.html" title="BiDiGenerate (module)">BiDiGenerate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_ruby_literal'><span class='object_link'><a href="../BiDiGenerate.html#ruby_literal-class_method" title="BiDiGenerate.ruby_literal (method)">ruby_literal</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>, </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -906,10 +1713,10 @@ long) carrying the inbound wire-&gt;symbol map for string-tagged variants.</p>
       <pre class="lines">
 
 
-352</pre>
+464</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 352</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 464</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_union?'>union?</span> <span class='op'>=</span> <span class='kw'>true</span></pre>
     </td>
@@ -945,12 +1752,63 @@ long) carrying the inbound wire-&gt;symbol map for string-tagged variants.</p>
       <pre class="lines">
 
 
-353</pre>
+465</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 353</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 465</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_value_variants'>value_variants</span> <span class='op'>=</span> <span class='id identifier rubyid_variants'>variants</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_mode'>mode</span> <span class='op'>==</span> <span class='symbol'>:value</span> <span class='rbrace'>}</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="variant_factories-instance_method">
+  
+    #<strong>variant_factories</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>A class-method factory per discriminated variant, so a caller builds the right
+variant record without naming its class or repeating the discriminator:
+<code>ExtensionData.path(path: '/x')</code> returns <code>ExtensionPath.new(path: '/x')</code>. The method
+name is the variant's discriminator symbol; every value variant's ref is a record, so
+<code>.new</code> is always defined. Presence/fallback arms are omitted (no single tag to name).</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+475
+476
+477
+478
+479</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 475</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_variant_factories'>variant_factories</span>
+  <span class='id identifier rubyid_value_variants'>value_variants</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_variant'>variant</span><span class='op'>|</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>def self.</span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../BiDiGenerate.html" title="BiDiGenerate (module)">BiDiGenerate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_enum_key'><span class='object_link'><a href="../BiDiGenerate.html#enum_key-class_method" title="BiDiGenerate.enum_key (method)">enum_key</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_variant'>variant</span><span class='period'>.</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'>(**) = </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_variant'>variant</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span><span class='embexpr_end'>}</span><span class='tstring_content'>.new(**)</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -961,9 +1819,9 @@ long) carrying the inbound wire-&gt;symbol map for string-tagged variants.</p>
 </div>
 
       <div id="footer">
-  Generated on Sat Jul 11 00:50:24 2026 by
+  Generated on Mon Aug 10 18:03:15 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.44 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.11).
 </div>
 
     </div>

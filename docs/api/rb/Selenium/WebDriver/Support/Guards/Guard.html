@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Support::Guards::Guard
   
-    &mdash; Documentation by YARD 0.9.44
+    &mdash; Documentation by YARD 0.9.45
   
 </title>
 
@@ -295,6 +295,28 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#exception%3F-instance_method" title="#exception? (instance method)">#<strong>exception?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'><p>A pending guard that only applies when the failure matches an expected exception.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#exclude%3F-instance_method" title="#exclude? (instance method)">#<strong>exclude?</strong>  &#x21d2; Boolean </a>
     
 
@@ -356,6 +378,28 @@
 
   
     <span class="summary_desc"><div class='inline'><p>A new instance of Guard.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#matches_exception%3F-instance_method" title="#matches_exception? (instance method)">#<strong>matches_exception?</strong>(exception)  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'><p>Whether the exception is the guard's <code>exception:</code> class and matches its optional <code>message:</code> (Regexp pattern or exact String), following RSpec's <code>raise_error</code> semantics.</p></div></span>
   
 </li>
 
@@ -454,7 +498,7 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_guarded'>guarded</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_guards'>guards</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='ivar'>@guarded</span> <span class='op'>=</span> <span class='id identifier rubyid_guarded'>guarded</span>
+  <span class='ivar'>@guarded</span> <span class='op'>=</span> <span class='id identifier rubyid_guarded'>guarded</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
   <span class='ivar'>@tracker</span> <span class='op'>=</span> <span class='id identifier rubyid_guards'>guards</span><span class='op'>&amp;.</span><span class='id identifier rubyid_bug_tracker'>bug_tracker</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span>
   <span class='ivar'>@messages</span> <span class='op'>=</span> <span class='id identifier rubyid_guards'>guards</span><span class='op'>&amp;.</span><span class='id identifier rubyid_messages'>messages</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
   <span class='ivar'>@messages</span><span class='lbracket'>[</span><span class='symbol'>:unknown</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TODO: Investigate why this is failing and file a bug report</span><span class='tstring_end'>&#39;</span></span>
@@ -746,15 +790,71 @@
       <pre class="lines">
 
 
-66
-67
-68</pre>
+68
+69
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 68</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_except?'>except?</span>
   <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:pending_if</span> <span class='op'>||</span> <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:except</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="exception?-instance_method">
+  
+    #<strong>exception?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>A pending guard that only applies when the failure matches an expected exception.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+88
+89
+90</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 88</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_exception?'>exception?</span>
+  <span class='lparen'>(</span><span class='id identifier rubyid_except?'>except?</span> <span class='op'>||</span> <span class='id identifier rubyid_only?'>only?</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='ivar'>@guarded</span><span class='lbracket'>[</span><span class='symbol'>:exception</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -802,12 +902,12 @@
       <pre class="lines">
 
 
-76
-77
-78</pre>
+78
+79
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 76</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_exclude?'>exclude?</span>
   <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:skip_if</span> <span class='op'>||</span> <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:exclude</span> <span class='op'>||</span> <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:flaky</span>
@@ -858,15 +958,80 @@
       <pre class="lines">
 
 
-81
-82
-83</pre>
+83
+84
+85</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 83</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_exclusive?'>exclusive?</span>
   <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:skip_unless</span> <span class='op'>||</span> <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:exclusive</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="matches_exception?-instance_method">
+  
+    #<strong>matches_exception?</strong>(exception)  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>Whether the exception is the guard's <code>exception:</code> class and matches its optional <code>message:</code>
+(Regexp pattern or exact String), following RSpec's <code>raise_error</code> semantics.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+94
+95
+96
+97
+98
+99
+100</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 94</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_matches_exception?'>matches_exception?</span><span class='lparen'>(</span><span class='id identifier rubyid_exception'>exception</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_spec'>spec</span> <span class='op'>=</span> <span class='ivar'>@guarded</span><span class='lbracket'>[</span><span class='symbol'>:exception</span><span class='rbracket'>]</span>
+  <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_spec'>spec</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_exception'>exception</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='id identifier rubyid_spec'>spec</span><span class='lbracket'>[</span><span class='symbol'>:class</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_message'>message</span> <span class='op'>=</span> <span class='id identifier rubyid_spec'>spec</span><span class='lbracket'>[</span><span class='symbol'>:message</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_message'>message</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Regexp</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_message'>message</span><span class='period'>.</span><span class='id identifier rubyid_match?'>match?</span><span class='lparen'>(</span><span class='id identifier rubyid_exception'>exception</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_message'>message</span> <span class='op'>==</span> <span class='id identifier rubyid_exception'>exception</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -921,7 +1086,9 @@
 60
 61
 62
-63</pre>
+63
+64
+65</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 43</span>
@@ -933,7 +1100,7 @@
             <span class='kw'>when</span> <span class='const'>Symbol</span>
               <span class='id identifier rubyid_messages'>messages</span><span class='lbracket'>[</span><span class='id identifier rubyid_reason'>reason</span><span class='rbracket'>]</span>
             <span class='kw'>else</span>
-              <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Guarded by </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_guarded'>guarded</span><span class='embexpr_end'>}</span><span class='tstring_content'>;</span><span class='tstring_end'>&quot;</span></span>
+              <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_tr'>tr</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>_</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_guarded'>guarded</span><span class='embexpr_end'>}</span><span class='tstring_content'>;</span><span class='tstring_end'>&quot;</span></span>
             <span class='kw'>end</span>
 
   <span class='kw'>case</span> <span class='id identifier rubyid_type'>type</span>
@@ -943,8 +1110,10 @@
     <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Test skipped because it is unreliable in this configuration; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_details'>details</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>when</span> <span class='symbol'>:skip_unless</span><span class='comma'>,</span> <span class='symbol'>:exclusive</span>
     <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Test does not apply to this configuration; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_details'>details</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>else</span>
+  <span class='kw'>when</span> <span class='symbol'>:pending_if</span><span class='comma'>,</span> <span class='symbol'>:pending_unless</span><span class='comma'>,</span> <span class='symbol'>:except</span><span class='comma'>,</span> <span class='symbol'>:only</span>
     <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Test guarded; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_details'>details</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown guard type: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_type'>type</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -993,12 +1162,12 @@
       <pre class="lines">
 
 
-71
-72
-73</pre>
+73
+74
+75</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 71</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 73</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_only?'>only?</span>
   <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:pending_unless</span> <span class='op'>||</span> <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:only</span>
@@ -1013,9 +1182,9 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Jul 11 00:50:23 2026 by
+  Generated on Mon Aug 10 18:03:13 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.44 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.11).
 </div>
 
     </div>

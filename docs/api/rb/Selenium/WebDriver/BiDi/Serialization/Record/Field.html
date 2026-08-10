@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::BiDi::Serialization::Record::Field
   
-    &mdash; Documentation by YARD 0.9.44
+    &mdash; Documentation by YARD 0.9.45
   
 </title>
 
@@ -123,6 +123,33 @@
 
   <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
   <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#const-instance_method" title="#const (instance method)">#<strong>const</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute const.</p></div></span>
+  
+</li>
+
     
       <li class="public ">
   <span class="summary_signature">
@@ -343,6 +370,33 @@
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#scalar-instance_method" title="#scalar (instance method)">#<strong>scalar</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute scalar.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#wire_key-instance_method" title="#wire_key (instance method)">#<strong>wire_key</strong>  &#x21d2; Object </a>
     
 
@@ -380,7 +434,64 @@
       
       <span id=""></span>
       <div class="method_details first">
-  <h3 class="signature first" id="enum-instance_method">
+  <h3 class="signature first" id="const-instance_method">
+  
+    #<strong>const</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute const</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the current value of const</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/record.rb', line 32</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_const'>const</span>
+  <span class='ivar'>@const</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id="enum-instance_method">
   
     #<strong>enum</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
@@ -836,6 +947,63 @@
       
       <span id=""></span>
       <div class="method_details ">
+  <h3 class="signature " id="scalar-instance_method">
+  
+    #<strong>scalar</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute scalar</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the current value of scalar</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/record.rb', line 32</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_scalar'>scalar</span>
+  <span class='ivar'>@scalar</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
   <h3 class="signature " id="wire_key-instance_method">
   
     #<strong>wire_key</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
@@ -896,9 +1064,9 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Jul 11 00:50:24 2026 by
+  Generated on Mon Aug 10 18:03:14 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.44 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.11).
 </div>
 
     </div>

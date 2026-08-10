@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::BiDi::Protocol::Browser
   
-    &mdash; Documentation by YARD 0.9.44
+    &mdash; Documentation by YARD 0.9.45
   
 </title>
 
@@ -122,6 +122,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#module-browser" target="_parent" title="https://w3c.github.io/webdriver-bidi/#module-browser">https://w3c.github.io/webdriver-bidi/#module-browser</a></li>
+    
   </ul>
 
 </div><h2>Defined Under Namespace</h2>
@@ -207,18 +209,20 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#type-browser-ClientWindowInfo" target="_parent" title="https://w3c.github.io/webdriver-bidi/#type-browser-ClientWindowInfo">https://w3c.github.io/webdriver-bidi/#type-browser-ClientWindowInfo</a></li>
+    
   </ul>
 
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
   <span class='label'>active:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>active</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>boolean</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>client_window:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>clientWindow</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>height:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>height</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>client_window:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>clientWindow</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>height:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>height</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>state:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>state</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>enum:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Browser::CLIENT_WINDOW_INFO_STATE</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>width:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>width</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>x:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>x</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>y:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>y</span><span class='tstring_end'>&#39;</span></span>
+  <span class='label'>width:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>width</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>x:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>x</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>y:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>y</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="UserContextInfo-constant" class="">UserContextInfo =
@@ -240,11 +244,13 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#type-browser-UserContextInfo" target="_parent" title="https://w3c.github.io/webdriver-bidi/#type-browser-UserContextInfo">https://w3c.github.io/webdriver-bidi/#type-browser-UserContextInfo</a></li>
+    
   </ul>
 
 </div>
         </dt>
-        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span><span class='label'>user_context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></pre></dd>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span><span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='rparen'>)</span></pre></dd>
       
         <dt id="CreateUserContextParameters-constant" class="">CreateUserContextParameters =
           <div class="docstring">
@@ -264,6 +270,8 @@
   <ul class="see">
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsercreateusercontextparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsercreateusercontextparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsercreateusercontextparameters</a></li>
     
   </ul>
 
@@ -298,6 +306,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsergetclientwindowsresult" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsergetclientwindowsresult">https://w3c.github.io/webdriver-bidi/#cddl-type-browsergetclientwindowsresult</a></li>
+    
   </ul>
 
 </div>
@@ -324,6 +334,8 @@
   <ul class="see">
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsergetusercontextsresult" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsergetusercontextsresult">https://w3c.github.io/webdriver-bidi/#cddl-type-browsergetusercontextsresult</a></li>
     
   </ul>
 
@@ -352,11 +364,15 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browserremoveusercontextparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browserremoveusercontextparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browserremoveusercontextparameters</a></li>
+    
   </ul>
 
 </div>
         </dt>
-        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span><span class='label'>user_context:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></pre></dd>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
+  <span class='label'>user_context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
+<span class='rparen'>)</span></pre></dd>
       
         <dt id="SetDownloadBehaviorParameters-constant" class="">SetDownloadBehaviorParameters =
           <div class="docstring">
@@ -376,6 +392,8 @@
   <ul class="see">
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsersetdownloadbehaviorparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsersetdownloadbehaviorparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsersetdownloadbehaviorparameters</a></li>
     
   </ul>
 
@@ -429,6 +447,28 @@
   <span class="summary_signature">
     
       <a href="#create_user_context-instance_method" title="#create_user_context (instance method)">#<strong>create_user_context</strong>(accept_insecure_certs: Serialization::UNSET, proxy: Serialization::UNSET, unhandled_prompt_behavior: Serialization::UNSET)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#download_behavior-instance_method" title="#download_behavior (instance method)">#<strong>download_behavior</strong>  &#x21d2; Object </a>
     
 
     
@@ -612,6 +652,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browser-close" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browser-close">https://w3c.github.io/webdriver-bidi/#command-browser-close</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -620,12 +662,12 @@
       <pre class="lines">
 
 
-145
-146
-147</pre>
+167
+168
+169</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browser.rb', line 145</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browser.rb', line 167</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browser.close</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -662,6 +704,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browser-createUserContext" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browser-createUserContext">https://w3c.github.io/webdriver-bidi/#command-browser-createUserContext</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -670,21 +714,21 @@
       <pre class="lines">
 
 
-151
-152
-153
-154
-155
-156
-157
-158
-159
-160
-161
-162</pre>
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browser.rb', line 151</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browser.rb', line 174</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_user_context'>create_user_context</span><span class='lparen'>(</span>
   <span class='label'>accept_insecure_certs:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span>
@@ -698,6 +742,45 @@
   <span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browser.createUserContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>params:</span> <span class='id identifier rubyid_params'>params</span><span class='comma'>,</span> <span class='label'>result:</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::Browser (class)">Browser</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#UserContextInfo-constant" title="Selenium::WebDriver::BiDi::Protocol::Browser::UserContextInfo (constant)">UserContextInfo</a></span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="download_behavior-instance_method">
+  
+    #<strong>download_behavior</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+162</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browser.rb', line 162</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_download_behavior'>download_behavior</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Browser/DownloadBehavior.html" title="Selenium::WebDriver::BiDi::Protocol::Browser::DownloadBehavior (class)">DownloadBehavior</a></span></span></pre>
     </td>
   </tr>
 </table>
@@ -730,6 +813,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browser-getClientWindows" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browser-getClientWindows">https://w3c.github.io/webdriver-bidi/#command-browser-getClientWindows</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -738,12 +823,12 @@
       <pre class="lines">
 
 
-166
-167
-168</pre>
+190
+191
+192</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browser.rb', line 166</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browser.rb', line 190</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get_client_windows'>get_client_windows</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browser.getClientWindows</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>result:</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::Browser (class)">Browser</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#GetClientWindowsResult-constant" title="Selenium::WebDriver::BiDi::Protocol::Browser::GetClientWindowsResult (constant)">GetClientWindowsResult</a></span></span><span class='rparen'>)</span>
@@ -780,6 +865,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browser-getUserContexts" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browser-getUserContexts">https://w3c.github.io/webdriver-bidi/#command-browser-getUserContexts</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -788,12 +875,12 @@
       <pre class="lines">
 
 
-172
-173
-174</pre>
+197
+198
+199</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browser.rb', line 172</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browser.rb', line 197</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get_user_contexts'>get_user_contexts</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browser.getUserContexts</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>result:</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::Browser (class)">Browser</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#GetUserContextsResult-constant" title="Selenium::WebDriver::BiDi::Protocol::Browser::GetUserContextsResult (constant)">GetUserContextsResult</a></span></span><span class='rparen'>)</span>
@@ -830,6 +917,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browser-removeUserContext" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browser-removeUserContext">https://w3c.github.io/webdriver-bidi/#command-browser-removeUserContext</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -838,13 +927,13 @@
       <pre class="lines">
 
 
-178
-179
-180
-181</pre>
+204
+205
+206
+207</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browser.rb', line 178</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browser.rb', line 204</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_user_context'>remove_user_context</span><span class='lparen'>(</span><span class='label'>user_context:</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#RemoveUserContextParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::Browser::RemoveUserContextParameters (constant)">RemoveUserContextParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>user_context:</span> <span class='id identifier rubyid_user_context'>user_context</span><span class='rparen'>)</span>
@@ -882,6 +971,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browser-setClientWindowState" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browser-setClientWindowState">https://w3c.github.io/webdriver-bidi/#command-browser-setClientWindowState</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -890,32 +981,32 @@
       <pre class="lines">
 
 
-185
-186
-187
-188
-189
-190
-191
-192
-193
-194
-195
-196
-197
-198
-199
-200
-201
-202
-203
-204
-205
-206
-207</pre>
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browser.rb', line 185</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browser.rb', line 212</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_client_window_state'>set_client_window_state</span><span class='lparen'>(</span>
   <span class='label'>client_window:</span><span class='comma'>,</span>
@@ -972,6 +1063,8 @@
     
       <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
     
+      <li><a href="https://w3c.github.io/webdriver-bidi/#command-browser-setDownloadBehavior" target="_parent" title="https://w3c.github.io/webdriver-bidi/#command-browser-setDownloadBehavior">https://w3c.github.io/webdriver-bidi/#command-browser-setDownloadBehavior</a></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -980,16 +1073,16 @@
       <pre class="lines">
 
 
-211
-212
-213
-214
-215
-216
-217</pre>
+239
+240
+241
+242
+243
+244
+245</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browser.rb', line 211</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browser.rb', line 239</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_download_behavior'>set_download_behavior</span><span class='lparen'>(</span><span class='label'>download_behavior:</span><span class='comma'>,</span> <span class='label'>user_contexts:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#SetDownloadBehaviorParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::Browser::SetDownloadBehaviorParameters (constant)">SetDownloadBehaviorParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span>
@@ -1008,9 +1101,9 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Jul 11 00:50:23 2026 by
+  Generated on Mon Aug 10 18:03:13 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.44 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.11).
 </div>
 
     </div>

@@ -6,7 +6,7 @@
 <title>
   Class: BiDiGenerate::Enum
   
-    &mdash; Documentation by YARD 0.9.44
+    &mdash; Documentation by YARD 0.9.45
   
 </title>
 
@@ -110,7 +110,8 @@
   <strong>This class is part of a private API.</strong>
   You should avoid using this class if possible, as it may be removed or be changed in the future.
 </p>
-<p>constant_name is the SCREAMING_SNAKE hash name; pairs are [symbol_key, wire_value] tuples.</p>
+<p>constant_name is the SCREAMING_SNAKE hash name; pairs are [symbol_key, wire_value] tuples.
+spec_href links to the type's definition in the live spec (nil when the schema has none).</p>
 
   </div>
 </div>
@@ -174,6 +175,31 @@
 </li>
 
     
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#spec_href-instance_method" title="#spec_href (instance method)">#<strong>spec_href</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute spec_href.</p></div></span>
+  
+</li>
+
+    
   </ul>
 
 
@@ -226,12 +252,12 @@
       <pre class="lines">
 
 
-233
-234
-235</pre>
+313
+314
+315</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 233</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 313</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_constant_name'>constant_name</span>
   <span class='ivar'>@constant_name</span>
@@ -283,15 +309,72 @@
       <pre class="lines">
 
 
-233
-234
-235</pre>
+313
+314
+315</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 233</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 313</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_pairs'>pairs</span>
   <span class='ivar'>@pairs</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="spec_href=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="spec_href-instance_method">
+  
+    #<strong>spec_href</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute spec_href</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the current value of spec_href</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+313
+314
+315</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 313</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_spec_href'>spec_href</span>
+  <span class='ivar'>@spec_href</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -304,9 +387,9 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Jul 11 00:50:24 2026 by
+  Generated on Mon Aug 10 18:03:14 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.44 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.11).
 </div>
 
     </div>

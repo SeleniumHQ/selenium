@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Firefox::Options
   
-    &mdash; Documentation by YARD 0.9.44
+    &mdash; Documentation by YARD 0.9.45
   
 </title>
 
@@ -235,6 +235,28 @@
 
   
     <span class="summary_desc"><div class='inline'><p>Add a command-line argument to use when starting Firefox.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#add_firefox_option-instance_method" title="#add_firefox_option (instance method)">#<strong>add_firefox_option</strong>(name, value)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Add a Firefox-specific capability nested in the <code>moz:firefoxOptions</code> object that is not yet exposed through a dedicated method.</p></div></span>
   
 </li>
 
@@ -502,7 +524,8 @@
 71
 72
 73
-74</pre>
+74
+75</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 59</span>
@@ -520,6 +543,7 @@
 </span>  <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:prefs</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>remote.active-protocols</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='int'>1</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:env</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:log</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='label'>level:</span> <span class='id identifier rubyid_log_level'>log_level</span><span class='rbrace'>}</span> <span class='kw'>if</span> <span class='id identifier rubyid_log_level'>log_level</span>
+  <span class='ivar'>@vendor_options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
 
   <span class='id identifier rubyid_process_profile'>process_profile</span><span class='lparen'>(</span><span class='ivar'>@options</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:profile</span><span class='rparen'>)</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
@@ -675,15 +699,99 @@
       <pre class="lines">
 
 
-86
 87
-88</pre>
+88
+89</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 86</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 87</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_argument'>add_argument</span><span class='lparen'>(</span><span class='id identifier rubyid_arg'>arg</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:args</span><span class='rbracket'>]</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_arg'>arg</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="add_firefox_option-instance_method">
+  
+    #<strong>add_firefox_option</strong>(name, value)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Add a Firefox-specific capability nested in the <code>moz:firefoxOptions</code>
+object that is not yet exposed through a dedicated method. This is the
+escape hatch for legitimate vendor capabilities the bindings do not model.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h4 class="tag_title">Examples:</h4>
+    
+      
+        <h5 class="example_title"><div class='inline'><p>Set an option not handled by other methods</p></div></h5>
+      
+      <pre class="example code"><code><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::Firefox::Options (class)">Options</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Firefox::Options#initialize (method)">new</a></span></span>
+<span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_add_firefox_option'>add_firefox_option</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>unhandledCapability</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>value</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>Symbol</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Name of the capability, as expected by geckodriver</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>value</span>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Value of the capability</p></div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+119
+120
+121</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 119</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_add_firefox_option'>add_firefox_option</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+  <span class='ivar'>@vendor_options</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -757,12 +865,12 @@
       <pre class="lines">
 
 
-101
 102
-103</pre>
+103
+104</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 101</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 102</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_preference'>add_preference</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:prefs</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
@@ -872,15 +980,15 @@ If not specified and multiple devices are attached, an error will be returned.</
       <pre class="lines">
 
 
-144
-145
-146
-147
-148
-149</pre>
+162
+163
+164
+165
+166
+167</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 144</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 162</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_enable_android'>enable_android</span><span class='lparen'>(</span><span class='label'>package:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>org.mozilla.firefox</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>serial_number:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>activity:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>intent_arguments:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:android_package</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_package'>package</span>
@@ -908,12 +1016,12 @@ If not specified and multiple devices are attached, an error will be returned.</
       <pre class="lines">
 
 
-124
-125
-126</pre>
+142
+143
+144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 124</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 142</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_log_level'>log_level</span>
   <span class='ivar'>@options</span><span class='period'>.</span><span class='id identifier rubyid_dig'>dig</span><span class='lparen'>(</span><span class='symbol'>:log</span><span class='comma'>,</span> <span class='symbol'>:level</span><span class='rparen'>)</span>
@@ -938,12 +1046,12 @@ If not specified and multiple devices are attached, an error will be returned.</
       <pre class="lines">
 
 
-128
-129
-130</pre>
+146
+147
+148</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 128</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 146</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_log_level='>log_level=</span><span class='lparen'>(</span><span class='id identifier rubyid_level'>level</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:log</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>level:</span> <span class='id identifier rubyid_level'>level</span><span class='rbrace'>}</span>
@@ -958,9 +1066,9 @@ If not specified and multiple devices are attached, an error will be returned.</
 </div>
 
       <div id="footer">
-  Generated on Sat Jul 11 00:50:22 2026 by
+  Generated on Mon Aug 10 18:03:11 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.44 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.11).
 </div>
 
     </div>

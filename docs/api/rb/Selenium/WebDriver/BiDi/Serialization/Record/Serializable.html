@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::BiDi::Serialization::Record::Serializable
   
-    &mdash; Documentation by YARD 0.9.44
+    &mdash; Documentation by YARD 0.9.45
   
 </title>
 
@@ -206,17 +206,17 @@
       <pre class="lines">
 
 
-198
-199
-200
-201
-202
-203
-204
-205</pre>
+357
+358
+359
+360
+361
+362
+363
+364</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/record.rb', line 198</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/record.rb', line 357</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_value'>value</span>
@@ -265,22 +265,22 @@
       <pre class="lines">
 
 
-208
-209
-210
-211
-212
-213
-214
-215
-216
-217
-218
-219
-220</pre>
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/record.rb', line 208</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/record.rb', line 367</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_payload'>payload</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -292,7 +292,7 @@
     <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='period'>.</span><span class='id identifier rubyid_to_wire'><span class='object_link'><a href="../../Serialization.html#to_wire-class_method" title="Selenium::WebDriver::BiDi::Serialization.to_wire (method)">to_wire</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="../../Protocol.html" title="Selenium::WebDriver::BiDi::Protocol (module)">Protocol</a></span></span><span class='period'>.</span><span class='id identifier rubyid_const_get'>const_get</span><span class='lparen'>(</span><span class='id identifier rubyid_f'>f</span><span class='period'>.</span><span class='id identifier rubyid_enum'>enum</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_f'>f</span><span class='period'>.</span><span class='id identifier rubyid_enum'>enum</span>
     <span class='id identifier rubyid_payload'>payload</span><span class='lbracket'>[</span><span class='id identifier rubyid_f'>f</span><span class='period'>.</span><span class='id identifier rubyid_wire_key'>wire_key</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Serialization::Record::Serializable (module)">Serializable</a></span></span><span class='period'>.</span><span class='id identifier rubyid_as_json'><span class='object_link'><a href="#as_json-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record::Serializable.as_json (method)">as_json</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
-  <span class='id identifier rubyid_payload'>payload</span><span class='period'>.</span><span class='id identifier rubyid_merge!'>merge!</span><span class='lparen'>(</span><span class='id identifier rubyid_extensions'>extensions</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_extensible?'>extensible?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_extensions'>extensions</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+  <span class='id identifier rubyid_merge_extensions!'>merge_extensions!</span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_extensible?'>extensible?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_extensions'>extensions</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
   <span class='id identifier rubyid_payload'>payload</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -305,9 +305,9 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Jul 11 00:50:20 2026 by
+  Generated on Mon Aug 10 18:03:09 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.44 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.11).
 </div>
 
     </div>

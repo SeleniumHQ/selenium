@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::BiDi::Serialization::Record::Deserializer
   
-    &mdash; Documentation by YARD 0.9.44
+    &mdash; Documentation by YARD 0.9.45
   
 </title>
 
@@ -183,9 +183,10 @@
   <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>Inbound: builds from the wire. A missing required field raises (in <code>wire_value</code>),
-enum tokens are mapped back to symbols and an unrecognized one raises (in <code>read</code>), and
-extra keys are captured (extensible) or ignored (closed) — strict on shape, lenient on extras.</p>
+<p>Inbound: builds from the wire. A missing required field is omitted and warned (or
+raised in strict mode, in <code>wire_value</code>); enum tokens are mapped back to symbols and an
+unrecognized one raises (in <code>read</code>); an undeclared property is captured silently
+(extensible) or warned and dropped (closed) — strict on shape, lenient on extras.</p>
 
   </div>
 </div>
@@ -198,9 +199,6 @@ extra keys are captured (extensible) or ignored (closed) — strict on shape, le
       <pre class="lines">
 
 
-83
-84
-85
 86
 87
 88
@@ -208,10 +206,18 @@ extra keys are captured (extensible) or ignored (closed) — strict on shape, le
 90
 91
 92
-93</pre>
+93
+94
+95
+96
+97
+98
+99
+100
+101</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/record.rb', line 83</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/record.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_from_json'>from_json</span><span class='lparen'>(</span><span class='id identifier rubyid_json_payload'>json_payload</span><span class='rparen'>)</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_json_payload'>json_payload</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>Hash</span><span class='rparen'>)</span>
@@ -221,7 +227,12 @@ extra keys are captured (extensible) or ignored (closed) — strict on shape, le
   <span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='id identifier rubyid_fields'>fields</span><span class='period'>.</span><span class='id identifier rubyid_to_h'>to_h</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_f'>f</span><span class='op'>|</span>
     <span class='lbracket'>[</span><span class='id identifier rubyid_f'>f</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_wire_value'>wire_value</span><span class='lparen'>(</span><span class='id identifier rubyid_f'>f</span><span class='comma'>,</span> <span class='id identifier rubyid_json_payload'>json_payload</span><span class='rparen'>)</span><span class='rbracket'>]</span>
   <span class='kw'>end</span>
-  <span class='id identifier rubyid_attributes'>attributes</span><span class='lbracket'>[</span><span class='symbol'>:extensions</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_extra'>extra</span><span class='lparen'>(</span><span class='id identifier rubyid_json_payload'>json_payload</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_extensible?'>extensible?</span>
+  <span class='id identifier rubyid_undeclared'>undeclared</span> <span class='op'>=</span> <span class='id identifier rubyid_extra'>extra</span><span class='lparen'>(</span><span class='id identifier rubyid_json_payload'>json_payload</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_extensible?'>extensible?</span>
+    <span class='id identifier rubyid_attributes'>attributes</span><span class='lbracket'>[</span><span class='symbol'>:extensions</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_undeclared'>undeclared</span> <span class='comment'># the spec sanctions these extras; preserve them silently
+</span>  <span class='kw'>else</span>
+    <span class='id identifier rubyid_warn_undeclared'>warn_undeclared</span><span class='lparen'>(</span><span class='id identifier rubyid_undeclared'>undeclared</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_undeclared'>undeclared</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+  <span class='kw'>end</span>
   <span class='id identifier rubyid_construct'>construct</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_attributes'>attributes</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -257,18 +268,18 @@ extra keys are captured (extensible) or ignored (closed) — strict on shape, le
       <pre class="lines">
 
 
-70
-71
 72
 73
 74
 75
 76
 77
-78</pre>
+78
+79
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/record.rb', line 70</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/serialization/record.rb', line 72</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
   <span class='comment'># Start from what was passed so ::Data&#39;s constructor rejects an unknown key, then fill
@@ -289,9 +300,9 @@ extra keys are captured (extensible) or ignored (closed) — strict on shape, le
 </div>
 
       <div id="footer">
-  Generated on Sat Jul 11 00:50:20 2026 by
+  Generated on Mon Aug 10 18:03:09 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.44 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.11).
 </div>
 
     </div>
