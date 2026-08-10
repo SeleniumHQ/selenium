@@ -72,10 +72,12 @@ module Selenium
       # process has locked. The handle outlives this method when it is returned, since it
       # holds the lock until #locked closes it.
       def open_lock_file
-        file = File.open(@path, File::RDWR | File::CREAT) # rubocop:disable Style/FileOpen
+        file = File.open(@path, File::RDWR | File::CREAT, 0o600) # rubocop:disable Style/FileOpen
         file.close_on_exec = true
         file
-      rescue Errno::EACCES, Errno::EROFS => e
+      rescue Errno::EROFS => e
+        raise Error::WebDriverError, "unable to create the lock file #{@path}: #{e.message}"
+      rescue Errno::EACCES => e
         WebDriver.logger.debug("#{self}: #{e.message}", id: :driver_service)
         nil
       end

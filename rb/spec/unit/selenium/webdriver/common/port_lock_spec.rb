@@ -63,6 +63,13 @@ module Selenium
       it 'lets a lock on a different port through' do
         expect(port_lock.locked { described_class.new(port + 1, 0).locked { :other } }).to be(:other)
       end
+
+      it 'fails without waiting out the timeout when the lock file cannot be created' do
+        allow(File).to receive(:open).and_raise(Errno::EROFS)
+
+        expect { port_lock.locked { :never } }
+          .to raise_error(Error::WebDriverError, /unable to create the lock file/)
+      end
     end
   end
 end
