@@ -1,3 +1,18 @@
+v4.47.0
+======
+* Support CDP versions: v149, v150, v151
+* [build] Fix GeckoDriver rejecting system-access via capabilities (#17811)
+* [build] Download and bundle Selenium Manager SBOM and NOTICE in each package (#17820)
+* [grid] honor client-advertised se:remoteUrl for reachable BiDi/CDP/VNC URLs (#17790)
+* prevent CDP access with Firefox (#17849)
+* [bidi] Don't warn if there are no subscribers (#17857)
+* pass --enable-chrome-logs unless CHROME_LOG_FILE is set (#17858)
+* deprecate invalid Firefox profile code (#17871)
+* [build] Automated Browser Version Update with CDP (#17873)
+* support SE_*DRIVER environment variables to set driver locations (#17875)
+* [bidi] Make BiDi transport factories composable (#17877)
+* [bidi] Remove optional command timeout in command options (#17891)
+
 v4.46.0
 ======
 * Support CDP versions: v148, v149, v150
