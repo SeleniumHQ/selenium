@@ -150,7 +150,7 @@ def render_files(var, entries):
 
 
 def sub_once(content, pattern, replacement, where):
-    content, n = re.subn(pattern, replacement, content, flags=re.DOTALL)
+    content, n = re.subn(pattern, replacement, content, flags=re.S)
     if n != 1:
         raise RuntimeError(f"Expected exactly one {where} in {BZL_FILE.name}, found {n}")
     return content
@@ -191,7 +191,7 @@ def update_module(repo_names):
         r"use_repo\(\n    webref_cddl_extension,\n.*?\n\)",
         new_block,
         content,
-        flags=re.DOTALL,
+        flags=re.S,
     )
     if count != 1:
         raise RuntimeError(f"Expected exactly one webref_cddl_extension use_repo block, found {count}")

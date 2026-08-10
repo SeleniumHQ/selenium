@@ -44,7 +44,7 @@ class _TimeoutsDescriptor:
         return getattr(obj, self.name) / 1000
 
     def __set__(self, obj, value) -> None:
-        converted_value = obj._convert(value)
+        converted_value = getattr(obj, "_convert")(value)
         setattr(obj, self.name, converted_value)
 
 

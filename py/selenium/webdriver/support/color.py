@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from re import Match
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from typing import SupportsFloat, SupportsIndex, SupportsInt
@@ -155,7 +155,7 @@ class Color:
             return self.rgba == other.rgba
         return NotImplemented
 
-    def __ne__(self, other: object) -> bool:
+    def __ne__(self, other: Any) -> bool:
         result = self.__eq__(other)
         if result is NotImplemented:
             return result

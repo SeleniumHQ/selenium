@@ -1244,8 +1244,10 @@ class CddlParser:
 
         # Remove outer braces
         clean_def = type_definition.strip()
-        clean_def = clean_def.removeprefix("{")
-        clean_def = clean_def.removesuffix("}")
+        if clean_def.startswith("{"):
+            clean_def = clean_def[1:]
+        if clean_def.endswith("}"):
+            clean_def = clean_def[:-1]
 
         # Parse each line for field: type patterns
         for line in clean_def.split("\n"):
@@ -1408,8 +1410,10 @@ class CddlParser:
         # Remove the outer curly braces and split by comma
         # Then parse each line for key: type patterns
         clean_def = stripped
-        clean_def = clean_def.removeprefix("{")
-        clean_def = clean_def.removesuffix("}")
+        if clean_def.startswith("{"):
+            clean_def = clean_def[1:]
+        if clean_def.endswith("}"):
+            clean_def = clean_def[:-1]
 
         # Split by newlines and process each line
         for line in clean_def.split("\n"):

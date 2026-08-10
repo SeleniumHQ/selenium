@@ -945,7 +945,8 @@ def generate_init(init_path, domains):
     """
     with open(init_path, "w", encoding="utf-8") as init_file:
         init_file.write(INIT_HEADER)
-        init_file.writelines(f"from . import {domain.module}\n" for domain in domains)
+        for domain in domains:
+            init_file.write(f"from . import {domain.module}\n")
         init_file.write("from . import util\n\n")
 
 

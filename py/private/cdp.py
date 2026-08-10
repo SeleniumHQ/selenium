@@ -176,6 +176,8 @@ class CdpConnectionClosed(WsConnectionClosed):
 class InternalError(Exception):
     """This exception is only raised when there is faulty logic in TrioCDP or the integration with PyCDP."""
 
+    pass
+
 
 @dataclass
 class CmEventProxy:

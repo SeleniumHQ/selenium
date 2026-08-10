@@ -203,6 +203,7 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
 
     def log_message(self, format, *args):
         """Override default to avoid trashing stderr."""
+        pass
 
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):

@@ -52,6 +52,8 @@ class BaseWebElement(metaclass=ABCMeta):
     pass type checks.
     """
 
+    pass
+
 
 class WebElement(BaseWebElement):
     """Represents a DOM element.

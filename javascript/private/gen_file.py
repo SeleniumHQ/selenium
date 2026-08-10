@@ -40,7 +40,7 @@ def write_atom_literal(out, name, contents, lang, utf8):
         else:
             line_format = '    L"{}",\n'
     elif "java" == lang:
-        line_format = '      .append\\("{}")\n'
+        line_format = '      .append\("{}")\n'
     else:
         raise RuntimeError(f"Unknown language: {lang} ")
 
