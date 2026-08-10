@@ -102,7 +102,8 @@ Class FirefoxExtension  <a class="header-action link-secondary" title="View sour
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class FirefoxExtension</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use FirefoxDriver.InstallAddOnFromFile instead.&quot;)]
+public class FirefoxExtension</code></pre>
   </div>
 
 
@@ -157,7 +158,7 @@ Class FirefoxExtension  <a class="header-action link-secondary" title="View sour
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxExtension__ctor_System_String_" data-uid="OpenQA.Selenium.Firefox.FirefoxExtension.#ctor(System.String)">
   FirefoxExtension(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxExtension.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxExtension.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Firefox.FirefoxExtension.html">FirefoxExtension</a> class.</p>
@@ -205,7 +206,7 @@ then using the full path to the file, if a full path is provided.</p>
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxExtension_Install_System_String_" data-uid="OpenQA.Selenium.Firefox.FirefoxExtension.Install(System.String)">
   Install(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxExtension.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxExtension.cs/#L60"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Installs the extension into a profile directory.</p>

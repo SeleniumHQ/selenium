@@ -153,23 +153,23 @@ such as the underlying transport mechanism.</p>
 
   <a id="OpenQA_Selenium_BiDi_BiDiOptionsBuilder_UseTransport_" data-uid="OpenQA.Selenium.BiDi.BiDiOptionsBuilder.UseTransport*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BiDiOptionsBuilder_UseTransport_System_Func_OpenQA_Selenium_BiDi_ITransport__" data-uid="OpenQA.Selenium.BiDi.BiDiOptionsBuilder.UseTransport(System.Func{OpenQA.Selenium.BiDi.ITransport})">
-  UseTransport(Func&lt;ITransport&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDiOptionsBuilder.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BiDiOptionsBuilder_UseTransport_System_Func_System_Func_System_Uri_System_Threading_CancellationToken_System_Threading_Tasks_Task_OpenQA_Selenium_BiDi_ITransport___System_Func_System_Uri_System_Threading_CancellationToken_System_Threading_Tasks_Task_OpenQA_Selenium_BiDi_ITransport____" data-uid="OpenQA.Selenium.BiDi.BiDiOptionsBuilder.UseTransport(System.Func{System.Func{System.Uri,System.Threading.CancellationToken,System.Threading.Tasks.Task{OpenQA.Selenium.BiDi.ITransport}},System.Func{System.Uri,System.Threading.CancellationToken,System.Threading.Tasks.Task{OpenQA.Selenium.BiDi.ITransport}}})">
+  UseTransport(Func&lt;Func&lt;Uri, CancellationToken, Task&lt;ITransport&gt;&gt;, Func&lt;Uri, CancellationToken, Task&lt;ITransport&gt;&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDiOptionsBuilder.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Configures the BiDi connection to use a transport created by the specified factory.</p>
+  <div class="markdown level1 summary"><p>Composes a transport factory into the current transport pipeline.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public BiDiOptionsBuilder UseTransport(Func&lt;ITransport&gt; factory)</code></pre>
+    <pre><code class="lang-csharp hljs">public BiDiOptionsBuilder UseTransport(Func&lt;Func&lt;Uri, CancellationToken, Task&lt;ITransport&gt;&gt;, Func&lt;Uri, CancellationToken, Task&lt;ITransport&gt;&gt;&gt; next)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>factory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.ITransport.html">ITransport</a>&gt;</dt>
-    <dd><p>A factory function that creates the <a class="xref" href="OpenQA.Selenium.BiDi.ITransport.html">ITransport</a> instance.</p>
+    <dt><code>next</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-3">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uri">Uri</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.ITransport.html">ITransport</a>&gt;&gt;, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-3">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uri">Uri</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.ITransport.html">ITransport</a>&gt;&gt;&gt;</dt>
+    <dd><p>A callback that composes a new transport factory from the current one.</p>
 </dd>
   </dl>
 
@@ -186,8 +186,10 @@ such as the underlying transport mechanism.</p>
 
 
 
-  <h4 class="section" id="OpenQA_Selenium_BiDi_BiDiOptionsBuilder_UseTransport_System_Func_OpenQA_Selenium_BiDi_ITransport___remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>BiDi takes ownership of the transport instance returned by the factory and will dispose it.</p>
+  <h4 class="section" id="OpenQA_Selenium_BiDi_BiDiOptionsBuilder_UseTransport_System_Func_System_Func_System_Uri_System_Threading_CancellationToken_System_Threading_Tasks_Task_OpenQA_Selenium_BiDi_ITransport___System_Func_System_Uri_System_Threading_CancellationToken_System_Threading_Tasks_Task_OpenQA_Selenium_BiDi_ITransport_____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The <code class="paramref">next</code> callback receives the current transport factory and returns
+the next factory in the chain. BiDi takes ownership of the transport instance returned by
+the final factory and will dispose it.</p>
 </div>
 
 
@@ -197,7 +199,7 @@ such as the underlying transport mechanism.</p>
 
   <h3 id="OpenQA_Selenium_BiDi_BiDiOptionsBuilder_UseWebSocket_System_Action_System_Net_WebSockets_ClientWebSocketOptions__" data-uid="OpenQA.Selenium.BiDi.BiDiOptionsBuilder.UseWebSocket(System.Action{System.Net.WebSockets.ClientWebSocketOptions})">
   UseWebSocket(Action&lt;ClientWebSocketOptions&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDiOptionsBuilder.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDiOptionsBuilder.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Configures the BiDi connection to use a WebSocket transport.</p>
