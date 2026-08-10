@@ -53,26 +53,31 @@ module Selenium
       private
 
       def lock
-        file = open_lock_file
         max_time = current_time + @timeout
 
-        sleep 0.1 until file.flock(File::LOCK_EX | File::LOCK_NB) || current_time >= max_time
-        return file if file.flock(File::LOCK_EX | File::LOCK_NB)
+        loop do
+          file = open_lock_file
+          return file if file&.flock(File::LOCK_EX | File::LOCK_NB)
 
-        file.close
+          file&.close
+          break if current_time >= max_time
+
+          sleep 0.1
+        end
+
         raise Error::WebDriverError, "unable to acquire #{@path} within #{@timeout} seconds"
       end
 
-      # The handle is held for as long as the lock is, so it outlives this method and
-      # #locked closes it. Another user may own the file, in which case it cannot be
-      # opened for writing; an exclusive flock on a read-only handle excludes just as well.
+      # nil means the lock is not available yet: Windows refuses to open a file another
+      # process has locked. The handle outlives this method when it is returned, since it
+      # holds the lock until #locked closes it.
       def open_lock_file
         file = File.open(@path, File::RDWR | File::CREAT) # rubocop:disable Style/FileOpen
         file.close_on_exec = true
         file
       rescue Errno::EACCES, Errno::EROFS => e
         WebDriver.logger.debug("#{self}: #{e.message}", id: :driver_service)
-        File.open(@path, File::RDONLY)
+        nil
       end
 
       def release(file)
