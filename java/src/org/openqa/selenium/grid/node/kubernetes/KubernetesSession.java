@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node.kubernetes;
 
+import io.fabric8.kubernetes.api.model.DeletionPropagation;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.LocalPortForward;
@@ -98,7 +99,18 @@ public class KubernetesSession extends DefaultActiveSession {
 
   private void deleteJob() {
     try {
-      kubeClient.batch().v1().jobs().inNamespace(namespace).withName(jobName).delete();
+      // Background propagation: return as soon as the Job is marked for deletion and let K8s reap
+      // the Pod (and its containers) asynchronously. Stopping a session must not block the Node
+      // waiting on Pod teardown. Set explicitly so the cascade is documented rather than relying on
+      // the client default, matching the intent of the factory's own Job deletion.
+      kubeClient
+          .batch()
+          .v1()
+          .jobs()
+          .inNamespace(namespace)
+          .withName(jobName)
+          .withPropagationPolicy(DeletionPropagation.BACKGROUND)
+          .delete();
     } catch (KubernetesClientException e) {
       LOG.log(
           Level.WARNING,
