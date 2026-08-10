@@ -1,288 +1,380 @@
 
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+
+<html lang="en" data-content_root="./" >
+
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="lang:clipboard.copy" content="Copy to clipboard">
-  <meta name="lang:clipboard.copied" content="Copied to clipboard">
-  <meta name="lang:search.language" content="en">
-  <meta name="lang:search.pipeline.stopwords" content="True">
-  <meta name="lang:search.pipeline.trimmer" content="True">
-  <meta name="lang:search.result.none" content="No matching documents">
-  <meta name="lang:search.result.one" content="1 matching document">
-  <meta name="lang:search.result.other" content="# matching documents">
-  <meta name="lang:search.tokenizer" content="[\s\-]+">
-
+    <title>Index &#8212; Selenium 4.47.0 documentation</title>
   
-    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
-
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
     <style>
-      body,
-      input {
-        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-      }
+      .pst-js-only { display: none !important; }
 
-      code,
-      kbd,
-      pre {
-        font-family: "Roboto Mono", "Courier New", Courier, monospace
-      }
     </style>
+  </noscript>
   
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
 
-  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
-  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
-  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
   
-  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
-  
-  <meta name="theme-color" content="#3f51b5">
-  <script src="_static/javascripts/modernizr.js"></script>
-  
-  
-  
-    <title>Index &#8212; Selenium 4.46.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
-    <script src="_static/documentation_options.js?v=34af0a0d"></script>
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+
+    <script src="_static/documentation_options.js?v=457a4054"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'genindex-I';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="4.47" />
   
-   
-
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
   </head>
-  <body dir=ltr
-        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  <body data-default-mode="">
   
-  <svg class="md-svg">
-    <defs data-children-count="0">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-      
-    </defs>
-  </svg>
   
-  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
-  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
-  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#genindex-I" tabindex="1" class="md-skip"> Skip to content </a>
-  <header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid">
-    <div class="md-flex navheader">
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="Selenium 4.46.0 documentation"
-           class="md-header-nav__button md-logo">
-          
-            &nbsp;
-          
-        </a>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
-      </div>
-      <div class="md-flex__cell md-flex__cell--stretch">
-        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.46.0 documentation</span>
-          <span class="md-header-nav__topic"> Index </span>
-        </div>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
-        
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
-             autocapitalize="off" autocomplete="off" spellcheck="false"
-             data-md-component="query" data-md-state="active">
-      <label class="md-icon md-search__icon" for="__search"></label>
-      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
-        &#xE5CD;
-      </button>
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
-          <div class="md-search-result__meta">
-            Type to start searching
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Selenium 4.47.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
       </div>
       
-      
-  
-  <script src="_static/javascripts/version_dropdown.js"></script>
-  <script>
-    var json_loc = ""versions.json"",
-        target_loc = "../",
-        text = "Versions";
-    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
-  </script>
-  
-
-    </div>
-  </nav>
-</header>
-
-  
-  <div class="md-container">
-    
-    
-    
-  <nav class="md-tabs" data-md-component="tabs">
-    <div class="md-tabs__inner md-grid">
-      <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">Selenium 4.46.0 documentation</a></li>
-      </ul>
-    </div>
-  </nav>
-    <main class="md-main">
-      <div class="md-main__inner md-grid" data-md-component="container">
+      <main id="main-content" class="bd-main" role="main">
         
-          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                <nav class="md-nav md-nav--primary" data-md-level="0">
-  <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="Selenium 4.46.0 documentation" class="md-nav__button md-logo">
-      
-        <img src="_static/" alt=" logo" width="48" height="48">
-      
-    </a>
-    <a href="index.html"
-       title="Selenium 4.46.0 documentation">Selenium 4.46.0 documentation</a>
-  </label>
-  
-
-</nav>
-              </div>
-            </div>
-          </div>
-          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none"></div>
+              
+              
+              
                 
-<nav class="md-nav md-nav--secondary">
-  <ul class="md-nav__list" data-md-scrollfix="">
-    
-
-<li id="searchbox" class="md-nav__item"></li>
-
-  </ul>
-</nav>
-              </div>
-            </div>
-          </div>
-        
-        <div class="md-content">
-          <article class="md-content__inner md-typeset" role="main">
-            
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
 
 
 <h1 id="index">Index &#x2013; I</h1>
 
 <table style="width: 100%" class="indextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.by.html#selenium.webdriver.common.by.By.ID">ID (selenium.webdriver.common.by.By attribute)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.by.html#selenium.webdriver.common.by.By.ID">ID (By attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Credential.id">id (selenium.webdriver.common.virtual_authenticator.Credential property)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Credential.id">id (Credential property)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.script_key.html#selenium.webdriver.remote.script_key.ScriptKey.id">(selenium.webdriver.remote.script_key.ScriptKey property)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.script_key.html#selenium.webdriver.remote.script_key.ScriptKey.id">(ScriptKey property)</a>
 </li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.shadowroot.html#selenium.webdriver.remote.shadowroot.ShadowRoot.id">(selenium.webdriver.remote.shadowroot.ShadowRoot property)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.shadowroot.html#selenium.webdriver.remote.shadowroot.ShadowRoot.id">(ShadowRoot property)</a>
 </li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.id">(selenium.webdriver.remote.webelement.WebElement property)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.id">(WebElement property)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common_fedcm/selenium.webdriver.common.fedcm.account.html#selenium.webdriver.common.fedcm.account.Account.idp_config_url">idp_config_url (selenium.webdriver.common.fedcm.account.Account attribute)</a>
+      <li><a href="selenium_webdriver_common_fedcm/selenium.webdriver.common.fedcm.account.html#selenium.webdriver.common.fedcm.account.Account.idp_config_url">idp_config_url (Account attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig.ignore_certificates">ignore_certificates (selenium.webdriver.remote.client_config.ClientConfig attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig.ignore_certificates">ignore_certificates (ClientConfig attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.ignore_local_proxy_environment_variables">ignore_local_proxy_environment_variables() (selenium.webdriver.chrome.options.Options method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.ArgOptions.ignore_local_proxy_environment_variables">ignore_local_proxy_environment_variables() (ArgOptions method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.options.html#selenium.webdriver.chromium.options.ChromiumOptions.ignore_local_proxy_environment_variables">(selenium.webdriver.chromium.options.ChromiumOptions method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.BaseOptions.ignore_local_proxy_environment_variables">(BaseOptions method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.ArgOptions.ignore_local_proxy_environment_variables">(selenium.webdriver.common.options.ArgOptions method)</a>
+        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.options.html#selenium.webdriver.chromium.options.ChromiumOptions.ignore_local_proxy_environment_variables">(ChromiumOptions method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.BaseOptions.ignore_local_proxy_environment_variables">(selenium.webdriver.common.options.BaseOptions method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.options.html#selenium.webdriver.edge.options.Options.ignore_local_proxy_environment_variables">(selenium.webdriver.edge.options.Options method)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.ignore_local_proxy_environment_variables">(selenium.webdriver.firefox.options.Options method)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.ignore_local_proxy_environment_variables">(selenium.webdriver.ie.options.Options method)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.options.html#selenium.webdriver.safari.options.Options.ignore_local_proxy_environment_variables">(selenium.webdriver.safari.options.Options method)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.options.html#selenium.webdriver.webkitgtk.options.Options.ignore_local_proxy_environment_variables">(selenium.webdriver.webkitgtk.options.Options method)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.options.html#selenium.webdriver.wpewebkit.options.Options.ignore_local_proxy_environment_variables">(selenium.webdriver.wpewebkit.options.Options method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.ignore_local_proxy_environment_variables">(Options method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.options.html#selenium.webdriver.edge.options.Options.ignore_local_proxy_environment_variables">[1]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.ignore_local_proxy_environment_variables">[2]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.ignore_local_proxy_environment_variables">[3]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.options.html#selenium.webdriver.safari.options.Options.ignore_local_proxy_environment_variables">[4]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.options.html#selenium.webdriver.webkitgtk.options.Options.ignore_local_proxy_environment_variables">[5]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.options.html#selenium.webdriver.wpewebkit.options.Options.ignore_local_proxy_environment_variables">[6]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.IGNORE_PROCESS_MATCH">IGNORE_PROCESS_MATCH (selenium.webdriver.ie.options.Options attribute)</a>
+      <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.IGNORE_PROCESS_MATCH">IGNORE_PROCESS_MATCH (Options attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.IGNORE_PROTECTED_MODE_SETTINGS">IGNORE_PROTECTED_MODE_SETTINGS (selenium.webdriver.ie.options.Options attribute)</a>
+      <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.IGNORE_PROTECTED_MODE_SETTINGS">IGNORE_PROTECTED_MODE_SETTINGS (Options attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.ignore_protected_mode_settings">ignore_protected_mode_settings (selenium.webdriver.ie.options.Options attribute)</a>
+      <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.ignore_protected_mode_settings">ignore_protected_mode_settings (Options attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.IGNORE_ZOOM_LEVEL">IGNORE_ZOOM_LEVEL (selenium.webdriver.ie.options.Options attribute)</a>
+      <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.IGNORE_ZOOM_LEVEL">IGNORE_ZOOM_LEVEL (Options attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.ignore_zoom_level">ignore_zoom_level (selenium.webdriver.ie.options.Options attribute)</a>
+      <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.ignore_zoom_level">ignore_zoom_level (Options attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.IME_ENGINE_ACTIVATION_FAILED">IME_ENGINE_ACTIVATION_FAILED (selenium.webdriver.remote.errorhandler.ErrorCode attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.IME_ENGINE_ACTIVATION_FAILED">IME_ENGINE_ACTIVATION_FAILED (ErrorCode attribute)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.IME_ENGINE_ACTIVATION_FAILED">(selenium.webdriver.remote.errorhandler.ExceptionMapping attribute)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.IME_ENGINE_ACTIVATION_FAILED">(ExceptionMapping attribute)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.IME_NOT_AVAILABLE">IME_NOT_AVAILABLE (selenium.webdriver.remote.errorhandler.ErrorCode attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.IME_NOT_AVAILABLE">IME_NOT_AVAILABLE (ErrorCode attribute)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.IME_NOT_AVAILABLE">(selenium.webdriver.remote.errorhandler.ExceptionMapping attribute)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.IME_NOT_AVAILABLE">(ExceptionMapping attribute)</a>
 </li>
       </ul></li>
       <li><a href="selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ImeActivationFailedException">ImeActivationFailedException</a>
 </li>
       <li><a href="selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ImeNotAvailableException">ImeNotAvailableException</a>
 </li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.timeouts.html#selenium.webdriver.common.timeouts.Timeouts.implicit_wait">implicit_wait (selenium.webdriver.common.timeouts.Timeouts attribute)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.timeouts.html#selenium.webdriver.common.timeouts.Timeouts.implicit_wait">implicit_wait (Timeouts attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.implicitly_wait">implicitly_wait() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.implicitly_wait">implicitly_wait() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.implicitly_wait">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.implicitly_wait">(LocalWebDriver method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.implicitly_wait">(selenium.webdriver.common.webdriver.LocalWebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.implicitly_wait">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.implicitly_wait">(selenium.webdriver.firefox.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.implicitly_wait">(selenium.webdriver.ie.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.implicitly_wait">(selenium.webdriver.remote.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.implicitly_wait">(selenium.webdriver.safari.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.implicitly_wait">(selenium.webdriver.webkitgtk.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.implicitly_wait">(selenium.webdriver.wpewebkit.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.implicitly_wait">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.implicitly_wait">[1]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.implicitly_wait">[2]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.implicitly_wait">[3]</a>, <a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.implicitly_wait">[4]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.implicitly_wait">[5]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.implicitly_wait">[6]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.implicitly_wait">[7]</a>
 </li>
       </ul></li>
       <li><a href="selenium_webdriver_common/selenium.webdriver.common.log.html#selenium.webdriver.common.log.import_cdp">import_cdp() (in module selenium.webdriver.common.log)</a>
@@ -291,120 +383,106 @@
         <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.import_cdp">(in module selenium.webdriver.remote.webdriver)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.index">index() (selenium.webdriver.common.options.PageLoadStrategy method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.index">index() (PageLoadStrategy method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.index">(selenium.webdriver.common.virtual_authenticator.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.index">(Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.index">(selenium.webdriver.common.virtual_authenticator.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.index">(Transport method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.index">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.index">(VirtualAuthenticatorOptions.Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.index">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.index">(VirtualAuthenticatorOptions.Transport method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig.init_args_for_pool_manager">init_args_for_pool_manager (selenium.webdriver.remote.client_config.ClientConfig attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig.init_args_for_pool_manager">init_args_for_pool_manager (ClientConfig attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.INITIAL_BROWSER_URL">INITIAL_BROWSER_URL (selenium.webdriver.ie.options.Options attribute)</a>
+      <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.INITIAL_BROWSER_URL">INITIAL_BROWSER_URL (Options attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.initial_browser_url">initial_browser_url (selenium.webdriver.ie.options.Options attribute)</a>
+      <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.initial_browser_url">initial_browser_url (Options attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.input">input (selenium.webdriver.chrome.webdriver.WebDriver property)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.input">input (ChromiumDriver property)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.input">(selenium.webdriver.chromium.webdriver.ChromiumDriver property)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.input">(LocalWebDriver property)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.input">(selenium.webdriver.common.webdriver.LocalWebDriver property)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.input">(selenium.webdriver.edge.webdriver.WebDriver property)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.input">(selenium.webdriver.firefox.webdriver.WebDriver property)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.input">(selenium.webdriver.ie.webdriver.WebDriver property)</a>
-</li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.input">(selenium.webdriver.remote.webdriver.WebDriver property)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.input">(selenium.webdriver.safari.webdriver.WebDriver property)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.input">(selenium.webdriver.webkitgtk.webdriver.WebDriver property)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.input">(selenium.webdriver.wpewebkit.webdriver.WebDriver property)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.input">(WebDriver property)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.input">[1]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.input">[2]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.input">[3]</a>, <a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.input">[4]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.input">[5]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.input">[6]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.input">[7]</a>
 </li>
       </ul></li>
       <li><a href="selenium_webdriver_common_actions/selenium.webdriver.common.actions.input_device.html#selenium.webdriver.common.actions.input_device.InputDevice">InputDevice (class in selenium.webdriver.common.actions.input_device)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INSECURE_CERTIFICATE">INSECURE_CERTIFICATE (selenium.webdriver.remote.errorhandler.ErrorCode attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INSECURE_CERTIFICATE">INSECURE_CERTIFICATE (ErrorCode attribute)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INSECURE_CERTIFICATE">(selenium.webdriver.remote.errorhandler.ExceptionMapping attribute)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INSECURE_CERTIFICATE">(ExceptionMapping attribute)</a>
 </li>
       </ul></li>
       <li><a href="selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InsecureCertificateException">InsecureCertificateException</a>
 </li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.keys.html#selenium.webdriver.common.keys.Keys.INSERT">INSERT (selenium.webdriver.common.keys.Keys attribute)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.keys.html#selenium.webdriver.common.keys.Keys.INSERT">INSERT (Keys attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.install_addon">install_addon() (selenium.webdriver.firefox.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.install_addon">install_addon() (WebDriver method)</a>
 </li>
       <li><a href="selenium_webdriver_common_actions/selenium.webdriver.common.actions.interaction.html#selenium.webdriver.common.actions.interaction.Interaction">Interaction (class in selenium.webdriver.common.actions.interaction)</a>
 </li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.INTERNAL">INTERNAL (selenium.webdriver.common.virtual_authenticator.Transport attribute)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.INTERNAL">INTERNAL (Transport attribute)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.INTERNAL">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport attribute)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.INTERNAL">(VirtualAuthenticatorOptions.Transport attribute)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.desired_capabilities.html#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.INTERNETEXPLORER">INTERNETEXPLORER (selenium.webdriver.common.desired_capabilities.DesiredCapabilities attribute)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.desired_capabilities.html#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.INTERNETEXPLORER">INTERNETEXPLORER (DesiredCapabilities attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ARGUMENT">INVALID_ARGUMENT (selenium.webdriver.remote.errorhandler.ErrorCode attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ARGUMENT">INVALID_ARGUMENT (ErrorCode attribute)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_ARGUMENT">(selenium.webdriver.remote.errorhandler.ExceptionMapping attribute)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_ARGUMENT">(ExceptionMapping attribute)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COOKIE_DOMAIN">INVALID_COOKIE_DOMAIN (selenium.webdriver.remote.errorhandler.ErrorCode attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COOKIE_DOMAIN">INVALID_COOKIE_DOMAIN (ErrorCode attribute)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_COOKIE_DOMAIN">(selenium.webdriver.remote.errorhandler.ExceptionMapping attribute)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_COOKIE_DOMAIN">(ExceptionMapping attribute)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COORDINATES">INVALID_COORDINATES (selenium.webdriver.remote.errorhandler.ErrorCode attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COORDINATES">INVALID_COORDINATES (ErrorCode attribute)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_COORDINATES">(selenium.webdriver.remote.errorhandler.ExceptionMapping attribute)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_COORDINATES">(ExceptionMapping attribute)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_COORDINATES">INVALID_ELEMENT_COORDINATES (selenium.webdriver.remote.errorhandler.ErrorCode attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_COORDINATES">INVALID_ELEMENT_COORDINATES (ErrorCode attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_STATE">INVALID_ELEMENT_STATE (selenium.webdriver.remote.errorhandler.ErrorCode attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_STATE">INVALID_ELEMENT_STATE (ErrorCode attribute)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_ELEMENT_STATE">(selenium.webdriver.remote.errorhandler.ExceptionMapping attribute)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_ELEMENT_STATE">(ExceptionMapping attribute)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SELECTOR">INVALID_SELECTOR (selenium.webdriver.remote.errorhandler.ErrorCode attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SELECTOR">INVALID_SELECTOR (ErrorCode attribute)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_SELECTOR">(selenium.webdriver.remote.errorhandler.ExceptionMapping attribute)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_SELECTOR">(ExceptionMapping attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SESSION_ID">INVALID_SESSION_ID (selenium.webdriver.remote.errorhandler.ErrorCode attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SESSION_ID">INVALID_SESSION_ID (ErrorCode attribute)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_SESSION_ID">(selenium.webdriver.remote.errorhandler.ExceptionMapping attribute)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_SESSION_ID">(ExceptionMapping attribute)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR">INVALID_XPATH_SELECTOR (selenium.webdriver.remote.errorhandler.ErrorCode attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR">INVALID_XPATH_SELECTOR (ErrorCode attribute)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_XPATH_SELECTOR">(selenium.webdriver.remote.errorhandler.ExceptionMapping attribute)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_XPATH_SELECTOR">(ExceptionMapping attribute)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER">INVALID_XPATH_SELECTOR_RETURN_TYPER (selenium.webdriver.remote.errorhandler.ErrorCode attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER">INVALID_XPATH_SELECTOR_RETURN_TYPER (ErrorCode attribute)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_XPATH_SELECTOR_RETURN_TYPER">(selenium.webdriver.remote.errorhandler.ExceptionMapping attribute)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_XPATH_SELECTOR_RETURN_TYPER">(ExceptionMapping attribute)</a>
 </li>
       </ul></li>
       <li><a href="selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidArgumentException">InvalidArgumentException</a>
@@ -425,228 +503,249 @@
 </li>
       <li><a href="selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.invisibility_of_element_located">invisibility_of_element_located() (in module selenium.webdriver.support.expected_conditions)</a>
 </li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.desired_capabilities.html#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.IPAD">IPAD (selenium.webdriver.common.desired_capabilities.DesiredCapabilities attribute)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.desired_capabilities.html#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.IPAD">IPAD (DesiredCapabilities attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.desired_capabilities.html#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.IPHONE">IPHONE (selenium.webdriver.common.desired_capabilities.DesiredCapabilities attribute)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.desired_capabilities.html#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.IPHONE">IPHONE (DesiredCapabilities attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.is_connectable">is_connectable() (in module selenium.webdriver.common.utils)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.service.html#selenium.webdriver.chromium.service.ChromiumService.is_connectable">is_connectable() (ChromiumService method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.service.html#selenium.webdriver.chrome.service.Service.is_connectable">(selenium.webdriver.chrome.service.Service method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.is_connectable">(in module selenium.webdriver.common.utils)</a>
 </li>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.service.html#selenium.webdriver.chromium.service.ChromiumService.is_connectable">(selenium.webdriver.chromium.service.ChromiumService method)</a>
-</li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service.is_connectable">(selenium.webdriver.common.service.Service method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.service.html#selenium.webdriver.edge.service.Service.is_connectable">(selenium.webdriver.edge.service.Service method)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.service.html#selenium.webdriver.firefox.service.Service.is_connectable">(selenium.webdriver.firefox.service.Service method)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.service.html#selenium.webdriver.ie.service.Service.is_connectable">(selenium.webdriver.ie.service.Service method)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.service.html#selenium.webdriver.safari.service.Service.is_connectable">(selenium.webdriver.safari.service.Service method)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.service.html#selenium.webdriver.webkitgtk.service.Service.is_connectable">(selenium.webdriver.webkitgtk.service.Service method)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.service.html#selenium.webdriver.wpewebkit.service.Service.is_connectable">(selenium.webdriver.wpewebkit.service.Service method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.service.html#selenium.webdriver.chrome.service.Service.is_connectable">(Service method)</a>, <a href="selenium_webdriver_common/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service.is_connectable">[1]</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.service.html#selenium.webdriver.edge.service.Service.is_connectable">[2]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.service.html#selenium.webdriver.firefox.service.Service.is_connectable">[3]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.service.html#selenium.webdriver.ie.service.Service.is_connectable">[4]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.service.html#selenium.webdriver.safari.service.Service.is_connectable">[5]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.service.html#selenium.webdriver.webkitgtk.service.Service.is_connectable">[6]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.service.html#selenium.webdriver.wpewebkit.service.Service.is_connectable">[7]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.is_displayed">is_displayed() (selenium.webdriver.remote.webelement.WebElement method)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.is_displayed">is_displayed() (WebElement method)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.IS_ELEMENT_ENABLED">IS_ELEMENT_ENABLED (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.IS_ELEMENT_ENABLED">IS_ELEMENT_ENABLED (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.IS_ELEMENT_SELECTED">IS_ELEMENT_SELECTED (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.IS_ELEMENT_SELECTED">IS_ELEMENT_SELECTED (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.is_enabled">is_enabled() (selenium.webdriver.remote.webelement.WebElement method)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.is_enabled">is_enabled() (WebElement method)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.file_detector.html#selenium.webdriver.remote.file_detector.FileDetector.is_local_file">is_local_file() (selenium.webdriver.remote.file_detector.FileDetector method)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.file_detector.html#selenium.webdriver.remote.file_detector.FileDetector.is_local_file">is_local_file() (FileDetector method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.file_detector.html#selenium.webdriver.remote.file_detector.LocalFileDetector.is_local_file">(selenium.webdriver.remote.file_detector.LocalFileDetector method)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.file_detector.html#selenium.webdriver.remote.file_detector.LocalFileDetector.is_local_file">(LocalFileDetector method)</a>
 </li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.file_detector.html#selenium.webdriver.remote.file_detector.UselessFileDetector.is_local_file">(selenium.webdriver.remote.file_detector.UselessFileDetector method)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.file_detector.html#selenium.webdriver.remote.file_detector.UselessFileDetector.is_local_file">(UselessFileDetector method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Credential.is_resident_credential">is_resident_credential (selenium.webdriver.common.virtual_authenticator.Credential property)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Credential.is_resident_credential">is_resident_credential (Credential property)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.is_selected">is_selected() (selenium.webdriver.remote.webelement.WebElement method)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.is_selected">is_selected() (WebElement method)</a>
 </li>
       <li><a href="selenium_webdriver_common/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.is_url_connectable">is_url_connectable() (in module selenium.webdriver.common.utils)</a>
 </li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isalnum">isalnum() (selenium.webdriver.common.options.PageLoadStrategy method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isalnum">isalnum() (PageLoadStrategy method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isalnum">(selenium.webdriver.common.virtual_authenticator.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isalnum">(Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isalnum">(selenium.webdriver.common.virtual_authenticator.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isalnum">(Transport method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isalnum">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isalnum">(VirtualAuthenticatorOptions.Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isalnum">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isalnum">(VirtualAuthenticatorOptions.Transport method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isalpha">isalpha() (selenium.webdriver.common.options.PageLoadStrategy method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isalpha">isalpha() (PageLoadStrategy method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isalpha">(selenium.webdriver.common.virtual_authenticator.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isalpha">(Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isalpha">(selenium.webdriver.common.virtual_authenticator.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isalpha">(Transport method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isalpha">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isalpha">(VirtualAuthenticatorOptions.Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isalpha">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isalpha">(VirtualAuthenticatorOptions.Transport method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isascii">isascii() (selenium.webdriver.common.options.PageLoadStrategy method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isascii">isascii() (PageLoadStrategy method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isascii">(selenium.webdriver.common.virtual_authenticator.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isascii">(Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isascii">(selenium.webdriver.common.virtual_authenticator.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isascii">(Transport method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isascii">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isascii">(VirtualAuthenticatorOptions.Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isascii">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isascii">(VirtualAuthenticatorOptions.Transport method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isdecimal">isdecimal() (selenium.webdriver.common.options.PageLoadStrategy method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isdecimal">isdecimal() (PageLoadStrategy method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isdecimal">(selenium.webdriver.common.virtual_authenticator.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isdecimal">(Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isdecimal">(selenium.webdriver.common.virtual_authenticator.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isdecimal">(Transport method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isdecimal">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isdecimal">(VirtualAuthenticatorOptions.Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isdecimal">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isdecimal">(VirtualAuthenticatorOptions.Transport method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isdigit">isdigit() (selenium.webdriver.common.options.PageLoadStrategy method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isdigit">isdigit() (PageLoadStrategy method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isdigit">(selenium.webdriver.common.virtual_authenticator.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isdigit">(Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isdigit">(selenium.webdriver.common.virtual_authenticator.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isdigit">(Transport method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isdigit">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isdigit">(VirtualAuthenticatorOptions.Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isdigit">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isdigit">(VirtualAuthenticatorOptions.Transport method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isidentifier">isidentifier() (selenium.webdriver.common.options.PageLoadStrategy method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isidentifier">isidentifier() (PageLoadStrategy method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isidentifier">(selenium.webdriver.common.virtual_authenticator.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isidentifier">(Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isidentifier">(selenium.webdriver.common.virtual_authenticator.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isidentifier">(Transport method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isidentifier">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isidentifier">(VirtualAuthenticatorOptions.Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isidentifier">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isidentifier">(VirtualAuthenticatorOptions.Transport method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.islower">islower() (selenium.webdriver.common.options.PageLoadStrategy method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.islower">islower() (PageLoadStrategy method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.islower">(selenium.webdriver.common.virtual_authenticator.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.islower">(Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.islower">(selenium.webdriver.common.virtual_authenticator.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.islower">(Transport method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.islower">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.islower">(VirtualAuthenticatorOptions.Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.islower">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.islower">(VirtualAuthenticatorOptions.Transport method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isnumeric">isnumeric() (selenium.webdriver.common.options.PageLoadStrategy method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isnumeric">isnumeric() (PageLoadStrategy method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isnumeric">(selenium.webdriver.common.virtual_authenticator.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isnumeric">(Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isnumeric">(selenium.webdriver.common.virtual_authenticator.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isnumeric">(Transport method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isnumeric">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isnumeric">(VirtualAuthenticatorOptions.Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isnumeric">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isnumeric">(VirtualAuthenticatorOptions.Transport method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isprintable">isprintable() (selenium.webdriver.common.options.PageLoadStrategy method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isprintable">isprintable() (PageLoadStrategy method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isprintable">(selenium.webdriver.common.virtual_authenticator.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isprintable">(Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isprintable">(selenium.webdriver.common.virtual_authenticator.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isprintable">(Transport method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isprintable">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isprintable">(VirtualAuthenticatorOptions.Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isprintable">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isprintable">(VirtualAuthenticatorOptions.Transport method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isspace">isspace() (selenium.webdriver.common.options.PageLoadStrategy method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isspace">isspace() (PageLoadStrategy method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isspace">(selenium.webdriver.common.virtual_authenticator.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isspace">(Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isspace">(selenium.webdriver.common.virtual_authenticator.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isspace">(Transport method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isspace">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isspace">(VirtualAuthenticatorOptions.Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isspace">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isspace">(VirtualAuthenticatorOptions.Transport method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.istitle">istitle() (selenium.webdriver.common.options.PageLoadStrategy method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.istitle">istitle() (PageLoadStrategy method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.istitle">(selenium.webdriver.common.virtual_authenticator.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.istitle">(Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.istitle">(selenium.webdriver.common.virtual_authenticator.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.istitle">(Transport method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.istitle">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.istitle">(VirtualAuthenticatorOptions.Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.istitle">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.istitle">(VirtualAuthenticatorOptions.Transport method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isupper">isupper() (selenium.webdriver.common.options.PageLoadStrategy method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.options.html#selenium.webdriver.common.options.PageLoadStrategy.isupper">isupper() (PageLoadStrategy method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isupper">(selenium.webdriver.common.virtual_authenticator.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol.isupper">(Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isupper">(selenium.webdriver.common.virtual_authenticator.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport.isupper">(Transport method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isupper">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isupper">(VirtualAuthenticatorOptions.Protocol method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isupper">(selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isupper">(VirtualAuthenticatorOptions.Transport method)</a>
 </li>
       </ul></li>
   </ul></td>
 </tr></table>
 
 
-          </article>
-        </div>
-      </div>
-    </main>
-  </div>
-  <footer class="md-footer">
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-          
-          
-        </a>
-        
-      </nav>
-    </div>
-    <div class="md-footer-meta md-typeset">
-      <div class="md-footer-meta__inner md-grid">
-        <div class="md-footer-copyright">
-          <div class="md-footer-copyright__highlight">
-              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+                </article>
               
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-        </div>
-      </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
     </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
   </footer>
-  <script src="_static/javascripts/application.js"></script>
-  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
   </body>
 </html>

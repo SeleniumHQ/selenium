@@ -1,408 +1,632 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="../">
+
+<html lang="en" data-content_root="../" >
+
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="lang:clipboard.copy" content="Copy to clipboard">
-  <meta name="lang:clipboard.copied" content="Copied to clipboard">
-  <meta name="lang:search.language" content="en">
-  <meta name="lang:search.pipeline.stopwords" content="True">
-  <meta name="lang:search.pipeline.trimmer" content="True">
-  <meta name="lang:search.result.none" content="No matching documents">
-  <meta name="lang:search.result.one" content="1 matching document">
-  <meta name="lang:search.result.other" content="# matching documents">
-  <meta name="lang:search.tokenizer" content="[\s\-]+">
-
+    <title>selenium.webdriver.chrome.remote_connection &#8212; Selenium 4.47.0 documentation</title>
   
-    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
-
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
     <style>
-      body,
-      input {
-        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-      }
+      .pst-js-only { display: none !important; }
 
-      code,
-      kbd,
-      pre {
-        font-family: "Roboto Mono", "Courier New", Courier, monospace
-      }
     </style>
+  </noscript>
   
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
 
-  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
-  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
-  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
   
-  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
-  
-  <meta name="theme-color" content="#3f51b5">
-  <script src="../_static/javascripts/modernizr.js"></script>
-  
-  
-  
-    <title>selenium.webdriver.chrome.remote_connection &#8212; Selenium 4.46.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=34af0a0d"></script>
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+
+    <script src="../_static/documentation_options.js?v=457a4054"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'selenium_webdriver_chrome/selenium.webdriver.chrome.remote_connection';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="4.47" />
   
-   
-
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
   </head>
-  <body dir=ltr
-        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  <body data-default-mode="">
   
-  <svg class="md-svg">
-    <defs data-children-count="0">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-      
-    </defs>
-  </svg>
   
-  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
-  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
-  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#selenium_webdriver_chrome/selenium.webdriver.chrome.remote_connection" tabindex="1" class="md-skip"> Skip to content </a>
-  <header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid">
-    <div class="md-flex navheader">
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.46.0 documentation"
-           class="md-header-nav__button md-logo">
-          
-            &nbsp;
-          
-        </a>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
-      </div>
-      <div class="md-flex__cell md-flex__cell--stretch">
-        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.46.0 documentation</span>
-          <span class="md-header-nav__topic"> selenium.webdriver.chrome.remote_connection </span>
-        </div>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
-        
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" action="../search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
-             autocapitalize="off" autocomplete="off" spellcheck="false"
-             data-md-component="query" data-md-state="active">
-      <label class="md-icon md-search__icon" for="__search"></label>
-      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
-        &#xE5CD;
-      </button>
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
-          <div class="md-search-result__meta">
-            Type to start searching
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Selenium 4.47.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
       </div>
       
-      
-  
-  <script src="../_static/javascripts/version_dropdown.js"></script>
-  <script>
-    var json_loc = "../"versions.json"",
-        target_loc = "../../",
-        text = "Versions";
-    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
-  </script>
-  
-
-    </div>
-  </nav>
-</header>
-
-  
-  <div class="md-container">
-    
-    
-    
-  <nav class="md-tabs" data-md-component="tabs">
-    <div class="md-tabs__inner md-grid">
-      <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.46.0 documentation</a></li>
-      </ul>
-    </div>
-  </nav>
-    <main class="md-main">
-      <div class="md-main__inner md-grid" data-md-component="container">
+      <main id="main-content" class="bd-main" role="main">
         
-          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                <nav class="md-nav md-nav--primary" data-md-level="0">
-  <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.46.0 documentation" class="md-nav__button md-logo">
-      
-        <img src="../_static/" alt=" logo" width="48" height="48">
-      
-    </a>
-    <a href="../index.html"
-       title="Selenium 4.46.0 documentation">Selenium 4.46.0 documentation</a>
-  </label>
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
   
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
 
-</nav>
-              </div>
-            </div>
-          </div>
-          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                
-<nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
-  <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#selenium-webdriver-chrome-selenium-webdriver-chrome-remote-connection--page-root" class="md-nav__link">selenium.webdriver.chrome.remote_connection</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.browser_name" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.browser_name</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.add_command" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.add_command()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.certifi" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.certifi</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.client_config" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.client_config</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.close" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.close()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.execute" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.execute()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.extra_commands" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.extra_commands</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.extra_headers" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.extra_headers</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_certificate_bundle_path" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.get_certificate_bundle_path()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_command" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.get_command()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_remote_connection_headers" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.get_remote_connection_headers()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_timeout" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.get_timeout()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.os" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.os</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.reset_timeout" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.reset_timeout()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.set_certificate_bundle_path" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.set_certificate_bundle_path()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.set_timeout" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.set_timeout()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.socket" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.socket</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.system" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.system</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.user_agent" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.user_agent</span></code></a>
-        </li></ul>
-            </nav>
-        </li></ul>
-            </nav>
-        </li>
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
     
-<li class="md-nav__item"><a class="md-nav__extra_link" href="../_sources/selenium_webdriver_chrome/selenium.webdriver.chrome.remote_connection.rst.txt">Show Source</a> </li>
-
-<li id="searchbox" class="md-nav__item"></li>
-
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">selenium.webdriver.chrome.remote_connection</span></li>
   </ul>
 </nav>
-              </div>
-            </div>
-          </div>
-        
-        <div class="md-content">
-          <article class="md-content__inner md-typeset" role="main">
-            
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
   <section id="module-selenium.webdriver.chrome.remote_connection">
-<span id="selenium-webdriver-chrome-remote-connection"></span><h1 id="selenium-webdriver-chrome-selenium-webdriver-chrome-remote-connection--page-root">selenium.webdriver.chrome.remote_connection<a class="headerlink" href="#selenium-webdriver-chrome-selenium-webdriver-chrome-remote-connection--page-root" title="Link to this heading">¶</a></h1>
+<span id="selenium-webdriver-chrome-remote-connection"></span><h1>selenium.webdriver.chrome.remote_connection<a class="headerlink" href="#module-selenium.webdriver.chrome.remote_connection" title="Link to this heading">#</a></h1>
 <p class="rubric">Classes</p>
-<table class="autosummary longtable docutils align-default">
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection" title="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ChromeRemoteConnection</span></code></a>(remote_server_addr[, ...])</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.chrome.remote_connection.</span></span><span class="sig-name descname"><span class="pre">ChromeRemoteConnection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remote_server_addr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_alive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_proxy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig" title="selenium.webdriver.remote.client_config.ClientConfig"><span class="pre">ClientConfig</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/chrome/remote_connection.html#ChromeRemoteConnection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection" title="Link to this definition">¶</a></dt>
-<dd><dl class="py attribute">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ChromeRemoteConnection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remote_server_addr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_alive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_proxy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/chrome/remote_connection.html#ChromeRemoteConnection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../selenium_webdriver_chromium/selenium.webdriver.chromium.remote_connection.html#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection" title="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChromiumRemoteConnection</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>remote_server_addr</strong> (<em>str</em>)</p></li>
+<li><p><strong>keep_alive</strong> (<em>bool</em>)</p></li>
+<li><p><strong>ignore_proxy</strong> (<em>bool</em>)</p></li>
+<li><p><strong>client_config</strong> (<a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig" title="selenium.webdriver.remote.client_config.ClientConfig"><em>ClientConfig</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.browser_name">
-<span class="sig-name descname"><span class="pre">browser_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'chrome'</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.browser_name" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">browser_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'chrome'</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.browser_name" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.add_command">
-<span class="sig-name descname"><span class="pre">add_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.add_command" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.add_command" title="Link to this definition">#</a></dt>
 <dd><p>Register a new command.</p>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.certifi">
-<span class="sig-name descname"><span class="pre">certifi</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'certifi'</span> <span class="pre">from</span> <span class="pre">'/home/runner/.bazel/sandbox/processwrapper-sandbox/54/execroot/_main/bazel-out/local_linux_gnu-opt-exec/bin/py/sphinx-build.runfiles/rules_python++pip+py_dev_requirements_310_certifi/site-packages/certifi/__init__.py'&gt;</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.certifi" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">certifi</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'certifi'</span> <span class="pre">from</span> <span class="pre">'/home/runner/.bazel/sandbox/processwrapper-sandbox/54/execroot/_main/bazel-out/local_linux_gnu-opt-exec/bin/py/sphinx-build.runfiles/rules_python++pip+py_dev_requirements_310_certifi/site-packages/certifi/__init__.py'&gt;</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.certifi" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.client_config">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">client_config</span></span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.client_config" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">client_config</span></span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.client_config" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.close" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.close" title="Link to this definition">#</a></dt>
 <dd><p>Clean up resources when finished with the remote_connection.</p>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.execute">
-<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.execute" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.execute" title="Link to this definition">#</a></dt>
 <dd><p>Send a command to the remote server.</p>
 <p>Any path substitutions required for the URL mapped to the command should be
 included in the command parameters.</p>
-<dl>
-<dt>Args:</dt><dd><p>command: A string specifying the command to execute.
-params: A dictionary of named parameters to send with the command as</p>
-<blockquote>
-<div><p>its JSON payload.</p>
-</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>command</strong> – A string specifying the command to execute.</p></li>
+<li><p><strong>params</strong> – A dictionary of named parameters to send with the command as
+its JSON payload.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.extra_commands">
-<span class="sig-name descname"><span class="pre">extra_commands</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.extra_commands" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">extra_commands</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.extra_commands" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.extra_headers">
-<span class="sig-name descname"><span class="pre">extra_headers</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.extra_headers" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">extra_headers</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.extra_headers" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_certificate_bundle_path">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_certificate_bundle_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_certificate_bundle_path" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_certificate_bundle_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_certificate_bundle_path" title="Link to this definition">#</a></dt>
 <dd><p>Returns paths of the .pem encoded certificate to verify connection to command executor.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>Paths of the .pem encoded certificate to verify connection to
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Paths of the .pem encoded certificate to verify connection to
 command executor. Defaults to certifi.where() or
 REQUESTS_CA_BUNDLE env variable if set.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_command">
-<span class="sig-name descname"><span class="pre">get_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_command" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_command" title="Link to this definition">#</a></dt>
 <dd><p>Retrieve a command if it exists.</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_remote_connection_headers">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_remote_connection_headers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parsed_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_alive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_remote_connection_headers" title="Link to this definition">¶</a></dt>
-<dd><p>Get headers for remote request.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>parsed_url: The parsed url
-keep_alive: Is this a keep-alive connection (default: False)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>)</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_remote_connection_headers">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_remote_connection_headers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parsed_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_alive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_remote_connection_headers" title="Link to this definition">#</a></dt>
+<dd><p>Get headers for remote request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parsed_url</strong> – The parsed url</p></li>
+<li><p><strong>keep_alive</strong> – Is this a keep-alive connection (default: False)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_timeout">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_timeout" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_timeout" title="Link to this definition">#</a></dt>
 <dd><p>Returns timeout value in seconds for all http requests made to the Remote Connection.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>Timeout value in seconds for all http requests made to the
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Timeout value in seconds for all http requests made to the
 Remote Connection</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.os">
-<span class="sig-name descname"><span class="pre">os</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'os'</span> <span class="pre">from</span> <span class="pre">'/home/runner/.bazel/execroot/_main/external/rules_python++python+python_3_10_19_x86_64-unknown-linux-gnu/lib/python3.10/os.py'&gt;</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.os" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">os</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'os'</span> <span class="pre">from</span> <span class="pre">'/home/runner/.bazel/execroot/_main/external/rules_python++python+python_3_10_19_x86_64-unknown-linux-gnu/lib/python3.10/os.py'&gt;</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.os" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.reset_timeout">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reset_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.reset_timeout" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reset_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.reset_timeout" title="Link to this definition">#</a></dt>
 <dd><p>Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT.</p>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.set_certificate_bundle_path">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_certificate_bundle_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.set_certificate_bundle_path" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_certificate_bundle_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.set_certificate_bundle_path" title="Link to this definition">#</a></dt>
 <dd><p>Set the path to the certificate bundle for verifying command executor connection.</p>
 <p>Can also be set to None to disable certificate validation.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>path: path of a .pem encoded certificate chain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – path of a .pem encoded certificate chain.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.set_timeout">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.set_timeout" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.set_timeout" title="Link to this definition">#</a></dt>
 <dd><p>Override the default timeout.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>timeout: timeout value for http requests in seconds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timeout</strong> – timeout value for http requests in seconds</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.socket">
-<span class="sig-name descname"><span class="pre">socket</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'socket'</span> <span class="pre">from</span> <span class="pre">'/home/runner/.bazel/execroot/_main/external/rules_python++python+python_3_10_19_x86_64-unknown-linux-gnu/lib/python3.10/socket.py'&gt;</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.socket" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">socket</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'socket'</span> <span class="pre">from</span> <span class="pre">'/home/runner/.bazel/execroot/_main/external/rules_python++python+python_3_10_19_x86_64-unknown-linux-gnu/lib/python3.10/socket.py'&gt;</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.socket" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.system">
-<span class="sig-name descname"><span class="pre">system</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'linux'</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.system" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">system</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'linux'</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.system" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.user_agent">
-<span class="sig-name descname"><span class="pre">user_agent</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'selenium/4.46.0</span> <span class="pre">(python</span> <span class="pre">linux)'</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.user_agent" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">user_agent</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'selenium/4.47.0</span> <span class="pre">(python</span> <span class="pre">linux)'</span></em><a class="headerlink" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.user_agent" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
 </dd></dl>
+
 </section>
 
 
-          </article>
-        </div>
-      </div>
-    </main>
-  </div>
-  <footer class="md-footer">
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-          
-          
-        </a>
-        
-      </nav>
-    </div>
-    <div class="md-footer-meta md-typeset">
-      <div class="md-footer-meta__inner md-grid">
-        <div class="md-footer-copyright">
-          <div class="md-footer-copyright__highlight">
-              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+                </article>
               
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.browser_name"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.browser_name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.add_command"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.add_command()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.certifi"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.certifi</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.client_config"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.client_config</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.close"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.close()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.execute"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.execute()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.extra_commands"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.extra_commands</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.extra_headers"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.extra_headers</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_certificate_bundle_path"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.get_certificate_bundle_path()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_command"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.get_command()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_remote_connection_headers"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.get_remote_connection_headers()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_timeout"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.get_timeout()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.os"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.os</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.reset_timeout"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.reset_timeout()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.set_certificate_bundle_path"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.set_certificate_bundle_path()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.set_timeout"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.set_timeout()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.socket"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.socket</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.system"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.system</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.user_agent"><code class="docutils literal notranslate"><span class="pre">ChromeRemoteConnection.user_agent</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/selenium_webdriver_chrome/selenium.webdriver.chrome.remote_connection.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
           </div>
-        </div>
-      </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
     </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
   </footer>
-  <script src="../_static/javascripts/application.js"></script>
-  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
   </body>
 </html>

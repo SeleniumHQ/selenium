@@ -1,210 +1,354 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="../../../../">
+
+<html lang="en" data-content_root="../../../../" >
+
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="lang:clipboard.copy" content="Copy to clipboard">
-  <meta name="lang:clipboard.copied" content="Copied to clipboard">
-  <meta name="lang:search.language" content="en">
-  <meta name="lang:search.pipeline.stopwords" content="True">
-  <meta name="lang:search.pipeline.trimmer" content="True">
-  <meta name="lang:search.result.none" content="No matching documents">
-  <meta name="lang:search.result.one" content="1 matching document">
-  <meta name="lang:search.result.other" content="# matching documents">
-  <meta name="lang:search.tokenizer" content="[\s\-]+">
-
+    <title>selenium.webdriver.support.color &#8212; Selenium 4.47.0 documentation</title>
   
-    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
-
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
     <style>
-      body,
-      input {
-        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-      }
+      .pst-js-only { display: none !important; }
 
-      code,
-      kbd,
-      pre {
-        font-family: "Roboto Mono", "Courier New", Courier, monospace
-      }
     </style>
+  </noscript>
   
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
 
-  <link rel="stylesheet" href="../../../../_static/stylesheets/application.css"/>
-  <link rel="stylesheet" href="../../../../_static/stylesheets/application-palette.css"/>
-  <link rel="stylesheet" href="../../../../_static/stylesheets/application-fixes.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
   
-  <link rel="stylesheet" href="../../../../_static/fonts/material-icons.css"/>
-  
-  <meta name="theme-color" content="#3f51b5">
-  <script src="../../../../_static/javascripts/modernizr.js"></script>
-  
-  
-  
-    <title>selenium.webdriver.support.color &#8212; Selenium 4.46.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=34af0a0d"></script>
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+
+    <script src="../../../../_static/documentation_options.js?v=457a4054"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/support/color';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="4.47" />
   
-   
-
+    
+    <script src="../../../../_static/searchtools.js"></script>
+    <script src="../../../../_static/language_data.js"></script>
+    <script src="../../../../searchindex.js"></script>
+  
   </head>
-  <body dir=ltr
-        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  <body data-default-mode="">
   
-  <svg class="md-svg">
-    <defs data-children-count="0">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-      
-    </defs>
-  </svg>
   
-  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
-  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
-  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#_modules/selenium/webdriver/support/color" tabindex="1" class="md-skip"> Skip to content </a>
-  <header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid">
-    <div class="md-flex navheader">
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.46.0 documentation"
-           class="md-header-nav__button md-logo">
-          
-            &nbsp;
-          
-        </a>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
-      </div>
-      <div class="md-flex__cell md-flex__cell--stretch">
-        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.46.0 documentation</span>
-          <span class="md-header-nav__topic"> selenium.webdriver.support.color </span>
-        </div>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
-        
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" action="../../../../search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
-             autocapitalize="off" autocomplete="off" spellcheck="false"
-             data-md-component="query" data-md-state="active">
-      <label class="md-icon md-search__icon" for="__search"></label>
-      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
-        &#xE5CD;
-      </button>
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
-          <div class="md-search-result__meta">
-            Type to start searching
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Selenium 4.47.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
       </div>
       
-      
-  
-  <script src="../../../../_static/javascripts/version_dropdown.js"></script>
-  <script>
-    var json_loc = "../../../../"versions.json"",
-        target_loc = "../../../../../",
-        text = "Versions";
-    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
-  </script>
-  
-
-    </div>
-  </nav>
-</header>
-
-  
-  <div class="md-container">
-    
-    
-    
-  <nav class="md-tabs" data-md-component="tabs">
-    <div class="md-tabs__inner md-grid">
-      <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.46.0 documentation</a></li>
-          <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
-      </ul>
-    </div>
-  </nav>
-    <main class="md-main">
-      <div class="md-main__inner md-grid" data-md-component="container">
+      <main id="main-content" class="bd-main" role="main">
         
-          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                <nav class="md-nav md-nav--primary" data-md-level="0">
-  <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.46.0 documentation" class="md-nav__button md-logo">
-      
-        <img src="../../../../_static/" alt=" logo" width="48" height="48">
-      
-    </a>
-    <a href="../../../../index.html"
-       title="Selenium 4.46.0 documentation">Selenium 4.46.0 documentation</a>
-  </label>
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
   
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
 
-</nav>
-              </div>
-            </div>
-          </div>
-          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                
-<nav class="md-nav md-nav--secondary">
-  <ul class="md-nav__list" data-md-scrollfix="">
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
     
-
-<li id="searchbox" class="md-nav__item"></li>
-
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">selenium.webdriver.support.color</span></li>
   </ul>
 </nav>
-              </div>
-            </div>
-          </div>
-        
-        <div class="md-content">
-          <article class="md-content__inner md-typeset" role="main">
-            
-  <h1 id="modules-selenium-webdriver-support-color--page-root">Source code for selenium.webdriver.support.color</h1><div class="highlight"><pre>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for selenium.webdriver.support.color</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
 <span class="c1"># or more contributor license agreements.  See the NOTICE file</span>
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># "License"); you may not use this file except in compliance</span>
+<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -222,35 +366,35 @@
     <span class="n">ParseableInt</span> <span class="o">=</span> <span class="n">SupportsInt</span> <span class="o">|</span> <span class="n">SupportsIndex</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span>
 
 
-<span class="n">RGB_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"^\s*rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*$"</span>
+<span class="n">RGB_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;^\s*rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*$&quot;</span>
 <span class="n">RGB_PCT_PATTERN</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="sa">r</span><span class="s2">"^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$"</span>
+    <span class="sa">r</span><span class="s2">&quot;^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$&quot;</span>
 <span class="p">)</span>
-<span class="n">RGBA_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"^\s*rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|1|0\.\d+)\s*\)\s*$"</span>
+<span class="n">RGBA_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;^\s*rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|1|0\.\d+)\s*\)\s*$&quot;</span>
 <span class="n">RGBA_PCT_PATTERN</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="sa">r</span><span class="s2">"^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,"</span>
-    <span class="o">+</span> <span class="sa">r</span><span class="s2">"\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(0|1|0\.\d+)\s*\)\s*$"</span>
+    <span class="sa">r</span><span class="s2">&quot;^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,&quot;</span>
+    <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(0|1|0\.\d+)\s*\)\s*$&quot;</span>
 <span class="p">)</span>
-<span class="n">HEX_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"#([A-Fa-f0-9]</span><span class="si">{2}</span><span class="s2">)([A-Fa-f0-9]</span><span class="si">{2}</span><span class="s2">)([A-Fa-f0-9]</span><span class="si">{2}</span><span class="s2">)"</span>
-<span class="n">HEX3_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"#([A-Fa-f0-9])([A-Fa-f0-9])([A-Fa-f0-9])"</span>
-<span class="n">HSL_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"^\s*hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)\s*$"</span>
-<span class="n">HSLA_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"^\s*hsla\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*(0|1|0\.\d+)\s*\)\s*$"</span>
+<span class="n">HEX_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;#([A-Fa-f0-9]</span><span class="si">{2}</span><span class="s2">)([A-Fa-f0-9]</span><span class="si">{2}</span><span class="s2">)([A-Fa-f0-9]</span><span class="si">{2}</span><span class="s2">)&quot;</span>
+<span class="n">HEX3_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;#([A-Fa-f0-9])([A-Fa-f0-9])([A-Fa-f0-9])&quot;</span>
+<span class="n">HSL_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;^\s*hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)\s*$&quot;</span>
+<span class="n">HSLA_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;^\s*hsla\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*(0|1|0\.\d+)\s*\)\s*$&quot;</span>
 
 
 <div class="viewcode-block" id="Color">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.color.html#selenium.webdriver.support.color.Color">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Color</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Color conversion support class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Color conversion support class.</span>
 
 <span class="sd">    Example:</span>
 <span class="sd">    ::</span>
 
 <span class="sd">        from selenium.webdriver.support.color import Color</span>
 
-<span class="sd">        print(Color.from_string("#00ff33").rgba)</span>
-<span class="sd">        print(Color.from_string("rgb(1, 255, 3)").hex)</span>
-<span class="sd">        print(Color.from_string("blue").rgba)</span>
-<span class="sd">    """</span>
+<span class="sd">        print(Color.from_string(&quot;#00ff33&quot;).rgba)</span>
+<span class="sd">        print(Color.from_string(&quot;rgb(1, 255, 3)&quot;).hex)</span>
+<span class="sd">        print(Color.from_string(&quot;blue&quot;).rgba)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Color.from_string">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.color.html#selenium.webdriver.support.color.Color.from_string">[docs]</a>
@@ -294,7 +438,7 @@
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_from_hsl</span><span class="p">(</span><span class="o">*</span><span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">str_</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="n">Colors</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Colors</span><span class="p">[</span><span class="n">str_</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not convert </span><span class="si">{</span><span class="n">str_</span><span class="si">}</span><span class="s2"> into color"</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not convert </span><span class="si">{</span><span class="n">str_</span><span class="si">}</span><span class="s2"> into color&quot;</span><span class="p">)</span></div>
 
 
     <span class="nd">@classmethod</span>
@@ -335,19 +479,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">red</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">red</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">green</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">green</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">blue</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">blue</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="s2">"1"</span> <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span> <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">rgb</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">"rgb(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;rgb(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">rgba</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">"rgba(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;rgba(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">hex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">"#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="si">:</span><span class="s2">02x</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="si">:</span><span class="s2">02x</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="si">:</span><span class="s2">02x</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="si">:</span><span class="s2">02x</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="si">:</span><span class="s2">02x</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="si">:</span><span class="s2">02x</span><span class="si">}</span><span class="s2">&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Color</span><span class="p">):</span>
@@ -364,194 +508,229 @@
         <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Color(red=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="si">}</span><span class="s2">, green=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="si">}</span><span class="s2">, blue=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="si">}</span><span class="s2">, alpha=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Color(red=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="si">}</span><span class="s2">, green=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="si">}</span><span class="s2">, blue=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="si">}</span><span class="s2">, alpha=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Color: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rgba</span><span class="si">}</span><span class="s2">"</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Color: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rgba</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
 
 
 <span class="c1"># Basic, extended and transparent colour keywords as defined by the W3C HTML4 spec</span>
 <span class="c1"># See http://www.w3.org/TR/css3-color/#html4</span>
 <span class="n">Colors</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"TRANSPARENT"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"ALICEBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">248</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
-    <span class="s2">"ANTIQUEWHITE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">235</span><span class="p">,</span> <span class="mi">215</span><span class="p">),</span>
-    <span class="s2">"AQUA"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
-    <span class="s2">"AQUAMARINE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">212</span><span class="p">),</span>
-    <span class="s2">"AZURE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
-    <span class="s2">"BEIGE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">245</span><span class="p">,</span> <span class="mi">245</span><span class="p">,</span> <span class="mi">220</span><span class="p">),</span>
-    <span class="s2">"BISQUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">228</span><span class="p">,</span> <span class="mi">196</span><span class="p">),</span>
-    <span class="s2">"BLACK"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"BLANCHEDALMOND"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">235</span><span class="p">,</span> <span class="mi">205</span><span class="p">),</span>
-    <span class="s2">"BLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
-    <span class="s2">"BLUEVIOLET"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">138</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">226</span><span class="p">),</span>
-    <span class="s2">"BROWN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">165</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">42</span><span class="p">),</span>
-    <span class="s2">"BURLYWOOD"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">222</span><span class="p">,</span> <span class="mi">184</span><span class="p">,</span> <span class="mi">135</span><span class="p">),</span>
-    <span class="s2">"CADETBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="mi">158</span><span class="p">,</span> <span class="mi">160</span><span class="p">),</span>
-    <span class="s2">"CHARTREUSE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"CHOCOLATE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">210</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
-    <span class="s2">"CORAL"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span>
-    <span class="s2">"CORNFLOWERBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">149</span><span class="p">,</span> <span class="mi">237</span><span class="p">),</span>
-    <span class="s2">"CORNSILK"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">248</span><span class="p">,</span> <span class="mi">220</span><span class="p">),</span>
-    <span class="s2">"CRIMSON"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">220</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>
-    <span class="s2">"CYAN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
-    <span class="s2">"DARKBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">139</span><span class="p">),</span>
-    <span class="s2">"DARKCYAN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">139</span><span class="p">,</span> <span class="mi">139</span><span class="p">),</span>
-    <span class="s2">"DARKGOLDENROD"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">184</span><span class="p">,</span> <span class="mi">134</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
-    <span class="s2">"DARKGRAY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">169</span><span class="p">,</span> <span class="mi">169</span><span class="p">,</span> <span class="mi">169</span><span class="p">),</span>
-    <span class="s2">"DARKGREEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"DARKGREY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">169</span><span class="p">,</span> <span class="mi">169</span><span class="p">,</span> <span class="mi">169</span><span class="p">),</span>
-    <span class="s2">"DARKKHAKI"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">189</span><span class="p">,</span> <span class="mi">183</span><span class="p">,</span> <span class="mi">107</span><span class="p">),</span>
-    <span class="s2">"DARKMAGENTA"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">139</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">139</span><span class="p">),</span>
-    <span class="s2">"DARKOLIVEGREEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">47</span><span class="p">),</span>
-    <span class="s2">"DARKORANGE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"DARKORCHID"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>
-    <span class="s2">"DARKRED"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">139</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"DARKSALMON"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">233</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">122</span><span class="p">),</span>
-    <span class="s2">"DARKSEAGREEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">188</span><span class="p">,</span> <span class="mi">143</span><span class="p">),</span>
-    <span class="s2">"DARKSLATEBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">72</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">139</span><span class="p">),</span>
-    <span class="s2">"DARKSLATEGRAY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">79</span><span class="p">,</span> <span class="mi">79</span><span class="p">),</span>
-    <span class="s2">"DARKSLATEGREY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">79</span><span class="p">,</span> <span class="mi">79</span><span class="p">),</span>
-    <span class="s2">"DARKTURQUOISE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">206</span><span class="p">,</span> <span class="mi">209</span><span class="p">),</span>
-    <span class="s2">"DARKVIOLET"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">148</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">211</span><span class="p">),</span>
-    <span class="s2">"DEEPPINK"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">147</span><span class="p">),</span>
-    <span class="s2">"DEEPSKYBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">191</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
-    <span class="s2">"DIMGRAY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">105</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">105</span><span class="p">),</span>
-    <span class="s2">"DIMGREY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">105</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">105</span><span class="p">),</span>
-    <span class="s2">"DODGERBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
-    <span class="s2">"FIREBRICK"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">178</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span>
-    <span class="s2">"FLORALWHITE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">240</span><span class="p">),</span>
-    <span class="s2">"FORESTGREEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="mi">139</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span>
-    <span class="s2">"FUCHSIA"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
-    <span class="s2">"GAINSBORO"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">220</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="mi">220</span><span class="p">),</span>
-    <span class="s2">"GHOSTWHITE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">248</span><span class="p">,</span> <span class="mi">248</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
-    <span class="s2">"GOLD"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">215</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"GOLDENROD"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">218</span><span class="p">,</span> <span class="mi">165</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
-    <span class="s2">"GRAY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
-    <span class="s2">"GREY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
-    <span class="s2">"GREEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"GREENYELLOW"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">173</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">47</span><span class="p">),</span>
-    <span class="s2">"HONEYDEW"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">240</span><span class="p">),</span>
-    <span class="s2">"HOTPINK"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span>
-    <span class="s2">"INDIANRED"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">205</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">92</span><span class="p">),</span>
-    <span class="s2">"INDIGO"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">130</span><span class="p">),</span>
-    <span class="s2">"IVORY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">240</span><span class="p">),</span>
-    <span class="s2">"KHAKI"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="mi">140</span><span class="p">),</span>
-    <span class="s2">"LAVENDER"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">230</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="mi">250</span><span class="p">),</span>
-    <span class="s2">"LAVENDERBLUSH"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">245</span><span class="p">),</span>
-    <span class="s2">"LAWNGREEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">124</span><span class="p">,</span> <span class="mi">252</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"LEMONCHIFFON"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">205</span><span class="p">),</span>
-    <span class="s2">"LIGHTBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">173</span><span class="p">,</span> <span class="mi">216</span><span class="p">,</span> <span class="mi">230</span><span class="p">),</span>
-    <span class="s2">"LIGHTCORAL"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
-    <span class="s2">"LIGHTCYAN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
-    <span class="s2">"LIGHTGOLDENRODYELLOW"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">210</span><span class="p">),</span>
-    <span class="s2">"LIGHTGRAY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">211</span><span class="p">,</span> <span class="mi">211</span><span class="p">,</span> <span class="mi">211</span><span class="p">),</span>
-    <span class="s2">"LIGHTGREEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">144</span><span class="p">,</span> <span class="mi">238</span><span class="p">,</span> <span class="mi">144</span><span class="p">),</span>
-    <span class="s2">"LIGHTGREY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">211</span><span class="p">,</span> <span class="mi">211</span><span class="p">,</span> <span class="mi">211</span><span class="p">),</span>
-    <span class="s2">"LIGHTPINK"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">182</span><span class="p">,</span> <span class="mi">193</span><span class="p">),</span>
-    <span class="s2">"LIGHTSALMON"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">122</span><span class="p">),</span>
-    <span class="s2">"LIGHTSEAGREEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">178</span><span class="p">,</span> <span class="mi">170</span><span class="p">),</span>
-    <span class="s2">"LIGHTSKYBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">135</span><span class="p">,</span> <span class="mi">206</span><span class="p">,</span> <span class="mi">250</span><span class="p">),</span>
-    <span class="s2">"LIGHTSLATEGRAY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">119</span><span class="p">,</span> <span class="mi">136</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>
-    <span class="s2">"LIGHTSLATEGREY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">119</span><span class="p">,</span> <span class="mi">136</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>
-    <span class="s2">"LIGHTSTEELBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">176</span><span class="p">,</span> <span class="mi">196</span><span class="p">,</span> <span class="mi">222</span><span class="p">),</span>
-    <span class="s2">"LIGHTYELLOW"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">224</span><span class="p">),</span>
-    <span class="s2">"LIME"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"LIMEGREEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">205</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
-    <span class="s2">"LINEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">230</span><span class="p">),</span>
-    <span class="s2">"MAGENTA"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
-    <span class="s2">"MAROON"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"MEDIUMAQUAMARINE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">205</span><span class="p">,</span> <span class="mi">170</span><span class="p">),</span>
-    <span class="s2">"MEDIUMBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">205</span><span class="p">),</span>
-    <span class="s2">"MEDIUMORCHID"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">186</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">211</span><span class="p">),</span>
-    <span class="s2">"MEDIUMPURPLE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">147</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">219</span><span class="p">),</span>
-    <span class="s2">"MEDIUMSEAGREEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">179</span><span class="p">,</span> <span class="mi">113</span><span class="p">),</span>
-    <span class="s2">"MEDIUMSLATEBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">238</span><span class="p">),</span>
-    <span class="s2">"MEDIUMSPRINGGREEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">154</span><span class="p">),</span>
-    <span class="s2">"MEDIUMTURQUOISE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">72</span><span class="p">,</span> <span class="mi">209</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>
-    <span class="s2">"MEDIUMVIOLETRED"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">199</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">133</span><span class="p">),</span>
-    <span class="s2">"MIDNIGHTBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">112</span><span class="p">),</span>
-    <span class="s2">"MINTCREAM"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">245</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">250</span><span class="p">),</span>
-    <span class="s2">"MISTYROSE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">228</span><span class="p">,</span> <span class="mi">225</span><span class="p">),</span>
-    <span class="s2">"MOCCASIN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">228</span><span class="p">,</span> <span class="mi">181</span><span class="p">),</span>
-    <span class="s2">"NAVAJOWHITE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">222</span><span class="p">,</span> <span class="mi">173</span><span class="p">),</span>
-    <span class="s2">"NAVY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
-    <span class="s2">"OLDLACE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">253</span><span class="p">,</span> <span class="mi">245</span><span class="p">,</span> <span class="mi">230</span><span class="p">),</span>
-    <span class="s2">"OLIVE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"OLIVEDRAB"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">107</span><span class="p">,</span> <span class="mi">142</span><span class="p">,</span> <span class="mi">35</span><span class="p">),</span>
-    <span class="s2">"ORANGE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">165</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"ORANGERED"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"ORCHID"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">218</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">214</span><span class="p">),</span>
-    <span class="s2">"PALEGOLDENROD"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">238</span><span class="p">,</span> <span class="mi">232</span><span class="p">,</span> <span class="mi">170</span><span class="p">),</span>
-    <span class="s2">"PALEGREEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">152</span><span class="p">,</span> <span class="mi">251</span><span class="p">,</span> <span class="mi">152</span><span class="p">),</span>
-    <span class="s2">"PALETURQUOISE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">175</span><span class="p">,</span> <span class="mi">238</span><span class="p">,</span> <span class="mi">238</span><span class="p">),</span>
-    <span class="s2">"PALEVIOLETRED"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">219</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">147</span><span class="p">),</span>
-    <span class="s2">"PAPAYAWHIP"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">239</span><span class="p">,</span> <span class="mi">213</span><span class="p">),</span>
-    <span class="s2">"PEACHPUFF"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">218</span><span class="p">,</span> <span class="mi">185</span><span class="p">),</span>
-    <span class="s2">"PERU"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">205</span><span class="p">,</span> <span class="mi">133</span><span class="p">,</span> <span class="mi">63</span><span class="p">),</span>
-    <span class="s2">"PINK"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">203</span><span class="p">),</span>
-    <span class="s2">"PLUM"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">221</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">221</span><span class="p">),</span>
-    <span class="s2">"POWDERBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">176</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">230</span><span class="p">),</span>
-    <span class="s2">"PURPLE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
-    <span class="s2">"REBECCAPURPLE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>
-    <span class="s2">"RED"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"ROSYBROWN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">188</span><span class="p">,</span> <span class="mi">143</span><span class="p">,</span> <span class="mi">143</span><span class="p">),</span>
-    <span class="s2">"ROYALBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">65</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">225</span><span class="p">),</span>
-    <span class="s2">"SADDLEBROWN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">139</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">19</span><span class="p">),</span>
-    <span class="s2">"SALMON"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">114</span><span class="p">),</span>
-    <span class="s2">"SANDYBROWN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">244</span><span class="p">,</span> <span class="mi">164</span><span class="p">,</span> <span class="mi">96</span><span class="p">),</span>
-    <span class="s2">"SEAGREEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">46</span><span class="p">,</span> <span class="mi">139</span><span class="p">,</span> <span class="mi">87</span><span class="p">),</span>
-    <span class="s2">"SEASHELL"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">245</span><span class="p">,</span> <span class="mi">238</span><span class="p">),</span>
-    <span class="s2">"SIENNA"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">45</span><span class="p">),</span>
-    <span class="s2">"SILVER"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">192</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">192</span><span class="p">),</span>
-    <span class="s2">"SKYBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">135</span><span class="p">,</span> <span class="mi">206</span><span class="p">,</span> <span class="mi">235</span><span class="p">),</span>
-    <span class="s2">"SLATEBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">106</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">205</span><span class="p">),</span>
-    <span class="s2">"SLATEGRAY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">112</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">144</span><span class="p">),</span>
-    <span class="s2">"SLATEGREY"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">112</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">144</span><span class="p">),</span>
-    <span class="s2">"SNOW"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">),</span>
-    <span class="s2">"SPRINGGREEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">127</span><span class="p">),</span>
-    <span class="s2">"STEELBLUE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span>
-    <span class="s2">"TAN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">210</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">140</span><span class="p">),</span>
-    <span class="s2">"TEAL"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
-    <span class="s2">"THISTLE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">216</span><span class="p">,</span> <span class="mi">191</span><span class="p">,</span> <span class="mi">216</span><span class="p">),</span>
-    <span class="s2">"TOMATO"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">71</span><span class="p">),</span>
-    <span class="s2">"TURQUOISE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">208</span><span class="p">),</span>
-    <span class="s2">"VIOLET"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">238</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">238</span><span class="p">),</span>
-    <span class="s2">"WHEAT"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">245</span><span class="p">,</span> <span class="mi">222</span><span class="p">,</span> <span class="mi">179</span><span class="p">),</span>
-    <span class="s2">"WHITE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
-    <span class="s2">"WHITESMOKE"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">245</span><span class="p">,</span> <span class="mi">245</span><span class="p">,</span> <span class="mi">245</span><span class="p">),</span>
-    <span class="s2">"YELLOW"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">"YELLOWGREEN"</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">154</span><span class="p">,</span> <span class="mi">205</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
+    <span class="s2">&quot;TRANSPARENT&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;ALICEBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">248</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="s2">&quot;ANTIQUEWHITE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">235</span><span class="p">,</span> <span class="mi">215</span><span class="p">),</span>
+    <span class="s2">&quot;AQUA&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="s2">&quot;AQUAMARINE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">212</span><span class="p">),</span>
+    <span class="s2">&quot;AZURE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="s2">&quot;BEIGE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">245</span><span class="p">,</span> <span class="mi">245</span><span class="p">,</span> <span class="mi">220</span><span class="p">),</span>
+    <span class="s2">&quot;BISQUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">228</span><span class="p">,</span> <span class="mi">196</span><span class="p">),</span>
+    <span class="s2">&quot;BLACK&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;BLANCHEDALMOND&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">235</span><span class="p">,</span> <span class="mi">205</span><span class="p">),</span>
+    <span class="s2">&quot;BLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="s2">&quot;BLUEVIOLET&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">138</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">226</span><span class="p">),</span>
+    <span class="s2">&quot;BROWN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">165</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">42</span><span class="p">),</span>
+    <span class="s2">&quot;BURLYWOOD&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">222</span><span class="p">,</span> <span class="mi">184</span><span class="p">,</span> <span class="mi">135</span><span class="p">),</span>
+    <span class="s2">&quot;CADETBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="mi">158</span><span class="p">,</span> <span class="mi">160</span><span class="p">),</span>
+    <span class="s2">&quot;CHARTREUSE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;CHOCOLATE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">210</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+    <span class="s2">&quot;CORAL&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span>
+    <span class="s2">&quot;CORNFLOWERBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">149</span><span class="p">,</span> <span class="mi">237</span><span class="p">),</span>
+    <span class="s2">&quot;CORNSILK&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">248</span><span class="p">,</span> <span class="mi">220</span><span class="p">),</span>
+    <span class="s2">&quot;CRIMSON&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">220</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>
+    <span class="s2">&quot;CYAN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="s2">&quot;DARKBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">139</span><span class="p">),</span>
+    <span class="s2">&quot;DARKCYAN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">139</span><span class="p">,</span> <span class="mi">139</span><span class="p">),</span>
+    <span class="s2">&quot;DARKGOLDENROD&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">184</span><span class="p">,</span> <span class="mi">134</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
+    <span class="s2">&quot;DARKGRAY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">169</span><span class="p">,</span> <span class="mi">169</span><span class="p">,</span> <span class="mi">169</span><span class="p">),</span>
+    <span class="s2">&quot;DARKGREEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;DARKGREY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">169</span><span class="p">,</span> <span class="mi">169</span><span class="p">,</span> <span class="mi">169</span><span class="p">),</span>
+    <span class="s2">&quot;DARKKHAKI&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">189</span><span class="p">,</span> <span class="mi">183</span><span class="p">,</span> <span class="mi">107</span><span class="p">),</span>
+    <span class="s2">&quot;DARKMAGENTA&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">139</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">139</span><span class="p">),</span>
+    <span class="s2">&quot;DARKOLIVEGREEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">47</span><span class="p">),</span>
+    <span class="s2">&quot;DARKORANGE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;DARKORCHID&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>
+    <span class="s2">&quot;DARKRED&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">139</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;DARKSALMON&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">233</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">122</span><span class="p">),</span>
+    <span class="s2">&quot;DARKSEAGREEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">188</span><span class="p">,</span> <span class="mi">143</span><span class="p">),</span>
+    <span class="s2">&quot;DARKSLATEBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">72</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">139</span><span class="p">),</span>
+    <span class="s2">&quot;DARKSLATEGRAY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">79</span><span class="p">,</span> <span class="mi">79</span><span class="p">),</span>
+    <span class="s2">&quot;DARKSLATEGREY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">79</span><span class="p">,</span> <span class="mi">79</span><span class="p">),</span>
+    <span class="s2">&quot;DARKTURQUOISE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">206</span><span class="p">,</span> <span class="mi">209</span><span class="p">),</span>
+    <span class="s2">&quot;DARKVIOLET&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">148</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">211</span><span class="p">),</span>
+    <span class="s2">&quot;DEEPPINK&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">147</span><span class="p">),</span>
+    <span class="s2">&quot;DEEPSKYBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">191</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="s2">&quot;DIMGRAY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">105</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">105</span><span class="p">),</span>
+    <span class="s2">&quot;DIMGREY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">105</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">105</span><span class="p">),</span>
+    <span class="s2">&quot;DODGERBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="s2">&quot;FIREBRICK&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">178</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span>
+    <span class="s2">&quot;FLORALWHITE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">240</span><span class="p">),</span>
+    <span class="s2">&quot;FORESTGREEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="mi">139</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span>
+    <span class="s2">&quot;FUCHSIA&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="s2">&quot;GAINSBORO&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">220</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="mi">220</span><span class="p">),</span>
+    <span class="s2">&quot;GHOSTWHITE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">248</span><span class="p">,</span> <span class="mi">248</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="s2">&quot;GOLD&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">215</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;GOLDENROD&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">218</span><span class="p">,</span> <span class="mi">165</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+    <span class="s2">&quot;GRAY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
+    <span class="s2">&quot;GREY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
+    <span class="s2">&quot;GREEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;GREENYELLOW&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">173</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">47</span><span class="p">),</span>
+    <span class="s2">&quot;HONEYDEW&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">240</span><span class="p">),</span>
+    <span class="s2">&quot;HOTPINK&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span>
+    <span class="s2">&quot;INDIANRED&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">205</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">92</span><span class="p">),</span>
+    <span class="s2">&quot;INDIGO&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">130</span><span class="p">),</span>
+    <span class="s2">&quot;IVORY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">240</span><span class="p">),</span>
+    <span class="s2">&quot;KHAKI&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="mi">140</span><span class="p">),</span>
+    <span class="s2">&quot;LAVENDER&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">230</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="mi">250</span><span class="p">),</span>
+    <span class="s2">&quot;LAVENDERBLUSH&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">245</span><span class="p">),</span>
+    <span class="s2">&quot;LAWNGREEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">124</span><span class="p">,</span> <span class="mi">252</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;LEMONCHIFFON&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">205</span><span class="p">),</span>
+    <span class="s2">&quot;LIGHTBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">173</span><span class="p">,</span> <span class="mi">216</span><span class="p">,</span> <span class="mi">230</span><span class="p">),</span>
+    <span class="s2">&quot;LIGHTCORAL&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
+    <span class="s2">&quot;LIGHTCYAN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="s2">&quot;LIGHTGOLDENRODYELLOW&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">210</span><span class="p">),</span>
+    <span class="s2">&quot;LIGHTGRAY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">211</span><span class="p">,</span> <span class="mi">211</span><span class="p">,</span> <span class="mi">211</span><span class="p">),</span>
+    <span class="s2">&quot;LIGHTGREEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">144</span><span class="p">,</span> <span class="mi">238</span><span class="p">,</span> <span class="mi">144</span><span class="p">),</span>
+    <span class="s2">&quot;LIGHTGREY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">211</span><span class="p">,</span> <span class="mi">211</span><span class="p">,</span> <span class="mi">211</span><span class="p">),</span>
+    <span class="s2">&quot;LIGHTPINK&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">182</span><span class="p">,</span> <span class="mi">193</span><span class="p">),</span>
+    <span class="s2">&quot;LIGHTSALMON&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">122</span><span class="p">),</span>
+    <span class="s2">&quot;LIGHTSEAGREEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">178</span><span class="p">,</span> <span class="mi">170</span><span class="p">),</span>
+    <span class="s2">&quot;LIGHTSKYBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">135</span><span class="p">,</span> <span class="mi">206</span><span class="p">,</span> <span class="mi">250</span><span class="p">),</span>
+    <span class="s2">&quot;LIGHTSLATEGRAY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">119</span><span class="p">,</span> <span class="mi">136</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>
+    <span class="s2">&quot;LIGHTSLATEGREY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">119</span><span class="p">,</span> <span class="mi">136</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>
+    <span class="s2">&quot;LIGHTSTEELBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">176</span><span class="p">,</span> <span class="mi">196</span><span class="p">,</span> <span class="mi">222</span><span class="p">),</span>
+    <span class="s2">&quot;LIGHTYELLOW&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">224</span><span class="p">),</span>
+    <span class="s2">&quot;LIME&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;LIMEGREEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">205</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
+    <span class="s2">&quot;LINEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">230</span><span class="p">),</span>
+    <span class="s2">&quot;MAGENTA&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="s2">&quot;MAROON&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;MEDIUMAQUAMARINE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">205</span><span class="p">,</span> <span class="mi">170</span><span class="p">),</span>
+    <span class="s2">&quot;MEDIUMBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">205</span><span class="p">),</span>
+    <span class="s2">&quot;MEDIUMORCHID&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">186</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">211</span><span class="p">),</span>
+    <span class="s2">&quot;MEDIUMPURPLE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">147</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">219</span><span class="p">),</span>
+    <span class="s2">&quot;MEDIUMSEAGREEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">179</span><span class="p">,</span> <span class="mi">113</span><span class="p">),</span>
+    <span class="s2">&quot;MEDIUMSLATEBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">238</span><span class="p">),</span>
+    <span class="s2">&quot;MEDIUMSPRINGGREEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">154</span><span class="p">),</span>
+    <span class="s2">&quot;MEDIUMTURQUOISE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">72</span><span class="p">,</span> <span class="mi">209</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>
+    <span class="s2">&quot;MEDIUMVIOLETRED&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">199</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">133</span><span class="p">),</span>
+    <span class="s2">&quot;MIDNIGHTBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">112</span><span class="p">),</span>
+    <span class="s2">&quot;MINTCREAM&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">245</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">250</span><span class="p">),</span>
+    <span class="s2">&quot;MISTYROSE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">228</span><span class="p">,</span> <span class="mi">225</span><span class="p">),</span>
+    <span class="s2">&quot;MOCCASIN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">228</span><span class="p">,</span> <span class="mi">181</span><span class="p">),</span>
+    <span class="s2">&quot;NAVAJOWHITE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">222</span><span class="p">,</span> <span class="mi">173</span><span class="p">),</span>
+    <span class="s2">&quot;NAVY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
+    <span class="s2">&quot;OLDLACE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">253</span><span class="p">,</span> <span class="mi">245</span><span class="p">,</span> <span class="mi">230</span><span class="p">),</span>
+    <span class="s2">&quot;OLIVE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;OLIVEDRAB&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">107</span><span class="p">,</span> <span class="mi">142</span><span class="p">,</span> <span class="mi">35</span><span class="p">),</span>
+    <span class="s2">&quot;ORANGE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">165</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;ORANGERED&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;ORCHID&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">218</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">214</span><span class="p">),</span>
+    <span class="s2">&quot;PALEGOLDENROD&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">238</span><span class="p">,</span> <span class="mi">232</span><span class="p">,</span> <span class="mi">170</span><span class="p">),</span>
+    <span class="s2">&quot;PALEGREEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">152</span><span class="p">,</span> <span class="mi">251</span><span class="p">,</span> <span class="mi">152</span><span class="p">),</span>
+    <span class="s2">&quot;PALETURQUOISE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">175</span><span class="p">,</span> <span class="mi">238</span><span class="p">,</span> <span class="mi">238</span><span class="p">),</span>
+    <span class="s2">&quot;PALEVIOLETRED&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">219</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">147</span><span class="p">),</span>
+    <span class="s2">&quot;PAPAYAWHIP&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">239</span><span class="p">,</span> <span class="mi">213</span><span class="p">),</span>
+    <span class="s2">&quot;PEACHPUFF&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">218</span><span class="p">,</span> <span class="mi">185</span><span class="p">),</span>
+    <span class="s2">&quot;PERU&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">205</span><span class="p">,</span> <span class="mi">133</span><span class="p">,</span> <span class="mi">63</span><span class="p">),</span>
+    <span class="s2">&quot;PINK&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">203</span><span class="p">),</span>
+    <span class="s2">&quot;PLUM&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">221</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">221</span><span class="p">),</span>
+    <span class="s2">&quot;POWDERBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">176</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">230</span><span class="p">),</span>
+    <span class="s2">&quot;PURPLE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
+    <span class="s2">&quot;REBECCAPURPLE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>
+    <span class="s2">&quot;RED&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;ROSYBROWN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">188</span><span class="p">,</span> <span class="mi">143</span><span class="p">,</span> <span class="mi">143</span><span class="p">),</span>
+    <span class="s2">&quot;ROYALBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">65</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">225</span><span class="p">),</span>
+    <span class="s2">&quot;SADDLEBROWN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">139</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">19</span><span class="p">),</span>
+    <span class="s2">&quot;SALMON&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">114</span><span class="p">),</span>
+    <span class="s2">&quot;SANDYBROWN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">244</span><span class="p">,</span> <span class="mi">164</span><span class="p">,</span> <span class="mi">96</span><span class="p">),</span>
+    <span class="s2">&quot;SEAGREEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">46</span><span class="p">,</span> <span class="mi">139</span><span class="p">,</span> <span class="mi">87</span><span class="p">),</span>
+    <span class="s2">&quot;SEASHELL&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">245</span><span class="p">,</span> <span class="mi">238</span><span class="p">),</span>
+    <span class="s2">&quot;SIENNA&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">45</span><span class="p">),</span>
+    <span class="s2">&quot;SILVER&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">192</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">192</span><span class="p">),</span>
+    <span class="s2">&quot;SKYBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">135</span><span class="p">,</span> <span class="mi">206</span><span class="p">,</span> <span class="mi">235</span><span class="p">),</span>
+    <span class="s2">&quot;SLATEBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">106</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">205</span><span class="p">),</span>
+    <span class="s2">&quot;SLATEGRAY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">112</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">144</span><span class="p">),</span>
+    <span class="s2">&quot;SLATEGREY&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">112</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">144</span><span class="p">),</span>
+    <span class="s2">&quot;SNOW&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">),</span>
+    <span class="s2">&quot;SPRINGGREEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">127</span><span class="p">),</span>
+    <span class="s2">&quot;STEELBLUE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span>
+    <span class="s2">&quot;TAN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">210</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">140</span><span class="p">),</span>
+    <span class="s2">&quot;TEAL&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
+    <span class="s2">&quot;THISTLE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">216</span><span class="p">,</span> <span class="mi">191</span><span class="p">,</span> <span class="mi">216</span><span class="p">),</span>
+    <span class="s2">&quot;TOMATO&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">71</span><span class="p">),</span>
+    <span class="s2">&quot;TURQUOISE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">208</span><span class="p">),</span>
+    <span class="s2">&quot;VIOLET&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">238</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">238</span><span class="p">),</span>
+    <span class="s2">&quot;WHEAT&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">245</span><span class="p">,</span> <span class="mi">222</span><span class="p">,</span> <span class="mi">179</span><span class="p">),</span>
+    <span class="s2">&quot;WHITE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="s2">&quot;WHITESMOKE&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">245</span><span class="p">,</span> <span class="mi">245</span><span class="p">,</span> <span class="mi">245</span><span class="p">),</span>
+    <span class="s2">&quot;YELLOW&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;YELLOWGREEN&quot;</span><span class="p">:</span> <span class="n">Color</span><span class="p">(</span><span class="mi">154</span><span class="p">,</span> <span class="mi">205</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
 <span class="p">}</span>
 </pre></div>
 
-          </article>
-        </div>
-      </div>
-    </main>
-  </div>
-  <footer class="md-footer">
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-          
-          
-        </a>
-        
-      </nav>
-    </div>
-    <div class="md-footer-meta md-typeset">
-      <div class="md-footer-meta__inner md-grid">
-        <div class="md-footer-copyright">
-          <div class="md-footer-copyright__highlight">
-              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+                </article>
               
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-        </div>
-      </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
     </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
   </footer>
-  <script src="../../../../_static/javascripts/application.js"></script>
-  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
   </body>
 </html>

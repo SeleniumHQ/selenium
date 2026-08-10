@@ -1,215 +1,359 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="../../../../">
+
+<html lang="en" data-content_root="../../../../" >
+
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="lang:clipboard.copy" content="Copy to clipboard">
-  <meta name="lang:clipboard.copied" content="Copied to clipboard">
-  <meta name="lang:search.language" content="en">
-  <meta name="lang:search.pipeline.stopwords" content="True">
-  <meta name="lang:search.pipeline.trimmer" content="True">
-  <meta name="lang:search.result.none" content="No matching documents">
-  <meta name="lang:search.result.one" content="1 matching document">
-  <meta name="lang:search.result.other" content="# matching documents">
-  <meta name="lang:search.tokenizer" content="[\s\-]+">
-
+    <title>selenium.webdriver.common.api_request_context &#8212; Selenium 4.47.0 documentation</title>
   
-    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
-
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
     <style>
-      body,
-      input {
-        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-      }
+      .pst-js-only { display: none !important; }
 
-      code,
-      kbd,
-      pre {
-        font-family: "Roboto Mono", "Courier New", Courier, monospace
-      }
     </style>
+  </noscript>
   
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
 
-  <link rel="stylesheet" href="../../../../_static/stylesheets/application.css"/>
-  <link rel="stylesheet" href="../../../../_static/stylesheets/application-palette.css"/>
-  <link rel="stylesheet" href="../../../../_static/stylesheets/application-fixes.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
   
-  <link rel="stylesheet" href="../../../../_static/fonts/material-icons.css"/>
-  
-  <meta name="theme-color" content="#3f51b5">
-  <script src="../../../../_static/javascripts/modernizr.js"></script>
-  
-  
-  
-    <title>selenium.webdriver.common.api_request_context &#8212; Selenium 4.46.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=34af0a0d"></script>
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+
+    <script src="../../../../_static/documentation_options.js?v=457a4054"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/common/api_request_context';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="4.47" />
   
-   
-
+    
+    <script src="../../../../_static/searchtools.js"></script>
+    <script src="../../../../_static/language_data.js"></script>
+    <script src="../../../../searchindex.js"></script>
+  
   </head>
-  <body dir=ltr
-        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  <body data-default-mode="">
   
-  <svg class="md-svg">
-    <defs data-children-count="0">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-      
-    </defs>
-  </svg>
   
-  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
-  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
-  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#_modules/selenium/webdriver/common/api_request_context" tabindex="1" class="md-skip"> Skip to content </a>
-  <header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid">
-    <div class="md-flex navheader">
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.46.0 documentation"
-           class="md-header-nav__button md-logo">
-          
-            &nbsp;
-          
-        </a>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
-      </div>
-      <div class="md-flex__cell md-flex__cell--stretch">
-        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.46.0 documentation</span>
-          <span class="md-header-nav__topic"> selenium.webdriver.common.api_request_context </span>
-        </div>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
-        
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" action="../../../../search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
-             autocapitalize="off" autocomplete="off" spellcheck="false"
-             data-md-component="query" data-md-state="active">
-      <label class="md-icon md-search__icon" for="__search"></label>
-      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
-        &#xE5CD;
-      </button>
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
-          <div class="md-search-result__meta">
-            Type to start searching
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Selenium 4.47.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
       </div>
       
-      
-  
-  <script src="../../../../_static/javascripts/version_dropdown.js"></script>
-  <script>
-    var json_loc = "../../../../"versions.json"",
-        target_loc = "../../../../../",
-        text = "Versions";
-    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
-  </script>
-  
-
-    </div>
-  </nav>
-</header>
-
-  
-  <div class="md-container">
-    
-    
-    
-  <nav class="md-tabs" data-md-component="tabs">
-    <div class="md-tabs__inner md-grid">
-      <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.46.0 documentation</a></li>
-          <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
-      </ul>
-    </div>
-  </nav>
-    <main class="md-main">
-      <div class="md-main__inner md-grid" data-md-component="container">
+      <main id="main-content" class="bd-main" role="main">
         
-          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                <nav class="md-nav md-nav--primary" data-md-level="0">
-  <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.46.0 documentation" class="md-nav__button md-logo">
-      
-        <img src="../../../../_static/" alt=" logo" width="48" height="48">
-      
-    </a>
-    <a href="../../../../index.html"
-       title="Selenium 4.46.0 documentation">Selenium 4.46.0 documentation</a>
-  </label>
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
   
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
 
-</nav>
-              </div>
-            </div>
-          </div>
-          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                
-<nav class="md-nav md-nav--secondary">
-  <ul class="md-nav__list" data-md-scrollfix="">
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
     
-
-<li id="searchbox" class="md-nav__item"></li>
-
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">selenium.webdriver.common.api_request_context</span></li>
   </ul>
 </nav>
-              </div>
-            </div>
-          </div>
-        
-        <div class="md-content">
-          <article class="md-content__inner md-typeset" role="main">
-            
-  <h1 id="modules-selenium-webdriver-common-api-request-context--page-root">Source code for selenium.webdriver.common.api_request_context</h1><div class="highlight"><pre>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for selenium.webdriver.common.api_request_context</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
 <span class="c1"># or more contributor license agreements.  See the NOTICE file</span>
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># "License"); you may not use this file except in compliance</span>
+<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
-<span class="sd">"""APIRequestContext for making HTTP requests with browser cookie synchronization."""</span>
+<span class="sd">&quot;&quot;&quot;APIRequestContext for making HTTP requests with browser cookie synchronization.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -232,29 +376,29 @@
 <div class="viewcode-block" id="APIRequestFailure">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.api_request_context.html#selenium.webdriver.common.api_request_context.APIRequestFailure">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">APIRequestFailure</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Raised when an API request returns a non-2xx status and fail_on_status_code is True.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when an API request returns a non-2xx status and fail_on_status_code is True.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        response: The APIResponse that triggered the failure.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="s2">"APIResponse"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="s2">&quot;APIResponse&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">response</span> <span class="o">=</span> <span class="n">response</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_text</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_text</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="APIResponse">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.api_request_context.html#selenium.webdriver.common.api_request_context.APIResponse">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">APIResponse</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Represents an HTTP response from an API request.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents an HTTP response from an API request.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        status: HTTP status code.</span>
 <span class="sd">        status_text: HTTP status text.</span>
 <span class="sd">        headers: Response headers as a dict.</span>
 <span class="sd">        url: The request URL.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">status_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
@@ -265,53 +409,53 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Whether the response status is in the 200-299 range."""</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the response status is in the 200-299 range.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mi">200</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">&lt;=</span> <span class="mi">299</span>
 
 <div class="viewcode-block" id="APIResponse.json">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.api_request_context.html#selenium.webdriver.common.api_request_context.APIResponse.json">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Parse the response body as JSON.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the response body as JSON.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The parsed JSON object.</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="APIResponse.text">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.api_request_context.html#selenium.webdriver.common.api_request_context.APIResponse.text">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Decode the response body as UTF-8 text.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode the response body as UTF-8 text.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The response body as a string.</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span></div>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="APIResponse.body">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.api_request_context.html#selenium.webdriver.common.api_request_context.APIResponse.body">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">body</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Return the raw response body bytes.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the raw response body bytes.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The response body as bytes.</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_body</span></div>
 
 
 <div class="viewcode-block" id="APIResponse.dispose">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.api_request_context.html#selenium.webdriver.common.api_request_context.APIResponse.dispose">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Free the response body memory."""</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_body</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">""</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Free the response body memory.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_body</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span></div>
 </div>
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_cookie_matches</span><span class="p">(</span><span class="n">cookie</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default_domain</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Check if a browser cookie should be sent with a request to the given URL.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_cookie_matches</span><span class="p">(</span><span class="n">cookie</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default_domain</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if a browser cookie should be sent with a request to the given URL.</span>
 
 <span class="sd">    Evaluates expiry, domain, path, and secure attribute matching per RFC 6265.</span>
 
@@ -324,24 +468,24 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        True if the cookie matches the URL.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Expiry check — skip expired cookies</span>
-    <span class="n">expiry</span> <span class="o">=</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"expiry"</span><span class="p">)</span>
+    <span class="n">expiry</span> <span class="o">=</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;expiry&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">expiry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">expiry</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()):</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="n">parsed</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-    <span class="n">hostname</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="s2">""</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">path</span> <span class="ow">or</span> <span class="s2">"/"</span>
-    <span class="n">scheme</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">scheme</span> <span class="ow">or</span> <span class="s2">"http"</span>
+    <span class="n">hostname</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">path</span> <span class="ow">or</span> <span class="s2">&quot;/&quot;</span>
+    <span class="n">scheme</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">scheme</span> <span class="ow">or</span> <span class="s2">&quot;http&quot;</span>
 
     <span class="c1"># Domain matching (RFC 6265 section 5.1.3)</span>
-    <span class="n">cookie_domain</span> <span class="o">=</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"domain"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+    <span class="n">cookie_domain</span> <span class="o">=</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;domain&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">cookie_domain</span><span class="p">:</span>
         <span class="c1"># Host-only cookie — must match the origin host exactly</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">default_domain</span> <span class="ow">or</span> <span class="n">hostname</span> <span class="o">!=</span> <span class="n">default_domain</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">elif</span> <span class="n">cookie_domain</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"."</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">cookie_domain</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
         <span class="c1"># .example.com matches example.com and sub.example.com</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">hostname</span> <span class="o">==</span> <span class="n">cookie_domain</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="ow">or</span> <span class="n">hostname</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">cookie_domain</span><span class="p">)):</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -350,21 +494,21 @@
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="c1"># Path matching (RFC 6265 section 5.1.4)</span>
-    <span class="n">cookie_path</span> <span class="o">=</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"path"</span><span class="p">,</span> <span class="s2">"/"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">cookie_path</span> <span class="o">==</span> <span class="s2">"/"</span><span class="p">:</span>
+    <span class="n">cookie_path</span> <span class="o">=</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cookie_path</span> <span class="o">==</span> <span class="s2">&quot;/&quot;</span><span class="p">:</span>
         <span class="k">pass</span>  <span class="c1"># root path matches everything</span>
-    <span class="k">elif</span> <span class="n">path</span> <span class="o">!=</span> <span class="n">cookie_path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">cookie_path</span> <span class="o">+</span> <span class="s2">"/"</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">path</span> <span class="o">!=</span> <span class="n">cookie_path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">cookie_path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="c1"># Secure matching</span>
-    <span class="k">if</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"secure"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="n">scheme</span> <span class="o">!=</span> <span class="s2">"https"</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;secure&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="n">scheme</span> <span class="o">!=</span> <span class="s2">&quot;https&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">return</span> <span class="kc">True</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_parse_set_cookie</span><span class="p">(</span><span class="n">header_value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Parse a single Set-Cookie header value into a cookie dict.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a single Set-Cookie header value into a cookie dict.</span>
 
 <span class="sd">    Uses manual parsing instead of http.cookies.SimpleCookie which is too</span>
 <span class="sd">    strict for real-world Set-Cookie headers.</span>
@@ -374,52 +518,52 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A dict with cookie attributes suitable for driver.add_cookie().</span>
-<span class="sd">    """</span>
-    <span class="n">parts</span> <span class="o">=</span> <span class="n">header_value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">";"</span><span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">header_value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
     <span class="n">name_value</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">eq_idx</span> <span class="o">=</span> <span class="n">name_value</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"="</span><span class="p">)</span>
+    <span class="n">eq_idx</span> <span class="o">=</span> <span class="n">name_value</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">eq_idx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{}</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">name_value</span><span class="p">[:</span><span class="n">eq_idx</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
     <span class="n">value</span> <span class="o">=</span> <span class="n">name_value</span><span class="p">[</span><span class="n">eq_idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
-    <span class="n">cookie</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
+    <span class="n">cookie</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
     <span class="n">has_max_age</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
         <span class="n">part</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">part</span><span class="p">:</span>
             <span class="k">continue</span>
-        <span class="k">if</span> <span class="s2">"="</span> <span class="ow">in</span> <span class="n">part</span><span class="p">:</span>
-            <span class="n">attr_name</span><span class="p">,</span> <span class="n">attr_value</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"="</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;=&quot;</span> <span class="ow">in</span> <span class="n">part</span><span class="p">:</span>
+            <span class="n">attr_name</span><span class="p">,</span> <span class="n">attr_value</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">attr_name</span> <span class="o">=</span> <span class="n">attr_name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
             <span class="n">attr_value</span> <span class="o">=</span> <span class="n">attr_value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">attr_name</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-            <span class="n">attr_value</span> <span class="o">=</span> <span class="s2">""</span>
+            <span class="n">attr_value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="n">attr_name</span> <span class="o">==</span> <span class="s2">"domain"</span><span class="p">:</span>
-            <span class="n">cookie</span><span class="p">[</span><span class="s2">"domain"</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_value</span>
-        <span class="k">elif</span> <span class="n">attr_name</span> <span class="o">==</span> <span class="s2">"path"</span><span class="p">:</span>
-            <span class="n">cookie</span><span class="p">[</span><span class="s2">"path"</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_value</span>
-        <span class="k">elif</span> <span class="n">attr_name</span> <span class="o">==</span> <span class="s2">"secure"</span><span class="p">:</span>
-            <span class="n">cookie</span><span class="p">[</span><span class="s2">"secure"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">elif</span> <span class="n">attr_name</span> <span class="o">==</span> <span class="s2">"httponly"</span><span class="p">:</span>
-            <span class="n">cookie</span><span class="p">[</span><span class="s2">"httpOnly"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">elif</span> <span class="n">attr_name</span> <span class="o">==</span> <span class="s2">"samesite"</span><span class="p">:</span>
-            <span class="n">cookie</span><span class="p">[</span><span class="s2">"sameSite"</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_value</span>
-        <span class="k">elif</span> <span class="n">attr_name</span> <span class="o">==</span> <span class="s2">"max-age"</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">attr_name</span> <span class="o">==</span> <span class="s2">&quot;domain&quot;</span><span class="p">:</span>
+            <span class="n">cookie</span><span class="p">[</span><span class="s2">&quot;domain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_value</span>
+        <span class="k">elif</span> <span class="n">attr_name</span> <span class="o">==</span> <span class="s2">&quot;path&quot;</span><span class="p">:</span>
+            <span class="n">cookie</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_value</span>
+        <span class="k">elif</span> <span class="n">attr_name</span> <span class="o">==</span> <span class="s2">&quot;secure&quot;</span><span class="p">:</span>
+            <span class="n">cookie</span><span class="p">[</span><span class="s2">&quot;secure&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">attr_name</span> <span class="o">==</span> <span class="s2">&quot;httponly&quot;</span><span class="p">:</span>
+            <span class="n">cookie</span><span class="p">[</span><span class="s2">&quot;httpOnly&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">attr_name</span> <span class="o">==</span> <span class="s2">&quot;samesite&quot;</span><span class="p">:</span>
+            <span class="n">cookie</span><span class="p">[</span><span class="s2">&quot;sameSite&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_value</span>
+        <span class="k">elif</span> <span class="n">attr_name</span> <span class="o">==</span> <span class="s2">&quot;max-age&quot;</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">max_age</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">attr_value</span><span class="p">)</span>
-                <span class="n">cookie</span><span class="p">[</span><span class="s2">"expiry"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="o">+</span> <span class="n">max_age</span>
+                <span class="n">cookie</span><span class="p">[</span><span class="s2">&quot;expiry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="o">+</span> <span class="n">max_age</span>
                 <span class="n">has_max_age</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="k">pass</span>
-        <span class="k">elif</span> <span class="n">attr_name</span> <span class="o">==</span> <span class="s2">"expires"</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">has_max_age</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">attr_name</span> <span class="o">==</span> <span class="s2">&quot;expires&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">has_max_age</span><span class="p">:</span>
             <span class="c1"># RFC 6265 §5.3: Max-Age takes precedence over Expires</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">dt</span> <span class="o">=</span> <span class="n">parsedate_to_datetime</span><span class="p">(</span><span class="n">attr_value</span><span class="p">)</span>
-                <span class="n">cookie</span><span class="p">[</span><span class="s2">"expiry"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">timestamp</span><span class="p">())</span>
+                <span class="n">cookie</span><span class="p">[</span><span class="s2">&quot;expiry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">timestamp</span><span class="p">())</span>
             <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
                 <span class="k">pass</span>
 
@@ -427,30 +571,30 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_set_cookie_headers</span><span class="p">(</span><span class="n">resp</span><span class="p">:</span> <span class="n">urllib3</span><span class="o">.</span><span class="n">BaseHTTPResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""Extract all Set-Cookie header values from a urllib3 response.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract all Set-Cookie header values from a urllib3 response.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        resp: The urllib3 HTTP response.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A list of Set-Cookie header strings.</span>
-<span class="sd">    """</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="s2">"getlist"</span><span class="p">):</span>
-        <span class="n">headers</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">getlist</span><span class="p">(</span><span class="s2">"Set-Cookie"</span><span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="s2">&quot;getlist&quot;</span><span class="p">):</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">getlist</span><span class="p">(</span><span class="s2">&quot;Set-Cookie&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">headers</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">headers</span>
-    <span class="n">sc</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"Set-Cookie"</span><span class="p">)</span>
+    <span class="n">sc</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Set-Cookie&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">sc</span><span class="p">]</span> <span class="k">if</span> <span class="n">sc</span> <span class="k">else</span> <span class="p">[]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_redirect_url</span><span class="p">(</span><span class="n">resp</span><span class="p">:</span> <span class="n">urllib3</span><span class="o">.</span><span class="n">BaseHTTPResponse</span><span class="p">,</span> <span class="n">original_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Return the final URL after any redirects.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the final URL after any redirects.</span>
 
-<span class="sd">    urllib3's retry history records each hop.  When redirects occurred,</span>
-<span class="sd">    the last entry's redirect_location resolved against its URL gives</span>
+<span class="sd">    urllib3&#39;s retry history records each hop.  When redirects occurred,</span>
+<span class="sd">    the last entry&#39;s redirect_location resolved against its URL gives</span>
 <span class="sd">    the final destination.  When no redirects occurred, the original</span>
 <span class="sd">    request URL is returned unchanged.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">history</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">retries</span><span class="o">.</span><span class="n">history</span> <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">retries</span> <span class="k">else</span> <span class="p">()</span>
     <span class="k">if</span> <span class="n">history</span><span class="p">:</span>
         <span class="n">last</span> <span class="o">=</span> <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -460,11 +604,11 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">_BaseRequestContext</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Base class with shared HTTP request logic for API request contexts."""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class with shared HTTP request logic for API request contexts.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">extra_headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">30.0</span><span class="p">,</span>
         <span class="n">max_redirects</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
@@ -478,7 +622,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span> <span class="o">=</span> <span class="n">urllib3</span><span class="o">.</span><span class="n">PoolManager</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Send a GET request.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a GET request.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            url: The request URL (absolute or relative to base_url).</span>
@@ -486,11 +630,11 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            An APIResponse object.</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Send a POST request.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a POST request.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            url: The request URL (absolute or relative to base_url).</span>
@@ -499,11 +643,11 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            An APIResponse object.</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">"POST"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Send a PUT request.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a PUT request.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            url: The request URL (absolute or relative to base_url).</span>
@@ -512,11 +656,11 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            An APIResponse object.</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">"PUT"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">patch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Send a PATCH request.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a PATCH request.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            url: The request URL (absolute or relative to base_url).</span>
@@ -525,11 +669,11 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            An APIResponse object.</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">"PATCH"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">&quot;PATCH&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Send a DELETE request.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a DELETE request.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            url: The request URL (absolute or relative to base_url).</span>
@@ -538,11 +682,11 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            An APIResponse object.</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">"DELETE"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Send a HEAD request.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a HEAD request.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            url: The request URL (absolute or relative to base_url).</span>
@@ -551,11 +695,11 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            An APIResponse object.</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">"HEAD"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">&quot;HEAD&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"GET"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Send an HTTP request with a custom method.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIResponse</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send an HTTP request with a custom method.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            url: The request URL (absolute or relative to base_url).</span>
@@ -565,65 +709,65 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            An APIResponse object.</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Close the underlying connection pool."""</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the underlying connection pool.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Resolve a URL, prepending base_url for relative paths."""</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">"http://"</span><span class="p">,</span> <span class="s2">"https://"</span><span class="p">)):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"/"</span> <span class="o">+</span> <span class="n">url</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve a URL, prepending base_url for relative paths.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">&quot;http://&quot;</span><span class="p">,</span> <span class="s2">&quot;https://&quot;</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">url</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">url</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Merge extra_headers with per-request headers."""</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge extra_headers with per-request headers.&quot;&quot;&quot;</span>
         <span class="n">headers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_extra_headers</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"headers"</span><span class="p">):</span>
-            <span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">"headers"</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;headers&quot;</span><span class="p">):</span>
+            <span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">headers</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Prepare the request body from json_data, form, or data kwargs.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare the request body from json_data, form, or data kwargs.</span>
 
 <span class="sd">        Priority: json_data &gt; form &gt; data. Only one should be provided.</span>
-<span class="sd">        """</span>
-        <span class="n">json_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"json_data"</span><span class="p">)</span>
-        <span class="n">form</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"form"</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"data"</span><span class="p">)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">json_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;json_data&quot;</span><span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;form&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">json_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">headers</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"Content-Type"</span><span class="p">,</span> <span class="s2">"application/json"</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+            <span class="n">headers</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">form</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">headers</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"Content-Type"</span><span class="p">,</span> <span class="s2">"application/x-www-form-urlencoded"</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">form</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+            <span class="n">headers</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/x-www-form-urlencoded&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">form</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="n">headers</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"Content-Type"</span><span class="p">,</span> <span class="s2">"application/x-www-form-urlencoded"</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+                <span class="n">headers</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/x-www-form-urlencoded&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">data</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_append_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Append query parameters to the URL."""</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"params"</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append query parameters to the URL.&quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;params&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
-            <span class="n">separator</span> <span class="o">=</span> <span class="s2">"&amp;"</span> <span class="k">if</span> <span class="s2">"?"</span> <span class="ow">in</span> <span class="n">url</span> <span class="k">else</span> <span class="s2">"?"</span>
+            <span class="n">separator</span> <span class="o">=</span> <span class="s2">&quot;&amp;&quot;</span> <span class="k">if</span> <span class="s2">&quot;?&quot;</span> <span class="ow">in</span> <span class="n">url</span> <span class="k">else</span> <span class="s2">&quot;?&quot;</span>
             <span class="k">return</span> <span class="n">url</span> <span class="o">+</span> <span class="n">separator</span> <span class="o">+</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">url</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_execute_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">body</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">urllib3</span><span class="o">.</span><span class="n">BaseHTTPResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Execute the HTTP request via urllib3."""</span>
-        <span class="n">timeout</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"timeout"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">)</span>
-        <span class="n">max_redirects</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"max_redirects"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_redirects</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the HTTP request via urllib3.&quot;&quot;&quot;</span>
+        <span class="n">timeout</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timeout&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">)</span>
+        <span class="n">max_redirects</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max_redirects&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_redirects</span><span class="p">)</span>
 
         <span class="n">follow</span> <span class="o">=</span> <span class="n">max_redirects</span> <span class="o">&gt;</span> <span class="mi">0</span>
         <span class="n">retries</span> <span class="o">=</span> <span class="n">Retry</span><span class="p">(</span>
@@ -647,18 +791,18 @@
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resp</span><span class="p">:</span> <span class="n">urllib3</span><span class="o">.</span><span class="n">BaseHTTPResponse</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Build an APIResponse from a urllib3 response."""</span>
-        <span class="c1"># Merge duplicate headers per RFC 7230 §3.2.2 (combine with ", ")</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build an APIResponse from a urllib3 response.&quot;&quot;&quot;</span>
+        <span class="c1"># Merge duplicate headers per RFC 7230 §3.2.2 (combine with &quot;, &quot;)</span>
         <span class="n">resp_headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">resp</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">key</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">resp_headers</span><span class="p">:</span>
-                <span class="n">resp_headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp_headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="s2">", "</span> <span class="o">+</span> <span class="n">v</span>
+                <span class="n">resp_headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp_headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span> <span class="o">+</span> <span class="n">v</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">resp_headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
         <span class="c1"># urllib3 2.x removed resp.reason; fall back to stdlib phrase lookup</span>
-        <span class="n">reason</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">status_text</span> <span class="o">=</span> <span class="n">reason</span> <span class="ow">or</span> <span class="n">http_status_phrases</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+        <span class="n">reason</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">status_text</span> <span class="o">=</span> <span class="n">reason</span> <span class="ow">or</span> <span class="n">http_status_phrases</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">APIResponse</span><span class="p">(</span>
             <span class="n">status</span><span class="o">=</span><span class="n">resp</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
             <span class="n">status_text</span><span class="o">=</span><span class="n">status_text</span><span class="p">,</span>
@@ -668,14 +812,14 @@
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_cookies_for_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Get cookies that should be sent with the request. Overridden by subclasses."""</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get cookies that should be sent with the request. Overridden by subclasses.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_handle_response_cookies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_cookie_headers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Process Set-Cookie headers from the response. Overridden by subclasses."""</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process Set-Cookie headers from the response. Overridden by subclasses.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Execute an HTTP request with cookie handling.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute an HTTP request with cookie handling.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            url: The request URL.</span>
@@ -684,24 +828,24 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            An APIResponse object.</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_url</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
         <span class="n">headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_headers</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Apply cookies</span>
         <span class="n">matching_cookies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cookies_for_request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">matching_cookies</span><span class="p">:</span>
-            <span class="n">cookie_header</span> <span class="o">=</span> <span class="s2">"; "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'value'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">matching_cookies</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s2">"Cookie"</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">:</span>
-                <span class="n">headers</span><span class="p">[</span><span class="s2">"Cookie"</span><span class="p">]</span> <span class="o">=</span> <span class="n">headers</span><span class="p">[</span><span class="s2">"Cookie"</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"; "</span> <span class="o">+</span> <span class="n">cookie_header</span>
+            <span class="n">cookie_header</span> <span class="o">=</span> <span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">matching_cookies</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;Cookie&quot;</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">:</span>
+                <span class="n">headers</span><span class="p">[</span><span class="s2">&quot;Cookie&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">headers</span><span class="p">[</span><span class="s2">&quot;Cookie&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;; &quot;</span> <span class="o">+</span> <span class="n">cookie_header</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">headers</span><span class="p">[</span><span class="s2">"Cookie"</span><span class="p">]</span> <span class="o">=</span> <span class="n">cookie_header</span>
+                <span class="n">headers</span><span class="p">[</span><span class="s2">&quot;Cookie&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cookie_header</span>
 
         <span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_body</span><span class="p">(</span><span class="n">headers</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
         <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_append_params</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute_request</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="c1"># After redirects, associate cookies with the final destination's</span>
+        <span class="c1"># After redirects, associate cookies with the final destination&#39;s</span>
         <span class="c1"># origin, not the initial request URL.</span>
         <span class="n">final_url</span> <span class="o">=</span> <span class="n">_resolve_redirect_url</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
 
@@ -712,7 +856,7 @@
 
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_response</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="n">final_url</span><span class="p">)</span>
 
-        <span class="n">fail</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fail_on_status_code"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fail_on_status_code</span><span class="p">)</span>
+        <span class="n">fail</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fail_on_status_code&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fail_on_status_code</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">fail</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">APIRequestFailure</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 
@@ -722,7 +866,7 @@
 <div class="viewcode-block" id="APIRequestContext">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.api_request_context.html#selenium.webdriver.common.api_request_context.APIRequestContext">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">APIRequestContext</span><span class="p">(</span><span class="n">_BaseRequestContext</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Makes HTTP requests with automatic browser cookie synchronization.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Makes HTTP requests with automatic browser cookie synchronization.</span>
 
 <span class="sd">    Cookies from the browser session are sent with API requests, and cookies</span>
 <span class="sd">    from API responses are synced back to the browser.</span>
@@ -734,12 +878,12 @@
 <span class="sd">        timeout: Default request timeout in seconds.</span>
 <span class="sd">        max_redirects: Maximum number of redirects to follow.</span>
 <span class="sd">        fail_on_status_code: If True, raise APIRequestFailure for non-2xx responses.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">driver</span><span class="p">:</span> <span class="s2">"WebDriver"</span><span class="p">,</span>
-        <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="n">driver</span><span class="p">:</span> <span class="s2">&quot;WebDriver&quot;</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">extra_headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">30.0</span><span class="p">,</span>
         <span class="n">max_redirects</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
@@ -758,12 +902,12 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.api_request_context.html#selenium.webdriver.common.api_request_context.APIRequestContext.new_context">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">new_context</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">extra_headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">storage_state</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">fail_on_status_code</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"_IsolatedAPIRequestContext"</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Create an isolated API request context that does not sync with the browser.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;_IsolatedAPIRequestContext&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an isolated API request context that does not sync with the browser.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            base_url: Optional base URL for this context.</span>
@@ -773,23 +917,23 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            An _IsolatedAPIRequestContext instance.</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cookies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">storage_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">storage_state</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)):</span>
                 <span class="n">file_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">storage_state</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                    <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Storage state file not found: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Storage state file not found: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                         <span class="n">state</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
                 <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid JSON in storage state file </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid JSON in storage state file </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
                 <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cannot read storage state file </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+                    <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot read storage state file </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">state</span> <span class="o">=</span> <span class="n">storage_state</span>
-            <span class="n">cookies</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"cookies"</span><span class="p">,</span> <span class="p">[]))</span>
+            <span class="n">cookies</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cookies&quot;</span><span class="p">,</span> <span class="p">[]))</span>
 
         <span class="k">return</span> <span class="n">_IsolatedAPIRequestContext</span><span class="p">(</span>
             <span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">,</span>
@@ -804,56 +948,56 @@
 <div class="viewcode-block" id="APIRequestContext.get_storage_state">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.api_request_context.html#selenium.webdriver.common.api_request_context.APIRequestContext.get_storage_state">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_storage_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Export the current browser cookies as a storage state dict.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export the current browser cookies as a storage state dict.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            path: Optional file path to save the storage state as JSON.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            A dict with a "cookies" key containing the browser cookies.</span>
-<span class="sd">        """</span>
+<span class="sd">            A dict with a &quot;cookies&quot; key containing the browser cookies.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cookies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">get_cookies</span><span class="p">()</span>
-        <span class="n">state</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"cookies"</span><span class="p">:</span> <span class="n">cookies</span><span class="p">}</span>
+        <span class="n">state</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cookies&quot;</span><span class="p">:</span> <span class="n">cookies</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">file_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cannot write storage state to </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+                <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot write storage state to </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
         <span class="k">return</span> <span class="n">state</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_cookies_for_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Get matching browser cookies for the request URL."""</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get matching browser cookies for the request URL.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">browser_cookies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">get_cookies</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Could not retrieve browser cookies"</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Could not retrieve browser cookies&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[]</span>
-        <span class="c1"># Derive default domain from the browser's current page for host-only cookies</span>
-        <span class="n">default_domain</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="c1"># Derive default domain from the browser&#39;s current page for host-only cookies</span>
+        <span class="n">default_domain</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">current_url</span>
             <span class="k">if</span> <span class="n">current</span><span class="p">:</span>
-                <span class="n">default_domain</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">current</span><span class="p">)</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="s2">""</span>
+                <span class="n">default_domain</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">current</span><span class="p">)</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Could not get current URL for host-only cookie matching"</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Could not get current URL for host-only cookie matching&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">browser_cookies</span> <span class="k">if</span> <span class="n">_cookie_matches</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">default_domain</span><span class="p">)]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_handle_response_cookies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_cookie_headers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Sync Set-Cookie headers back to the browser."""</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sync Set-Cookie headers back to the browser.&quot;&quot;&quot;</span>
         <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">sc_header</span> <span class="ow">in</span> <span class="n">set_cookie_headers</span><span class="p">:</span>
             <span class="n">cookie</span> <span class="o">=</span> <span class="n">_parse_set_cookie</span><span class="p">(</span><span class="n">sc_header</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">):</span>
                 <span class="k">continue</span>
-            <span class="n">cookie</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"domain"</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
-            <span class="n">cookie</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"path"</span><span class="p">,</span> <span class="s2">"/"</span><span class="p">)</span>
-            <span class="n">expiry</span> <span class="o">=</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"expiry"</span><span class="p">)</span>
+            <span class="n">cookie</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;domain&quot;</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">cookie</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
+            <span class="n">expiry</span> <span class="o">=</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;expiry&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">expiry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">expiry</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()):</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">delete_cookie</span><span class="p">(</span><span class="n">cookie</span><span class="p">[</span><span class="s2">"name"</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">delete_cookie</span><span class="p">(</span><span class="n">cookie</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
                 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="k">pass</span>
                 <span class="k">continue</span>
@@ -861,22 +1005,22 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">add_cookie</span><span class="p">(</span><span class="n">cookie</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">"Could not sync cookie '</span><span class="si">%s</span><span class="s2">' to browser (domain mismatch with current page)"</span><span class="p">,</span>
-                    <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">),</span>
+                    <span class="s2">&quot;Could not sync cookie &#39;</span><span class="si">%s</span><span class="s2">&#39; to browser (domain mismatch with current page)&quot;</span><span class="p">,</span>
+                    <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
                     <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="p">)</span></div>
 
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">_IsolatedAPIRequestContext</span><span class="p">(</span><span class="n">_BaseRequestContext</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""An isolated API request context that maintains its own cookie jar.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An isolated API request context that maintains its own cookie jar.</span>
 
 <span class="sd">    Does not synchronize cookies with any browser session.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">extra_headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">cookies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">30.0</span><span class="p">,</span>
@@ -893,64 +1037,99 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_cookies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">cookies</span> <span class="ow">or</span> <span class="p">[]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_storage_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Return the current cookies as a storage state dict."""</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">"cookies"</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cookies</span><span class="p">)}</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the current cookies as a storage state dict.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;cookies&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cookies</span><span class="p">)}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_cookies_for_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Get matching cookies from the internal jar."""</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get matching cookies from the internal jar.&quot;&quot;&quot;</span>
         <span class="c1"># For isolated contexts, use the request hostname as default domain</span>
-        <span class="n">default_domain</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="s2">""</span>
+        <span class="n">default_domain</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cookies</span> <span class="k">if</span> <span class="n">_cookie_matches</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">default_domain</span><span class="p">)]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_handle_response_cookies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_cookie_headers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Store Set-Cookie headers in the internal jar."""</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store Set-Cookie headers in the internal jar.&quot;&quot;&quot;</span>
         <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
         <span class="n">now</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
         <span class="k">for</span> <span class="n">sc_header</span> <span class="ow">in</span> <span class="n">set_cookie_headers</span><span class="p">:</span>
             <span class="n">cookie</span> <span class="o">=</span> <span class="n">_parse_set_cookie</span><span class="p">(</span><span class="n">sc_header</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">):</span>
                 <span class="k">continue</span>
-            <span class="n">cookie</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"domain"</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
-            <span class="n">cookie</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"path"</span><span class="p">,</span> <span class="s2">"/"</span><span class="p">)</span>
+            <span class="n">cookie</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;domain&quot;</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">cookie</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
             <span class="c1"># Cookies are unique by (name, domain, path)</span>
-            <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">cookie</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"domain"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"path"</span><span class="p">,</span> <span class="s2">"/"</span><span class="p">))</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">cookie</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;domain&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">))</span>
             <span class="c1"># Remove existing cookie with same key</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cookies</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cookies</span> <span class="k">if</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"domain"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"path"</span><span class="p">,</span> <span class="s2">"/"</span><span class="p">))</span> <span class="o">!=</span> <span class="n">key</span>
+                <span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cookies</span> <span class="k">if</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;domain&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">))</span> <span class="o">!=</span> <span class="n">key</span>
             <span class="p">]</span>
             <span class="c1"># Only store if not expired (Max-Age=0 or negative means delete)</span>
-            <span class="n">expiry</span> <span class="o">=</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"expiry"</span><span class="p">)</span>
+            <span class="n">expiry</span> <span class="o">=</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;expiry&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">expiry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">expiry</span> <span class="o">&lt;=</span> <span class="n">now</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cookies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cookie</span><span class="p">)</span>
 </pre></div>
 
-          </article>
-        </div>
-      </div>
-    </main>
-  </div>
-  <footer class="md-footer">
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-          
-          
-        </a>
-        
-      </nav>
-    </div>
-    <div class="md-footer-meta md-typeset">
-      <div class="md-footer-meta__inner md-grid">
-        <div class="md-footer-copyright">
-          <div class="md-footer-copyright__highlight">
-              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+                </article>
               
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-        </div>
-      </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
     </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
   </footer>
-  <script src="../../../../_static/javascripts/application.js"></script>
-  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
   </body>
 </html>

@@ -1,682 +1,659 @@
 
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+
+<html lang="en" data-content_root="./" >
+
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="lang:clipboard.copy" content="Copy to clipboard">
-  <meta name="lang:clipboard.copied" content="Copied to clipboard">
-  <meta name="lang:search.language" content="en">
-  <meta name="lang:search.pipeline.stopwords" content="True">
-  <meta name="lang:search.pipeline.trimmer" content="True">
-  <meta name="lang:search.result.none" content="No matching documents">
-  <meta name="lang:search.result.one" content="1 matching document">
-  <meta name="lang:search.result.other" content="# matching documents">
-  <meta name="lang:search.tokenizer" content="[\s\-]+">
-
+    <title>Index &#8212; Selenium 4.47.0 documentation</title>
   
-    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
-
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
     <style>
-      body,
-      input {
-        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-      }
+      .pst-js-only { display: none !important; }
 
-      code,
-      kbd,
-      pre {
-        font-family: "Roboto Mono", "Courier New", Courier, monospace
-      }
     </style>
+  </noscript>
   
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
 
-  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
-  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
-  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
   
-  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
-  
-  <meta name="theme-color" content="#3f51b5">
-  <script src="_static/javascripts/modernizr.js"></script>
-  
-  
-  
-    <title>Index &#8212; Selenium 4.46.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
-    <script src="_static/documentation_options.js?v=34af0a0d"></script>
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+
+    <script src="_static/documentation_options.js?v=457a4054"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'genindex-G';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="4.47" />
   
-   
-
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
   </head>
-  <body dir=ltr
-        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  <body data-default-mode="">
   
-  <svg class="md-svg">
-    <defs data-children-count="0">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-      
-    </defs>
-  </svg>
   
-  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
-  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
-  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#genindex-G" tabindex="1" class="md-skip"> Skip to content </a>
-  <header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid">
-    <div class="md-flex navheader">
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="Selenium 4.46.0 documentation"
-           class="md-header-nav__button md-logo">
-          
-            &nbsp;
-          
-        </a>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
-      </div>
-      <div class="md-flex__cell md-flex__cell--stretch">
-        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.46.0 documentation</span>
-          <span class="md-header-nav__topic"> Index </span>
-        </div>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
-        
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
-             autocapitalize="off" autocomplete="off" spellcheck="false"
-             data-md-component="query" data-md-state="active">
-      <label class="md-icon md-search__icon" for="__search"></label>
-      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
-        &#xE5CD;
-      </button>
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
-          <div class="md-search-result__meta">
-            Type to start searching
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Selenium 4.47.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
       </div>
       
-      
-  
-  <script src="_static/javascripts/version_dropdown.js"></script>
-  <script>
-    var json_loc = ""versions.json"",
-        target_loc = "../",
-        text = "Versions";
-    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
-  </script>
-  
-
-    </div>
-  </nav>
-</header>
-
-  
-  <div class="md-container">
-    
-    
-    
-  <nav class="md-tabs" data-md-component="tabs">
-    <div class="md-tabs__inner md-grid">
-      <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">Selenium 4.46.0 documentation</a></li>
-      </ul>
-    </div>
-  </nav>
-    <main class="md-main">
-      <div class="md-main__inner md-grid" data-md-component="container">
+      <main id="main-content" class="bd-main" role="main">
         
-          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                <nav class="md-nav md-nav--primary" data-md-level="0">
-  <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="Selenium 4.46.0 documentation" class="md-nav__button md-logo">
-      
-        <img src="_static/" alt=" logo" width="48" height="48">
-      
-    </a>
-    <a href="index.html"
-       title="Selenium 4.46.0 documentation">Selenium 4.46.0 documentation</a>
-  </label>
-  
-
-</nav>
-              </div>
-            </div>
-          </div>
-          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none"></div>
+              
+              
+              
                 
-<nav class="md-nav md-nav--secondary">
-  <ul class="md-nav__list" data-md-scrollfix="">
-    
-
-<li id="searchbox" class="md-nav__item"></li>
-
-  </ul>
-</nav>
-              </div>
-            </div>
-          </div>
-        
-        <div class="md-content">
-          <article class="md-content__inner md-typeset" role="main">
-            
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
 
 
 <h1 id="index">Index &#x2013; G</h1>
 
 <table style="width: 100%" class="indextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET">GET (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET">GET (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get">get() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.api_request_context.html#selenium.webdriver.common.api_request_context.APIRequestContext.get">get() (APIRequestContext method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
+        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get">(ChromiumDriver method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.api_request_context.html#selenium.webdriver.common.api_request_context.APIRequestContext.get">(selenium.webdriver.common.api_request_context.APIRequestContext method)</a>
+        <li><a href="selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.get">(EventFiringWebDriver method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get">(selenium.webdriver.common.webdriver.LocalWebDriver method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get">(LocalWebDriver method)</a>
 </li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get">(selenium.webdriver.firefox.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get">(selenium.webdriver.ie.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get">(selenium.webdriver.remote.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get">(selenium.webdriver.safari.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.get">(selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get">(selenium.webdriver.webkitgtk.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get">(selenium.webdriver.wpewebkit.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get">[1]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get">[2]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get">[3]</a>, <a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get">[4]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get">[5]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get">[6]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get">[7]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common_fedcm/selenium.webdriver.common.fedcm.dialog.html#selenium.webdriver.common.fedcm.dialog.Dialog.get_accounts">get_accounts() (selenium.webdriver.common.fedcm.dialog.Dialog method)</a>
+      <li><a href="selenium_webdriver_common_fedcm/selenium.webdriver.common.fedcm.dialog.html#selenium.webdriver.common.fedcm.dialog.Dialog.get_accounts">get_accounts() (Dialog method)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ALL_COOKIES">GET_ALL_COOKIES (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ALL_COOKIES">GET_ALL_COOKIES (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.get_attribute">get_attribute() (selenium.webdriver.remote.webelement.WebElement method)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.get_attribute">get_attribute() (WebElement method)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig.get_auth_header">get_auth_header() (selenium.webdriver.remote.client_config.ClientConfig method)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig.get_auth_header">get_auth_header() (ClientConfig method)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_AVAILABLE_LOG_TYPES">GET_AVAILABLE_LOG_TYPES (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_AVAILABLE_LOG_TYPES">GET_AVAILABLE_LOG_TYPES (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.driver_finder.html#selenium.webdriver.common.driver_finder.DriverFinder.get_browser_path">get_browser_path() (selenium.webdriver.common.driver_finder.DriverFinder method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.driver_finder.html#selenium.webdriver.common.driver_finder.DriverFinder.get_browser_path">get_browser_path() (DriverFinder method)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.remote_connection.html#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_certificate_bundle_path">get_certificate_bundle_path() (selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection class method)</a>
+      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.remote_connection.html#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_certificate_bundle_path">get_certificate_bundle_path() (ChromeRemoteConnection class method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.remote_connection.html#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_certificate_bundle_path">(selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection class method)</a>
+        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.remote_connection.html#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_certificate_bundle_path">(ChromiumRemoteConnection class method)</a>
 </li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.remote_connection.html#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_certificate_bundle_path">(selenium.webdriver.edge.remote_connection.EdgeRemoteConnection class method)</a>
+        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.remote_connection.html#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_certificate_bundle_path">(EdgeRemoteConnection class method)</a>
 </li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.remote_connection.html#selenium.webdriver.firefox.remote_connection.FirefoxRemoteConnection.get_certificate_bundle_path">(selenium.webdriver.firefox.remote_connection.FirefoxRemoteConnection class method)</a>
+        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.remote_connection.html#selenium.webdriver.firefox.remote_connection.FirefoxRemoteConnection.get_certificate_bundle_path">(FirefoxRemoteConnection class method)</a>
 </li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_certificate_bundle_path">(selenium.webdriver.remote.remote_connection.RemoteConnection class method)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_certificate_bundle_path">(RemoteConnection class method)</a>
 </li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.remote_connection.html#selenium.webdriver.safari.remote_connection.SafariRemoteConnection.get_certificate_bundle_path">(selenium.webdriver.safari.remote_connection.SafariRemoteConnection class method)</a>
+        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.remote_connection.html#selenium.webdriver.safari.remote_connection.SafariRemoteConnection.get_certificate_bundle_path">(SafariRemoteConnection class method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.remote_connection.html#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_command">get_command() (selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection method)</a>
+      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.remote_connection.html#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_command">get_command() (ChromeRemoteConnection method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.remote_connection.html#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_command">(selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection method)</a>
+        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.remote_connection.html#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_command">(ChromiumRemoteConnection method)</a>
 </li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.remote_connection.html#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_command">(selenium.webdriver.edge.remote_connection.EdgeRemoteConnection method)</a>
+        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.remote_connection.html#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_command">(EdgeRemoteConnection method)</a>
 </li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.remote_connection.html#selenium.webdriver.firefox.remote_connection.FirefoxRemoteConnection.get_command">(selenium.webdriver.firefox.remote_connection.FirefoxRemoteConnection method)</a>
+        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.remote_connection.html#selenium.webdriver.firefox.remote_connection.FirefoxRemoteConnection.get_command">(FirefoxRemoteConnection method)</a>
 </li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_command">(selenium.webdriver.remote.remote_connection.RemoteConnection method)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_command">(RemoteConnection method)</a>
 </li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.remote_connection.html#selenium.webdriver.safari.remote_connection.SafariRemoteConnection.get_command">(selenium.webdriver.safari.remote_connection.SafariRemoteConnection method)</a>
+        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.remote_connection.html#selenium.webdriver.safari.remote_connection.SafariRemoteConnection.get_command">(SafariRemoteConnection method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_COOKIE">GET_COOKIE (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_COOKIE">GET_COOKIE (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_cookie">get_cookie() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_cookie">get_cookie() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_cookie">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_cookie">(LocalWebDriver method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_cookie">(selenium.webdriver.common.webdriver.LocalWebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_cookie">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_cookie">(selenium.webdriver.firefox.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_cookie">(selenium.webdriver.ie.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_cookie">(selenium.webdriver.remote.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_cookie">(selenium.webdriver.safari.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_cookie">(selenium.webdriver.webkitgtk.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_cookie">(selenium.webdriver.wpewebkit.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_cookie">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_cookie">[1]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_cookie">[2]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_cookie">[3]</a>, <a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_cookie">[4]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_cookie">[5]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_cookie">[6]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_cookie">[7]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_cookies">get_cookies() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_cookies">get_cookies() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_cookies">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_cookies">(LocalWebDriver method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_cookies">(selenium.webdriver.common.webdriver.LocalWebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_cookies">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_cookies">(selenium.webdriver.firefox.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_cookies">(selenium.webdriver.ie.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_cookies">(selenium.webdriver.remote.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_cookies">(selenium.webdriver.safari.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_cookies">(selenium.webdriver.webkitgtk.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_cookies">(selenium.webdriver.wpewebkit.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_cookies">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_cookies">[1]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_cookies">[2]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_cookies">[3]</a>, <a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_cookies">[4]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_cookies">[5]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_cookies">[6]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_cookies">[7]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_CREDENTIALS">GET_CREDENTIALS (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_CREDENTIALS">GET_CREDENTIALS (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_credentials">get_credentials() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_credentials">get_credentials() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_credentials">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_credentials">(LocalWebDriver method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_credentials">(selenium.webdriver.common.webdriver.LocalWebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_credentials">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_credentials">(selenium.webdriver.firefox.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_credentials">(selenium.webdriver.ie.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_credentials">(selenium.webdriver.remote.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_credentials">(selenium.webdriver.safari.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_credentials">(selenium.webdriver.webkitgtk.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_credentials">(selenium.webdriver.wpewebkit.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_credentials">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_credentials">[1]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_credentials">[2]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_credentials">[3]</a>, <a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_credentials">[4]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_credentials">[5]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_credentials">[6]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_credentials">[7]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_CURRENT_URL">GET_CURRENT_URL (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_CURRENT_URL">GET_CURRENT_URL (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_common_actions/selenium.webdriver.common.actions.action_builder.html#selenium.webdriver.common.actions.action_builder.ActionBuilder.get_device_with">get_device_with() (selenium.webdriver.common.actions.action_builder.ActionBuilder method)</a>
+      <li><a href="selenium_webdriver_common_actions/selenium.webdriver.common.actions.action_builder.html#selenium.webdriver.common.actions.action_builder.ActionBuilder.get_device_with">get_device_with() (ActionBuilder method)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.get_dom_attribute">get_dom_attribute() (selenium.webdriver.remote.webelement.WebElement method)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.get_dom_attribute">get_dom_attribute() (WebElement method)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_DOWNLOADABLE_FILES">GET_DOWNLOADABLE_FILES (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_DOWNLOADABLE_FILES">GET_DOWNLOADABLE_FILES (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_downloadable_files">get_downloadable_files() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_downloadable_files">get_downloadable_files() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_downloadable_files">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_downloadable_files">(LocalWebDriver method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_downloadable_files">(selenium.webdriver.common.webdriver.LocalWebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_downloadable_files">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_downloadable_files">(selenium.webdriver.firefox.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_downloadable_files">(selenium.webdriver.ie.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_downloadable_files">(selenium.webdriver.remote.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_downloadable_files">(selenium.webdriver.safari.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_downloadable_files">(selenium.webdriver.webkitgtk.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_downloadable_files">(selenium.webdriver.wpewebkit.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_downloadable_files">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_downloadable_files">[1]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_downloadable_files">[2]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_downloadable_files">[3]</a>, <a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_downloadable_files">[4]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_downloadable_files">[5]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_downloadable_files">[6]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_downloadable_files">[7]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.driver_finder.html#selenium.webdriver.common.driver_finder.DriverFinder.get_driver_path">get_driver_path() (selenium.webdriver.common.driver_finder.DriverFinder method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.driver_finder.html#selenium.webdriver.common.driver_finder.DriverFinder.get_driver_path">get_driver_path() (DriverFinder method)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_LABEL">GET_ELEMENT_ARIA_LABEL (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_LABEL">GET_ELEMENT_ARIA_LABEL (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_ROLE">GET_ELEMENT_ARIA_ROLE (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_ROLE">GET_ELEMENT_ARIA_ROLE (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_ATTRIBUTE">GET_ELEMENT_ATTRIBUTE (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_ATTRIBUTE">GET_ELEMENT_ATTRIBUTE (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_PROPERTY">GET_ELEMENT_PROPERTY (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_PROPERTY">GET_ELEMENT_PROPERTY (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_RECT">GET_ELEMENT_RECT (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_RECT">GET_ELEMENT_RECT (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_TAG_NAME">GET_ELEMENT_TAG_NAME (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_TAG_NAME">GET_ELEMENT_TAG_NAME (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_TEXT">GET_ELEMENT_TEXT (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_TEXT">GET_ELEMENT_TEXT (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY">GET_ELEMENT_VALUE_OF_CSS_PROPERTY (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY">GET_ELEMENT_VALUE_OF_CSS_PROPERTY (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_FEDCM_ACCOUNT_LIST">GET_FEDCM_ACCOUNT_LIST (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_FEDCM_ACCOUNT_LIST">GET_FEDCM_ACCOUNT_LIST (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_FEDCM_DIALOG_TYPE">GET_FEDCM_DIALOG_TYPE (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_FEDCM_DIALOG_TYPE">GET_FEDCM_DIALOG_TYPE (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_FEDCM_TITLE">GET_FEDCM_TITLE (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_FEDCM_TITLE">GET_FEDCM_TITLE (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.by.html#selenium.webdriver.common.by.By.get_finder">get_finder() (selenium.webdriver.common.by.By class method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.by.html#selenium.webdriver.common.by.By.get_finder">get_finder() (By class method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_base64">get_full_page_screenshot_as_base64() (selenium.webdriver.firefox.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_base64">get_full_page_screenshot_as_base64() (WebDriver method)</a>
 </li>
-      <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_file">get_full_page_screenshot_as_file() (selenium.webdriver.firefox.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_file">get_full_page_screenshot_as_file() (WebDriver method)</a>
 </li>
-      <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_png">get_full_page_screenshot_as_png() (selenium.webdriver.firefox.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_png">get_full_page_screenshot_as_png() (WebDriver method)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_issue_message">get_issue_message() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_issue_message">get_issue_message() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_issue_message">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_issue_message">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_issue_message">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_issue_message">[1]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_LOG">GET_LOG (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_LOG">GET_LOG (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_log">get_log() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_log">get_log() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_log">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_log">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_log">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_log">[1]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_network_conditions">get_network_conditions() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_network_conditions">get_network_conditions() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_network_conditions">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_network_conditions">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_network_conditions">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_network_conditions">[1]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_NETWORK_CONNECTION">GET_NETWORK_CONNECTION (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_NETWORK_CONNECTION">GET_NETWORK_CONNECTION (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_PAGE_SOURCE">GET_PAGE_SOURCE (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_PAGE_SOURCE">GET_PAGE_SOURCE (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_permission">get_permission() (selenium.webdriver.safari.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_permission">get_permission() (WebDriver method)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_pinned_scripts">get_pinned_scripts() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_pinned_scripts">get_pinned_scripts() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_pinned_scripts">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_pinned_scripts">(LocalWebDriver method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_pinned_scripts">(selenium.webdriver.common.webdriver.LocalWebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_pinned_scripts">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_pinned_scripts">(selenium.webdriver.firefox.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_pinned_scripts">(selenium.webdriver.ie.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_pinned_scripts">(selenium.webdriver.remote.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_pinned_scripts">(selenium.webdriver.safari.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_pinned_scripts">(selenium.webdriver.webkitgtk.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_pinned_scripts">(selenium.webdriver.wpewebkit.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_pinned_scripts">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_pinned_scripts">[1]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_pinned_scripts">[2]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_pinned_scripts">[3]</a>, <a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_pinned_scripts">[4]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_pinned_scripts">[5]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_pinned_scripts">[6]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_pinned_scripts">[7]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.get_property">get_property() (selenium.webdriver.remote.webelement.WebElement method)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.get_property">get_property() (WebElement method)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig.get_proxy_url">get_proxy_url() (selenium.webdriver.remote.client_config.ClientConfig method)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig.get_proxy_url">get_proxy_url() (ClientConfig method)</a>
 </li>
       <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.get_remote_connection">get_remote_connection() (in module selenium.webdriver.remote.webdriver)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.remote_connection.html#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_remote_connection_headers">get_remote_connection_headers() (selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection class method)</a>
+      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.remote_connection.html#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_remote_connection_headers">get_remote_connection_headers() (ChromeRemoteConnection class method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.remote_connection.html#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_remote_connection_headers">(selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection class method)</a>
+        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.remote_connection.html#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_remote_connection_headers">(ChromiumRemoteConnection class method)</a>
 </li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.remote_connection.html#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_remote_connection_headers">(selenium.webdriver.edge.remote_connection.EdgeRemoteConnection class method)</a>
+        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.remote_connection.html#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_remote_connection_headers">(EdgeRemoteConnection class method)</a>
 </li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.remote_connection.html#selenium.webdriver.firefox.remote_connection.FirefoxRemoteConnection.get_remote_connection_headers">(selenium.webdriver.firefox.remote_connection.FirefoxRemoteConnection class method)</a>
+        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.remote_connection.html#selenium.webdriver.firefox.remote_connection.FirefoxRemoteConnection.get_remote_connection_headers">(FirefoxRemoteConnection class method)</a>
 </li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_remote_connection_headers">(selenium.webdriver.remote.remote_connection.RemoteConnection class method)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_remote_connection_headers">(RemoteConnection class method)</a>
 </li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.remote_connection.html#selenium.webdriver.safari.remote_connection.SafariRemoteConnection.get_remote_connection_headers">(selenium.webdriver.safari.remote_connection.SafariRemoteConnection class method)</a>
+        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.remote_connection.html#selenium.webdriver.safari.remote_connection.SafariRemoteConnection.get_remote_connection_headers">(SafariRemoteConnection class method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_SCREEN_ORIENTATION">GET_SCREEN_ORIENTATION (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_SCREEN_ORIENTATION">GET_SCREEN_ORIENTATION (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_screenshot_as_base64">get_screenshot_as_base64() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_screenshot_as_base64">get_screenshot_as_base64() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_screenshot_as_base64">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_screenshot_as_base64">(LocalWebDriver method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_screenshot_as_base64">(selenium.webdriver.common.webdriver.LocalWebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_screenshot_as_base64">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_screenshot_as_base64">(selenium.webdriver.firefox.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_screenshot_as_base64">(selenium.webdriver.ie.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_base64">(selenium.webdriver.remote.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_screenshot_as_base64">(selenium.webdriver.safari.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_screenshot_as_base64">(selenium.webdriver.webkitgtk.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_screenshot_as_base64">(selenium.webdriver.wpewebkit.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_screenshot_as_base64">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_screenshot_as_base64">[1]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_screenshot_as_base64">[2]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_screenshot_as_base64">[3]</a>, <a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_base64">[4]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_screenshot_as_base64">[5]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_screenshot_as_base64">[6]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_screenshot_as_base64">[7]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_screenshot_as_file">get_screenshot_as_file() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_screenshot_as_file">get_screenshot_as_file() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_screenshot_as_file">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_screenshot_as_file">(LocalWebDriver method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_screenshot_as_file">(selenium.webdriver.common.webdriver.LocalWebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_screenshot_as_file">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_screenshot_as_file">(selenium.webdriver.firefox.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_screenshot_as_file">(selenium.webdriver.ie.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_file">(selenium.webdriver.remote.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_screenshot_as_file">(selenium.webdriver.safari.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_screenshot_as_file">(selenium.webdriver.webkitgtk.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_screenshot_as_file">(selenium.webdriver.wpewebkit.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_screenshot_as_file">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_screenshot_as_file">[1]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_screenshot_as_file">[2]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_screenshot_as_file">[3]</a>, <a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_file">[4]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_screenshot_as_file">[5]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_screenshot_as_file">[6]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_screenshot_as_file">[7]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_screenshot_as_png">get_screenshot_as_png() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_screenshot_as_png">get_screenshot_as_png() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_screenshot_as_png">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_screenshot_as_png">(LocalWebDriver method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_screenshot_as_png">(selenium.webdriver.common.webdriver.LocalWebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_screenshot_as_png">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_screenshot_as_png">(selenium.webdriver.firefox.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_screenshot_as_png">(selenium.webdriver.ie.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_png">(selenium.webdriver.remote.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_screenshot_as_png">(selenium.webdriver.safari.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_screenshot_as_png">(selenium.webdriver.webkitgtk.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_screenshot_as_png">(selenium.webdriver.wpewebkit.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_screenshot_as_png">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_screenshot_as_png">[1]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_screenshot_as_png">[2]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_screenshot_as_png">[3]</a>, <a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_png">[4]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_screenshot_as_png">[5]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_screenshot_as_png">[6]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_screenshot_as_png">[7]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_SHADOW_ROOT">GET_SHADOW_ROOT (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_SHADOW_ROOT">GET_SHADOW_ROOT (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_sinks">get_sinks() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_sinks">get_sinks() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_sinks">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_sinks">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_sinks">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_sinks">[1]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common/selenium.webdriver.common.api_request_context.html#selenium.webdriver.common.api_request_context.APIRequestContext.get_storage_state">get_storage_state() (selenium.webdriver.common.api_request_context.APIRequestContext method)</a>
+      <li><a href="selenium_webdriver_common/selenium.webdriver.common.api_request_context.html#selenium.webdriver.common.api_request_context.APIRequestContext.get_storage_state">get_storage_state() (APIRequestContext method)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.remote_connection.html#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_timeout">get_timeout() (selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection class method)</a>
+      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.remote_connection.html#selenium.webdriver.chrome.remote_connection.ChromeRemoteConnection.get_timeout">get_timeout() (ChromeRemoteConnection class method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.remote_connection.html#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_timeout">(selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection class method)</a>
+        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.remote_connection.html#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_timeout">(ChromiumRemoteConnection class method)</a>
 </li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.remote_connection.html#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_timeout">(selenium.webdriver.edge.remote_connection.EdgeRemoteConnection class method)</a>
+        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.remote_connection.html#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_timeout">(EdgeRemoteConnection class method)</a>
 </li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.remote_connection.html#selenium.webdriver.firefox.remote_connection.FirefoxRemoteConnection.get_timeout">(selenium.webdriver.firefox.remote_connection.FirefoxRemoteConnection class method)</a>
+        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.remote_connection.html#selenium.webdriver.firefox.remote_connection.FirefoxRemoteConnection.get_timeout">(FirefoxRemoteConnection class method)</a>
 </li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_timeout">(selenium.webdriver.remote.remote_connection.RemoteConnection class method)</a>
+        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_timeout">(RemoteConnection class method)</a>
 </li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.remote_connection.html#selenium.webdriver.safari.remote_connection.SafariRemoteConnection.get_timeout">(selenium.webdriver.safari.remote_connection.SafariRemoteConnection class method)</a>
+        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.remote_connection.html#selenium.webdriver.safari.remote_connection.SafariRemoteConnection.get_timeout">(SafariRemoteConnection class method)</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_TIMEOUTS">GET_TIMEOUTS (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_TIMEOUTS">GET_TIMEOUTS (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_TITLE">GET_TITLE (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_TITLE">GET_TITLE (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.permissions.html#selenium.webdriver.safari.permissions.Permission.GET_USER_MEDIA">GET_USER_MEDIA (selenium.webdriver.safari.permissions.Permission attribute)</a>
+      <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.permissions.html#selenium.webdriver.safari.permissions.Permission.GET_USER_MEDIA">GET_USER_MEDIA (Permission attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_window_position">get_window_position() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_window_position">get_window_position() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_window_position">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_window_position">(LocalWebDriver method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_window_position">(selenium.webdriver.common.webdriver.LocalWebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_window_position">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_window_position">(selenium.webdriver.firefox.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_window_position">(selenium.webdriver.ie.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_window_position">(selenium.webdriver.remote.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_window_position">(selenium.webdriver.safari.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_window_position">(selenium.webdriver.webkitgtk.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_window_position">(selenium.webdriver.wpewebkit.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_window_position">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_window_position">[1]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_window_position">[2]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_window_position">[3]</a>, <a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_window_position">[4]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_window_position">[5]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_window_position">[6]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_window_position">[7]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_WINDOW_RECT">GET_WINDOW_RECT (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GET_WINDOW_RECT">GET_WINDOW_RECT (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_window_rect">get_window_rect() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_window_rect">get_window_rect() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_window_rect">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_window_rect">(LocalWebDriver method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_window_rect">(selenium.webdriver.common.webdriver.LocalWebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_window_rect">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_window_rect">(selenium.webdriver.firefox.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_window_rect">(selenium.webdriver.ie.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_window_rect">(selenium.webdriver.remote.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_window_rect">(selenium.webdriver.safari.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_window_rect">(selenium.webdriver.webkitgtk.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_window_rect">(selenium.webdriver.wpewebkit.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_window_rect">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_window_rect">[1]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_window_rect">[2]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_window_rect">[3]</a>, <a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_window_rect">[4]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_window_rect">[5]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_window_rect">[6]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_window_rect">[7]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_window_size">get_window_size() (selenium.webdriver.chrome.webdriver.WebDriver method)</a>
+      <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_window_size">get_window_size() (ChromiumDriver method)</a>
 
       <ul>
-        <li><a href="selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_window_size">(selenium.webdriver.chromium.webdriver.ChromiumDriver method)</a>
+        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_window_size">(LocalWebDriver method)</a>
 </li>
-        <li><a href="selenium_webdriver_common/selenium.webdriver.common.webdriver.html#selenium.webdriver.common.webdriver.LocalWebDriver.get_window_size">(selenium.webdriver.common.webdriver.LocalWebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_window_size">(selenium.webdriver.edge.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_window_size">(selenium.webdriver.firefox.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_window_size">(selenium.webdriver.ie.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_window_size">(selenium.webdriver.remote.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_window_size">(selenium.webdriver.safari.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_window_size">(selenium.webdriver.webkitgtk.webdriver.WebDriver method)</a>
-</li>
-        <li><a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_window_size">(selenium.webdriver.wpewebkit.webdriver.WebDriver method)</a>
+        <li><a href="selenium_webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_window_size">(WebDriver method)</a>, <a href="selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver.get_window_size">[1]</a>, <a href="selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_window_size">[2]</a>, <a href="selenium_webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.get_window_size">[3]</a>, <a href="selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_window_size">[4]</a>, <a href="selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_window_size">[5]</a>, <a href="selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.webkitgtk.webdriver.WebDriver.get_window_size">[6]</a>, <a href="selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.wpewebkit.webdriver.WebDriver.get_window_size">[7]</a>
 </li>
       </ul></li>
-      <li><a href="selenium_webdriver_common_fedcm/selenium.webdriver.common.fedcm.account.html#selenium.webdriver.common.fedcm.account.Account.given_name">given_name (selenium.webdriver.common.fedcm.account.Account attribute)</a>
+      <li><a href="selenium_webdriver_common_fedcm/selenium.webdriver.common.fedcm.account.html#selenium.webdriver.common.fedcm.account.Account.given_name">given_name (Account attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GO_BACK">GO_BACK (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GO_BACK">GO_BACK (Command attribute)</a>
 </li>
-      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GO_FORWARD">GO_FORWARD (selenium.webdriver.remote.command.Command attribute)</a>
+      <li><a href="selenium_webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command.GO_FORWARD">GO_FORWARD (Command attribute)</a>
 </li>
   </ul></td>
 </tr></table>
 
 
-          </article>
-        </div>
-      </div>
-    </main>
-  </div>
-  <footer class="md-footer">
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-          
-          
-        </a>
-        
-      </nav>
-    </div>
-    <div class="md-footer-meta md-typeset">
-      <div class="md-footer-meta__inner md-grid">
-        <div class="md-footer-copyright">
-          <div class="md-footer-copyright__highlight">
-              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+                </article>
               
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-        </div>
-      </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
     </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
   </footer>
-  <script src="_static/javascripts/application.js"></script>
-  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
   </body>
 </html>

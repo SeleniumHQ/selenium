@@ -1,210 +1,354 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="../../../../">
+
+<html lang="en" data-content_root="../../../../" >
+
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="lang:clipboard.copy" content="Copy to clipboard">
-  <meta name="lang:clipboard.copied" content="Copied to clipboard">
-  <meta name="lang:search.language" content="en">
-  <meta name="lang:search.pipeline.stopwords" content="True">
-  <meta name="lang:search.pipeline.trimmer" content="True">
-  <meta name="lang:search.result.none" content="No matching documents">
-  <meta name="lang:search.result.one" content="1 matching document">
-  <meta name="lang:search.result.other" content="# matching documents">
-  <meta name="lang:search.tokenizer" content="[\s\-]+">
-
+    <title>selenium.webdriver.remote.webelement &#8212; Selenium 4.47.0 documentation</title>
   
-    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
-
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
     <style>
-      body,
-      input {
-        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-      }
+      .pst-js-only { display: none !important; }
 
-      code,
-      kbd,
-      pre {
-        font-family: "Roboto Mono", "Courier New", Courier, monospace
-      }
     </style>
+  </noscript>
   
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
 
-  <link rel="stylesheet" href="../../../../_static/stylesheets/application.css"/>
-  <link rel="stylesheet" href="../../../../_static/stylesheets/application-palette.css"/>
-  <link rel="stylesheet" href="../../../../_static/stylesheets/application-fixes.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
   
-  <link rel="stylesheet" href="../../../../_static/fonts/material-icons.css"/>
-  
-  <meta name="theme-color" content="#3f51b5">
-  <script src="../../../../_static/javascripts/modernizr.js"></script>
-  
-  
-  
-    <title>selenium.webdriver.remote.webelement &#8212; Selenium 4.46.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=34af0a0d"></script>
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+
+    <script src="../../../../_static/documentation_options.js?v=457a4054"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/remote/webelement';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="4.47" />
   
-   
-
+    
+    <script src="../../../../_static/searchtools.js"></script>
+    <script src="../../../../_static/language_data.js"></script>
+    <script src="../../../../searchindex.js"></script>
+  
   </head>
-  <body dir=ltr
-        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  <body data-default-mode="">
   
-  <svg class="md-svg">
-    <defs data-children-count="0">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-      
-    </defs>
-  </svg>
   
-  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
-  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
-  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#_modules/selenium/webdriver/remote/webelement" tabindex="1" class="md-skip"> Skip to content </a>
-  <header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid">
-    <div class="md-flex navheader">
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.46.0 documentation"
-           class="md-header-nav__button md-logo">
-          
-            &nbsp;
-          
-        </a>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
-      </div>
-      <div class="md-flex__cell md-flex__cell--stretch">
-        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.46.0 documentation</span>
-          <span class="md-header-nav__topic"> selenium.webdriver.remote.webelement </span>
-        </div>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
-        
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" action="../../../../search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
-             autocapitalize="off" autocomplete="off" spellcheck="false"
-             data-md-component="query" data-md-state="active">
-      <label class="md-icon md-search__icon" for="__search"></label>
-      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
-        &#xE5CD;
-      </button>
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
-          <div class="md-search-result__meta">
-            Type to start searching
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Selenium 4.47.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
       </div>
       
-      
-  
-  <script src="../../../../_static/javascripts/version_dropdown.js"></script>
-  <script>
-    var json_loc = "../../../../"versions.json"",
-        target_loc = "../../../../../",
-        text = "Versions";
-    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
-  </script>
-  
-
-    </div>
-  </nav>
-</header>
-
-  
-  <div class="md-container">
-    
-    
-    
-  <nav class="md-tabs" data-md-component="tabs">
-    <div class="md-tabs__inner md-grid">
-      <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.46.0 documentation</a></li>
-          <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
-      </ul>
-    </div>
-  </nav>
-    <main class="md-main">
-      <div class="md-main__inner md-grid" data-md-component="container">
+      <main id="main-content" class="bd-main" role="main">
         
-          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                <nav class="md-nav md-nav--primary" data-md-level="0">
-  <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.46.0 documentation" class="md-nav__button md-logo">
-      
-        <img src="../../../../_static/" alt=" logo" width="48" height="48">
-      
-    </a>
-    <a href="../../../../index.html"
-       title="Selenium 4.46.0 documentation">Selenium 4.46.0 documentation</a>
-  </label>
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
   
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
 
-</nav>
-              </div>
-            </div>
-          </div>
-          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                
-<nav class="md-nav md-nav--secondary">
-  <ul class="md-nav__list" data-md-scrollfix="">
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
     
-
-<li id="searchbox" class="md-nav__item"></li>
-
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">selenium.webdriver.remote.webelement</span></li>
   </ul>
 </nav>
-              </div>
-            </div>
-          </div>
-        
-        <div class="md-content">
-          <article class="md-content__inner md-typeset" role="main">
-            
-  <h1 id="modules-selenium-webdriver-remote-webelement--page-root">Source code for selenium.webdriver.remote.webelement</h1><div class="highlight"><pre>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for selenium.webdriver.remote.webelement</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
 <span class="c1"># or more contributor license agreements.  See the NOTICE file</span>
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># "License"); you may not use this file except in compliance</span>
+<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -234,19 +378,19 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_load_js</span><span class="p">():</span>
     <span class="k">global</span> <span class="n">getAttribute_js</span>
     <span class="k">global</span> <span class="n">isDisplayed_js</span>
-    <span class="n">_pkg</span> <span class="o">=</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">getAttribute_js</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">_pkg</span><span class="p">,</span> <span class="s2">"getAttribute.js"</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf8"</span><span class="p">)</span>
-    <span class="n">isDisplayed_js</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">_pkg</span><span class="p">,</span> <span class="s2">"isDisplayed.js"</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf8"</span><span class="p">)</span>
+    <span class="n">_pkg</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">getAttribute_js</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">_pkg</span><span class="p">,</span> <span class="s2">&quot;getAttribute.js&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span>
+    <span class="n">isDisplayed_js</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">_pkg</span><span class="p">,</span> <span class="s2">&quot;isDisplayed.js&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="BaseWebElement">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.BaseWebElement">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseWebElement</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Abstract Base Class for WebElement.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract Base Class for WebElement.</span>
 
-<span class="sd">    ABC's will allow custom types to be registered as a WebElement to</span>
+<span class="sd">    ABC&#39;s will allow custom types to be registered as a WebElement to</span>
 <span class="sd">    pass type checks.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">pass</span></div>
 
@@ -255,7 +399,7 @@
 <div class="viewcode-block" id="WebElement">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">WebElement</span><span class="p">(</span><span class="n">BaseWebElement</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Represents a DOM element.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a DOM element.</span>
 
 <span class="sd">    Generally, all interesting operations that interact with a document will be</span>
 <span class="sd">    performed through this interface.</span>
@@ -265,14 +409,14 @@
 <span class="sd">    element is still attached to the DOM.  If this test fails, then an</span>
 <span class="sd">    `StaleElementReferenceException` is thrown, and all future calls to this</span>
 <span class="sd">    instance will fail.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">id_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">id_</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> (session="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="si">}</span><span class="s1">", element="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s1">")&gt;'</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> (session=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="si">}</span><span class="s1">&quot;, element=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s1">&quot;)&gt;&#39;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">session_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -280,84 +424,84 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">tag_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""This element's `tagName` property.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This element&#39;s `tagName` property.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The tag name of the element.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            element = driver.find_element(By.ID, "foo")</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_TAG_NAME</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
+<span class="sd">            element = driver.find_element(By.ID, &quot;foo&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_TAG_NAME</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""The text of the element.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The text of the element.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The text of the element.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            element = driver.find_element(By.ID, "foo")</span>
+<span class="sd">            element = driver.find_element(By.ID, &quot;foo&quot;)</span>
 <span class="sd">            print(element.text)</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_TEXT</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_TEXT</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="WebElement.click">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.click">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">click</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Clicks the element.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clicks the element.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            element = driver.find_element(By.ID, "foo")</span>
+<span class="sd">            element = driver.find_element(By.ID, &quot;foo&quot;)</span>
 <span class="sd">            element.click()</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">CLICK_ELEMENT</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WebElement.submit">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.submit">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Submits a form.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Submits a form.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            form = driver.find_element(By.NAME, "login")</span>
+<span class="sd">            form = driver.find_element(By.NAME, &quot;login&quot;)</span>
 <span class="sd">            form.submit()</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">script</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">"/* submitForm */var form = arguments[0];</span><span class="se">\n</span><span class="s2">"</span>
-            <span class="s1">'while (form.nodeName != "FORM" &amp;&amp; form.parentNode) {</span><span class="se">\n</span><span class="s1">'</span>
-            <span class="s2">"  form = form.parentNode;</span><span class="se">\n</span><span class="s2">"</span>
-            <span class="s2">"}</span><span class="se">\n</span><span class="s2">"</span>
-            <span class="s2">"if (!form) { throw Error('Unable to find containing form element'); }</span><span class="se">\n</span><span class="s2">"</span>
-            <span class="s2">"if (!form.ownerDocument) { throw Error('Unable to find owning document'); }</span><span class="se">\n</span><span class="s2">"</span>
-            <span class="s2">"var e = form.ownerDocument.createEvent('Event');</span><span class="se">\n</span><span class="s2">"</span>
-            <span class="s2">"e.initEvent('submit', true, true);</span><span class="se">\n</span><span class="s2">"</span>
-            <span class="s2">"if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">&quot;/* submitForm */var form = arguments[0];</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s1">&#39;while (form.nodeName != &quot;FORM&quot; &amp;&amp; form.parentNode) {</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="s2">&quot;  form = form.parentNode;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;if (!form) { throw Error(&#39;Unable to find containing form element&#39;); }</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;if (!form.ownerDocument) { throw Error(&#39;Unable to find owning document&#39;); }</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;var e = form.ownerDocument.createEvent(&#39;Event&#39;);</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;e.initEvent(&#39;submit&#39;, true, true);</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">JavascriptException</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"To submit an element, it must be nested inside a form element"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;To submit an element, it must be nested inside a form element&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
 
 
 <div class="viewcode-block" id="WebElement.clear">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.clear">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Clears the text if it's a text entry element.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clears the text if it&#39;s a text entry element.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            text_field = driver.find_element(By.NAME, "username")</span>
+<span class="sd">            text_field = driver.find_element(By.NAME, &quot;username&quot;)</span>
 <span class="sd">            text_field.clear()</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">CLEAR_ELEMENT</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WebElement.get_property">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.get_property">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">WebElement</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Gets the given property of the element.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the given property of the element.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name: Name of the property to retrieve.</span>
@@ -366,21 +510,21 @@
 <span class="sd">            The value of the property.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            text_length = target_element.get_property("text_length")</span>
-<span class="sd">        """</span>
+<span class="sd">            text_length = target_element.get_property(&quot;text_length&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_PROPERTY</span><span class="p">,</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">})[</span><span class="s2">"value"</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_PROPERTY</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">})[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
         <span class="k">except</span> <span class="n">WebDriverException</span><span class="p">:</span>
-            <span class="c1"># if we hit an end point that doesn't understand getElementProperty lets fake it</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">"return arguments[0][arguments[1]]"</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+            <span class="c1"># if we hit an end point that doesn&#39;t understand getElementProperty lets fake it</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">&quot;return arguments[0][arguments[1]]&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WebElement.get_dom_attribute">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.get_dom_attribute">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_dom_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Get the HTML attribute value (not reflected properties) of the element.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the HTML attribute value (not reflected properties) of the element.</span>
 
-<span class="sd">        Returns only attributes declared in the element's HTML markup, unlike</span>
+<span class="sd">        Returns only attributes declared in the element&#39;s HTML markup, unlike</span>
 <span class="sd">        `selenium.webdriver.remote.BaseWebElement.get_attribute`.</span>
 
 <span class="sd">        Args:</span>
@@ -390,22 +534,22 @@
 <span class="sd">            The value of the attribute.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            text_length = target_element.get_dom_attribute("class")</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_ATTRIBUTE</span><span class="p">,</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">})[</span><span class="s2">"value"</span><span class="p">]</span></div>
+<span class="sd">            text_length = target_element.get_dom_attribute(&quot;class&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_ATTRIBUTE</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">})[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="WebElement.get_attribute">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.get_attribute">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Gets the given attribute or property of the element.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the given attribute or property of the element.</span>
 
 <span class="sd">        This method will first try to return the value of a property with the</span>
-<span class="sd">        given name. If a property with that name doesn't exist, it returns the</span>
-<span class="sd">        value of the attribute with the same name. If there's no attribute with</span>
+<span class="sd">        given name. If a property with that name doesn&#39;t exist, it returns the</span>
+<span class="sd">        value of the attribute with the same name. If there&#39;s no attribute with</span>
 <span class="sd">        that name, ``None`` is returned.</span>
 
-<span class="sd">        Values which are considered truthy, that is equals "true" or "false",</span>
+<span class="sd">        Values which are considered truthy, that is equals &quot;true&quot; or &quot;false&quot;,</span>
 <span class="sd">        are returned as booleans.  All other non-``None`` values are returned</span>
 <span class="sd">        as strings.  For attributes or properties which do not exist, ``None``</span>
 <span class="sd">        is returned.</span>
@@ -421,13 +565,13 @@
 <span class="sd">            The value of the attribute/property.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            # Check if the "active" CSS class is applied to an element.</span>
-<span class="sd">            is_active = "active" in target_element.get_attribute("class")</span>
-<span class="sd">        """</span>
+<span class="sd">            # Check if the &quot;active&quot; CSS class is applied to an element.</span>
+<span class="sd">            is_active = &quot;active&quot; in target_element.get_attribute(&quot;class&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">getAttribute_js</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">_load_js</span><span class="p">()</span>
         <span class="n">attribute_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">"/* getAttribute */return (</span><span class="si">{</span><span class="n">getAttribute_js</span><span class="si">}</span><span class="s2">).apply(null, arguments);"</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span>
+            <span class="sa">f</span><span class="s2">&quot;/* getAttribute */return (</span><span class="si">{</span><span class="n">getAttribute_js</span><span class="si">}</span><span class="s2">).apply(null, arguments);&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">attribute_value</span></div>
 
@@ -435,32 +579,32 @@
 <div class="viewcode-block" id="WebElement.is_selected">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.is_selected">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Returns whether the element is selected.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns whether the element is selected.</span>
 
 <span class="sd">        This method is generally used on checkboxes, options in a select</span>
 <span class="sd">        and radio buttons.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            is_selected = element.is_selected()</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">IS_ELEMENT_SELECTED</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span></div>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">IS_ELEMENT_SELECTED</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="WebElement.is_enabled">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.is_enabled">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Returns whether the element is enabled.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns whether the element is enabled.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            is_enabled = element.is_enabled()</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">IS_ELEMENT_ENABLED</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span></div>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">IS_ELEMENT_ENABLED</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="WebElement.send_keys">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.send_keys">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">send_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Simulates typing into the element.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Simulates typing into the element.</span>
 
 <span class="sd">        Use this to send simple key events or to fill out form fields.</span>
 <span class="sd">        This can also be used to set file inputs.</span>
@@ -472,40 +616,40 @@
 <span class="sd">        Examples:</span>
 <span class="sd">            To send a simple key event::</span>
 
-<span class="sd">            form_textfield = driver.find_element(By.NAME, "username")</span>
-<span class="sd">            form_textfield.send_keys("admin")</span>
+<span class="sd">            form_textfield = driver.find_element(By.NAME, &quot;username&quot;)</span>
+<span class="sd">            form_textfield.send_keys(&quot;admin&quot;)</span>
 
 <span class="sd">            or to set a file input field::</span>
 
-<span class="sd">            file_input = driver.find_element(By.NAME, "profilePic")</span>
-<span class="sd">            file_input.send_keys("path/to/profilepic.gif")</span>
-<span class="sd">            # Generally it's better to wrap the file path in one of the methods</span>
+<span class="sd">            file_input = driver.find_element(By.NAME, &quot;profilePic&quot;)</span>
+<span class="sd">            file_input.send_keys(&quot;path/to/profilepic.gif&quot;)</span>
+<span class="sd">            # Generally it&#39;s better to wrap the file path in one of the methods</span>
 <span class="sd">            # in os.path to return the actual path to support cross OS testing.</span>
-<span class="sd">            # file_input.send_keys(os.path.abspath("path/to/profilepic.gif"))</span>
-<span class="sd">        """</span>
+<span class="sd">            # file_input.send_keys(os.path.abspath(&quot;path/to/profilepic.gif&quot;))</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># transfer file to another machine only if remote driver is used</span>
         <span class="c1"># the same behaviour as for java binding</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">_is_remote</span><span class="p">:</span>
             <span class="n">local_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
                 <span class="nb">map</span><span class="p">(</span>
                     <span class="k">lambda</span> <span class="n">keys_to_send</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">file_detector</span><span class="o">.</span><span class="n">is_local_file</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">keys_to_send</span><span class="p">)),</span>
-                    <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">),</span>
+                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">),</span>
                 <span class="p">)</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">local_files</span><span class="p">:</span>
                 <span class="n">remote_files</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">local_files</span><span class="p">:</span>
                     <span class="n">remote_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload</span><span class="p">(</span><span class="n">file</span><span class="p">))</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">remote_files</span><span class="p">))</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">remote_files</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span>
-            <span class="n">Command</span><span class="o">.</span><span class="n">SEND_KEYS_TO_ELEMENT</span><span class="p">,</span> <span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">keys_to_typing</span><span class="p">(</span><span class="n">value</span><span class="p">)),</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">keys_to_typing</span><span class="p">(</span><span class="n">value</span><span class="p">)}</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">SEND_KEYS_TO_ELEMENT</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">keys_to_typing</span><span class="p">(</span><span class="n">value</span><span class="p">)),</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">keys_to_typing</span><span class="p">(</span><span class="n">value</span><span class="p">)}</span>
         <span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">shadow_root</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ShadowRoot</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Get the shadow root attached to this element if present (Chromium, Firefox, Safari).</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the shadow root attached to this element if present (Chromium, Firefox, Safari).</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The ShadowRoot object.</span>
@@ -517,28 +661,28 @@
 <span class="sd">            try:</span>
 <span class="sd">                shadow_root = element.shadow_root</span>
 <span class="sd">            except NoSuchShadowRoot:</span>
-<span class="sd">                print("No shadow root attached to element")</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_SHADOW_ROOT</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
+<span class="sd">                print(&quot;No shadow root attached to element&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_SHADOW_ROOT</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
 
     <span class="c1"># RenderedWebElement Items</span>
 <div class="viewcode-block" id="WebElement.is_displayed">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.is_displayed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_displayed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Whether the element is visible to a user.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the element is visible to a user.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            is_displayed = element.is_displayed()</span>
-<span class="sd">        """</span>
-        <span class="c1"># Only go into this conditional for browsers that don't use the atom themselves</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Only go into this conditional for browsers that don&#39;t use the atom themselves</span>
         <span class="k">if</span> <span class="n">isDisplayed_js</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">_load_js</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="sa">f</span><span class="s2">"/* isDisplayed */return (</span><span class="si">{</span><span class="n">isDisplayed_js</span><span class="si">}</span><span class="s2">).apply(null, arguments);"</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/* isDisplayed */return (</span><span class="si">{</span><span class="n">isDisplayed_js</span><span class="si">}</span><span class="s2">).apply(null, arguments);&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">location_once_scrolled_into_view</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Get the element's location on screen after scrolling it into view.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the element&#39;s location on screen after scrolling it into view.</span>
 
 <span class="sd">        This may change without warning and scrolls the element into view</span>
 <span class="sd">        before calculating coordinates for clicking purposes.</span>
@@ -549,34 +693,34 @@
 
 <span class="sd">        Example:</span>
 <span class="sd">            loc = element.location_once_scrolled_into_view</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">old_loc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">W3C_EXECUTE_SCRIPT</span><span class="p">,</span>
             <span class="p">{</span>
-                <span class="s2">"script"</span><span class="p">:</span> <span class="s2">"arguments[0].scrollIntoView(true); return arguments[0].getBoundingClientRect()"</span><span class="p">,</span>
-                <span class="s2">"args"</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="p">],</span>
+                <span class="s2">&quot;script&quot;</span><span class="p">:</span> <span class="s2">&quot;arguments[0].scrollIntoView(true); return arguments[0].getBoundingClientRect()&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="p">],</span>
             <span class="p">},</span>
-        <span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">"x"</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">old_loc</span><span class="p">[</span><span class="s2">"x"</span><span class="p">]),</span> <span class="s2">"y"</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">old_loc</span><span class="p">[</span><span class="s2">"y"</span><span class="p">])}</span>
+        <span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">old_loc</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]),</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">old_loc</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])}</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Get the size of the element.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the size of the element.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The width and height of the element.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            size = element.size</span>
-<span class="sd">        """</span>
-        <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_RECT</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
-        <span class="n">new_size</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"height"</span><span class="p">:</span> <span class="n">size</span><span class="p">[</span><span class="s2">"height"</span><span class="p">],</span> <span class="s2">"width"</span><span class="p">:</span> <span class="n">size</span><span class="p">[</span><span class="s2">"width"</span><span class="p">]}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_RECT</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+        <span class="n">new_size</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;height&quot;</span><span class="p">:</span> <span class="n">size</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">],</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="n">size</span><span class="p">[</span><span class="s2">&quot;width&quot;</span><span class="p">]}</span>
         <span class="k">return</span> <span class="n">new_size</span>
 
 <div class="viewcode-block" id="WebElement.value_of_css_property">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.value_of_css_property">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">value_of_css_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">property_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Get the value of a CSS property.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the value of a CSS property.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            property_name: The name of the CSS property to get the value of.</span>
@@ -585,89 +729,89 @@
 <span class="sd">            The value of the CSS property.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            value = element.value_of_css_property("color")</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_VALUE_OF_CSS_PROPERTY</span><span class="p">,</span> <span class="p">{</span><span class="s2">"propertyName"</span><span class="p">:</span> <span class="n">property_name</span><span class="p">})[</span><span class="s2">"value"</span><span class="p">]</span></div>
+<span class="sd">            value = element.value_of_css_property(&quot;color&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_VALUE_OF_CSS_PROPERTY</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;propertyName&quot;</span><span class="p">:</span> <span class="n">property_name</span><span class="p">})[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">location</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Get the location of the element in the renderable canvas.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the location of the element in the renderable canvas.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The x and y coordinates of the element.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            loc = element.location</span>
-<span class="sd">        """</span>
-        <span class="n">old_loc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_RECT</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
-        <span class="n">new_loc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"x"</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">old_loc</span><span class="p">[</span><span class="s2">"x"</span><span class="p">]),</span> <span class="s2">"y"</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">old_loc</span><span class="p">[</span><span class="s2">"y"</span><span class="p">])}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">old_loc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_RECT</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+        <span class="n">new_loc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">old_loc</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]),</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">old_loc</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])}</span>
         <span class="k">return</span> <span class="n">new_loc</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">rect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Get the size and location of the element.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the size and location of the element.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A dictionary with size and location of the element.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            rect = element.rect</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_RECT</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_RECT</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">aria_role</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Get the ARIA role of the current web element.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the ARIA role of the current web element.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The ARIA role of the element.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            role = element.aria_role</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_ARIA_ROLE</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_ARIA_ROLE</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">accessible_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Get the ARIA Level of the current webelement.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the ARIA Level of the current webelement.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The ARIA Level of the element.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            name = element.accessible_name</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_ARIA_LABEL</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_ARIA_LABEL</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">screenshot_as_base64</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Get a base64-encoded screenshot of the current element.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a base64-encoded screenshot of the current element.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The screenshot of the element as a base64 encoded string.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            img_b64 = element.screenshot_as_base64</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">ELEMENT_SCREENSHOT</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">ELEMENT_SCREENSHOT</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">screenshot_as_png</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Get the screenshot of the current element as a binary data.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the screenshot of the current element as a binary data.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The screenshot of the element as binary data.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            element_png = element.screenshot_as_png</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screenshot_as_base64</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"ascii"</span><span class="p">))</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screenshot_as_base64</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">))</span>
 
 <div class="viewcode-block" id="WebElement.screenshot">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.screenshot">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Save a PNG screenshot of the current element to a file.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save a PNG screenshot of the current element to a file.</span>
 
 <span class="sd">        Use full paths in your filename.</span>
 
@@ -679,16 +823,16 @@
 <span class="sd">            True if the screenshot was saved successfully, False otherwise.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            element.screenshot("/Screenshots/foo.png")</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".png"</span><span class="p">):</span>
+<span class="sd">            element.screenshot(&quot;/Screenshots/foo.png&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.png&quot;</span><span class="p">):</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">"name used for saved screenshot does not match file type. It should end with a `.png` extension"</span><span class="p">,</span>
+                <span class="s2">&quot;name used for saved screenshot does not match file type. It should end with a `.png` extension&quot;</span><span class="p">,</span>
                 <span class="ne">UserWarning</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="n">png</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screenshot_as_png</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">png</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -699,53 +843,53 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Get the WebDriver instance this element was found from.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the WebDriver instance this element was found from.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            element = driver.find_element(By.ID, "foo")</span>
+<span class="sd">            element = driver.find_element(By.ID, &quot;foo&quot;)</span>
 <span class="sd">            parent_element = element.parent</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Get the ID used by selenium.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the ID used by selenium.</span>
 
 <span class="sd">        This is mainly for internal use. Simple use cases such as checking if 2</span>
 <span class="sd">        webelements refer to the same element, can be done using ``==``::</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            if element1 == element2:</span>
-<span class="sd">                print("These 2 are equal")</span>
-<span class="sd">        """</span>
+<span class="sd">                print(&quot;These 2 are equal&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="s2">"id"</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">==</span> <span class="n">element</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">==</span> <span class="n">element</span><span class="o">.</span><span class="n">id</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
 
     <span class="c1"># Private Methods</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Executes a command against the underlying HTML element.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Executes a command against the underlying HTML element.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            command: The name of the command to _execute as a string.</span>
 <span class="sd">            params: A dictionary of named Parameters to send with the command.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            The command's JSON response loaded into a dictionary object.</span>
-<span class="sd">        """</span>
+<span class="sd">            The command&#39;s JSON response loaded into a dictionary object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="p">:</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">params</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 
 <div class="viewcode-block" id="WebElement.find_element">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_element">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebElement</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Find an element given a By strategy and locator.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">By</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebElement</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find an element given a By strategy and locator.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            by: The locating strategy to use. Default is `By.ID`. Supported values include:</span>
@@ -754,7 +898,7 @@
 <span class="sd">                - By.XPATH: Locate by an XPath expression.</span>
 <span class="sd">                - By.CSS_SELECTOR: Locate by a CSS selector.</span>
 <span class="sd">                - By.CLASS_NAME: Locate by the `class` attribute.</span>
-<span class="sd">                - By.TAG_NAME: Locate by the tag name (e.g., "input", "button").</span>
+<span class="sd">                - By.TAG_NAME: Locate by the tag name (e.g., &quot;input&quot;, &quot;button&quot;).</span>
 <span class="sd">                - By.LINK_TEXT: Locate a link element by its exact text.</span>
 <span class="sd">                - By.PARTIAL_LINK_TEXT: Locate a link element by partial text match.</span>
 <span class="sd">            value: The locator value to use with the specified `by` strategy.</span>
@@ -763,16 +907,16 @@
 <span class="sd">            The first matching `WebElement` found on the page.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            element = driver.find_element(By.ID, "foo")</span>
-<span class="sd">        """</span>
+<span class="sd">            element = driver.find_element(By.ID, &quot;foo&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">by</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">locator_converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENT</span><span class="p">,</span> <span class="p">{</span><span class="s2">"using"</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s2">"value"</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENT</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;using&quot;</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="WebElement.find_elements">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">WebElement</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Find elements given a By strategy and locator.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">By</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">WebElement</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find elements given a By strategy and locator.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            by: The locating strategy to use. Default is `By.ID`. Supported values include:</span>
@@ -781,7 +925,7 @@
 <span class="sd">                - By.XPATH: Locate by an XPath expression.</span>
 <span class="sd">                - By.CSS_SELECTOR: Locate by a CSS selector.</span>
 <span class="sd">                - By.CLASS_NAME: Locate by the `class` attribute.</span>
-<span class="sd">                - By.TAG_NAME: Locate by the tag name (e.g., "input", "button").</span>
+<span class="sd">                - By.TAG_NAME: Locate by the tag name (e.g., &quot;input&quot;, &quot;button&quot;).</span>
 <span class="sd">                - By.LINK_TEXT: Locate a link element by its exact text.</span>
 <span class="sd">                - By.PARTIAL_LINK_TEXT: Locate a link element by partial text match.</span>
 <span class="sd">            value: The locator value to use with the specified `by` strategy.</span>
@@ -790,62 +934,97 @@
 <span class="sd">            List of `WebElements` matching locator strategy found on the page.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            element = driver.find_elements(By.ID, "foo")</span>
-<span class="sd">        """</span>
+<span class="sd">            element = driver.find_elements(By.ID, &quot;foo&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">by</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">locator_converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENTS</span><span class="p">,</span> <span class="p">{</span><span class="s2">"using"</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s2">"value"</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENTS</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;using&quot;</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">md5_hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">md5_hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="mi">16</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="n">fp</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
-        <span class="n">zipped</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZIP_DEFLATED</span><span class="p">)</span>
+        <span class="n">zipped</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZIP_DEFLATED</span><span class="p">)</span>
         <span class="n">zipped</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">zipped</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">encodebytes</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">UPLOAD_FILE</span><span class="p">,</span> <span class="p">{</span><span class="s2">"file"</span><span class="p">:</span> <span class="n">content</span><span class="p">})[</span><span class="s2">"value"</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">UPLOAD_FILE</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="n">content</span><span class="p">})[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
         <span class="k">except</span> <span class="n">WebDriverException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">"Unrecognized command: POST"</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s2">&quot;Unrecognized command: POST&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">filename</span>
-            <span class="k">if</span> <span class="s2">"Command not found: POST "</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s2">&quot;Command not found: POST &quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">filename</span>
-            <span class="k">if</span> <span class="s1">'{"status":405,"value":["GET","HEAD","DELETE"]}'</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;{&quot;status&quot;:405,&quot;value&quot;:[&quot;GET&quot;,&quot;HEAD&quot;,&quot;DELETE&quot;]}&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">filename</span>
             <span class="k">raise</span></div>
 
 </pre></div>
 
-          </article>
-        </div>
-      </div>
-    </main>
-  </div>
-  <footer class="md-footer">
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-          
-          
-        </a>
-        
-      </nav>
-    </div>
-    <div class="md-footer-meta md-typeset">
-      <div class="md-footer-meta__inner md-grid">
-        <div class="md-footer-copyright">
-          <div class="md-footer-copyright__highlight">
-              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+                </article>
               
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-        </div>
-      </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
     </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
   </footer>
-  <script src="../../../../_static/javascripts/application.js"></script>
-  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
   </body>
 </html>

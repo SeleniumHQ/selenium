@@ -1,226 +1,370 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="../../../">
+
+<html lang="en" data-content_root="../../../" >
+
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="lang:clipboard.copy" content="Copy to clipboard">
-  <meta name="lang:clipboard.copied" content="Copied to clipboard">
-  <meta name="lang:search.language" content="en">
-  <meta name="lang:search.pipeline.stopwords" content="True">
-  <meta name="lang:search.pipeline.trimmer" content="True">
-  <meta name="lang:search.result.none" content="No matching documents">
-  <meta name="lang:search.result.one" content="1 matching document">
-  <meta name="lang:search.result.other" content="# matching documents">
-  <meta name="lang:search.tokenizer" content="[\s\-]+">
-
+    <title>selenium.common.exceptions &#8212; Selenium 4.47.0 documentation</title>
   
-    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
-
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
     <style>
-      body,
-      input {
-        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-      }
+      .pst-js-only { display: none !important; }
 
-      code,
-      kbd,
-      pre {
-        font-family: "Roboto Mono", "Courier New", Courier, monospace
-      }
     </style>
+  </noscript>
   
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
 
-  <link rel="stylesheet" href="../../../_static/stylesheets/application.css"/>
-  <link rel="stylesheet" href="../../../_static/stylesheets/application-palette.css"/>
-  <link rel="stylesheet" href="../../../_static/stylesheets/application-fixes.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
   
-  <link rel="stylesheet" href="../../../_static/fonts/material-icons.css"/>
-  
-  <meta name="theme-color" content="#3f51b5">
-  <script src="../../../_static/javascripts/modernizr.js"></script>
-  
-  
-  
-    <title>selenium.common.exceptions &#8212; Selenium 4.46.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/material.css?v=79c92029" />
-    <script src="../../../_static/documentation_options.js?v=34af0a0d"></script>
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+
+    <script src="../../../_static/documentation_options.js?v=457a4054"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/common/exceptions';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="4.47" />
   
-   
-
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
   </head>
-  <body dir=ltr
-        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  <body data-default-mode="">
   
-  <svg class="md-svg">
-    <defs data-children-count="0">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-      
-    </defs>
-  </svg>
   
-  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
-  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
-  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#_modules/selenium/common/exceptions" tabindex="1" class="md-skip"> Skip to content </a>
-  <header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid">
-    <div class="md-flex navheader">
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../index.html" title="Selenium 4.46.0 documentation"
-           class="md-header-nav__button md-logo">
-          
-            &nbsp;
-          
-        </a>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
-      </div>
-      <div class="md-flex__cell md-flex__cell--stretch">
-        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.46.0 documentation</span>
-          <span class="md-header-nav__topic"> selenium.common.exceptions </span>
-        </div>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
-        
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" action="../../../search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
-             autocapitalize="off" autocomplete="off" spellcheck="false"
-             data-md-component="query" data-md-state="active">
-      <label class="md-icon md-search__icon" for="__search"></label>
-      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
-        &#xE5CD;
-      </button>
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
-          <div class="md-search-result__meta">
-            Type to start searching
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Selenium 4.47.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
       </div>
       
-      
-  
-  <script src="../../../_static/javascripts/version_dropdown.js"></script>
-  <script>
-    var json_loc = "../../../"versions.json"",
-        target_loc = "../../../../",
-        text = "Versions";
-    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
-  </script>
-  
-
-    </div>
-  </nav>
-</header>
-
-  
-  <div class="md-container">
-    
-    
-    
-  <nav class="md-tabs" data-md-component="tabs">
-    <div class="md-tabs__inner md-grid">
-      <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Selenium 4.46.0 documentation</a></li>
-          <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">Module code</a></li>
-      </ul>
-    </div>
-  </nav>
-    <main class="md-main">
-      <div class="md-main__inner md-grid" data-md-component="container">
+      <main id="main-content" class="bd-main" role="main">
         
-          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                <nav class="md-nav md-nav--primary" data-md-level="0">
-  <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../index.html" title="Selenium 4.46.0 documentation" class="md-nav__button md-logo">
-      
-        <img src="../../../_static/" alt=" logo" width="48" height="48">
-      
-    </a>
-    <a href="../../../index.html"
-       title="Selenium 4.46.0 documentation">Selenium 4.46.0 documentation</a>
-  </label>
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
   
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
 
-</nav>
-              </div>
-            </div>
-          </div>
-          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                
-<nav class="md-nav md-nav--secondary">
-  <ul class="md-nav__list" data-md-scrollfix="">
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
     
-
-<li id="searchbox" class="md-nav__item"></li>
-
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">selenium.common.exceptions</span></li>
   </ul>
 </nav>
-              </div>
-            </div>
-          </div>
-        
-        <div class="md-content">
-          <article class="md-content__inner md-typeset" role="main">
-            
-  <h1 id="modules-selenium-common-exceptions--page-root">Source code for selenium.common.exceptions</h1><div class="highlight"><pre>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for selenium.common.exceptions</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
 <span class="c1"># or more contributor license agreements.  See the NOTICE file</span>
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># "License"); you may not use this file except in compliance</span>
+<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
-<span class="sd">"""Exceptions that may happen in all the webdriver code."""</span>
+<span class="sd">&quot;&quot;&quot;Exceptions that may happen in all the webdriver code.&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
-<span class="n">SUPPORT_MSG</span> <span class="o">=</span> <span class="s2">"For documentation on this error, please visit:"</span>
-<span class="n">ERROR_URL</span> <span class="o">=</span> <span class="s2">"https://www.selenium.dev/documentation/webdriver/troubleshooting/errors"</span>
+<span class="n">SUPPORT_MSG</span> <span class="o">=</span> <span class="s2">&quot;For documentation on this error, please visit:&quot;</span>
+<span class="n">ERROR_URL</span> <span class="o">=</span> <span class="s2">&quot;https://www.selenium.dev/documentation/webdriver/troubleshooting/errors&quot;</span>
 
 
 <div class="viewcode-block" id="WebDriverException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.WebDriverException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">WebDriverException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Base webdriver exception."""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base webdriver exception.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -234,12 +378,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stacktrace</span> <span class="o">=</span> <span class="n">stacktrace</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">exception_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Message: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="n">exception_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Message: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="p">:</span>
-            <span class="n">exception_msg</span> <span class="o">+=</span> <span class="s2">"Screenshot: available via screen</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="n">exception_msg</span> <span class="o">+=</span> <span class="s2">&quot;Screenshot: available via screen</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stacktrace</span><span class="p">:</span>
-            <span class="n">stacktrace</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stacktrace</span><span class="p">)</span>
-            <span class="n">exception_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"Stacktrace:</span><span class="se">\n</span><span class="si">{</span><span class="n">stacktrace</span><span class="si">}</span><span class="s2">"</span>
+            <span class="n">stacktrace</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stacktrace</span><span class="p">)</span>
+            <span class="n">exception_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Stacktrace:</span><span class="se">\n</span><span class="si">{</span><span class="n">stacktrace</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="n">exception_msg</span></div>
 
 
@@ -247,41 +391,41 @@
 <div class="viewcode-block" id="InvalidSwitchToTargetException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSwitchToTargetException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidSwitchToTargetException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when frame or window target to be switched doesn't exist."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when frame or window target to be switched doesn&#39;t exist.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="NoSuchFrameException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchFrameException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoSuchFrameException</span><span class="p">(</span><span class="n">InvalidSwitchToTargetException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when frame target to be switched doesn't exist."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when frame target to be switched doesn&#39;t exist.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="NoSuchWindowException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchWindowException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoSuchWindowException</span><span class="p">(</span><span class="n">InvalidSwitchToTargetException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when window target to be switched doesn't exist.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when window target to be switched doesn&#39;t exist.</span>
 
 <span class="sd">    To find the current set of active window handles, you can get a list</span>
 <span class="sd">    of the active window handles in the following way::</span>
 
 <span class="sd">        print driver.window_handles</span>
-<span class="sd">    """</span></div>
+<span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="NoSuchElementException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchElementException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoSuchElementException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when element could not be found.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when element could not be found.</span>
 
 <span class="sd">    If you encounter this exception, you may want to check the following:</span>
 <span class="sd">        * Check your selector used in your find_by...</span>
 <span class="sd">        * Element may not yet be on the screen at the time of the find operation,</span>
 <span class="sd">          (webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait()</span>
 <span class="sd">          for how to write a wait wrapper to wait for an element to appear.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -289,7 +433,7 @@
         <span class="n">screen</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">stacktrace</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#nosuchelementexception"</span>
+        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#nosuchelementexception&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">with_support</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span></div>
 
@@ -298,27 +442,27 @@
 <div class="viewcode-block" id="NoSuchAttributeException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchAttributeException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoSuchAttributeException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when the attribute of element could not be found.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when the attribute of element could not be found.</span>
 
 <span class="sd">    You may want to check if the attribute exists in the particular</span>
 <span class="sd">    browser you are testing against.  Some browsers may have different</span>
-<span class="sd">    property names for the same property.  (IE8's .innerText vs. Firefox</span>
+<span class="sd">    property names for the same property.  (IE8&#39;s .innerText vs. Firefox</span>
 <span class="sd">    .textContent)</span>
-<span class="sd">    """</span></div>
+<span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="NoSuchShadowRootException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchShadowRootException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoSuchShadowRootException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when trying to access the shadow root of an element when it does not have a shadow root attached."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when trying to access the shadow root of an element when it does not have a shadow root attached.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="StaleElementReferenceException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.StaleElementReferenceException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">StaleElementReferenceException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when a reference to an element is now "stale".</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when a reference to an element is now &quot;stale&quot;.</span>
 
 <span class="sd">    Stale means the element no longer appears on the DOM of the page.</span>
 
@@ -331,7 +475,7 @@
 <span class="sd">          This can happen typically with a javascript framework when values are updated and the</span>
 <span class="sd">          node is rebuilt.</span>
 <span class="sd">        * Element may have been inside an iframe or another context which was refreshed.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -339,7 +483,7 @@
         <span class="n">screen</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">stacktrace</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#staleelementreferenceexception"</span>
+        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#staleelementreferenceexception&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">with_support</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span></div>
 
@@ -348,21 +492,21 @@
 <div class="viewcode-block" id="InvalidElementStateException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidElementStateException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidElementStateException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when a command could not be completed because the element is in an invalid state.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when a command could not be completed because the element is in an invalid state.</span>
 
-<span class="sd">    This can be caused by attempting to clear an element that isn't both editable and resettable.</span>
-<span class="sd">    """</span></div>
+<span class="sd">    This can be caused by attempting to clear an element that isn&#39;t both editable and resettable.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="UnexpectedAlertPresentException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.UnexpectedAlertPresentException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UnexpectedAlertPresentException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when an unexpected alert has appeared.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when an unexpected alert has appeared.</span>
 
 <span class="sd">    Usually raised when  an unexpected modal is blocking the webdriver</span>
 <span class="sd">    from executing commands.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -375,28 +519,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">alert_text</span> <span class="o">=</span> <span class="n">alert_text</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Alert Text: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">alert_text</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Alert Text: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">alert_text</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="NoAlertPresentException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoAlertPresentException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoAlertPresentException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when switching to no presented alert.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when switching to no presented alert.</span>
 
 <span class="sd">    This can be caused by calling an operation on the Alert() class when</span>
 <span class="sd">    an alert is not yet on the screen.</span>
-<span class="sd">    """</span></div>
+<span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ElementNotVisibleException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotVisibleException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ElementNotVisibleException</span><span class="p">(</span><span class="n">InvalidElementStateException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when an element is present on the DOM, but it is not visible, and so is not able to be interacted with.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when an element is present on the DOM, but it is not visible, and so is not able to be interacted with.</span>
 
 <span class="sd">    Most commonly encountered when trying to click or read text of an element that is hidden from view.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -404,7 +548,7 @@
         <span class="n">screen</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">stacktrace</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#elementnotvisibleexception"</span>
+        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#elementnotvisibleexception&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">with_support</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span></div>
 
@@ -413,7 +557,7 @@
 <div class="viewcode-block" id="ElementNotInteractableException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotInteractableException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ElementNotInteractableException</span><span class="p">(</span><span class="n">InvalidElementStateException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when element interactions will hit another element due to paint order."""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when element interactions will hit another element due to paint order.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -421,7 +565,7 @@
         <span class="n">screen</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">stacktrace</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#elementnotinteractableexception"</span>
+        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#elementnotinteractableexception&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">with_support</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span></div>
 
@@ -430,55 +574,55 @@
 <div class="viewcode-block" id="ElementNotSelectableException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotSelectableException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ElementNotSelectableException</span><span class="p">(</span><span class="n">InvalidElementStateException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when trying to select an unselectable element.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when trying to select an unselectable element.</span>
 
-<span class="sd">    For example, selecting a 'script' element.</span>
-<span class="sd">    """</span></div>
+<span class="sd">    For example, selecting a &#39;script&#39; element.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="InvalidCookieDomainException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidCookieDomainException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidCookieDomainException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when attempting to add a cookie under a different domain."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when attempting to add a cookie under a different domain.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="UnableToSetCookieException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.UnableToSetCookieException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UnableToSetCookieException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when a driver fails to set a cookie."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when a driver fails to set a cookie.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="TimeoutException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.TimeoutException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TimeoutException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when a command does not complete in enough time."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when a command does not complete in enough time.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="MoveTargetOutOfBoundsException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.MoveTargetOutOfBoundsException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MoveTargetOutOfBoundsException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when the target provided to the `ActionsChains` move() method is invalid, i.e. out of document."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when the target provided to the `ActionsChains` move() method is invalid, i.e. out of document.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="UnexpectedTagNameException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.UnexpectedTagNameException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UnexpectedTagNameException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when a support class did not get an expected web element."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when a support class did not get an expected web element.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="InvalidSelectorException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSelectorException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidSelectorException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when the selector used to find an element does not return a WebElement.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when the selector used to find an element does not return a WebElement.</span>
 
 <span class="sd">    Currently this only happens when the XPath expression is syntactically invalid or does not select WebElements.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -486,7 +630,7 @@
         <span class="n">screen</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">stacktrace</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#invalidselectorexception"</span>
+        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#invalidselectorexception&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">with_support</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span></div>
 
@@ -495,53 +639,53 @@
 <div class="viewcode-block" id="ImeNotAvailableException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ImeNotAvailableException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImeNotAvailableException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when IME support is not available.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when IME support is not available.</span>
 
 <span class="sd">    This exception is thrown for every IME-related method call if IME</span>
 <span class="sd">    support is not available on the machine.</span>
-<span class="sd">    """</span></div>
+<span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ImeActivationFailedException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ImeActivationFailedException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImeActivationFailedException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when activating an IME engine has failed."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when activating an IME engine has failed.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="InvalidArgumentException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidArgumentException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidArgumentException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""The arguments passed to a command are either invalid or malformed."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The arguments passed to a command are either invalid or malformed.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="JavascriptException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.JavascriptException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">JavascriptException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""An error occurred while executing JavaScript supplied by the user."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An error occurred while executing JavaScript supplied by the user.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="NoSuchCookieException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchCookieException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoSuchCookieException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when no cookie matching the given path name was found."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when no cookie matching the given path name was found.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ScreenshotException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ScreenshotException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ScreenshotException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""A screen capture was made impossible."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A screen capture was made impossible.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ElementClickInterceptedException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.ElementClickInterceptedException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ElementClickInterceptedException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when element click fails because another element obscures it."""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when element click fails because another element obscures it.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -549,7 +693,7 @@
         <span class="n">screen</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">stacktrace</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#elementclickinterceptedexception"</span>
+        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#elementclickinterceptedexception&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">with_support</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span></div>
 
@@ -558,21 +702,21 @@
 <div class="viewcode-block" id="InsecureCertificateException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InsecureCertificateException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InsecureCertificateException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when the user agent hits a certificate warning (expired or invalid TLS certificate)."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when the user agent hits a certificate warning (expired or invalid TLS certificate).&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="InvalidCoordinatesException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidCoordinatesException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidCoordinatesException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""The coordinates provided to an interaction's operation are invalid."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The coordinates provided to an interaction&#39;s operation are invalid.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="InvalidSessionIdException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSessionIdException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidSessionIdException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Thrown when the given session id is not in the list of active sessions."""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thrown when the given session id is not in the list of active sessions.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -580,7 +724,7 @@
         <span class="n">screen</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">stacktrace</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#invalidsessionidexception"</span>
+        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#invalidsessionidexception&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">with_support</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span></div>
 
@@ -589,7 +733,7 @@
 <div class="viewcode-block" id="SessionNotCreatedException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.SessionNotCreatedException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SessionNotCreatedException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""A new session could not be created."""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A new session could not be created.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -597,7 +741,7 @@
         <span class="n">screen</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">stacktrace</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#sessionnotcreatedexception"</span>
+        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">#sessionnotcreatedexception&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">with_support</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span></div>
 
@@ -606,14 +750,14 @@
 <div class="viewcode-block" id="UnknownMethodException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.UnknownMethodException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UnknownMethodException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""The requested command matched a known URL but did not match any methods for that URL."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The requested command matched a known URL but did not match any methods for that URL.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="NoSuchDriverException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchDriverException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoSuchDriverException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Raised when driver is not specified and cannot be located."""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when driver is not specified and cannot be located.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -621,7 +765,7 @@
         <span class="n">screen</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">stacktrace</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">/driver_location"</span>
+        <span class="n">with_support</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">SUPPORT_MSG</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ERROR_URL</span><span class="si">}</span><span class="s2">/driver_location&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">with_support</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span></div>
 
@@ -630,36 +774,71 @@
 <div class="viewcode-block" id="DetachedShadowRootException">
 <a class="viewcode-back" href="../../../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.DetachedShadowRootException">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DetachedShadowRootException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Raised when referenced shadow root is no longer attached to the DOM."""</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when referenced shadow root is no longer attached to the DOM.&quot;&quot;&quot;</span></div>
 
 </pre></div>
 
-          </article>
-        </div>
-      </div>
-    </main>
-  </div>
-  <footer class="md-footer">
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-          
-          
-        </a>
-        
-      </nav>
-    </div>
-    <div class="md-footer-meta md-typeset">
-      <div class="md-footer-meta__inner md-grid">
-        <div class="md-footer-copyright">
-          <div class="md-footer-copyright__highlight">
-              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+                </article>
               
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-        </div>
-      </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
     </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
   </footer>
-  <script src="../../../_static/javascripts/application.js"></script>
-  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
   </body>
 </html>

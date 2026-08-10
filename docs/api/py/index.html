@@ -1,237 +1,331 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+
+<html lang="en" data-content_root="./" >
+
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="lang:clipboard.copy" content="Copy to clipboard">
-  <meta name="lang:clipboard.copied" content="Copied to clipboard">
-  <meta name="lang:search.language" content="en">
-  <meta name="lang:search.pipeline.stopwords" content="True">
-  <meta name="lang:search.pipeline.trimmer" content="True">
-  <meta name="lang:search.result.none" content="No matching documents">
-  <meta name="lang:search.result.one" content="1 matching document">
-  <meta name="lang:search.result.other" content="# matching documents">
-  <meta name="lang:search.tokenizer" content="[\s\-]+">
-
+    <title>Selenium Client Driver &#8212; Selenium 4.47.0 documentation</title>
   
-    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
-
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
     <style>
-      body,
-      input {
-        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-      }
+      .pst-js-only { display: none !important; }
 
-      code,
-      kbd,
-      pre {
-        font-family: "Roboto Mono", "Courier New", Courier, monospace
-      }
     </style>
+  </noscript>
   
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
 
-  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
-  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
-  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
   
-  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
-  
-  <meta name="theme-color" content="#3f51b5">
-  <script src="_static/javascripts/modernizr.js"></script>
-  
-  
-  
-    <title>Selenium Client Driver &#8212; Selenium 4.46.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
-    <script src="_static/documentation_options.js?v=34af0a0d"></script>
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+
+    <script src="_static/documentation_options.js?v=457a4054"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="4.47" />
   
-   
-
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
   </head>
-  <body dir=ltr
-        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  <body data-default-mode="">
   
-  <svg class="md-svg">
-    <defs data-children-count="0">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-      
-    </defs>
-  </svg>
   
-  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
-  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
-  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#index" tabindex="1" class="md-skip"> Skip to content </a>
-  <header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid">
-    <div class="md-flex navheader">
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="#" title="Selenium 4.46.0 documentation"
-           class="md-header-nav__button md-logo">
-          
-            &nbsp;
-          
-        </a>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
-      </div>
-      <div class="md-flex__cell md-flex__cell--stretch">
-        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.46.0 documentation</span>
-          <span class="md-header-nav__topic"> Selenium Client Driver </span>
-        </div>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
-        
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
-             autocapitalize="off" autocomplete="off" spellcheck="false"
-             data-md-component="query" data-md-state="active">
-      <label class="md-icon md-search__icon" for="__search"></label>
-      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
-        &#xE5CD;
-      </button>
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
-          <div class="md-search-result__meta">
-            Type to start searching
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="#">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Selenium 4.47.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
       </div>
       
-      
-  
-  <script src="_static/javascripts/version_dropdown.js"></script>
-  <script>
-    var json_loc = ""versions.json"",
-        target_loc = "../",
-        text = "Versions";
-    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
-  </script>
-  
-
-    </div>
-  </nav>
-</header>
-
-  
-  <div class="md-container">
-    
-    
-    
-  <nav class="md-tabs" data-md-component="tabs">
-    <div class="md-tabs__inner md-grid">
-      <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="#" class="md-tabs__link">Selenium 4.46.0 documentation</a></li>
-      </ul>
-    </div>
-  </nav>
-    <main class="md-main">
-      <div class="md-main__inner md-grid" data-md-component="container">
+      <main id="main-content" class="bd-main" role="main">
         
-          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                <nav class="md-nav md-nav--primary" data-md-level="0">
-  <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="#" title="Selenium 4.46.0 documentation" class="md-nav__button md-logo">
-      
-        <img src="_static/" alt=" logo" width="48" height="48">
-      
-    </a>
-    <a href="#"
-       title="Selenium 4.46.0 documentation">Selenium 4.46.0 documentation</a>
-  </label>
-  
-
-</nav>
-              </div>
-            </div>
-          </div>
-          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none"></div>
+              
+              
+              
                 
-<nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
-  <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#index--page-root" class="md-nav__link">Selenium Client Driver</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#introduction" class="md-nav__link">Introduction</a>
-        </li>
-        <li class="md-nav__item"><a href="#supported-python-versions" class="md-nav__link">Supported Python Versions</a>
-        </li>
-        <li class="md-nav__item"><a href="#supported-browsers" class="md-nav__link">Supported Browsers</a>
-        </li>
-        <li class="md-nav__item"><a href="#installing" class="md-nav__link">Installing</a>
-        </li>
-        <li class="md-nav__item"><a href="#drivers" class="md-nav__link">Drivers</a>
-        </li>
-        <li class="md-nav__item"><a href="#example-0" class="md-nav__link">Example 0:</a>
-        </li>
-        <li class="md-nav__item"><a href="#example-1" class="md-nav__link">Example 1:</a>
-        </li>
-        <li class="md-nav__item"><a href="#example-2" class="md-nav__link">Example 2:</a>
-        </li>
-        <li class="md-nav__item"><a href="#example-3" class="md-nav__link">Example 3:</a>
-        </li>
-        <li class="md-nav__item"><a href="#selenium-grid-optional" class="md-nav__link">Selenium Grid (optional)</a>
-        </li>
-        <li class="md-nav__item"><a href="#use-the-source-luke" class="md-nav__link">Use The Source Luke!</a>
-        </li></ul>
-            </nav>
-        </li>
-    
-<li class="md-nav__item"><a class="md-nav__extra_link" href="_sources/index.rst.txt">Show Source</a> </li>
-
-<li id="searchbox" class="md-nav__item"></li>
-
-  </ul>
-</nav>
-              </div>
-            </div>
-          </div>
-        
-        <div class="md-content">
-          <article class="md-content__inner md-typeset" role="main">
-            
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
   <section id="selenium-client-driver">
-<h1 id="index--page-root">Selenium Client Driver<a class="headerlink" href="#index--page-root" title="Link to this heading">¶</a></h1>
+<h1>Selenium Client Driver<a class="headerlink" href="#selenium-client-driver" title="Link to this heading">#</a></h1>
 <section id="introduction">
-<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
 <p>Python language bindings for Selenium WebDriver.</p>
 <p>The <cite>selenium</cite> package is used to automate web browser interaction from Python.</p>
-<table>
+<div class="pst-scrollable-table-container"><table class="table">
 <tbody>
 <tr class="row-odd"><td><p><strong>Home</strong>:</p></td>
 <td><p><a class="reference external" href="https://selenium.dev">https://selenium.dev</a></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>GitHub</strong>:</p></td>
-<td><p><a class="reference external" href="https://github.com/SeleniumHQ/Selenium">https://github.com/SeleniumHQ/Selenium</a></p></td>
+<td><p><a class="github reference external" href="https://github.com/SeleniumHQ/Selenium">SeleniumHQ/Selenium</a></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>PyPI</strong>:</p></td>
 <td><p><a class="reference external" href="https://pypi.org/project/selenium">https://pypi.org/project/selenium</a></p></td>
@@ -247,17 +341,18 @@
 </tr>
 </tbody>
 </table>
+</div>
 <p>Updated documentation published with each commit is available at: <a class="reference external" href="https://selenium-python-api-docs.readthedocs.io/en/latest">readthedocs.io</a></p>
 </section>
-<hr class="docutils"/>
+<hr class="docutils" />
 <section id="supported-python-versions">
-<h2 id="supported-python-versions">Supported Python Versions<a class="headerlink" href="#supported-python-versions" title="Link to this heading">¶</a></h2>
+<h2>Supported Python Versions<a class="headerlink" href="#supported-python-versions" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Python 3.10+</p></li>
 </ul>
 </section>
 <section id="supported-browsers">
-<h2 id="supported-browsers">Supported Browsers<a class="headerlink" href="#supported-browsers" title="Link to this heading">¶</a></h2>
+<h2>Supported Browsers<a class="headerlink" href="#supported-browsers" title="Link to this heading">#</a></h2>
 <p>Several browsers are supported, as well as the Remote protocol:</p>
 <ul class="simple">
 <li><p>Chrome</p></li>
@@ -269,7 +364,7 @@
 </ul>
 </section>
 <section id="installing">
-<h2 id="installing">Installing<a class="headerlink" href="#installing" title="Link to this heading">¶</a></h2>
+<h2>Installing<a class="headerlink" href="#installing" title="Link to this heading">#</a></h2>
 <p>Install or upgrade the Python bindings with <cite>pip &lt;https://pip.pypa.io/&gt;</cite>.</p>
 <p>Latest official release:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">selenium</span>
@@ -284,7 +379,7 @@
 to create an isolated Python environment for installation.</p>
 </section>
 <section id="drivers">
-<h2 id="drivers">Drivers<a class="headerlink" href="#drivers" title="Link to this heading">¶</a></h2>
+<h2>Drivers<a class="headerlink" href="#drivers" title="Link to this heading">#</a></h2>
 <p>Selenium requires a driver to interface with the chosen browser (chromedriver, edgedriver, geckodriver, etc).</p>
 <p>In older versions of Selenium, it was necessary to install and manage these drivers yourself. You had to make sure the
 driver executable was available on your system <cite>PATH</cite>, or specified explicitly in code. Modern versions of Selenium
@@ -294,7 +389,7 @@ driver installation or configuration now that it’s done for you when you insta
 with most supported platforms and browsers. If it doesn’t meet your needs, you can still install and specify browsers
 and drivers yourself.</p>
 <p>Links to some of the more popular browser drivers:</p>
-<table>
+<div class="pst-scrollable-table-container"><table class="table">
 <tbody>
 <tr class="row-odd"><td><p><strong>Chrome</strong>:</p></td>
 <td><p><a class="reference external" href="https://developer.chrome.com/docs/chromedriver">https://developer.chrome.com/docs/chromedriver</a></p></td>
@@ -303,16 +398,17 @@ and drivers yourself.</p>
 <td><p><a class="reference external" href="https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver">https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver</a></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>Firefox</strong>:</p></td>
-<td><p><a class="reference external" href="https://github.com/mozilla/geckodriver">https://github.com/mozilla/geckodriver</a></p></td>
+<td><p><a class="github reference external" href="https://github.com/mozilla/geckodriver">mozilla/geckodriver</a></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Safari</strong>:</p></td>
 <td><p><a class="reference external" href="https://webkit.org/blog/6900/webdriver-support-in-safari-10">https://webkit.org/blog/6900/webdriver-support-in-safari-10</a></p></td>
 </tr>
 </tbody>
 </table>
+</div>
 </section>
 <section id="example-0">
-<h2 id="example-0">Example 0:<a class="headerlink" href="#example-0" title="Link to this heading">¶</a></h2>
+<h2>Example 0:<a class="headerlink" href="#example-0" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>launch a new Chrome browser</p></li>
 <li><p>load a web page</p></li>
@@ -322,13 +418,13 @@ and drivers yourself.</p>
 
 
 <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">()</span>
-<span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://selenium.dev"</span><span class="p">)</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://selenium.dev&quot;</span><span class="p">)</span>
 <span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
 <section id="example-1">
-<h2 id="example-1">Example 1:<a class="headerlink" href="#example-1" title="Link to this heading">¶</a></h2>
+<h2>Example 1:<a class="headerlink" href="#example-1" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>launch a new Chrome browser</p></li>
 <li><p>load the Selenium documentation page</p></li>
@@ -342,19 +438,19 @@ and drivers yourself.</p>
 
 <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">()</span>
 
-<span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://selenium.dev/documentation"</span><span class="p">)</span>
-<span class="k">assert</span> <span class="s2">"Selenium"</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://selenium.dev/documentation&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="s2">&quot;Selenium&quot;</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span>
 
-<span class="n">elem</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"m-documentationwebdriver"</span><span class="p">)</span>
+<span class="n">elem</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">&quot;m-documentationwebdriver&quot;</span><span class="p">)</span>
 <span class="n">elem</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
-<span class="k">assert</span> <span class="s2">"WebDriver"</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span>
+<span class="k">assert</span> <span class="s2">&quot;WebDriver&quot;</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span>
 
 <span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
 <section id="example-2">
-<h2 id="example-2">Example 2:<a class="headerlink" href="#example-2" title="Link to this heading">¶</a></h2>
+<h2>Example 2:<a class="headerlink" href="#example-2" title="Link to this heading">#</a></h2>
 <p>Selenium WebDriver is often used as a basis for testing web applications. Here is an example using Python’s
 standard <a class="reference external" href="https://docs.python.org/3/library/unittest.html">unittest</a> framework:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">unittest</span>
@@ -368,13 +464,13 @@ standard <a class="reference external" href="https://docs.python.org/3/library/u
         <span class="bp">self</span><span class="o">.</span><span class="n">addCleanup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">test_page_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://selenium.dev"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s2">"Selenium"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://selenium.dev&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s2">&quot;Selenium&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="example-3">
-<h2 id="example-3">Example 3:<a class="headerlink" href="#example-3" title="Link to this heading">¶</a></h2>
+<h2>Example 3:<a class="headerlink" href="#example-3" title="Link to this heading">#</a></h2>
 <p>Here is an example using <a class="reference external" href="https://pytest.org">pytest</a> framework:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium</span><span class="w"> </span><span class="kn">import</span> <span class="n">webdriver</span>
@@ -388,58 +484,131 @@ standard <a class="reference external" href="https://docs.python.org/3/library/u
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">test_page_title</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
-    <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://selenium.dev"</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="s2">"Selenium"</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span>
+    <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://selenium.dev&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="s2">&quot;Selenium&quot;</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span>
 </pre></div>
 </div>
 </section>
 <section id="selenium-grid-optional">
-<h2 id="selenium-grid-optional">Selenium Grid (optional)<a class="headerlink" href="#selenium-grid-optional" title="Link to this heading">¶</a></h2>
+<h2>Selenium Grid (optional)<a class="headerlink" href="#selenium-grid-optional" title="Link to this heading">#</a></h2>
 <p>For local Selenium scripts, the Java server is not needed.</p>
 <p>To use Selenium remotely, you need to also run a Selenium Grid. For information on running Selenium Grid:
 <a class="reference external" href="https://selenium.dev/documentation/grid/getting_started/">https://selenium.dev/documentation/grid/getting_started/</a></p>
 <p>To use Remote WebDriver see: <a class="reference external" href="https://selenium.dev/documentation/webdriver/drivers/remote_webdriver/?tab=python">https://selenium.dev/documentation/webdriver/drivers/remote_webdriver/?tab=python</a></p>
 </section>
 <section id="use-the-source-luke">
-<h2 id="use-the-source-luke">Use The Source Luke!<a class="headerlink" href="#use-the-source-luke" title="Link to this heading">¶</a></h2>
+<h2>Use The Source Luke!<a class="headerlink" href="#use-the-source-luke" title="Link to this heading">#</a></h2>
 <p>View source code online:</p>
-<table>
+<div class="pst-scrollable-table-container"><table class="table">
 <tbody>
 <tr class="row-odd"><td><p><strong>Official</strong>:</p></td>
-<td><p><a class="reference external" href="https://github.com/SeleniumHQ/selenium/tree/trunk/py">https://github.com/SeleniumHQ/selenium/tree/trunk/py</a></p></td>
+<td><p><a class="github reference external" href="https://github.com/SeleniumHQ/selenium/tree/trunk/py">SeleniumHQ/selenium</a></p></td>
 </tr>
 </tbody>
 </table>
+</div>
 </section>
 </section>
 
 
-          </article>
-        </div>
-      </div>
-    </main>
-  </div>
-  <footer class="md-footer">
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-          
-          
-        </a>
-        
-      </nav>
-    </div>
-    <div class="md-footer-meta md-typeset">
-      <div class="md-footer-meta__inner md-grid">
-        <div class="md-footer-copyright">
-          <div class="md-footer-copyright__highlight">
-              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+                </article>
               
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-python-versions">Supported Python Versions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-browsers">Supported Browsers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installing">Installing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#drivers">Drivers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-0">Example 0:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1">Example 1:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2">Example 2:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-3">Example 3:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium-grid-optional">Selenium Grid (optional)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-the-source-luke">Use The Source Luke!</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="_sources/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
           </div>
-        </div>
-      </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
     </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
   </footer>
-  <script src="_static/javascripts/application.js"></script>
-  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
   </body>
 </html>
