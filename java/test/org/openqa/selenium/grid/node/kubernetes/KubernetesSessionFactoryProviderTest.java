@@ -29,9 +29,12 @@ class KubernetesSessionFactoryProviderTest {
 
   @Test
   void requireFabric8PassesWhenClientIsOnClasspath() {
-    // The test classpath includes the fabric8 client, so the probe resolves.
+    // The test classpath includes the fabric8 client, so the probe resolves. Use the same
+    // classloader expression as the production call site in loadFactories().
     assertThatCode(
-            () -> KubernetesSessionFactoryProvider.requireFabric8(getClass().getClassLoader()))
+            () ->
+                KubernetesSessionFactoryProvider.requireFabric8(
+                    KubernetesSessionFactoryProvider.class.getClassLoader()))
         .doesNotThrowAnyException();
   }
 
