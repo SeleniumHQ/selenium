@@ -75,6 +75,10 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
       return false;
     }
 
+    if (!automationNameMatch(stereotype, capabilities)) {
+      return false;
+    }
+
     if (!platformVersionMatch(stereotype, capabilities)) {
       return false;
     }
@@ -186,6 +190,26 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
             })
         .reduce(Boolean::logicalAnd)
         .orElse(true);
+  }
+
+  private Boolean automationNameMatch(Capabilities stereotype, Capabilities capabilities) {
+    /*
+     A stereotype with no Appium-related capabilities at all has no relationship to a
+     requested automationName, so it should not match.
+    */
+    boolean stereotypeIsAppiumAware =
+        stereotype.getCapabilityNames().stream()
+            .anyMatch(
+                name ->
+                    name.contains("platformVersion")
+                        || (name.contains(":")
+                            && !name.toLowerCase().contains("options")
+                            && EXTENSION_CAPABILITIES_PREFIXES.stream().noneMatch(name::contains)));
+    if (stereotypeIsAppiumAware) {
+      return true;
+    }
+    return capabilities.getCapabilityNames().stream()
+        .noneMatch(name -> name.contains("automationName"));
   }
 
   public static Boolean matchConditionToRemoveCapability(Capabilities capabilities) {

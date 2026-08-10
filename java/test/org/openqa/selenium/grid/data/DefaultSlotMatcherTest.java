@@ -752,4 +752,45 @@ class DefaultSlotMatcherTest {
 
     assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
   }
+
+  @Test
+  void automationNameDoesNotMatchWhenStereotypeDeclaresNoExtensionCapabilities() {
+    /*
+    A plain browser stereotype must not match a request that only asks for automationName.
+    Regression test for https://github.com/SeleniumHQ/selenium/issues/17845
+     */
+    Capabilities stereotype =
+        new ImmutableCapabilities(
+            CapabilityType.BROWSER_NAME, "MicrosoftEdge",
+            CapabilityType.PLATFORM_NAME, Platform.WIN10);
+
+    Capabilities capabilities =
+        new ImmutableCapabilities(
+            "appium:automationName", "Windows",
+            CapabilityType.PLATFORM_NAME, Platform.WINDOWS);
+
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
+  }
+
+  @Test
+  void automationNameStillMatchesForExtensionAwareStereotypeMissingAutomationName() {
+    /*
+    An Appium-aware stereotype may still match a request carrying automationName even if it
+    doesn't declare that capability itself.
+     */
+    Capabilities stereotype =
+        new ImmutableCapabilities(
+            CapabilityType.PLATFORM_NAME, Platform.ANDROID, "appium:platformVersion", "14");
+
+    Capabilities capabilities =
+        new ImmutableCapabilities(
+            CapabilityType.PLATFORM_NAME,
+            Platform.ANDROID,
+            "appium:platformVersion",
+            "14",
+            "appium:automationName",
+            "uiautomator2");
+
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
+  }
 }
