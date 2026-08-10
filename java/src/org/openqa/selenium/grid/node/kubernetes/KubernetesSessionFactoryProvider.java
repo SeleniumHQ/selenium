@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Map;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.NodeSessionFactoryProvider;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
@@ -31,6 +32,10 @@ import org.openqa.selenium.remote.tracing.Tracer;
 @AutoService(NodeSessionFactoryProvider.class)
 public class KubernetesSessionFactoryProvider implements NodeSessionFactoryProvider {
 
+  // Probed by name so this provider does not hard-link fabric8 and stays loadable (and
+  // ServiceLoader-instantiable) when fabric8 is absent from the runtime classpath.
+  private static final String FABRIC8_PROBE_CLASS = "io.fabric8.kubernetes.client.KubernetesClient";
+
   @Override
   public boolean isEnabled(Config config) {
     return config.getAll("kubernetes", "configs").isPresent();
@@ -39,8 +44,25 @@ public class KubernetesSessionFactoryProvider implements NodeSessionFactoryProvi
   @Override
   public Map<Capabilities, Collection<SessionFactory>> loadFactories(
       Config config, Tracer tracer, HttpClient.Factory clientFactory) {
+    requireFabric8(KubernetesSessionFactoryProvider.class.getClassLoader());
     NodeOptions nodeOptions = new NodeOptions(config);
     return new KubernetesOptions(config)
         .getKubernetesSessionFactories(tracer, clientFactory, nodeOptions);
+  }
+
+  static void requireFabric8(ClassLoader loader) {
+    try {
+      Class.forName(FABRIC8_PROBE_CLASS, false, loader);
+    } catch (ClassNotFoundException | LinkageError e) {
+      throw new ConfigException(
+          "Kubernetes support is enabled (via [kubernetes] configs / --kubernetes-configs), but the"
+              + " fabric8 Kubernetes client is not on the runtime classpath. The Selenium server jar"
+              + " bundles the Kubernetes node classes without fabric8; supply the fabric8 client at"
+              + " runtime with --ext, for example:\n"
+              + "  --ext $(coursier fetch -p io.fabric8:kubernetes-client:<version>"
+              + " io.fabric8:kubernetes-client-api:<version> io.fabric8:kubernetes-model-batch:<version>"
+              + " io.fabric8:kubernetes-model-core:<version>)",
+          e);
+    }
   }
 }
