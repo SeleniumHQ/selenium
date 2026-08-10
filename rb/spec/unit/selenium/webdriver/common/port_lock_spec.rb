@@ -24,7 +24,9 @@ module Selenium
     describe PortLock do
       subject(:port_lock) { described_class.new(port, 2) }
 
-      let(:port) { 4444 }
+      # The lock file is named after the port, so a fixed one would collide with a real
+      # driver on 4444 and with any other run of this spec on the same machine.
+      let(:port) { 40_000 + (Process.pid % 10_000) }
 
       it 'yields to the block' do
         expect { |block| port_lock.locked(&block) }.to yield_control
