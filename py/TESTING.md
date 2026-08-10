@@ -13,11 +13,13 @@ This guide helps contributors write tests in the Selenium Python codebase.
 import pytest
 from selenium.webdriver.common.by import By
 
+
 def test_element_is_displayed(driver, pages):
     pages.load("javascriptPage.html")
 
     element = driver.find_element(By.ID, "displayed")
     assert element.is_displayed() is True
+
 
 @pytest.mark.xfail_safari(reason="Safari doesn't support this")
 def test_something_safari_fails(driver, pages):
@@ -116,6 +118,7 @@ Skips use pytest markers; each accepts optional `reason` and `run` parameters
 @pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/123")
 def test_something(driver, pages):
     pass
+
 
 @pytest.mark.xfail_safari(run=False)  # Skip entirely instead of xfail
 def test_skip_safari(driver, pages):

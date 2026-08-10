@@ -375,7 +375,6 @@ class WebDriver(BaseWebDriver):
 
         This method may be overridden to define custom startup behavior.
         """
-        pass
 
     def stop_client(self) -> None:
         """Called after executing a quit command.
@@ -383,7 +382,6 @@ class WebDriver(BaseWebDriver):
         This method may be overridden to define custom shutdown
         behavior.
         """
-        pass
 
     def start_session(self, capabilities: dict) -> None:
         """Creates a new session with the desired capabilities.

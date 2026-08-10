@@ -32,11 +32,7 @@ logger.debug("diagnostic: request payload for debugging")
 ### Deprecation
 
 ```python
-warnings.warn(
-    "old_method is deprecated, use new_method instead",
-    DeprecationWarning,
-    stacklevel=2
-)
+warnings.warn("old_method is deprecated, use new_method instead", DeprecationWarning, stacklevel=2)
 ```
 
 ### Type hints
@@ -49,6 +45,7 @@ Use union notation (`|`) instead of `Optional`:
 # Preferred
 def method(param: str | None) -> int | None:
     pass
+
 
 # Avoid
 def method(param: Optional[str]) -> Optional[int]:

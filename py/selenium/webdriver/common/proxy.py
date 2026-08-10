@@ -66,8 +66,8 @@ class _ProxyTypeDescriptor:
     def __set__(self, obj, value):
         if self.name == "autodetect" and not isinstance(value, bool):
             raise ValueError("Autodetect proxy value needs to be a boolean")
-        getattr(obj, "_verify_proxy_type_compatibility")(self.p_type)
-        setattr(obj, "proxyType", self.p_type)
+        obj._verify_proxy_type_compatibility(self.p_type)
+        obj.proxyType = self.p_type
         setattr(obj, self.name, value)
 
 
