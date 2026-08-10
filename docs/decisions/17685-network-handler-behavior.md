@@ -31,8 +31,9 @@ nothing here exposes a protocol type.
 
 ## Decision
 
-By default, a handler blocks the event until it has run. The decisions below can be implemented in
-more than one way; the Ruby and Java examples show the user-facing shape, not a prescribed API.
+By default, a handler intercepts the event, blocking it until the handler has run, wherever blocking
+interception is available at that stage. The decisions below can be implemented in more than one way;
+the Ruby and Java examples show the user-facing shape, not a prescribed API.
 
 1. **Handlers can be added, removed, and cleared.** Each family — request,
    response, and authentication — has an add, a remove, and a clear:
@@ -72,11 +73,12 @@ network.clearRequestHandlers();
    than deconstructing it to an object. Predicates are not accepted; a user who
    wants one may write it inside the callable.
 
-   Everything specified by an url pattern argument must be resolvable by the
-   remote end; no additional filtering is done client-side. Everything else
-   errors, including unsupported wildcard matching — the protocol matches
-   literally, so a glob is not refused by the remote, it quietly matches
-   nothing.
+   Everything specified by a url pattern argument must be resolvable by the
+   remote end; no filtering is done client-side. Patterns are passed to the
+   remote as given, and input that is not a valid pattern errors. A binding may
+   log a warning when a value looks like a glob, to flag that Selenium passes it
+   through rather than expanding it; that detection is optional and left to the
+   binding rather than specified here.
 
 ```ruby
 # A pattern string or components — an event matches any of them
@@ -85,8 +87,9 @@ network.add_request_handler(
                  {hostname: "cdn.example.com"}]
 ) { |r| r.fail }
 
-# Wildcards are rejected; the matching goes in the callable instead
-network.add_request_handler(url_patterns: ["https://*.example.com/"]) # raises
+# A glob-looking pattern is passed to the remote as-is
+network.add_request_handler(url_patterns: ["https://*.example.com/"])
+# Finer matching goes in the callable instead
 network.add_request_handler(url_patterns: [{hostname: "api.example.com"}]) do |r|
   r.fail if r.url.end_with?(".json")
 end
@@ -240,22 +243,38 @@ network.addRequestHandler(r -> { if (r.request().headers().containsKey("X-Test")
 network.addRequestHandler(r -> r.addHeader("X-Test", "true"));
 ```
 
-10. **Body data is collected only when the handler opts in at registration.** A body is not available
-    by default; the handler declares that it needs the body when it is registered — not from inside
-    the callback, since the collector must be in place before the event — and Selenium then owns the
-    collector's lifecycle, size cap, and browser-support quirks. The body is readable on the event
+10. **Body data is collected only when a request handler opts in at registration.** A body is not
+    available by default; the handler declares that it needs the body when it is registered — not from
+    inside the callback, since the collector must be in place before the event — and Selenium then owns
+    the collector's lifecycle, size cap, and browser-support quirks. The body is readable on the event
     inside that handler.
     * The user never calls `addDataCollector` / `getData` or tears a collector down.
     * There is no way to collect or read body data outside a handler; collection happens only through
-      the `addRequestHandler` / `addResponseHandler` registration.
+      the `addRequestHandler` registration.
+    * Only request bodies are collected. Intercepting a response holds it in a blocked state before its
+      body is collected, so a response body is not available while intercepting.
 
 ```ruby
 # Declare body collection at registration; the body is then available on the event
-network.add_response_handler(collect_body: true) { |r| log(r.body) }
+network.add_request_handler(collect_body: true) { |r| log(r.body) }
 ```
 
 ```java
-network.addResponseHandler(new BodyCollection(), r -> log(r.body()));
+network.addRequestHandler(new BodyCollection(), r -> log(r.body()));
+```
+
+11. **Handlers are scoped to the current browsing context by default.** A handler applies to the
+    browsing context that is active when it is registered, resolved from the current window; the user
+    may pass a browsing context, a user context, or both to scope it elsewhere. This lets a handler
+    apply to a context that is not the active one, such as a background tab that does not currently
+    have focus.
+
+```ruby
+network.add_request_handler(context: other_tab) { |r| r.fail if blocked?(r.url) }
+```
+
+```java
+network.addRequestHandler(otherTab, r -> { if (blocked(r.url())) r.fail(); });
 ```
 
 ## Considered options
@@ -279,11 +298,11 @@ network.addResponseHandler(new BodyCollection(), r -> log(r.body()));
   - Take a native URL apart into components, erroring on what no component represents — URLs are
     complicated enough that parsing them is work we would own and get wrong; passing one on as a
     pattern string leaves that to the spec.
-  - Accept globs, matching them client-side until the spec catches up — widely understood, and another
-    framework ships exactly this. But it means intercepting every event, and no two glob dialects agree
-    with each other or with the URL pattern syntax the spec is adopting: `/orders/*` is valid in both
-    and matches one segment or any depth. The same string would quietly mean different things. Users
-    can do this in the callable, and if enough do, we can revisit with evidence.
+  - Detect glob-looking patterns and reject them, translate them, or match them client-side. All three
+    make Selenium own matching logic that belongs on the remote, and glob dialects are ambiguous
+    (`/orders/*` matches one segment or any depth depending on the dialect), so doing it ourselves would
+    make the same string quietly mean different things. Input is passed through as given, and users can
+    express anything finer in the callable.
   - Let each binding choose which forms it accepts — five capability sets, so what a user can express
     would depend on their language rather than the spec.
 - **Authentication as a callable (decision 3).**
@@ -312,9 +331,8 @@ network.addResponseHandler(new BodyCollection(), r -> log(r.body()));
   - Omit a pass-through disposition entirely and only continue after gathering every handler's
     mutations at the end — safest against an accidental short-circuit, but leaves no way for one handler
     to override a default a shared handler set, so it is kept as a deliberately named override instead.
-  - `submit` may not be the best name for that override, and a better one is worth settling before
-    this ships: `finish`, `complete`, `send`, or a form each binding marks as terminal in its own way,
-    such as a Ruby `submit!`.
+  - Name the override `finish`, `complete`, or `send` instead of `submit`. `submit` was chosen as the
+    clearest terminal "send exactly this now" verb; the alternatives were considered and set aside.
 - **Ordering (decision 6).**
   - Registration order instead of LIFO — prevents overriding global settings locally.
 - **Failure (decision 7).**
@@ -338,6 +356,13 @@ network.addResponseHandler(new BodyCollection(), r -> log(r.body()));
   - Always collect bodies — bodies are large and most handlers never read them.
   - Make the user manage the collector — it has no meaning outside a handler and pushes lifecycle and
     size-cap bookkeeping onto them.
+  - Collect response bodies too — intercepting a response holds it blocked before its body is
+    collected, so it is not available while intercepting.
+- **Context scoping (decision 11).**
+  - No scoping, so every handler applies globally — cannot target a specific tab, a background context,
+    or a user context, which network work spanning several contexts needs.
+  - Scope only by browsing context — a user context is the natural unit for some interception, so both
+    are accepted.
 
 ## Consequences
 
@@ -347,5 +372,7 @@ network.addResponseHandler(new BodyCollection(), r -> log(r.body()));
   handler stays contained, and the original event remains readable.
 - Authentication handlers gain a callable form in addition to static credentials, so credentials can
   be produced — or the challenge cancelled — per challenge.
+- Handlers can be scoped to a specific browsing or user context, so interception can target a
+  background tab or an isolated context rather than only the active one.
 - This changes handler behavior that several bindings already ship, so it is not backwards
   compatible.
