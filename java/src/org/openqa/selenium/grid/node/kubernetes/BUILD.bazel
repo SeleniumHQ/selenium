@@ -60,6 +60,7 @@ java_library(
     srcs = glob(["*.java"]),
     visibility = [
         "//java/src/org/openqa/selenium/grid:__pkg__",
+        "//java/test/org/openqa/selenium/grid/node/kubernetes:__pkg__",
     ],
     deps = [
         ":fabric8-compile-only",
