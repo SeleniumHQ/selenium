@@ -73,6 +73,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#withProfileRoot(java.io.File)" tabindex="0">withProfileRoot(File)</a></li>
 <li><a href="#connectToExisting(int)" tabindex="0">connectToExisting(int)</a></li>
 <li><a href="#withWebSocketPort(java.lang.Integer)" tabindex="0">withWebSocketPort(Integer)</a></li>
+<li><a href="#withAllowSystemAccess(java.lang.Boolean)" tabindex="0">withAllowSystemAccess(Boolean)</a></li>
 <li><a href="#loadSystemProperties()" tabindex="0">loadSystemProperties()</a></li>
 <li><a href="#createArgs()" tabindex="0">createArgs()</a></li>
 <li><a href="#createDriverService(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)" tabindex="0">createDriverService(File, int, Duration, List, Map)</a></li>
@@ -171,19 +172,25 @@ capabilities</code>.</div>
 <div class="block">Values of the Host header to allow for incoming requests.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withLogLevel(org.openqa.selenium.firefox.FirefoxDriverLogLevel)" class="member-name-link">withLogLevel</a><wbr>(@Nullable <a href="FirefoxDriverLogLevel.html" title="enum class in org.openqa.selenium.firefox">FirefoxDriverLogLevel</a>&nbsp;logLevel)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withAllowSystemAccess(java.lang.Boolean)" class="member-name-link">withAllowSystemAccess</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;allowSystemAccess)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Allows GeckoDriver to access system-level Firefox APIs, such as switching to the chrome
+command context.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withProfileRoot(java.io.File)" class="member-name-link">withProfileRoot</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;root)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withLogLevel(org.openqa.selenium.firefox.FirefoxDriverLogLevel)" class="member-name-link">withLogLevel</a><wbr>(@Nullable <a href="FirefoxDriverLogLevel.html" title="enum class in org.openqa.selenium.firefox">FirefoxDriverLogLevel</a>&nbsp;logLevel)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withProfileRoot(java.io.File)" class="member-name-link">withProfileRoot</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;root)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">This is necessary when you do not have permissions to write to the default directory.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withTruncatedLogs(java.lang.Boolean)" class="member-name-link">withTruncatedLogs</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;truncate)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withWebSocketPort(java.lang.Integer)" class="member-name-link">withWebSocketPort</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;websocketPort)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withTruncatedLogs(java.lang.Boolean)" class="member-name-link">withTruncatedLogs</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;truncate)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withWebSocketPort(java.lang.Integer)" class="member-name-link">withWebSocketPort</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;websocketPort)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Configures the WebSocket port for BiDi.</div>
 </div>
 </div>
@@ -327,6 +334,22 @@ Marionette port.</div>
 <dt>Parameters:</dt>
 <dd><code>websocketPort</code> - The port to use for WebSocket communication, or 0 for automatic
     allocation.</dd>
+<dt>Returns:</dt>
+<dd>A self reference.</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="withAllowSystemAccess(java.lang.Boolean)">
+<h3>withAllowSystemAccess</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></span>&nbsp;<span class="element-name">withAllowSystemAccess</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;allowSystemAccess)</span></div>
+<div class="block">Allows GeckoDriver to access system-level Firefox APIs, such as switching to the chrome
+command context. This must be configured on the driver service itself, not via capabilities.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>allowSystemAccess</code> - whether to allow system access.</dd>
 <dt>Returns:</dt>
 <dd>A self reference.</dd>
 </dl>

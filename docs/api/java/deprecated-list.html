@@ -53,6 +53,7 @@ loadScripts(document, 'script');</script>
 <h2 title="Contents">Contents</h2>
 <ul class="contents-list">
 <li id="contents-for-removal"><a href="#for-removal">Terminally Deprecated</a></li>
+<li id="contents-interface"><a href="#interface">Interfaces</a></li>
 <li id="contents-class"><a href="#class">Classes</a></li>
 <li id="contents-field"><a href="#field">Fields</a></li>
 <li id="contents-method"><a href="#method">Methods</a></li>
@@ -88,6 +89,46 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Use <a href="org/openqa/selenium/devtools/noop/NoOpDomains.html#%3Cinit%3E(java.lang.String,java.util.Collection)"><code>NoOpDomains(String, Collection)</code></a> instead.</div>
 </div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/firefox/ClasspathExtension.html" title="class in org.openqa.selenium.firefox">org.openqa.selenium.firefox.ClasspathExtension</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/firefox/Extension.html" title="interface in org.openqa.selenium.firefox">org.openqa.selenium.firefox.Extension</a></div>
+<div class="col-last even-row-color">
+<div class="block">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/firefox/FileExtension.html" title="class in org.openqa.selenium.firefox">org.openqa.selenium.firefox.FileExtension</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#addExtension(java.io.File)">org.openqa.selenium.firefox.FirefoxProfile.addExtension<wbr>(File)</a></div>
+<div class="col-last even-row-color">
+<div class="block">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#addExtension(java.lang.Class,java.lang.String)">org.openqa.selenium.firefox.FirefoxProfile.addExtension<wbr>(Class&lt;?&gt;, String)</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#addExtension(java.lang.String,org.openqa.selenium.firefox.Extension)">org.openqa.selenium.firefox.FirefoxProfile.addExtension<wbr>(String, Extension)</a></div>
+<div class="col-last even-row-color">
+<div class="block">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#setAcceptUntrustedCertificates(boolean)">org.openqa.selenium.firefox.FirefoxProfile.setAcceptUntrustedCertificates<wbr>(boolean)</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Use <a href="org/openqa/selenium/remote/AbstractDriverOptions.html#setAcceptInsecureCerts(boolean)"><code>AbstractDriverOptions.setAcceptInsecureCerts(boolean)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#setAlwaysLoadNoFocusLib(boolean)">org.openqa.selenium.firefox.FirefoxProfile.setAlwaysLoadNoFocusLib<wbr>(boolean)</a></div>
+<div class="col-last even-row-color">
+<div class="block">Native events are no longer supported.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#setAssumeUntrustedCertificateIssuer(boolean)">org.openqa.selenium.firefox.FirefoxProfile.setAssumeUntrustedCertificateIssuer<wbr>(boolean)</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Use <a href="org/openqa/selenium/remote/AbstractDriverOptions.html#setAcceptInsecureCerts(boolean)"><code>AbstractDriverOptions.setAcceptInsecureCerts(boolean)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#shouldLoadNoFocusLib()">org.openqa.selenium.firefox.FirefoxProfile.shouldLoadNoFocusLib()</a></div>
+<div class="col-last even-row-color">
+<div class="block">Native events are no longer supported.</div>
+</div>
 <div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/json/JsonInput.html#nextInstant()">org.openqa.selenium.json.JsonInput.nextInstant()</a></div>
 <div class="col-last odd-row-color">
 <div class="block">Instant is not a basic JSON type, use the <a href="org/openqa/selenium/json/InstantCoercer.html" title="class in org.openqa.selenium.json"><code>InstantCoercer</code></a> instead.</div>
@@ -108,6 +149,21 @@ loadScripts(document, 'script');</script>
 </ul>
 <ul class="block-list">
 <li>
+<div id="interface">
+<div class="caption"><span>Deprecated Interfaces</span></div>
+<div class="summary-table two-column-summary">
+<div class="table-header col-first">Interface</div>
+<div class="table-header col-last">Description</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/firefox/Extension.html" title="interface in org.openqa.selenium.firefox">org.openqa.selenium.firefox.Extension</a></div>
+<div class="col-last even-row-color">
+<div class="block">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
+</div>
+</div>
+</div>
+</li>
+</ul>
+<ul class="block-list">
+<li>
 <div id="class">
 <div class="caption"><span>Deprecated Classes</span></div>
 <div class="summary-table two-column-summary">
@@ -116,6 +172,14 @@ loadScripts(document, 'script');</script>
 <div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/bidi/browser/ClientWindow.html" title="class in org.openqa.selenium.bidi.browser">org.openqa.selenium.bidi.browser.ClientWindow</a></div>
 <div class="col-last even-row-color">
 <div class="block">Not used. In BiDi spec, type `browser.ClientWindow` is just text (String).</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/firefox/ClasspathExtension.html" title="class in org.openqa.selenium.firefox">org.openqa.selenium.firefox.ClasspathExtension</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/firefox/FileExtension.html" title="class in org.openqa.selenium.firefox">org.openqa.selenium.firefox.FileExtension</a></div>
+<div class="col-last even-row-color">
+<div class="block">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
 </div>
 <div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/ErrorCodes.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.ErrorCodes</a></div>
 <div class="col-last odd-row-color">
@@ -242,65 +306,85 @@ loadScripts(document, 'script');</script>
 <div class="block">List of container logs might be very long. If you need to write down the logs, use
     <a href="org/openqa/selenium/docker/ContainerLogs.html#getLogs()"><code>ContainerLogs.getLogs()</code></a> to avoid reading the whole content to memory.</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/HasDownloads.html#getDownloadableFiles()">org.openqa.selenium.HasDownloads.getDownloadableFiles()</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#addExtension(java.io.File)">org.openqa.selenium.firefox.FirefoxProfile.addExtension<wbr>(File)</a></div>
 <div class="col-last even-row-color">
+<div class="block">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#addExtension(java.lang.Class,java.lang.String)">org.openqa.selenium.firefox.FirefoxProfile.addExtension<wbr>(Class&lt;?&gt;, String)</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#addExtension(java.lang.String,org.openqa.selenium.firefox.Extension)">org.openqa.selenium.firefox.FirefoxProfile.addExtension<wbr>(String, Extension)</a></div>
+<div class="col-last even-row-color">
+<div class="block">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#setAcceptUntrustedCertificates(boolean)">org.openqa.selenium.firefox.FirefoxProfile.setAcceptUntrustedCertificates<wbr>(boolean)</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Use <a href="org/openqa/selenium/remote/AbstractDriverOptions.html#setAcceptInsecureCerts(boolean)"><code>AbstractDriverOptions.setAcceptInsecureCerts(boolean)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#setAlwaysLoadNoFocusLib(boolean)">org.openqa.selenium.firefox.FirefoxProfile.setAlwaysLoadNoFocusLib<wbr>(boolean)</a></div>
+<div class="col-last even-row-color">
+<div class="block">Native events are no longer supported.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#setAssumeUntrustedCertificateIssuer(boolean)">org.openqa.selenium.firefox.FirefoxProfile.setAssumeUntrustedCertificateIssuer<wbr>(boolean)</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Use <a href="org/openqa/selenium/remote/AbstractDriverOptions.html#setAcceptInsecureCerts(boolean)"><code>AbstractDriverOptions.setAcceptInsecureCerts(boolean)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#shouldLoadNoFocusLib()">org.openqa.selenium.firefox.FirefoxProfile.shouldLoadNoFocusLib()</a></div>
+<div class="col-last even-row-color">
+<div class="block">Native events are no longer supported.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/HasDownloads.html#getDownloadableFiles()">org.openqa.selenium.HasDownloads.getDownloadableFiles()</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Use method <a href="org/openqa/selenium/HasDownloads.html#getDownloadedFiles()"><code>HasDownloads.getDownloadedFiles()</code></a> instead</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/io/Read.html#resourceAsString(java.lang.String)">org.openqa.selenium.io.Read.resourceAsString<wbr>(String)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/io/Read.html#resourceAsString(java.lang.String)">org.openqa.selenium.io.Read.resourceAsString<wbr>(String)</a></div>
+<div class="col-last even-row-color">
 <div class="block">Use <a href="org/openqa/selenium/io/Read.html#resourceAsString(java.lang.Class,java.lang.String)"><code>Read.resourceAsString(Class, String)</code></a> instead</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/json/JsonInput.html#nextInstant()">org.openqa.selenium.json.JsonInput.nextInstant()</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/json/JsonInput.html#nextInstant()">org.openqa.selenium.json.JsonInput.nextInstant()</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Instant is not a basic JSON type, use the <a href="org/openqa/selenium/json/InstantCoercer.html" title="class in org.openqa.selenium.json"><code>InstantCoercer</code></a> instead.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/Proxy.html#getFtpProxy()">org.openqa.selenium.Proxy.getFtpProxy()</a></div>
-<div class="col-last odd-row-color">
-<div class="block">getFtpProxy is deprecated and will be removed in a future release.</div>
-</div>
-<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/Proxy.html#setFtpProxy(java.lang.String)">org.openqa.selenium.Proxy.setFtpProxy<wbr>(String)</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/http/Contents.html#string(java.io.File)">org.openqa.selenium.remote.http.Contents.string<wbr>(File)</a></div>
 <div class="col-last even-row-color">
-<div class="block">setFtpProxy is deprecated and will be removed in a future release.</div>
-</div>
-<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/http/Contents.html#string(java.io.File)">org.openqa.selenium.remote.http.Contents.string<wbr>(File)</a></div>
-<div class="col-last odd-row-color">
 <div class="block">Not needed anymore. It's a bad idea to read the entire file to memory. It may cause
     OutOfMemory errors in case of large files.</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/http/Contents.html#string(org.openqa.selenium.remote.http.Contents.Supplier,java.nio.charset.Charset)">org.openqa.selenium.remote.http.Contents.string<wbr>(Contents.Supplier, Charset)</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/http/Contents.html#string(org.openqa.selenium.remote.http.Contents.Supplier,java.nio.charset.Charset)">org.openqa.selenium.remote.http.Contents.string<wbr>(Contents.Supplier, Charset)</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Use method <a href="org/openqa/selenium/remote/http/Contents.Supplier.html#contentAsString(java.nio.charset.Charset)"><code>Contents.Supplier.contentAsString(Charset)</code></a> instead.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/http/Contents.html#string(org.openqa.selenium.remote.http.HttpMessage)">org.openqa.selenium.remote.http.Contents.string<wbr>(HttpMessage&lt;?&gt;)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/http/Contents.html#string(org.openqa.selenium.remote.http.HttpMessage)">org.openqa.selenium.remote.http.Contents.string<wbr>(HttpMessage&lt;?&gt;)</a></div>
+<div class="col-last even-row-color">
 <div class="block">Use method <code>HttpMessage.contentAsString()</code> instead</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/http/HttpClient.html#sendAsyncNative(java.net.http.HttpRequest,java.net.http.HttpResponse.BodyHandler)">org.openqa.selenium.remote.http.HttpClient.sendAsyncNative<wbr>(HttpRequest, HttpResponse.BodyHandler&lt;T&gt;)</a></div>
-<div class="col-last even-row-color">
-<div class="block">use JdkHttpClient#httpClient() instead.</div>
-</div>
-<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/http/HttpClient.html#sendNative(java.net.http.HttpRequest,java.net.http.HttpResponse.BodyHandler)">org.openqa.selenium.remote.http.HttpClient.sendNative<wbr>(HttpRequest, HttpResponse.BodyHandler&lt;T&gt;)</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/http/HttpClient.html#sendAsyncNative(java.net.http.HttpRequest,java.net.http.HttpResponse.BodyHandler)">org.openqa.selenium.remote.http.HttpClient.sendAsyncNative<wbr>(HttpRequest, HttpResponse.BodyHandler&lt;T&gt;)</a></div>
 <div class="col-last odd-row-color">
 <div class="block">use JdkHttpClient#httpClient() instead.</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#getDownloadableFiles()">org.openqa.selenium.remote.RemoteWebDriver.getDownloadableFiles()</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/http/HttpClient.html#sendNative(java.net.http.HttpRequest,java.net.http.HttpResponse.BodyHandler)">org.openqa.selenium.remote.http.HttpClient.sendNative<wbr>(HttpRequest, HttpResponse.BodyHandler&lt;T&gt;)</a></div>
 <div class="col-last even-row-color">
+<div class="block">use JdkHttpClient#httpClient() instead.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#getDownloadableFiles()">org.openqa.selenium.remote.RemoteWebDriver.getDownloadableFiles()</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Use method <a href="org/openqa/selenium/remote/RemoteWebDriver.html#getDownloadedFiles()"><code>RemoteWebDriver.getDownloadedFiles()</code></a> instead</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#maybeGetBiDi()">org.openqa.selenium.remote.RemoteWebDriver.maybeGetBiDi()</a></div>
-<div class="col-last odd-row-color"></div>
-<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/Response.html#getStatus()">org.openqa.selenium.remote.Response.getStatus()</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#maybeGetBiDi()">org.openqa.selenium.remote.RemoteWebDriver.maybeGetBiDi()</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/Response.html#getStatus()">org.openqa.selenium.remote.Response.getStatus()</a></div>
+<div class="col-last odd-row-color">
 <div class="block">The integer status is a JSON Wire Protocol artifact; use <a href="org/openqa/selenium/remote/Response.html#getState()"><code>Response.getState()</code></a> (the
     W3C state) instead. Removal is tracked by <a href="https://github.com/SeleniumHQ/selenium/issues/17638">#17638</a>.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/Response.html#setStatus(java.lang.Integer)">org.openqa.selenium.remote.Response.setStatus<wbr>(Integer)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/Response.html#setStatus(java.lang.Integer)">org.openqa.selenium.remote.Response.setStatus<wbr>(Integer)</a></div>
+<div class="col-last even-row-color">
 <div class="block">The integer status is a JSON Wire Protocol artifact; use <a href="org/openqa/selenium/remote/Response.html#setState(java.lang.String)"><code>Response.setState(String)</code></a>
     (the W3C state) instead. Removal is tracked by <a href="https://github.com/SeleniumHQ/selenium/issues/17638">#17638</a>.</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)">org.openqa.selenium.remote.WebDriverInfo.createDriver<wbr>(Capabilities)</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)">org.openqa.selenium.remote.WebDriverInfo.createDriver<wbr>(Capabilities)</a></div>
+<div class="col-last odd-row-color">
 <div class="block">use <a href="org/openqa/selenium/remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)"><code>WebDriverInfo.createDriver(Capabilities, ClientConfig)</code></a> instead</div>
 </div>
 </div>

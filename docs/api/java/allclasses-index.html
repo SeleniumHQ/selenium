@@ -361,7 +361,9 @@ Log levels</a> defined by ChromeDriver</div>
 <div class="block">Captures the last N bytes of output.</div>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/firefox/ClasspathExtension.html" title="class in org.openqa.selenium.firefox">ClasspathExtension</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">Deprecated, for removal: This API element is subject to removal in a future version.
+<div class="deprecation-comment">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
+</div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/web/ClassPathResource.html" title="class in org.openqa.selenium.grid.web">ClassPathResource</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/sessionqueue/ClearSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">ClearSessionQueue</a></div>
@@ -786,7 +788,9 @@ neither null nor false.</div>
 <div class="block">Canned <a href="org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui"><code>ExpectedCondition</code></a>s which are generally useful within webdriver tests.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/firefox/Extension.html" title="interface in org.openqa.selenium.firefox">Extension</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">Deprecated, for removal: This API element is subject to removal in a future version.
+<div class="deprecation-comment">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
+</div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/webextension/ExtensionArchivePath.html" title="class in org.openqa.selenium.bidi.webextension">ExtensionArchivePath</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/webextension/ExtensionBase64Encoded.html" title="class in org.openqa.selenium.bidi.webextension">ExtensionBase64Encoded</a></div>
@@ -820,7 +824,9 @@ neither null nor false.</div>
 <div class="block">Used for identifying whether a sequence of chars represents the path to a file.</div>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/firefox/FileExtension.html" title="class in org.openqa.selenium.firefox">FileExtension</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">Deprecated, for removal: This API element is subject to removal in a future version.
+<div class="deprecation-comment">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
+</div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/io/FileHandler.html" title="class in org.openqa.selenium.io">FileHandler</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Utility methods for common filesystem activities</div>
@@ -928,378 +934,387 @@ partially filled nodes.</div>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/events/local/GuavaEventBus.html" title="class in org.openqa.selenium.events.local">GuavaEventBus</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/grid/web/HandlerNotFoundException.html" title="class in org.openqa.selenium.grid.web">HandlerNotFoundException</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/HasAuthentication.html" title="interface in org.openqa.selenium">HasAuthentication</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/Handle.html" title="class in org.openqa.selenium.bidi">Handle</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="block">An opaque handle to the active BiDi connection, used by <a href="org/openqa/selenium/bidi/Module.html" title="class in org.openqa.selenium.bidi"><code>Module</code></a> subclasses to send
+commands and subscribe to events.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/grid/web/HandlerNotFoundException.html" title="class in org.openqa.selenium.grid.web">HandlerNotFoundException</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab5">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/HasAuthentication.html" title="interface in org.openqa.selenium">HasAuthentication</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Indicates that a driver supports authenticating to a website in some way.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/bidi/HasBiDi.html" title="interface in org.openqa.selenium.bidi">HasBiDi</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/bidi/HasBiDi.html" title="interface in org.openqa.selenium.bidi">HasBiDi</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Used by classes to indicate that they can describe the <a href="org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a>
 they possess.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/chromium/HasCasting.html" title="interface in org.openqa.selenium.chromium">HasCasting</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/chromium/HasCasting.html" title="interface in org.openqa.selenium.chromium">HasCasting</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Used by classes to indicate that they can cast devices to available sink targets.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/chromium/HasCdp.html" title="interface in org.openqa.selenium.chromium">HasCdp</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/chromium/HasCdp.html" title="interface in org.openqa.selenium.chromium">HasCdp</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Used by classes to indicate that they can execute Command DevTools commands.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/firefox/HasContext.html" title="interface in org.openqa.selenium.firefox">HasContext</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/firefox/HasContext.html" title="interface in org.openqa.selenium.firefox">HasContext</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Used by classes to indicate that they can change the context commands operate in.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/safari/HasDebugger.html" title="interface in org.openqa.selenium.safari">HasDebugger</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/safari/HasDebugger.html" title="interface in org.openqa.selenium.safari">HasDebugger</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Used by classes to indicate that they can open the browser debugger.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/HasDownloads.html" title="interface in org.openqa.selenium">HasDownloads</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/HasDownloads.html" title="interface in org.openqa.selenium">HasDownloads</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Indicates that a driver supports downloading remote files.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/HasDownloads.DownloadedFile.html" title="class in org.openqa.selenium">HasDownloads.DownloadedFile</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/firefox/HasExtensions.html" title="interface in org.openqa.selenium.firefox">HasExtensions</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/HasDownloads.DownloadedFile.html" title="class in org.openqa.selenium">HasDownloads.DownloadedFile</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/firefox/HasExtensions.html" title="interface in org.openqa.selenium.firefox">HasExtensions</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Used by classes to indicate that they can install and uninstall browser extensions on the fly.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/federatedcredentialmanagement/HasFederatedCredentialManagement.html" title="interface in org.openqa.selenium.federatedcredentialmanagement">HasFederatedCredentialManagement</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/federatedcredentialmanagement/HasFederatedCredentialManagement.html" title="interface in org.openqa.selenium.federatedcredentialmanagement">HasFederatedCredentialManagement</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Used by classes to indicate that they can interact with FedCM dialogs.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/firefox/HasFullPageScreenshot.html" title="interface in org.openqa.selenium.firefox">HasFullPageScreenshot</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/firefox/HasFullPageScreenshot.html" title="interface in org.openqa.selenium.firefox">HasFullPageScreenshot</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Used by classes to indicate that they can take a full page screenshot.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/chromium/HasLaunchApp.html" title="interface in org.openqa.selenium.chromium">HasLaunchApp</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/chromium/HasLaunchApp.html" title="interface in org.openqa.selenium.chromium">HasLaunchApp</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Used by classes to indicate that they can launch a Chromium app.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/grid/component/HasLifecycle.html" title="interface in org.openqa.selenium.grid.component">HasLifecycle&lt;T&gt;</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/grid/component/HasLifecycle.html" title="interface in org.openqa.selenium.grid.component">HasLifecycle&lt;T&gt;</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Allows an implementation of something to be marked as startable and stoppable, allowing its
 lifecycle to be controlled.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/logging/HasLogEvents.html" title="interface in org.openqa.selenium.logging">HasLogEvents</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/chromium/HasNetworkConditions.html" title="interface in org.openqa.selenium.chromium">HasNetworkConditions</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/logging/HasLogEvents.html" title="interface in org.openqa.selenium.logging">HasLogEvents</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/chromium/HasNetworkConditions.html" title="interface in org.openqa.selenium.chromium">HasNetworkConditions</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Used by classes to indicate that they can simulate different network conditions.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/chromium/HasPermissions.html" title="interface in org.openqa.selenium.chromium">HasPermissions</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/chromium/HasPermissions.html" title="interface in org.openqa.selenium.chromium">HasPermissions</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Used by classes to indicate that they can adjust permissions compatible items.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/safari/HasPermissions.html" title="interface in org.openqa.selenium.safari">HasPermissions</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/safari/HasPermissions.html" title="interface in org.openqa.selenium.safari">HasPermissions</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Used by classes to indicate that they can take adjust permissions.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/status/HasReadyState.html" title="interface in org.openqa.selenium.status">HasReadyState</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/grid/config/HasRoles.html" title="interface in org.openqa.selenium.grid.config">HasRoles</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/status/HasReadyState.html" title="interface in org.openqa.selenium.status">HasReadyState</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/virtualauthenticator/HasVirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">HasVirtualAuthenticator</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/grid/config/HasRoles.html" title="interface in org.openqa.selenium.grid.config">HasRoles</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/virtualauthenticator/HasVirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">HasVirtualAuthenticator</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Interface implemented by each driver that allows access to the virtual authenticator API.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/network/Header.html" title="class in org.openqa.selenium.bidi.network">Header</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/grid/node/HealthCheck.html" title="interface in org.openqa.selenium.grid.node">HealthCheck</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/node/HealthCheck.Result.html" title="class in org.openqa.selenium.grid.node">HealthCheck.Result</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/HealthCheckFailedException.html" title="class in org.openqa.selenium">HealthCheckFailedException</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/network/Header.html" title="class in org.openqa.selenium.bidi.network">Header</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/grid/node/HealthCheck.html" title="interface in org.openqa.selenium.grid.node">HealthCheck</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/node/HealthCheck.Result.html" title="class in org.openqa.selenium.grid.node">HealthCheck.Result</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/HealthCheckFailedException.html" title="class in org.openqa.selenium">HealthCheckFailedException</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab5">
 <div class="block">Indicates that a Node health check failed.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/server/HelpFlags.html" title="class in org.openqa.selenium.grid.server">HelpFlags</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/browsingcontext/HistoryUpdated.html" title="class in org.openqa.selenium.bidi.browsingcontext">HistoryUpdated</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/server/HelpFlags.html" title="class in org.openqa.selenium.grid.server">HelpFlags</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/net/HostIdentifier.html" title="class in org.openqa.selenium.net">HostIdentifier</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/browsingcontext/HistoryUpdated.html" title="class in org.openqa.selenium.bidi.browsingcontext">HistoryUpdated</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/support/How.html" title="enum class in org.openqa.selenium.support">How</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/net/HostIdentifier.html" title="class in org.openqa.selenium.net">HostIdentifier</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/support/How.html" title="enum class in org.openqa.selenium.support">How</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Defines a simple client for making HTTP requests.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab6"><a href="org/openqa/selenium/remote/http/HttpClientName.html" title="annotation interface in org.openqa.selenium.remote.http">HttpClientName</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab6">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/remote/http/HttpHeader.html" title="enum class in org.openqa.selenium.remote.http">HttpHeader</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab6"><a href="org/openqa/selenium/remote/http/HttpClientName.html" title="annotation interface in org.openqa.selenium.remote.http">HttpClientName</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab6">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/remote/http/HttpHeader.html" title="enum class in org.openqa.selenium.remote.http">HttpHeader</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/remote/http/HttpMethod.html" title="enum class in org.openqa.selenium.remote.http">HttpMethod</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/remote/http/HttpMethod.html" title="enum class in org.openqa.selenium.remote.http">HttpMethod</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/HttpSessionId.html" title="class in org.openqa.selenium.remote">HttpSessionId</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/tracing/HttpTracing.html" title="class in org.openqa.selenium.remote.tracing">HttpTracing</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/HttpSessionId.html" title="class in org.openqa.selenium.remote">HttpSessionId</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/commands/Hub.html" title="class in org.openqa.selenium.grid.commands">Hub</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/tracing/HttpTracing.html" title="class in org.openqa.selenium.remote.tracing">HttpTracing</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/docker/Image.html" title="class in org.openqa.selenium.docker">Image</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/commands/Hub.html" title="class in org.openqa.selenium.grid.commands">Hub</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/browsingcontext/ImageFormat.html" title="class in org.openqa.selenium.bidi.browsingcontext">ImageFormat</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/docker/Image.html" title="class in org.openqa.selenium.docker">Image</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/docker/ImageId.html" title="class in org.openqa.selenium.docker">ImageId</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/browsingcontext/ImageFormat.html" title="class in org.openqa.selenium.bidi.browsingcontext">ImageFormat</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/docker/internal/ImageSummary.html" title="class in org.openqa.selenium.docker.internal">ImageSummary</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/docker/ImageId.html" title="class in org.openqa.selenium.docker">ImageId</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/ImmutableCapabilities.html" title="class in org.openqa.selenium">ImmutableCapabilities</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/docker/internal/ImageSummary.html" title="class in org.openqa.selenium.docker.internal">ImageSummary</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/commands/InfoCommand.html" title="class in org.openqa.selenium.grid.commands">InfoCommand</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/ImmutableCapabilities.html" title="class in org.openqa.selenium">ImmutableCapabilities</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/commands/InfoFlags.html" title="class in org.openqa.selenium.grid.commands">InfoFlags</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/commands/InfoCommand.html" title="class in org.openqa.selenium.grid.commands">InfoCommand</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/network/Initiator.html" title="class in org.openqa.selenium.bidi.network">Initiator</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/commands/InfoFlags.html" title="class in org.openqa.selenium.grid.commands">InfoFlags</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/bidi/network/Initiator.Type.html" title="enum class in org.openqa.selenium.bidi.network">Initiator.Type</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/module/Input.html" title="class in org.openqa.selenium.bidi.module">Input</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/interactions/InputSource.html" title="interface in org.openqa.selenium.interactions">InputSource</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/network/Initiator.html" title="class in org.openqa.selenium.bidi.network">Initiator</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/bidi/network/Initiator.Type.html" title="enum class in org.openqa.selenium.bidi.network">Initiator.Type</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/module/Input.html" title="class in org.openqa.selenium.bidi.module">Input</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/interactions/InputSource.html" title="interface in org.openqa.selenium.interactions">InputSource</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Models an <a href="https://www.w3.org/TR/webdriver/#dfn-input-source">input source</a> as defined
 and used by the W3C WebDriver spec.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/InsecureCertificateException.html" title="class in org.openqa.selenium">InsecureCertificateException</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/InsecureCertificateException.html" title="class in org.openqa.selenium">InsecureCertificateException</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab5">
 <div class="block">Indicates that navigation caused by the user agent hit a certificate warning, which is usually
 the result of an expired or invalid TLS certificate.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/webextension/InstallExtensionParameters.html" title="class in org.openqa.selenium.bidi.webextension">InstallExtensionParameters</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/json/InstantCoercer.html" title="class in org.openqa.selenium.json">InstantCoercer</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/webextension/InstallExtensionParameters.html" title="class in org.openqa.selenium.bidi.webextension">InstallExtensionParameters</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/interactions/Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/json/InstantCoercer.html" title="class in org.openqa.selenium.json">InstantCoercer</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/interactions/Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Used as the basis of <a href="org/openqa/selenium/interactions/Sequence.html" title="class in org.openqa.selenium.interactions"><code>Sequence</code></a>s for the W3C WebDriver spec <a href="https://www.w3.org/TR/webdriver/#actions">Action commands</a>.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Indicates that a class can be used with the W3C WebDriver <a href="https://www.w3.org/TR/webdriver/#actions">Actions commands</a>.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/bidi/network/InterceptPhase.html" title="enum class in org.openqa.selenium.bidi.network">InterceptPhase</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html" title="class in org.openqa.selenium.ie">InternetExplorerDriver</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/ie/InternetExplorerDriverInfo.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverInfo</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/ie/InternetExplorerDriverLogLevel.html" title="enum class in org.openqa.selenium.ie">InternetExplorerDriverLogLevel</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/bidi/network/InterceptPhase.html" title="enum class in org.openqa.selenium.bidi.network">InterceptPhase</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html" title="class in org.openqa.selenium.ie">InternetExplorerDriver</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/ie/InternetExplorerDriverInfo.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverInfo</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/ie/InternetExplorerDriverLogLevel.html" title="enum class in org.openqa.selenium.ie">InternetExplorerDriverLogLevel</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Manages the life and death of an IEDriverServer.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Builder used to configure new <a href="org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> instances.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Options for configuring the use of IE.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/InvalidArgumentException.html" title="class in org.openqa.selenium">InvalidArgumentException</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/InvalidCookieDomainException.html" title="class in org.openqa.selenium">InvalidCookieDomainException</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab5">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/InvalidArgumentException.html" title="class in org.openqa.selenium">InvalidArgumentException</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab5">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/InvalidCookieDomainException.html" title="class in org.openqa.selenium">InvalidCookieDomainException</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">
 <div class="block">Thrown when attempting to add a cookie under a different domain than the current URL.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/InvalidElementStateException.html" title="class in org.openqa.selenium">InvalidElementStateException</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/InvalidElementStateException.html" title="class in org.openqa.selenium">InvalidElementStateException</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab5">
 <div class="block">Indicates that a <a href="org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> is in a state that means actions cannot be performed with it.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/remote/InvalidResponseException.html" title="class in org.openqa.selenium.remote">InvalidResponseException</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab5">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/InvalidSelectorException.html" title="class in org.openqa.selenium">InvalidSelectorException</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/remote/InvalidResponseException.html" title="class in org.openqa.selenium.remote">InvalidResponseException</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab5">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/InvalidSelectorException.html" title="class in org.openqa.selenium">InvalidSelectorException</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab5">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Created by evgeniyat on 13.05.16</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/web/JarFileResource.html" title="class in org.openqa.selenium.grid.web">JarFileResource</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/devtools/idealized/Javascript.html" title="class in org.openqa.selenium.devtools.idealized">Javascript&lt;SCRIPTID, BINDINGCALLED&gt;</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/web/JarFileResource.html" title="class in org.openqa.selenium.grid.web">JarFileResource</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/JavascriptException.html" title="class in org.openqa.selenium">JavascriptException</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/devtools/idealized/Javascript.html" title="class in org.openqa.selenium.devtools.idealized">Javascript&lt;SCRIPTID, BINDINGCALLED&gt;</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/JavascriptException.html" title="class in org.openqa.selenium">JavascriptException</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab5">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Indicates that a driver can execute JavaScript, providing access to the mechanism to do so.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/log/JavascriptLogEntry.html" title="class in org.openqa.selenium.bidi.log">JavascriptLogEntry</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/http/jdk/JdkHttpClient.html" title="class in org.openqa.selenium.remote.http.jdk">JdkHttpClient</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/log/JavascriptLogEntry.html" title="class in org.openqa.selenium.bidi.log">JavascriptLogEntry</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/http/jdk/JdkHttpClient.Factory.html" title="class in org.openqa.selenium.remote.http.jdk">JdkHttpClient.Factory</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/http/jdk/JdkHttpClient.html" title="class in org.openqa.selenium.remote.http.jdk">JdkHttpClient</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/jmx/JMXHelper.html" title="class in org.openqa.selenium.grid.jmx">JMXHelper</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/http/jdk/JdkHttpClient.Factory.html" title="class in org.openqa.selenium.remote.http.jdk">JdkHttpClient.Factory</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/json/Json.html" title="class in org.openqa.selenium.json">Json</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/jmx/JMXHelper.html" title="class in org.openqa.selenium.grid.jmx">JMXHelper</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/json/Json.html" title="class in org.openqa.selenium.json">Json</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">The <b>Json</b> class is the entrypoint for the JSON processing features of the Selenium API.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/config/JsonConfig.html" title="class in org.openqa.selenium.grid.config">JsonConfig</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/json/JsonException.html" title="class in org.openqa.selenium.json">JsonException</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/config/JsonConfig.html" title="class in org.openqa.selenium.grid.config">JsonConfig</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/json/JsonException.html" title="class in org.openqa.selenium.json">JsonException</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab5">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">The <b>JsonInput</b> class defines the operations used to deserialize JSON strings into Java
 objects.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">The <b>JsonOutput</b> class defines the operations used to serialize Java objects into JSON
 strings.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/JsonToWebElementConverter.html" title="class in org.openqa.selenium.remote">JsonToWebElementConverter</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/JsonToWebElementConverter.html" title="class in org.openqa.selenium.remote">JsonToWebElementConverter</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Reconstitutes <a href="org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>s from their JSON representation.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/json/JsonType.html" title="enum class in org.openqa.selenium.json">JsonType</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/json/JsonType.html" title="enum class in org.openqa.selenium.json">JsonType</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab3">
 <div class="block">Used to specify the pending JSON element type.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/interactions/KeyInput.html" title="class in org.openqa.selenium.interactions">KeyInput</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/interactions/KeyInput.html" title="class in org.openqa.selenium.interactions">KeyInput</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Models a <a href="https://www.w3.org/TR/webdriver/#dfn-key-input-source">key input source</a>.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/Keys.html" title="enum class in org.openqa.selenium">Keys</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/Keys.html" title="enum class in org.openqa.selenium">Keys</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab3">
 <div class="block">Representations of pressable keys that aren't text.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/concurrent/Lazy.html" title="class in org.openqa.selenium.concurrent">Lazy&lt;T&gt;</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/concurrent/Lazy.InitializationException.html" title="class in org.openqa.selenium.concurrent">Lazy.InitializationException</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/concurrent/Lazy.Supplier.html" title="interface in org.openqa.selenium.concurrent">Lazy.Supplier&lt;T&gt;</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/net/LinuxEphemeralPortRangeDetector.html" title="class in org.openqa.selenium.net">LinuxEphemeralPortRangeDetector</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/concurrent/Lazy.html" title="class in org.openqa.selenium.concurrent">Lazy&lt;T&gt;</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/support/ui/LoadableComponent.html" title="class in org.openqa.selenium.support.ui">LoadableComponent&lt;T&gt;</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/concurrent/Lazy.InitializationException.html" title="class in org.openqa.selenium.concurrent">Lazy.InitializationException</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab5">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/concurrent/Lazy.Supplier.html" title="interface in org.openqa.selenium.concurrent">Lazy.Supplier&lt;T&gt;</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/net/LinuxEphemeralPortRangeDetector.html" title="class in org.openqa.selenium.net">LinuxEphemeralPortRangeDetector</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/support/ui/LoadableComponent.html" title="class in org.openqa.selenium.support.ui">LoadableComponent&lt;T&gt;</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Represents any abstraction of something that can be loaded.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/distributor/local/LocalDistributor.html" title="class in org.openqa.selenium.grid.distributor.local">LocalDistributor</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/LocalFileDetector.html" title="class in org.openqa.selenium.remote">LocalFileDetector</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/distributor/local/LocalDistributor.html" title="class in org.openqa.selenium.grid.distributor.local">LocalDistributor</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/remote/LocalFileDetector.html" title="class in org.openqa.selenium.remote">LocalFileDetector</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Detects files on the local disk.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/distributor/local/LocalGridModel.html" title="class in org.openqa.selenium.grid.distributor.local">LocalGridModel</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/sessionqueue/local/LocalNewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue.local">LocalNewSessionQueue</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/distributor/local/LocalGridModel.html" title="class in org.openqa.selenium.grid.distributor.local">LocalGridModel</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/sessionqueue/local/LocalNewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue.local">LocalNewSessionQueue</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">An in-memory implementation of the list of new session requests.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/node/local/LocalNode.html" title="class in org.openqa.selenium.grid.node.local">LocalNode</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/node/local/LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/node/local/LocalNode.html" title="class in org.openqa.selenium.grid.node.local">LocalNode</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/node/local/LocalNodeFactory.html" title="class in org.openqa.selenium.grid.node.local">LocalNodeFactory</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/node/local/LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/distributor/local/LocalNodeRegistry.html" title="class in org.openqa.selenium.grid.distributor.local">LocalNodeRegistry</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/node/local/LocalNodeFactory.html" title="class in org.openqa.selenium.grid.node.local">LocalNodeFactory</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/distributor/local/LocalNodeRegistry.html" title="class in org.openqa.selenium.grid.distributor.local">LocalNodeRegistry</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Default implementation of <a href="org/openqa/selenium/grid/distributor/NodeRegistry.html" title="interface in org.openqa.selenium.grid.distributor"><code>NodeRegistry</code></a> that keeps nodes in memory.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/sessionmap/local/LocalSessionMap.html" title="class in org.openqa.selenium.grid.sessionmap.local">LocalSessionMap</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/script/LocalValue.html" title="class in org.openqa.selenium.bidi.script">LocalValue</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/sessionmap/local/LocalSessionMap.html" title="class in org.openqa.selenium.grid.sessionmap.local">LocalSessionMap</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/bidi/script/LocalValue.SpecialNumberType.html" title="enum class in org.openqa.selenium.bidi.script">LocalValue.SpecialNumberType</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/interactions/Locatable.html" title="interface in org.openqa.selenium.interactions">Locatable</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/browsingcontext/LocateNodeParameters.html" title="class in org.openqa.selenium.bidi.browsingcontext">LocateNodeParameters</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/script/LocalValue.html" title="class in org.openqa.selenium.bidi.script">LocalValue</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/support/pagefactory/internal/LocatingElementHandler.html" title="class in org.openqa.selenium.support.pagefactory.internal">LocatingElementHandler</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/bidi/script/LocalValue.SpecialNumberType.html" title="enum class in org.openqa.selenium.bidi.script">LocalValue.SpecialNumberType</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/interactions/Locatable.html" title="interface in org.openqa.selenium.interactions">Locatable</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/browsingcontext/LocateNodeParameters.html" title="class in org.openqa.selenium.bidi.browsingcontext">LocateNodeParameters</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/support/pagefactory/internal/LocatingElementListHandler.html" title="class in org.openqa.selenium.support.pagefactory.internal">LocatingElementListHandler</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/support/pagefactory/internal/LocatingElementHandler.html" title="class in org.openqa.selenium.support.pagefactory.internal">LocatingElementHandler</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/browsingcontext/Locator.html" title="class in org.openqa.selenium.bidi.browsingcontext">Locator</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/support/pagefactory/internal/LocatingElementListHandler.html" title="class in org.openqa.selenium.support.pagefactory.internal">LocatingElementListHandler</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/log/Log.html" title="class in org.openqa.selenium.bidi.log">Log</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/browsingcontext/Locator.html" title="class in org.openqa.selenium.bidi.browsingcontext">Locator</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/devtools/idealized/log/Log.html" title="interface in org.openqa.selenium.devtools.idealized.log">Log</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/log/Log.html" title="class in org.openqa.selenium.bidi.log">Log</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/devtools/idealized/log/Log.html" title="interface in org.openqa.selenium.devtools.idealized.log">Log</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Represent a pool of <a href="org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging"><code>LogEntry</code></a>.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/log/LogEntry.html" title="class in org.openqa.selenium.bidi.log">LogEntry</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/devtools/idealized/log/model/LogEntry.html" title="class in org.openqa.selenium.devtools.idealized.log.model">LogEntry</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/log/LogEntry.html" title="class in org.openqa.selenium.bidi.log">LogEntry</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/devtools/idealized/log/model/LogEntry.html" title="class in org.openqa.selenium.devtools.idealized.log.model">LogEntry</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Represents a single log statement.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/log/LoggingFlags.html" title="class in org.openqa.selenium.grid.log">LoggingFlags</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/log/LoggingOptions.html" title="class in org.openqa.selenium.grid.log">LoggingOptions</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/log/LoggingFlags.html" title="class in org.openqa.selenium.grid.log">LoggingFlags</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/log/LoggingOptions.html" title="class in org.openqa.selenium.grid.log">LoggingOptions</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Represents the logging preferences.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/module/LogInspector.html" title="class in org.openqa.selenium.bidi.module">LogInspector</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/bidi/log/LogLevel.html" title="enum class in org.openqa.selenium.bidi.log">LogLevel</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/logging/LogLevelMapping.html" title="class in org.openqa.selenium.logging">LogLevelMapping</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/module/LogInspector.html" title="class in org.openqa.selenium.bidi.module">LogInspector</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="org/openqa/selenium/bidi/log/LogLevel.html" title="enum class in org.openqa.selenium.bidi.log">LogLevel</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/logging/LogLevelMapping.html" title="class in org.openqa.selenium.logging">LogLevelMapping</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Interface for providing logs.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging">LogType</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging">LogType</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Supported log types.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/Main.html" title="class in org.openqa.selenium.grid">Main</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab6"><a href="org/openqa/selenium/grid/jmx/ManagedAttribute.html" title="annotation interface in org.openqa.selenium.grid.jmx">ManagedAttribute</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab6">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab6"><a href="org/openqa/selenium/grid/jmx/ManagedOperation.html" title="annotation interface in org.openqa.selenium.grid.jmx">ManagedOperation</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab6">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab6"><a href="org/openqa/selenium/grid/jmx/ManagedService.html" title="annotation interface in org.openqa.selenium.grid.jmx">ManagedService</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab6">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/config/MapConfig.html" title="class in org.openqa.selenium.grid.config">MapConfig</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/script/MapLocalValue.html" title="class in org.openqa.selenium.bidi.script">MapLocalValue</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/Main.html" title="class in org.openqa.selenium.grid">Main</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/internal/Maps.html" title="class in org.openqa.selenium.internal">Maps</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab6"><a href="org/openqa/selenium/grid/jmx/ManagedAttribute.html" title="annotation interface in org.openqa.selenium.grid.jmx">ManagedAttribute</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab6">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab6"><a href="org/openqa/selenium/grid/jmx/ManagedOperation.html" title="annotation interface in org.openqa.selenium.grid.jmx">ManagedOperation</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab6">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab6"><a href="org/openqa/selenium/grid/jmx/ManagedService.html" title="annotation interface in org.openqa.selenium.grid.jmx">ManagedService</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab6">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/config/MapConfig.html" title="class in org.openqa.selenium.grid.config">MapConfig</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/script/MapLocalValue.html" title="class in org.openqa.selenium.bidi.script">MapLocalValue</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/internal/Maps.html" title="class in org.openqa.selenium.internal">Maps</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">All methods return immutable objects</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/jmx/MBean.html" title="class in org.openqa.selenium.grid.jmx">MBean</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/config/MemoizedConfig.html" title="class in org.openqa.selenium.grid.config">MemoizedConfig</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/jmx/MBean.html" title="class in org.openqa.selenium.grid.jmx">MBean</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/web/MergedResource.html" title="class in org.openqa.selenium.grid.web">MergedResource</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/config/MemoizedConfig.html" title="class in org.openqa.selenium.grid.config">MemoizedConfig</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/script/Message.html" title="class in org.openqa.selenium.bidi.script">Message</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/grid/web/MergedResource.html" title="class in org.openqa.selenium.grid.web">MergedResource</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/devtools/Message.html" title="class in org.openqa.selenium.devtools">Message</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/script/Message.html" title="class in org.openqa.selenium.bidi.script">Message</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/remote/http/Message.html" title="interface in org.openqa.selenium.remote.http">Message</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/devtools/Message.html" title="class in org.openqa.selenium.devtools">Message</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/openqa/selenium/remote/http/Message.html" title="interface in org.openqa.selenium.remote.http">Message</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/openqa/selenium/bidi/Module.html" title="class in org.openqa.selenium.bidi">Module</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="block">Base class for generated BiDi module classes.</div>
+</div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="org/openqa/selenium/interactions/MoveTargetOutOfBoundsException.html" title="class in org.openqa.selenium.interactions">MoveTargetOutOfBoundsException</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab5">
 <div class="block">Indicates that the target provided to the actions move() method is invalid - outside of the size

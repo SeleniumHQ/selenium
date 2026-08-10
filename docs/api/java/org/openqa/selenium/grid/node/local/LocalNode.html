@@ -61,7 +61,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
-<li><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.github.benmanes.caffeine.cache.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int,int,java.util.List)" tabindex="0">LocalNode(Tracer, EventBus, URI, URI, HealthCheck, int, int, boolean, boolean, Ticker, Duration, Duration, List, Secret, boolean, int, int, List)</a></li>
+<li><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,boolean,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.github.benmanes.caffeine.cache.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int,int,java.util.List)" tabindex="0">LocalNode(Tracer, EventBus, URI, URI, boolean, HealthCheck, int, int, boolean, boolean, Ticker, Duration, Duration, List, Secret, boolean, int, int, List)</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
@@ -158,10 +158,11 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.github.benmanes.caffeine.cache.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int,int,java.util.List)" class="member-name-link">LocalNode</a><wbr>(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,boolean,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.github.benmanes.caffeine.cache.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int,int,java.util.List)" class="member-name-link">LocalNode</a><wbr>(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
  <a href="../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;gridUri,
+ boolean&nbsp;gridUrlSpecified,
  @Nullable <a href="../HealthCheck.html" title="interface in org.openqa.selenium.grid.node">HealthCheck</a>&nbsp;healthCheck,
  int&nbsp;maxSessionCount,
  int&nbsp;drainAfterSessionCount,
@@ -316,13 +317,14 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.github.benmanes.caffeine.cache.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int,int,java.util.List)">
+<section class="detail" id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,boolean,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.github.benmanes.caffeine.cache.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int,int,java.util.List)">
 <h3>LocalNode</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">LocalNode</span><wbr><span class="parameters">(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
  <a href="../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;gridUri,
+ boolean&nbsp;gridUrlSpecified,
  @Nullable <a href="../HealthCheck.html" title="interface in org.openqa.selenium.grid.node">HealthCheck</a>&nbsp;healthCheck,
  int&nbsp;maxSessionCount,
  int&nbsp;drainAfterSessionCount,

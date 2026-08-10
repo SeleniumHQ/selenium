@@ -71,6 +71,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#connectionLimitPerSession(int)" tabindex="0">connectionLimitPerSession(int)</a></li>
 <li><a href="#nodeDownFailureThreshold(int)" tabindex="0">nodeDownFailureThreshold(int)</a></li>
 <li><a href="#addInterceptor(org.openqa.selenium.grid.node.NodeCommandInterceptor)" tabindex="0">addInterceptor(NodeCommandInterceptor)</a></li>
+<li><a href="#gridUrlSpecified(boolean)" tabindex="0">gridUrlSpecified(boolean)</a></li>
 <li><a href="#build()" tabindex="0">build()</a></li>
 <li><a href="#advanced()" tabindex="0">advanced()</a></li>
 </ol>
@@ -153,20 +154,23 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#enableManagedDownloads(boolean)" class="member-name-link">enableManagedDownloads</a><wbr>(boolean&nbsp;enable)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#heartbeatPeriod(java.time.Duration)" class="member-name-link">heartbeatPeriod</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;heartbeatPeriod)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#gridUrlSpecified(boolean)" class="member-name-link">gridUrlSpecified</a><wbr>(boolean&nbsp;configured)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#maximumConcurrentSessions(int)" class="member-name-link">maximumConcurrentSessions</a><wbr>(int&nbsp;maxCount)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#heartbeatPeriod(java.time.Duration)" class="member-name-link">heartbeatPeriod</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;heartbeatPeriod)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#nodeDownFailureThreshold(int)" class="member-name-link">nodeDownFailureThreshold</a><wbr>(int&nbsp;threshold)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#maximumConcurrentSessions(int)" class="member-name-link">maximumConcurrentSessions</a><wbr>(int&nbsp;maxCount)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#nodeDownFailureThreshold(int)" class="member-name-link">nodeDownFailureThreshold</a><wbr>(int&nbsp;threshold)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the maximum number of consecutive session creation failures allowed before the node is
 marked as DOWN.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sessionTimeout(java.time.Duration)" class="member-name-link">sessionTimeout</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sessionTimeout(java.time.Duration)" class="member-name-link">sessionTimeout</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -280,6 +284,14 @@ create sessions.</div>
 <h3>addInterceptor</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></span>&nbsp;<span class="element-name">addInterceptor</span><wbr><span class="parameters">(<a href="../NodeCommandInterceptor.html" title="interface in org.openqa.selenium.grid.node">NodeCommandInterceptor</a>&nbsp;interceptor)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="gridUrlSpecified(boolean)">
+<h3>gridUrlSpecified</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></span>&nbsp;<span class="element-name">gridUrlSpecified</span><wbr><span class="parameters">(boolean&nbsp;configured)</span></div>
 </div>
 </section>
 </li>

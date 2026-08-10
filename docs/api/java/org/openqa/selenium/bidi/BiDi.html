@@ -77,6 +77,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#removeListener(java.lang.String)" tabindex="0">removeListener(String)</a></li>
 <li><a href="#clearListeners()" tabindex="0">clearListeners()</a></li>
 <li><a href="#getBidiSessionStatus()" tabindex="0">getBidiSessionStatus()</a></li>
+<li><a href="#asHandle()" tabindex="0">asHandle()</a></li>
 </ol>
 </li>
 </ol>
@@ -149,35 +150,38 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addListener(org.openqa.selenium.bidi.Event,java.util.function.Consumer)" class="member-name-link">addListener</a><wbr>(<a href="Event.html" title="class in org.openqa.selenium.bidi">Event</a>&lt;X&gt;&nbsp;event,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;X&gt;&nbsp;handler)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clearListener(java.util.Set,org.openqa.selenium.bidi.Event)" class="member-name-link">clearListener</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;browsingContextIds,
- <a href="Event.html" title="class in org.openqa.selenium.bidi">Event</a>&lt;X&gt;&nbsp;event)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Handle.html" title="class in org.openqa.selenium.bidi">Handle</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#asHandle()" class="member-name-link">asHandle</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clearListener(org.openqa.selenium.bidi.Event)" class="member-name-link">clearListener</a><wbr>(<a href="Event.html" title="class in org.openqa.selenium.bidi">Event</a>&lt;X&gt;&nbsp;event)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clearListener(java.util.Set,org.openqa.selenium.bidi.Event)" class="member-name-link">clearListener</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;browsingContextIds,
+ <a href="Event.html" title="class in org.openqa.selenium.bidi">Event</a>&lt;X&gt;&nbsp;event)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clearListeners()" class="member-name-link">clearListeners</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clearListener(org.openqa.selenium.bidi.Event)" class="member-name-link">clearListener</a><wbr>(<a href="Event.html" title="class in org.openqa.selenium.bidi">Event</a>&lt;X&gt;&nbsp;event)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#close()" class="member-name-link">close</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clearListeners()" class="member-name-link">clearListeners</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#disconnectSession()" class="member-name-link">disconnectSession</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#close()" class="member-name-link">close</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="BiDiSessionStatus.html" title="class in org.openqa.selenium.bidi">BiDiSessionStatus</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getBidiSessionStatus()" class="member-name-link">getBidiSessionStatus</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#disconnectSession()" class="member-name-link">disconnectSession</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeListener(java.lang.String)" class="member-name-link">removeListener</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="BiDiSessionStatus.html" title="class in org.openqa.selenium.bidi">BiDiSessionStatus</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getBidiSessionStatus()" class="member-name-link">getBidiSessionStatus</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;X</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#send(org.openqa.selenium.bidi.Command)" class="member-name-link">send</a><wbr>(<a href="Command.html" title="class in org.openqa.selenium.bidi">Command</a>&lt;X&gt;&nbsp;command)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeListener(java.lang.String)" class="member-name-link">removeListener</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;X</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#send(org.openqa.selenium.bidi.Command,java.time.Duration)" class="member-name-link">send</a><wbr>(<a href="Command.html" title="class in org.openqa.selenium.bidi">Command</a>&lt;X&gt;&nbsp;command,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#send(org.openqa.selenium.bidi.Command)" class="member-name-link">send</a><wbr>(<a href="Command.html" title="class in org.openqa.selenium.bidi">Command</a>&lt;X&gt;&nbsp;command)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;X</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#send(org.openqa.selenium.bidi.Command,java.time.Duration)" class="member-name-link">send</a><wbr>(<a href="Command.html" title="class in org.openqa.selenium.bidi">Command</a>&lt;X&gt;&nbsp;command,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -330,6 +334,14 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <h3>getBidiSessionStatus</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="BiDiSessionStatus.html" title="class in org.openqa.selenium.bidi">BiDiSessionStatus</a></span>&nbsp;<span class="element-name">getBidiSessionStatus</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="asHandle()">
+<h3>asHandle</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="Handle.html" title="class in org.openqa.selenium.bidi">Handle</a></span>&nbsp;<span class="element-name">asHandle</span>()</div>
 </div>
 </section>
 </li>
