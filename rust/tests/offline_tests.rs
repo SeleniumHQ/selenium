@@ -15,17 +15,26 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{get_selenium_manager, get_stdout};
+use crate::common::{get_selenium_manager, get_stdout, is_linux_arm64};
 
 mod common;
 
 #[test]
 fn offline_test() {
     let mut cmd = get_selenium_manager();
-    cmd.args(["--debug", "--browser", "chrome", "--offline"])
-        .assert()
-        .success()
-        .code(0);
+    cmd.args([
+        "--debug",
+        "--browser",
+        if is_linux_arm64() {
+            "firefox"
+        } else {
+            "chrome"
+        },
+        "--offline",
+    ])
+    .assert()
+    .success()
+    .code(0);
 
     let stdout = get_stdout(&mut cmd);
 

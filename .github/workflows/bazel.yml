@@ -151,7 +151,7 @@ jobs:
         env:
           GIT_REF: ${{ github.ref }}
       - name: Delete browsers and drivers
-        if: inputs.os == 'ubuntu' || inputs.os == 'macos'
+        if: startsWith(inputs.os, 'ubuntu') || inputs.os == 'macos'
         run: ./scripts/github-actions/delete-browsers-drivers.sh
       - name: Delete drivers (Windows)
         if: inputs.os == 'windows'

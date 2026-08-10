@@ -30,6 +30,7 @@ use crate::{
     create_http_client, get_binary_extension, path_to_string,
 };
 use anyhow::Error;
+use anyhow::anyhow;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -319,6 +320,10 @@ impl SeleniumManager for EdgeManager {
             }
         } else if MACOS.is(os) {
             if ARM64.is(arch) { "mac64_m1" } else { "mac64" }
+        } else if LINUX.is(os) && ARM64.is(arch) {
+            return Err(anyhow!(
+                "Linux arm64 is not supported yet by Microsoft Edge. Please try another browser."
+            ));
         } else {
             "linux64"
         };
@@ -391,6 +396,14 @@ impl SeleniumManager for EdgeManager {
         browser_version: &str,
     ) -> Result<String, Error> {
         let browser_name = self.browser_name;
+        let os = self.get_os();
+        let arch = self.get_arch();
+        if LINUX.is(os) && ARM64.is(arch) {
+            return Err(anyhow!(format!(
+                "Linux arm64 is not supported yet by {}. Please try another browser.",
+                browser_name
+            )));
+        }
         let is_fixed_browser_version = !self.is_empty(browser_version)
             && !self.is_stable(browser_version)
             && !self.is_unstable(browser_version);
