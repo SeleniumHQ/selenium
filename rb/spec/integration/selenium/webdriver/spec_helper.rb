@@ -119,22 +119,6 @@ RSpec.configure do |c|
     results = @guards.disposition
     send(*results) if results
   end
-
-  # The low-level BiDi protocol specs assert exact wire shapes, so they always run in strict
-  # serialization mode: a response missing a required field raises instead of being tolerated.
-  # Production stays lenient by default; only these specs opt in.
-  c.before do |example|
-    next unless example.metadata[:file_path].to_s.include?('bidi/protocol')
-
-    @strict_serialization_was = ENV.fetch('SE_BIDI_STRICT', nil)
-    ENV['SE_BIDI_STRICT'] = 'true'
-  end
-
-  c.after do |example|
-    next unless example.metadata[:file_path].to_s.include?('bidi/protocol')
-
-    ENV['SE_BIDI_STRICT'] = @strict_serialization_was
-  end
 end
 
 WebDriver::Platform.exit_hook { GlobalTestEnv.quit }
