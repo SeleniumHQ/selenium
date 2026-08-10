@@ -56,11 +56,12 @@ public class KubernetesSessionFactoryProvider implements NodeSessionFactoryProvi
     } catch (ClassNotFoundException | LinkageError e) {
       throw new ConfigException(
           "Kubernetes support is enabled (via [kubernetes] configs / --kubernetes-configs), but the"
-              + " fabric8 Kubernetes client is not on the runtime classpath. The Selenium server jar"
-              + " bundles the Kubernetes node classes without fabric8; supply the fabric8 client at"
-              + " runtime with --ext, for example:\n"
+              + " fabric8 Kubernetes client is not on the runtime classpath. The Selenium server"
+              + " jar bundles the Kubernetes node classes without fabric8; supply the fabric8"
+              + " client at runtime with --ext, for example:\n"
               + "  --ext $(coursier fetch -p io.fabric8:kubernetes-client:<version>"
-              + " io.fabric8:kubernetes-client-api:<version> io.fabric8:kubernetes-model-batch:<version>"
+              + " io.fabric8:kubernetes-client-api:<version>"
+              + " io.fabric8:kubernetes-model-batch:<version>"
               + " io.fabric8:kubernetes-model-core:<version>)",
           e);
     }
