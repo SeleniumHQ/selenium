@@ -51,6 +51,9 @@ module Selenium
             )
             fallback 'Log::GenericLogEntry'
             object_only
+
+            def self.console(**) = Log::ConsoleLogEntry.new(**)
+            def self.javascript(**) = Log::JavascriptLogEntry.new(**)
           end
 
           # @api private

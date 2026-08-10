@@ -30,6 +30,12 @@ module Selenium
           <%= enum.constant_name %>: Hash[Symbol, String]
 
 <%- end -%>
+<%- mod.types.select(&:union?).each do |union| -%>
+          type <%= BiDiGenerate.camel_to_snake(union.ruby_name) %> = <%= union.rbs_value_type %>
+<%- end -%>
+<%- if mod.types.any?(&:union?) -%>
+
+<%- end -%>
 <%- mod.types.each do |type| -%>
 <%- if type.union? -%>
           class <%= type.ruby_name %> < ::Selenium::WebDriver::BiDi::Serialization::Union
@@ -40,6 +46,9 @@ module Selenium
 <%- end -%>
               def self.new: (<%= nested.rbs_new_args %>) -> instance
             end
+<%- end -%>
+<%- type.rbs_variant_factories.each do |factory| -%>
+            <%= factory %>
 <%- end -%>
           end
 
@@ -65,6 +74,15 @@ module Selenium
 <%- unless mod.events.empty? -%>
           EVENT_TYPES: Hash[String, untyped]
 
+<%- end -%>
+<%- mod.accessors.each do |accessor| -%>
+<%- if accessor.vendor? -%>
+          def <%= accessor.method_name %>: () -> <%= accessor.type_name %>
+<%- elsif accessor.union? -%>
+          def <%= accessor.method_name %>: () -> singleton(<%= accessor.type_name %>)
+<%- else -%>
+          def <%= accessor.method_name %>: (<%= accessor.rbs_args %>) -> <%= accessor.type_name %>
+<%- end -%>
 <%- end -%>
 <%- mod.commands.each do |cmd| -%>
           def <%= cmd.method_name %>: <%= cmd.rbs_signature %>

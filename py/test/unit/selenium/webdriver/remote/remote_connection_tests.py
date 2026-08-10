@@ -231,7 +231,9 @@ def test_get_proxy_url_https_auth(mock_proxy_auth_settings):
 def test_get_connection_manager_without_proxy(mock_proxy_settings_missing):
     remote_connection = RemoteConnection("http://remote", keep_alive=False)
     conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, PoolManager)
+    # ProxyManager and SOCKSProxyManager both subclass PoolManager, so isinstance
+    # cannot tell a direct connection from a proxied one.
+    assert type(conn) is PoolManager
 
 
 def test_get_connection_manager_for_certs_and_timeout():
@@ -293,31 +295,42 @@ def test_get_connection_manager_with_auth_https_proxy(mock_proxy_auth_settings):
 @pytest.mark.parametrize(
     "url",
     [
-        "*",
-        ".localhost",
-        "localhost:80",
-        "localhost",
-        "LOCALHOST",
-        "LOCALHOST:80",
         "http://localhost",
+        "http://localhost:80",
         "https://localhost",
-        "test.localhost",
-        " localhost",
-        "127.0.0.1",
-        "127.0.0.2",
-        "::1",
+        "http://LOCALHOST",
+        "http://LOCALHOST:80",
+        "http://test.localhost",
+        "http://127.0.0.1",
+        "http://65.253.214.253",
+        "http://[::1]",
     ],
 )
 def test_get_connection_manager_when_no_proxy_set(mock_no_proxy_settings, url):
     remote_connection = RemoteConnection(url)
-    conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, PoolManager)
+    assert remote_connection.client_config.get_proxy_url() is None
+    assert type(remote_connection._get_connection_manager()) is PoolManager
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://127.0.0.2",
+        "http://notlocalhost.com",
+        "http://localhost.evil.com",
+    ],
+)
+def test_get_connection_manager_when_no_proxy_does_not_match(mock_no_proxy_settings, url):
+    """A host that no_proxy does not cover must still be reached through the proxy."""
+    remote_connection = RemoteConnection(url)
+    assert remote_connection.client_config.get_proxy_url() == "http://http_proxy.com:8080"
+    assert isinstance(remote_connection._get_connection_manager(), ProxyManager)
 
 
 def test_ignore_proxy_env_vars(mock_proxy_settings):
     remote_connection = RemoteConnection("http://remote", ignore_proxy=True)
     conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, PoolManager)
+    assert type(conn) is PoolManager
 
 
 def test_get_socks_proxy_when_set(mock_socks_proxy_settings):

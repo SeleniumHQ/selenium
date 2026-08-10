@@ -22,6 +22,7 @@ use rstest::rstest;
 use selenium_manager::SeleniumManager;
 use selenium_manager::chrome::ChromeManager;
 use selenium_manager::edge::EdgeManager;
+use std::env::consts::ARCH;
 use std::env::consts::OS;
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
@@ -44,6 +45,10 @@ fn browser_version_test(
     #[case] browser_version: String,
     #[case] driver_version: String,
 ) {
+    if OS.eq("linux") && ARCH.eq("aarch64") {
+        return;
+    }
+
     let mut cmd = get_selenium_manager();
     cmd.args([
         "--browser",
@@ -82,6 +87,10 @@ fn wrong_parameters_test(
     #[case] driver_version: String,
     #[case] error_code: i32,
 ) {
+    if OS.eq("linux") && ARCH.eq("aarch64") && !browser.eq("firefox") {
+        return;
+    }
+
     let mut cmd = get_selenium_manager();
     let result = cmd
         .args([
@@ -117,6 +126,55 @@ fn invalid_geckodriver_version_test() {
         &mut cmd,
         result,
         vec!["Not valid geckodriver version found"],
+        DATAERR,
+    );
+}
+
+#[test]
+fn chrome_is_unsupported_on_linux_arm64() {
+    let mut manager = ChromeManager::new().unwrap();
+    manager.config.os = "linux".to_string();
+    manager.config.arch = "aarch64".to_string();
+    let error = manager
+        .request_latest_browser_version_from_online("")
+        .unwrap_err();
+    assert!(error.to_string().contains("not supported yet"));
+}
+
+#[test]
+fn edge_is_unsupported_on_linux_arm64() {
+    let mut manager = EdgeManager::new().unwrap();
+    manager.config.os = "linux".to_string();
+    manager.config.arch = "aarch64".to_string();
+    let error = manager
+        .request_latest_browser_version_from_online("")
+        .unwrap_err();
+    assert!(error.to_string().contains("not supported yet"));
+}
+
+#[test]
+fn firefox_below_min_version_on_linux_arm64_test() {
+    let mut cmd = get_selenium_manager();
+    let result = cmd
+        .args([
+            "--browser",
+            "firefox",
+            "--browser-version",
+            "121",
+            "--os",
+            "linux",
+            "--arch",
+            "arm64",
+            "--force-browser-download",
+            "--debug",
+        ])
+        .assert()
+        .try_success();
+
+    assert_output(
+        &mut cmd,
+        result,
+        vec!["not available for download"],
         DATAERR,
     );
 }

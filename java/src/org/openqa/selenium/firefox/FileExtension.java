@@ -47,6 +47,10 @@ import org.openqa.selenium.json.JsonInput;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+/**
+ * @deprecated Use {@link HasExtensions#installExtension} instead.
+ */
+@Deprecated(forRemoval = true)
 public class FileExtension implements Extension {
   private static final String EM_NAMESPACE_URI = "http://www.mozilla.org/2004/em-rdf#";
 

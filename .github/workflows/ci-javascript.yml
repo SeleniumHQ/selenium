@@ -1,0 +1,30 @@
+name: CI - JavaScript
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build
+      run: bazel build //javascript/selenium-webdriver
+
+  unit-tests:
+    name: Unit Tests
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ['22.22.0', '24.14.1']
+        os: [ubuntu]
+    with:
+      name: Unit Tests (${{ matrix.node-version }}, ${{ matrix.os }})
+      os: ${{ matrix.os }}
+      node-version: ${{ matrix.node-version }}
+      run: bazel test --local_test_jobs 1 //javascript/selenium-webdriver:small-tests

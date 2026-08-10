@@ -92,6 +92,65 @@ module Selenium
               expect(parsed.url).to eq('https://x')
             end
           end
+
+          describe 'outbound domain type accessors' do
+            it 'exposes an outbound union as an accessor returning the class (variant factories dispatch)' do
+              expect(WebExtension.new(connection).extension_data).to eq(WebExtension::ExtensionData)
+            end
+
+            it 'constructs an outbound record directly through its accessor' do
+              path = WebExtension.new(connection).extension_path(path: '/tmp/ext')
+
+              expect(path).to be_a(WebExtension::ExtensionPath)
+              expect(path.as_json).to eq('type' => 'path', 'path' => '/tmp/ext')
+            end
+
+            it 'builds a variant end-to-end through a union accessor and its factory' do
+              built = WebExtension.new(connection).extension_data.path(path: '/tmp/ext')
+
+              expect(built).to be_a(WebExtension::ExtensionPath)
+              expect(built.as_json).to eq('type' => 'path', 'path' => '/tmp/ext')
+            end
+
+            it 'dispatches a locator variant through a union accessor factory' do
+              built = BrowsingContext.new(connection).locator.css(value: '.submit')
+
+              expect(built).to be_a(BrowsingContext::CssLocator)
+              expect(built.as_json).to eq('type' => 'css', 'value' => '.submit')
+            end
+
+            it 'exposes a vendor variant over the same connection, driving its overridden command' do
+              moz = WebExtension.new(connection).moz
+              expect(moz).to be_a(WebExtension::Moz)
+
+              allow(connection).to receive(:send_cmd).and_return('result' => {'extension' => 'ext-id'})
+              moz.install(extension_data: WebExtension.new(connection).extension_path(path: '/tmp/ext'),
+                          allow_private_browsing: true)
+
+              expect(connection).to have_received(:send_cmd)
+                .with(method: 'webExtension.install',
+                      params: hash_including('moz:allowPrivateBrowsing' => true))
+            end
+
+            it 'does not expose an inbound-only type (script.RemoteValue is received, never sent)' do
+              expect(Script.new(connection)).not_to respond_to(:remote_value)
+            end
+
+            it 'does not expose a command param wrapper (the command method builds it)' do
+              expect(WebExtension.new(connection)).not_to respond_to(:install_parameters)
+            end
+
+            it 'exposes a nested type reached as a plain field ref (a locator value a caller fills in)' do
+              value = BrowsingContext.new(connection).accessibility_locator_value(name: 'submit', role: 'button')
+
+              expect(value).to be_a(BrowsingContext::AccessibilityLocator::Value)
+              expect(value.as_json).to eq('name' => 'submit', 'role' => 'button')
+            end
+
+            it 'does not expose a synthetic reached only as a union arm (built through its union)' do
+              expect(Network.new(connection)).not_to respond_to(:continue_with_auth_parameters_credentials)
+            end
+          end
         end
       end # Protocol
     end # BiDi

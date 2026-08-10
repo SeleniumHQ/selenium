@@ -39,6 +39,7 @@ module Selenium
             def self.new: (descriptor: ::Selenium::WebDriver::BiDi::Protocol::Permissions::PermissionDescriptor, state: Symbol, origin: String, ?embedded_origin: String, ?user_context: String) -> instance
           end
 
+          def permission_descriptor: (name: String) -> PermissionDescriptor
           def set_permission: (descriptor: ::Selenium::WebDriver::BiDi::Protocol::Permissions::PermissionDescriptor, state: Symbol, origin: String, ?embedded_origin: String, ?user_context: String) -> untyped
         end
       end

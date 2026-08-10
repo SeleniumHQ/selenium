@@ -21,7 +21,8 @@ use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
 use crate::files::{BrowserPath, compose_driver_path_in_cache, first_existing_path};
 use crate::metadata::{
-    create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
+    create_driver_metadata, get_driver_version_from_metadata, get_metadata,
+    should_cache_driver_version, write_metadata,
 };
 use crate::{
     BETA, DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, Logger, NIGHTLY,
@@ -29,6 +30,7 @@ use crate::{
     create_http_client, get_binary_extension, path_to_string,
 };
 use anyhow::Error;
+use anyhow::anyhow;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -281,7 +283,11 @@ impl SeleniumManager for EdgeManager {
                     read_version_from_link(self.get_http_client(), &driver_url, self.get_logger())?;
 
                 let driver_ttl = self.get_ttl();
-                if driver_ttl > 0 && !major_browser_version.is_empty() {
+                if should_cache_driver_version(
+                    driver_ttl,
+                    major_browser_version.as_str(),
+                    &driver_version,
+                ) {
                     metadata.drivers.push(create_driver_metadata(
                         major_browser_version.as_str(),
                         self.driver_name,
@@ -314,6 +320,10 @@ impl SeleniumManager for EdgeManager {
             }
         } else if MACOS.is(os) {
             if ARM64.is(arch) { "mac64_m1" } else { "mac64" }
+        } else if LINUX.is(os) && ARM64.is(arch) {
+            return Err(anyhow!(
+                "Linux arm64 is not supported yet by Microsoft Edge. Please try another browser."
+            ));
         } else {
             "linux64"
         };
@@ -386,6 +396,14 @@ impl SeleniumManager for EdgeManager {
         browser_version: &str,
     ) -> Result<String, Error> {
         let browser_name = self.browser_name;
+        let os = self.get_os();
+        let arch = self.get_arch();
+        if LINUX.is(os) && ARM64.is(arch) {
+            return Err(anyhow!(format!(
+                "Linux arm64 is not supported yet by {}. Please try another browser.",
+                browser_name
+            )));
+        }
         let is_fixed_browser_version = !self.is_empty(browser_version)
             && !self.is_stable(browser_version)
             && !self.is_unstable(browser_version);

@@ -22,12 +22,13 @@ use crate::downloads::{parse_json_from_url, read_version_from_link};
 use crate::files::{BrowserPath, compose_driver_path_in_cache, first_existing_path};
 use crate::logger::Logger;
 use crate::metadata::{
-    create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
+    create_driver_metadata, get_driver_version_from_metadata, get_metadata,
+    should_cache_driver_version, write_metadata,
 };
 use crate::{
     BETA, DASH_DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
     SeleniumManager, UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG, create_http_client,
-    format_three_args,
+    format_four_args,
 };
 use anyhow::Error;
 use anyhow::anyhow;
@@ -210,10 +211,11 @@ impl ChromeManager {
         if filtered_versions.is_empty() {
             return Err(anyhow!(format!(
                 "{}. Check available versions at {}",
-                format_three_args(
+                format_four_args(
                     UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
                     self.get_driver_name(),
                     version_for_filtering.as_str(),
+                    self.get_arch(),
                     &MIN_CHROMEDRIVER_VERSION_CFT.to_string(),
                 ),
                 CFT_URL
@@ -366,8 +368,7 @@ impl SeleniumManager for ChromeManager {
                 };
 
                 let driver_ttl = self.get_ttl();
-                if driver_ttl > 0 && !major_browser_version.is_empty() && !driver_version.is_empty()
-                {
+                if should_cache_driver_version(driver_ttl, major_browser_version, &driver_version) {
                     metadata.drivers.push(create_driver_metadata(
                         major_browser_version,
                         self.driver_name,
@@ -418,6 +419,10 @@ impl SeleniumManager for ChromeManager {
             } else {
                 "mac64"
             }
+        } else if LINUX.is(os) && ARM64.is(arch) {
+            return Err(anyhow!(
+                "Linux arm64 is not supported yet by Google Chrome. Please try another browser."
+            ));
         } else {
             "linux64"
         };
@@ -489,6 +494,14 @@ impl SeleniumManager for ChromeManager {
         _browser_version: &str,
     ) -> Result<String, Error> {
         let browser_name = self.browser_name;
+        let os = self.get_os();
+        let arch = self.get_arch();
+        if LINUX.is(os) && ARM64.is(arch) {
+            return Err(anyhow!(format!(
+                "Linux arm64 is not supported yet by {}. Please try another browser.",
+                browser_name
+            )));
+        }
         self.get_logger().trace(format!(
             "Using Chrome for Testing (CfT) endpoints to find out latest stable {} version",
             browser_name

@@ -103,7 +103,7 @@ pub const OFFLINE_REQUEST_ERR_MSG: &str = "Unable to discover proper {} version 
 pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mode";
 pub const UNAVAILABLE_DOWNLOAD_ERR_MSG: &str = "{}{} not available for download";
 pub const UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG: &str =
-    "{} {} not available for download (minimum version: {})";
+    "{} {} not available for download on {} (minimum version: {})";
 pub const NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG: &str =
     "{} can only be installed in Windows with administrator permissions";
 pub const ONLINE_DISCOVERY_ERROR_MESSAGE: &str = "Unable to discover {}{} in online repository";
@@ -251,10 +251,11 @@ pub trait SeleniumManager {
             && !self.is_browser_version_empty()
             && major_browser_version_int < min_browser_version_for_download
         {
-            let mut message = format_three_args(
+            let mut message = format_four_args(
                 UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
                 self.get_browser_name(),
                 &major_browser_version,
+                self.get_arch(),
                 &min_browser_version_for_download.to_string(),
             );
             let versions_url = self.get_browser_versions_url();
@@ -1144,10 +1145,6 @@ pub trait SeleniumManager {
         get_index_version(full_version, 0)
     }
 
-    fn get_minor_version(&self, full_version: &str) -> Result<String, Error> {
-        get_index_version(full_version, 1)
-    }
-
     fn get_selenium_release_version(&self) -> Result<String, Error> {
         let driver_version = self.get_driver_version();
         if driver_version.contains(SNAPSHOT) {
@@ -1982,14 +1979,62 @@ pub fn format_three_args(string: &str, arg1: &str, arg2: &str, arg3: &str) -> St
         .replacen("{}", arg3, 1)
 }
 
+pub fn format_four_args(string: &str, arg1: &str, arg2: &str, arg3: &str, arg4: &str) -> String {
+    string
+        .replacen("{}", arg1, 1)
+        .replacen("{}", arg2, 1)
+        .replacen("{}", arg3, 1)
+        .replacen("{}", arg4, 1)
+}
+
 // ----------------------------------------------------------
 // Private functions
 // ----------------------------------------------------------
 
 fn get_index_version(full_version: &str, index: usize) -> Result<String, Error> {
+    if full_version.is_empty() {
+        return Err(anyhow!(format!("Wrong version: {}", full_version)));
+    }
     let version_vec: Vec<&str> = full_version.split('.').collect();
     Ok(version_vec
         .get(index)
         .ok_or(anyhow!(format!("Wrong version: {}", full_version)))?
         .to_string())
+}
+
+#[cfg(test)]
+mod index_version_tests {
+    use super::*;
+
+    #[test]
+    fn get_index_version_major() {
+        assert_eq!(get_index_version("120.0.6099.109", 0).unwrap(), "120");
+    }
+
+    #[test]
+    fn get_index_version_minor() {
+        assert_eq!(get_index_version("120.0.6099.109", 1).unwrap(), "0");
+    }
+
+    #[test]
+    fn get_index_version_patch() {
+        assert_eq!(get_index_version("120.0.6099.109", 2).unwrap(), "6099");
+    }
+
+    #[test]
+    fn get_index_version_single_component() {
+        assert_eq!(get_index_version("115", 0).unwrap(), "115");
+    }
+
+    #[test]
+    fn get_index_version_out_of_bounds_errors() {
+        let result = get_index_version("115", 1);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn get_index_version_empty_string_errors() {
+        let result = get_index_version("", 0);
+        assert!(result.is_err());
+    }
 }

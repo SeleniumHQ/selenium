@@ -163,6 +163,8 @@ describe('projectType (list / union / alias defs)', () => {
         ],
       },
       objectOnly: true, // both arms are records
+      inbound: false, // no model → reachable from no message root
+      outbound: false,
     })
   })
   it('projects a single-member dispatch choice group as an alias to its ref', () => {
@@ -182,11 +184,20 @@ describe('projectType (list / union / alias defs)', () => {
           Name: 'x.F',
           PropertyType: [{ Type: 'range', Value: { Min: { Value: 0.1 }, Max: { Value: 2 } } }],
         },
+        {
+          // `(0.0..1.0)` — integral bounds, but the `IsFloat` marker makes it a number range.
+          Type: 'variable',
+          Name: 'x.W',
+          PropertyType: [
+            { Type: 'range', Value: { Min: { Value: 0, IsFloat: true }, Max: { Value: 1, IsFloat: true } } },
+          ],
+        },
       ],
       {},
     )
     assert.deepEqual(s.types['x.U'], { kind: 'alias', type: { primitive: 'integer' } })
     assert.deepEqual(s.types['x.F'], { kind: 'alias', type: { primitive: 'number' } })
+    assert.deepEqual(s.types['x.W'], { kind: 'alias', type: { primitive: 'number' } })
   })
 
   it('unwraps a control-operator (.default / .ge) wrapped field type to its inner type', () => {
@@ -386,7 +397,7 @@ describe('unionSelector', () => {
   })
 })
 
-describe('schema signals (objectOnly / preserveExtras / enum primitive)', () => {
+describe('schema signals (objectOnly / extensible / enum primitive)', () => {
   const rec = (name, typeConst) => group(name, [field('type', [lit(typeConst)])])
   const union = (name, refs) => ({
     Type: 'variable',
@@ -428,9 +439,15 @@ describe('schema signals (objectOnly / preserveExtras / enum primitive)', () => 
     const s = projectSchema([origin, group('x.Element', [field('type', [lit('element')]), field('id', ['text'])])], {})
     assert.equal(s.types['x.Origin'].kind, 'alias')
     assert.equal(s.types['x.Origin'].objectOnly, undefined)
+    // The const arms' literals are pinned so a binding can reject a wrong string, not just a wrong primitive.
+    assert.equal(s.types['x.Origin'].type.scalar, 'string')
+    assert.deepEqual(s.types['x.Origin'].type.scalarValues, ['viewport', 'pointer'])
   })
 
-  it('marks an extensible type reachable from command params as preserveExtras, but not a result-only one', () => {
+  it('marks every extensible type extensible, regardless of send/receive reachability', () => {
+    // Extensibility is the whole signal: a type reachable only through a command's result
+    // keeps its extras store just as one reachable through params does. Send-reachability
+    // ("retain extras only where they can be sent back") is deliberately not a factor.
     const ast = [
       group('x.SetParams', [field('cfg', [ref('x.Config')])]),
       group('x.Config', [field('text', ['any'], { n: 0, m: null })]),
@@ -439,22 +456,19 @@ describe('schema signals (objectOnly / preserveExtras / enum primitive)', () => 
     ]
     const model = { x: { commands: [{ method: 'x.set', name: 'set', params: 'x.SetParams', result: 'x.GetResult' }] } }
     const s = projectSchema(ast, model)
-    assert.equal(s.types['x.Config'].extensible, true)
-    assert.equal(s.types['x.Config'].preserveExtras, true) // reachable through the command's params
-    assert.equal(s.types['x.Info'].extensible, true)
-    assert.equal(s.types['x.Info'].preserveExtras, undefined) // reachable only through the result
+    assert.equal(s.types['x.Config'].extensible, true) // reachable through the command's params
+    assert.equal(s.types['x.Info'].extensible, true) // reachable only through the result
     assert.deepEqual(checkSchema(s), [])
   })
 
-  it('types an inline (non-hoisted) literal choice with the primitive its literals share', () => {
-    // A nullable literal choice (`("classic" / "overlay") / null`) the normalizer leaves
-    // inline — carry `primitive: string` so the scalar is typed rather than opaque.
+  it('hoists a nullable literal choice to a named enum, referenced with the null preserved', () => {
+    // A nullable literal choice (`("classic" / "overlay") / null`) is hoisted (normalize_bidi_ast)
+    // to a named enum and referenced with the null kept on the field — a nullable enum ref, not an
+    // inline enum carrying a primitive.
     const s = projectSchema([group('x.R', [field('kind', [lit('classic'), lit('overlay'), 'null'])])], {})
-    assert.deepEqual(s.types['x.R'].fields[0].type, {
-      enum: ['classic', 'overlay'],
-      primitive: 'string',
-      nullable: true,
-    })
+    assert.deepEqual(s.types['x.R'].fields[0].type, { ref: 'x.RKind', nullable: true })
+    assert.equal(s.types['x.RKind'].kind, 'enum')
+    assert.deepEqual(s.types['x.RKind'].values, ['classic', 'overlay'])
     assert.deepEqual(checkSchema(s), [])
   })
 
@@ -470,6 +484,106 @@ describe('schema signals (objectOnly / preserveExtras / enum primitive)', () => 
     assert.deepEqual(s[0].type, { union: [{ ref: 'x.U' }, { primitive: 'string' }], scalar: 'string' })
     // ...but an all-object union is not flagged (no scalar arm to pass through).
     assert.deepEqual(s[1].type, { union: [{ ref: 'x.A' }, { ref: 'x.B' }] })
+  })
+})
+
+describe('directionality (inbound / outbound per structured type)', () => {
+  const union = (name, refs) => ({
+    Type: 'variable',
+    Name: name,
+    IsChoiceAddition: false,
+    Comments: [],
+    PropertyType: refs.map(ref),
+  })
+  // A command (params x.DoParams → result x.DoResult) and an event (params x.HappenedParams)
+  // seed the walk. x.Both is referenced from both params and result; x.NoMessage from neither.
+  // x.LocalNode and x.RemoteNode are structural look-alikes (same `type: "node"`) reached
+  // only through params vs only through result, so they must land on opposite sides.
+  const ast = [
+    group('x.DoParams', [
+      field('cfg', [ref('x.OutOnly')]),
+      field('shared', [ref('x.Both')]),
+      field('lv', [ref('x.LocalValue')]),
+    ]),
+    group('x.OutOnly', [field('a', ['text'])]),
+    group('x.Both', [field('b', ['text'])]),
+    group('x.DoResult', [
+      field('info', [ref('x.InOnly')]),
+      field('note', [ref('x.Both')]),
+      field('rv', [ref('x.RemoteValue')]),
+    ]),
+    group('x.InOnly', [field('c', ['text'])]),
+    group('x.HappenedParams', [field('d', ['text'])]),
+    group('x.NoMessage', [field('e', ['text'])]),
+    union('x.LocalValue', ['x.LocalNode', 'x.LocalString']),
+    group('x.LocalNode', [field('type', [lit('node')]), field('v', ['text'])]),
+    group('x.LocalString', [field('type', [lit('string')]), field('v', ['text'])]),
+    union('x.RemoteValue', ['x.RemoteNode', 'x.RemoteString']),
+    group('x.RemoteNode', [field('type', [lit('node')]), field('v', ['text'])]),
+    group('x.RemoteString', [field('type', [lit('string')]), field('v', ['text'])]),
+  ]
+  const model = {
+    x: {
+      commands: [{ method: 'x.doThing', name: 'doThing', params: 'x.DoParams', result: 'x.DoResult' }],
+      events: [{ method: 'x.happened', name: 'happened', params: 'x.HappenedParams' }],
+    },
+  }
+  const schema = projectSchema(ast, model)
+  const dir = (n) => ({ inbound: schema.types[n].inbound, outbound: schema.types[n].outbound })
+
+  it('marks a params-only record outbound (send side)', () => {
+    assert.deepEqual(dir('x.OutOnly'), { inbound: false, outbound: true })
+    assert.deepEqual(dir('x.DoParams'), { inbound: false, outbound: true })
+  })
+
+  it('marks a result/event-only payload inbound (receive side)', () => {
+    assert.deepEqual(dir('x.InOnly'), { inbound: true, outbound: false })
+    assert.deepEqual(dir('x.DoResult'), { inbound: true, outbound: false })
+    assert.deepEqual(dir('x.HappenedParams'), { inbound: true, outbound: false })
+  })
+
+  it('marks a type reached from both params and result as both (Cookie-shaped)', () => {
+    assert.deepEqual(dir('x.Both'), { inbound: true, outbound: true })
+  })
+
+  it('leaves a type reachable from no message at (false, false)', () => {
+    assert.deepEqual(dir('x.NoMessage'), { inbound: false, outbound: false })
+  })
+
+  it('splits structural look-alikes by reachability, not by name (LocalValue vs RemoteValue variant)', () => {
+    assert.deepEqual(dir('x.LocalNode'), { inbound: false, outbound: true }) // reached via params
+    assert.deepEqual(dir('x.RemoteNode'), { inbound: true, outbound: false }) // reached via result
+    assert.deepEqual(dir('x.LocalValue'), { inbound: false, outbound: true })
+    assert.deepEqual(dir('x.RemoteValue'), { inbound: true, outbound: false })
+  })
+
+  it('passes both validators (flags present on every structured type, (false,false) not an error)', () => {
+    assert.deepEqual(checkSchema(schema), [])
+    assert.deepEqual(checkCompleteness(ast, schema), [])
+  })
+
+  it('fails completeness when a structured type is missing a directionality flag', () => {
+    const broken = projectSchema(ast, model)
+    delete broken.types['x.OutOnly'].outbound
+    assert.ok(
+      checkCompleteness(ast, broken).some((e) => /x\.OutOnly: missing directionality flag/.test(e)),
+      'a stripped flag must fail closed',
+    )
+  })
+
+  it('does not flag enums or aliases (only record/union carry directionality)', () => {
+    // An enum and an alias are leaves/pass-throughs, not constructed message parts.
+    const s = projectSchema(
+      [
+        { Type: 'variable', Name: 'x.E', IsChoiceAddition: false, Comments: [], PropertyType: [lit('a'), lit('b')] },
+        { Type: 'variable', Name: 'x.A', IsChoiceAddition: false, Comments: [], PropertyType: [ref('x.OutOnly')] },
+        group('x.OutOnly', [field('a', ['text'])]),
+      ],
+      {},
+    )
+    assert.equal(s.types['x.E'].inbound, undefined)
+    assert.equal(s.types['x.A'].outbound, undefined)
+    assert.deepEqual(checkCompleteness([], s), [])
   })
 })
 

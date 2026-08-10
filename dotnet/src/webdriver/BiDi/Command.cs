@@ -63,8 +63,6 @@ public record Parameters
 
 public abstract record CommandOptions
 {
-    public TimeSpan? Timeout { get; init; }
-
     public AdditionalData AdditionalData { get; init; }
 
     public AdditionalData AdditionalMessageData { get; init; }

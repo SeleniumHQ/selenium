@@ -39,7 +39,7 @@ jobs:
         [ "${{ github.event_name }}" == "workflow_call" ] || \
         [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
           echo "Running all targets for ${{ github.event_name }} event"
-          echo "//java/... //py/... //rb/... //dotnet/... //rust/..." > bazel-targets.txt
+          echo "//java/... //py/... //rb/... //dotnet/... //rust/... //javascript/..." > bazel-targets.txt
         else
           if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
             BASE_SHA="HEAD^1"
@@ -70,6 +70,7 @@ jobs:
       rb: ${{ steps.read.outputs.rb }}
       dotnet: ${{ steps.read.outputs.dotnet }}
       rust: ${{ steps.read.outputs.rust }}
+      js: ${{ steps.read.outputs.js }}
     steps:
       - name: Download targets
         uses: actions/download-artifact@v8
@@ -101,6 +102,7 @@ jobs:
           check_binding "openqa/selenium/grid" "grid"
           check_binding "//dotnet" "dotnet"
           check_binding "//rust" "rust"
+          check_binding "//javascript" "js"
           process_binding "//rb" "rb"
           process_binding "//py" "py"
       - name: Upload target files
@@ -138,6 +140,8 @@ jobs:
     needs: read-targets
     uses: ./.github/workflows/ci-ruby.yml
     if: needs.read-targets.outputs.rb != ''
+    with:
+      smoke: ${{ !(github.head_ref == 'pinned-browser-updates' && contains(github.event.pull_request.title, '(major)')) }}
 
   rust:
     name: Rust
@@ -147,10 +151,16 @@ jobs:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
     if: needs.read-targets.outputs.rust != ''
 
+  javascript:
+    name: JavaScript
+    needs: read-targets
+    uses: ./.github/workflows/ci-javascript.yml
+    if: needs.read-targets.outputs.js != ''
+
   ci-success:
     name: CI Success
     if: always()
-    needs: [check, read-targets, dotnet, java, grid, python, ruby, rust]
+    needs: [check, read-targets, dotnet, java, grid, python, ruby, rust, javascript]
     runs-on: ubuntu-latest
     steps:
       - name: Verify required jobs succeeded

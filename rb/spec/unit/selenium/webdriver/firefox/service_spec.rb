@@ -25,14 +25,7 @@ module Selenium
       describe Service do
         describe '#new' do
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
-
-          around do |example|
-            original_debug = ENV.fetch('SE_DEBUG', nil)
-            ENV.delete('SE_DEBUG')
-            example.run
-          ensure
-            original_debug ? ENV['SE_DEBUG'] = original_debug : ENV.delete('SE_DEBUG')
-          end
+          let(:debug_args) { ENV.key?('SE_DEBUG') ? ['-v'] : [] }
 
           before do
             allow(Platform).to receive(:assert_executable)
@@ -60,7 +53,7 @@ module Selenium
           it 'creates websocket args by default' do
             service = described_class.new
 
-            expect(service.extra_args.count).to eq 2
+            expect(service.extra_args.count).to eq(2 + debug_args.size)
           end
 
           it 'uses sets log path to stdout' do
@@ -97,7 +90,7 @@ module Selenium
             it 'does not uses websocket-port' do
               service = described_class.new(args: ['--connect-existing'])
               expect(service.extra_args).not_to include('--websocket-port')
-              expect(service.extra_args).to eq(['--connect-existing'])
+              expect(service.extra_args).to eq(['--connect-existing'] + debug_args)
             end
           end
 
@@ -105,7 +98,7 @@ module Selenium
             it 'does not add websocket-port' do
               service = described_class.new(args: ['--websocket-port=1234'])
               expect(service.extra_args).not_to include('--websocket-port=0')
-              expect(service.extra_args).to eq(['--websocket-port=1234'])
+              expect(service.extra_args).to eq(['--websocket-port=1234'] + debug_args)
             end
           end
 

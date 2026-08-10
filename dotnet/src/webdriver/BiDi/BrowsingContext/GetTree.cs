@@ -35,8 +35,7 @@ public sealed record ContextGetTreeOptions : CommandOptions
     internal static GetTreeOptions WithContext(ContextGetTreeOptions? options, BrowsingContext context) => new()
     {
         Root = context,
-        MaxDepth = options?.MaxDepth,
-        Timeout = options?.Timeout
+        MaxDepth = options?.MaxDepth
     };
 }
 

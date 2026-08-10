@@ -122,12 +122,12 @@ generate_bidi_library(
     ],
 )
 
-VERSION = "4.47.0-nightly202607110055"
+VERSION = "4.48.0-nightly202608101808"
 
 BROWSER_VERSIONS = [
     "v149",
     "v150",
-    "v148",
+    "v151",
 ]
 
 js_library(

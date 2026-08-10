@@ -29,6 +29,8 @@ import io.fabric8.kubernetes.api.model.PodSpecBuilder;
 import io.fabric8.kubernetes.api.model.PodTemplateSpecBuilder;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder;
+import io.fabric8.kubernetes.api.model.SecurityContext;
+import io.fabric8.kubernetes.api.model.SecurityContextBuilder;
 import io.fabric8.kubernetes.api.model.Toleration;
 import io.fabric8.kubernetes.api.model.TolerationBuilder;
 import io.fabric8.kubernetes.api.model.Volume;
@@ -133,6 +135,13 @@ class KubernetesSessionFactoryTest {
         30L,
         false,
         caps -> true);
+  }
+
+  private static KubernetesSessionFactory createSubfolderImageFactory(
+      String videoImage, String assetsPath) {
+    // The per-session subfolder approach is always enabled now, so this is the same as the image
+    // factory (kept as a named helper for the subfolder-focused tests).
+    return createImageFactory(videoImage, assetsPath);
   }
 
   private static EnvVar findEnvVar(List<EnvVar> envVars, String name) {
@@ -690,10 +699,91 @@ class KubernetesSessionFactoryTest {
     assertThat(job.getMetadata().getOwnerReferences().get(0).getUid()).isEqualTo("pod-uid-123");
   }
 
+  // ---- Container securityContext inheritance ----
+
+  private static InheritedPodSpec containerSecurityContextSpec(SecurityContext securityContext) {
+    return new InheritedPodSpec(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        securityContext);
+  }
+
+  private static SecurityContext restrictedSecurityContext() {
+    return new SecurityContextBuilder()
+        .withAllowPrivilegeEscalation(false)
+        .withNewCapabilities()
+        .withDrop("ALL")
+        .endCapabilities()
+        .build();
+  }
+
+  @Test
+  void imageModeBrowserContainerInheritsContainerSecurityContext() {
+    KubernetesSessionFactory factory =
+        createImageFactory(null, null, containerSecurityContextSpec(restrictedSecurityContext()));
+
+    Job job = factory.buildJobSpec("test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(browser.getSecurityContext()).isNotNull();
+    assertThat(browser.getSecurityContext().getAllowPrivilegeEscalation()).isFalse();
+    assertThat(browser.getSecurityContext().getCapabilities().getDrop()).containsExactly("ALL");
+  }
+
+  @Test
+  void imageModeBrowserContainerHasNoSecurityContextWhenNotInherited() {
+    KubernetesSessionFactory factory = createImageFactory(null, null);
+
+    Job job = factory.buildJobSpec("test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(browser.getSecurityContext()).isNull();
+  }
+
+  @Test
+  void imageModeVideoContainerInheritsContainerSecurityContext() {
+    KubernetesSessionFactory factory =
+        createImageFactory(
+            "selenium/video:latest",
+            null,
+            containerSecurityContextSpec(restrictedSecurityContext()));
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container video =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "video");
+    assertThat(video).isNotNull();
+    assertThat(video.getSecurityContext()).isNotNull();
+    assertThat(video.getSecurityContext().getAllowPrivilegeEscalation()).isFalse();
+    assertThat(video.getSecurityContext().getCapabilities().getDrop()).containsExactly("ALL");
+  }
+
   // ---- Browser container env vars ----
 
   @Test
-  void browserContainerHasVideoFileNameEnvVar() {
+  void browserContainerUsesAutoVideoFileNameAndSubfolder() {
     KubernetesSessionFactory factory = createImageFactory(null, null);
 
     Job job =
@@ -705,7 +795,70 @@ class KubernetesSessionFactoryTest {
             job.getSpec().getTemplate().getSpec().getContainers(), "browser");
     EnvVar videoFileName = findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME");
     assertThat(videoFileName).isNotNull();
-    assertThat(videoFileName.getValue()).isEqualTo("test-job.mp4");
+    assertThat(videoFileName.getValue()).isEqualTo("auto");
+    // The per-session subfolder approach is always used, with a Pod-name fallback env var.
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_SESSION_SUBFOLDER"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+    assertThat(findEnvVar(browser.getEnv(), "SE_NODE_CONTAINER_NAME")).isNotNull();
+  }
+
+  @Test
+  void browserContainerEnablesSessionSubfolderAndDropsJobFileName() {
+    KubernetesSessionFactory factory = createSubfolderImageFactory(null, "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_SESSION_SUBFOLDER"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+    // The recorder derives <name>_<sessionId>.mp4 itself; jobName naming would defeat the subfolder
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("auto");
+  }
+
+  @Test
+  void videoSidecarEnablesSessionSubfolderAndDropsJobFileName() {
+    KubernetesSessionFactory factory =
+        createSubfolderImageFactory("selenium/video:latest", "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container video =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "video");
+    assertThat(video).isNotNull();
+    assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_SESSION_SUBFOLDER"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+    assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_FILE_NAME"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("auto");
+  }
+
+  @Test
+  void noSessionSubfolderEnvVarWhenSessionDoesNotRecord() {
+    KubernetesSessionFactory factory = createSubfolderImageFactory(null, "/opt/selenium/assets");
+
+    Job job = factory.buildJobSpec("test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_SESSION_SUBFOLDER")).isNull();
   }
 
   @Test
@@ -890,7 +1043,7 @@ class KubernetesSessionFactoryTest {
     assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_FILE_NAME"))
         .isNotNull()
         .extracting(EnvVar::getValue)
-        .isEqualTo("test-job.mp4");
+        .isEqualTo("auto");
     assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_RECORD_STANDALONE"))
         .isNotNull()
         .extracting(EnvVar::getValue)
@@ -983,7 +1136,7 @@ class KubernetesSessionFactoryTest {
     assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_FILE_NAME"))
         .isNotNull()
         .extracting(EnvVar::getValue)
-        .isEqualTo("test-job.mp4");
+        .isEqualTo("auto");
     assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_RECORD_STANDALONE"))
         .isNotNull()
         .extracting(EnvVar::getValue)
@@ -1091,7 +1244,7 @@ class KubernetesSessionFactoryTest {
     assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME"))
         .isNotNull()
         .extracting(EnvVar::getValue)
-        .isEqualTo("test-job.mp4");
+        .isEqualTo("auto");
     assertThat(findEnvVar(browser.getEnv(), "SE_SCREEN_WIDTH"))
         .isNotNull()
         .extracting(EnvVar::getValue)

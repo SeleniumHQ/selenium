@@ -27,8 +27,11 @@ namespace OpenQA.Selenium.BiDi;
 /// </summary>
 public sealed class BiDiOptionsBuilder
 {
+    private static readonly Func<Uri, CancellationToken, Task<ITransport>> DefaultTransportFactory =
+        (uri, ct) => WebSocketTransport.ConnectAsync(uri, null, ct);
+
     internal Func<Uri, CancellationToken, Task<ITransport>> TransportFactory { get; private set; }
-        = (uri, ct) => WebSocketTransport.ConnectAsync(uri, null, ct);
+        = DefaultTransportFactory;
 
     /// <summary>
     /// Configures the BiDi connection to use a WebSocket transport.
@@ -42,36 +45,27 @@ public sealed class BiDiOptionsBuilder
     /// <returns>The current <see cref="BiDiOptionsBuilder"/> instance for chaining.</returns>
     public BiDiOptionsBuilder UseWebSocket(Action<ClientWebSocketOptions>? configure = null)
     {
-        return UseTransport((uri, ct) => WebSocketTransport.ConnectAsync(uri, configure, ct));
+        TransportFactory = (uri, ct) => WebSocketTransport.ConnectAsync(uri, configure, ct);
+        return this;
     }
 
     /// <summary>
-    /// Configures the BiDi connection to use a transport created by the specified factory.
+    /// Composes a transport factory into the current transport pipeline.
     /// </summary>
     /// <remarks>
-    /// BiDi takes ownership of the transport instance returned by the factory and will dispose it.
+    /// The <paramref name="next"/> callback receives the current transport factory and returns
+    /// the next factory in the chain. BiDi takes ownership of the transport instance returned by
+    /// the final factory and will dispose it.
     /// </remarks>
-    /// <param name="factory">A factory function that creates the <see cref="ITransport"/> instance.</param>
+    /// <param name="next">A callback that composes a new transport factory from the current one.</param>
     /// <returns>The current <see cref="BiDiOptionsBuilder"/> instance for chaining.</returns>
-    public BiDiOptionsBuilder UseTransport(Func<ITransport> factory)
+    public BiDiOptionsBuilder UseTransport(Func<Func<Uri, CancellationToken, Task<ITransport>>, Func<Uri, CancellationToken, Task<ITransport>>> next)
     {
-        ArgumentNullException.ThrowIfNull(factory);
+        ArgumentNullException.ThrowIfNull(next);
 
-        return UseTransport((_, ct) =>
-        {
-            if (ct.IsCancellationRequested)
-            {
-                return Task.FromCanceled<ITransport>(ct);
-            }
+        var factory = next(TransportFactory)
+            ?? throw new InvalidOperationException("The transport factory decorator must return a non-null factory.");
 
-            var transport = factory() ?? throw new InvalidOperationException("The transport factory must return a non-null ITransport instance.");
-
-            return Task.FromResult(transport);
-        });
-    }
-
-    private BiDiOptionsBuilder UseTransport(Func<Uri, CancellationToken, Task<ITransport>> factory)
-    {
         TransportFactory = factory;
         return this;
     }
