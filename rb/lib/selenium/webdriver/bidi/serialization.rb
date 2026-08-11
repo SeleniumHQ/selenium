@@ -79,7 +79,7 @@ module Selenium
           return value if value.nil?
           return value.map { |element| to_symbol(name, element, enum) } if value.is_a?(::Array)
 
-          enum.key(value) || raise(Error::WebDriverError, "#{name} received an unknown value: #{value.inspect}")
+          enum.key(value) || raise(Error::SerializationError, "#{name} received an unknown value: #{value.inspect}")
         end
       end
     end # BiDi

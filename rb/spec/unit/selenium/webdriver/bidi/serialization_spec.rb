@@ -79,12 +79,12 @@ module Selenium
               payload = {'type' => 'futuristic', 'value' => 'x'}
 
               expect { BrowsingContext::Locator.from_json(payload) }
-                .to raise_error(Error::WebDriverError, /variant not in this Selenium's BiDi schema/)
+                .to raise_error(Error::SerializationError, /variant not in this Selenium's BiDi schema/)
             end
 
             it 'raises when an object-only union receives a bare scalar (no arm can match)' do
               expect { Script::RemoteValue.from_json('not-an-object') }
-                .to raise_error(Error::WebDriverError, /RemoteValue expected an object/)
+                .to raise_error(Error::SerializationError, /RemoteValue expected an object/)
             end
 
             it 'passes a bare scalar through a union that has a scalar arm (input.Origin)' do
@@ -162,7 +162,7 @@ module Selenium
               wire = {'type' => 'object', 'value' => [[42, {'type' => 'number', 'value' => 2}]]}
 
               expect { Script::ObjectRemoteValue.from_json(wire) }
-                .to raise_error(Error::WebDriverError, /value expected string, got 42/)
+                .to raise_error(Error::SerializationError, /value expected string, got 42/)
             end
 
             # Scalar tolerance is the key's alone: the value is the object-only RemoteValue union,
@@ -171,7 +171,7 @@ module Selenium
               wire = {'type' => 'object', 'value' => [['k', 'bare string, not an object']]}
 
               expect { Script::ObjectRemoteValue.from_json(wire) }
-                .to raise_error(Error::WebDriverError, /expected an object on the wire/)
+                .to raise_error(Error::SerializationError, /expected an object on the wire/)
             end
 
             # A map is `[key, value]` pairs; a malformed entry that is not a 2-item pair is a wire
@@ -180,7 +180,7 @@ module Selenium
               wire = {'type' => 'object', 'value' => [['orphan-key']]}
 
               expect { Script::ObjectRemoteValue.from_json(wire) }
-                .to raise_error(Error::WebDriverError, /expected a \[key, value\] pair/)
+                .to raise_error(Error::SerializationError, /expected a \[key, value\] pair/)
             end
           end
 
@@ -394,7 +394,7 @@ module Selenium
 
             it 'raises on an inbound enum value outside our schema' do
               expect { Log::ConsoleLogEntry.from_json('type' => 'console', 'level' => 'futureLevel') }
-                .to raise_error(Error::WebDriverError, /level received an unknown value.*futureLevel/)
+                .to raise_error(Error::SerializationError, /level received an unknown value.*futureLevel/)
             end
           end
 
@@ -545,7 +545,7 @@ module Selenium
 
             it 'raises on an unrecognized inbound token' do
               expect { Bluetooth::SimulateAdapterParameters.from_json('context' => 'c', 'state' => 'powered-sideways') }
-                .to raise_error(Error::WebDriverError, /state received an unknown value.*powered-sideways/)
+                .to raise_error(Error::SerializationError, /state received an unknown value.*powered-sideways/)
             end
 
             it 'coerces each element of a list-valued enum' do
@@ -566,7 +566,7 @@ module Selenium
               expect(klass.new(scrollbar_type: nil).as_json).to eq('scrollbarType' => nil)
               expect { klass.new(scrollbar_type: :banana) }.to raise_error(ArgumentError, /must be one of/)
               expect { klass.from_json('scrollbarType' => 'banana') }
-                .to raise_error(Error::WebDriverError, /received an unknown value/)
+                .to raise_error(Error::SerializationError, /received an unknown value/)
             end
           end
 
@@ -577,42 +577,42 @@ module Selenium
 
             it 'raises when a non-nullable field arrives as explicit null' do
               expect { Network::Cookie.from_json(cookie_wire.merge('name' => nil)) }
-                .to raise_error(Error::WebDriverError, /Cookie#name received null but is not nullable/)
+                .to raise_error(Error::SerializationError, /Cookie#name received null but is not nullable/)
             end
 
             it 'raises when a list-typed field arrives as a scalar' do
               expect { Network::AddInterceptParameters.from_json('phases' => 'beforeRequestSent') }
-                .to raise_error(Error::WebDriverError, /phases expected a list/)
+                .to raise_error(Error::SerializationError, /phases expected a list/)
             end
 
             it 'raises when a scalar-typed field arrives as a list' do
               expect { Network::Cookie.from_json(cookie_wire.merge('sameSite' => %w[none])) }
-                .to raise_error(Error::WebDriverError, /same_site expected a single value/)
+                .to raise_error(Error::SerializationError, /same_site expected a single value/)
             end
 
             it 'raises when an object-typed record arrives as a scalar' do
               expect { Network::AuthCredentials.from_json('not-an-object') }
-                .to raise_error(Error::WebDriverError, /AuthCredentials expected an object/)
+                .to raise_error(Error::SerializationError, /AuthCredentials expected an object/)
             end
 
             it 'raises when a string-typed field arrives as a number' do
               expect { Network::Cookie.from_json(cookie_wire.merge('name' => 123)) }
-                .to raise_error(Error::WebDriverError, /name expected string/)
+                .to raise_error(Error::SerializationError, /name expected string/)
             end
 
             it 'raises when a boolean-typed field arrives as a string' do
               expect { Network::Cookie.from_json(cookie_wire.merge('secure' => 'yes')) }
-                .to raise_error(Error::WebDriverError, /secure expected boolean/)
+                .to raise_error(Error::SerializationError, /secure expected boolean/)
             end
 
             it 'raises when an integer-typed field arrives as a string' do
               expect { Bluetooth::BluetoothManufacturerData.from_json('key' => 'nope', 'data' => 'x') }
-                .to raise_error(Error::WebDriverError, /key expected integer/)
+                .to raise_error(Error::SerializationError, /key expected integer/)
             end
 
             it 'raises when an integer-typed field arrives as a non-integer float' do
               expect { Bluetooth::BluetoothManufacturerData.from_json('key' => 1.5, 'data' => 'x') }
-                .to raise_error(Error::WebDriverError, /key expected integer/)
+                .to raise_error(Error::SerializationError, /key expected integer/)
             end
 
             it 'accepts an integer for an integer-typed field' do
@@ -625,7 +625,7 @@ module Selenium
             # its leaf primitive, so a wrong-typed value is rejected instead of passing opaque.
             it 'raises when an alias-typed integer field (js-uint) arrives as a string' do
               expect { Network::Cookie.from_json(cookie_wire.merge('size' => 'big')) }
-                .to raise_error(Error::WebDriverError, /size expected integer/)
+                .to raise_error(Error::SerializationError, /size expected integer/)
             end
           end
 
@@ -646,7 +646,7 @@ module Selenium
               allow(ENV).to receive(:fetch).with('SE_BIDI_STRICT', '').and_return('true')
 
               expect { Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1') }
-                .to raise_error(Error::WebDriverError, /RequestDeviceInfo#name is required but was missing/)
+                .to raise_error(Error::SerializationError, /RequestDeviceInfo#name is required but was missing/)
             end
           end
         end

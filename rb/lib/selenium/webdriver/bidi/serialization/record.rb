@@ -85,7 +85,7 @@ module Selenium
             # (extensible) or warned and dropped (closed) — strict on shape, lenient on extras.
             def from_json(json_payload)
               unless json_payload.is_a?(::Hash)
-                raise Error::WebDriverError, "#{name} expected an object on the wire, got #{json_payload.inspect}"
+                raise Error::SerializationError, "#{name} expected an object on the wire, got #{json_payload.inspect}"
               end
 
               attributes = fields.to_h do |f|
@@ -228,7 +228,7 @@ module Selenium
             # which matters for the required-and-nullable fields the schema flags.
             def missing_required(field)
               message = "#{name}##{field.name} is required but was missing from the response"
-              raise Error::WebDriverError, message if Serialization.strict?
+              raise Error::SerializationError, message if Serialization.strict?
 
               WebDriver.logger.warn(message, id: :bidi_missing_required)
               UNSET
@@ -238,7 +238,7 @@ module Selenium
               if raw.nil?
                 return raw if field.nullable
 
-                raise Error::WebDriverError, "#{name}##{field.name} received null but is not nullable"
+                raise Error::SerializationError, "#{name}##{field.name} received null but is not nullable"
               end
               check_shape(field, raw)
               return Serialization.to_symbol("#{name}##{field.name}", raw, enum_hash(field)) if field.enum
@@ -268,7 +268,7 @@ module Selenium
               return if field.list == raw.is_a?(::Array)
               return unless field.list || field.enum || field.ref
 
-              raise Error::WebDriverError,
+              raise Error::SerializationError,
                     "#{name}##{field.name} expected #{field.list ? 'a list' : 'a single value'}, got #{raw.inspect}"
             end
 
@@ -285,7 +285,7 @@ module Selenium
               expected = PRIMITIVE_TYPES[field.primitive]
               return if expected.nil? || expected.any? { |type| raw.is_a?(type) }
 
-              raise Error::WebDriverError, "#{name}##{field.name} expected #{field.primitive}, got #{raw.inspect}"
+              raise Error::SerializationError, "#{name}##{field.name} expected #{field.primitive}, got #{raw.inspect}"
             end
 
             def enum_hash(field)
@@ -314,7 +314,7 @@ module Selenium
             # malformed entry and is rejected outright.
             def read_map_entry(field, element, klass)
               unless element.is_a?(::Array) && element.size == 2
-                raise Error::WebDriverError,
+                raise Error::SerializationError,
                       "#{name}##{field.name} expected a [key, value] pair, got #{element.inspect}"
               end
 
@@ -332,7 +332,7 @@ module Selenium
               expected = Array(field.scalar).flat_map { |primitive| PRIMITIVE_TYPES[primitive] || [] }
               return value if expected.empty? || expected.any? { |type| value.is_a?(type) }
 
-              raise Error::WebDriverError,
+              raise Error::SerializationError,
                     "#{name}##{field.name} expected #{Array(field.scalar).join(' or ')}, got #{value.inspect}"
             end
 

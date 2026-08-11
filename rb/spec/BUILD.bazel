@@ -18,6 +18,7 @@ rb_library(
         "//rb/spec/integration:all_srcs",
         "//rb/spec/integration/selenium/webdriver:all_srcs",
         "//rb/spec/integration/selenium/webdriver/bidi:all_srcs",
+        "//rb/spec/integration/selenium/webdriver/bidi/protocol:all_srcs",
         "//rb/spec/integration/selenium/webdriver/chrome:all_srcs",
         "//rb/spec/integration/selenium/webdriver/edge:all_srcs",
         "//rb/spec/integration/selenium/webdriver/firefox:all_srcs",

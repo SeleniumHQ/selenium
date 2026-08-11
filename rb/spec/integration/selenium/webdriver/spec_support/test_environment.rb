@@ -40,6 +40,9 @@ module Selenium
           WebDriver.logger.ignore(:logger_info)
           SeleniumManager.bin_path = root.join('bazel-bin/rb/bin').to_s if File.exist?(root.join('bazel-bin/rb/bin'))
 
+          # always run bidi tests in strict mode to detect browser bugs
+          ENV['SE_BIDI_STRICT'] ||= 'true' if ENV['WEBDRIVER_BIDI']
+
           @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').tr('-', '_').to_sym
           @driver_instance = nil
           @remote_server = nil
