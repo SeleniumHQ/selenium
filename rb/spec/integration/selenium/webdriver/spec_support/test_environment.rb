@@ -40,9 +40,7 @@ module Selenium
           WebDriver.logger.ignore(:logger_info)
           SeleniumManager.bin_path = root.join('bazel-bin/rb/bin').to_s if File.exist?(root.join('bazel-bin/rb/bin'))
 
-          # BiDi specs exercise the wire layer, so run them under strict serialization: a response
-          # missing a required field raises instead of being tolerated. Production stays lenient by
-          # default; an explicit SE_BIDI_STRICT (e.g. to debug) still wins.
+          # always run bidi tests in strict mode to detect browser bugs
           ENV['SE_BIDI_STRICT'] ||= 'true' if ENV['WEBDRIVER_BIDI']
 
           @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').tr('-', '_').to_sym
