@@ -1,3 +1,32 @@
+4.47.0 (2026-08-10)
+=========================
+* Support CDP versions: v149, v150, v151
+* support WebDriver BiDi on Safari Preview and move #bidi onto Driver (#17729)
+* link generated BiDi elements to their spec definitions (#17781)
+* add objectOnly/preserveExtras/scalar-primitive BiDi schema signals (#17784)
+* construct the BiDi transport inside the domain from a connection (#17796)
+* route BiDiBridge navigation through the generated Protocol::BrowsingContext (#17785)
+* resolve spec runfiles via Bazel::Runfiles (#17810)
+* [build] standardize generated-file license and not to edit markers across generators (#17816)
+* validate nullable-constant BiDi params outbound (#17818)
+* [build] upgrade rules_ruby to 0.28.0 and drop vendored Bazel::Runfiles workaround (#17824)
+* [build] Merge vendor cddl files into shared BiDi schema and implement custom Firefox webExtension options (#17840)
+* [grid] honor client-advertised se:remoteUrl for reachable BiDi/CDP/VNC URLs (#17790)
+* tolerate and warn on missing required inbound BiDi fields, with SE_BIDI_STRICT to escalate (#17844)
+* remove deprecated FTP proxy support (#17846)
+* prevent CDP access with Firefox (#17849)
+* test matchers assert log entries by id and optional messages and match severity (#17848)
+* [bidi] Correct float/enum type fidelity in the shared schema and validate primitives outbound in Ruby (#17852)
+* [bidi] mark BiDi types extensible per spec and update Ruby handling (#17853)
+* raise typed WebDriver errors for BiDi from a generated error-code map (#17855)
+* allow pending test guards to require matching provided exception (#17859)
+* pass --enable-chrome-logs unless CHROME_LOG_FILE is set (#17858)
+* support custom vendor specific capabilities in options classes (#17862)
+* validate BiDi outbound ref fields against their declared type (#17861)
+* generate BiDi domain type accessors and union variant factories (#17865)
+* deprecate invalid Firefox profile code (#17871)
+* [build] Automated Browser Version Update with CDP (#17873)
+
 4.46.0 (2026-07-10)
 =========================
 * Support CDP versions: v148, v149, v150

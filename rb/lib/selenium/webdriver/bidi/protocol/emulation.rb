@@ -118,6 +118,23 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetmediafeaturesoverrideparameters
+          SetMediaFeaturesOverrideParameters = Serialization::Record.define(
+            features: {wire_key: 'features', nullable: true, ref: 'Emulation::MediaFeature', list: true},
+            contexts: {wire_key: 'contexts', required: false, list: true},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationmediafeature
+          MediaFeature = Serialization::Record.define(
+            name: {wire_key: 'name', primitive: 'string'},
+            value: {wire_key: 'value', primitive: 'string'}
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetnetworkconditionsparameters
           SetNetworkConditionsParameters = Serialization::Record.define(
             network_conditions: {
@@ -179,6 +196,15 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetviewportmetaoverrideparameters
+          SetViewportMetaOverrideParameters = Serialization::Record.define(
+            viewport_meta: {wire_key: 'viewportMeta', nullable: true, const: true},
+            contexts: {wire_key: 'contexts', required: false, list: true},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetscriptingenabledparameters
           SetScriptingEnabledParameters = Serialization::Record.define(
             enabled: {wire_key: 'enabled', nullable: true, const: false},
@@ -219,6 +245,7 @@ module Selenium
 
           def geolocation_coordinates(**) = GeolocationCoordinates.new(**)
           def geolocation_position_error(**) = GeolocationPositionError.new(**)
+          def media_feature(**) = MediaFeature.new(**)
           def network_conditions_offline(**) = NetworkConditionsOffline.new(**)
           def screen_area(**) = ScreenArea.new(**)
           def screen_orientation(**) = ScreenOrientation.new(**)
@@ -264,6 +291,22 @@ module Selenium
           def set_locale_override(locale:, contexts: Serialization::UNSET, user_contexts: Serialization::UNSET)
             params = SetLocaleOverrideParameters.new(locale: locale, contexts: contexts, user_contexts: user_contexts)
             execute(cmd: 'emulation.setLocaleOverride', params: params)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-emulation-setMediaFeaturesOverride
+          def set_media_features_override(
+            features:,
+            contexts: Serialization::UNSET,
+            user_contexts: Serialization::UNSET
+          )
+            params = SetMediaFeaturesOverrideParameters.new(
+              features: features,
+              contexts: contexts,
+              user_contexts: user_contexts
+            )
+            execute(cmd: 'emulation.setMediaFeaturesOverride', params: params)
           end
 
           # @api private
@@ -381,6 +424,22 @@ module Selenium
               user_contexts: user_contexts
             )
             execute(cmd: 'emulation.setUserAgentOverride', params: params)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-emulation-setViewportMetaOverride
+          def set_viewport_meta_override(
+            viewport_meta:,
+            contexts: Serialization::UNSET,
+            user_contexts: Serialization::UNSET
+          )
+            params = SetViewportMetaOverrideParameters.new(
+              viewport_meta: viewport_meta,
+              contexts: contexts,
+              user_contexts: user_contexts
+            )
+            execute(cmd: 'emulation.setViewportMetaOverride', params: params)
           end
         end # Emulation
       end # Protocol
