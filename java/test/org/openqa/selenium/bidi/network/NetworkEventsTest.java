@@ -18,6 +18,7 @@
 package org.openqa.selenium.bidi.network;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
@@ -27,8 +28,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.bidi.module.Network;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -172,5 +175,26 @@ class NetworkEventsTest extends JupiterTestBase {
       assertThat(fetchError.getNavigationId()).isNotNull();
       assertThat(fetchError.getErrorText()).contains("UNKNOWN_HOST");
     }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  @Ignore(value = EDGE, reason = "network.fetchError is not delivered, so the check is vacuous")
+  @Ignore(value = CHROME, reason = "network.fetchError is not delivered, so the check is vacuous")
+  void doesNotReceiveFetchErrorAfterClose() {
+    CompletableFuture<FetchError> future = new CompletableFuture<>();
+    Network network = new Network(driver);
+    network.onFetchError(future::complete);
+    network.close();
+
+    try {
+      driver.get("https://not_a_valid_url.test/");
+    } catch (NoSuchSessionException e) {
+      throw e;
+    } catch (WebDriverException ignored) {
+    }
+
+    assertThatThrownBy(() -> future.get(5, TimeUnit.SECONDS))
+        .isInstanceOf(TimeoutException.class);
   }
 }
