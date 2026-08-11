@@ -368,7 +368,7 @@ internal class CallFunctionLocalValueTests : BiDiTestFixture
     public async Task CanCallFunctionWithSharedReferenceLocalValue()
     {
         // Navigate to a page with a known element
-        driver.Url = UrlBuilder.WhereIs("bidi/logEntryAdded.html");
+        driver.Url = Urls.WhereIs("bidi/logEntryAdded.html");
 
         var node = (await context.LocateNodesAsync(new CssLocator("#consoleLog"))).Nodes[0];
 

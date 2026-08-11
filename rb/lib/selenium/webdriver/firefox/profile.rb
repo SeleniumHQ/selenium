@@ -40,7 +40,6 @@ module Selenium
         LOCK_FILES = %w[.parentlock parent.lock lock].freeze
 
         attr_reader :name, :log_file
-        attr_writer :secure_ssl, :load_no_focus_lib
 
         class << self
           def ini
@@ -110,7 +109,18 @@ module Selenium
         end
 
         def port=(port)
+          WebDriver.logger.deprecate('Firefox::Profile#port=', 'the Service class', id: :firefox_profile)
           self[WEBDRIVER_PREFS[:port]] = port
+        end
+
+        def secure_ssl=(value)
+          WebDriver.logger.deprecate('Firefox::Profile#secure_ssl=', id: :firefox_profile)
+          @secure_ssl = value
+        end
+
+        def load_no_focus_lib=(value)
+          WebDriver.logger.deprecate('Firefox::Profile#load_no_focus_lib=', id: :firefox_profile)
+          @load_no_focus_lib = value
         end
 
         def log_file=(file)
@@ -118,11 +128,9 @@ module Selenium
           self[WEBDRIVER_PREFS[:log_file]] = file
         end
 
-        #
-        # Add the extension (directory, .zip or .xpi) at the given path to the profile.
-        #
-
         def add_extension(path, name = extension_name_for(path))
+          WebDriver.logger.deprecate('Firefox::Profile#add_extension', 'Driver#install_addon',
+                                     id: :firefox_profile)
           @extensions[name] = Extension.new(path)
         end
 
@@ -133,7 +141,6 @@ module Selenium
           when :manual
             self['network.proxy.type'] = 1
 
-            set_manual_proxy_preference 'ftp', proxy.ftp
             set_manual_proxy_preference 'http', proxy.http
             set_manual_proxy_preference 'ssl', proxy.ssl
             set_manual_proxy_preference 'socks', proxy.socks

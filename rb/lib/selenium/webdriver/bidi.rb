@@ -35,6 +35,9 @@ module Selenium
         @ws = WebSocketConnection.new(url: url)
       end
 
+      # @api private
+      attr_reader :ws
+
       def close
         @ws.close
       end

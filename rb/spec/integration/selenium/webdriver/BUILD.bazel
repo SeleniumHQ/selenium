@@ -1,6 +1,13 @@
 load("@rules_ruby//ruby:defs.bzl", "rb_library")
 load("//rb/spec:tests.bzl", "rb_integration_test")
 
+filegroup(
+    name = "all_srcs",
+    testonly = True,
+    srcs = glob(["**/*.rb"]),
+    visibility = ["//rb/spec:__pkg__"],
+)
+
 rb_library(
     name = "spec_helper",
     testonly = True,
@@ -24,6 +31,7 @@ rb_library(
         "//rb/lib/selenium/webdriver:remote",
         "//rb/spec:rspec_matchers",
         "@bundle",
+        "@rules_ruby//ruby/runfiles",
     ],
 )
 
@@ -46,6 +54,8 @@ _BIDI_ONLY = [
 
 _DEVTOOLS = ["devtools_spec.rb"]
 
+_NO_GRID = ["driver_finder_spec.rb"]
+
 [
     rb_integration_test(
         name = file[:-8],
@@ -56,8 +66,21 @@ _DEVTOOLS = ["devtools_spec.rb"]
     )
     for file in glob(
         ["*_spec.rb"],
-        exclude = _OS_SENSITIVE + _BIDI_IMPLEMENTATIONS + _BIDI_ONLY + _DEVTOOLS,
+        exclude = _OS_SENSITIVE + _BIDI_IMPLEMENTATIONS + _BIDI_ONLY + _DEVTOOLS + _NO_GRID,
     )
+]
+
+[
+    rb_integration_test(
+        name = f[:-8],
+        srcs = [f],
+        grid = False,
+        tags = ["se-manager"],
+        deps = [
+            "//rb/lib/selenium/webdriver:common",
+        ],
+    )
+    for f in _NO_GRID
 ]
 
 [
@@ -76,7 +99,7 @@ _DEVTOOLS = ["devtools_spec.rb"]
     rb_integration_test(
         name = f[:-8],
         srcs = [f],
-        tags = ["bidi"],
+        bidi = True,
         deps = [
             "//rb/lib/selenium/webdriver:bidi",
         ],
@@ -88,7 +111,8 @@ _DEVTOOLS = ["devtools_spec.rb"]
     rb_integration_test(
         name = f[:-8],
         srcs = [f],
-        bidi_only = True,
+        bidi = True,
+        classic = False,
         deps = [
             "//rb/lib/selenium/webdriver:bidi",
         ],

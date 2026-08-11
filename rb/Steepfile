@@ -6,8 +6,16 @@ target :lib do
 
   # Total amount of errors ignore 64 in 29 files
   ignore(
-    # Ignore all files in the bidi directory until we decide the implementation
-    'lib/selenium/webdriver/bidi/**/*.rb',
+    # Ignore all hand-written files in the bidi directory while we update the implementation
+    'lib/selenium/webdriver/bidi/network/**/*.rb',
+    'lib/selenium/webdriver/bidi/browser.rb',
+    'lib/selenium/webdriver/bidi/browsing_context.rb',
+    'lib/selenium/webdriver/bidi/log_handler.rb',
+    'lib/selenium/webdriver/bidi/network.rb',
+    'lib/selenium/webdriver/bidi/session.rb',
+    'lib/selenium/webdriver/bidi/struct.rb',
+    # The generator + its up-to-date checker are build tooling, not typed runtime code
+    'lib/selenium/webdriver/bidi/support/**/*.rb',
     # Ignore all spec files
     'spec/**/*.rb',
     # Ignore line 166 due to UDP RBS issue

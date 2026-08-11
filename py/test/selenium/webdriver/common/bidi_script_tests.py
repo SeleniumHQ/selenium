@@ -1418,3 +1418,206 @@ class TestBidiDomMutationHandler:
         finally:
             driver.script.remove_dom_mutation_handler(id1)
             driver.script.remove_dom_mutation_handler(id2)
+
+    def test_dom_mutation_handler_child_list(self, driver):
+        """Handlers registered for childList receive added-node mutations."""
+        mutations = []
+        handler_id = driver.script.add_dom_mutation_handler(mutations.append, mutation_types=("childList",))
+
+        try:
+            driver.find_element(By.ID, "adder").click()
+            WebDriverWait(driver, 10).until(lambda _: any(m.type == "childList" for m in mutations))
+
+            mutation = next(m for m in mutations if m.type == "childList")
+            assert mutation.added_nodes
+            added = mutation.added_nodes[0]
+            assert added.get("nodeName") == "DIV"
+            assert added.get("id") is not None
+        finally:
+            driver.script.remove_dom_mutation_handler(handler_id)
+
+    def test_dom_mutation_handler_character_data(self, driver):
+        """Handlers registered for characterData receive text mutations."""
+        driver.execute_script(
+            "var el = document.createElement('div');"
+            "el.id = 'cdata';"
+            "el.textContent = 'before';"
+            "document.body.appendChild(el);"
+        )
+        mutations = []
+        handler_id = driver.script.add_dom_mutation_handler(mutations.append, mutation_types="characterData")
+
+        try:
+            driver.execute_script("document.getElementById('cdata').firstChild.data = 'after';")
+            WebDriverWait(driver, 10).until(lambda _: any(m.type == "characterData" for m in mutations))
+
+            mutation = next(m for m in mutations if m.type == "characterData")
+            assert mutation.current_value == "after"
+            assert mutation.old_value == "before"
+            assert mutation.element_id is not None
+        finally:
+            driver.script.remove_dom_mutation_handler(handler_id)
+
+    def test_dom_mutation_handlers_only_receive_requested_types(self, driver):
+        """Each handler only receives the mutation types it registered for.
+
+        In particular the default (attributes-only) handler never receives
+        childList or characterData payloads.
+        """
+        attribute_mutations = []
+        child_list_mutations = []
+        id1 = driver.script.add_dom_mutation_handler(attribute_mutations.append)
+        id2 = driver.script.add_dom_mutation_handler(child_list_mutations.append, mutation_types="childList")
+
+        try:
+            driver.find_element(By.ID, "adder").click()
+            WebDriverWait(driver, 10).until(lambda _: child_list_mutations)
+
+            assert all(m.type == "attributes" for m in attribute_mutations)
+            assert all(m.type == "childList" for m in child_list_mutations)
+        finally:
+            driver.script.remove_dom_mutation_handler(id1)
+            driver.script.remove_dom_mutation_handler(id2)
+
+    def test_clear_dom_mutation_handlers(self, driver):
+        """clear_dom_mutation_handlers removes every mutation handler."""
+        mutations = []
+        driver.script.add_dom_mutation_handler(mutations.append)
+        driver.script.add_dom_mutation_handler(mutations.append, mutation_types="childList")
+
+        driver.script.clear_dom_mutation_handlers()
+
+        driver.find_element(By.ID, "reveal").click()
+        WebDriverWait(driver, 10).until(lambda d: d.find_element(By.ID, "revealed").is_displayed())
+        assert mutations == []
+
+
+class TestBidiScriptAlignment:
+    """Tests for the cross-binding API design surface.
+
+    Covers ScriptError/ConsoleMessage handlers with clear_* counterparts,
+    and PinnedScript/ScriptResult.
+    """
+
+    def test_error_handler_receives_script_error(self, driver, pages):
+        from selenium.webdriver.common.bidi.script import ScriptError
+
+        pages.load("bidi/logEntryAdded.html")
+        errors = []
+        handler_id = driver.script.add_error_handler(errors.append)
+
+        try:
+            driver.find_element(By.ID, "jsException").click()
+            WebDriverWait(driver, 5).until(lambda _: errors)
+
+            error = errors[0]
+            assert isinstance(error, ScriptError)
+            assert error.message == "Error: Not working"
+            assert error.line_number is not None
+            assert error.stack_trace is not None
+            assert "logEntryAdded" in (error.source or "")
+        finally:
+            driver.script.remove_error_handler(handler_id)
+
+    def test_console_handler_receives_console_message(self, driver, pages):
+        from selenium.webdriver.common.bidi.script import ConsoleMessage
+
+        pages.load("bidi/logEntryAdded.html")
+        messages = []
+        handler_id = driver.script.add_console_handler(messages.append)
+
+        try:
+            driver.find_element(By.ID, "consoleLog").click()
+            WebDriverWait(driver, 5).until(lambda _: messages)
+
+            message = messages[0]
+            assert isinstance(message, ConsoleMessage)
+            assert message.level == "info"
+            assert message.text == "Hello, world!"
+        finally:
+            driver.script.remove_console_handler(handler_id)
+
+    def test_clear_console_handlers(self, driver, pages):
+        pages.load("bidi/logEntryAdded.html")
+        messages = []
+        errors = []
+        driver.script.add_console_handler(messages.append)
+        driver.script.add_console_message_handler(messages.append)
+        sentinel_id = driver.script.add_error_handler(errors.append)
+
+        try:
+            driver.script.clear_console_handlers()
+
+            driver.find_element(By.ID, "consoleLog").click()
+            # The error sentinel proves log events still flow after the clear.
+            driver.find_element(By.ID, "jsException").click()
+            WebDriverWait(driver, 5).until(lambda _: errors)
+
+            assert messages == []
+        finally:
+            driver.script.remove_error_handler(sentinel_id)
+
+    def test_clear_error_handlers(self, driver, pages):
+        pages.load("bidi/logEntryAdded.html")
+        messages = []
+        errors = []
+        driver.script.add_error_handler(errors.append)
+        driver.script.add_javascript_error_handler(errors.append)
+        sentinel_id = driver.script.add_console_handler(messages.append)
+
+        try:
+            driver.script.clear_error_handlers()
+
+            driver.find_element(By.ID, "jsException").click()
+            # The console sentinel proves log events still flow after the clear.
+            driver.find_element(By.ID, "consoleLog").click()
+            WebDriverWait(driver, 5).until(lambda _: messages)
+
+            assert errors == []
+        finally:
+            driver.script.remove_console_handler(sentinel_id)
+
+    def test_pin_returns_pinned_script(self, driver, pages):
+        from selenium.webdriver.common.bidi.script import PinnedScript
+
+        pages.load("xhtmlTest.html")
+        pinned = driver.script.pin("function getTitle() { return document.title; }")
+
+        try:
+            assert isinstance(pinned, PinnedScript)
+            assert isinstance(pinned, str)
+            assert pinned.id == str(pinned)
+            assert "getTitle" in pinned.source
+        finally:
+            driver.script.unpin(pinned)
+
+    def test_execute_pinned_script_returns_script_result(self, driver, pages):
+        from selenium.webdriver.common.bidi.script import ScriptResult
+
+        pages.load("xhtmlTest.html")
+        pinned = driver.script.pin("function getTitle() { return document.title; }")
+
+        try:
+            result = driver.script.execute(pinned, "return getTitle();")
+
+            assert isinstance(result, ScriptResult)
+            assert result.error is None
+            assert result.realm is not None
+            assert result.value.get("value") == "XHTML Test Page"
+        finally:
+            driver.script.unpin(pinned)
+
+    def test_execute_pinned_script_reports_error(self, driver, pages):
+        from selenium.webdriver.common.bidi.script import ScriptError
+
+        pages.load("xhtmlTest.html")
+        pinned = driver.script.pin("function getTitle() { return document.title; }")
+
+        try:
+            result = driver.script.execute(pinned, "return missingFunction();")
+
+            assert result.value is None
+            assert isinstance(result.error, ScriptError)
+            assert "missingFunction" in result.error.message
+        finally:
+            driver.script.unpin(pinned)

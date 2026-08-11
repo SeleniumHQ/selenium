@@ -38,7 +38,6 @@ def close_alert(driver):
         pass
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_be_able_to_override_the_window_alert_method(driver, pages):
     pages.load("alerts.html")
     driver.execute_script("window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }")
@@ -55,7 +54,6 @@ def test_should_be_able_to_override_the_window_alert_method(driver, pages):
         raise e
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_allow_users_to_accept_an_alert_manually(driver, pages):
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="alert").click()
@@ -65,7 +63,6 @@ def test_should_allow_users_to_accept_an_alert_manually(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_allow_users_to_accept_an_alert_with_no_text_manually(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "empty-alert").click()
@@ -76,7 +73,6 @@ def test_should_allow_users_to_accept_an_alert_with_no_text_manually(driver, pag
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_get_text_of_alert_opened_in_set_timeout(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "slow-alert").click()
@@ -92,7 +88,6 @@ def test_should_get_text_of_alert_opened_in_set_timeout(driver, pages):
         alert.accept()
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_allow_users_to_dismiss_an_alert_manually(driver, pages):
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="alert").click()
@@ -102,7 +97,6 @@ def test_should_allow_users_to_dismiss_an_alert_manually(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_allow_auser_to_accept_aprompt(driver, pages):
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="prompt").click()
@@ -113,7 +107,6 @@ def test_should_allow_auser_to_accept_aprompt(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_allow_auser_to_dismiss_aprompt(driver, pages):
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="prompt").click()
@@ -124,7 +117,6 @@ def test_should_allow_auser_to_dismiss_aprompt(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_allow_auser_to_set_the_value_of_aprompt(driver, pages):
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="prompt").click()
@@ -136,7 +128,6 @@ def test_should_allow_auser_to_set_the_value_of_aprompt(driver, pages):
     assert "cheese" == result
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 def test_setting_the_value_of_an_alert_throws(driver, pages):
@@ -155,7 +146,6 @@ def test_setting_the_value_of_an_alert_throws(driver, pages):
 @pytest.mark.xfail_edge(
     condition=sys.platform == "darwin", reason="https://bugs.chromium.org/p/chromedriver/issues/detail?id=26", run=False
 )
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_alert_should_not_allow_additional_commands_if_dimissed(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "alert").click()
@@ -208,7 +198,6 @@ def test_should_throw_an_exception_if_an_alert_has_not_been_dealt_with_and_dismi
     # Alert would be dismissed automatically
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_prompt_should_use_default_value_if_no_keys_sent(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "prompt-with-default").click()
@@ -220,7 +209,6 @@ def test_prompt_should_use_default_value_if_no_keys_sent(driver, pages):
     assert "This is a default value" == txt
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_prompt_should_have_null_value_if_dismissed(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "prompt-with-default").click()
@@ -230,7 +218,6 @@ def test_prompt_should_have_null_value_if_dismissed(driver, pages):
     assert "null" == driver.find_element(By.ID, "text").text
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_handles_two_alerts_from_one_interaction(driver, pages):
     pages.load("alerts.html")
 
@@ -270,7 +257,6 @@ def test_should_handle_alert_on_page_load_using_get(driver, pages):
     )
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 @pytest.mark.xfail_chrome(reason="Non W3C conformant")
 @pytest.mark.xfail_edge(reason="Non W3C conformant")
 def test_should_handle_alert_on_page_before_unload(driver, pages):
@@ -281,7 +267,6 @@ def test_should_handle_alert_on_page_before_unload(driver, pages):
     WebDriverWait(driver, 3).until(EC.title_is("Testing Alerts"))
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_allow_the_user_to_get_the_text_of_an_alert(driver, pages):
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="alert").click()
@@ -291,7 +276,6 @@ def test_should_allow_the_user_to_get_the_text_of_an_alert(driver, pages):
     assert "cheese" == value
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_allow_the_user_to_get_the_text_of_aprompt(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "prompt").click()
@@ -303,7 +287,6 @@ def test_should_allow_the_user_to_get_the_text_of_aprompt(driver, pages):
     assert "Enter something" == value
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_alert_should_not_allow_additional_commands_if_dismissed(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "alert").click()

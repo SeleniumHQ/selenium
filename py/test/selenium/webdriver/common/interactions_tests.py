@@ -124,7 +124,6 @@ def test_context_click(driver, pages):
     assert "ContextClicked" == toContextClick.get_attribute("value")
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_move_and_click(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
@@ -200,7 +199,6 @@ def test_sending_keys_to_active_element_with_modifier(driver, pages):
     assert "ABC" == e.get_attribute("value")
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_sending_keys_to_element(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element(By.ID, "working")
@@ -210,7 +208,6 @@ def test_sending_keys_to_element(driver, pages):
     assert "abc" == e.get_attribute("value")
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_can_send_keys_between_clicks(driver, pages):
     """Ensure W3C sends correct pause count to other input devices."""
     pages.load("javascriptPage.html")
@@ -232,7 +229,6 @@ def test_can_reset_interactions(driver):
     assert all(len(device.actions) == 0 for device in actions.w3c_actions.devices)
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_can_pause(driver, pages):
     from time import time
 

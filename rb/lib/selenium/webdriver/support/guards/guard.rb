@@ -30,7 +30,7 @@ module Selenium
           attr_reader :guarded, :type, :messages, :reason, :tracker
 
           def initialize(guarded, type, guards = nil)
-            @guarded = guarded
+            @guarded = guarded.dup
             @tracker = guards&.bug_tracker || ''
             @messages = guards&.messages || {}
             @messages[:unknown] = 'TODO: Investigate why this is failing and file a bug report'
@@ -47,40 +47,56 @@ module Selenium
                       when Symbol
                         messages[reason]
                       else
-                        "Guarded by #{guarded};"
+                        "#{type.to_s.tr('_', ' ')} #{guarded};"
                       end
 
             case type
-            when :exclude
+            when :skip_if, :exclude
               "Test skipped because it breaks test run; #{details}"
             when :flaky
               "Test skipped because it is unreliable in this configuration; #{details}"
-            when :exclusive
+            when :skip_unless, :exclusive
               "Test does not apply to this configuration; #{details}"
-            else
+            when :pending_if, :pending_unless, :except, :only
               "Test guarded; #{details}"
+            else
+              raise ArgumentError, "unknown guard type: #{type}"
             end
           end
 
-          # Bug is present on all configurations specified
+          # Test is expected to fail on the configurations specified (marked pending).
           def except?
-            @type == :except
+            @type == :pending_if || @type == :except
           end
 
-          # Bug is present on all configurations not specified
+          # Test is expected to fail on every configuration except those specified (marked pending).
           def only?
-            @type == :only
+            @type == :pending_unless || @type == :only
           end
 
-          # Bug is present on all configurations specified, but test can not be run because it breaks other tests,
-          # or it is flaky and unreliable
+          # Test is skipped on the configurations specified because it breaks the run or is unreliable.
           def exclude?
-            @type == :exclude || @type == :flaky
+            @type == :skip_if || @type == :exclude || @type == :flaky
           end
 
-          # Test only applies to configurations specified
+          # Test is skipped on every configuration except those specified (it only applies there).
           def exclusive?
-            @type == :exclusive
+            @type == :skip_unless || @type == :exclusive
+          end
+
+          # A pending guard that only applies when the failure matches an expected exception.
+          def exception?
+            (except? || only?) && !@guarded[:exception].nil?
+          end
+
+          # Whether the exception is the guard's `exception:` class and matches its optional `message:`
+          # (Regexp pattern or exact String), following RSpec's `raise_error` semantics.
+          def matches_exception?(exception)
+            spec = @guarded[:exception]
+            return false unless spec && exception.is_a?(spec[:class])
+
+            message = spec[:message]
+            message.nil? || (message.is_a?(Regexp) ? message.match?(exception.message) : message == exception.message)
           end
         end # Guard
       end # Guards

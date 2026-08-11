@@ -92,6 +92,19 @@ module Selenium
             described_class.new(options: Options.firefox)
           }.to raise_exception(ArgumentError, ':options must be an instance of Selenium::WebDriver::Chrome::Options')
         end
+
+        it 'does not accept a server URL set on the client_config' do
+          config = WebDriver::ClientConfig.new(server_url: 'http://example.com')
+          expect {
+            described_class.new(client_config: config)
+          }.to raise_exception(ArgumentError, /Can't set the server URL/)
+        end
+
+        it 'rejects both http_client and client_config' do
+          expect {
+            described_class.new(http_client: Remote::Http::Default.new, client_config: WebDriver::ClientConfig.new)
+          }.to raise_exception(ArgumentError, /cannot use both/i)
+        end
       end
     end # Chrome
   end # WebDriver

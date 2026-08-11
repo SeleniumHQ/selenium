@@ -176,6 +176,7 @@ pub fn str_to_os(os: &str) -> Result<OS, Error> {
     }
 }
 
+/// Processor architecture families used by the manager.
 #[allow(dead_code)]
 #[allow(clippy::upper_case_acronyms)]
 pub enum ARCH {
@@ -186,15 +187,17 @@ pub enum ARCH {
 }
 
 impl ARCH {
+    /// Returns the known string aliases for this architecture.
     pub fn to_str_vector(&self) -> Vec<&str> {
         match self {
-            ARCH::X32 => vec![ARCH_X86, "i386", "x32"],
-            ARCH::X64 => vec![ARCH_X64, "amd64", "x64", "i686", "ia64"],
+            ARCH::X32 => vec![ARCH_X86, "i386", "x32", "i686"],
+            ARCH::X64 => vec![ARCH_X64, "amd64", "x64", "ia64"],
             ARCH::ARM64 => vec![ARCH_ARM64, "aarch64", "arm"],
             ARCH::ARMV7 => vec![ARCH_ARM7L, "armv7l"],
         }
     }
 
+    /// Checks whether the given architecture string matches this family.
     pub fn is(&self, arch: &str) -> bool {
         self.to_str_vector()
             .contains(&arch.to_ascii_lowercase().as_str())
@@ -267,6 +270,31 @@ impl BooleanKey<'_> {
 fn get_env_name(suffix: &str) -> String {
     let suffix_uppercase: String = suffix.replace('-', "_").to_uppercase();
     concat(ENV_PREFIX, suffix_uppercase.as_str())
+}
+
+#[cfg(test)]
+mod env_name_tests {
+    use super::*;
+
+    #[test]
+    fn get_env_name_simple_key() {
+        assert_eq!(get_env_name("browser"), "SE_BROWSER");
+    }
+
+    #[test]
+    fn get_env_name_dashes_become_underscores() {
+        assert_eq!(get_env_name("browser-version"), "SE_BROWSER_VERSION");
+    }
+
+    #[test]
+    fn get_env_name_mixed_case_uppercased() {
+        assert_eq!(get_env_name("Cache-Path"), "SE_CACHE_PATH");
+    }
+
+    #[test]
+    fn get_env_name_empty_suffix() {
+        assert_eq!(get_env_name(""), "SE_");
+    }
 }
 
 fn get_config() -> Result<Table, Error> {

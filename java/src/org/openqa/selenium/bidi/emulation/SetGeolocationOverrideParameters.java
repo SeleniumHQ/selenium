@@ -19,8 +19,10 @@ package org.openqa.selenium.bidi.emulation;
 
 import java.util.List;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public class SetGeolocationOverrideParameters extends AbstractOverrideParameters {
 
   public SetGeolocationOverrideParameters(@Nullable GeolocationCoordinates coordinates) {

@@ -151,7 +151,7 @@ jobs:
     with:
       name: Run dependency updates
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
-      run: ./go ${{ needs.parse-tag.outputs.language }}:update
+      run: ./go ${{ needs.parse-tag.outputs.language }}:update${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:update' || '' }}
       artifact-name: patch-dep-updates
 
   calculate-changelog-depth:
@@ -228,6 +228,9 @@ jobs:
           - task: multitool
             name: Multitool
             run: ./go update_multitool
+          - task: cddl
+            name: CDDL Spec Files
+            run: ./go update_cddl
           - task: authors
             name: Authors
             run: ./go authors
@@ -282,6 +285,7 @@ jobs:
           }
           apply_patch versions "bump versions"
           apply_patch devtools "update devtools versions"
+          apply_patch cddl "update cddl spec files"
           apply_patch dep-updates "update dependencies"
           apply_patch changelogs "changelogs updated"
           apply_patch rust-changelogs "rust changelogs updated"
@@ -313,6 +317,7 @@ jobs:
             |-----------|--------|
             | Versions | ${{ steps.apply.outputs.versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | CDP version | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.devtools == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
+            | CDDL spec files | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.cddl == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
             | Binding Dependencies | ${{ steps.apply.outputs.dep-updates == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Changelogs | ${{ steps.apply.outputs.changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Rust Changelogs | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.rust-changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |

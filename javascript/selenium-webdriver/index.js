@@ -479,6 +479,14 @@ class Builder {
   }
 
   /**
+   * @return {firefox.ServiceBuilder} the Firefox service currently configured
+   *     for this instance.
+   */
+  getFirefoxService() {
+    return this.firefoxService_
+  }
+
+  /**
    * Sets the {@link firefox.ServiceBuilder} to use to manage the geckodriver
    * child process when creating Firefox sessions locally.
    *
@@ -650,6 +658,11 @@ class Builder {
 
     if (url) {
       this.log_.fine('Creating session on remote server')
+
+      if (typeof url === 'string') {
+        capabilities.set('se:remoteUrl', url)
+      }
+
       let client = Promise.resolve(url).then((url) => new _http.HttpClient(url, this.agent_, this.proxy_))
       let executor = new _http.Executor(client)
 

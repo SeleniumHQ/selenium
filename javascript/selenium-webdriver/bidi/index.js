@@ -79,10 +79,31 @@ class Index extends EventEmitter {
         }
         return
       }
-      // Messages without a numeric id are BiDi events, not command
-      // responses; they are routed via subscribe/EventEmitter elsewhere
-      // and intentionally ignored by this dispatcher.
+      // Messages without a numeric id are BiDi events, not command responses.
+      // Re-emit them on this EventEmitter by method name (e.g.
+      // 'browsingContext.contextCreated') so that generated domain classes can
+      // subscribe via bidi.on(methodName, callback) instead of each attaching
+      // a new raw ws.on('message', ...) listener.  The existing hand-written
+      // modules (logInspector, network, etc.) continue to use their own
+      // ws.on('message', ...) listeners unchanged — this emission is purely
+      // additive and does not affect those code paths.
       if (payload == null || typeof payload.id !== 'number') {
+        if (payload != null && typeof payload.method === 'string') {
+          // 'error' is a reserved EventEmitter event — emitting it without a
+          // listener throws and crashes the process. Route any peer-supplied
+          // method named 'error' through the same guarded path used for JSON
+          // parse failures rather than forwarding it directly.
+          if (payload.method === 'error') {
+            const err = new Error(`BiDi protocol error event: ${JSON.stringify(payload.params)}`)
+            if (this.listenerCount('error') > 0) {
+              this.emit('error', err)
+            } else {
+              process.emitWarning(err.message, 'BiDiProtocolWarning')
+            }
+          } else {
+            this.emit(payload.method, payload.params)
+          }
+        }
         return
       }
       const entry = this._pending.get(payload.id)

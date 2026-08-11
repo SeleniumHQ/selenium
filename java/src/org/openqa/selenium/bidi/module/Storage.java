@@ -20,6 +20,7 @@ package org.openqa.selenium.bidi.module;
 import java.io.StringReader;
 import java.util.Map;
 import java.util.function.Function;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
@@ -33,6 +34,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
+@Beta
 public class Storage {
   private static final Json JSON = new Json();
 

@@ -17,9 +17,12 @@
 
 """The WebDriver implementation."""
 
+from __future__ import annotations
+
 import base64
 import contextlib
 import copy
+import functools
 import inspect
 import os
 import pkgutil
@@ -32,7 +35,7 @@ from base64 import b64decode, urlsafe_b64encode
 from collections.abc import Generator
 from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from typing_extensions import Self
 
@@ -43,7 +46,6 @@ from selenium.common.exceptions import (
     NoSuchElementException,
     WebDriverException,
 )
-from selenium.webdriver.common.api_request_context import APIRequestContext
 from selenium.webdriver.common.bidi.browser import Browser
 from selenium.webdriver.common.bidi.browsing_context import BrowsingContext
 from selenium.webdriver.common.bidi.emulation import Emulation
@@ -55,15 +57,7 @@ from selenium.webdriver.common.bidi.session import Session
 from selenium.webdriver.common.bidi.storage import Storage
 from selenium.webdriver.common.bidi.webextension import WebExtension
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.fedcm.dialog import Dialog
 from selenium.webdriver.common.options import ArgOptions, BaseOptions
-from selenium.webdriver.common.print_page_options import PrintOptions
-from selenium.webdriver.common.timeouts import Timeouts
-from selenium.webdriver.common.virtual_authenticator import (
-    Credential,
-    VirtualAuthenticatorOptions,
-    required_virtual_authenticator,
-)
 from selenium.webdriver.remote.bidi_connection import BidiConnection
 from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.command import Command
@@ -126,7 +120,7 @@ def get_remote_connection(
         from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
 
         handler = ChromeRemoteConnection
-    elif browser_name == "MicrosoftEdge":
+    elif browser_name in ("MicrosoftEdge", "webview2"):
         from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
 
         handler = EdgeRemoteConnection
@@ -134,7 +128,7 @@ def get_remote_connection(
         from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
 
         handler = FirefoxRemoteConnection
-    elif browser_name == "Safari":
+    elif browser_name in ("safari", "Safari Technology Preview"):
         from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 
         handler = SafariRemoteConnection
@@ -188,6 +182,36 @@ def create_matches(options: list[BaseOptions]) -> dict:
     return capabilities
 
 
+if TYPE_CHECKING:
+    from selenium.webdriver.common.api_request_context import APIRequestContext
+    from selenium.webdriver.common.fedcm.dialog import Dialog
+    from selenium.webdriver.common.print_page_options import PrintOptions
+    from selenium.webdriver.common.timeouts import Timeouts
+    from selenium.webdriver.common.virtual_authenticator import Credential, VirtualAuthenticatorOptions
+
+
+def _required_chromium_based_browser(func):
+    @functools.wraps(func)
+    def wrapper(self, *args, **kwargs):
+        assert self.caps["browserName"].lower() not in ["firefox", "safari"], (
+            "This only currently works in Chromium based browsers"
+        )
+        return func(self, *args, **kwargs)
+
+    return wrapper
+
+
+def _required_virtual_authenticator(func):
+    @functools.wraps(func)
+    @_required_chromium_based_browser
+    def wrapper(self, *args, **kwargs):
+        if not self.virtual_authenticator_id:
+            raise ValueError("This function requires a virtual authenticator to be set.")
+        return func(self, *args, **kwargs)
+
+    return wrapper
+
+
 class BaseWebDriver(metaclass=ABCMeta):
     """Abstract Base Class for all Webdriver subtypes.
 
@@ -229,7 +253,7 @@ class WebDriver(BaseWebDriver):
         Args:
             command_executor: Either a string representing the URL of the remote
                 server or a custom remote_connection.RemoteConnection object.
-                Defaults to 'http://127.0.0.1:4444/wd/hub'.
+                Defaults to 'http://127.0.0.1:4444'.
             keep_alive: (Deprecated) Whether to configure
                 remote_connection.RemoteConnection to use HTTP keep-alive.
                 Defaults to True.
@@ -367,6 +391,9 @@ class WebDriver(BaseWebDriver):
         Args:
             capabilities: A capabilities dict to start the session with.
         """
+        remote_url = self._remote_url()
+        if remote_url:
+            capabilities = {**capabilities, "se:remoteUrl": remote_url}
         caps = _create_caps(capabilities)
         try:
             response = self.execute(Command.NEW_SESSION, caps)["value"]
@@ -376,6 +403,13 @@ class WebDriver(BaseWebDriver):
             if hasattr(self, "service") and self.service is not None:
                 self.service.stop()
             raise
+
+    def _remote_url(self) -> str | None:
+        """The address used to reach the Grid, advertised as ``se:remoteUrl`` (None for local drivers)."""
+        if getattr(self, "service", None) is not None:
+            return None
+        client_config = getattr(self.command_executor, "client_config", None)
+        return getattr(client_config, "remote_server_addr", None) or None
 
     def _wrap_value(self, value):
         if isinstance(value, dict):
@@ -426,6 +460,8 @@ class WebDriver(BaseWebDriver):
         Example:
             `driver.execute_cdp_cmd("Network.getResponseBody", {"requestId": requestId})`
         """
+        if self.caps["browserName"].lower() == "firefox":
+            raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
         return self.execute("executeCdpCommand", {"cmd": cmd, "params": cmd_args})["value"]
 
     def execute(
@@ -613,6 +649,11 @@ class WebDriver(BaseWebDriver):
     def quit(self) -> None:
         """Quits the driver and closes every associated window."""
         try:
+            # Close the BiDi/CDP websocket before deleting the session so the
+            # close is initiated from our side.
+            if self._websocket_connection is not None:
+                self._websocket_connection.close()
+                self._websocket_connection = None
             self.execute(Command.QUIT)
         finally:
             if self._request is not None:
@@ -820,6 +861,8 @@ class WebDriver(BaseWebDriver):
         Example:
             `driver.timeouts`
         """
+        from selenium.webdriver.common.timeouts import Timeouts
+
         timeouts = self.execute(Command.GET_TIMEOUTS)["value"]
         timeouts["implicit_wait"] = timeouts.pop("implicit") / 1000
         timeouts["page_load"] = timeouts.pop("pageLoad") / 1000
@@ -841,7 +884,7 @@ class WebDriver(BaseWebDriver):
         """
         _ = self.execute(Command.SET_TIMEOUTS, timeouts._to_json())["value"]
 
-    def find_element(self, by: str | RelativeBy = By.ID, value: str | None = None) -> WebElement:
+    def find_element(self, by: str | By | RelativeBy = By.ID, value: str | None = None) -> WebElement:
         """Find an element given a By strategy and locator.
 
         Args:
@@ -867,7 +910,7 @@ class WebDriver(BaseWebDriver):
 
         return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
 
-    def find_elements(self, by: str | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
+    def find_elements(self, by: str | By | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
         """Find elements given a By strategy and locator.
 
         Args:
@@ -1140,6 +1183,8 @@ class WebDriver(BaseWebDriver):
 
     @asynccontextmanager
     async def bidi_connection(self):
+        if self.caps["browserName"].lower() == "firefox":
+            raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
         global cdp
         import_cdp()
         if self.caps.get("se:cdp"):
@@ -1386,6 +1431,8 @@ class WebDriver(BaseWebDriver):
             ```
         """
         if self._request is None:
+            from selenium.webdriver.common.api_request_context import APIRequestContext
+
             self._request = APIRequestContext(self)
         return self._request
 
@@ -1434,7 +1481,7 @@ class WebDriver(BaseWebDriver):
         """Returns the id of the virtual authenticator."""
         return self._authenticator_id
 
-    @required_virtual_authenticator
+    @_required_virtual_authenticator
     def remove_virtual_authenticator(self) -> None:
         """Removes a previously added virtual authenticator.
 
@@ -1447,7 +1494,7 @@ class WebDriver(BaseWebDriver):
         )
         self._authenticator_id = None
 
-    @required_virtual_authenticator
+    @_required_virtual_authenticator
     def add_credential(self, credential: Credential) -> None:
         """Injects a credential into the authenticator.
 
@@ -1464,13 +1511,15 @@ class WebDriver(BaseWebDriver):
             {**credential.to_dict(), "authenticatorId": self._authenticator_id},
         )
 
-    @required_virtual_authenticator
+    @_required_virtual_authenticator
     def get_credentials(self) -> list[Credential]:
         """Returns the list of credentials owned by the authenticator."""
+        from selenium.webdriver.common.virtual_authenticator import Credential
+
         credential_data = self.execute(Command.GET_CREDENTIALS, {"authenticatorId": self._authenticator_id})
         return [Credential.from_dict(credential) for credential in credential_data["value"]]
 
-    @required_virtual_authenticator
+    @_required_virtual_authenticator
     def remove_credential(self, credential_id: str | bytearray) -> None:
         """Removes a credential from the authenticator.
 
@@ -1487,12 +1536,12 @@ class WebDriver(BaseWebDriver):
             {"credentialId": credential_id, "authenticatorId": self._authenticator_id},
         )
 
-    @required_virtual_authenticator
+    @_required_virtual_authenticator
     def remove_all_credentials(self) -> None:
         """Removes all credentials from the authenticator."""
         self.execute(Command.REMOVE_ALL_CREDENTIALS, {"authenticatorId": self._authenticator_id})
 
-    @required_virtual_authenticator
+    @_required_virtual_authenticator
     def set_user_verified(self, verified: bool) -> None:
         """Set whether the authenticator will simulate success or failure on user verification.
 
@@ -1617,6 +1666,8 @@ class WebDriver(BaseWebDriver):
     @property
     def dialog(self) -> Dialog:
         """Returns the FedCM dialog object for interaction."""
+        from selenium.webdriver.common.fedcm.dialog import Dialog
+
         self._require_fedcm_support()
         return Dialog(self)
 
@@ -1636,6 +1687,7 @@ class WebDriver(BaseWebDriver):
             WebDriverException: If FedCM not supported.
         """
         from selenium.common.exceptions import NoAlertPresentException
+        from selenium.webdriver.common.fedcm.dialog import Dialog
         from selenium.webdriver.support.wait import WebDriverWait
 
         self._require_fedcm_support()

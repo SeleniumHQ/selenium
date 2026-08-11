@@ -81,6 +81,12 @@ task :release_update do |_task, _arguments|
   Rake::Task[:update_multitool].invoke
 end
 
+desc 'Update pinned CDDL spec files from w3c/webref'
+task :update_cddl do |_task, _arguments|
+  puts 'Updating pinned CDDL spec references'
+  Bazel.execute('run', [], '//scripts:update_cddl')
+end
+
 desc 'Update Chrome DevTools support'
 task :update_cdp, [:channel] do |_task, arguments|
   chrome_channel = arguments[:channel] || 'stable'
@@ -112,6 +118,7 @@ task :release_updates, [:tag, :channel] do |_task, arguments|
   if parsed[:patch].zero?
     Rake::Task['update_browsers'].invoke(arguments[:channel])
     Rake::Task['update_cdp'].invoke(arguments[:channel])
+    Rake::Task['update_cddl'].invoke
     Rake::Task['update_manager'].invoke
     Rake::Task['update_multitool'].invoke
     Rake::Task['authors'].invoke
@@ -143,13 +150,17 @@ task :format do |_task, arguments|
   Rake::Task['all:format'].invoke(*args)
 end
 
-desc 'Run linters (may auto-fix some issues; stricter checks than :format)'
-task :lint do
-  puts 'Linting shell scripts and GitHub Actions...'
+def lint_actions
   shellcheck = Bazel.execute('build', [], '@multitool//tools/shellcheck')
   Bazel.execute('run', ['--', '-shellcheck', shellcheck], '@multitool//tools/actionlint:cwd')
+end
 
-  Rake::Task['all:lint'].invoke
+desc 'Run linters (may auto-fix some issues; stricter checks than :format)'
+task :lint do
+  SeleniumRake.aggregate_errors(
+    shellcheck_and_actionlint: -> { lint_actions },
+    all: -> { Rake::Task['all:lint'].invoke }
+  )
 end
 
 # Legacy aliases - call namespaced tasks
@@ -215,24 +226,18 @@ namespace :all do
   desc 'Validate release credentials for all languages'
   task :check_credentials do |_task, arguments|
     args = arguments.to_a
-    failures = []
-    %w[java py rb dotnet node].each do |lang|
-      Rake::Task["#{lang}:check_credentials"].invoke(*args)
-    rescue StandardError => e
-      failures << "#{lang}: #{e.message}"
+    steps = %w[java py rb dotnet node].to_h do |lang|
+      [lang.to_sym, -> { Rake::Task["#{lang}:check_credentials"].invoke(*args) }]
     end
-    raise "Credential check failed:\n#{failures.join("\n")}" unless failures.empty?
+    SeleniumRake.aggregate_errors(**steps)
   end
 
   desc 'Verify all packages are published to their registries'
   task :verify do
-    failures = []
-    %w[java py rb dotnet node].each do |lang|
-      Rake::Task["#{lang}:verify"].invoke
-    rescue StandardError => e
-      failures << "#{lang}: #{e.message}"
+    steps = %w[java py rb dotnet node].to_h do |lang|
+      [lang.to_sym, -> { Rake::Task["#{lang}:verify"].invoke }]
     end
-    raise "Verification failed:\n#{failures.join("\n")}" unless failures.empty?
+    SeleniumRake.aggregate_errors(**steps)
   end
 
   desc 'Release all artifacts for all language bindings'
@@ -257,15 +262,10 @@ namespace :all do
 
   desc 'Run linters for all language bindings'
   task :lint do
-    all_langs = %w[java py rb dotnet node]
-    failures = []
-    all_langs.each do |lang|
-      puts "Linting #{lang}..."
-      Rake::Task["#{lang}:lint"].invoke
-    rescue StandardError => e
-      failures << "#{lang}: #{e.message}"
+    steps = %w[java py rb dotnet node].to_h do |lang|
+      [lang.to_sym, -> { Rake::Task["#{lang}:lint"].invoke }]
     end
-    raise "Lint failed:\n#{failures.join("\n")}" unless failures.empty?
+    SeleniumRake.aggregate_errors(**steps)
   end
 
   desc 'Update versions for all language bindings'

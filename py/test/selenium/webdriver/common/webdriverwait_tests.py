@@ -45,7 +45,6 @@ def test_should_fail_with_invalid_selector_exception(driver, pages):
         WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, "//*[contains(@id,'something'")))
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_explicitly_wait_for_a_single_element(driver, pages):
     pages.load("dynamic.html")
     add = driver.find_element(By.ID, "adder")
@@ -61,7 +60,6 @@ def test_should_still_fail_to_find_an_element_with_explicit_wait(driver, pages):
         WebDriverWait(driver, 0.01).until(EC.presence_of_element_located((By.ID, "box0")))
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_explicitly_wait_until_at_least_one_element_is_found_when_searching_for_many(driver, pages):
     pages.load("dynamic.html")
     add = driver.find_element(By.ID, "adder")
@@ -79,7 +77,6 @@ def test_should_fail_to_find_elements_when_explicit_waiting(driver, pages):
         WebDriverWait(driver, 0.01).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "redbox")))
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_wait_until_at_least_one_visible_elements_is_found_when_searching_for_many(driver, pages):
     pages.load("hidden_partially.html")
     add_visible = driver.find_element(By.ID, "addVisible")
@@ -107,7 +104,6 @@ def test_should_fail_to_find_visible_elements_when_explicit_waiting(driver, page
         WebDriverWait(driver, 0.01).until(EC.visibility_of_any_elements_located((By.CLASS_NAME, "redbox")))
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_should_wait_until_all_visible_elements_are_found_when_searching_for_many(driver, pages):
     pages.load("hidden_partially.html")
     add_visible = driver.find_element(By.ID, "addVisible")
@@ -292,7 +288,6 @@ def test_expected_condition_element_to_be_clickable(driver, pages):
     assert element.is_displayed() is False
 
 
-@pytest.mark.xfail_safari(reason="SafariDriver 26.5 regression")
 def test_expected_condition_staleness_of(driver, pages):
     pages.load("dynamicallyModifiedPage.html")
     element = driver.find_element(By.ID, "element-to-remove")

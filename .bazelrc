@@ -20,11 +20,15 @@ build --enable_runfiles
 build --flag_alias=pin_browsers=//common:pin_browsers
 build --flag_alias=headless=//common:headless
 
-# Set the default java toolchain
+# Set the default java toolchain.
+# When bumping these, also update java_runtime in //common/remote-build/java to match.
 build --java_language_version=25
 build --java_runtime_version=remotejdk_25
 build --tool_java_language_version=25
 build --tool_java_runtime_version=remotejdk_25
+
+# Silence protobuf sun.misc.Unsafe warnings from the JDK 25 Java compile workers.
+build --extra_toolchains=//common/remote-build/java:java-toolchain_definition
 
 # We target java 11 by default
 build --javacopt="--release 11"
@@ -86,6 +90,13 @@ build:windows --host_per_file_copt=external/protobuf\\+.*@/w
 common --enable_platform_specific_config
 common:linux --host_platform=//:local_linux_gnu
 common:windows --host_platform=//:local_windows_gnullvm
+
+# rules_rs 0.0.90 bundles a newer rules_rust whose cargo build-script runner
+# rejects libtool as the archiver (AR). macOS toolchains use libtool by default,
+# so build Rust against the hermetic @llvm toolchain (registered for macOS exec
+# in MODULE.bazel) with the rules_cc archiver switched from libtool to llvm-ar.
+common:macos --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+common:macos --@rules_cc//cc/toolchains/args/archiver_flags:use_libtool_on_macos=False
 build:linux --workspace_status_command=scripts/build-info.sh
 build:macos --workspace_status_command=scripts/build-info.sh
 build:windows --workspace_status_command="powershell.exe scripts/build-info.ps1"
@@ -104,6 +115,7 @@ test --test_env=MOZ_HEADLESS
 test --test_env=SELENIUM_BROWSER
 test --test_env=PYTHON_VERSION
 test --test_env=SE_AVOID_STATS=true
+test --test_env=SE_CACHE_PATH
 
 # Remove once rules_ruby support proper $LOAD_PATH expansion.
 test --test_env=RUBYOPT="-Irb/lib -w"

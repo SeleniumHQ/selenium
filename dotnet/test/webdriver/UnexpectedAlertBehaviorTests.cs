@@ -107,7 +107,7 @@ public class UnexpectedAlertBehaviorTests : DriverTestFixture
         };
 
         localDriver = EnvironmentManager.Instance.CreateDriverInstance(options);
-        localDriver.Url = alertsPage;
+        localDriver.Url = Urls.AlertsPage;
         IWebElement resultElement = localDriver.FindElement(By.Id("text"));
         localDriver.FindElement(By.Id("prompt-with-default")).Click();
 

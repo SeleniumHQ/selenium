@@ -30,6 +30,23 @@ end
 desc 'Release Python wheel and sdist to pypi'
 task :release do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
+
+  unless nightly
+    already_published = begin
+      Rake::Task['py:verify'].invoke
+      true
+    rescue StandardError
+      false
+    ensure
+      Rake::Task['py:verify'].reenable
+    end
+
+    if already_published
+      puts 'Python package already published — skipping release.'
+      next
+    end
+  end
+
   Rake::Task['py:check_credentials'].invoke(*arguments.to_a)
 
   if nightly
@@ -50,45 +67,47 @@ end
 
 desc 'Copy known generated files for local development (use `./go py:local_dev all` to copy everything)'
 task :local_dev, [:all] do |_task, arguments|
-  Bazel.execute('build', [], '//py:selenium')
+  Bazel.execute('build', [], '//py:selenium-wheel')
 
   bazel_bin = 'bazel-bin/py/selenium/webdriver'
   lib_path = 'py/selenium/webdriver'
 
-  copy_all = arguments[:all] == 'all'
-  if copy_all
-    FileUtils.rm_rf("#{lib_path}/common/devtools")
-    FileUtils.cp_r("#{bazel_bin}/.", lib_path, remove_destination: true)
+  if arguments[:all] == 'all'
+    dirs = Dir.children(bazel_bin)
+    files = []
   else
-    bidi_src = "#{bazel_bin}/common/bidi"
-    bidi_dest = "#{lib_path}/common/bidi"
-    if Dir.exist?(bidi_src)
-      FileUtils.mkdir_p(bidi_dest)
-      Dir.children(bidi_src).sort.each do |entry|
-        src = File.join(bidi_src, entry)
-        dest = File.join(bidi_dest, entry)
-        next unless File.file?(src) || File.symlink?(src)
+    dirs = %w[common/bidi common/devtools]
+    files = %w[
+      remote/getAttribute.js remote/isDisplayed.js remote/findElements.js
+      common/mutation-listener.js common/bidi-mutation-listener.js
+      common/linux/selenium-manager common/macos/selenium-manager common/windows/selenium-manager.exe
+      firefox/webdriver_prefs.json
+    ]
+  end
 
-        resolved_src = File.symlink?(src) ? File.realpath(src) : src
-        FileUtils.rm_f(dest)
-        FileUtils.cp(resolved_src, dest)
-      end
+  dirs.each do |dir|
+    src_dir = "#{bazel_bin}/#{dir}"
+    dest_dir = "#{lib_path}/#{dir}"
+
+    FileUtils.rm_rf(dest_dir)
+    # Restore any git tracked files in the directory we just deleted
+    SeleniumRake.git.checkout_file('HEAD', dest_dir) unless SeleniumRake.git.ls_files(dest_dir).empty?
+
+    # Copy each file individually to resolve Bazel's cache symlinks
+    Dir.glob(File.join(src_dir, '**', '*')).each do |src|
+      next unless File.file?(src)
+
+      dest = File.join(dest_dir, src.delete_prefix("#{src_dir}/"))
+      FileUtils.mkdir_p(File.dirname(dest))
+      FileUtils.cp(File.realpath(src), dest)
     end
+  end
 
-    %w[common/devtools common/linux common/macos common/windows].each do |dir|
-      src = "#{bazel_bin}/#{dir}"
-      dest = "#{lib_path}/#{dir}"
-      next unless Dir.exist?(src)
-
-      FileUtils.rm_rf(dest)
-      FileUtils.cp_r(src, dest)
-    end
-
-    %w[getAttribute.js isDisplayed.js findElements.js].each do |atom|
-      dest = "#{lib_path}/remote/#{atom}"
-      FileUtils.rm_f(dest)
-      FileUtils.cp("#{bazel_bin}/remote/#{atom}", dest)
-    end
+  files.each do |file|
+    dest = "#{lib_path}/#{file}"
+    FileUtils.mkdir_p(File.dirname(dest))
+    FileUtils.rm_f(dest)
+    FileUtils.cp(File.realpath("#{bazel_bin}/#{file}"), dest)
   end
 end
 
@@ -172,9 +191,9 @@ end
 
 desc 'Run Python linters (ruff check --no-fix, mypy, docs)'
 task :lint do
-  puts '  Running ruff check (verify)...'
-  Bazel.execute('run', [], '//py:ruff-check', '--', '--no-fix')
-  puts '  Running mypy...'
-  Bazel.execute('run', [], '//py:mypy')
-  Rake::Task['py:docs_generate'].invoke
+  SeleniumRake.aggregate_errors(
+    ruff_check: -> { Bazel.execute('run', ['--', '--no-fix'], '//py:ruff-check') },
+    mypy: -> { Bazel.execute('run', [], '//py:mypy') },
+    python_docs: -> { Rake::Task['py:docs_generate'].invoke }
+  )
 end

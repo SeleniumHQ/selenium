@@ -75,12 +75,12 @@ compile_pip_requirements(
     ],
 )
 
-SE_VERSION = "4.45.0.202605121853"
+SE_VERSION = "4.48.0.202608101808"
 
 BROWSER_VERSIONS = [
-    "v146",
-    "v147",
-    "v148",
+    "v149",
+    "v150",
+    "v151",
 ]
 
 TEST_DEPS = [
@@ -118,6 +118,18 @@ copy_file(
     name = "manager-windows",
     src = "//common/manager:selenium-manager-windows",
     out = "selenium/webdriver/common/windows/selenium-manager.exe",
+)
+
+copy_file(
+    name = "manager-sbom",
+    src = "//common/manager:selenium-manager-sbom",
+    out = "selenium/webdriver/common/selenium-manager.cdx.json",
+)
+
+copy_file(
+    name = "manager-notice",
+    src = "//common/manager:selenium-manager-notice",
+    out = "selenium/webdriver/common/selenium-manager-THIRD-PARTY-NOTICES.txt",
 )
 
 copy_file(
@@ -294,13 +306,23 @@ py_library(
     srcs = glob(
         ["selenium/webdriver/common/**/*.py"],
         exclude = [
+            "selenium/webdriver/common/action_chains.py",
+            "selenium/webdriver/common/actions/**",
+            "selenium/webdriver/common/alert.py",
+            "selenium/webdriver/common/api_request_context.py",
             "selenium/webdriver/common/bidi/**",
             "selenium/webdriver/common/devtools/**",
+            "selenium/webdriver/common/fedcm/**",
+            "selenium/webdriver/common/print_page_options.py",
+            "selenium/webdriver/common/timeouts.py",
+            "selenium/webdriver/common/virtual_authenticator.py",
         ],
     ),
     data = [
         ":manager-linux",
         ":manager-macos",
+        ":manager-notice",
+        ":manager-sbom",
         ":manager-windows",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
@@ -314,6 +336,72 @@ py_library(
     ],
 )
 
+# Input actions API (action_chains + actions subpackage)
+py_library(
+    name = "common_actions",
+    srcs = glob([
+        "selenium/webdriver/common/action_chains.py",
+        "selenium/webdriver/common/actions/**/*.py",
+    ]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
+    ],
+)
+
+py_library(
+    name = "common_alert",
+    srcs = ["selenium/webdriver/common/alert.py"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
+    ],
+)
+
+py_library(
+    name = "common_api_request_context",
+    srcs = ["selenium/webdriver/common/api_request_context.py"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [":exceptions"],
+)
+
+py_library(
+    name = "common_fedcm",
+    srcs = glob(["selenium/webdriver/common/fedcm/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [":exceptions"],
+)
+
+py_library(
+    name = "common_print_page_options",
+    srcs = ["selenium/webdriver/common/print_page_options.py"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [],
+)
+
+py_library(
+    name = "common_timeouts",
+    srcs = ["selenium/webdriver/common/timeouts.py"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [],
+)
+
+py_library(
+    name = "common_virtual_authenticator",
+    srcs = ["selenium/webdriver/common/virtual_authenticator.py"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [":exceptions"],
+)
+
 # Module that points to the latest devtools module
 py_library(
     name = "latest",
@@ -325,7 +413,10 @@ py_library(
 # Support utilities (wait conditions, event listeners, etc.)
 py_library(
     name = "support",
-    srcs = glob(["selenium/webdriver/support/**/*.py"]),
+    srcs = glob(
+        ["selenium/webdriver/support/**/*.py"],
+        exclude = ["selenium/webdriver/support/color.py"],
+    ),
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -333,6 +424,14 @@ py_library(
         ":exceptions",
         ":remote",
     ],
+)
+
+py_library(
+    name = "support_color",
+    srcs = ["selenium/webdriver/support/color.py"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [],
 )
 
 # Chromium base (shared by Chrome and Edge)
@@ -450,6 +549,13 @@ py_library(
         ":chrome",
         ":chromium",
         ":common",
+        ":common_actions",
+        ":common_alert",
+        ":common_api_request_context",
+        ":common_fedcm",
+        ":common_print_page_options",
+        ":common_timeouts",
+        ":common_virtual_authenticator",
         ":edge",
         ":exceptions",
         ":firefox",
@@ -457,6 +563,7 @@ py_library(
         ":remote",
         ":safari",
         ":support",
+        ":support_color",
         ":webkitgtk",
         ":wpewebkit",
     ],
@@ -497,6 +604,8 @@ pkg_files(
     excludes = [
         ":manager-linux",
         ":manager-macos",
+        ":manager-notice",
+        ":manager-sbom",
         ":manager-windows",
     ],
     strip_prefix = strip_prefix.from_pkg(),
@@ -610,10 +719,18 @@ py_binary(
     deps = [requirement("inflection")],
 )
 
+copy_file(
+    name = "license_header_local",
+    src = "//scripts:license_header.txt",
+    out = "license_header.txt",
+)
+
 py_binary(
     name = "generate_bidi",
     srcs = ["generate_bidi.py"],
+    data = [":license_header_local"],
     srcs_version = "PY3",
+    deps = ["//scripts:generated_note"],
 )
 
 [generate_devtools(
@@ -645,6 +762,8 @@ generate_bidi(
     ],
     extra_srcs = [
         "//py/private:_event_manager.py",
+        "//py/private:_network_handlers.py",
+        "//py/private:_script_handlers.py",
         "//py/private:cdp.py",
     ],
     generator = ":generate_bidi",
@@ -683,6 +802,51 @@ py_library(
 
 BIDI_TESTS = glob(["test/selenium/webdriver/common/**/*bidi*_tests.py"])
 
+# Tests that have bidi and classic implementations.
+BIDI_IMPLEMENTATIONS = []
+
+# Test files that only run against browsers supporting the given feature.
+# Each group is split into its own sub-suite so that changing the underlying
+# library only triggers that group's targets, not the full ~700-target suite.
+FEDCM_TESTS = ["test/selenium/webdriver/common/fedcm_tests.py"]
+
+TIMEOUTS_TESTS = ["test/selenium/webdriver/common/timeout_tests.py"]
+
+VIRTUAL_AUTH_TESTS = ["test/selenium/webdriver/common/virtual_authenticator_tests.py"]
+
+API_REQUEST_TESTS = ["test/selenium/webdriver/common/api_request_context_tests.py"]
+
+# alerts_tests.py and webdriverwait_tests.py both call driver.switch_to.alert,
+# requiring :common_alert at runtime, so they share a sub-suite.
+ALERT_TESTS = [
+    "test/selenium/webdriver/common/alerts_tests.py",
+    "test/selenium/webdriver/common/webdriverwait_tests.py",
+]
+
+# rendered_webelement_tests.py is the only browser test that imports Color.
+RENDERED_WEBELEMENT_TESTS = ["test/selenium/webdriver/common/rendered_webelement_tests.py"]
+
+FEATURE_TESTS = (
+    FEDCM_TESTS +
+    TIMEOUTS_TESTS +
+    VIRTUAL_AUTH_TESTS +
+    API_REQUEST_TESTS +
+    ALERT_TESTS +
+    RENDERED_WEBELEMENT_TESTS
+)
+
+# Test files that import from selenium.webdriver.common.actions / action_chains.
+# These are kept separate so they can depend on :common_actions without pulling
+# that library into every other test suite.
+ACTIONS_TESTS = [
+    "test/selenium/webdriver/common/interactions_tests.py",
+    "test/selenium/webdriver/common/interactions_with_device_tests.py",
+    "test/selenium/webdriver/common/w3c_interaction_tests.py",
+    "test/selenium/webdriver/support/event_firing_webdriver_tests.py",
+]
+
+DRIVER_FINDER_TESTS = ["test/selenium/webdriver/common/driver_finder_tests.py"]
+
 # Browser-specific test configuration
 BROWSER_TESTS = {
     "chrome": {
@@ -692,6 +856,11 @@ BROWSER_TESTS = {
             ":common",
             ":support",
         ],
+        "actions_deps": [
+            ":chrome",
+            ":common_actions",
+            ":support",
+        ],
         "bidi": True,
     },
     "edge": {
@@ -699,6 +868,11 @@ BROWSER_TESTS = {
         "deps": [
             ":edge",
             ":common",
+            ":support",
+        ],
+        "actions_deps": [
+            ":edge",
+            ":common_actions",
             ":support",
         ],
         "bidi": True,
@@ -712,6 +886,11 @@ BROWSER_TESTS = {
             ":common",
             ":support",
         ],
+        "actions_deps": [
+            ":firefox",
+            ":common_actions",
+            ":support",
+        ],
         "extra_excludes": ["test/selenium/webdriver/common/devtools_tests.py"],
         "bidi": True,
     },
@@ -722,6 +901,11 @@ BROWSER_TESTS = {
             ":common",
             ":support",
         ],
+        "actions_deps": [
+            ":ie",
+            ":common_actions",
+            ":support",
+        ],
     },
     "safari": {
         "browser_srcs": ["test/selenium/webdriver/safari/**/*.py"],
@@ -730,22 +914,27 @@ BROWSER_TESTS = {
             ":common",
             ":support",
         ],
+        "actions_deps": [
+            ":safari",
+            ":common_actions",
+            ":support",
+        ],
     },
 }
 
 DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
 
-# Generate test-<browser> targets (non-bidi)
+# Generate test-<browser>-common targets (non-bidi, non-actions)
 [
     py_test_suite(
-        name = "test-%s" % browser,
+        name = "test-%s-common" % browser,
         size = "large",
         srcs = glob(
             [
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = BIDI_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
         args = [
@@ -755,6 +944,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         env_inherit = ["DISPLAY"],
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        test_suffix = browser,
         deps = [
             ":init-tree",
             ":webserver",
@@ -763,19 +953,99 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
     for browser in DEFAULT_BROWSER_TESTS
 ]
 
-# Generate test-<browser>-bidi targets (only for browsers with bidi=True)
+# Generate test-<browser>-actions targets (non-bidi, actions tests only)
+[
+    py_test_suite(
+        name = "test-%s-actions" % browser,
+        size = "large",
+        srcs = ACTIONS_TESTS,
+        args = [
+            "--instafail",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"],
+        env_inherit = ["DISPLAY"],
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        test_suffix = "%s-actions" % browser,
+        deps = [
+            ":init-tree",
+            ":webserver",
+        ] + BROWSER_TESTS[browser]["actions_deps"] + TEST_DEPS,
+    )
+    for browser in DEFAULT_BROWSER_TESTS
+]
+
+# Feature test definitions: suffix -> (srcs, dep)
+FEATURE_SUITE_DEFS = {
+    "fedcm": (FEDCM_TESTS, ":common_fedcm"),
+    "timeouts": (TIMEOUTS_TESTS, ":common_timeouts"),
+    "virtual-auth": (VIRTUAL_AUTH_TESTS, ":common_virtual_authenticator"),
+    "api-request": (API_REQUEST_TESTS, ":common_api_request_context"),
+    "alerts": (ALERT_TESTS, ":common_alert"),
+    "rendered": (RENDERED_WEBELEMENT_TESTS, ":support_color"),
+}
+
+# Generate test-<browser>-<feature> targets (non-bidi, one per feature library)
+[
+    py_test_suite(
+        name = "test-%s-%s" % (browser, feature),
+        size = "large",
+        srcs = FEATURE_SUITE_DEFS[feature][0],
+        args = [
+            "--instafail",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"],
+        env_inherit = ["DISPLAY"],
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        test_suffix = "%s-%s" % (browser, feature),
+        deps = [
+            ":init-tree",
+            ":webserver",
+            FEATURE_SUITE_DEFS[feature][1],
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
+    )
+    for browser in DEFAULT_BROWSER_TESTS
+    for feature in FEATURE_SUITE_DEFS
+]
+
+# Aggregate test-<browser> = common + actions + features (keeps CI targets unchanged)
+[test_suite(
+    name = "test-%s" % browser,
+    tests = [
+        ":test-%s-common" % browser,
+        ":test-%s-actions" % browser,
+    ] + [":test-%s-%s" % (browser, f) for f in FEATURE_SUITE_DEFS],
+) for browser in DEFAULT_BROWSER_TESTS]
+
+[
+    py_test_suite(
+        name = "test-%s-driver-finder" % browser,
+        size = "large",
+        srcs = DRIVER_FINDER_TESTS,
+        args = [
+            "--instafail",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"],
+        env_inherit = ["DISPLAY"],
+        flaky = True,
+        tags = BROWSERS[browser]["tags"] + ["se-manager"],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        test_suffix = browser,
+        deps = [
+            ":init-tree",
+            ":webserver",
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
+    )
+    for browser in DEFAULT_BROWSER_TESTS
+]
+
+# Generate test-<browser>-bidi targets
 [
     py_test_suite(
         name = "test-%s-bidi" % browser,
         size = "large",
-        srcs = glob(
-            [
-                "test/selenium/webdriver/common/**/*.py",
-                "test/selenium/webdriver/support/**/*.py",
-            ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = ["test/selenium/webdriver/common/print_pdf_tests.py"] +
-                      BROWSER_TESTS[browser].get("extra_excludes", []),
-        ),
+        srcs = BIDI_TESTS + BIDI_IMPLEMENTATIONS,
         args = [
             "--instafail",
             "--bidi",
@@ -784,7 +1054,9 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         env_inherit = ["DISPLAY"],
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        test_suffix = "%s-bidi" % browser,
         deps = [
+            ":common_alert",  # bidi_browsing_context_tests.py calls EC.alert_is_present()
             ":init-tree",
             ":webserver",
         ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
@@ -793,10 +1065,10 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
     if BROWSER_TESTS[browser].get("bidi", False)
 ]
 
-# Generate test-<browser>-remote targets (chrome and firefox only)
+# Generate test-<browser>-remote-common targets (chrome and firefox only)
 [
     py_test_suite(
-        name = "test-%s-remote" % browser,
+        name = "test-%s-remote-common" % browser,
         size = "large",
         srcs = glob(
             [
@@ -804,7 +1076,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
                 "test/selenium/webdriver/remote/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = BIDI_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
         args = [
@@ -825,6 +1097,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
             "remote",
             "%s-remote" % browser,
         ],
+        test_suffix = "%s-remote" % browser,
         deps = [
             ":init-tree",
             ":webserver",
@@ -836,6 +1109,92 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
     ]
 ]
 
+# Generate test-<browser>-remote-actions targets (chrome and firefox only)
+[
+    py_test_suite(
+        name = "test-%s-remote-actions" % browser,
+        size = "large",
+        srcs = ACTIONS_TESTS,
+        args = [
+            "--instafail",
+            "--remote",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"] + [
+            ":java-location",
+            "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+            "@bazel_tools//tools/jdk:current_java_runtime",
+        ],
+        env = {
+            "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
+        },
+        env_inherit = ["DISPLAY"],
+        tags = [
+            "no-sandbox",
+            "remote",
+            "%s-remote" % browser,
+        ],
+        test_suffix = "%s-remote-actions" % browser,
+        deps = [
+            ":init-tree",
+            ":webserver",
+        ] + BROWSER_TESTS[browser]["actions_deps"] + TEST_DEPS,
+    )
+    for browser in [
+        "chrome",
+        "firefox",
+    ]
+]
+
+# Generate test-<browser>-remote-<feature> targets (chrome and firefox only)
+[
+    py_test_suite(
+        name = "test-%s-remote-%s" % (browser, feature),
+        size = "large",
+        srcs = FEATURE_SUITE_DEFS[feature][0],
+        args = [
+            "--instafail",
+            "--remote",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"] + [
+            ":java-location",
+            "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+            "@bazel_tools//tools/jdk:current_java_runtime",
+        ],
+        env = {
+            "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
+        },
+        env_inherit = ["DISPLAY"],
+        tags = [
+            "no-sandbox",
+            "remote",
+            "%s-remote" % browser,
+        ],
+        test_suffix = "%s-remote-%s" % (browser, feature),
+        deps = [
+            ":init-tree",
+            ":webserver",
+            FEATURE_SUITE_DEFS[feature][1],
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
+    )
+    for browser in [
+        "chrome",
+        "firefox",
+    ]
+    for feature in FEATURE_SUITE_DEFS
+]
+
+# Aggregate test-<browser>-remote = remote-common + remote-actions + remote-features
+[test_suite(
+    name = "test-%s-remote" % browser,
+    tests = [
+        ":test-%s-remote-common" % browser,
+        ":test-%s-remote-actions" % browser,
+    ] + [":test-%s-remote-%s" % (browser, f) for f in FEATURE_SUITE_DEFS],
+) for browser in [
+    "chrome",
+    "firefox",
+]]
+
 test_suite(
     name = "test-remote",
     tags = ["remote"],
@@ -846,12 +1205,15 @@ test_suite(
 )
 
 py_test_suite(
-    name = "test-webkitgtk",
+    name = "test-webkitgtk-common",
     size = "large",
-    srcs = glob([
-        "test/selenium/webdriver/common/**/*.py",
-        "test/selenium/webdriver/support/**/*.py",
-    ]),
+    srcs = glob(
+        [
+            "test/selenium/webdriver/common/**/*.py",
+            "test/selenium/webdriver/support/**/*.py",
+        ],
+        exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS,
+    ),
     args = [
         "--instafail",
         "--driver=webkitgtk",
@@ -863,6 +1225,7 @@ py_test_suite(
         "no-sandbox",
         "skip-rbe",
     ],
+    test_suffix = "webkitgtk",
     deps = [
         ":common",
         ":init-tree",
@@ -873,12 +1236,76 @@ py_test_suite(
 )
 
 py_test_suite(
-    name = "test-wpewebkit",
+    name = "test-webkitgtk-actions",
     size = "large",
-    srcs = glob([
-        "test/selenium/webdriver/common/**/*.py",
-        "test/selenium/webdriver/support/**/*.py",
-    ]),
+    srcs = ACTIONS_TESTS,
+    args = [
+        "--instafail",
+        "--driver=webkitgtk",
+        "--browser-binary=MiniBrowser",
+        "--browser-args=--automation",
+    ],
+    tags = [
+        "exclusive-if-local",
+        "no-sandbox",
+        "skip-rbe",
+    ],
+    test_suffix = "webkitgtk-actions",
+    deps = [
+        ":common_actions",
+        ":init-tree",
+        ":support",
+        ":webkitgtk",
+        ":webserver",
+    ] + TEST_DEPS,
+)
+
+[
+    py_test_suite(
+        name = "test-webkitgtk-%s" % feature,
+        size = "large",
+        srcs = FEATURE_SUITE_DEFS[feature][0],
+        args = [
+            "--instafail",
+            "--driver=webkitgtk",
+            "--browser-binary=MiniBrowser",
+            "--browser-args=--automation",
+        ],
+        tags = [
+            "exclusive-if-local",
+            "no-sandbox",
+            "skip-rbe",
+        ],
+        test_suffix = "webkitgtk-%s" % feature,
+        deps = [
+            ":init-tree",
+            ":support",
+            ":webkitgtk",
+            ":webserver",
+            FEATURE_SUITE_DEFS[feature][1],
+        ] + TEST_DEPS,
+    )
+    for feature in FEATURE_SUITE_DEFS
+]
+
+test_suite(
+    name = "test-webkitgtk",
+    tests = [
+        ":test-webkitgtk-actions",
+        ":test-webkitgtk-common",
+    ] + [":test-webkitgtk-%s" % f for f in FEATURE_SUITE_DEFS],
+)
+
+py_test_suite(
+    name = "test-wpewebkit-common",
+    size = "large",
+    srcs = glob(
+        [
+            "test/selenium/webdriver/common/**/*.py",
+            "test/selenium/webdriver/support/**/*.py",
+        ],
+        exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS,
+    ),
     args = [
         "--instafail",
         "--driver=wpewebkit",
@@ -890,6 +1317,7 @@ py_test_suite(
         "no-sandbox",
         "skip-rbe",
     ],
+    test_suffix = "wpewebkit",
     deps = [
         ":common",
         ":init-tree",
@@ -897,6 +1325,67 @@ py_test_suite(
         ":webserver",
         ":wpewebkit",
     ] + TEST_DEPS,
+)
+
+py_test_suite(
+    name = "test-wpewebkit-actions",
+    size = "large",
+    srcs = ACTIONS_TESTS,
+    args = [
+        "--instafail",
+        "--driver=wpewebkit",
+        "--browser-binary=MiniBrowser",
+        "--browser-args=--automation --headless",
+    ],
+    tags = [
+        "exclusive-if-local",
+        "no-sandbox",
+        "skip-rbe",
+    ],
+    test_suffix = "wpewebkit-actions",
+    deps = [
+        ":common_actions",
+        ":init-tree",
+        ":support",
+        ":webserver",
+        ":wpewebkit",
+    ] + TEST_DEPS,
+)
+
+[
+    py_test_suite(
+        name = "test-wpewebkit-%s" % feature,
+        size = "large",
+        srcs = FEATURE_SUITE_DEFS[feature][0],
+        args = [
+            "--instafail",
+            "--driver=wpewebkit",
+            "--browser-binary=MiniBrowser",
+            "--browser-args=--automation --headless",
+        ],
+        tags = [
+            "exclusive-if-local",
+            "no-sandbox",
+            "skip-rbe",
+        ],
+        test_suffix = "wpewebkit-%s" % feature,
+        deps = [
+            ":init-tree",
+            ":support",
+            ":webserver",
+            ":wpewebkit",
+            FEATURE_SUITE_DEFS[feature][1],
+        ] + TEST_DEPS,
+    )
+    for feature in FEATURE_SUITE_DEFS
+]
+
+test_suite(
+    name = "test-wpewebkit",
+    tests = [
+        ":test-wpewebkit-actions",
+        ":test-wpewebkit-common",
+    ] + [":test-wpewebkit-%s" % f for f in FEATURE_SUITE_DEFS],
 )
 
 py_binary(
@@ -922,7 +1411,7 @@ py_console_script_binary(
     script = "sphinx-build",
     deps = [
         ":selenium",
-        requirement("sphinx-material"),
+        requirement("pydata_sphinx_theme"),
     ],
 )
 

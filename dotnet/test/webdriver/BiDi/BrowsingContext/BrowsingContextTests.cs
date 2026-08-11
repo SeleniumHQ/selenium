@@ -79,7 +79,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanNavigateToUrl()
     {
-        var info = await context.NavigateAsync(UrlBuilder.WhereIs("/bidi/logEntryAdded.html"));
+        var info = await context.NavigateAsync(Urls.WhereIs("/bidi/logEntryAdded.html"));
 
         Assert.That(info.Url, Does.Contain("/bidi/logEntryAdded.html"));
     }
@@ -87,7 +87,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanNavigateToUrlWithReadinessState()
     {
-        var info = await context.NavigateAsync(UrlBuilder.WhereIs("/bidi/logEntryAdded.html"), new()
+        var info = await context.NavigateAsync(Urls.WhereIs("/bidi/logEntryAdded.html"), new()
         {
             Wait = ReadinessState.Complete
         });
@@ -99,7 +99,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanGetTreeWithChild()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("iframes.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.IframesPage, new() { Wait = ReadinessState.Complete });
 
         var tree = await context.GetTreeAsync();
 
@@ -113,7 +113,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanGetTreeWithDepth()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("iframes.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.IframesPage, new() { Wait = ReadinessState.Complete });
 
         var tree = await context.GetTreeAsync(new() { MaxDepth = 0 });
 
@@ -168,7 +168,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanReload()
     {
-        string url = UrlBuilder.WhereIs("/bidi/logEntryAdded.html");
+        string url = Urls.WhereIs("/bidi/logEntryAdded.html");
 
         await context.NavigateAsync(url, new() { Wait = ReadinessState.Complete });
 
@@ -181,7 +181,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanReloadWithReadinessState()
     {
-        string url = UrlBuilder.WhereIs("/bidi/logEntryAdded.html");
+        string url = Urls.WhereIs("/bidi/logEntryAdded.html");
 
         await context.NavigateAsync(url, new() { Wait = ReadinessState.Complete });
 
@@ -197,7 +197,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanHandleUserPrompt()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("alerts.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.AlertsPage, new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
 
@@ -207,7 +207,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanAcceptUserPrompt()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("alerts.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.AlertsPage, new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
 
@@ -220,7 +220,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanDismissUserPrompt()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("alerts.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.AlertsPage, new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
 
@@ -233,7 +233,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanPassUserTextToPrompt()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("alerts.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.AlertsPage, new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
 
@@ -281,7 +281,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanCaptureScreenshotOfElement()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("formPage.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.FormsPage, new() { Wait = ReadinessState.Complete });
 
         var nodesResult = await context.LocateNodesAsync(new CssLocator("#checky"));
 

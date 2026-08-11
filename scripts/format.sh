@@ -106,6 +106,8 @@ if changed_matches '^rb/|^rake_tasks/|^Rakefile'; then
     echo "    rubocop -a" >&2
     if [[ "$run_lint" == "true" ]]; then
         bazel run //rb:rubocop -- -a
+        echo "    steep check" >&2
+        bazel run //rb:steep
     else
         bazel run //rb:rubocop -- -a --fail-level F
     fi
@@ -117,13 +119,13 @@ if changed_matches '^rust/'; then
     bazel run @rules_rust//:rustfmt
 fi
 
-if changed_matches '^py/'; then
+if changed_matches '\.py$'; then
     section "Python"
     RUFF="$(bazel run --run_under=echo @multitool//tools/ruff)"
     RUFF_COMMON=(--config=py/pyproject.toml --exclude '**/node_modules/**' --exclude '**/.bundle/**' --exclude '**/bidi/**' --exclude '**/devtools/**' py scripts common dotnet java javascript rb)
     echo "    ruff check" >&2
-    # Apply auto-fixable lint issues; don't fail on unfixable violations (caught by py:lint)
-    "$RUFF" check --fix --show-fixes "${RUFF_COMMON[@]}" || true
+    # Apply auto-fixable lint issues; don't fail on unfixable violations unless lint defined
+    "$RUFF" check --fix --show-fixes "${RUFF_COMMON[@]}" || [[ "$run_lint" != "true" ]]
     echo "    ruff format" >&2
     "$RUFF" format "${RUFF_COMMON[@]}"
 fi

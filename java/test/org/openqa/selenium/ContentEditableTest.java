@@ -18,10 +18,11 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -30,7 +31,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.TestUtilities;
 
 class ContentEditableTest extends JupiterTestBase {
 
@@ -100,8 +100,9 @@ class ContentEditableTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(value = CHROME, reason = "Typing into rich text editors broken since 149")
+  @NotYetImplemented(value = EDGE, reason = "Typing into rich text editors broken since 149")
   void testShouldBeAbleToTypeIntoTinyMCE() {
-    assumeThat(TestUtilities.getChromeVersion(driver)).isLessThan(149);
     driver.get(appServer.whereIs("tinymce.html"));
     driver.switchTo().frame("mce_0_ifr");
 
@@ -114,12 +115,12 @@ class ContentEditableTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(value = CHROME, reason = "Typing into rich text editors broken since 149")
+  @NotYetImplemented(value = EDGE, reason = "Typing into rich text editors broken since 149")
   @NotYetImplemented(value = IE, reason = "Prepends text")
   @NotYetImplemented(value = SAFARI, reason = "Prepends text")
   @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/667")
   public void testShouldAppendToTinyMCE() {
-    assumeThat(TestUtilities.getChromeVersion(driver)).isLessThan(149);
-
     driver.get(appServer.whereIs("tinymce.html"));
     driver.switchTo().frame("mce_0_ifr");
 

@@ -1,0 +1,23 @@
+load("@rules_java//toolchains:default_java_toolchain.bzl", "DEFAULT_TOOLCHAIN_CONFIGURATION", "default_java_toolchain")
+
+package(default_visibility = ["//visibility:public"])
+
+# Quiet protobuf's sun.misc.Unsafe warnings spammed by the JDK 25 compile workers.
+_SILENCE_UNSAFE_WARNING = ["--sun-misc-unsafe-memory-access=allow"]
+
+default_java_toolchain(
+    name = "java-toolchain",
+    configuration = DEFAULT_TOOLCHAIN_CONFIGURATION | {
+        "java_runtime": "@rules_java//toolchains:remotejdk_25",
+        "jvm_opts": DEFAULT_TOOLCHAIN_CONFIGURATION["jvm_opts"] + _SILENCE_UNSAFE_WARNING,
+        "turbine_jvm_opts": DEFAULT_TOOLCHAIN_CONFIGURATION["turbine_jvm_opts"] + _SILENCE_UNSAFE_WARNING,
+    },
+    toolchain_definition = False,
+)
+
+# No version target_setting, so it applies regardless of --java_language_version.
+toolchain(
+    name = "java-toolchain_definition",
+    toolchain = ":java-toolchain",
+    toolchain_type = "@bazel_tools//tools/jdk:toolchain_type",
+)

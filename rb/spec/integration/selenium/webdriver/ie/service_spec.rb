@@ -23,8 +23,8 @@ module Selenium
   module WebDriver
     module IE
       describe Service,
-               {exclude: {driver: :remote},
-                exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :ie}]} do
+               {skip_if: {driver: :remote},
+                skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :ie}]} do
         let(:service) { described_class.new }
         let(:service_manager) { service.launch }
 

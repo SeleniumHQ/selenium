@@ -34,6 +34,14 @@ def setup_gem_credentials
   File.chmod(0o600, credentials)
 end
 
+def publish_gem(target)
+  Bazel.execute('run', ['--config=release'], target)
+rescue RuntimeError => e
+  raise unless e.message.match?(/Repushing of gem versions/i)
+
+  puts "Gem version already published — skipping #{target}."
+end
+
 desc 'Generate Ruby gems'
 task :build do |_task, arguments|
   args = arguments.to_a
@@ -68,6 +76,23 @@ end
 desc 'Push Ruby gems to rubygems'
 task :release do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
+
+  unless nightly
+    already_published = begin
+      Rake::Task['rb:verify'].invoke
+      true
+    rescue StandardError
+      false
+    ensure
+      Rake::Task['rb:verify'].reenable
+    end
+
+    if already_published
+      puts 'Ruby gems already published — skipping release.'
+      next
+    end
+  end
+
   Rake::Task['rb:check_credentials'].invoke(*arguments.to_a)
 
   if nightly
@@ -81,20 +106,14 @@ task :release do |_task, arguments|
     Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
 
     puts 'Releasing nightly WebDriver gem...'
-    begin
-      Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release-nightly')
-    rescue RuntimeError => e
-      raise unless e.message.match?(/Repushing of gem versions is not allowed/i)
-
-      puts 'Nightly gem version already published to GitHub Packages — skipping.'
-    end
+    publish_gem('//rb:selenium-webdriver-release-nightly')
   else
     setup_gem_credentials
     patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?
 
     puts 'Releasing Ruby gems...'
-    Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release')
-    Bazel.execute('run', ['--config=release'], '//rb:selenium-devtools-release') unless patch_release
+    publish_gem('//rb:selenium-webdriver-release')
+    publish_gem('//rb:selenium-devtools-release') unless patch_release
   end
 end
 
@@ -102,9 +121,10 @@ desc 'Verify Ruby packages are published on RubyGems'
 task :verify do
   patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?
 
-  SeleniumRake.verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-webdriver/versions/#{ruby_version}.json")
+  base = 'https://rubygems.org/api/v2/rubygems'
+  SeleniumRake.verify_package_published("#{base}/selenium-webdriver/versions/#{ruby_version}.json")
   unless patch_release
-    SeleniumRake.verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-devtools/versions/#{devtools_version}.json")
+    SeleniumRake.verify_package_published("#{base}/selenium-devtools/versions/#{devtools_version}.json")
   end
 end
 
@@ -161,15 +181,17 @@ end
 desc 'Run Ruby linters (rubocop, steep, docs)'
 task :lint do |_task, arguments|
   flag = arguments.to_a.include?('-A') ? '-A' : '-a'
-  puts '  Running rubocop...'
-  Bazel.execute('run', ['--', flag], '//rb:rubocop')
-  puts '  Running steep type checker...'
-  Bazel.execute('run', [], '//rb:steep')
-  Rake::Task['rb:docs_generate'].invoke
+  SeleniumRake.aggregate_errors(
+    rubocop: -> { Bazel.execute('run', ['--', flag], '//rb:rubocop') },
+    steep_type_checker: -> { Bazel.execute('run', [], '//rb:steep') },
+    ruby_docs: -> { Rake::Task['rb:docs_generate'].invoke }
+  )
 end
 
-desc 'Sync gem checksums from Gemfile.lock to MODULE.bazel (use force to re-download all)'
+desc 'Reconcile Gemfile.lock and sync gem checksums to MODULE.bazel (use force to re-download all)'
 task :pin, [:force] do |_task, arguments|
+  Bazel.execute('run', [], '//rb:bundle-lock')
+
   gemfile_lock = 'rb/Gemfile.lock'
   module_bazel = 'MODULE.bazel'
   force = arguments[:force] == 'force'

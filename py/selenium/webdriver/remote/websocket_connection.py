@@ -102,8 +102,16 @@ class WebSocketConnection:
         self._wait_until(lambda: self._started)
 
     def close(self):
-        self._ws_thread.join(timeout=self.response_wait_timeout)
-        self._ws.close()
+        # Close the socket first so ``run_forever`` returns; only then join the
+        # thread. Joining first would block for the full ``response_wait_timeout``
+        # because the thread does not exit until the connection is closed.
+        if self._ws is not None:
+            try:
+                self._ws.close()
+            except Exception as e:
+                logger.debug(f"Error while closing websocket connection: {e}")
+        if self._ws_thread is not None:
+            self._ws_thread.join(timeout=self.response_wait_timeout)
         self._started = False
         self._ws = None
 

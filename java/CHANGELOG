@@ -1,3 +1,65 @@
+v4.47.0
+======
+* Support CDP versions: v149, v150, v151
+* [bidi] Add transport layer that will be used by generated BiDi Modules (#17758)
+* [bidi] Allow passing subscription parameters for events (#17769)
+* Support @Nullable constructor parameters in ConstructorCoercer (#17770)
+* Fix BiDi not initializing for RemoteWebDriver built via builder (#17792)
+* [build] Fix GeckoDriver rejecting system-access via capabilities (#17811)
+* [build] standardize generated-file license and not to edit markers across generators (#17816)
+* [build] Download and bundle Selenium Manager SBOM and NOTICE in each package (#17820)
+* [bidi] Remove subscription scope (#17842)
+* [grid] honor client-advertised se:remoteUrl for reachable BiDi/CDP/VNC URLs (#17790)
+* remove deprecated FTP proxy support (#17846)
+* [grid] Store Dynamic Grid videos in a per-session subfolder via SE_VIDEO_SESSION_SUBFOLDER (#17856)
+* [grid] inherit the Node Pod container securityContext for Dynamic Grid on K8s (#17860)
+* pass --enable-chrome-logs unless CHROME_LOG_FILE is set (#17858)
+* deprecate invalid Firefox profile code (#17871)
+* [build] Automated Browser Version Update with CDP (#17873)
+* [grid] Dynamic K8s video always use the per-session subfolder; remove pod-wait + relocation (#17876)
+* Fix By.className()/By.id() misescaping non-ASCII leading digits (#17815)
+* Fix By.name() double String.format on names containing '%' (#17888)
+
+v4.46.0
+======
+* Support CDP versions: v148, v149, v150
+* Mark all current BiDi related classes beta (#17690)
+* Treat prefix literally in UrlTemplate.match(url, prefix) (#17713)
+* show browser version and available CDP versions (#17708)
+* Make Either.stream() and iterator() empty for a left value (#17714)
+* Handle system proxy setting for arguments passed to selenium manager (#17402)
+* fix comparator of Docker versions (#17723)
+* [grid] Fix classpath packaging Redis-backed for SessionQueue (#17706)
+* [json] Allow constructor args to be used when coercing from json (#17733)
+* Fix JSON parser EOF sentinel collision with U+FFFF (#17737)
+* Reject unescaped control characters in JSON strings (#17740)
+* Tighten JSON number lexer to match RFC 8259 (#17739)
+* Enforce commas between JSON elements; accept trailing commas (#17738)
+* Deprecate methods to avoid internal BiDi connection surfacing on driver (#17751)
+* Move BiDi creation to RemoteWebDriver. Add enable BiDi to SafariOptions. (#17753)
+* [bidi] Track events subscriptions using subscription ids (#17759)
+
+v4.45.0
+======
+* Support CDP versions: v147, v148, v149
+* remove deprecated logging classes (#17453)
+* [grid] Close pre-handshake race in WebSocket proxy (#17435)
+* Move Java bindings to use Typescript atoms for isShown, getAtt… (#17530)
+* [grid] Bundle Redis-backed SessionMap by default (#17441)
+* skip browser-restricted ports when picking a free port (#17561)
+* [grid] Apply TCP backpressure across the WebSocket tunnel handler (#17543)
+* [grid] Add BinaryMessage.wrap for transferring an owned byte array (#17544)
+* [grid] Apply the WebSocket frame fast path on the Node (#17545)
+* [grid] Skip the TCP tunnel read-idle close when reads are paused (#17578)
+* [build] reduce downloaded artifacts (#17598)
+* publish selenium-devtools-latest artifact (#17562)
+* support driving Electron apps with ElectronOptions and ElectronDriver (#17559)
+* [BiDi] add clearListners via browsingContextIds for inspectors (#17376)
+* [build] use pinned browser and driver for starting grid in python and ruby tests (#17610)
+* Add logs to Grid to debug downloading files (#17599)
+* correct deprecation annotations for JSON Wire error code APIs (#17639)
+* [grid] Add support Redis-backed for SessionQueue (#17678)
+
 v4.44.0
 ======
 * Support CDP versions: v146, v147, v148

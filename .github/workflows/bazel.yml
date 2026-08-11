@@ -21,13 +21,18 @@ on:
         required: false
         type: string
         default: ubuntu
-      browser:
-        description: One of chrome, firefox, or edge
+      needs-display:
+        description: Whether this job drives a browser and needs display/driver setup
         required: false
-        type: string
-        default: ''
+        type: boolean
+        default: false
+      safari-preview:
+        description: Whether this job needs Safari Technology Preview installed (macos only)
+        required: false
+        type: boolean
+        default: false
       node-version:
-        description: Custom Node version to install
+        description: Custom Node version to use
         required: false
         type: string
         default: ''
@@ -38,6 +43,11 @@ on:
         default: ''
       ruby-version:
         description: Custom Ruby version to use
+        required: false
+        type: string
+        default: ''
+      download-artifact-name:
+        description: Name of an artifact to download into the workspace before running
         required: false
         type: string
         default: ''
@@ -81,11 +91,17 @@ on:
         required: false
         type: boolean
         default: false
+    outputs:
+      output:
+        description: Value the run script writes to $GITHUB_OUTPUT as "output=..."; empty when unused
+        value: ${{ jobs.bazel.outputs.output }}
 
 jobs:
   bazel:
     name: ${{ inputs.name }}
     runs-on: ${{ contains(inputs.os, '-') && inputs.os || format('{0}-latest', inputs.os) }}
+    outputs:
+      output: ${{ steps.run-bazel.outputs.output }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
@@ -95,6 +111,9 @@ jobs:
       GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     steps:
+      - name: Configure Selenium Manager cache path
+        shell: bash
+        run: echo "SE_CACHE_PATH=$RUNNER_TEMP/selenium-cache" >> "$GITHUB_ENV"
       - name: Calculate fetch depth
         id: depth
         shell: bash
@@ -131,13 +150,25 @@ jobs:
         run: git pull origin "$GIT_REF"
         env:
           GIT_REF: ${{ github.ref }}
-      - name: Free disk space
-        if: inputs.os == 'ubuntu'
-        run: ./scripts/github-actions/free-disk-space.sh
-      - name: Free disk space (Windows)
+      - name: Delete browsers and drivers
+        if: startsWith(inputs.os, 'ubuntu') || inputs.os == 'macos'
+        run: ./scripts/github-actions/delete-browsers-drivers.sh
+      - name: Delete drivers (Windows)
         if: inputs.os == 'windows'
         shell: pwsh
-        run: ./scripts/github-actions/free-disk-space.ps1
+        run: ./scripts/github-actions/delete-browsers-drivers.ps1
+      - name: Free disk space
+        if: inputs.os == 'ubuntu'
+        shell: bash
+        run: |
+          . ./scripts/github-actions/disk-status.sh
+          if [ "$AVAIL_GB" -lt 25 ]; then
+            ./scripts/github-actions/free-disk-space.sh
+          fi
+      - name: Disk status before cache restore
+        if: inputs.os != 'macos'
+        shell: bash
+        run: . ./scripts/github-actions/disk-status.sh
       - name: Restore cache
         if: inputs.cache-name != ''
         uses: actions/cache/restore@v5
@@ -145,20 +176,24 @@ jobs:
           path: ${{ inputs.cache-name }}
           key: ${{ inputs.cache-name }}-
           restore-keys: ${{ inputs.cache-name }}-
+      - name: Download artifact
+        if: inputs.download-artifact-name != ''
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ inputs.download-artifact-name }}
+        continue-on-error: true
       - name: Set Python version
         if: inputs.python-version != ''
         run: echo '${{ inputs.python-version }}' > py/.python-version
       - name: Set Ruby version
         if: inputs.ruby-version != ''
         run: echo '${{ inputs.ruby-version }}' > rb/.ruby-version
-      - name: Setup Node
+      - name: Set Node version
         if: inputs.node-version != ''
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ inputs.node-version }}
+        run: echo '${{ inputs.node-version }}' > .nvmrc
       - name: Setup Bazel with caching
-        id: setup-bazel-cached
         continue-on-error: true
+        timeout-minutes: 10
         uses: bazel-contrib/setup-bazel@0.19.0
         with:
           cache-save: ${{ inputs.cache-save }}
@@ -167,64 +202,39 @@ jobs:
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
           output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
           disk-cache: false
-          external-cache: |
-            manifest:
-              crates: rust/Cargo.Bazel.lock
-              "rules_ruby++ruby+ruby": false
-              "+pin_browsers_extension+linux_beta_chrome": false
-              "+pin_browsers_extension+linux_beta_chromedriver": true
-              "+pin_browsers_extension+linux_beta_firefox": false
-              "+pin_browsers_extension+linux_chrome": false
-              "+pin_browsers_extension+linux_chromedriver": true
-              "+pin_browsers_extension+linux_edge": false
-              "+pin_browsers_extension+linux_edgedriver": true
-              "+pin_browsers_extension+linux_firefox": false
-              "+pin_browsers_extension+linux_geckodriver": true
-              "+pin_browsers_extension+mac_beta_chrome": false
-              "+pin_browsers_extension+mac_beta_chromedriver": false
-              "+pin_browsers_extension+mac_beta_firefox": false
-              "+pin_browsers_extension+mac_chrome": false
-              "+pin_browsers_extension+mac_chromedriver": false
-              "+pin_browsers_extension+mac_edge": false
-              "+pin_browsers_extension+mac_edgedriver": false
-              "+pin_browsers_extension+mac_firefox": false
-              "+pin_browsers_extension+mac_geckodriver": false
+          external-cache: false
           repository-cache: true
-      - name: Setup Bazel without caching
-        if: steps.setup-bazel-cached.outcome == 'failure'
-        uses: bazel-contrib/setup-bazel@0.19.0
-        with:
-          cache-save: false
-          bazelisk-cache: true
-          external-cache: |
-            manifest:
-              crates: rust/Cargo.Bazel.lock
-          repository-cache: true
-          bazelrc: common --color=yes
       - name: Disk status after cache restore
         if: inputs.os != 'macos'
         shell: bash
-        run: |
-          if [[ "${{ steps.setup-bazel-cached.outcome }}" == "failure" ]]; then
-            echo "::warning::Bazel cache setup failed — fell back to setup without cache"
-          fi
-          . ./scripts/github-actions/disk-status.sh
+        run: . ./scripts/github-actions/disk-status.sh
       - name: Setup Fluxbox and Xvfb
-        if: inputs.os == 'ubuntu' && inputs.browser != ''
+        if: inputs.needs-display && inputs.os == 'ubuntu'
         run: |
-          sudo apt-get update && sudo apt-get -y install fluxbox
+          sudo apt-get update && sudo apt-get -y install fluxbox x11-utils
           Xvfb :99 &
+          # X server must start before fluxbox
+          for _ in $(seq 1 30); do
+            xdpyinfo -display :99 >/dev/null 2>&1 && break
+            sleep 0.5
+          done
+          xdpyinfo -display :99 >/dev/null 2>&1 || { echo "::error::X server :99 failed to start"; exit 1; }
           fluxbox -display :99 &
           echo "DISPLAY=:99" >> "$GITHUB_ENV"
       - name: Set resolution
-        if: inputs.os == 'windows' && inputs.browser != ''
+        if: inputs.needs-display && inputs.os == 'windows'
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
       - name: Disable 8dot3 short names
         if: inputs.os == 'windows'
         run: fsutil 8dot3name set 0
       - name: Setup Safari
-        if: inputs.browser == 'safari'
+        if: inputs.needs-display && inputs.os == 'macos'
         run: sudo safaridriver --enable
+      - name: Setup Safari Technology Preview
+        if: inputs.safari-preview && inputs.os == 'macos'
+        run: |
+          brew install --cask safari-technology-preview
+          sudo "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver" --enable
       - name: Import GPG key
         if: inputs.gpg-sign
         uses: crazy-max/ghaction-import-gpg@v7
@@ -234,17 +244,9 @@ jobs:
       - name: Configure RubyGems credentials via OIDC
         if: inputs.gem-trusted-publishing
         uses: rubygems/configure-rubygems-credentials@main
-      - name: Disk status before build
-        if: inputs.os != 'macos'
-        shell: bash
-        run: |
-          . ./scripts/github-actions/disk-status.sh
-          if [ "$AVAIL_GB" -lt 10 ]; then
-            echo "::error::Insufficient disk space: ${AVAIL_GB}GB available (need >=10GB)"
-            exit 1
-          fi
       - name: Run Bazel
         id: run-bazel
+        continue-on-error: true
         shell: bash
         env:
           MSYS_NO_PATHCONV: 1
@@ -255,18 +257,19 @@ jobs:
             ${{ inputs.run }}
           } 2>&1 | tee build/bazel-console.log
       - name: Rerun failures with debug
-        if: failure() && steps.run-bazel.outcome == 'failure'
+        id: rerun-failures
+        if: steps.run-bazel.outcome == 'failure'
         shell: bash
         run: ./scripts/github-actions/rerun-failures.sh '${{ inputs.run }}' '${{ inputs.rerun-with-debug }}'
       - name: Collect failed test logs
-        if: failure() && steps.run-bazel.outcome == 'failure'
+        if: always() && steps.run-bazel.outcome == 'failure'
         shell: bash
         run: ./scripts/github-actions/collect-test-logs.sh
       - name: Upload failed test logs
-        if: failure() && steps.run-bazel.outcome == 'failure'
+        if: always() && steps.run-bazel.outcome == 'failure'
         uses: actions/upload-artifact@v7
         with:
-          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ inputs.browser }}
+          name: test-logs-${{ inputs.os }}-${{ inputs.name }}
           retention-days: 7
           path: build/failures/**
       - name: Start SSH session

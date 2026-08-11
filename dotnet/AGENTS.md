@@ -28,6 +28,14 @@ _logger.Debug("diagnostic: request details for debugging");
 [Obsolete("Use NewMethod instead")]
 public void OldMethod() { }
 ```
+When code inside the assembly must still reference an obsolete member (e.g. a field
+or method the obsolete API is built on), wrap just that usage to keep the build
+warning-clean (see `UserPromptHandler.cs`):
+```csharp
+#pragma warning disable CS0618 // Type or member is obsolete
+this.legacyThing.DoWork();
+#pragma warning restore CS0618 // Type or member is obsolete
+```
 
 ### Async patterns
 The codebase is migrating to async
@@ -42,14 +50,3 @@ Use XML documentation comments for public APIs:
 /// <returns>Description.</returns>
 /// <exception cref="ExceptionType">When condition.</exception>
 ```
-
-## Formatting
-C# files are formatted with **`dotnet format`** (style + whitespace).
-Run `./go format` after changes; it will auto-fix most violations.
-
-Key rules enforced (from `dotnet/.editorconfig`):
-- **Namespaces**: file-scoped (`namespace Foo.Bar;` not block-wrapped)
-- **Using directives**: placed **outside** the namespace block; `System` namespaces sorted first
-- **Braces**: Allman style — opening brace on its own line for all blocks
-- **Spacing**: no space after cast, space after commas, space around binary operators
-- Remove unnecessary `using` directives (IDE0005 treated as warning)

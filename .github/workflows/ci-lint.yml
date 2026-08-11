@@ -2,6 +2,8 @@ name: CI - Lint
 
 on:
   pull_request:
+    paths-ignore:
+      - 'docs/decisions/**'
   push:
     branches:
       - trunk

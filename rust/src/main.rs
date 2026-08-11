@@ -29,10 +29,11 @@ use selenium_manager::logger::{BROWSER_PATH, DRIVER_PATH, Logger};
 use selenium_manager::metadata::clear_metadata;
 use selenium_manager::rules::write_rules_file;
 use selenium_manager::skills::write_skills_file;
-use selenium_manager::{REQUEST_TIMEOUT_SEC, SM_BETA_LABEL};
 use selenium_manager::{
-    SeleniumManager, clear_cache, get_manager_by_browser, get_manager_by_driver,
+    CACHE_TTL_DAYS, SeleniumManager, clear_cache, get_manager_by_browser, get_manager_by_driver,
+    prune_old_cache_entries,
 };
+use selenium_manager::{REQUEST_TIMEOUT_SEC, SM_BETA_LABEL};
 use std::backtrace::{Backtrace, BacktraceStatus};
 use std::path::Path;
 use std::process::exit;
@@ -282,6 +283,7 @@ fn main() {
     if cli.clear_metadata || BooleanKey("clear-metadata", false).get_value() {
         clear_metadata(selenium_manager.get_logger(), &cache_path);
     }
+    prune_old_cache_entries(selenium_manager.get_logger(), &cache_path, CACHE_TTL_DAYS);
 
     let proxy = cli.proxy.clone().unwrap_or_default();
 

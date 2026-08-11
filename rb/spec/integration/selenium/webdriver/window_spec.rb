@@ -21,10 +21,10 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Window, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
-      after(:all) { reset_driver! }
-
+    describe Window, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       let(:window) { driver.manage.window }
+
+      before { window.rect = Rectangle.new(50, 50, 600, 500) }
 
       it 'gets the size of the current window' do
         size = window.size
@@ -113,8 +113,9 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      it 'can make window full screen', except: [{browser: %i[chrome edge], headless: true},
-                                                 {browser: %i[safari safari_preview], ci: :github}] do
+      it 'can make window full screen', pending_if: {browser_family: :chromium, headless: true},
+                                        skip_if: {browser_family: :safari, ci: :github,
+                                                  reason: 'Net::ReadTimeout'} do
         window.size = old_size = Dimension.new(700, 700)
 
         window.full_screen
@@ -125,9 +126,8 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      it 'can minimize the window', except: [{browser: %i[chrome edge], headless: true},
-                                             {browser: %i[safari safari_preview]}],
-                                    flaky: {browser: :chrome, platform: %i[macosx linux], ci: :github} do
+      it 'can minimize the window', flaky: {browser_family: :chromium, platform: :macosx, ci: :github},
+                                    pending_if: [{browser_family: :chromium, headless: true}] do
         window.minimize
         expect {
           wait.until { driver.execute_script('return document.hidden;') }

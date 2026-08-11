@@ -26,8 +26,7 @@ public class Response {
 
   private volatile @Nullable Object value;
   private volatile @Nullable String sessionId;
-  @Deprecated // (forRemoval = true)
-  private volatile @Nullable Integer status;
+  @Deprecated private volatile @Nullable Integer status;
   private volatile @Nullable String state;
 
   public Response() {}
@@ -36,12 +35,22 @@ public class Response {
     this.sessionId = String.valueOf(sessionId);
   }
 
-  @Deprecated // (forRemoval = true)
+  /**
+   * @deprecated The integer status is a JSON Wire Protocol artifact; use {@link #getState()} (the
+   *     W3C state) instead. Removal is tracked by <a
+   *     href="https://github.com/SeleniumHQ/selenium/issues/17638">#17638</a>.
+   */
+  @Deprecated
   public @Nullable Integer getStatus() {
     return status;
   }
 
-  @Deprecated // (forRemoval = true)
+  /**
+   * @deprecated The integer status is a JSON Wire Protocol artifact; use {@link #setState(String)}
+   *     (the W3C state) instead. Removal is tracked by <a
+   *     href="https://github.com/SeleniumHQ/selenium/issues/17638">#17638</a>.
+   */
+  @Deprecated
   public void setStatus(@Nullable Integer status) {
     this.status = status;
   }

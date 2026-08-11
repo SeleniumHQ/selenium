@@ -23,8 +23,8 @@ module Selenium
   module WebDriver
     module Chrome
       describe Service,
-               {exclude: {driver: :remote},
-                exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :chrome}]} do
+               {skip_if: {driver: :remote},
+                skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :chrome}]} do
         let(:service) { described_class.new }
         let(:service_manager) { service.launch }
 

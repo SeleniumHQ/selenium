@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Timeouts, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+    describe Timeouts, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       before do
         driver.manage.timeouts.implicit_wait = 6
         driver.manage.timeouts.page_load = 2
@@ -42,7 +42,7 @@ module Selenium
       end
 
       describe 'implicit waits' do
-        it 'implicitlies wait for a single element', except: {browser: %i[safari safari_preview]} do
+        it 'implicitlies wait for a single element' do
           driver.find_element(id: 'adder').click
           expect { driver.find_element(id: 'box0') }.not_to raise_error
         end
@@ -57,8 +57,7 @@ module Selenium
           expect { driver.find_element(id: 'box0') }.to raise_error(WebDriver::Error::NoSuchElementError)
         end
 
-        it 'implicitlies wait until at least one element is found when searching for many',
-           except: {browser: %i[safari safari_preview]} do
+        it 'implicitlies wait until at least one element is found when searching for many' do
           add = driver.find_element(id: 'adder')
 
           add.click
@@ -87,7 +86,7 @@ module Selenium
           expect { driver.navigate.to url_for('sleep?time=3') }.to raise_error(WebDriver::Error::TimeoutError)
         end
 
-        it 'times out if page takes too long to load after click', except: {browser: %i[safari safari_preview]} do
+        it 'times out if page takes too long to load after click', pending_if: {browser_family: :safari} do
           driver.navigate.to url_for('page_with_link_to_slow_loading_page.html')
 
           expect {

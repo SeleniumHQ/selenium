@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Element, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+    describe Element, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       it 'clicks' do
         open_file 'formPage.html'
         element = wait_for_element(id: 'imageButton')
@@ -29,14 +29,14 @@ module Selenium
       end
 
       # Safari returns "click intercepted" error instead of "element click intercepted"
-      it 'raises if different element receives click', except: {browser: %i[safari safari_preview]} do
+      it 'raises if different element receives click', pending_if: {browser_family: :safari} do
         open_file 'click_tests/overlapping_elements.html'
         element = wait_for_element(id: 'contents', timeout: 10)
         expect { element.click }.to raise_error(Error::ElementClickInterceptedError)
       end
 
       # Safari returns "click intercepted" error instead of "element click intercepted"
-      it 'raises if element is partially covered', except: {browser: %i[safari safari_preview]} do
+      it 'raises if element is partially covered', pending_if: {browser_family: :safari} do
         open_file 'click_tests/overlapping_elements.html'
         element = wait_for_element(id: 'other_contents')
         expect { element.click }.to raise_error(Error::ElementClickInterceptedError)
@@ -121,7 +121,7 @@ module Selenium
       end
 
       # https://github.com/mozilla/geckodriver/issues/245
-      it 'sends key presses chords', except: {browser: %i[firefox safari safari_preview]} do
+      it 'sends key presses chords', pending_if: {browser: %i[firefox safari safari_preview]} do
         open_file 'javascriptPage.html'
         key_reporter = wait_for_element(id: 'keyReporter')
 
@@ -183,7 +183,7 @@ module Selenium
           let(:element) { wait_for_element(id: 'checkedchecky') }
           let(:prop_or_attr) { 'checked' }
 
-          it '#dom_attribute returns String', except: {browser: :safari} do
+          it '#dom_attribute returns String', pending_if: {browser_family: :safari} do
             expect(element.dom_attribute(prop_or_attr)).to eq 'true'
           end
 
@@ -195,17 +195,17 @@ module Selenium
             expect(element.attribute(prop_or_attr)).to eq 'true'
           end
 
-          it '#dom_attribute does not update after click', except: {browser: :safari} do
+          it '#dom_attribute does not update after click', pending_if: {browser_family: :safari} do
             element.click
             expect(element.dom_attribute(prop_or_attr)).to eq 'true'
           end
 
-          it '#property updates to false after click', except: {browser: %i[safari safari_preview]} do
+          it '#property updates to false after click' do
             element.click
             expect(element.property(prop_or_attr)).to be false
           end
 
-          it '#attribute updates to nil after click', except: {browser: %i[safari safari_preview]} do
+          it '#attribute updates to nil after click' do
             element.click
             expect(element.attribute(prop_or_attr)).to be_nil
           end
@@ -232,12 +232,12 @@ module Selenium
             expect(element.dom_attribute(prop_or_attr)).to be_nil
           end
 
-          it '#property updates to true after click', except: {browser: %i[safari safari_preview]} do
+          it '#property updates to true after click' do
             element.click
             expect(element.property(prop_or_attr)).to be true
           end
 
-          it '#attribute updates to String after click', except: {browser: %i[safari safari_preview]} do
+          it '#attribute updates to String after click' do
             element.click
             expect(element.attribute(prop_or_attr)).to eq 'true'
           end
@@ -316,9 +316,9 @@ module Selenium
 
           # TODO: This might not be correct behavior
           it '#property returns object',
-             except: [{browser: :firefox,
-                       reason: 'https://github.com/mozilla/geckodriver/issues/1846'},
-                      {browser: :safari}] do
+             pending_if: [{browser: :firefox,
+                           reason: 'https://github.com/mozilla/geckodriver/issues/1846'},
+                          {browser_family: :safari}] do
             expect(element.property(prop_or_attr)).to eq %w[width height]
           end
 
@@ -348,7 +348,7 @@ module Selenium
           let(:element) { wait_for_element(name: 'readonly') }
           let(:prop_or_attr) { 'readonly' }
 
-          it '#dom_attribute returns a String', except: {browser: :safari} do
+          it '#dom_attribute returns a String', pending_if: {browser_family: :safari} do
             expect(element.dom_attribute(prop_or_attr)).to eq 'true'
           end
 
@@ -366,9 +366,9 @@ module Selenium
           let(:prop_or_attr) { 'readOnly' }
 
           it '#dom_attribute returns a String',
-             except: [{browser: :firefox,
-                       reason: 'https://github.com/mozilla/geckodriver/issues/1850'},
-                      {browser: :safari}] do
+             pending_if: [{browser: :firefox,
+                           reason: 'https://github.com/mozilla/geckodriver/issues/1850'},
+                          {browser_family: :safari}] do
             expect(element.dom_attribute(prop_or_attr)).to eq 'true'
           end
 
@@ -454,7 +454,7 @@ module Selenium
         expect { element.clear }.not_to raise_error
       end
 
-      it 'gets and set selected', except: {browser: %i[safari safari_preview]} do
+      it 'gets and set selected' do
         open_file 'formPage.html'
 
         cheese = wait_for_element(id: 'cheese')
@@ -526,7 +526,7 @@ module Selenium
       end
 
       # IE - https://github.com/SeleniumHQ/selenium/pull/4043
-      it 'drags and drop', except: [{browser: :ie}, {browser: %i[safari safari_preview]}] do
+      it 'drags and drop', pending_if: {browser: :ie} do
         open_file 'dragAndDropTest.html'
 
         img1 = wait_for_element(id: 'test1')

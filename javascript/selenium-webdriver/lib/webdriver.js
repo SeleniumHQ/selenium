@@ -1045,6 +1045,9 @@ class WebDriver {
   async findElementInternal_(locatorFn, context) {
     let result = await locatorFn(context)
     if (Array.isArray(result)) {
+      if (result.length === 0) {
+        throw new NoSuchElementError('Cannot locate an element with provided parameters')
+      }
       result = result[0]
     }
     if (!(result instanceof WebElement)) {
@@ -1088,7 +1091,15 @@ class WebDriver {
    * @private
    */
   async findElementsInternal_(locatorFn, context) {
-    const result = await locatorFn(context)
+    let result
+    try {
+      result = await locatorFn(context)
+    } catch (ex) {
+      if (ex instanceof NoSuchElementError) {
+        return []
+      }
+      throw ex
+    }
     if (result instanceof WebElement) {
       return [result]
     }

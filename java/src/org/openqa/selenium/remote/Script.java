@@ -26,17 +26,17 @@ import org.openqa.selenium.bidi.script.RemoteValue;
 @Beta
 public interface Script {
 
-  long addConsoleMessageHandler(Consumer<ConsoleLogEntry> consumer);
+  String addConsoleMessageHandler(Consumer<ConsoleLogEntry> consumer);
 
-  void removeConsoleMessageHandler(long id);
+  void removeConsoleMessageHandler(String id);
 
-  long addJavaScriptErrorHandler(Consumer<JavascriptLogEntry> consumer);
+  String addJavaScriptErrorHandler(Consumer<JavascriptLogEntry> consumer);
 
-  void removeJavaScriptErrorHandler(long id);
+  void removeJavaScriptErrorHandler(String id);
 
-  long addDomMutationHandler(Consumer<DomMutation> event);
+  String addDomMutationHandler(Consumer<DomMutation> event);
 
-  void removeDomMutationHandler(long id);
+  void removeDomMutationHandler(String id);
 
   String pin(String script);
 

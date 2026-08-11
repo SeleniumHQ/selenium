@@ -27,37 +27,12 @@ namespace OpenQA.Selenium.Tests.BiDi.Session;
 internal class SessionTests : BiDiTestFixture
 {
     [Test]
-    public async Task ShouldHaveIdempotentDisposal()
-    {
-        await bidi.DisposeAsync();
-        await bidi.DisposeAsync();
-    }
-
-    [Test]
     public async Task CanGetStatus()
     {
         var status = await bidi.StatusAsync();
 
         Assert.That(status, Is.Not.Null);
         Assert.That(status.Message, Is.Not.Empty);
-    }
-
-    [Test]
-    public void ShouldRespectTimeout()
-    {
-        Assert.That(
-            () => bidi.StatusAsync(new() { Timeout = TimeSpan.FromMicroseconds(1) }),
-            Throws.InstanceOf<TaskCanceledException>());
-    }
-
-    [Test]
-    public void ShouldRespectCancellationToken()
-    {
-        using var cts = new CancellationTokenSource(TimeSpan.FromMicroseconds(1));
-
-        Assert.That(
-            () => bidi.StatusAsync(cancellationToken: cts.Token),
-            Throws.InstanceOf<TaskCanceledException>());
     }
 
     [Test]
@@ -102,7 +77,7 @@ internal class SessionTests : BiDiTestFixture
             }
         });
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("blank.html"), new() { Wait = OpenQA.Selenium.BiDi.BrowsingContext.ReadinessState.Complete });
+        await context.NavigateAsync(Urls.BlankPage, new() { Wait = OpenQA.Selenium.BiDi.BrowsingContext.ReadinessState.Complete });
 
         var e1 = await tcs1.Task.WaitAsync(TimeSpan.FromSeconds(5));
         var e2 = await tcs2.Task.WaitAsync(TimeSpan.FromSeconds(5));
@@ -119,7 +94,7 @@ internal class SessionTests : BiDiTestFixture
         await using var sub = await bidi.Log.EntryAdded.StreamAsync();
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        await using var enumerator = sub.GetAsyncEnumerator(cts.Token);
+        await using var enumerator = sub.ReadAllAsync(cts.Token).GetAsyncEnumerator();
 
         await context.Script.EvaluateAsync("console.log('hello stream');", true);
 
@@ -135,7 +110,7 @@ internal class SessionTests : BiDiTestFixture
         await context.Script.EvaluateAsync("console.log('hello stream');", true);
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        var log = await sub.FirstAsync(cts.Token);
+        var log = await sub.ReadAllAsync(cts.Token).FirstAsync();
 
         Assert.That(log.Text, Is.EqualTo("hello stream"));
     }
@@ -145,13 +120,13 @@ internal class SessionTests : BiDiTestFixture
     {
         using var cts = new CancellationTokenSource();
 
-        await using var sub = await bidi.Log.EntryAdded.StreamAsync(cts.Token);
+        await using var sub = await bidi.Log.EntryAdded.StreamAsync();
 
         cts.Cancel();
 
         Assert.ThrowsAsync<TaskCanceledException>(async () =>
         {
-            await foreach (var _ in sub) { }
+            await foreach (var _ in sub.ReadAllAsync(cts.Token)) { }
         });
     }
 
@@ -160,12 +135,12 @@ internal class SessionTests : BiDiTestFixture
     {
         using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(200));
 
-        await using var sub = await bidi.Log.EntryAdded.StreamAsync(cts.Token);
+        await using var sub = await bidi.Log.EntryAdded.StreamAsync();
 
-        Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        Assert.That(async () =>
         {
-            await foreach (var _ in sub) { }
-        });
+            await foreach (var _ in sub.ReadAllAsync(cts.Token)) { }
+        }, Throws.InstanceOf<OperationCanceledException>());
     }
 
     [Test]
@@ -209,10 +184,9 @@ class CustomModule : Module
         new("session.status", JsonContext.Parameters, JsonContext.DoSomethingResult);
 
     private static readonly EventDescriptor<SomethingHappenedEventArgs> SomethingHappenedDescriptor =
-        EventDescriptor<SomethingHappenedEventArgs>.Create<SomethingHappenedParameters>(
+        EventDescriptor<SomethingHappenedEventArgs>.Create(
             "log.entryAdded",
-            static (bidi, p) => new SomethingHappenedEventArgs(bidi, p.Text),
-            JsonContext.SomethingHappenedParameters);
+            JsonContext.SomethingHappenedEventArgs);
 
     public IEventSource<SomethingHappenedEventArgs> SomethingHappened => CreateEventSource(SomethingHappenedDescriptor);
 
@@ -227,13 +201,11 @@ class CustomModule : Module
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 [JsonSerializable(typeof(Parameters))]
 [JsonSerializable(typeof(DoSomethingResult))]
-[JsonSerializable(typeof(SomethingHappenedParameters))]
+[JsonSerializable(typeof(SomethingHappenedEventArgs))]
 partial class CustomModuleJsonSerializerContext : JsonSerializerContext;
 
 record DoSomethingResult : EmptyResult;
 
 record DoSomethingOptions : CommandOptions;
 
-record SomethingHappenedParameters(string Text);
-
-record SomethingHappenedEventArgs(IBiDi BiDi, string Text) : OpenQA.Selenium.BiDi.EventArgs(BiDi);
+record SomethingHappenedEventArgs(string Text) : Selenium.BiDi.EventArgs;

@@ -35,6 +35,23 @@ end
 desc 'Build, package, and push nupkg files to NuGet'
 task :release do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
+
+  unless nightly
+    already_published = begin
+      Rake::Task['dotnet:verify'].invoke
+      true
+    rescue StandardError
+      false
+    ensure
+      Rake::Task['dotnet:verify'].reenable
+    end
+
+    if already_published
+      puts '.NET packages already published — skipping release.'
+      next
+    end
+  end
+
   Rake::Task['dotnet:check_credentials'].invoke(*arguments.to_a)
 
   if nightly
@@ -55,8 +72,9 @@ end
 
 desc 'Verify .NET packages are published on NuGet'
 task :verify do
-  SeleniumRake.verify_package_published("https://api.nuget.org/v3/registration5-semver1/selenium.webdriver/#{dotnet_version}.json")
-  SeleniumRake.verify_package_published("https://api.nuget.org/v3/registration5-semver1/selenium.support/#{dotnet_version}.json")
+  base = 'https://api.nuget.org/v3/registration5-semver1'
+  SeleniumRake.verify_package_published("#{base}/selenium.webdriver/#{dotnet_version}.json")
+  SeleniumRake.verify_package_published("#{base}/selenium.support/#{dotnet_version}.json")
 end
 
 desc 'Generate and stage .NET documentation'
@@ -127,14 +145,16 @@ end
 
 desc 'Run .NET linter (dotnet format analyzers, docs)'
 task :lint do
-  puts '  Running dotnet format analyzers...'
-  Bazel.execute('run', ['--', 'analyzers', '--verify-no-changes'], '//dotnet:format')
-  Rake::Task['dotnet:docs_generate'].invoke
+  steps = {
+    dotnet_format_analyzers: -> { Bazel.execute('run', ['--', 'analyzers', '--verify-no-changes'], '//dotnet:format') },
+    dotnet_docs: -> { Rake::Task['dotnet:docs_generate'].invoke }
+  }
 
-  # TODO: Identify specific diagnostics that we want to enforce but can't be auto-corrected (e.g., 'IDE0060'):
   enforced_diagnostics = []
-  next if enforced_diagnostics.empty?
+  if enforced_diagnostics&.any?
+    arguments = %w[-- style --severity info --verify-no-changes --diagnostics] + enforced_diagnostics
+    steps[:dotnet_format_style] = -> { Bazel.execute('run', arguments, '//dotnet:format') }
+  end
 
-  arguments = %w[-- style --severity info --verify-no-changes --diagnostics] + enforced_diagnostics
-  Bazel.execute('run', arguments, '//dotnet:format')
+  SeleniumRake.aggregate_errors(**steps)
 end
