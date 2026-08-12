@@ -89,12 +89,17 @@ public class Debug {
    */
   public static synchronized void configureLogger() {
     boolean shouldDebug = isDebugAll() || isDebugging();
+    Handler currentHandler = installedHandler;
+    boolean handlerInstalled =
+        currentHandler != null
+            && Arrays.asList(SELENIUM_LOGGER.getHandlers()).contains(currentHandler);
+    Level currentEffectiveLevel = effectiveLevel(SELENIUM_LOGGER);
     if (shouldDebug == loggerConfigured
         && (!shouldDebug
-            || (isHandlerCurrentlyInstalled()
-                && effectiveLevel(SELENIUM_LOGGER).intValue() <= Level.FINE.intValue()
-                && installedHandler.getLevel().intValue()
-                    <= effectiveLevel(SELENIUM_LOGGER).intValue()))) {
+            || (handlerInstalled
+                && currentHandler != null
+                && currentEffectiveLevel.intValue() <= Level.FINE.intValue()
+                && currentHandler.getLevel().intValue() <= currentEffectiveLevel.intValue()))) {
       return;
     }
 
@@ -104,29 +109,29 @@ public class Debug {
         levelSetByDebug = null;
       }
 
-      if (effectiveLevel(SELENIUM_LOGGER).intValue() > Level.FINE.intValue()) {
+      if (currentEffectiveLevel.intValue() > Level.FINE.intValue()) {
         SELENIUM_LOGGER.setLevel(Level.FINE);
         levelSetByDebug = Level.FINE;
+        currentEffectiveLevel = Level.FINE;
       }
 
-      Level handlerLevel = effectiveLevel(SELENIUM_LOGGER);
-      if (isHandlerCurrentlyInstalled()) {
-        installedHandler.setLevel(handlerLevel);
+      if (handlerInstalled && currentHandler != null) {
+        currentHandler.setLevel(currentEffectiveLevel);
       } else {
-        if (installedHandler != null) {
-          installedHandler.close();
+        if (currentHandler != null) {
+          currentHandler.close();
         }
         Handler handler = new ConsoleHandler();
-        handler.setLevel(handlerLevel);
+        handler.setLevel(currentEffectiveLevel);
         Filter belowInfo = record -> record.getLevel().intValue() < Level.INFO.intValue();
         handler.setFilter(belowInfo);
         SELENIUM_LOGGER.addHandler(handler);
         installedHandler = handler;
       }
     } else {
-      if (installedHandler != null) {
-        SELENIUM_LOGGER.removeHandler(installedHandler);
-        installedHandler.close();
+      if (currentHandler != null) {
+        SELENIUM_LOGGER.removeHandler(currentHandler);
+        currentHandler.close();
         installedHandler = null;
       }
       if (levelSetByDebug != null && levelSetByDebug.equals(SELENIUM_LOGGER.getLevel())) {

@@ -275,6 +275,11 @@ class DebugTest {
 
   @Test
   void seleniumOwnedHandlerRepairsToAMoreVerboseLevel() {
+    environment.set("SE_DEBUG", "false");
+    System.clearProperty("selenium.debug");
+    Debug.configureLogger();
+    List<Handler> oldHandlers = List.of(seleniumLogger().getHandlers());
+    oldHandlers.forEach(seleniumLogger()::removeHandler);
     boolean oldUseParentHandlers = seleniumLogger().getUseParentHandlers();
     PrintStream originalErr = System.err;
     ByteArrayOutputStream capturedErr = new ByteArrayOutputStream();
@@ -293,6 +298,9 @@ class DebugTest {
         handler.flush();
       }
     } finally {
+      System.clearProperty("selenium.debug");
+      Debug.configureLogger();
+      oldHandlers.forEach(seleniumLogger()::addHandler);
       System.setErr(originalErr);
       seleniumLogger().setUseParentHandlers(oldUseParentHandlers);
     }
