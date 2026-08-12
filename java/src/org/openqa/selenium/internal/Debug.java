@@ -119,6 +119,7 @@ public class Debug {
         currentHandler.setLevel(currentEffectiveLevel);
       } else {
         if (currentHandler != null) {
+          SELENIUM_LOGGER.removeHandler(currentHandler);
           currentHandler.close();
         }
         Handler handler = new ConsoleHandler();
