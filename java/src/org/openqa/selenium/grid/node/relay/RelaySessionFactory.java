@@ -183,7 +183,10 @@ public class RelaySessionFactory implements SessionFactory {
       }
       HttpClient client = clientFactory.createClient(clientConfig);
 
-      Command command = new Command(null, DriverCommand.NEW_SESSION(capabilities));
+      Command command =
+          new Command(
+              null,
+              DriverCommand.NEW_SESSION(SessionFactory.stripPerHopCapabilities(capabilities)));
       try {
         ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
         Set<Dialect> downstreamDialects = sessionRequest.getDownstreamDialects();
