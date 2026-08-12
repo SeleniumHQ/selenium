@@ -89,6 +89,12 @@ py/docs/build/
 py/docs/source/**/*
 !py/docs/source/conf.py
 !py/docs/source/*.rst
+# Sphinx extensions, and the deprecation dataset published beside the HTML.
+# Sources, unlike the autosummary stubs the rule above is aimed at.
+!py/docs/source/_ext/
+!py/docs/source/_ext/*.py
+!py/docs/source/_extra/
+!py/docs/source/_extra/*.json
 py/build/
 py/pytestdebug.log
 py/python.iml
