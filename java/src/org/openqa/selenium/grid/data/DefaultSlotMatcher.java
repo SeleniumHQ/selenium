@@ -199,17 +199,13 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
     */
     boolean stereotypeIsAppiumAware =
         stereotype.getCapabilityNames().stream()
-            .anyMatch(
-                name ->
-                    name.contains("platformVersion")
-                        || (name.contains(":")
-                            && !name.toLowerCase().contains("options")
-                            && EXTENSION_CAPABILITIES_PREFIXES.stream().noneMatch(name::contains)));
+            .anyMatch(name -> name.contains("platformVersion") || name.startsWith("appium:"));
     if (stereotypeIsAppiumAware) {
       return true;
     }
     return capabilities.getCapabilityNames().stream()
-        .noneMatch(name -> name.contains("automationName"));
+        .noneMatch(
+            name -> name.equals("automationName") || name.endsWith(":automationName"));
   }
 
   public static Boolean matchConditionToRemoveCapability(Capabilities capabilities) {

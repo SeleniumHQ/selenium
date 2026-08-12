@@ -761,13 +761,14 @@ class DefaultSlotMatcherTest {
      */
     Capabilities stereotype =
         new ImmutableCapabilities(
-            CapabilityType.BROWSER_NAME, "MicrosoftEdge",
-            CapabilityType.PLATFORM_NAME, Platform.WIN10);
+            CapabilityType.BROWSER_NAME,
+            "MicrosoftEdge",
+            CapabilityType.PLATFORM_NAME,
+            Platform.WIN10);
 
     Capabilities capabilities =
         new ImmutableCapabilities(
-            "appium:automationName", "Windows",
-            CapabilityType.PLATFORM_NAME, Platform.WINDOWS);
+            "appium:automationName", "Windows", CapabilityType.PLATFORM_NAME, Platform.WINDOWS);
 
     assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
   }
@@ -792,5 +793,27 @@ class DefaultSlotMatcherTest {
             "uiautomator2");
 
     assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
+  }
+
+  @Test
+  void automationNameDoesNotMatchWhenStereotypeHasUnrelatedExtensionCapability() {
+    /*
+    A stereotype's unrelated, non-Appium extension capability must not be treated as a signal
+    that it can serve an automationName-differentiated request.
+     */
+    Capabilities stereotype =
+        new ImmutableCapabilities(
+            CapabilityType.BROWSER_NAME,
+            "MicrosoftEdge",
+            CapabilityType.PLATFORM_NAME,
+            Platform.WIN10,
+            "prefixed:cheese",
+            "amsterdam");
+
+    Capabilities capabilities =
+        new ImmutableCapabilities(
+            "appium:automationName", "Windows", CapabilityType.PLATFORM_NAME, Platform.WINDOWS);
+
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
   }
 }
