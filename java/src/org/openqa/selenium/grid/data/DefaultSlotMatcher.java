@@ -204,8 +204,7 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
       return true;
     }
     return capabilities.getCapabilityNames().stream()
-        .noneMatch(
-            name -> name.equals("automationName") || name.endsWith(":automationName"));
+        .noneMatch(name -> name.equals("automationName") || name.endsWith(":automationName"));
   }
 
   public static Boolean matchConditionToRemoveCapability(Capabilities capabilities) {
