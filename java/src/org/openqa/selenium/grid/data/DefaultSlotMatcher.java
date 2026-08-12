@@ -56,6 +56,14 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
   public static final List<String> MANDATORY_CAPABILITIES =
       List.of("platformName", "browserName", "browserVersion");
 
+  /**
+   * Determines whether {@code stereotype} is an acceptable match for a new session request carrying
+   * {@code capabilities}, per the class-level matching rules described above.
+   *
+   * @param stereotype the capabilities declared by a candidate {@link Slot}
+   * @param capabilities the capabilities requested for a new session
+   * @return {@code true} if the stereotype may serve the request
+   */
   @Override
   public boolean matches(Capabilities stereotype, Capabilities capabilities) {
 
