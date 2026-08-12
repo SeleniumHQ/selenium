@@ -129,8 +129,9 @@ task :docs_generate do
 
   FileUtils.rm_rf('build/docs/api/py/')
 
-  # Generate API listing and stub files in source tree
+  # Generate API listing, deprecation data, and stub files in source tree
   Bazel.execute('run', [], '//py:generate-api-listing')
+  Bazel.execute('run', [], '//py:generate-deprecations')
   Bazel.execute('run', [], '//py:sphinx-autogen')
 
   # Build docs (outputs to bazel-bin)

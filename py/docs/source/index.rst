@@ -23,7 +23,18 @@ The `selenium` package is used to automate web browser interaction from Python.
 | **API Reference**:| https://selenium.dev/selenium/docs/api/py/api.html     |
 +-------------------+--------------------------------------------------------+
 
-Updated documentation published with each commit is available at: `readthedocs.io <https://selenium-python-api-docs.readthedocs.io/en/latest>`_
+The official API reference for the Python bindings is published at
+https://www.selenium.dev/selenium/docs/api/py. It is built from the
+`Selenium repository <https://github.com/SeleniumHQ/selenium/tree/trunk/py>`_ with each release and
+documents the release it was built from. Treat it as the canonical reference.
+
+A preview of the next release, rebuilt on every commit to ``trunk``, is published at
+`selenium-python-api-docs.readthedocs.io <https://selenium-python-api-docs.readthedocs.io/en/latest>`_.
+Use it to read documentation for changes that have not been released yet.
+
+Other Python Selenium documentation is widely mirrored, and much of it predates Selenium 4 and
+describes APIs that have since been removed. Where a mirror disagrees with the official reference,
+the official reference is correct.
 
 ----
 
