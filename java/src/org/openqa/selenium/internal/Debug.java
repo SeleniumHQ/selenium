@@ -29,7 +29,6 @@ import org.jspecify.annotations.Nullable;
 /** Used to provide information about whether Selenium is running under debug mode. */
 public class Debug {
 
-  private static final boolean IS_DEBUG = isDebuggingRequested();
   private static final AtomicBoolean DEBUG_WARNING_LOGGED = new AtomicBoolean(false);
   private static final Logger SELENIUM_LOGGER = Logger.getLogger("org.openqa.selenium");
 
@@ -42,12 +41,8 @@ public class Debug {
     // Utility class
   }
 
-  /** Returns whether either Selenium debug system property was enabled at class initialization. */
+  /** Returns whether either Selenium debug system property is currently enabled. */
   public static boolean isDebugging() {
-    return IS_DEBUG;
-  }
-
-  private static boolean isDebuggingRequested() {
     return Boolean.getBoolean("selenium.debug") || Boolean.getBoolean("selenium.webdriver.verbose");
   }
 
@@ -58,7 +53,7 @@ public class Debug {
    */
   @Deprecated(forRemoval = true)
   public static Level getDebugLogLevel() {
-    return isDebuggingRequested() ? Level.INFO : Level.FINE;
+    return isDebugging() ? Level.INFO : Level.FINE;
   }
 
   static synchronized boolean isHandlerCurrentlyInstalled() {
@@ -93,7 +88,7 @@ public class Debug {
    * repair an externally removed handler or a less-verbose logger level.
    */
   public static synchronized void configureLogger() {
-    boolean shouldDebug = isDebugAll() || isDebuggingRequested();
+    boolean shouldDebug = isDebugAll() || isDebugging();
     if (shouldDebug == loggerConfigured
         && (!shouldDebug
             || (isHandlerCurrentlyInstalled()

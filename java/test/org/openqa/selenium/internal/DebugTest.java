@@ -83,12 +83,12 @@ class DebugTest {
   }
 
   @Test
-  void isDebuggingRetainsItsClassInitializationSemantics() {
-    boolean initializedValue = Debug.isDebugging();
+  void isDebuggingReflectsPropertySetAfterClassLoad() {
+    assertThat(Debug.isDebugging()).isFalse();
 
-    System.setProperty("selenium.debug", Boolean.toString(!initializedValue));
+    System.setProperty("selenium.debug", "true");
 
-    assertThat(Debug.isDebugging()).isEqualTo(initializedValue);
+    assertThat(Debug.isDebugging()).isTrue();
   }
 
   @Test

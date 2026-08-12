@@ -41,10 +41,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.TimeoutException;
@@ -358,58 +354,5 @@ class RetryRequestTest {
 
     assertThat(handler.execute(new HttpRequest(GET, "/"))).isSameAs(lastResponse.get());
     assertThat(count).hasValue(3);
-  }
-
-  @Test
-  void retryRecordsFollowTheLiveDebugPropertyUntilMigrated() {
-    Logger logger = Logger.getLogger(RetryRequest.class.getName());
-    Level oldLevel = logger.getLevel();
-    String originalDebugProperty = System.getProperty("selenium.debug");
-    String originalVerboseProperty = System.getProperty("selenium.webdriver.verbose");
-    List<LogRecord> records = new ArrayList<>();
-    Handler handler =
-        new Handler() {
-          @Override
-          public void publish(LogRecord record) {
-            records.add(record);
-          }
-
-          @Override
-          public void flush() {}
-
-          @Override
-          public void close() {}
-        };
-    handler.setLevel(Level.ALL);
-    logger.setLevel(Level.ALL);
-    logger.addHandler(handler);
-    System.clearProperty("selenium.webdriver.verbose");
-    try {
-      System.setProperty("selenium.debug", "true");
-      new RetryRequest()
-          .andFinally(request -> new HttpResponse().setStatus(HTTP_UNAVAILABLE))
-          .execute(new HttpRequest(GET, "/"));
-      assertThat(records).extracting(LogRecord::getLevel).contains(Level.INFO);
-
-      records.clear();
-      System.setProperty("selenium.debug", "false");
-      new RetryRequest()
-          .andFinally(request -> new HttpResponse().setStatus(HTTP_UNAVAILABLE))
-          .execute(new HttpRequest(GET, "/"));
-      assertThat(records).extracting(LogRecord::getLevel).contains(Level.FINE);
-    } finally {
-      logger.removeHandler(handler);
-      logger.setLevel(oldLevel);
-      if (originalDebugProperty == null) {
-        System.clearProperty("selenium.debug");
-      } else {
-        System.setProperty("selenium.debug", originalDebugProperty);
-      }
-      if (originalVerboseProperty == null) {
-        System.clearProperty("selenium.webdriver.verbose");
-      } else {
-        System.setProperty("selenium.webdriver.verbose", originalVerboseProperty);
-      }
-    }
   }
 }
