@@ -47,6 +47,8 @@ module Selenium
             user_context: {wire_key: 'userContext', required: false, primitive: 'string'}
           )
 
+          def permission_descriptor(**) = PermissionDescriptor.new(**)
+
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           def set_permission(

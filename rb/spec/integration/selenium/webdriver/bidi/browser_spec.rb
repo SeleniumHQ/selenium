@@ -28,7 +28,7 @@ module Selenium
         let(:bidi) { driver.bidi }
 
         it 'creates a user context',
-           pending_if: {browser: %i[safari safari_preview],
+           pending_if: {browser_family: :safari,
                         reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
           browser = described_class.new(bidi)
           user_context = browser.create_user_context
@@ -37,7 +37,7 @@ module Selenium
         end
 
         it 'gets user contexts',
-           pending_if: {browser: %i[safari safari_preview],
+           pending_if: {browser_family: :safari,
                         reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
           browser = described_class.new(bidi)
           created_context_id = browser.create_user_context['userContext']
@@ -56,7 +56,7 @@ module Selenium
         end
 
         it 'throws an error when removing the default user context',
-           pending_if: {browser: %i[safari safari_preview],
+           pending_if: {browser_family: :safari,
                         reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
           browser = described_class.new(bidi)
           expect {
@@ -65,7 +65,7 @@ module Selenium
         end
 
         it 'throws an error when removing a non-existent user context',
-           pending_if: {browser: %i[safari safari_preview],
+           pending_if: {browser_family: :safari,
                         reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
           browser = described_class.new(bidi)
           expect {
@@ -74,7 +74,7 @@ module Selenium
         end
 
         it 'gets windows',
-           pending_if: {browser: %i[safari safari_preview],
+           pending_if: {browser_family: :safari,
                         reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
           browser = described_class.new(bidi)
           windows = browser.windows

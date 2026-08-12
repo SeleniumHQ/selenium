@@ -22,6 +22,8 @@ module Selenium
       class Transport
         @connection: untyped
 
+        attr_reader connection: untyped
+
         def initialize: (untyped connection) -> void
 
         def execute: (cmd: String, ?params: untyped, ?result: untyped) -> untyped
@@ -30,7 +32,7 @@ module Selenium
 
         def serialize: (untyped params) -> untyped
 
-        def error_message: (Hash[String, untyped] reply) -> String
+        def error_for: (Hash[String, untyped] reply) -> Error::WebDriverError
       end
     end
   end

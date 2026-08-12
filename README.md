@@ -34,8 +34,8 @@ For people looking to get started using Selenium, please check out
 our [User Manual](https://selenium.dev/documentation/) for detailed examples and descriptions, and if you
 get stuck, there are several ways to [Get Help](https://www.selenium.dev/support/).
 
-[![CI](https://github.com/SeleniumHQ/selenium/actions/workflows/ci.yml/badge.svg)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci.yml)
-[![CI - RBE](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-rbe.yml/badge.svg)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-rbe.yml)
+[![CI](https://github.com/SeleniumHQ/selenium/actions/workflows/ci.yml/badge.svg?event=push)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci.yml)
+[![CI - RBE](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-rbe.yml/badge.svg?event=push)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-rbe.yml)
 [![Releases downloads](https://img.shields.io/github/downloads/SeleniumHQ/selenium/total.svg)](https://github.com/SeleniumHQ/selenium/releases)
 
 ## Contributing

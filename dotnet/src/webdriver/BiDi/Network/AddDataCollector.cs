@@ -43,8 +43,7 @@ public sealed record ContextAddDataCollectorOptions : CommandOptions
     {
         Contexts = [context],
         CollectorType = options?.CollectorType,
-        UserContexts = options?.UserContexts,
-        Timeout = options?.Timeout
+        UserContexts = options?.UserContexts
     };
 }
 

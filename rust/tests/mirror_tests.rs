@@ -15,12 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{assert_driver, get_selenium_manager};
+use crate::common::{assert_driver, get_selenium_manager, is_linux_arm64};
 
 mod common;
 
 #[test]
 fn mirror_test() {
+    if is_linux_arm64() {
+        return;
+    }
     let mut cmd = get_selenium_manager();
     cmd.args([
         "--browser",

@@ -37,6 +37,10 @@ module Selenium
 
           PRINT_PARAMETERS_ORIENTATION: Hash[Symbol, String]
 
+          type locator = ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::AccessibilityLocator | ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CssLocator | ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ContextLocator | ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::InnerTextLocator | ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::XPathLocator
+          type clip_rectangle = ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::BoxClipRectangle | ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ElementClipRectangle
+          type download_end_params = ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::DownloadEndParams::CanceledParams | ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::DownloadEndParams::CompleteParams
+
           class Info < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader children: Array[::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Info]?
             attr_reader client_window: String
@@ -49,6 +53,11 @@ module Selenium
           end
 
           class Locator < ::Selenium::WebDriver::BiDi::Serialization::Union
+            def self.accessibility: (?type: String, value: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::AccessibilityLocator::Value) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::AccessibilityLocator
+            def self.css: (?type: String, value: String) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CssLocator
+            def self.context: (?type: String, value: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ContextLocator::Value) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ContextLocator
+            def self.inner_text: (?type: String, value: String, ?ignore_case: bool, ?match_type: Symbol, ?max_depth: Integer) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::InnerTextLocator
+            def self.xpath: (?type: String, value: String) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::XPathLocator
           end
 
           class AccessibilityLocator < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -123,16 +132,18 @@ module Selenium
             attr_reader origin: untyped
             attr_reader format: untyped
             attr_reader clip: untyped
-            def self.new: (context: String, ?origin: Symbol, ?format: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ImageFormat, ?clip: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ClipRectangle) -> instance
+            def self.new: (context: String, ?origin: Symbol, ?format: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ImageFormat, ?clip: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::clip_rectangle) -> instance
           end
 
           class ImageFormat < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: String
             attr_reader quality: untyped
-            def self.new: (type: String, ?quality: Integer) -> instance
+            def self.new: (type: String, ?quality: Numeric) -> instance
           end
 
           class ClipRectangle < ::Selenium::WebDriver::BiDi::Serialization::Union
+            def self.box: (?type: String, x: Numeric, y: Numeric, width: Numeric, height: Numeric) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::BoxClipRectangle
+            def self.element: (?type: String, element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ElementClipRectangle
           end
 
           class ElementClipRectangle < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -195,11 +206,11 @@ module Selenium
 
           class LocateNodesParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
-            attr_reader locator: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Locator
+            attr_reader locator: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::locator
             attr_reader max_node_count: untyped
             attr_reader serialization_options: untyped
             attr_reader start_nodes: untyped
-            def self.new: (context: String, locator: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Locator, ?max_node_count: Integer, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions, ?start_nodes: Array[::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference]) -> instance
+            def self.new: (context: String, locator: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::locator, ?max_node_count: Integer, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions, ?start_nodes: Array[::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference]) -> instance
           end
 
           class LocateNodesResult < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -358,6 +369,8 @@ module Selenium
               attr_reader user_context: untyped
               def self.new: (?status: String, download: String, filepath: String?, context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String) -> instance
             end
+            def self.canceled: (?status: String, download: String, context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::DownloadEndParams::CanceledParams
+            def self.complete: (?status: String, download: String, filepath: String?, context: String, navigation: String?, timestamp: Integer, url: String, ?user_context: String) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::DownloadEndParams::CompleteParams
           end
 
           class UserPromptClosedParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -381,13 +394,29 @@ module Selenium
 
           EVENT_TYPES: Hash[String, untyped]
 
+          def locator: () -> singleton(Locator)
+          def accessibility_locator: (?type: String, value: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::AccessibilityLocator::Value) -> AccessibilityLocator
+          def css_locator: (?type: String, value: String) -> CssLocator
+          def context_locator: (?type: String, value: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ContextLocator::Value) -> ContextLocator
+          def inner_text_locator: (?type: String, value: String, ?ignore_case: bool, ?match_type: Symbol, ?max_depth: Integer) -> InnerTextLocator
+          def x_path_locator: (?type: String, value: String) -> XPathLocator
+          def image_format: (type: String, ?quality: Numeric) -> ImageFormat
+          def clip_rectangle: () -> singleton(ClipRectangle)
+          def element_clip_rectangle: (?type: String, element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference) -> ElementClipRectangle
+          def box_clip_rectangle: (?type: String, x: Numeric, y: Numeric, width: Numeric, height: Numeric) -> BoxClipRectangle
+          def print_margin_parameters: (?bottom: Numeric, ?left: Numeric, ?right: Numeric, ?top: Numeric) -> PrintMarginParameters
+          def print_page_parameters: (?height: Numeric, ?width: Numeric) -> PrintPageParameters
+          def viewport: (width: Integer, height: Integer) -> Viewport
+          def media_track_constraints: (?width: Integer, ?height: Integer, ?frame_rate: Integer) -> MediaTrackConstraints
+          def accessibility_locator_value: (?name: String, ?role: String) -> AccessibilityLocator::Value
+          def context_locator_value: (context: String) -> ContextLocator::Value
           def activate: (context: String) -> untyped
-          def capture_screenshot: (context: String, ?origin: Symbol, ?format: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ImageFormat, ?clip: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ClipRectangle) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CaptureScreenshotResult
+          def capture_screenshot: (context: String, ?origin: Symbol, ?format: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ImageFormat, ?clip: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::clip_rectangle) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CaptureScreenshotResult
           def close: (context: String, ?prompt_unload: bool) -> untyped
           def create: (type: Symbol, ?reference_context: String, ?background: bool, ?user_context: String) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CreateResult
           def get_tree: (?max_depth: Integer, ?root: String) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::GetTreeResult
           def handle_user_prompt: (context: String, ?accept: bool, ?user_text: String) -> untyped
-          def locate_nodes: (context: String, locator: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Locator, ?max_node_count: Integer, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions, ?start_nodes: Array[::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference]) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::LocateNodesResult
+          def locate_nodes: (context: String, locator: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::locator, ?max_node_count: Integer, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions, ?start_nodes: Array[::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference]) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::LocateNodesResult
           def navigate: (context: String, url: String, ?wait: Symbol) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::NavigateResult
           def print: (context: String, ?background: bool, ?margin: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintMarginParameters, ?orientation: Symbol, ?page: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintPageParameters, ?page_ranges: Array[untyped], ?scale: Numeric, ?shrink_to_fit: bool) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintResult
           def reload: (context: String, ?ignore_cache: bool, ?wait: Symbol) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::NavigateResult

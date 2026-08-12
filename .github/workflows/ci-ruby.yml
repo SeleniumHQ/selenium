@@ -2,6 +2,12 @@ name: CI - Ruby
 
 on:
   workflow_call:
+    inputs:
+      smoke:
+        description: Run smoke tests only (callers pass false to run the full matrix)
+        required: false
+        type: boolean
+        default: true
   workflow_dispatch:
     inputs:
       smoke:
@@ -25,7 +31,7 @@ jobs:
   # covers truffleruby and the most recent MRI release.
   unit-tests:
     name: Unit Tests
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.smoke)
+    if: github.event_name == 'schedule' || !inputs.smoke
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -48,7 +54,7 @@ jobs:
 
   smoke:
     name: ${{ matrix.os }}-smoke
-    if: github.event_name != 'schedule' && (github.event_name != 'workflow_dispatch' || inputs.smoke)
+    if: github.event_name != 'schedule' && inputs.smoke
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -79,13 +85,13 @@ jobs:
 
   os-tests-full:
     name: ${{ matrix.os }}-full
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.smoke)
+    if: github.event_name == 'schedule' || !inputs.smoke
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
         os: [windows]
-        tag_filters: [chrome-beta, firefox-beta, edge-local]
+        tag_filters: [chrome-beta, firefox-beta, "edge-local,edge-bidi"]
         include:
           - os: macos
             tag_filters: safari-local,safari-preview-bidi

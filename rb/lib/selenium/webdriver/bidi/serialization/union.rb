@@ -48,6 +48,11 @@ module Selenium
             # object, so a non-Hash payload is a schema violation rather than a scalar arm.
             def object_only = @object_only = true
 
+            # Declared (via the schema's `scalarValues` signal) on a non-object_only union whose
+            # bare-scalar arms are a fixed set of literals (input.Origin's "viewport" / "pointer").
+            # An outbound scalar outside that set matches no arm, so it is a caller error.
+            def scalar_values(*values) = @scalar_values = values
+
             # A non-Hash payload is a bare scalar arm (e.g. input.Origin's "viewport") with no
             # object to dispatch on, so it is returned unchanged — unless every arm is an object
             # (object_only), where a non-Hash cannot match any variant and is a wire error.
@@ -55,12 +60,12 @@ module Selenium
               unless json_payload.is_a?(::Hash)
                 return json_payload unless @object_only
 
-                raise Error::WebDriverError, "#{name} expected an object on the wire, got #{json_payload.inspect}"
+                raise Error::SerializationError, "#{name} expected an object on the wire, got #{json_payload.inspect}"
               end
 
               variant = select(json_payload)
               unless variant
-                raise Error::WebDriverError,
+                raise Error::SerializationError,
                       "#{name} received a variant not in this Selenium's BiDi schema: #{json_payload.inspect}"
               end
               Protocol.const_get(variant).from_json(json_payload)
@@ -84,7 +89,35 @@ module Selenium
               raise ::ArgumentError, "invalid combination for #{name}: #{invalid.join(', ')}"
             end
 
+            # Outbound mirror of from_json: is +value+ one this union accepts? Any variant is accepted,
+            # and a variant that is itself a union recurses (e.g. LocalValue's RemoteReference fallback).
+            # A non-object_only union (e.g. input.Origin) also admits one of its pinned bare-scalar
+            # literals; an object (a Hash or another union's record) that matched no variant does not.
+            def valid_outbound?(value)
+              return true if variant_refs.any? { |ref| variant_accepts?(ref, value) }
+
+              !@object_only && scalar_arm?(value)
+            end
+
             private
+
+            # A bare-scalar arm must be one of the literals the schema pinned for this union
+            # (scalar_values, e.g. input.Origin's "viewport" / "pointer"). The generator guarantees a
+            # non-object_only union declares them, so no runtime guard is needed here.
+            def scalar_arm?(value)
+              @scalar_values.include?(value)
+            end
+
+            # Every variant's class name: the discriminated table, the presence paths, and the fallback.
+            def variant_refs
+              @variant_refs ||= [*@variants&.values, *@presence&.keys, @fallback].compact
+            end
+
+            # A variant that is itself a union recurses; a record variant is matched by instance.
+            def variant_accepts?(ref, value)
+              klass = (@variant_classes ||= {})[ref] ||= Protocol.const_get(ref)
+              klass < Union ? klass.valid_outbound?(value) : value.is_a?(klass)
+            end
 
             # The discriminator value may legitimately be null (e.g. script.NullValue's
             # "null" tag), so it is matched by key presence.

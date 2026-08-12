@@ -137,10 +137,10 @@ internal class SessionTests : BiDiTestFixture
 
         await using var sub = await bidi.Log.EntryAdded.StreamAsync();
 
-        Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        Assert.That(async () =>
         {
             await foreach (var _ in sub.ReadAllAsync(cts.Token)) { }
-        });
+        }, Throws.InstanceOf<OperationCanceledException>());
     }
 
     [Test]

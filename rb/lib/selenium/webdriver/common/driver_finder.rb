@@ -52,8 +52,8 @@ module Selenium
           path = @service.executable_path || env_path || class_path
           path ? paths_from_service(path) : paths_from_manager
         rescue StandardError => e
-          WebDriver.logger.error("Exception occurred: #{e.message}")
-          WebDriver.logger.error("Backtrace:\n\t#{e.backtrace&.join("\n\t")}")
+          WebDriver.logger.error("Exception occurred: #{e.message}", id: :driver_finder)
+          WebDriver.logger.error("Backtrace:\n\t#{e.backtrace&.join("\n\t")}", id: :driver_finder)
           raise Error::NoSuchDriverError, "Unable to obtain #{@service.class::EXECUTABLE}"
         end
       end
@@ -69,7 +69,8 @@ module Selenium
 
       def paths_from_service(path)
         exe = @service.class::EXECUTABLE
-        WebDriver.logger.debug("Skipping Selenium Manager; path to #{exe} specified in service class: #{path}")
+        WebDriver.logger.debug("Skipping Selenium Manager; path to #{exe} specified in service class: #{path}",
+                               id: :driver_finder)
         Platform.assert_executable(path)
         {driver_path: path}
       end

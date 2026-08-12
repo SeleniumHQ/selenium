@@ -111,7 +111,7 @@ module Selenium
           end
 
           it 'raises an error if the proxy is not an HTTP proxy' do
-            client.proxy = Proxy.new(ftp: 'ftp://example.com')
+            client.proxy = Proxy.new(ssl: 'ssl://example.com')
             expect { client.send :http }.to raise_error(Error::WebDriverError)
           end
 

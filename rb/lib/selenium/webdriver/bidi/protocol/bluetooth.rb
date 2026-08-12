@@ -150,6 +150,9 @@ module Selenium
               context: {wire_key: 'context', primitive: 'string'},
               prompt: {wire_key: 'prompt', primitive: 'string'}
             )
+
+            def self.true(**) = Bluetooth::HandleRequestDevicePromptParameters::AcceptParameters.new(**)
+            def self.false(**) = Bluetooth::HandleRequestDevicePromptParameters::CancelParameters.new(**)
           end
 
           # @api private
@@ -324,6 +327,11 @@ module Selenium
             'bluetooth.requestDevicePromptUpdated' => Bluetooth::RequestDevicePromptUpdatedParameters,
             'bluetooth.gattConnectionAttempted' => Bluetooth::GattConnectionAttemptedParameters
           }.freeze
+
+          def bluetooth_manufacturer_data(**) = BluetoothManufacturerData.new(**)
+          def characteristic_properties(**) = CharacteristicProperties.new(**)
+          def scan_record(**) = ScanRecord.new(**)
+          def simulate_advertisement_scan_entry_parameters(**) = SimulateAdvertisementScanEntryParameters.new(**)
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/

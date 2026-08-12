@@ -102,6 +102,9 @@ module Selenium
               exception: 'Script::EvaluateResultException'
             )
             object_only
+
+            def self.success(**) = Script::EvaluateResultSuccess.new(**)
+            def self.exception(**) = Script::EvaluateResultException.new(**)
           end
 
           # @api private
@@ -169,6 +172,20 @@ module Selenium
             )
             fallback 'Script::RemoteReference'
             object_only
+
+            def self.undefined(**) = Script::UndefinedValue.new(**)
+            def self.null(**) = Script::NullValue.new(**)
+            def self.string(**) = Script::StringValue.new(**)
+            def self.number(**) = Script::NumberValue.new(**)
+            def self.boolean(**) = Script::BooleanValue.new(**)
+            def self.bigint(**) = Script::BigIntValue.new(**)
+            def self.channel(**) = Script::ChannelValue.new(**)
+            def self.array(**) = Script::ArrayLocalValue.new(**)
+            def self.date(**) = Script::DateLocalValue.new(**)
+            def self.map(**) = Script::MapLocalValue.new(**)
+            def self.object(**) = Script::ObjectLocalValue.new(**)
+            def self.regexp(**) = Script::RegExpLocalValue.new(**)
+            def self.set(**) = Script::SetLocalValue.new(**)
           end
 
           # @api private
@@ -248,6 +265,13 @@ module Selenium
               bigint: 'Script::BigIntValue'
             )
             object_only
+
+            def self.undefined(**) = Script::UndefinedValue.new(**)
+            def self.null(**) = Script::NullValue.new(**)
+            def self.string(**) = Script::StringValue.new(**)
+            def self.number(**) = Script::NumberValue.new(**)
+            def self.boolean(**) = Script::BooleanValue.new(**)
+            def self.bigint(**) = Script::BigIntValue.new(**)
           end
 
           # @api private
@@ -314,6 +338,15 @@ module Selenium
               worklet: 'Script::WorkletRealmInfo'
             )
             object_only
+
+            def self.window(**) = Script::WindowRealmInfo.new(**)
+            def self.dedicated_worker(**) = Script::DedicatedWorkerRealmInfo.new(**)
+            def self.shared_worker(**) = Script::SharedWorkerRealmInfo.new(**)
+            def self.service_worker(**) = Script::ServiceWorkerRealmInfo.new(**)
+            def self.worker(**) = Script::WorkerRealmInfo.new(**)
+            def self.paint_worklet(**) = Script::PaintWorkletRealmInfo.new(**)
+            def self.audio_worklet(**) = Script::AudioWorkletRealmInfo.new(**)
+            def self.worklet(**) = Script::WorkletRealmInfo.new(**)
           end
 
           # @api private
@@ -490,6 +523,33 @@ module Selenium
               window: 'Script::WindowProxyRemoteValue'
             )
             object_only
+
+            def self.undefined(**) = Script::UndefinedValue.new(**)
+            def self.null(**) = Script::NullValue.new(**)
+            def self.string(**) = Script::StringValue.new(**)
+            def self.number(**) = Script::NumberValue.new(**)
+            def self.boolean(**) = Script::BooleanValue.new(**)
+            def self.bigint(**) = Script::BigIntValue.new(**)
+            def self.symbol(**) = Script::SymbolRemoteValue.new(**)
+            def self.array(**) = Script::ArrayRemoteValue.new(**)
+            def self.object(**) = Script::ObjectRemoteValue.new(**)
+            def self.function(**) = Script::FunctionRemoteValue.new(**)
+            def self.regexp(**) = Script::RegExpRemoteValue.new(**)
+            def self.date(**) = Script::DateRemoteValue.new(**)
+            def self.map(**) = Script::MapRemoteValue.new(**)
+            def self.set(**) = Script::SetRemoteValue.new(**)
+            def self.weakmap(**) = Script::WeakMapRemoteValue.new(**)
+            def self.weakset(**) = Script::WeakSetRemoteValue.new(**)
+            def self.generator(**) = Script::GeneratorRemoteValue.new(**)
+            def self.error(**) = Script::ErrorRemoteValue.new(**)
+            def self.proxy(**) = Script::ProxyRemoteValue.new(**)
+            def self.promise(**) = Script::PromiseRemoteValue.new(**)
+            def self.typedarray(**) = Script::TypedArrayRemoteValue.new(**)
+            def self.arraybuffer(**) = Script::ArrayBufferRemoteValue.new(**)
+            def self.nodelist(**) = Script::NodeListRemoteValue.new(**)
+            def self.htmlcollection(**) = Script::HTMLCollectionRemoteValue.new(**)
+            def self.node(**) = Script::NodeRemoteValue.new(**)
+            def self.window(**) = Script::WindowProxyRemoteValue.new(**)
           end
 
           # @api private
@@ -865,6 +925,31 @@ module Selenium
             'script.realmCreated' => Script::RealmInfo,
             'script.realmDestroyed' => Script::RealmDestroyedParameters
           }.freeze
+
+          def channel_value(**) = ChannelValue.new(**)
+          def channel_properties(**) = ChannelProperties.new(**)
+          def local_value = LocalValue
+          def array_local_value(**) = ArrayLocalValue.new(**)
+          def date_local_value(**) = DateLocalValue.new(**)
+          def map_local_value(**) = MapLocalValue.new(**)
+          def object_local_value(**) = ObjectLocalValue.new(**)
+          def reg_exp_value(**) = RegExpValue.new(**)
+          def reg_exp_local_value(**) = RegExpLocalValue.new(**)
+          def set_local_value(**) = SetLocalValue.new(**)
+          def primitive_protocol_value = PrimitiveProtocolValue
+          def undefined_value(**) = UndefinedValue.new(**)
+          def null_value(**) = NullValue.new(**)
+          def string_value(**) = StringValue.new(**)
+          def number_value(**) = NumberValue.new(**)
+          def boolean_value(**) = BooleanValue.new(**)
+          def big_int_value(**) = BigIntValue.new(**)
+          def remote_reference = RemoteReference
+          def shared_reference(**) = SharedReference.new(**)
+          def remote_object_reference(**) = RemoteObjectReference.new(**)
+          def serialization_options(**) = SerializationOptions.new(**)
+          def realm_target(**) = RealmTarget.new(**)
+          def context_target(**) = ContextTarget.new(**)
+          def target = Target
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
