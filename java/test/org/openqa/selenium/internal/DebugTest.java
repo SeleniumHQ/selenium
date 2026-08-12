@@ -274,6 +274,33 @@ class DebugTest {
   }
 
   @Test
+  void seleniumOwnedHandlerRepairsToAMoreVerboseLevel() {
+    boolean oldUseParentHandlers = seleniumLogger().getUseParentHandlers();
+    PrintStream originalErr = System.err;
+    ByteArrayOutputStream capturedErr = new ByteArrayOutputStream();
+    String marker = "finer-check-" + UUID.randomUUID();
+    try {
+      seleniumLogger().setUseParentHandlers(false);
+      System.setErr(new PrintStream(capturedErr));
+      System.setProperty("selenium.debug", "true");
+      Debug.configureLogger();
+
+      seleniumLogger().setLevel(Level.FINER);
+      Debug.configureLogger();
+
+      seleniumLogger().log(Level.FINER, marker);
+      for (Handler handler : seleniumLogger().getHandlers()) {
+        handler.flush();
+      }
+    } finally {
+      System.setErr(originalErr);
+      seleniumLogger().setUseParentHandlers(oldUseParentHandlers);
+    }
+
+    assertThat(capturedErr.toString()).containsOnlyOnce(marker);
+  }
+
+  @Test
   void configureLoggerDoesNotRestoreALevelItNeverChanged() {
     seleniumLogger().setLevel(Level.FINER);
     System.setProperty("selenium.debug", "true");

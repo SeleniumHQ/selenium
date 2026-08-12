@@ -92,7 +92,9 @@ public class Debug {
     if (shouldDebug == loggerConfigured
         && (!shouldDebug
             || (isHandlerCurrentlyInstalled()
-                && effectiveLevel(SELENIUM_LOGGER).intValue() <= Level.FINE.intValue()))) {
+                && effectiveLevel(SELENIUM_LOGGER).intValue() <= Level.FINE.intValue()
+                && installedHandler.getLevel().intValue()
+                    <= effectiveLevel(SELENIUM_LOGGER).intValue()))) {
       return;
     }
 
@@ -107,14 +109,15 @@ public class Debug {
         levelSetByDebug = Level.FINE;
       }
 
+      Level handlerLevel = effectiveLevel(SELENIUM_LOGGER);
       if (isHandlerCurrentlyInstalled()) {
-        installedHandler.setLevel(Level.FINE);
+        installedHandler.setLevel(handlerLevel);
       } else {
         if (installedHandler != null) {
           installedHandler.close();
         }
         Handler handler = new ConsoleHandler();
-        handler.setLevel(Level.FINE);
+        handler.setLevel(handlerLevel);
         Filter belowInfo = record -> record.getLevel().intValue() < Level.INFO.intValue();
         handler.setFilter(belowInfo);
         SELENIUM_LOGGER.addHandler(handler);
