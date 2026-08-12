@@ -361,10 +361,11 @@ class RetryRequestTest {
   }
 
   @Test
-  void retryRecordsStayFineWhenSystemPropertyDebuggingIsEnabled() {
+  void retryRecordsFollowTheLiveDebugPropertyUntilMigrated() {
     Logger logger = Logger.getLogger(RetryRequest.class.getName());
     Level oldLevel = logger.getLevel();
     String originalDebugProperty = System.getProperty("selenium.debug");
+    String originalVerboseProperty = System.getProperty("selenium.webdriver.verbose");
     List<LogRecord> records = new ArrayList<>();
     Handler handler =
         new Handler() {
@@ -382,23 +383,32 @@ class RetryRequestTest {
     handler.setLevel(Level.ALL);
     logger.setLevel(Level.ALL);
     logger.addHandler(handler);
-    System.setProperty("selenium.debug", "false");
+    System.clearProperty("selenium.webdriver.verbose");
     try {
       System.setProperty("selenium.debug", "true");
       new RetryRequest()
           .andFinally(request -> new HttpResponse().setStatus(HTTP_UNAVAILABLE))
           .execute(new HttpRequest(GET, "/"));
+      assertThat(records).extracting(LogRecord::getLevel).contains(Level.INFO);
 
+      records.clear();
+      System.setProperty("selenium.debug", "false");
+      new RetryRequest()
+          .andFinally(request -> new HttpResponse().setStatus(HTTP_UNAVAILABLE))
+          .execute(new HttpRequest(GET, "/"));
       assertThat(records).extracting(LogRecord::getLevel).contains(Level.FINE);
     } finally {
-      System.setProperty("selenium.debug", "false");
-      assertThat(System.getProperty("selenium.debug")).isEqualTo("false");
       logger.removeHandler(handler);
       logger.setLevel(oldLevel);
       if (originalDebugProperty == null) {
         System.clearProperty("selenium.debug");
       } else {
         System.setProperty("selenium.debug", originalDebugProperty);
+      }
+      if (originalVerboseProperty == null) {
+        System.clearProperty("selenium.webdriver.verbose");
+      } else {
+        System.setProperty("selenium.webdriver.verbose", originalVerboseProperty);
       }
     }
   }

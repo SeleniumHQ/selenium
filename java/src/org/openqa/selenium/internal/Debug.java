@@ -29,48 +29,36 @@ import org.jspecify.annotations.Nullable;
 /** Used to provide information about whether Selenium is running under debug mode. */
 public class Debug {
 
+  private static final boolean IS_DEBUG = isDebuggingRequested();
   private static final AtomicBoolean DEBUG_WARNING_LOGGED = new AtomicBoolean(false);
   private static final Logger SELENIUM_LOGGER = Logger.getLogger("org.openqa.selenium");
 
   private static boolean loggerConfigured = false;
-  private static Handler installedHandler = null;
-  private static Level previousLevel = null;
-  private static boolean levelRaisedByDebug = false;
-  private static Level configuredLevel = null;
-  private static Level levelSetByDebug = null;
+  private static @Nullable Handler installedHandler;
+  private static @Nullable Level previousLevel;
+  private static @Nullable Level levelSetByDebug;
 
   private Debug() {
     // Utility class
   }
 
-  /**
-   * Reports whether Selenium debug logging has been requested via the {@code selenium.debug} or the
-   * legacy {@code selenium.webdriver.verbose} system property. Read live on every call, so a
-   * property change made at runtime is reflected immediately.
-   *
-   * @return true when either the {@code selenium.debug} or the {@code selenium.webdriver.verbose}
-   *     system property is set to {@code true}; false otherwise
-   */
+  /** Returns whether either Selenium debug system property was enabled at class initialization. */
   public static boolean isDebugging() {
+    return IS_DEBUG;
+  }
+
+  private static boolean isDebuggingRequested() {
     return Boolean.getBoolean("selenium.debug") || Boolean.getBoolean("selenium.webdriver.verbose");
   }
 
   /**
-   * Returns the log level that debug output should be reported at: {@link Level#INFO} when {@link
-   * #isDebugging()} is true, {@link Level#FINE} otherwise.
+   * Returns the legacy level selected by the current debug system properties.
    *
-   * @deprecated Individual log statements no longer change what severity they report at based on
-   *     this switch; {@link #configureLogger()} raises the real {@code org.openqa.selenium} logger
-   *     to {@link Level#FINE} instead, which is the ordinary way to see Selenium's debug output.
-   *     Enable it with {@code -Dselenium.debug=true}, the {@code SE_DEBUG} environment variable, or
-   *     directly via {@code Logger.getLogger("org.openqa.selenium").setLevel(Level.FINE)}. This
-   *     method's own behavior is unchanged and kept only for existing call sites still comparing
-   *     against it.
-   * @return {@link Level#INFO} when debugging is enabled; {@link Level#FINE} otherwise
+   * @deprecated Log at a fixed severity and use {@link #configureLogger()} to expose debug output.
    */
   @Deprecated(forRemoval = true)
   public static Level getDebugLogLevel() {
-    return isDebugging() ? Level.INFO : Level.FINE;
+    return isDebuggingRequested() ? Level.INFO : Level.FINE;
   }
 
   static synchronized boolean isHandlerCurrentlyInstalled() {
@@ -89,16 +77,6 @@ public class Debug {
     return everything;
   }
 
-  /**
-   * Computes {@code logger}'s effective level: its own level if set, otherwise the first non-null
-   * level found walking up its {@link Logger#getParent()} chain, falling back to {@link Level#INFO}
-   * (JUL's own root default) if none is ever set. {@link Logger} has no single built-in method for
-   * this, but walking the parent chain is how the JVM itself resolves it internally when deciding
-   * whether a record is loggable.
-   *
-   * @param logger the logger to compute the effective level of
-   * @return the effective level; never {@code null}
-   */
   private static Level effectiveLevel(Logger logger) {
     for (Logger current = logger; current != null; current = current.getParent()) {
       Level level = current.getLevel();
@@ -109,108 +87,54 @@ public class Debug {
     return Level.INFO;
   }
 
-  @Nullable
-  private static Level getRequestedLogLevel() {
-    if (isDebugAll()) {
-      return Level.FINE;
-    }
-    if (isDebugging()) {
-      return Level.FINE;
-    }
-    return null;
-  }
-
   /**
-   * Reflects the current debug switches ({@code -Dselenium.debug=true}, {@code
-   * -Dselenium.webdriver.verbose=true}, {@code SE_DEBUG}) onto the real {@code org.openqa.selenium}
-   * logger: raises it to {@link Level#FINE} when it is currently less verbose than {@link
-   * Level#FINE}; a level already at {@link Level#FINE} or more verbose is left untouched. It also
-   * attaches a handler Selenium owns, filtered to exclude {@link Level#INFO} and above. Caller-owned
-   * direct or ancestor handlers that accept {@link Level#FINE} can still receive and print FINE
-   * records, so FINE output can be duplicated. Calls are no-ops when the requested configuration
-   * is already consistent, but repair the Selenium-owned handler and FINE loggability after
-   * external divergence. Reversible: once every switch is off, the
-   * next call removes exactly the handler this method installed and restores the logger's level to
-   * what it was before debugging turned on, only when this method was the one that raised it and
-   * unless something else changed the level in the meantime -- that change is left alone rather
-   * than clobbered. This can't distinguish an external override that happens to also set exactly
-   * {@link Level#FINE}: since JUL has no level-change listener to tell the two apart, that specific
-   * case still restores the pre-debug level. Safe to call from concurrent driver construction.
-   *
-   * <p>Cross-binding note: the Python binding does the analogous thing at import time (the {@code
-   * SE_DEBUG} block at the top of {@code py/selenium/webdriver/__init__.py}): when the {@code
-   * SE_DEBUG} environment variable is set it puts the {@code selenium} logger at {@code DEBUG} and
-   * attaches an unfiltered {@code StreamHandler} if the logger has none of its own. Two deliberate
-   * differences here: Java only raises the level when the logger is currently less verbose than
-   * {@link Level#FINE} (Python sets {@code DEBUG} unconditionally), and Java's Selenium-owned
-   * handler is filtered to records below {@link Level#INFO}. Caller-owned direct or ancestor
-   * handlers accepting {@link Level#FINE} can still print FINE records, so duplicates remain
-   * possible.
+   * Applies the current Selenium debug switches to the {@code org.openqa.selenium} logger. Selenium
+   * owns the added handler and restores only logger state that it changed. Repeated calls also
+   * repair an externally removed handler or a less-verbose logger level.
    */
   public static synchronized void configureLogger() {
-    Level requestedLevel = getRequestedLogLevel();
-    boolean shouldDebug = requestedLevel != null;
-    // When shouldDebug is on and already configured, only skip if the handler this method
-    // installed is still actually attached -- something outside this class (e.g. a LogManager
-    // reset, or unrelated code calling removeHandler() directly) can remove it without ever
-    // going through configureLogger(), and that divergence must be repaired here rather than
-    // silently left until the debug switch itself changes.
+    boolean shouldDebug = isDebugAll() || isDebuggingRequested();
     if (shouldDebug == loggerConfigured
         && (!shouldDebug
             || (isHandlerCurrentlyInstalled()
-                && requestedLevel.equals(configuredLevel)
-                && effectiveLevel(SELENIUM_LOGGER).intValue() <= requestedLevel.intValue()))) {
+                && effectiveLevel(SELENIUM_LOGGER).intValue() <= Level.FINE.intValue()))) {
       return;
     }
 
     if (shouldDebug) {
-      // Capture the original own level on a genuine off->on transition. A repair call must not
-      // overwrite this snapshot with the level it is repairing.
       if (!loggerConfigured) {
-        configuredLevel = requestedLevel;
         previousLevel = SELENIUM_LOGGER.getLevel();
-        levelRaisedByDebug = false;
         levelSetByDebug = null;
       }
 
-      if (effectiveLevel(SELENIUM_LOGGER).intValue() > requestedLevel.intValue()) {
-        SELENIUM_LOGGER.setLevel(requestedLevel);
-        levelSetByDebug = requestedLevel;
-        levelRaisedByDebug = true;
+      if (effectiveLevel(SELENIUM_LOGGER).intValue() > Level.FINE.intValue()) {
+        SELENIUM_LOGGER.setLevel(Level.FINE);
+        levelSetByDebug = Level.FINE;
       }
 
-      configuredLevel = requestedLevel;
       if (isHandlerCurrentlyInstalled()) {
-        installedHandler.setLevel(requestedLevel);
+        installedHandler.setLevel(Level.FINE);
       } else {
+        if (installedHandler != null) {
+          installedHandler.close();
+        }
         Handler handler = new ConsoleHandler();
-        handler.setLevel(requestedLevel);
+        handler.setLevel(Level.FINE);
         Filter belowInfo = record -> record.getLevel().intValue() < Level.INFO.intValue();
         handler.setFilter(belowInfo);
         SELENIUM_LOGGER.addHandler(handler);
         installedHandler = handler;
       }
     } else {
-      // installedHandler can already be null here if it was removed externally and debugging
-      // turned off before any repair call ever ran -- Logger.removeHandler(null) throws NPE per
-      // its javadoc, so guard against that.
       if (installedHandler != null) {
         SELENIUM_LOGGER.removeHandler(installedHandler);
         installedHandler.close();
         installedHandler = null;
       }
-      // Restore only when Debug itself raised the level AND nothing else changed it since. The
-      // equality guard keeps the existing "external override while debugging" protection;
-      // levelRaisedByDebug additionally covers the case where Debug never touched the level at
-      // all and so has nothing to restore.
-      if (levelRaisedByDebug
-          && levelSetByDebug != null
-          && levelSetByDebug.equals(SELENIUM_LOGGER.getLevel())) {
+      if (levelSetByDebug != null && levelSetByDebug.equals(SELENIUM_LOGGER.getLevel())) {
         SELENIUM_LOGGER.setLevel(previousLevel);
       }
-      levelRaisedByDebug = false;
       previousLevel = null;
-      configuredLevel = null;
       levelSetByDebug = null;
     }
 

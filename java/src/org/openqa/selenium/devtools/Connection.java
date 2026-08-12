@@ -51,7 +51,6 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.idealized.target.model.SessionID;
-import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -92,27 +91,9 @@ public class Connection implements Closeable {
     this(client, url, ClientConfig.defaultConfig());
   }
 
-  /**
-   * Creates a new CDP connection to the given URL using the given HTTP client and client
-   * configuration. Before the socket opens, the current Selenium debug switches are reflected onto
-   * the {@code org.openqa.selenium} logger via {@link Debug#configureLogger()}, so connections
-   * constructed directly (bypassing {@code RemoteWebDriver}/{@code DriverFinder}) still honor
-   * {@code -Dselenium.debug} and friends. The deprecated 2-arg constructor delegates here, so this
-   * single call point covers both.
-   *
-   * @param client the HTTP client used to open the underlying web socket; must not be null
-   * @param url the URL to open the web socket connection to
-   * @param clientConfig the client configuration to use when opening the connection
-   */
   public Connection(HttpClient client, String url, ClientConfig clientConfig) {
-    // Reflect the current debug switches before this connection starts logging its wire
-    // diagnostics at FINE -- callers that construct a Connection directly (never going through
-    // RemoteWebDriver or DriverFinder) would otherwise never trigger the raise. Idempotent and
-    // cheap, same pattern as DriverFinder.getBinaryPaths(). The deprecated 2-arg constructor
-    // delegates here, so this single call point covers both.
     this.client = Require.nonNull("HTTP client", client);
     this.wsConfig = wsClientConfig(clientConfig, url);
-    Debug.configureLogger();
     this.socket = this.client.openSocket(new HttpRequest(GET, wsConfig.baseUri()), new Listener());
     this.isClosed = new AtomicBoolean();
   }

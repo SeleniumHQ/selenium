@@ -4,7 +4,6 @@ load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_selenium_test_suite
 SMALL_TESTS = [
     "CdpEndpointFinderTest.java",
     "CdpVersionFinderTest.java",
-    "ConnectionTest.java",
 ]
 
 java_test_suite(
