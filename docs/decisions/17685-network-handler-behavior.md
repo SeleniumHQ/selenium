@@ -195,20 +195,24 @@ network.addRequestHandler(r -> r.addHeader("X-Test", "true"));
 network.addRequestHandler(r -> r.removeHeader("X-Test"));
 ```
 
-7. **An uncaught exception is raised to the user, not logged.** The handler callable is responsible
-   for its own error handling; an exception it does not catch surfaces rather than being swallowed.
-   The event still continues (decision 5) so the browser is not left waiting; what a throwing handler
-   contributed to it before the exception is unspecified.
+7. **An uncaught exception surfaces to the user and stops the chain.** The handler callable is
+   responsible for its own error handling. An exception it does not catch is not swallowed or merely
+   logged: it surfaces to the user so it can be caught, and it does not on its own end the session.
+   When a handler raises, no further handlers run and the event is submitted with the mutations staged
+   by the handlers that completed before it, the same outcome the chain would reach on its own
+   (decision 5). A handler that raises contributes nothing; its own staged mutations are discarded, so
+   each handler applies all-or-nothing.
 
 ```ruby
-# The exception is raised; the header addition from the other handler still applies
-network.add_request_handler { |r| r.add_header("X-Test", true) }
-network.add_request_handler { |r| raise Exception }
+# LIFO: the raising handler runs first, so processing stops before the other handler runs.
+# The request is submitted with what completed handlers staged; the exception surfaces to the user.
+network.add_request_handler { |r| r.add_header("X-Test", true) }   # never runs
+network.add_request_handler { |r| raise Exception }                # runs first, then raises
 ```
 
 ```java
-network.addRequestHandler(r -> r.addHeader("X-Test", "true"));
-network.addRequestHandler(r -> { throw new RuntimeException(); });   // raised to the user
+network.addRequestHandler(r -> r.addHeader("X-Test", "true"));      // never runs
+network.addRequestHandler(r -> { throw new RuntimeException(); });   // runs first, surfaces to the user
 ```
 
 8. **Return values within the callables are ignored.** No meaning will ever be applied to anything a
@@ -339,11 +343,12 @@ network.addRequestHandler(otherTab, r -> { if (blocked(r.url())) r.fail(); });
   - Log the exception instead of raising it — but an uncaught exception is the handler's own bug, so
     it should error, not disappear into a log.
   - End the whole session on any uncaught exception, as an unhandled rejection effectively does in
-    Playwright — disproportionate to one handler's bug: it closes the browser and drops all other
-    handlers, whereas decision 7 surfaces the error and leaves the session running.
-  - Shape the wire outcome on a throw — snapshot each handler so only prior handlers' changes survive,
-    or revert to the browser's original request — but the event resolves before the exception
-    surfaces, so the outcome is moot either way.
+    Playwright — disproportionate to one handler's bug: it closes the browser, whereas decision 7
+    surfaces the error, stops only this event's chain, and leaves the session running.
+  - Keep running the remaining handlers after the throw, or discard what is staged and send the
+    browser's original request — the first runs a chain past a fault the user is already being told
+    about, the second throws away changes from handlers that completed cleanly; stopping and submitting
+    what completed handlers staged does neither.
   - Abort or mock-respond on any handler error — deterministic, but turns a handler bug into a failed
     or empty request instead of letting it proceed.
 - **Return values (decision 8).**
@@ -370,6 +375,8 @@ network.addRequestHandler(otherTab, r -> { if (blocked(r.url())) r.fail(); });
   handlers rather than diverging.
 - Client code can override shared handlers locally and resolve a request its own way, a broken
   handler stays contained, and the original event remains readable.
+- A handler's mutations apply all-or-nothing, so each handler's changes are staged separately and
+  committed only when it returns cleanly rather than accumulated on one shared event object.
 - Authentication handlers gain a callable form in addition to static credentials, so credentials can
   be produced — or the challenge cancelled — per challenge.
 - Handlers can be scoped to a specific browsing or user context, so interception can target a
