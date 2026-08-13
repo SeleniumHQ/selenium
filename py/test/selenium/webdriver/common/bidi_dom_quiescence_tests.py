@@ -394,3 +394,37 @@ def test_wait_for_dom_settled_timeout_reports_active_regions(driver, pages):
 
     assert result["settled"] is False
     assert len(result["activeRegions"]) >= 1
+
+
+# ---------------------------------------------------------------------------
+# Install provenance. A preload script runs before any page script, so the
+# ledger sees everything the document did. Injection into an already-loaded
+# document does not, and a "quiet" report from it is only evidence about the
+# future -- the record has to say so rather than read as a clean bill of
+# health (ADR 17886 decision 9).
+# ---------------------------------------------------------------------------
+
+
+def test_preloaded_oracle_does_not_report_late_install(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    result = driver.wait_for_dom_settled(timeout=2, settle_ms=0.1)
+
+    assert not [u for u in result["unobservable"] if u["reason"] == "late-install"]
+
+
+def test_injected_oracle_reports_its_missing_history(driver, pages):
+    driver.wait_for_dom_settled(timeout=1, settle_ms=0.1)  # ensure the preload is registered
+    script_id = driver._quiescence_script_id
+    assert script_id is not None, "preload registration is a precondition of this test"
+    driver.script._remove_preload_script(script_id)
+    driver._quiescence_script_id = None
+    try:
+        _navigate(driver, pages, "blank.html")
+
+        result = driver.wait_for_dom_settled(timeout=2, settle_ms=0.1)
+
+        assert [u for u in result["unobservable"] if u["reason"] == "late-install"]
+    finally:
+        driver._quiescence_preload_attempted = False
+        driver._ensure_quiescence_preload()
