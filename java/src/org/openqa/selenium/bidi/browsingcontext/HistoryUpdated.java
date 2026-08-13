@@ -19,7 +19,6 @@ package org.openqa.selenium.bidi.browsingcontext;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 
 @Beta
 public class HistoryUpdated {
@@ -30,44 +29,11 @@ public class HistoryUpdated {
 
   private final String url;
 
-  private HistoryUpdated(String browsingContextId, long timestamp, String url) {
-    this.browsingContextId = browsingContextId;
-    this.timestamp = timestamp;
-    this.url = url;
-  }
-
-  public static HistoryUpdated fromJson(JsonInput input) {
-    String browsingContextId = null;
-    Long timestamp = null;
-    String url = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "context":
-          browsingContextId = input.read(String.class);
-          break;
-
-        case "timestamp":
-          timestamp = input.read(Long.class);
-          break;
-
-        case "url":
-          url = input.read(String.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-
-    input.endObject();
-
-    return new HistoryUpdated(
-        Require.nonNull("browsingContext", browsingContextId),
-        Require.positive("Timestamp", timestamp),
-        Require.nonNull("URL", url));
+  // Constructor parameter names are used as JSON field names.
+  private HistoryUpdated(String context, long timestamp, String url) {
+    this.browsingContextId = Require.nonNull("browsingContext", context);
+    this.timestamp = Require.positive("Timestamp", timestamp);
+    this.url = Require.nonNull("URL", url);
   }
 
   public String getBrowsingContextId() {

@@ -19,7 +19,6 @@
 
 using OpenQA.Selenium.BiDi.BrowsingContext;
 using OpenQA.Selenium.BiDi.Speculation;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests.BiDi.Speculation;
 
@@ -39,9 +38,9 @@ internal class SpeculationTests : BiDiTestFixture
         });
 
         // Navigate to a blank page first
-        await context.NavigateAsync(UrlBuilder.WhereIs("simpleTest.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.SimpleTestPage, new() { Wait = ReadinessState.Complete });
 
-        var targetUrl = UrlBuilder.WhereIs("formPage.html");
+        var targetUrl = Urls.FormsPage;
 
         // Add speculation rules with "immediate" eagerness AND a clickable link
         // The link is necessary for the where clause to match

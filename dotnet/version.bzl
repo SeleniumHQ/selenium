@@ -1,11 +1,11 @@
 # BUILD FILE SYNTAX: STARLARK
 
-SE_VERSION = "4.46.0-nightly202606161656"
+SE_VERSION = "4.48.0-nightly202608101808"
 
 SUPPORTED_DEVTOOLS_VERSIONS = [
     "v149",
-    "v147",
-    "v148",
+    "v150",
+    "v151",
 ]
 
 ASSEMBLY_COMPANY = "Selenium Committers"

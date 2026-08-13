@@ -3,9 +3,11 @@ name: CI - Ruby
 on:
   workflow_call:
     inputs:
-      targets:
-        required: true
-        type: string
+      smoke:
+        description: Run smoke tests only (callers pass false to run the full matrix)
+        required: false
+        type: boolean
+        default: true
   workflow_dispatch:
     inputs:
       smoke:
@@ -29,7 +31,7 @@ jobs:
   # covers truffleruby and the most recent MRI release.
   unit-tests:
     name: Unit Tests
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.smoke)
+    if: github.event_name == 'schedule' || !inputs.smoke
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -48,11 +50,11 @@ jobs:
         bazel test
         --keep_going
         --test_size_filters small
-        //rb/spec/...
+        //rb/...
 
   smoke:
     name: ${{ matrix.os }}-smoke
-    if: github.event_name != 'schedule' && (github.event_name != 'workflow_dispatch' || inputs.smoke)
+    if: github.event_name != 'schedule' && inputs.smoke
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -66,7 +68,9 @@ jobs:
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      download-artifact-name: targets
       run: >
+        [ -s bazel-targets-rb.txt ] || echo //rb/... > bazel-targets-rb.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --keep_going
         --flaky_test_attempts 2
@@ -77,23 +81,24 @@ jobs:
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_env=SKIP_PENDING=true
         --test_tag_filters=unit,os-sensitive,se-manager,skip-rbe
-        ${{ inputs.targets || '//rb/...' }}
+        --target_pattern_file=bazel-targets-rb.txt
 
   os-tests-full:
     name: ${{ matrix.os }}-full
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.smoke)
+    if: github.event_name == 'schedule' || !inputs.smoke
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
         os: [windows]
-        tag_filters: [chrome-beta, firefox-beta, edge-local]
+        tag_filters: [chrome-beta, firefox-beta, "edge-local,edge-bidi"]
         include:
           - os: macos
-            tag_filters: safari-local
+            tag_filters: safari-local,safari-preview-bidi
     with:
       name: (${{ matrix.tag_filters }})
       needs-display: true
+      safari-preview: ${{ contains(matrix.tag_filters, 'safari-preview') }}
       os: ${{ matrix.os }}
       rerun-with-debug: true
       run: >

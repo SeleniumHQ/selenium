@@ -8,8 +8,8 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v149:v149.publish
-  //java/src/org/openqa/selenium/devtools/v147:v147.publish
-  //java/src/org/openqa/selenium/devtools/v148:v148.publish
+  //java/src/org/openqa/selenium/devtools/v150:v150.publish
+  //java/src/org/openqa/selenium/devtools/v151:v151.publish
   //java/src/org/openqa/selenium/devtools/latest:latest.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
@@ -101,7 +101,9 @@ end
 
 def trigger_sonatype_publish(token)
   puts 'Triggering Sonatype upload with automatic publishing...'
-  uri = URI('https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.seleniumhq?publishing_type=automatic')
+  url = 'https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/' \
+        'org.seleniumhq?publishing_type=automatic'
+  uri = URI(url)
 
   req = Net::HTTP::Post.new(uri)
   req['Authorization'] = "Basic #{token}"
@@ -143,6 +145,94 @@ end
 desc 'Build Grid Server'
 task :grid do |_task, arguments|
   Bazel.execute('build', arguments.to_a, '//java/src/org/openqa/selenium/grid:executable-grid')
+end
+
+# IDE test runners supply their own JUnit Platform launcher/engine; a second copy clashes.
+JAVA_LIBS_IDE_TEST_RUNTIME = %w[
+  junit-jupiter-engine junit-platform-engine junit-platform-launcher junit-platform-reporting
+].freeze
+
+# Third-party jars on the IntelliJ modules' resolved classpath. Scoping to this drops unused
+# transitives (e.g. javacc's test-only junit-4) by construction. Reads two providers, duck-typed
+# because cquery keys them by long Starlark ids: JavaInfo.transitive_runtime_jars for libraries, and
+# JavaRuntimeClasspathInfo.runtime_classpath for the in-tree java_binary tools (CDP/module generators).
+def resolved_third_party_jars
+  expr = '"\n".join(' \
+         '[f.path for p in providers(target).values() ' \
+         'if hasattr(p, "transitive_runtime_jars") for f in p.transitive_runtime_jars.to_list()] + ' \
+         '[f.path for p in providers(target).values() ' \
+         'if hasattr(p, "runtime_classpath") for f in p.runtime_classpath.to_list()])'
+  query = 'set(//java/src/... //java/test/... //java/src/dev/...)'
+  jars = []
+  Bazel.execute('cquery', ['--pin_browsers=false', '--output=starlark', "--starlark:expr=#{expr}"], query) do |out|
+    jars = out.lines.map(&:strip)
+              .grep(%r{\+\+maven\+maven/.*\.jar$})
+              .map { |path| File.basename(path).sub(/\A(?:processed|header)_/, '') }
+  end
+  jars.uniq.reject { |base| JAVA_LIBS_IDE_TEST_RUNTIME.any? { |name| base.start_with?(name) } }
+end
+
+desc 'Copy Bazel-built dependency jars to ./java-libs for local development'
+task :local_dev do
+  # pin_browsers defaults true and pulls pinned browsers this task doesn't need. @maven has the
+  # third-party jars; the module builds materialize the generated jars (devtools) the IDE can't rebuild.
+  ['@maven//...', '//java/test/...', '//java/src/dev/...'].each do |target|
+    Bazel.execute('build', ['--pin_browsers=false'], target)
+  end
+
+  needed = resolved_third_party_jars
+  raise 'Resolved classpath query returned no third-party jars' if needed.empty?
+
+  # Bazel.execute merges stdout/stderr, so keep only the path line.
+  execroot = nil
+  Bazel.execute('info', [], 'execution_root') do |out|
+    execroot = out.lines.map(&:strip).grep(%r{[\\/]execroot[\\/]}).last
+  end
+  raise 'Could not determine Bazel execution_root' unless execroot
+
+  # Skip the exec-configuration bazel-out tree (config dir ends in "-exec") to avoid build-tool dupes.
+  exec_config = %r{[\\/]bazel-out[\\/][^\\/]*-exec[\\/]}
+  bin = File.join(execroot, 'bazel-out', '*', 'bin')
+  maven_tree = 'external/rules_jvm_external++maven+maven'
+  jars = Dir.glob([
+                    File.join(bin, maven_tree, '**/*.jar'),
+                    File.join(bin, 'java/src/org/openqa/selenium/devtools/v*/libcdp.jar'),
+                    File.join(bin, 'java/src/org/openqa/selenium/devtools/v*/libcdp-src.jar'),
+                    File.join(bin, 'external/rules_java+/**/librunfiles.jar'),
+                    File.join(bin, 'external/rules_jvm_external+/**/libzip.jar')
+                  ]).grep_v(exec_config)
+
+  lib = File.join(Dir.pwd, 'java-libs')
+  sources = File.join(lib, 'sources')
+  FileUtils.rm_rf(lib)
+  FileUtils.mkdir_p(sources)
+
+  jars.each do |path|
+    base = File.basename(path)
+    if path.include?(maven_tree)
+      # rules_jvm_external emits header_/processed_ compile variants beside the raw jar; skip those
+      # and copy the raw jar, whose clean name matches the stripped `needed` basenames.
+      next if base.start_with?('header_', 'processed_')
+      next unless needed.include?(base.sub(/-(?:sources|src)\.jar$/, '.jar'))
+    elsif base.start_with?('libcdp')
+      # Every CDP version emits libcdp.jar; prefix with the version dir so a flat dir holds them all.
+      base = "#{File.basename(File.dirname(path))}-#{base}"
+    end
+
+    dir = base.end_with?('-sources.jar', '-src.jar') ? sources : lib
+    dest = File.join(dir, base)
+    warn "warning: overwriting #{base} (duplicate basename)" if File.exist?(dest)
+    FileUtils.cp(path, dest)
+  end
+
+  copied = Dir.children(lib).select { |entry| entry.end_with?('.jar') }
+  raise "No dependency jars copied to #{lib}; expected Bazel outputs are missing" if copied.empty?
+
+  # Fail loudly rather than hand the IDE an incomplete classpath if a resolved jar wasn't materialized.
+  missing = needed - copied
+  raise "Resolved classpath jars missing from #{lib}: #{missing.join(', ')}" unless missing.empty?
+
+  puts "Copied #{copied.size} dependency jars to #{lib}"
 end
 
 desc 'Package Java bindings and grid into releasable packages and stage for release'
@@ -239,7 +329,8 @@ end
 
 desc 'Verify Java packages are published on Maven Central'
 task :verify do
-  SeleniumRake.verify_package_published("https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java/#{java_version}/selenium-java-#{java_version}.pom")
+  base = 'https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java'
+  SeleniumRake.verify_package_published("#{base}/#{java_version}/selenium-java-#{java_version}.pom")
 end
 
 desc 'Install jars to local m2 directory'

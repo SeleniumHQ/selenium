@@ -22,10 +22,22 @@ import org.openqa.selenium.Beta;
 
 @Beta
 public interface HasBiDi {
+  /**
+   * @deprecated BiDi is an internal implementation detail. Direct access to the BiDi object from
+   *     drivers will be removed in a future release.
+   */
+  @Deprecated(since = "4.46", forRemoval = true)
   default BiDi getBiDi() {
     return maybeGetBiDi()
         .orElseThrow(() -> new BiDiException("Unable to create a BiDi connection"));
   }
 
+  /**
+   * @deprecated BiDi is an internal implementation detail. Direct access to the BiDi object from
+   *     drivers will be removed in a future release.
+   */
+  @Deprecated(since = "4.46", forRemoval = true)
   Optional<BiDi> maybeGetBiDi();
+
+  Handle getHandle();
 }

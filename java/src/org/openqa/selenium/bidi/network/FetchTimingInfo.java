@@ -18,8 +18,6 @@
 package org.openqa.selenium.bidi.network;
 
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 
 /**
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-networkfetchtiminginfo">BiDi
@@ -69,100 +67,6 @@ public class FetchTimingInfo {
     this.requestStart = requestStart;
     this.responseStart = responseStart;
     this.responseEnd = responseEnd;
-  }
-
-  public static FetchTimingInfo fromJson(JsonInput input) {
-    Double timeOrigin = null;
-    Double requestTime = null;
-    Double redirectStart = null;
-    Double redirectEnd = null;
-    Double fetchStart = null;
-    Double dnsStart = null;
-    Double dnsEnd = null;
-    Double connectStart = null;
-    Double connectEnd = null;
-    Double tlsStart = null;
-    Double requestStart = null;
-    Double responseStart = null;
-    Double responseEnd = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "timeOrigin":
-          timeOrigin = input.read(Double.class);
-          break;
-
-        case "requestTime":
-          requestTime = input.read(Double.class);
-          break;
-
-        case "redirectStart":
-          redirectStart = input.read(Double.class);
-          break;
-
-        case "redirectEnd":
-          redirectEnd = input.read(Double.class);
-          break;
-
-        case "fetchStart":
-          fetchStart = input.read(Double.class);
-          break;
-
-        case "dnsStart":
-          dnsStart = input.read(Double.class);
-          break;
-
-        case "dnsEnd":
-          dnsEnd = input.read(Double.class);
-          break;
-
-        case "connectStart":
-          connectStart = input.read(Double.class);
-          break;
-
-        case "connectEnd":
-          connectEnd = input.read(Double.class);
-          break;
-
-        case "tlsStart":
-          tlsStart = input.read(Double.class);
-          break;
-
-        case "requestStart":
-          requestStart = input.read(Double.class);
-          break;
-
-        case "responseStart":
-          responseStart = input.read(Double.class);
-          break;
-
-        case "responseEnd":
-          responseEnd = input.read(Double.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-
-    input.endObject();
-
-    return new FetchTimingInfo(
-        Require.nonNull("timeOrigin", timeOrigin),
-        Require.nonNull("requestTime", requestTime),
-        Require.nonNull("redirectStart", redirectStart),
-        Require.nonNull("redirectEnd", redirectEnd),
-        Require.nonNull("fetchStart", fetchStart),
-        Require.nonNull("dnsStart", dnsStart),
-        Require.nonNull("dnsEnd", dnsEnd),
-        Require.nonNull("connectStart", connectStart),
-        Require.nonNull("connectEnd", connectEnd),
-        Require.nonNull("tlsStart", tlsStart),
-        Require.nonNull("requestStart", requestStart),
-        Require.nonNull("responseStart", responseStart),
-        Require.nonNull("responseEnd", responseEnd));
   }
 
   public double getTimeOrigin() {

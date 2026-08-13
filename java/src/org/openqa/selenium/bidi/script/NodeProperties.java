@@ -21,8 +21,6 @@ import java.util.Map;
 import java.util.Optional;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.TypeToken;
 
 @Beta
 public class NodeProperties {
@@ -80,78 +78,6 @@ public class NodeProperties {
     this.namespaceURI = namespaceURI;
     this.nodeValue = nodeValue;
     this.shadowRoot = shadowRoot;
-  }
-
-  public static NodeProperties fromJson(JsonInput input) {
-    Long nodeType = null;
-    Long childNodeCount = null;
-    Optional<Map<String, String>> attributes = Optional.empty();
-    Optional<List<RemoteValue>> children = Optional.empty();
-    Optional<String> localName = Optional.empty();
-    Optional<Mode> mode = Optional.empty();
-    Optional<String> namespaceURI = Optional.empty();
-    Optional<String> nodeValue = Optional.empty();
-    Optional<RemoteValue> shadowRoot = Optional.empty();
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "nodeType":
-          nodeType = input.read(Long.class);
-          break;
-
-        case "childNodeCount":
-          childNodeCount = input.read(Long.class);
-          break;
-
-        case "attributes":
-          attributes =
-              Optional.of(input.readNonNull(new TypeToken<Map<String, String>>() {}.getType()));
-          break;
-
-        case "children":
-          children =
-              Optional.of(input.readNonNull(new TypeToken<List<RemoteValue>>() {}.getType()));
-          break;
-
-        case "localName":
-          localName = Optional.of(input.readNonNull(String.class));
-          break;
-
-        case "mode":
-          mode = Optional.of(Mode.findByName(input.readNonNull(String.class)));
-          break;
-
-        case "namespaceURI":
-          namespaceURI = Optional.of(input.readNonNull(String.class));
-          break;
-
-        case "nodeValue":
-          nodeValue = Optional.of(input.readNonNull(String.class));
-          break;
-
-        case "shadowRoot":
-          shadowRoot = Optional.ofNullable(input.read(RemoteValue.class));
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-
-    input.endObject();
-
-    return new NodeProperties(
-        Require.nonNegative("nodeType", nodeType),
-        Require.nonNegative("childNodeCount", childNodeCount),
-        attributes,
-        children,
-        localName,
-        mode,
-        namespaceURI,
-        nodeValue,
-        shadowRoot);
   }
 
   public long getNodeType() {

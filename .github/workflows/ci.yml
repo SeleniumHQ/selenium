@@ -39,7 +39,7 @@ jobs:
         [ "${{ github.event_name }}" == "workflow_call" ] || \
         [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
           echo "Running all targets for ${{ github.event_name }} event"
-          echo "//java/... //py/... //rb/... //dotnet/... //rust/..." > bazel-targets.txt
+          echo "//java/... //py/... //rb/... //dotnet/... //rust/... //javascript/..." > bazel-targets.txt
         else
           if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
             BASE_SHA="HEAD^1"
@@ -67,9 +67,10 @@ jobs:
       java: ${{ steps.read.outputs.java }}
       grid: ${{ steps.read.outputs.grid }}
       py: ${{ steps.read.outputs.py }}
-      rb_targets: ${{ steps.read.outputs.rb_targets }}
+      rb: ${{ steps.read.outputs.rb }}
       dotnet: ${{ steps.read.outputs.dotnet }}
       rust: ${{ steps.read.outputs.rust }}
+      js: ${{ steps.read.outputs.js }}
     steps:
       - name: Download targets
         uses: actions/download-artifact@v8
@@ -91,17 +92,25 @@ jobs:
           process_binding() {
             local pattern=$1 tag=$2
             local lang_targets
-            lang_targets=$(echo "$targets" | tr ' ' '\n' | awk -v p="^${pattern}[:/]" '$0 ~ p' | tr '\n' ' ' | sed 's/ *$//')
+            lang_targets=$(echo "$targets" | tr ' ' '\n' | awk -v p="^${pattern}[:/]" '$0 ~ p')
             if [ -n "$lang_targets" ]; then
-              echo "${tag}_targets=$lang_targets" >> "$GITHUB_OUTPUT"
+              echo "$tag=true" >> "$GITHUB_OUTPUT"
+              echo "$lang_targets" > "bazel-targets-${tag}.txt"
             fi
           }
           check_binding "//java" "java"
           check_binding "openqa/selenium/grid" "grid"
-          check_binding "//py" "py"
           check_binding "//dotnet" "dotnet"
           check_binding "//rust" "rust"
+          check_binding "//javascript" "js"
           process_binding "//rb" "rb"
+          process_binding "//py" "py"
+      - name: Upload target files
+        uses: actions/upload-artifact@v7
+        with:
+          name: targets
+          path: bazel-targets-*.txt
+          if-no-files-found: ignore
   dotnet:
     name: .NET
     needs: read-targets
@@ -130,9 +139,9 @@ jobs:
     name: Ruby
     needs: read-targets
     uses: ./.github/workflows/ci-ruby.yml
-    if: needs.read-targets.outputs.rb_targets != ''
+    if: needs.read-targets.outputs.rb != ''
     with:
-      targets: ${{ needs.read-targets.outputs.rb_targets }}
+      smoke: ${{ !(github.head_ref == 'pinned-browser-updates' && contains(github.event.pull_request.title, '(major)')) }}
 
   rust:
     name: Rust
@@ -142,10 +151,16 @@ jobs:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
     if: needs.read-targets.outputs.rust != ''
 
+  javascript:
+    name: JavaScript
+    needs: read-targets
+    uses: ./.github/workflows/ci-javascript.yml
+    if: needs.read-targets.outputs.js != ''
+
   ci-success:
     name: CI Success
     if: always()
-    needs: [check, read-targets, dotnet, java, grid, python, ruby, rust]
+    needs: [check, read-targets, dotnet, java, grid, python, ruby, rust, javascript]
     runs-on: ubuntu-latest
     steps:
       - name: Verify required jobs succeeded

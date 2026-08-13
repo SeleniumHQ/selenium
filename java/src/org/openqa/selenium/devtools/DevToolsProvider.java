@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.concurrent.Lazy;
-import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.RemoteExecuteMethod;
@@ -74,7 +73,7 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
     Object cdpVersion = caps.getCapability("se:cdpVersion");
     String version = cdpVersion instanceof String ? (String) cdpVersion : caps.getBrowserVersion();
 
-    CdpInfo info = new CdpVersionFinder().match(version).orElseGet(NoOpCdpInfo::new);
+    CdpInfo info = new CdpVersionFinder().findMatchingVersion(version);
     return SeleniumCdpConnection.create(
             caps, ((RemoteExecuteMethod) executeMethod).getWrappedDriver().getClientConfig())
         .map(conn -> new DevTools(info::getDomains, conn))

@@ -1,3 +1,31 @@
+## 4.47.0
+
+- Support CDP versions: v149, v150, v151
+- link generated BiDi elements to their spec definitions (#17781)
+- add objectOnly/preserveExtras/scalar-primitive BiDi schema signals (#17784)
+- [build] Fix GeckoDriver rejecting system-access via capabilities (#17811)
+- [build] standardize generated-file license and not to edit markers across generators (#17816)
+- [build] Download and bundle Selenium Manager SBOM and NOTICE in each package (#17820)
+- [build] BiDi schema generation cleanup (#17837)
+- [build] Merge vendor cddl files into shared BiDi schema and implement custom Firefox webExtension options (#17840)
+- [grid] honor client-advertised se:remoteUrl for reachable BiDi/CDP/VNC URLs (#17790)
+- remove deprecated FTP proxy support (#17846)
+- [bidi] Correct float/enum type fidelity in the shared schema and validate primitives outbound in Ruby (#17852)
+- [bidi] mark BiDi types extensible per spec and update Ruby handling (#17853)
+- validate BiDi outbound ref fields against their declared type (#17861)
+- [build] derive per-type inbound/outbound directionality in the shared schema (#17864)
+- [build] update node versioning for testing and publishing (#17866)
+- Wait for async BiDi events and window resize in flaky tests (#17874)
+- deprecate invalid Firefox profile code (#17871)
+- [build] Automated Browser Version Update with CDP (#17873)
+
+## 4.46.0
+
+- Support CDP versions: v148, v149, v150
+- Add binding-neutral BiDi schema with cddl2ts-gated fidelity (#17700)
+- Update cddl to 0.21.0 to fix quoted reserved-word parsing in BiDi codegen (#17752)
+- Add guidance for testing conventions in each language (#16734)
+
 ## 4.45.0
 
 - Support CDP versions: v147, v148, v149

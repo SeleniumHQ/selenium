@@ -29,6 +29,18 @@ copy_file(
     out = "bin/windows/selenium-manager.exe",
 )
 
+copy_file(
+    name = "manager-sbom",
+    src = "//common/manager:selenium-manager-sbom",
+    out = "bin/selenium-manager.cdx.json",
+)
+
+copy_file(
+    name = "manager-notice",
+    src = "//common/manager:selenium-manager-notice",
+    out = "bin/selenium-manager-THIRD-PARTY-NOTICES.txt",
+)
+
 select_file(
     name = "global-license",
     srcs = "//:license",
@@ -65,6 +77,8 @@ rb_gem_build(
         ":license",
         ":manager-linux",
         ":manager-macos",
+        ":manager-notice",
+        ":manager-sbom",
         ":manager-windows",
         ":notice",
     ],
@@ -178,15 +192,30 @@ rb_binary(
 )
 
 rb_binary(
-    name = "bundle-update",
+    name = "bundle-lock",
     args = [
-        "rb/support/bundle_update.rb",
+        "rb/support/bundle.rb",
+        "lock",
     ],
     data = [
         "Gemfile",
     ],
     deps = [
-        "//rb/support:bundle_update",
+        "//rb/support:bundle",
+    ],
+)
+
+rb_binary(
+    name = "bundle-update",
+    args = [
+        "rb/support/bundle.rb",
+        "update",
+    ],
+    data = [
+        "Gemfile",
+    ],
+    deps = [
+        "//rb/support:bundle",
     ],
 )
 

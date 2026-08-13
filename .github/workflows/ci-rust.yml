@@ -29,10 +29,12 @@ jobs:
         include:
           - os: macos
           - os: ubuntu
+          - os: ubuntu-24.04-arm
           - os: windows
     with:
       name: Tests (${{ matrix.os }})
       os: ${{ matrix.os }}
+      rerun-with-debug: true
       run: bazel test --test_env=RUST_BACKTRACE=full --test_env=RUST_TEST_NOCAPTURE=1 --flaky_test_attempts=3 //rust/...
 
   windows-stable:
@@ -112,16 +114,27 @@ jobs:
       - name: "Install cross"
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
-      - name: "Build release binary"
+      - name: "Build release binary (x64)"
         run: cross build --target x86_64-unknown-linux-musl --release
         working-directory: rust
+      - name: "Build release binary (arm64)"
+        run: cross build --target aarch64-unknown-linux-musl --release
+        working-directory: rust
       - name: "Rename binary"
-        run: mv rust/target/x86_64-unknown-linux-musl/release/selenium-manager selenium-manager-linux
+        run: |
+          mv rust/target/x86_64-unknown-linux-musl/release/selenium-manager selenium-manager-linux
+          mv rust/target/aarch64-unknown-linux-musl/release/selenium-manager selenium-manager-linux-arm64
       - name: "Upload release binary"
         uses: actions/upload-artifact@v7
         with:
           name: selenium-manager-linux
           path: selenium-manager-linux
+          retention-days: 6
+      - name: "Upload release binary"
+        uses: actions/upload-artifact@v7
+        with:
+          name: selenium-manager-linux-arm64
+          path: selenium-manager-linux-arm64
           retention-days: 6
 
   linux-debug:
@@ -141,17 +154,29 @@ jobs:
       - name: "Install cross"
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
-      - name: "Build release binary"
+      - name: "Build release binary (x64)"
         run: |
           cross build --target x86_64-unknown-linux-musl --profile dev
           cd target/x86_64-unknown-linux-musl/debug
           tar -cvf ../../../../selenium-manager-linux-debug.tar selenium-manager
+        working-directory: rust
+      - name: "Build release binary (arm64)"
+        run: |
+          cross build --target aarch64-unknown-linux-musl --profile dev
+          cd target/aarch64-unknown-linux-musl/debug
+          tar -cvf ../../../../selenium-manager-linux-arm64-debug.tar selenium-manager
         working-directory: rust
       - name: "Upload release binary"
         uses: actions/upload-artifact@v7
         with:
           name: selenium-manager-linux-debug
           path: selenium-manager-linux-debug.tar
+          retention-days: 6
+      - name: "Upload release binary"
+        uses: actions/upload-artifact@v7
+        with:
+          name: selenium-manager-linux-arm64-debug
+          path: selenium-manager-linux-arm64-debug.tar
           retention-days: 6
 
   macos-stable:
@@ -222,10 +247,41 @@ jobs:
           path: selenium-manager-macos-debug.tar
           retention-days: 6
 
+  sbom:
+    name: "SBOM and Notices"
+    runs-on: ubuntu-latest
+    needs: tests
+    if: github.event_name != 'schedule' && github.event.repository.fork == false && (github.ref == 'refs/heads/trunk' || inputs.release)
+    steps:
+      - name: "Checkout project"
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.branch }}
+      - name: "Update Rust"
+        run: |
+          rustup update
+          rustc -vV
+      - name: "Install SBOM tools"
+        run: cargo install --locked cargo-cyclonedx@0.5.7 cargo-about@0.6.6
+      - name: "Generate SBOM and third-party notices"
+        working-directory: rust
+        run: |
+          # --target all includes target-gated crates for every platform, not just the host.
+          cargo cyclonedx --format json --all-features --target all
+          cargo about generate about.hbs > selenium-manager-THIRD-PARTY-NOTICES.txt
+      - name: "Upload SBOM and notices"
+        uses: actions/upload-artifact@v7
+        with:
+          name: selenium-manager-sbom
+          path: |
+            rust/selenium-manager.cdx.json
+            rust/selenium-manager-THIRD-PARTY-NOTICES.txt
+          retention-days: 6
+
   release:
     name: "Release Binaries"
     runs-on: ubuntu-latest
-    needs: [ macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug ]
+    needs: [ macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug, sbom ]
     if: github.event_name != 'schedule' && github.event.repository.fork == false && (github.ref == 'refs/heads/trunk' || inputs.release)
     steps:
       - name: "Checkout selenium_manager_artifacts"
@@ -240,9 +296,12 @@ jobs:
       - name: "Prepare and Commit"
         run: |
           linux_sha=$(shasum -a 256 artifacts/selenium-manager-linux/selenium-manager-linux | awk '{print $1}')
+          linux_arm64_sha=$(shasum -a 256 artifacts/selenium-manager-linux-arm64/selenium-manager-linux-arm64 | awk '{print $1}')
           macos_sha=$(shasum -a 256 artifacts/selenium-manager-macos/selenium-manager-macos | awk '{print $1}')
           windows_sha=$(shasum -a 256 artifacts/selenium-manager-windows/selenium-manager-windows.exe | awk '{print $1}')
-          echo "{\"macos\": \"$macos_sha\", \"windows\": \"$windows_sha\", \"linux\": \"$linux_sha\"}" > latest.json
+          sbom_sha=$(shasum -a 256 artifacts/selenium-manager-sbom/selenium-manager.cdx.json | awk '{print $1}')
+          notice_sha=$(shasum -a 256 artifacts/selenium-manager-sbom/selenium-manager-THIRD-PARTY-NOTICES.txt | awk '{print $1}')
+          echo "{\"macos\": \"$macos_sha\", \"windows\": \"$windows_sha\", \"linux\": \"$linux_sha\", \"linux-arm64\": \"$linux_arm64_sha\", \"sbom\": \"$sbom_sha\", \"notice\": \"$notice_sha\"}" > latest.json
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
           git add latest.json
@@ -261,8 +320,12 @@ jobs:
           prerelease: false
           files: |
             artifacts/selenium-manager-linux/selenium-manager-linux
+            artifacts/selenium-manager-linux-arm64/selenium-manager-linux-arm64
             artifacts/selenium-manager-macos/selenium-manager-macos
             artifacts/selenium-manager-windows/selenium-manager-windows.exe
             artifacts/selenium-manager-linux-debug/selenium-manager-linux-debug.tar
+            artifacts/selenium-manager-linux-arm64-debug/selenium-manager-linux-arm64-debug.tar
             artifacts/selenium-manager-macos-debug/selenium-manager-macos-debug.tar
             artifacts/selenium-manager-windows-debug/selenium-manager-windows-debug.exe
+            artifacts/selenium-manager-sbom/selenium-manager.cdx.json
+            artifacts/selenium-manager-sbom/selenium-manager-THIRD-PARTY-NOTICES.txt

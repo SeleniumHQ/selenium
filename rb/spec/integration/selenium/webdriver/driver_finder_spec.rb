@@ -53,7 +53,8 @@ module Selenium
 
       it 'downloads the browser into the Selenium cache',
          pending_if: [{browser: :safari, reason: 'browser ships with OS'},
-                  {browser: :edge, platform: :windows, reason: 'Edge MSI installer always writes to system path'}] do
+                      {browser: :edge, platform: :windows,
+                       reason: 'Edge MSI installer always writes to system path'}] do
         Dir.mktmpdir('se-cache') do |cache_dir|
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
                        'SE_FORCE_BROWSER_DOWNLOAD' => ENV.fetch('SE_FORCE_BROWSER_DOWNLOAD', nil)}
@@ -68,7 +69,7 @@ module Selenium
 
       it 'resolves the browser to its system install location',
          skip_unless: [{browser: :safari},
-                     {browser: :edge, platform: :windows}] do
+                       {browser: :edge, platform: :windows}] do
         Dir.mktmpdir('se-cache') do |cache_dir|
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
                        'SE_FORCE_BROWSER_DOWNLOAD' => ENV.fetch('SE_FORCE_BROWSER_DOWNLOAD', nil)}

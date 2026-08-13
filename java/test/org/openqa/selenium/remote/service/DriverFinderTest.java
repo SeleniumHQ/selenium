@@ -40,6 +40,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.chrome.ElectronOptions;
 import org.openqa.selenium.manager.SeleniumManager;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
@@ -196,6 +197,60 @@ class DriverFinderTest {
   }
 
   @Test
+  void createsArgumentsForSeleniumManagerWithSystemProxySettings() throws IOException {
+    createsArgumentsForSeleniumManagerWithProxySettings(ProxyType.SYSTEM);
+  }
+
+  @Test
+  void createsArgumentsForSeleniumManagerWithAutodetectProxySettings() throws IOException {
+    createsArgumentsForSeleniumManagerWithProxySettings(ProxyType.AUTODETECT);
+  }
+
+  @Test
+  void createsArgumentsForSeleniumManagerWithDirectProxySettings() throws IOException {
+    createsArgumentsForSeleniumManagerWithProxySettings(ProxyType.DIRECT);
+  }
+
+  void createsArgumentsForSeleniumManagerWithProxySettings(ProxyType proxyType) throws IOException {
+    when(service.getExecutable()).thenReturn(null);
+    when(service.getDriverProperty()).thenReturn("property.selenium.manager.empty");
+    when(service.getDriverEnvironmentVariable())
+        .thenReturn("ENVIRONMENT_VARIABLE_IGNORES_SELENIUM_MANAGER");
+
+    Proxy proxy = new Proxy().setProxyType(proxyType);
+    Capabilities capabilities =
+        new ImmutableCapabilities(
+            "browserName",
+            "chrome",
+            "browserVersion",
+            "beta",
+            "proxy",
+            proxy,
+            "goog:chromeOptions",
+            Map.of("binary", browserFile.toString()));
+    DriverFinder finder = new DriverFinder(service, capabilities, seleniumManager);
+
+    List<String> arguments = new ArrayList<>();
+    arguments.add("--browser");
+    arguments.add("chrome");
+    arguments.add("--browser-version");
+    arguments.add("beta");
+    arguments.add("--browser-path");
+    arguments.add(browserFile.toString());
+    Result result = new Result(0, "", driverFile.toString(), browserFile.toString());
+    doReturn(result).when(seleniumManager).getBinaryPaths(arguments);
+
+    assertThat(finder.getDriverPath()).isEqualTo(driverFile.toString());
+    assertThat(finder.getBrowserPath()).isEqualTo(browserFile.toString());
+    verify(service, times(1)).getExecutable();
+    verify(service, times(1)).getDriverName();
+    verify(service, times(1)).getDriverProperty();
+    verify(service, times(1)).getDriverEnvironmentVariable();
+    verifyNoMoreInteractions(service);
+    verify(seleniumManager, times(1)).getBinaryPaths(arguments);
+    verifyNoMoreInteractions(seleniumManager);
+  }
+
   @SuppressWarnings("unchecked")
   void electronOptionsPassesElectronBrowserNameToSeleniumManager() throws IOException {
     when(service.getExecutable()).thenReturn(null);

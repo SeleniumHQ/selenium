@@ -25,6 +25,7 @@ module Selenium
       describe Service do
         describe '#new' do
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
+          let(:debug_args) { ENV.key?('SE_DEBUG') ? ['--log-level=DEBUG'] : [] }
 
           before do
             allow(Platform).to receive(:assert_executable)
@@ -53,7 +54,7 @@ module Selenium
           it 'does not create args by default' do
             service = described_class.new
 
-            expect(service.extra_args).to be_empty
+            expect(service.extra_args).to eq(debug_args)
           end
 
           it 'uses sets log path to stdout' do
@@ -77,15 +78,16 @@ module Selenium
           it 'uses provided args' do
             service = described_class.new(args: ['--foo', '--bar'])
 
-            expect(service.extra_args).to eq ['--foo', '--bar']
+            expect(service.extra_args).to eq(['--foo', '--bar'] + debug_args)
           end
 
           context 'when SE_DEBUG is set' do
             around do |example|
+              original_debug = ENV.fetch('SE_DEBUG', nil)
               ENV['SE_DEBUG'] = '1'
               example.run
             ensure
-              ENV.delete('SE_DEBUG')
+              original_debug ? ENV['SE_DEBUG'] = original_debug : ENV.delete('SE_DEBUG')
             end
 
             it 'adds --log-level=DEBUG flag' do
@@ -129,7 +131,7 @@ module Selenium
           it 'is not created when :url is provided' do
             expect {
               driver.new(url: 'http://example.com:4321')
-            }.to raise_error(ArgumentError, "Can't initialize Selenium::WebDriver::IE::Driver with :url")
+            }.to raise_error(ArgumentError, /Can't set the server URL for/)
           end
 
           it 'is created when :url is not provided' do

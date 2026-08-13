@@ -17,37 +17,15 @@
 package org.openqa.selenium.bidi.script;
 
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 
 @Beta
 public class WindowProxyProperties {
 
   private final String browsingContext;
 
-  private WindowProxyProperties(String browsingContext) {
-    this.browsingContext = browsingContext;
-  }
-
-  public static WindowProxyProperties fromJson(JsonInput input) {
-    String browsingContext = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "context":
-          browsingContext = input.read(String.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-
-    input.endObject();
-
-    return new WindowProxyProperties(Require.nonNull("browsingContext", browsingContext));
+  // Constructor parameter names are used as JSON field names.
+  private WindowProxyProperties(String context) {
+    this.browsingContext = context;
   }
 
   public String getBrowsingContext() {

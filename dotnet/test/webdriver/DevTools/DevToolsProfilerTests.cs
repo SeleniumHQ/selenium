@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-using CurrentCdpVersion = OpenQA.Selenium.DevTools.V149;
+using CurrentCdpVersion = OpenQA.Selenium.DevTools.V151;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 
@@ -49,7 +49,7 @@ public class DevToolsProfilerTests : DevToolsTestFixture
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Profiler.Enable();
-        driver.Url = simpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
         await domains.Profiler.SetSamplingInterval(new CurrentCdpVersion.Profiler.SetSamplingIntervalCommandSettings()
         {
             Interval = 30
@@ -71,7 +71,7 @@ public class DevToolsProfilerTests : DevToolsTestFixture
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Profiler.Enable();
-        driver.Url = simpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
         await domains.Profiler.StartPreciseCoverage(new CurrentCdpVersion.Profiler.StartPreciseCoverageCommandSettings()
         {
             CallCount = true,
@@ -96,7 +96,7 @@ public class DevToolsProfilerTests : DevToolsTestFixture
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Profiler.Enable();
-        driver.Url = simpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
         ManualResetEventSlim startSync = new ManualResetEventSlim(false);
         EventHandler<CurrentCdpVersion.Profiler.ConsoleProfileStartedEventArgs> consoleProfileStartedHandler = (sender, e) =>
         {
@@ -107,7 +107,7 @@ public class DevToolsProfilerTests : DevToolsTestFixture
 
         await domains.Profiler.Start();
         startSync.Wait(TimeSpan.FromSeconds(5));
-        driver.Navigate().Refresh();
+        Driver.Navigate().Refresh();
 
         ManualResetEventSlim finishSync = new ManualResetEventSlim(false);
         EventHandler<CurrentCdpVersion.Profiler.ConsoleProfileFinishedEventArgs> consoleProfileFinishedHandler = (sender, e) =>

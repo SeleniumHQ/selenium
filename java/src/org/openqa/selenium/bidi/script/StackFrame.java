@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 
 @Beta
 public class StackFrame {
@@ -33,9 +32,10 @@ public class StackFrame {
   private final int lineNumber;
   private final int columnNumber;
 
-  private StackFrame(String scriptUrl, String function, int lineNumber, int columnNumber) {
-    this.url = scriptUrl;
-    this.functionName = function;
+  // Constructor parameter names are used as JSON field names.
+  private StackFrame(String url, String functionName, int lineNumber, int columnNumber) {
+    this.url = url;
+    this.functionName = functionName;
     this.lineNumber = Require.nonNegative("lineNumber", lineNumber);
     this.columnNumber = Require.nonNegative("columnNumber", columnNumber);
   }
@@ -54,46 +54,6 @@ public class StackFrame {
 
   public int getColumnNumber() {
     return columnNumber;
-  }
-
-  public static StackFrame fromJson(JsonInput input) {
-    String url = null;
-    String functionName = null;
-    Integer lineNumber = null;
-    Integer columnNumber = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "url":
-          url = input.read(String.class);
-          break;
-
-        case "functionName":
-          functionName = input.read(String.class);
-          break;
-
-        case "lineNumber":
-          lineNumber = input.read(Integer.class);
-          break;
-
-        case "columnNumber":
-          columnNumber = input.read(Integer.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-
-    input.endObject();
-
-    return new StackFrame(
-        Require.nonNull("url", url),
-        Require.nonNull("functionName", functionName),
-        Require.nonNull("lineNumber", lineNumber),
-        Require.nonNull("columnNumber", columnNumber));
   }
 
   private Map<String, Object> toJson() {

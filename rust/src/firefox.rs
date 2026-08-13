@@ -21,7 +21,8 @@ use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_content_from_link, read_redirect_from_link};
 use crate::files::{BrowserPath, compose_driver_path_in_cache};
 use crate::metadata::{
-    create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
+    create_driver_metadata, get_driver_version_from_metadata, get_metadata,
+    should_cache_driver_version, write_metadata,
 };
 use crate::{
     BETA, DASH_VERSION, DEV, ESR, LATEST_RELEASE, Logger, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, STABLE,
@@ -61,8 +62,10 @@ const FIREFOX_NIGHTLY_URL: &str =
 const FIREFOX_VOLUME: &str = "Firefox";
 const FIREFOX_NIGHTLY_VOLUME: &str = r"Firefox\ Nightly";
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN: i32 = 13;
+const MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN_ARM64: i32 = 102;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC: i32 = 4;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX: i32 = 4;
+const MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX_ARM64: i32 = 136;
 const UNAVAILABLE_DOWNLOAD_ERROR_MESSAGE: &str =
     "{} {} not available for downloading (minimum version: {})";
 const FIREFOX_RELEASES_URL: &str = "https://www.mozilla.org/en-US/firefox/releases/";
@@ -130,7 +133,19 @@ impl SeleniumManager for FirefoxManager {
     }
 
     fn get_browser_names_in_path(&self) -> Vec<&str> {
-        vec![self.get_browser_name()]
+        let browser_version = self.get_browser_version();
+        let mut browser_names = vec![];
+        if self.is_beta(browser_version) {
+            browser_names.push("firefox-beta");
+        } else if self.is_dev(browser_version) {
+            browser_names.push("firefox-devedition");
+        } else if self.is_nightly(browser_version) {
+            browser_names.push("firefox-trunk");
+        } else if self.is_esr(browser_version) {
+            browser_names.push("firefox-esr");
+        }
+        browser_names.push(self.get_browser_name());
+        browser_names
     }
 
     fn get_http_client(&self) -> &Client {
@@ -284,7 +299,7 @@ impl SeleniumManager for FirefoxManager {
                 };
 
                 let driver_ttl = self.get_ttl();
-                if driver_ttl > 0 && !major_browser_version.is_empty() {
+                if should_cache_driver_version(driver_ttl, major_browser_version, &driver_version) {
                     metadata.drivers.push(create_driver_metadata(
                         major_browser_version,
                         self.driver_name,
@@ -308,16 +323,10 @@ impl SeleniumManager for FirefoxManager {
         let os = self.get_os();
         let arch = self.get_arch();
 
-        // As of 0.32.0, geckodriver ships aarch64 binaries for Linux and Windows
-        // https://github.com/mozilla/geckodriver/releases/tag/v0.32.0
-        let minor_driver_version = self
-            .get_minor_version(driver_version)?
-            .parse::<i32>()
-            .unwrap_or_default();
         let driver_label = if WINDOWS.is(os) {
             if X32.is(arch) {
                 "win32.zip"
-            } else if ARM64.is(arch) && minor_driver_version > 31 {
+            } else if ARM64.is(arch) {
                 "win-aarch64.zip"
             } else {
                 "win64.zip"
@@ -330,7 +339,7 @@ impl SeleniumManager for FirefoxManager {
             }
         } else if X32.is(arch) {
             "linux32.tar.gz"
-        } else if ARM64.is(arch) && minor_driver_version > 31 {
+        } else if ARM64.is(arch) {
             "linux-aarch64.tar.gz"
         } else {
             "linux64.tar.gz"
@@ -384,18 +393,12 @@ impl SeleniumManager for FirefoxManager {
     }
 
     fn get_platform_label(&self) -> &str {
-        let driver_version = self.get_driver_version();
         let os = self.get_os();
         let arch = self.get_arch();
-        let minor_driver_version = self
-            .get_minor_version(driver_version)
-            .unwrap_or_default()
-            .parse::<i32>()
-            .unwrap_or_default();
         if WINDOWS.is(os) {
             if X32.is(arch) {
                 "win32"
-            } else if ARM64.is(arch) && minor_driver_version > 31 {
+            } else if ARM64.is(arch) {
                 "win-arm64"
             } else {
                 "win64"
@@ -404,7 +407,7 @@ impl SeleniumManager for FirefoxManager {
             if ARM64.is(arch) { "mac-arm64" } else { "mac64" }
         } else if X32.is(arch) {
             "linux32"
-        } else if ARM64.is(arch) && minor_driver_version > 31 {
+        } else if ARM64.is(arch) {
             "linux-arm64"
         } else {
             "linux64"
@@ -515,10 +518,17 @@ impl SeleniumManager for FirefoxManager {
 
     fn get_min_browser_version_for_download(&self) -> Result<i32, Error> {
         let os = self.get_os();
+        let arch = self.get_arch();
         let min_browser_version_for_download = if WINDOWS.is(os) {
-            MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN
+            if ARM64.is(arch) {
+                MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN_ARM64
+            } else {
+                MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN
+            }
         } else if MACOS.is(os) {
             MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC
+        } else if ARM64.is(arch) {
+            MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX_ARM64
         } else {
             MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX
         };
@@ -590,6 +600,8 @@ impl SeleniumManager for FirefoxManager {
                 } else {
                     platform_label = "linux64";
                 }
+            } else if ARM64.is(arch) {
+                platform_label = "linux-aarch64";
             } else {
                 platform_label = "linux-x86_64";
             }
@@ -744,7 +756,7 @@ mod unit_tests {
                 "0.31.0",
                 "linux",
                 "aarch64",
-                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-linux64.tar.gz",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-linux-aarch64.tar.gz",
             ],
             vec![
                 "0.31.0",
@@ -762,7 +774,7 @@ mod unit_tests {
                 "0.31.0",
                 "windows",
                 "aarch64",
-                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-win64.zip",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-win-aarch64.zip",
             ],
             vec![
                 "0.31.0",

@@ -103,7 +103,7 @@ pub const OFFLINE_REQUEST_ERR_MSG: &str = "Unable to discover proper {} version 
 pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mode";
 pub const UNAVAILABLE_DOWNLOAD_ERR_MSG: &str = "{}{} not available for download";
 pub const UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG: &str =
-    "{} {} not available for download (minimum version: {})";
+    "{} {} not available for download on {} (minimum version: {})";
 pub const NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG: &str =
     "{} can only be installed in Windows with administrator permissions";
 pub const ONLINE_DISCOVERY_ERROR_MESSAGE: &str = "Unable to discover {}{} in online repository";
@@ -251,10 +251,11 @@ pub trait SeleniumManager {
             && !self.is_browser_version_empty()
             && major_browser_version_int < min_browser_version_for_download
         {
-            let mut message = format_three_args(
+            let mut message = format_four_args(
                 UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
                 self.get_browser_name(),
                 &major_browser_version,
+                self.get_arch(),
                 &min_browser_version_for_download.to_string(),
             );
             let versions_url = self.get_browser_versions_url();
@@ -421,7 +422,27 @@ pub trait SeleniumManager {
             .unwrap_or_default()
     }
 
+    fn detect_browser_in_known_locations(&self) -> Option<PathBuf> {
+        None
+    }
+
     fn detect_browser_path(&mut self) -> Option<PathBuf> {
+        // A driver's binary search is channel-agnostic and finds system browsers, so mirror it only
+        // for the default channel and when the user hasn't asked to skip browsers in the path.
+        if !self.is_browser_version_unstable()
+            && !self.is_skip_browser_in_path()
+            && let Some(browser_path) = self.detect_browser_in_known_locations()
+        {
+            let canon_browser_path = self.canonicalize_path(browser_path);
+            self.get_logger().debug(format!(
+                "{} detected at {}",
+                self.get_browser_name(),
+                canon_browser_path
+            ));
+            self.set_browser_path(canon_browser_path.clone());
+            return Some(Path::new(&canon_browser_path).to_path_buf());
+        }
+
         let browser_version = self.get_browser_version();
         let browser_path = self.get_browser_path_from_version(browser_version);
 
@@ -514,6 +535,7 @@ pub trait SeleniumManager {
         }
         if !download_browser && !self.is_electron() {
             let major_browser_version = self.get_major_browser_version();
+            let original_browser_path = self.get_browser_path().to_string();
             match self.discover_browser_version()? {
                 Some(discovered_version) => {
                     if !self.is_safari() {
@@ -526,6 +548,17 @@ pub trait SeleniumManager {
                     if self.is_browser_version_specific()
                         && !self.get_browser_version().eq(&discovered_version)
                     {
+                        if !original_browser_path.is_empty() {
+                            self.set_fallback_driver_from_cache(false);
+                            return Err(anyhow!(format!(
+                                "The browser at {} has version {} but {} {} was requested; \
+                                 remove --browser-path to allow a browser download",
+                                original_browser_path,
+                                discovered_version,
+                                self.get_browser_name(),
+                                self.get_browser_version(),
+                            )));
+                        }
                         download_browser = true;
                     } else {
                         let discovered_major_browser_version = self
@@ -556,6 +589,9 @@ pub trait SeleniumManager {
                                         discovered_major_browser_version,
                                     ));
                                     download_browser = true;
+                                    if self.is_avoid_browser_download() {
+                                        self.set_browser_version(discovered_major_browser_version);
+                                    }
                                 }
                             } else {
                                 self.set_browser_version(discovered_version);
@@ -570,6 +606,17 @@ pub trait SeleniumManager {
                                 discovered_major_browser_version,
                                 major_browser_version,
                             ));
+                            if !original_browser_path.is_empty() {
+                                self.set_fallback_driver_from_cache(false);
+                                return Err(anyhow!(format!(
+                                    "The browser at {} has version {} but {} {} was requested; \
+                                     remove --browser-path to allow a browser download",
+                                    original_browser_path,
+                                    discovered_version,
+                                    self.get_browser_name(),
+                                    self.get_browser_version(),
+                                )));
+                            }
                             download_browser = true;
                         } else {
                             self.set_browser_version(discovered_version);
@@ -745,7 +792,8 @@ pub trait SeleniumManager {
     }
 
     fn is_webview2(&self) -> bool {
-        self.get_browser_name().eq(WEBVIEW2_NAME)
+        // Browser selection matches case-insensitively but keeps the original casing (e.g. "WebView2").
+        self.get_browser_name().eq_ignore_ascii_case(WEBVIEW2_NAME)
     }
 
     fn is_browser_version_beta(&self) -> bool {
@@ -1095,10 +1143,6 @@ pub trait SeleniumManager {
 
     fn get_major_version(&self, full_version: &str) -> Result<String, Error> {
         get_index_version(full_version, 0)
-    }
-
-    fn get_minor_version(&self, full_version: &str) -> Result<String, Error> {
-        get_index_version(full_version, 1)
     }
 
     fn get_selenium_release_version(&self) -> Result<String, Error> {
@@ -1935,14 +1979,62 @@ pub fn format_three_args(string: &str, arg1: &str, arg2: &str, arg3: &str) -> St
         .replacen("{}", arg3, 1)
 }
 
+pub fn format_four_args(string: &str, arg1: &str, arg2: &str, arg3: &str, arg4: &str) -> String {
+    string
+        .replacen("{}", arg1, 1)
+        .replacen("{}", arg2, 1)
+        .replacen("{}", arg3, 1)
+        .replacen("{}", arg4, 1)
+}
+
 // ----------------------------------------------------------
 // Private functions
 // ----------------------------------------------------------
 
 fn get_index_version(full_version: &str, index: usize) -> Result<String, Error> {
+    if full_version.is_empty() {
+        return Err(anyhow!(format!("Wrong version: {}", full_version)));
+    }
     let version_vec: Vec<&str> = full_version.split('.').collect();
     Ok(version_vec
         .get(index)
         .ok_or(anyhow!(format!("Wrong version: {}", full_version)))?
         .to_string())
+}
+
+#[cfg(test)]
+mod index_version_tests {
+    use super::*;
+
+    #[test]
+    fn get_index_version_major() {
+        assert_eq!(get_index_version("120.0.6099.109", 0).unwrap(), "120");
+    }
+
+    #[test]
+    fn get_index_version_minor() {
+        assert_eq!(get_index_version("120.0.6099.109", 1).unwrap(), "0");
+    }
+
+    #[test]
+    fn get_index_version_patch() {
+        assert_eq!(get_index_version("120.0.6099.109", 2).unwrap(), "6099");
+    }
+
+    #[test]
+    fn get_index_version_single_component() {
+        assert_eq!(get_index_version("115", 0).unwrap(), "115");
+    }
+
+    #[test]
+    fn get_index_version_out_of_bounds_errors() {
+        let result = get_index_version("115", 1);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn get_index_version_empty_string_errors() {
+        let result = get_index_version("", 0);
+        assert!(result.is_err());
+    }
 }

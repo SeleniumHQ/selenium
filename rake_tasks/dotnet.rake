@@ -72,8 +72,9 @@ end
 
 desc 'Verify .NET packages are published on NuGet'
 task :verify do
-  SeleniumRake.verify_package_published("https://api.nuget.org/v3/registration5-semver1/selenium.webdriver/#{dotnet_version}.json")
-  SeleniumRake.verify_package_published("https://api.nuget.org/v3/registration5-semver1/selenium.support/#{dotnet_version}.json")
+  base = 'https://api.nuget.org/v3/registration5-semver1'
+  SeleniumRake.verify_package_published("#{base}/selenium.webdriver/#{dotnet_version}.json")
+  SeleniumRake.verify_package_published("#{base}/selenium.support/#{dotnet_version}.json")
 end
 
 desc 'Generate and stage .NET documentation'

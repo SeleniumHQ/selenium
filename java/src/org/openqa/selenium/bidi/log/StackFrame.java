@@ -19,7 +19,6 @@ package org.openqa.selenium.bidi.log;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 
 /**
  * @see <a href="https://w3c.github.io/webdriver-bidi/#type-script-StackFrame">BiDi spec</a>
@@ -32,9 +31,10 @@ public class StackFrame {
   private final int lineNumber;
   private final int columnNumber;
 
-  public StackFrame(String scriptUrl, String function, int lineNumber, int columnNumber) {
-    this.url = scriptUrl;
-    this.functionName = function;
+  // Constructor parameter names are used as JSON field names.
+  public StackFrame(String url, String functionName, int lineNumber, int columnNumber) {
+    this.url = url;
+    this.functionName = functionName;
     this.lineNumber = Require.nonNegative("Line number", lineNumber);
     this.columnNumber = Require.nonNegative("Column number", columnNumber);
   }
@@ -53,45 +53,5 @@ public class StackFrame {
 
   public int getColumnNumber() {
     return columnNumber;
-  }
-
-  public static StackFrame fromJson(JsonInput input) {
-    String url = null;
-    String functionName = null;
-    Integer lineNumber = null;
-    Integer columnNumber = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "url":
-          url = input.read(String.class);
-          break;
-
-        case "functionName":
-          functionName = input.read(String.class);
-          break;
-
-        case "lineNumber":
-          lineNumber = input.read(Integer.class);
-          break;
-
-        case "columnNumber":
-          columnNumber = input.read(Integer.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-
-    input.endObject();
-
-    return new StackFrame(
-        Require.nonNull("URL", url),
-        Require.nonNull("Function name", functionName),
-        Require.nonNull("Line number", lineNumber),
-        Require.nonNull("Column number", columnNumber));
   }
 }

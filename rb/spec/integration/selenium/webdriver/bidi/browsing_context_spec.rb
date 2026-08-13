@@ -46,7 +46,8 @@ module Selenium
             expect(driver.window_handles).to include(id)
           end
 
-          it 'errors on unknown type', pending_if: {browser: :firefox, reason: "Doesn't return the expected error"} do
+          it 'errors on unknown type',
+             pending_if: {browser: %i[firefox safari safari_preview], reason: "Doesn't return the expected error"} do
             msg = /invalid argument: Invalid enum value. Expected 'tab' | 'window', received 'unknown'/
             expect {
               described_class.new(bridge).create(type: :unknown)
@@ -80,7 +81,7 @@ module Selenium
         end
 
         it 'accepts users prompts without text',
-           pending_if: {browser: %i[edge chrome],
+           pending_if: {browser_family: :chromium,
                         reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
           browsing_context = described_class.new(bridge)
 
@@ -95,7 +96,7 @@ module Selenium
         end
 
         it 'accepts users prompts with text',
-           pending_if: {browser: %i[edge chrome],
+           pending_if: {browser_family: :chromium,
                         reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
           browsing_context = described_class.new(bridge)
           driver.navigate.to url_for('alerts.html')
@@ -109,7 +110,7 @@ module Selenium
         end
 
         it 'rejects users prompts',
-           pending_if: {browser: %i[edge chrome],
+           pending_if: {browser_family: :chromium,
                         reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
           browsing_context = described_class.new(bridge)
           driver.navigate.to url_for('alerts.html')
@@ -123,7 +124,8 @@ module Selenium
           expect(driver.title).to eq('Testing Alerts')
         end
 
-        it 'activates a browser context' do
+        it 'activates a browser context',
+           pending_if: {browser_family: :safari, reason: 'Safari does not focus the activated context'} do
           browsing_context = described_class.new(bridge)
           browsing_context.create
 

@@ -33,7 +33,7 @@ public class NeedsFreshDriverAttribute : TestActionAttribute
         if (test.Fixture is DriverTestFixture fixtureInstance && this.IsCreatedBeforeTest)
         {
             EnvironmentManager.Instance.CreateFreshDriver();
-            fixtureInstance.driver = EnvironmentManager.Instance.GetCurrentDriver();
+            fixtureInstance.Driver = EnvironmentManager.Instance.GetCurrentDriver();
         }
 
         base.BeforeTest(test);
@@ -44,7 +44,7 @@ public class NeedsFreshDriverAttribute : TestActionAttribute
         if (test.Fixture is DriverTestFixture fixtureInstance && this.IsCreatedAfterTest)
         {
             EnvironmentManager.Instance.CreateFreshDriver();
-            fixtureInstance.driver = EnvironmentManager.Instance.GetCurrentDriver();
+            fixtureInstance.Driver = EnvironmentManager.Instance.GetCurrentDriver();
         }
 
         base.AfterTest(test);

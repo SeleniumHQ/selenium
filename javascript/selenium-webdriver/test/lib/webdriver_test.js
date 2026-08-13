@@ -726,6 +726,15 @@ describe('WebDriver', function () {
           assert.strictEqual('Custom locator did not return a WebElement', e.message)
         })
     })
+
+    it('customLocatorThrowsNoSuchElementErrorForEmptyArray', function () {
+      const driver = new FakeExecutor().createDriver()
+      return driver
+        .findElement((_) => [])
+        .then(assert.fail, function (e) {
+          assertIsInstance(error.NoSuchElementError, e)
+        })
+    })
   })
 
   describe('findElements', function () {
@@ -853,6 +862,20 @@ describe('WebDriver', function () {
           )
         })
         .then((actual) => assert.deepStrictEqual(['one', 'two'], actual))
+    })
+
+    it('customLocatorReturnsEmptyArrayForNoSuchElementError', function () {
+      const driver = new FakeExecutor().createDriver()
+      return driver
+        .findElements((_) => {
+          throw new error.NoSuchElementError()
+        })
+        .then((actual) => assert.deepStrictEqual([], actual))
+    })
+
+    it('customLocatorPropagatesUnexpectedErrors', function () {
+      const driver = new FakeExecutor().createDriver()
+      return driver.findElements(throwStubError).then(assert.fail, assertIsStubError)
     })
   })
 

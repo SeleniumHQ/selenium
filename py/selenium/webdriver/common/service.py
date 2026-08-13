@@ -160,12 +160,13 @@ class Service(ABC):
                 self.log_output.close()
             elif isinstance(self.log_output, int):
                 os.close(self.log_output)
-
-        if self.process is not None and self.process.poll() is None:
+        if self.process is not None:
             try:
-                self.send_remote_shutdown_command()
-            except TypeError:
-                pass
+                if self.process.poll() is None:
+                    try:
+                        self.send_remote_shutdown_command()
+                    except TypeError:
+                        pass
             finally:
                 self._terminate_process()
 
@@ -173,30 +174,29 @@ class Service(ABC):
         """Terminate the child process.
 
         On POSIX this attempts a graceful SIGTERM followed by a SIGKILL,
-        on a Windows OS kill is an alias to terminate.  Terminating does
-        not raise itself if something has gone wrong but (currently)
-        silently ignores errors here.
+        on a Windows OS kill is an alias to terminate. Terminating does
+        not raise itself if something has gone wrong but ignores errors here.
         """
         try:
-            stdin, stdout, stderr = (
+            if self.process.poll() is None:
+                self.process.terminate()
+                try:
+                    self.process.wait(60)
+                except subprocess.TimeoutExpired:
+                    logger.error(
+                        "Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL.",
+                        exc_info=True,
+                    )
+                    self.process.kill()
+            for stream in (
                 self.process.stdin,
                 self.process.stdout,
                 self.process.stderr,
-            )
-            for stream in stdin, stdout, stderr:
+            ):
                 try:
                     stream.close()  # type: ignore
                 except AttributeError:
                     pass
-            self.process.terminate()
-            try:
-                self.process.wait(60)
-            except subprocess.TimeoutExpired:
-                logger.error(
-                    "Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL.",
-                    exc_info=True,
-                )
-                self.process.kill()
         except OSError:
             logger.error("Error terminating service process.", exc_info=True)
 

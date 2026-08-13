@@ -1,6 +1,6 @@
 {
   "name": "selenium-webdriver",
-  "version": "4.46.0-nightly202606161656",
+  "version": "4.48.0-nightly202608101808",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "license": "Apache-2.0",
   "keywords": [
@@ -20,35 +20,35 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "engines": {
-    "node": ">= 20.0.0"
+    "node": ">= 22.0.0"
   },
   "dependencies": {
     "@bazel/runfiles": "^6.5.0",
     "jszip": "^3.10.1",
     "tmp": "^0.2.7",
-    "ws": "^8.21.0"
+    "ws": "^8.21.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "cddl": "^0.20.1",
-    "cddl2ts": "^0.9.1",
-    "clean-jsdoc-theme": "^4.3.2",
-    "eslint": "^10.5.0",
+    "cddl": "^0.21.1",
+    "cddl2ts": "^0.10.1",
+    "clean-jsdoc-theme": "^4.3.3",
+    "eslint": "^10.8.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-mocha": "^11.3.0",
-    "eslint-plugin-n": "^18.1.0",
+    "eslint-plugin-n": "^18.3.0",
     "eslint-plugin-no-only-tests": "^3.4.0",
     "eslint-plugin-prettier": "^5.5.6",
     "express": "^5.2.1",
-    "globals": "^17.6.0",
+    "globals": "^17.9.0",
     "has-flag": "^5.0.1",
     "jsdoc": "^4.0.5",
-    "mocha": "^11.7.6",
+    "mocha": "^11.8.0",
     "mocha-junit-reporter": "^2.2.1",
     "multer": "^2.2.0",
-    "prettier": "^3.8.4",
+    "prettier": "^3.9.6",
     "serve-index": "^1.9.2",
-    "sinon": "^22.0.0",
+    "sinon": "^22.1.0",
     "supports-color": "^10.2.2"
   },
   "scripts": {

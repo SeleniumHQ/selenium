@@ -19,7 +19,6 @@ package org.openqa.selenium.bidi;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 
 /**
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#command-session-status">BiDi spec</a>
@@ -33,32 +32,6 @@ public class BiDiSessionStatus {
   public BiDiSessionStatus(boolean ready, String message) {
     this.ready = Require.nonNull("Session's readiness", ready);
     this.message = Require.nonNull("Message", message);
-  }
-
-  public static BiDiSessionStatus fromJson(JsonInput input) {
-    Boolean ready = null;
-    String message = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "ready":
-          ready = input.read(Boolean.class);
-          break;
-
-        case "message":
-          message = input.read(String.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-    input.endObject();
-
-    return new BiDiSessionStatus(
-        Require.nonNull("ready", ready), Require.nonNull("message", message));
   }
 
   public boolean isReady() {

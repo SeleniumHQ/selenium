@@ -1,3 +1,19 @@
+Selenium 4.47.0
+* Support CDP versions: v149, v150, v151
+* Fix default command_executor URL in RemoteWebDriver docstring (#17803)
+* [grid] honor client-advertised se:remoteUrl for reachable BiDi/CDP/VNC URLs (#17790)
+* prevent CDP access with Firefox (#17849)
+* pass --enable-chrome-logs unless CHROME_LOG_FILE is set (#17858)
+* accept By in find_element/find_elements type hints (#17870)
+* fix no_proxy matching so empty entries and substrings do not bypass the proxy (#17884)
+* Ensure driver service subprocess resources are cleaned up (#17889)
+
+Selenium 4.46.0
+* Support CDP versions: v148, v149, v150
+* [build] add copyright headers to rbs, pyi, ts, mjs, and erb files (#17720)
+* Route Safari, STP and WebView2 to their handlers (#17728)
+* Fix example WebDriverWait import in docstring (#17735)
+
 Selenium 4.45.0
 * Support CDP versions: v147, v148, v149
 * Allow MAX_WS_MESSAGE_SIZE to be configurable (#17581)

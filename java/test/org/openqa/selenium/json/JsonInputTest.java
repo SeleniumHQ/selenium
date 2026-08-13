@@ -292,6 +292,212 @@ class JsonInputTest {
   }
 
   @Test
+  void shouldReadU_FFFF_AsALiteralCharacterAndNotEndOfInput() {
+    // U+FFFF is a valid Unicode code unit that historically collided with the in-band EOF
+    // sentinel and was mis-reported as an unterminated string. Build the strings from
+    // char values rather than embedding literal U+FFFF so the test is independent of the
+    // source file's byte encoding.
+    char nonChar = (char) 0xFFFF;
+    String literalPayload = "a" + nonChar + "b";
+
+    try (JsonInput input = newInput("\"" + literalPayload + "\"")) {
+      assertThat(input.nextString()).isEqualTo(literalPayload);
+    }
+
+    try (JsonInput input = newInput("\"\\uFFFF\"")) {
+      assertThat(input.nextString()).isEqualTo(String.valueOf(nonChar));
+    }
+  }
+
+  @Test
+  void shouldRejectUnescapedControlCharactersInStrings() {
+    // RFC 8259 §7: characters U+0000..U+001F MUST be escaped in JSON strings.
+    // A literal newline / tab / etc. inside quotes is not valid JSON.
+    try (JsonInput input = newInput("\"a\nb\"")) {
+      assertThatExceptionOfType(JsonException.class)
+          .isThrownBy(input::nextString)
+          .withMessageStartingWith("Illegal unescaped control character");
+    }
+
+    // Escaped equivalents are still fine.
+    try (JsonInput input = newInput("\"a\\nb\"")) {
+      assertThat(input.nextString()).isEqualTo("a\nb");
+    }
+  }
+
+  @Test
+  void shouldRejectSpecInvalidNumbers() {
+    // See RFC 8259 §6. Each of these was previously accepted by nextNumber().
+    for (String bad :
+        new String[] {
+          "+5", // leading plus not allowed
+          "01", // leading zero not allowed
+          "007", // leading zero not allowed
+          ".5", // no digit before decimal
+          "5.", // no digit after decimal
+          "1e", // exponent without digits
+          "-", // sign without digits
+        }) {
+      try (JsonInput input = newInput(bad)) {
+        assertThatExceptionOfType(JsonException.class)
+            .describedAs("Input %s should be rejected", bad)
+            .isThrownBy(input::nextNumber);
+      }
+    }
+  }
+
+  @Test
+  void shouldStillAcceptSpecValidNumbers() {
+    assertThat(parseNumber("0")).isEqualTo(0L);
+    assertThat(parseNumber("-0")).isEqualTo(0L);
+    assertThat(parseNumber("42")).isEqualTo(42L);
+    assertThat(parseNumber("-17")).isEqualTo(-17L);
+    assertThat(parseNumber("3.14")).isEqualTo(3.14d);
+    assertThat(parseNumber("-2.5e10")).isEqualTo(-2.5e10d);
+    assertThat(parseNumber("1E+2")).isEqualTo(100.0d);
+    assertThat(parseNumber("0.0")).isEqualTo(0.0d);
+  }
+
+  @Test
+  void shouldRejectDoubleOverflow() {
+    try (JsonInput input = newInput("1e9999")) {
+      assertThatExceptionOfType(JsonException.class)
+          .isThrownBy(input::nextNumber)
+          .withMessageContaining("out of range");
+    }
+  }
+
+  private Number parseNumber(String raw) {
+    try (JsonInput input = newInput(raw)) {
+      return input.nextNumber();
+    }
+  }
+
+  @Test
+  void shouldReportEndOfInputAsEofNotAsAUnicodeReplacement() {
+    // If the number ends prematurely, the diagnostic should say "<EOF>" rather than "'￿'"
+    // (which is a valid literal character elsewhere).
+    try (JsonInput input = newInput("5.")) {
+      assertThatExceptionOfType(JsonException.class)
+          .isThrownBy(input::nextNumber)
+          .withMessageContaining("<EOF>");
+    }
+  }
+
+  @Test
+  void shouldAcceptTrailingCommaInArray() {
+    try (JsonInput input = newInput("[1,2,3,]")) {
+      input.beginArray();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(2L);
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(3L);
+      assertThat(input.hasNext()).isFalse();
+      input.endArray();
+    }
+  }
+
+  @Test
+  void shouldAcceptTrailingCommaInObject() {
+    try (JsonInput input = newInput("{\"a\":1,}")) {
+      input.beginObject();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextName()).isEqualTo("a");
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThat(input.hasNext()).isFalse();
+      input.endObject();
+    }
+  }
+
+  @Test
+  void shouldRejectMissingCommaBetweenArrayElements() {
+    try (JsonInput input = newInput("[1 2]")) {
+      input.beginArray();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThatExceptionOfType(JsonException.class).isThrownBy(input::hasNext);
+    }
+  }
+
+  @Test
+  void shouldRejectLeadingCommaInArray() {
+    try (JsonInput input = newInput("[,1]")) {
+      input.beginArray();
+      assertThatExceptionOfType(JsonException.class).isThrownBy(input::hasNext);
+    }
+  }
+
+  @Test
+  void shouldRejectMissingCommaBetweenObjectEntries() {
+    try (JsonInput input = newInput("{\"a\":1 \"b\":2}")) {
+      input.beginObject();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextName()).isEqualTo("a");
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThatExceptionOfType(JsonException.class).isThrownBy(input::hasNext);
+    }
+  }
+
+  @Test
+  void shouldRejectLeadingCommaInObject() {
+    try (JsonInput input = newInput("{,\"a\":1}")) {
+      input.beginObject();
+      assertThatExceptionOfType(JsonException.class).isThrownBy(input::hasNext);
+    }
+  }
+
+  @Test
+  void mismatchedCloseLeavesParserStateIntact() {
+    // endObject() while inside an array must fail without popping the container stack,
+    // so the parser still knows it is inside the array afterwards.
+    try (JsonInput input = newInput("[1}")) {
+      input.beginArray();
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThatExceptionOfType(JsonException.class)
+          .isThrownBy(input::endObject)
+          .withMessageStartingWith("Attempt to close a JSON Map");
+      // Before the fix this threw "not in a container type" because the array's
+      // stack entry had already been popped.
+      assertThat(input.hasNext()).isFalse();
+    }
+  }
+
+  @Test
+  void hasNextIsIdempotentBetweenElementsInArray() {
+    // Iterator-style probing (peek/hasNext repeatedly before reading) must not falsely fail
+    // once hasNext() has already consumed the comma before the next element.
+    try (JsonInput input = newInput("[1,2]")) {
+      input.beginArray();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextNumber()).isEqualTo(2L);
+      assertThat(input.hasNext()).isFalse();
+      assertThat(input.hasNext()).isFalse();
+      input.endArray();
+    }
+  }
+
+  @Test
+  void hasNextIsIdempotentBetweenEntriesInObject() {
+    try (JsonInput input = newInput("{\"a\":1,\"b\":2}")) {
+      input.beginObject();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextName()).isEqualTo("a");
+      assertThat(input.nextNumber()).isEqualTo(1L);
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.hasNext()).isTrue();
+      assertThat(input.nextName()).isEqualTo("b");
+      assertThat(input.nextNumber()).isEqualTo(2L);
+      assertThat(input.hasNext()).isFalse();
+      input.endObject();
+    }
+  }
+
+  @Test
   void nullInputsShouldCoerceAsNullValues() throws IOException {
     try (InputStream is = new ByteArrayInputStream(new byte[0]);
         Reader reader = new InputStreamReader(is, UTF_8);

@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.Runtime.CompilerServices;
 using System.Threading.Channels;
 using OpenQA.Selenium.Internal.Logging;
 
@@ -28,19 +29,17 @@ internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubsc
     private static readonly ILogger _logger = Internal.Logging.Log.GetLogger(typeof(EventStream<TEventArgs>));
 
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
-    private readonly CancellationToken _cancellationToken;
     private int _disposed;
 
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
-        new UnboundedChannelOptions { SingleReader = true, SingleWriter = true });
+        new UnboundedChannelOptions { SingleReader = false, SingleWriter = true });
 
     private readonly Func<TEventArgs, bool>? _filter;
 
-    internal EventStream(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, bool>? filter = null, CancellationToken cancellationToken = default)
+    internal EventStream(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, bool>? filter = null)
     {
         _unsubscribe = unsubscribe;
         _filter = filter;
-        _cancellationToken = cancellationToken;
     }
 
     void ISubscriptionSink.Deliver(EventArgs args)
@@ -60,24 +59,13 @@ internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubsc
         _channel.Writer.TryComplete(error);
     }
 
-    public IAsyncEnumerator<TEventArgs> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<TEventArgs> ReadAllAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var effectiveToken = (_cancellationToken.CanBeCanceled, cancellationToken.CanBeCanceled) switch
-        {
-            (true, true) => CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken, cancellationToken).Token,
-            (true, false) => _cancellationToken,
-            (false, true) => cancellationToken,
-            _ => default
-        };
+        if (_disposed != 0) throw new ObjectDisposedException(GetType().FullName);
 
-        return ReadChannelAsync(_channel.Reader, effectiveToken);
-    }
-
-    private static async IAsyncEnumerator<TEventArgs> ReadChannelAsync(ChannelReader<TEventArgs> reader, CancellationToken cancellationToken)
-    {
-        while (await reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
+        while (await _channel.Reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
         {
-            while (reader.TryRead(out var item))
+            while (_channel.Reader.TryRead(out var item))
             {
                 yield return item;
             }
@@ -100,7 +88,6 @@ internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubsc
             finally
             {
                 _channel.Writer.TryComplete();
-                GC.SuppressFinalize(this);
             }
         }
     }

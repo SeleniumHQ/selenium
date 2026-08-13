@@ -10,6 +10,7 @@ permissions:
 jobs:
   build:
     name: Build
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build
@@ -42,7 +43,7 @@ jobs:
 
   unit-tests:
     name: Unit Tests
-    needs: build
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -57,18 +58,24 @@ jobs:
 
   remote-tests:
     name: Remote Tests
-    needs: build
     uses: ./.github/workflows/bazel.yml
     with:
       name: Integration Tests Remote
       needs-display: true
       rerun-with-debug: true
-      run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
+      download-artifact-name: targets
+      run: >
+        [ -s bazel-targets-py.txt ] || echo //py/... > bazel-targets-py.txt;
+        { echo "tests(//py:test-remote) intersect set("; cat bazel-targets-py.txt; echo ")"; } > query.txt;
+        bazel query --query_file=query.txt --output=label > remote-targets.txt;
+        ./scripts/github-actions/bazel-test-if-targets.sh
+        --keep_going
+        --flaky_test_attempts 3
+        --local_test_jobs 1
+        --target_pattern_file=remote-targets.txt
 
   browser-tests:
     name: Browser Tests
-    needs: build
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -83,12 +90,20 @@ jobs:
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
-      run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-${{ matrix.browser }}
+      download-artifact-name: targets
+      run: >
+        [ -s bazel-targets-py.txt ] || echo //py/... > bazel-targets-py.txt;
+        { echo "tests(//py:test-${{ matrix.browser }}) intersect set("; cat bazel-targets-py.txt; echo ")"; } > query.txt;
+        bazel query --query_file=query.txt --output=label > browser-targets.txt;
+        ./scripts/github-actions/bazel-test-if-targets.sh
+        --keep_going
+        --flaky_test_attempts 3
+        --local_test_jobs 1
+        --skip_incompatible_explicit_targets
+        --target_pattern_file=browser-targets.txt
 
   selenium-manager-tests:
     name: Selenium Manager Tests
-    needs: build
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -99,5 +114,14 @@ jobs:
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
-      run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 --pin_browsers=false --build_tests_only --test_tag_filters=se-manager //py/...
+      download-artifact-name: targets
+      run: >
+        [ -s bazel-targets-py.txt ] || echo //py/... > bazel-targets-py.txt;
+        ./scripts/github-actions/bazel-test-if-targets.sh
+        --local_test_jobs 1
+        --flaky_test_attempts 3
+        --pin_browsers=false
+        --build_tests_only
+        --skip_incompatible_explicit_targets
+        --test_tag_filters=se-manager
+        --target_pattern_file=bazel-targets-py.txt

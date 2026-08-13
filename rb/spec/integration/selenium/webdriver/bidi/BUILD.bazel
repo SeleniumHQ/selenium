@@ -1,10 +1,18 @@
 load("//rb/spec:tests.bzl", "rb_integration_test")
 
+filegroup(
+    name = "all_srcs",
+    testonly = True,
+    srcs = glob(["**/*.rb"]),
+    visibility = ["//rb/spec:__pkg__"],
+)
+
 [
     rb_integration_test(
         name = file[:-8],
         srcs = [file],
-        bidi_only = True,
+        bidi = True,
+        classic = False,
         tags = ["exclusive-if-local"],
         deps = [
             "//rb/lib/selenium/webdriver:bidi",

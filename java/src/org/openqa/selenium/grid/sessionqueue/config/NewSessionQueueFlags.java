@@ -87,6 +87,15 @@ public class NewSessionQueueFlags implements HasRoles {
   private int batchSize = DEFAULT_BATCH_SIZE;
 
   @Parameter(
+      names = {"--sessionqueue-implementation"},
+      description = "Full classname of the non-default session queue implementation.")
+  @ConfigValue(
+      section = SESSION_QUEUE_SECTION,
+      name = "implementation",
+      example = "\"org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue\"")
+  private String sessionQueueImplementation;
+
+  @Parameter(
       names = {"--sessionqueue-backend-url"},
       description =
           "Backend datastore URL for the SessionQueue implementation."
