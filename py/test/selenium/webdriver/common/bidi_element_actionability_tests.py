@@ -374,6 +374,32 @@ def test_scrolled_off_element_becomes_ready_after_autoscroll(driver, pages):
     assert result["ready"] is True
 
 
+def test_element_displaced_after_autoscroll_is_scrolled_back_into_view(driver, pages):
+    """Scrolling into view once is not enough if the page moves it again.
+
+    A layout that restores its own scroll position (sticky headers, virtual
+    lists, scroll-jacking widgets) puts the element back out of view after the
+    first scroll, and a one-shot scroll then waits out the whole budget on an
+    element it could have reached.
+    """
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.style.height = '3000px';"
+        "const d = document.createElement('button');"
+        "d.id = 't'; d.textContent = 'go';"
+        "d.style.cssText = 'position:absolute;top:2500px;left:20px';"
+        "document.body.appendChild(d);"
+        "let bounced = false;"
+        "window.addEventListener('scroll', () => {"
+        "  if (!bounced) { bounced = true; window.scrollTo(0, 0); }"
+        "});"
+    )
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=3000)
+
+    assert result["ready"] is True
+
+
 def test_obstructed_element_times_out_with_reason(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(
