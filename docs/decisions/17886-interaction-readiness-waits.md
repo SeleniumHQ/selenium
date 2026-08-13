@@ -68,7 +68,7 @@ it — including by adding a second timeout budget on top of one the remote end 
 
 Selenium waits for interaction readiness inside the interaction commands, for sessions that ask for
 it. The wait replaces the implicit wait rather than adding a budget beside it, the semantics are
-defined once as shared atoms, and the underlying state is exposed as snapshots and events rather
+defined once in a single shared atom, and the underlying state is exposed as snapshots and events rather
 than as a blessed pair of wait methods.
 
 **1. Readiness is two independent signals, not one stack.**
@@ -159,16 +159,19 @@ is a default, not a constraint: a navigation or a click that is known to trigger
 ask for `settled` while the rest of the suite does not pay for it, and one that is known to leave the
 page busy forever can ask for `none`.
 
-**8. One shared implementation, several narrow atoms.** The semantics live in one shared
-JavaScript/TypeScript implementation in `javascript/atoms/`, compiled into separate entry points that
-each take only the arguments belonging to it — pending work, settledness given a root and a settle
-window, actionability given an element and an interaction. Bindings pass arguments and marshal
-results; no binding adds logic of its own. Sharing the implementation is the point, not shipping one
-combined atom: heuristics this delicate — what counts as meaningful mutation, when a spinner is
-inert, how obstruction is hit-tested — will not stay identical across five hand-written ports, and
-any divergence surfaces to users as flakiness.
+**8. One shared atom, with narrow named exports.** The semantics live in one shared
+JavaScript/TypeScript implementation in `javascript/atoms/`, shipped as a single artifact that
+exposes a small set of named exports rather than one combined entry point. Each export takes only
+the arguments belonging to it and returns only its own result — pending work for a document,
+settledness given a root and a settle window, actionability given an element and an interaction — so
+a binding that wants an actionability snapshot neither constructs arguments for settledness nor
+interprets a record containing it. Bindings pass arguments and marshal results; no binding adds
+logic of its own. One artifact is what holds the heuristics together: what counts as meaningful
+mutation, when a spinner is inert and how obstruction is hit-tested share definitions, will not stay
+identical across five hand-written ports, and are one thing to hand to the BiDi working group. The
+exports are what keep a caller from taking on the parts it did not ask for.
 
-**9. The atoms are installed as a preload script, and degrade explicitly.** Registration is
+**9. The atom is installed as a preload script, and degrades explicitly.** Registration is
 per-binding plumbing that must never affect navigation: if it fails, the failure is logged once and
 readiness waiting is off for that session, so the interaction commands behave exactly as they do
 today. Snapshot and settledness access fall back to injection into the current document, where
@@ -253,19 +256,23 @@ and drop the polyfill.
     flakiness.
 21. *Specify the semantics in this record, implement per binding* (Rejected) — prose cannot pin
     down "meaningful mutation" tightly enough to make five implementations agree.
-22. *One shared implementation as a single combined atom* (Rejected) — forces bindings to construct
-    and interpret arguments for functionality they are not using, which is where per-binding logic
-    creeps back in.
-23. *One shared implementation, several narrow atoms* (Accepted) — one place to fix a
-    misclassification, and a single artifact to hand to the BiDi working group.
+22. *One shared atom behind a single combined entry point* (Rejected) — forces bindings to
+    construct and interpret arguments for functionality they are not using, which is where
+    per-binding logic creeps back in.
+23. *Several separate atoms, one per signal* (Rejected) — keeps callers honest, but splits
+    heuristics that share definitions of meaningful mutation and inertness across artifacts that can
+    be built, shipped and versioned apart, which is the divergence this record exists to prevent.
+24. *One shared atom exposing narrow named exports* (Accepted) — one place to fix a
+    misclassification and one artifact to hand to the BiDi working group, with a per-signal export so
+    no caller takes on more than it asked for.
 
 **How it reaches the page**
 
-24. *Specify the BiDi module first and wait for browsers* (Rejected as a precondition) — the right
+25. *Specify the BiDi module first and wait for browsers* (Rejected as a precondition) — the right
     end state, but it leaves users with nothing for years and gives the working group no evidence.
     Pursued in parallel, not instead.
-25. *CDP* (Rejected) — Chromium-only, and being retired as an implementation mechanism.
-26. *BiDi preload script, with fallback injection where the signal allows it* (Accepted).
+26. *CDP* (Rejected) — Chromium-only, and being retired as an implementation mechanism.
+27. *BiDi preload script, with fallback injection where the signal allows it* (Accepted).
 
 ## Consequences
 
@@ -289,7 +296,7 @@ and drop the polyfill.
   only in the code, or the API will be read as a guarantee.
 - A page that never stops working never settles. A `settled` page load strategy on such a page
   always reaches its timeout, which is correct behavior and will be reported as a bug.
-- The shared atoms are loaded and injected by each binding, so each needs the packaging wiring to
+- The shared atom is loaded and injected by each binding, so each needs the packaging wiring to
   ship a JavaScript resource. Bindings that already ship atoms have this; the rest gain a build step.
 - The project's own test suite gains coverage rather than losing it: the capability is off by
   default, so existing tests are unaffected, and each binding needs tests for the capability on, the
@@ -308,6 +315,7 @@ lines of behavioral tests covering mutation classification, periodic-noise detec
 frame boundaries, obstruction hit-testing, motion stability, and the per-interaction check matrix. It
 is linked from this record's PR as evidence that the semantics above are implementable and testable,
 not as the proposed API shape — decisions 4 and 5 replace its two driver-level wait methods, and
-decision 8 splits its single atom into narrow entry points. The capability, the implicit-wait
+decision 8 keeps its single atom while requiring narrow named exports in place of its combined
+entry point. The capability, the implicit-wait
 replacement, the client-side element-location retry, the error subclasses, and the `settled` page
 load strategy are proposed here and not yet built.
