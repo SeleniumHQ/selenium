@@ -831,7 +831,8 @@
     node = composedParent(el);
     while (node && node.nodeType === 1) {
       const cs = global.getComputedStyle(node);
-      if (cs.overflow === 'hidden' || cs.overflowX === 'hidden' || cs.overflowY === 'hidden') {
+      if (!generatesNoBox(cs)
+          && (cs.overflow === 'hidden' || cs.overflowX === 'hidden' || cs.overflowY === 'hidden')) {
         const ar = node.getBoundingClientRect();
         if (rect.right <= ar.left || rect.left >= ar.right
             || rect.bottom <= ar.top || rect.top >= ar.bottom) {
@@ -841,6 +842,14 @@
       node = composedParent(node);
     }
     return true;
+  }
+  /**
+   * `display: contents` generates no box, so overflow does not apply to it and
+   * it cannot clip its children -- but it still reports a computed overflow
+   * and a 0x0 border box, which would clip everything inside it to nothing.
+   */
+  function generatesNoBox(cs) {
+    return cs.display === 'contents';
   }
   function ariaDisabled(el) {
     for (let n = el; n && n.nodeType === 1; n = composedParent(n)) {
@@ -912,6 +921,7 @@
     return { left, top, right, bottom };
   }
   function isClippingAncestor(cs) {
+    if (generatesNoBox(cs)) return false;
     return cs.overflow === 'hidden' || cs.overflow === 'auto' || cs.overflow === 'scroll'
       || cs.overflowX === 'hidden' || cs.overflowX === 'auto' || cs.overflowX === 'scroll'
       || cs.overflowY === 'hidden' || cs.overflowY === 'auto' || cs.overflowY === 'scroll';
