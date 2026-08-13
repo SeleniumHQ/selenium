@@ -1,4 +1,4 @@
-# Licensed to the Software Freedom Conservancy (SFC) under one
+	# Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
 # regarding copyright ownership.  The SFC licenses this file
@@ -208,6 +208,19 @@ def test_prompt_should_use_default_value_if_no_keys_sent(driver, pages):
     txt = driver.find_element(By.ID, "text").text
     assert "This is a default value" == txt
 
+def test_prompt_should_clear_default_value(driver, pages):
+    pages.load("alerts.html")
+
+    driver.find_element(By.ID, "prompt-with-default").click()
+
+    alert = _wait_for_alert(driver)
+
+    alert.clear()
+    alert.accept()
+
+    txt = driver.find_element(By.ID, "text").text
+
+    assert "" == txt
 
 def test_prompt_should_have_null_value_if_dismissed(driver, pages):
     pages.load("alerts.html")

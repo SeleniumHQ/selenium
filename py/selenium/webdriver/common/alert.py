@@ -75,4 +75,10 @@ class Alert:
         Args:
             keysToSend: The text to be sent to Alert.
         """
-        self.driver.execute(Command.W3C_SET_ALERT_VALUE, {"value": keys_to_typing(keysToSend), "text": keysToSend})
+        self.driver.execute(
+            Command.W3C_SET_ALERT_VALUE, {"value": keys_to_typing(keysToSend), "text": keysToSend}
+        )
+
+    def clear(self) -> None:
+        """Clears the text of the Alert prompt."""
+        self.driver.execute(Command.W3C_SET_ALERT_VALUE, {"value": [], "text": ""})
