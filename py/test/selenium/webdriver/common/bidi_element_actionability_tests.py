@@ -334,16 +334,20 @@ def test_open_shadow_element_reports_no_false_obstruction(driver, pages):
 # ---------------------------------------------------------------------------
 
 
-def _wait_for_interaction_ready(driver, element, interaction="click", timeout_ms=3000, auto_scroll=True):
+def _wait_for_interaction_ready(
+    driver, element, interaction="click", timeout_ms=3000, auto_scroll=True, require_stable=True
+):
     return driver.execute_async_script(
         "const done = arguments[arguments.length - 1];"
         "window.__quiescence.waitForInteractionReady(arguments[0], {"
-        "  interaction: arguments[1], timeoutMs: arguments[2], autoScroll: arguments[3]"
+        "  interaction: arguments[1], timeoutMs: arguments[2], autoScroll: arguments[3],"
+        "  requireStable: arguments[4]"
         "}).then(done);",
         element,
         interaction,
         timeout_ms,
         auto_scroll,
+        require_stable,
     )
 
 
@@ -669,6 +673,91 @@ def test_click_interaction_does_not_require_editable(driver, pages):
     result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), interaction="click", timeout_ms=800)
 
     assert result["ready"] is True
+
+
+# ---------------------------------------------------------------------------
+# Motion: the stability check must terminate. Sub-pixel drift is not motion,
+# and a provably endless animation is a question with no answer -- a wait that
+# cannot halt turns a passing test into a timeout, which is a worse failure
+# than acting a frame early.
+# ---------------------------------------------------------------------------
+
+
+def _add_element(driver, css_text, extra=""):
+    driver.execute_script(
+        "const d = document.createElement('div');"
+        "d.id = 't'; d.textContent = 'x'; d.style.cssText = arguments[0];"
+        "document.body.appendChild(d);" + extra,
+        css_text,
+    )
+
+
+def test_perpetually_moving_element_is_actionable(driver, pages):
+    """A wait that provably cannot halt must not be waited on.
+
+    An animation with infinite iterations moves the element forever, so
+    requiring a stationary rect turns every interaction into a timeout.
+    """
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "const s = document.createElement('style');"
+        "s.textContent = '@keyframes drift { from { transform: translateX(0px) }"
+        " to { transform: translateX(200px) } }';"
+        "document.head.appendChild(s);"
+    )
+    _add_element(driver, "width:40px;height:20px;animation: drift 900ms linear infinite")
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=1500)
+
+    assert result["ready"] is True
+    assert result["perpetualMotion"] is not None
+
+
+def test_sub_pixel_drift_does_not_prevent_actionability(driver, pages):
+    """Motion below a pixel is not motion anyone can mis-click on."""
+    _navigate(driver, pages, "blank.html")
+    _add_element(
+        driver,
+        "width:40px;height:20px;position:absolute;top:20px;left:20px",
+        "let x = 0;"
+        "(function step() { x += 0.1; d.style.transform = 'translateX(' + x + 'px)';"
+        "  requestAnimationFrame(step); })();",
+    )
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=1500)
+
+    assert result["ready"] is True
+    assert result["perpetualMotion"] is None
+
+
+def test_require_stable_false_skips_the_motion_check(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    _add_element(
+        driver,
+        "width:40px;height:20px;position:absolute;top:20px;left:20px;transition:transform 5000ms linear",
+        "d.getBoundingClientRect(); d.style.transform = 'translateX(400px)';",
+    )
+
+    result = _wait_for_interaction_ready(
+        driver, driver.find_element(By.ID, "t"), timeout_ms=1000, require_stable=False
+    )
+
+    assert result["ready"] is True
+
+
+def test_finite_motion_still_delays_actionability(driver, pages):
+    """Guard on the tolerance: real movement must still block."""
+    _navigate(driver, pages, "blank.html")
+    _add_element(
+        driver,
+        "width:40px;height:20px;position:absolute;top:20px;left:20px;transition:transform 600ms linear",
+        "d.getBoundingClientRect(); d.style.transform = 'translateX(300px)';",
+    )
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=3000)
+
+    assert result["ready"] is True
+    assert result["elapsedMs"] >= 300
 
 
 # ---------------------------------------------------------------------------
