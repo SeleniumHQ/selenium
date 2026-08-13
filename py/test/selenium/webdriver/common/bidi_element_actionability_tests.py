@@ -669,3 +669,38 @@ def test_click_interaction_does_not_require_editable(driver, pages):
     result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), interaction="click", timeout_ms=800)
 
     assert result["ready"] is True
+
+
+# ---------------------------------------------------------------------------
+# ADR 17886 decision 12: the interaction path consults actionability only.
+# Settledness is a separate signal, reachable on request but never on the
+# path an interaction takes -- otherwise every click on an application that
+# long-polls or animates continuously pays the settle timeout.
+# ---------------------------------------------------------------------------
+
+
+def _never_settles(driver):
+    """Start a long-poll chain: one request is always in flight."""
+    driver.execute_script("(function loop() { window.fetch('/slow?ms=200').then(loop); })();")
+
+
+def test_wait_until_actionable_does_not_wait_for_a_page_that_never_settles(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<button id=\"t\">go</button>';")
+    _never_settles(driver)
+
+    result = driver.wait_until_actionable(driver.find_element(By.ID, "t"), timeout=5)
+
+    assert result["ready"] is True
+    assert result["elapsedMs"] < 2000
+
+
+def test_wait_until_actionable_settled_opt_in_reports_a_page_that_never_settles(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<button id=\"t\">go</button>';")
+    _never_settles(driver)
+
+    result = driver.wait_until_actionable(driver.find_element(By.ID, "t"), timeout=2, settled=True)
+
+    assert result["ready"] is False
+    assert "settle" in result["reason"]
