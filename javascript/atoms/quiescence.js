@@ -46,6 +46,11 @@
  *    rAF effects are not tracked in v0.
  *  - Promise reactions are not tracked (undecidable from script level without
  *    async-context hooks); microtasks drain within the settle window anyway.
+ *  - Motion: an element driven by an infinite-iteration animation is reported
+ *    actionable rather than waited on, because that wait provably cannot
+ *    halt; the result carries `perpetualMotion` naming the animated node, and
+ *    the interaction may land while the element is moving. Motion under
+ *    0.5px (`stableEpsilonPx`) does not count as movement at all.
  *  - Resource tracking: loading="lazy" images are never tracked (they fetch
  *    on viewport proximity with no observable start edge); scripts and
  *    stylesheets already in flight at DOMContentLoaded, and cross-origin
@@ -924,15 +929,22 @@
     const r = el.getBoundingClientRect();
     return { x: r.x, y: r.y, width: r.width, height: r.height };
   }
-  function rectsEqual(a, b) {
-    return a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
+  // Below this, the element has not moved in any sense a user could act on:
+  // sub-pixel drift comes from fractional layout and compositor rounding, and
+  // demanding exact equality turns it into permanent instability.
+  const STABLE_EPSILON_PX = 0.5;
+  function rectsEqual(a, b, epsilonPx) {
+    const e = epsilonPx == null ? STABLE_EPSILON_PX : epsilonPx;
+    return Math.abs(a.x - b.x) <= e && Math.abs(a.y - b.y) <= e
+      && Math.abs(a.width - b.width) <= e && Math.abs(a.height - b.height) <= e;
   }
   /**
    * Samples `el`'s bounding rect across `opts.frames` (default 2)
-   * requestAnimationFrame callbacks; unstable if it moves. Independent of
-   * `animationsActive()` (region-level, tracked-animation only): a
-   * CSS-transition or JS-driven transform can move an element with no DOM
-   * mutation and no animation the region oracle classifies as "running".
+   * requestAnimationFrame callbacks; unstable if it moves by more than
+   * `opts.epsilonPx`. Independent of `animationsActive()` (region-level,
+   * tracked-animation only): a CSS-transition or JS-driven transform can move
+   * an element with no DOM mutation and no animation the region oracle
+   * classifies as "running".
    */
   function isStable(el, opts) {
     const o = opts || {};
@@ -943,7 +955,7 @@
       function sample(remaining) {
         if (remaining <= 0) {
           for (let i = 1; i < rects.length; i++) {
-            if (!rectsEqual(rects[0], rects[i])) { resolve(false); return; }
+            if (!rectsEqual(rects[0], rects[i], o.epsilonPx)) { resolve(false); return; }
           }
           resolve(true);
           return;
@@ -955,6 +967,29 @@
       }
       sample(frames);
     });
+  }
+  /**
+   * An animation with infinite iterations driving `el` (or a composed
+   * ancestor) means the rect provably never stops changing. Waiting for
+   * stability cannot halt, so the wait would spend its whole budget and then
+   * fail an element that was interactable the entire time -- a false "not
+   * ready" is a worse failure than acting a frame early. Returns a preview of
+   * the animated node so the caller can report *why* it stopped asking, since
+   * this is the region oracle's spinner-noise rule applied to one element.
+   */
+  function perpetualMotionSource(el) {
+    try {
+      if (!global.document || !global.document.getAnimations) return null;
+      for (const a of global.document.getAnimations()) {
+        if (a.playState !== 'running') continue;
+        const timing = a.effect && a.effect.getTiming ? a.effect.getTiming() : null;
+        if (!timing || timing.iterations !== Infinity) continue;
+        const target = a.effect.target;
+        if (!target || !composedContains(target, el)) continue;
+        return nodePreview(target);
+      }
+    } catch (_) { /* getAnimations unsupported */ }
+    return null;
   }
   function nodePreview(el) {
     if (!el || el.nodeType !== 1) return '';
@@ -1018,12 +1053,19 @@
     const requiresEditable = interaction === 'type' || interaction === 'clear';
     // drop/screenshot act on the element regardless of its enabled state.
     const requiresEnabled = interaction !== 'drop' && interaction !== 'screenshot';
+    const requireStable = o.requireStable !== false;
     const started = native.now();
     return new Promise((resolve) => {
       let attempt = 0;
       let scrolled = false;
-      function done(ready, point, reason) {
-        resolve({ ready, interactionPoint: point, reason: reason || null, elapsedMs: native.now() - started });
+      function done(ready, point, reason, perpetualMotion) {
+        resolve({
+          ready,
+          interactionPoint: point,
+          reason: reason || null,
+          perpetualMotion: perpetualMotion || null,
+          elapsedMs: native.now() - started,
+        });
       }
       function tick() {
         const state = elementState(el);
@@ -1039,8 +1081,11 @@
           && (!requiresEditable || state.editable)
           && !hit.obstructedBy && state.inViewport;
         if (ready) {
-          isStable(el).then((stable) => {
+          if (!requireStable) { done(true, hit.point, null); return; }
+          isStable(el, { epsilonPx: o.stableEpsilonPx }).then((stable) => {
             if (stable) { done(true, hit.point, null); return; }
+            const perpetual = perpetualMotionSource(el);
+            if (perpetual) { done(true, hit.point, null, perpetual); return; }
             armNext(state, hit);
           });
           return;
