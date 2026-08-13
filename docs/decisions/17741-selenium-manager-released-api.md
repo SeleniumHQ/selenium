@@ -34,8 +34,8 @@ skew. How an older SM treats an input it does not recognize depends on the input
 - New switches must be optional — an older binding will omit them.
 - Nothing in the contract — switches, values, output fields — is removed or renamed without a
   deprecation cycle.
-- Current defaults must not change once released, and must all be documented
-  ([configuration reference](https://www.selenium.dev/documentation/selenium_manager/#configuration)).
+- The defaults enumerated below are what 1.0 commits to; changing one afterwards requires a
+  deprecation cycle like any other contract change.
 
 **Resolution.**
 
@@ -49,6 +49,68 @@ skew. How an older SM treats an input it does not recognize depends on the input
 - The binding must pass in the Selenium version and language (name and version).
 - SM must pass in the SM version.
 - Each time SM sends data, it logs what was sent and how to disable it.
+
+## Committed defaults
+
+What 1.0 locks, as it behaves today. Rows marked **→** are changed by this record; everything else
+is a commitment to current behavior.
+
+**Output and logging**
+
+| Default | Current value |
+| --- | --- |
+| `--output` | `LOGGER` — human-readable logs, written to stdout **→** changed, see *Output* |
+| `--output JSON` | full JSON (logs and result) on stdout |
+| `--output MIXED` | logs to stderr, minimal JSON result to stdout |
+| `--output SHELL` | INFO to stdout, ERROR to stderr |
+| Log level | `info`; `--debug` and `--trace` raise it, `--log-level` sets it directly |
+| `RUST_LOG` set | the env filter takes over and output goes to stderr regardless of `--output` |
+
+**Network**
+
+| Default | Current value |
+| --- | --- |
+| `--timeout` | 300 seconds, connect through end of response body |
+| `--ttl` | 3600 seconds — how long an online version lookup is reused before re-querying |
+| `--proxy` | unset; no proxy inferred from the environment |
+| `--offline` | off |
+| `--driver-mirror-url` / `--browser-mirror-url` | unset; official endpoints |
+| Telemetry request timeout | 3 seconds, not configurable |
+
+**Cache and configuration**
+
+| Default | Current value |
+| --- | --- |
+| Cache path | `~/.cache/selenium` |
+| Cache pruning | entries older than 30 days are deleted on every invocation |
+| Config file | `se-config.toml`, read from the cache path |
+| Environment prefix | `SE_`, with `-` becoming `_` (`--browser-version` → `SE_BROWSER_VERSION`) |
+| Precedence | config file, then environment, then CLI switch |
+| `--clear-cache` / `--clear-metadata` | off |
+
+**Resolution**
+
+| Default | Current value |
+| --- | --- |
+| Driver found in `PATH` | used, when no `--browser-version` was requested |
+| `PATH` driver not matching the browser | used anyway, with a warning **→** changed, see *Resolution* |
+| `--browser-path` provided | bindings bypass SM entirely **→** changed behind a toggle, see *Resolution* |
+| Browser download | when no local browser is found, or a requested `--browser-version` does not match the local one and no `--browser-path` was given |
+| `--force-browser-download` / `--avoid-browser-download` | off |
+| `--skip-driver-in-path` / `--skip-browser-in-path` | off |
+| Resolution fails with a driver in `PATH` or cache | falls back to the cached driver rather than erroring |
+| Resolution fails under `--offline` | warns and exits 0 |
+| Exit codes | 0 success, 65 bad input or unresolvable, 69 driver missing after resolution |
+
+**Telemetry**
+
+| Default | Current value |
+| --- | --- |
+| Collection | on; `--avoid-stats` opts out, and the `avoid_stats` build feature flips the default for redistributors |
+| Endpoint | `plausible.io`, under the `manager.selenium.dev` domain |
+| Fields sent | browser, browser version, os, arch, language binding, Selenium version |
+| Selenium version field | carries SM's own version with the `0.` prefix stripped **→** changed, see *Telemetry* |
+| Send failure | warned, never fatal |
 
 ## Considered options
 
