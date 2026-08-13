@@ -396,7 +396,7 @@ def test_disabled_element_never_becomes_ready(driver, pages):
 
 
 # ---------------------------------------------------------------------------
-# Slice E: composition + driver.wait_until_actionable()
+# Slice E: driver.wait_until_actionable()
 # ---------------------------------------------------------------------------
 
 
@@ -409,7 +409,7 @@ def test_wait_until_actionable_returns_ready_for_ordinary_button(driver, pages):
     assert result["ready"] is True
 
 
-def test_wait_until_actionable_waits_for_dom_settle_and_element_reveal(driver, pages):
+def test_wait_until_actionable_waits_for_element_reveal(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(
         'document.body.innerHTML = \'<button id="t" style="display:none">go</button>\';'

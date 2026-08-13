@@ -1058,20 +1058,44 @@
       tick();
     });
   }
+  function unsettledReason(dom) {
+    const parts = [];
+    const types = Array.from(new Set(getBlockers().map((b) => b.type)));
+    if (types.length) parts.push('pending ' + types.join(', '));
+    if (dom.activeRegions && dom.activeRegions.length) {
+      parts.push(dom.activeRegions.length + ' mutating region(s)');
+    }
+    return parts.length ? parts.join('; ') : 'cause not observable';
+  }
   /**
-   * "Safe to act on X" = region-quiescent ∧ element-ready. Sequential
-   * composition (settle the document first, then wait for the element) —
-   * the simplest correct reading for v0; the element's containing region
-   * isn't known upfront, so `awaitDomSettled` runs unscoped.
+   * "Safe to act on X" = element-ready. Settledness is deliberately *not* on
+   * this path: an application that long-polls or animates continuously never
+   * settles, so composing it in would make every interaction pay the settle
+   * timeout for a signal that says nothing about this element. Actionability
+   * does not depend on settledness and is not derived from it.
+   *
+   * `opts.settled` opts into settle-then-act for a caller that knows the page
+   * does quiesce — a slow re-render after a click, say. Failing to settle is
+   * then reported, not silently stepped over: proceeding would spend the whole
+   * budget and still act on a page that is visibly still working.
    */
   function waitUntilActionable(el, opts) {
     const o = opts || {};
     const timeoutMs = o.timeoutMs != null ? o.timeoutMs : 10000;
     const started = native.now();
-    return awaitDomSettled({ timeoutMs }).then(() => {
-      const remaining = Math.max(0, timeoutMs - (native.now() - started));
-      return waitForInteractionReady(el, Object.assign({}, o, { timeoutMs: remaining }));
-    }).then((result) => Object.assign({}, result, { elapsedMs: native.now() - started }));
+    const elapsed = () => native.now() - started;
+    if (!o.settled) return waitForInteractionReady(el, Object.assign({}, o, { timeoutMs }));
+    return awaitDomSettled({ root: o.root, timeoutMs }).then((dom) => {
+      if (!dom.settled) {
+        return {
+          ready: false,
+          interactionPoint: null,
+          reason: 'did not settle: ' + unsettledReason(dom),
+        };
+      }
+      return waitForInteractionReady(
+        el, Object.assign({}, o, { timeoutMs: Math.max(0, timeoutMs - elapsed()) }));
+    }).then((result) => Object.assign({}, result, { elapsedMs: elapsed() }));
   }
   function elementState(el) {
     const rect = visibleRectOf(el);
