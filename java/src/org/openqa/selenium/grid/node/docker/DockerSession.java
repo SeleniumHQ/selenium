@@ -78,6 +78,13 @@ public class DockerSession extends DefaultActiveSession {
   }
 
   @Override
+  public boolean isRemoteFileSystem() {
+    // The browser runs inside a Docker container that does not share the Node's filesystem, so
+    // file upload and download commands must be forwarded to the container.
+    return true;
+  }
+
+  @Override
   public void stop() {
     try {
       if (videoContainer != null) {

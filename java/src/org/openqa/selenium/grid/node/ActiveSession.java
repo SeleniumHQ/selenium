@@ -40,5 +40,18 @@ public interface ActiveSession extends HttpHandler {
 
   Dialect getDownstreamDialect();
 
+  /**
+   * Indicates whether the browser backing this session runs in a separate environment from the
+   * Node process (for example, a Docker container or a Kubernetes Pod) and therefore does not share
+   * the Node's local filesystem. When {@code true}, file upload and download commands must be
+   * forwarded to the session so files are written to (or read from) the environment where the
+   * browser actually runs, instead of being handled on the Node's own filesystem.
+   *
+   * @return {@code true} if file transfer commands must be forwarded to the browser environment
+   */
+  default boolean isRemoteFileSystem() {
+    return false;
+  }
+
   void stop();
 }

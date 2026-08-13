@@ -112,7 +112,6 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.NodeCommandInterceptor;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
-import org.openqa.selenium.grid.node.docker.DockerSession;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
@@ -901,10 +900,11 @@ public class LocalNode extends Node implements Closeable {
 
   @Override
   public HttpResponse downloadFile(HttpRequest req, SessionId id) {
-    // When the session is running in a Docker container, the download file command
-    // needs to be forwarded to the container as well.
+    // When the browser runs in a separate environment from the Node (e.g. a Docker container or a
+    // Kubernetes Pod), the download file command needs to be forwarded to that environment as well,
+    // since the Node does not share a filesystem with the browser.
     SessionSlot slot = currentSessions.getIfPresent(id);
-    if (slot != null && slot.getSession() instanceof DockerSession) {
+    if (slot != null && slot.getSession() != null && slot.getSession().isRemoteFileSystem()) {
       return executeWebDriverCommand(req);
     }
     if (!this.managedDownloadsEnabled) {
@@ -1109,10 +1109,12 @@ public class LocalNode extends Node implements Closeable {
   @Override
   public HttpResponse uploadFile(HttpRequest req, SessionId id) {
 
-    // When the session is running in a Docker container, the upload file command
-    // needs to be forwarded to the container as well.
+    // When the browser runs in a separate environment from the Node (e.g. a Docker container or a
+    // Kubernetes Pod), the upload file command needs to be forwarded to that environment as well,
+    // since the Node does not share a filesystem with the browser. Otherwise the file would be
+    // written to the Node's filesystem and be unreachable from the browser when sendKeys runs.
     SessionSlot slot = currentSessions.getIfPresent(id);
-    if (slot != null && slot.getSession() instanceof DockerSession) {
+    if (slot != null && slot.getSession() != null && slot.getSession().isRemoteFileSystem()) {
       return executeWebDriverCommand(req);
     }
 
