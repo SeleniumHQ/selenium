@@ -819,3 +819,55 @@ def test_wait_until_actionable_settled_opt_in_reports_a_page_that_never_settles(
 
     assert result["ready"] is False
     assert "settle" in result["reason"]
+
+
+# ---------------------------------------------------------------------------
+# Elements that generate no box, or a box with no area. There is no point to
+# click on either, so failing fast beats waiting out the budget -- but an
+# element *inside* a box-less wrapper is ordinary and must stay reachable.
+# ---------------------------------------------------------------------------
+
+
+def test_zero_area_element_is_not_visible(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script('document.body.innerHTML = \'<div id="t" style="width:0;height:0"></div>\';')
+
+    state = _element_state(driver, driver.find_element(By.ID, "t"))
+
+    assert state["visible"] is False
+    assert state["inViewport"] is False
+
+
+def test_zero_area_element_is_not_actionable(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script('document.body.innerHTML = \'<div id="t" style="width:0;height:0"></div>\';')
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=500)
+
+    assert result["ready"] is False
+    assert "not visible" in result["reason"]
+
+
+def test_display_contents_element_is_not_actionable(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = '<div id=\"t\" style=\"display:contents\"><span>x</span></div>';"
+    )
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=500)
+
+    assert result["ready"] is False
+    assert "not visible" in result["reason"]
+
+
+def test_element_inside_a_display_contents_wrapper_is_actionable(driver, pages):
+    """A wrapper that generates no box cannot clip: overflow does not apply."""
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = "
+        '\'<div id="wrap" style="display:contents;overflow:hidden"><button id="t">go</button></div>\';'
+    )
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=1000)
+
+    assert result["ready"] is True
