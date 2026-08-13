@@ -18,11 +18,13 @@
 use assert_cmd::Command;
 use assert_cmd::assert::AssertResult;
 use is_executable::is_executable;
+use selenium_manager::DASH_DASH_VERSION;
 use selenium_manager::files::path_to_string;
 use selenium_manager::logger::JsonOutput;
 use selenium_manager::shell;
-use selenium_manager::shell::run_shell_command_by_os;
+use selenium_manager::shell::run_shell_command;
 use std::borrow::BorrowMut;
+use std::env::consts::ARCH;
 use std::env::consts::OS;
 use std::path::{Path, PathBuf};
 
@@ -82,8 +84,9 @@ pub fn get_driver_path(cmd: &mut Command) -> String {
 pub fn exec_driver(cmd: &mut Command) -> String {
     let cmd_mut = cmd.borrow_mut();
     let driver_path = get_driver_path(cmd_mut);
-    let driver_version_command = shell::Command::new_single(format!("{} --version", &driver_path));
-    let output = run_shell_command_by_os(OS, driver_version_command).unwrap();
+    let driver_version_command =
+        shell::Command::new(&driver_path, vec![String::from(DASH_DASH_VERSION)]);
+    let output = run_shell_command(driver_version_command).unwrap();
     println!("**** EXEC DRIVER: {}", output);
     output
 }
@@ -126,4 +129,9 @@ pub fn assert_output(
                 .contains(&error_code.to_string())
         );
     }
+}
+
+#[allow(dead_code)]
+pub fn is_linux_arm64() -> bool {
+    OS == "linux" && ARCH == "aarch64"
 }

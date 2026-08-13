@@ -78,12 +78,11 @@ internal sealed class Broker : IAsyncDisposable
 
         var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        using var cts = cancellationToken.CanBeCanceled
-            ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
-            : new CancellationTokenSource();
+        using CancellationTokenSource? cts = cancellationToken.CanBeCanceled
+            ? null
+            : new CancellationTokenSource(DefaultCommandTimeout);
 
-        var timeout = options?.Timeout ?? DefaultCommandTimeout;
-        cts.CancelAfter(timeout);
+        var effectiveToken = cts?.Token ?? cancellationToken;
 
         var sendBuffer = RentBuffer();
 
@@ -96,7 +95,30 @@ internal sealed class Broker : IAsyncDisposable
                 writer.WriteNumber("id"u8, id);
                 writer.WriteString("method"u8, descriptor.Method);
                 writer.WritePropertyName("params"u8);
+
+                if (options is { AdditionalData: { IsEmpty: false } additionalData })
+                {
+                    // Cannot mutate the shared Parameters.Empty singleton; create a fresh instance to hold the extra data.
+                    if (ReferenceEquals(@params, Parameters.Empty))
+                    {
+                        @params = (TParameters)(object)new Parameters();
+                    }
+                    @params.RawAdditionalData ??= [];
+                    foreach (var prop in additionalData)
+                    {
+                        @params.RawAdditionalData[prop.Name] = prop.Value;
+                    }
+                }
+
                 JsonSerializer.Serialize(writer, @params, descriptor.ParamsTypeInfo);
+                if (options is not null)
+                {
+                    foreach (var prop in options.AdditionalMessageData)
+                    {
+                        writer.WritePropertyName(prop.Name);
+                        prop.Value.WriteTo(writer);
+                    }
+                }
                 writer.WriteEndObject();
             }
         }
@@ -109,9 +131,9 @@ internal sealed class Broker : IAsyncDisposable
         var commandInfo = new CommandInfo(tcs, descriptor.ResultTypeInfo);
         _pendingCommands[id] = commandInfo;
 
-        using var ctsRegistration = cts.Token.Register(() =>
+        using var ctsRegistration = effectiveToken.Register(() =>
         {
-            tcs.TrySetCanceled(cts.Token);
+            tcs.TrySetCanceled(effectiveToken);
             _pendingCommands.TryRemove(id, out _);
         });
 
@@ -126,7 +148,7 @@ internal sealed class Broker : IAsyncDisposable
 #endif
             }
 
-            await _transport.SendAsync(sendBuffer.WrittenMemory, cts.Token).ConfigureAwait(false);
+            await _transport.SendAsync(sendBuffer.WrittenMemory, effectiveToken).ConfigureAwait(false);
         }
         catch
         {
@@ -189,6 +211,7 @@ internal sealed class Broker : IAsyncDisposable
         string? message = default;
         Utf8JsonReader resultReader = default;
         Utf8JsonReader paramsReader = default;
+        Dictionary<string, JsonElement>? additionalMessageData = null;
 
         Utf8JsonReader reader = new(data);
         reader.Read(); // "{"
@@ -236,7 +259,10 @@ internal sealed class Broker : IAsyncDisposable
             }
             else
             {
+                var propName = reader.GetString()!;
                 reader.Read();
+                additionalMessageData ??= [];
+                additionalMessageData[propName] = JsonElement.ParseValue(ref reader);
             }
 
             reader.Skip();
@@ -254,6 +280,11 @@ internal sealed class Broker : IAsyncDisposable
                     {
                         var commandResult = JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)
                             ?? throw new BiDiException("Remote end returned null command result in the 'result' property.");
+
+                        if (additionalMessageData is not null)
+                        {
+                            ((EmptyResult)commandResult).AdditionalMessageData = AdditionalData.FromDictionary(additionalMessageData);
+                        }
 
                         command.TaskCompletionSource.TrySetResult((EmptyResult)commandResult);
                     }
@@ -275,12 +306,13 @@ internal sealed class Broker : IAsyncDisposable
             case TypeEvent:
                 if (method is null) throw new BiDiException($"The remote end responded with 'event' message type, but missed required 'method' property. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
 
-                if (!_bidi.EventDispatcher.TryDeserializeAndDispatch(method, ref paramsReader))
+                try
                 {
-                    if (_logger.IsEnabled(LogEventLevel.Warn))
-                    {
-                        _logger.Warn($"Received BiDi event with method '{method}', but no event type mapping was found. Event will be ignored. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
-                    }
+                    _bidi.EventDispatcher.DeserializeAndDispatch(method, ref paramsReader, additionalMessageData);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Warn($"Failed to deserialize and dispatch '{method}' event: {ex}.\nMessage content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
                 }
 
                 break;

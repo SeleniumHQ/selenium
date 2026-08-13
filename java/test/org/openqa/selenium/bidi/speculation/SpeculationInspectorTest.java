@@ -22,8 +22,10 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -31,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.bidi.module.Script;
 import org.openqa.selenium.bidi.module.SpeculationInspector;
@@ -227,11 +230,125 @@ class SpeculationInspectorTest extends JupiterTestBase {
   @NeedsFreshDriver
   @NotYetImplemented(FIREFOX)
   @NotYetImplemented(SAFARI)
+  @Disabled("https://github.com/SeleniumHQ/selenium/issues/17764")
+  void canClearListenersForBrowsingContext() throws InterruptedException {
+    CountDownLatch latch = new CountDownLatch(1);
+    List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
+
+    speculationInspector.onPrefetchStatusUpdated(
+        event -> {
+          events.add(event);
+          latch.countDown();
+        });
+
+    String testUrl = appServer.whereIs("/common/blank.html");
+    driver.get(testUrl);
+
+    String prefetchTarget = appServer.whereIs("/common/dummy.xml");
+    String speculationRules =
+        String.format(
+            "{\"prefetch\": [{\"source\": \"list\", \"urls\": [\"%s\"]}]}", prefetchTarget);
+
+    addSpeculationRulesAndLink(speculationRules, prefetchTarget, "Test Link", "prefetch-page");
+
+    latch.await(5, TimeUnit.SECONDS);
+    assertThat(events).hasSizeGreaterThanOrEqualTo(1);
+
+    // Clear listeners for this browsing context
+    speculationInspector.clearListener(driver.getWindowHandle());
+
+    // Re-subscribe after clearing
+    CountDownLatch newLatch = new CountDownLatch(1);
+    List<PrefetchStatusUpdatedParameters> newEvents = new ArrayList<>();
+
+    speculationInspector.onPrefetchStatusUpdated(
+        event -> {
+          newEvents.add(event);
+          newLatch.countDown();
+        });
+
+    driver.get(testUrl);
+
+    String prefetchTarget2 = appServer.whereIs("/common/square.png");
+    String speculationRules2 =
+        String.format(
+            "{\"prefetch\": [{\"source\": \"list\", \"urls\": [\"%s\"]}]}", prefetchTarget2);
+
+    addSpeculationRulesAndLink(
+        speculationRules2, prefetchTarget2, "Test Link 2", "prefetch-page-2");
+
+    newLatch.await(5, TimeUnit.SECONDS);
+    assertThat(newEvents).hasSizeGreaterThanOrEqualTo(1);
+    assertThat(newEvents.get(0).getUrl()).isEqualTo(prefetchTarget2);
+  }
+
+  @Test
+  @NeedsFreshDriver
+  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(SAFARI)
+  @Disabled("https://github.com/SeleniumHQ/selenium/issues/17764")
+  void canClearListenersForMultipleBrowsingContexts() throws InterruptedException {
+    CountDownLatch latch = new CountDownLatch(1);
+    List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
+
+    speculationInspector.onPrefetchStatusUpdated(
+        event -> {
+          events.add(event);
+          latch.countDown();
+        });
+
+    String testUrl = appServer.whereIs("/common/blank.html");
+    driver.get(testUrl);
+
+    String prefetchTarget = appServer.whereIs("/common/dummy.xml");
+    String speculationRules =
+        String.format(
+            "{\"prefetch\": [{\"source\": \"list\", \"urls\": [\"%s\"]}]}", prefetchTarget);
+
+    addSpeculationRulesAndLink(speculationRules, prefetchTarget, "Test Link", "prefetch-page");
+
+    latch.await(5, TimeUnit.SECONDS);
+    assertThat(events).hasSizeGreaterThanOrEqualTo(1);
+
+    // Clear listeners for the set of browsing context ids
+    Set<String> browsingContextIds = new HashSet<String>();
+    browsingContextIds.add(driver.getWindowHandle());
+    speculationInspector.clearListeners(browsingContextIds);
+
+    // Re-subscribe after clearing
+    CountDownLatch newLatch = new CountDownLatch(1);
+    List<PrefetchStatusUpdatedParameters> newEvents = new ArrayList<>();
+
+    speculationInspector.onPrefetchStatusUpdated(
+        event -> {
+          newEvents.add(event);
+          newLatch.countDown();
+        });
+
+    driver.get(testUrl);
+
+    String prefetchTarget2 = appServer.whereIs("/common/square.png");
+    String speculationRules2 =
+        String.format(
+            "{\"prefetch\": [{\"source\": \"list\", \"urls\": [\"%s\"]}]}", prefetchTarget2);
+
+    addSpeculationRulesAndLink(
+        speculationRules2, prefetchTarget2, "Test Link 2", "prefetch-page-2");
+
+    newLatch.await(5, TimeUnit.SECONDS);
+    assertThat(newEvents).hasSizeGreaterThanOrEqualTo(1);
+    assertThat(newEvents.get(0).getUrl()).isEqualTo(prefetchTarget2);
+  }
+
+  @Test
+  @NeedsFreshDriver
+  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(SAFARI)
   void canUnsubscribeFromPrefetchStatusUpdated() throws InterruptedException {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
 
-    long subscriptionId =
+    String subscriptionId =
         speculationInspector.onPrefetchStatusUpdated(
             event -> {
               events.add(event);

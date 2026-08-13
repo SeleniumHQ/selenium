@@ -4,6 +4,7 @@ projectFilesBackup/
 .svn
 .credentials.dat
 .ijwb
+/java-libs
 mockpiframe.log
 mockpiframe.log.lck
 junitvmwatcher*.properties
@@ -100,6 +101,9 @@ obj/
 *.aps
 launchSettings.json
 Generated/
+# Un-ignore the hand-written tests for the generated BiDi domain API (macOS
+# case-insensitive filesystem would otherwise match "Generated/" above).
+!javascript/selenium-webdriver/test/bidi/generated/
 ipch/
 /iedriver.log
 /phantomjsdriver.log
@@ -145,8 +149,8 @@ dotnet-bin
 .metadata/
 .npmrc
 
-/.local/*
-!/.local/.gitkeep
+**/.local/*
+!/.local/README.md
 
 # Security
 .env
@@ -159,6 +163,9 @@ dotnet-bin
 /.cline
 /.windsurf
 /.zencoder
+AGENTS.local.md
+CLAUDE.local.md
+GEMINI.local.md
 
 # Common per-tool config/rules files people accidentally add
 /.cursorignore

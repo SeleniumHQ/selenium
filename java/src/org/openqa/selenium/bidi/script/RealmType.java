@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.bidi.script;
 
+import org.openqa.selenium.Beta;
+
+@Beta
 public enum RealmType {
   AUDIO_WORKLET("audio-worklet"),
   DEDICATED_WORKER("dedicated-worker"),

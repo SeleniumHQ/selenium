@@ -4,9 +4,9 @@ load("@rules_ruby//ruby:defs.bzl", "rb_binary", "rb_library")
 package(default_visibility = ["//rb:__subpackages__"])
 
 CDP_VERSIONS = [
-    "v146",
-    "v147",
-    "v148",
+    "v149",
+    "v150",
+    "v151",
 ]
 
 rb_library(
@@ -26,8 +26,10 @@ rb_binary(
     data = [
         "support/cdp/domain.rb.erb",
         "support/cdp/loader.rb.erb",
+        "//scripts:generated_note_template.txt",
     ],
     main = "support/cdp_client_generator.rb",
+    deps = ["//rb/support:generated_note"],
 )
 
 [

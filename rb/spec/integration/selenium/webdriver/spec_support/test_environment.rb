@@ -17,6 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'bazel/runfiles'
+
 module Selenium
   module WebDriver
     module SpecSupport
@@ -37,6 +39,9 @@ module Selenium
           $LOAD_PATH.insert(0, root.join('bazel-bin/rb/lib').to_s) if File.exist?(root.join('bazel-bin/rb/lib'))
           WebDriver.logger.ignore(:logger_info)
           SeleniumManager.bin_path = root.join('bazel-bin/rb/bin').to_s if File.exist?(root.join('bazel-bin/rb/bin'))
+
+          # always run bidi tests in strict mode to detect browser bugs
+          ENV['SE_BIDI_STRICT'] ||= 'true' if ENV['WEBDRIVER_BIDI']
 
           @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').tr('-', '_').to_sym
           @driver_instance = nil
@@ -64,6 +69,17 @@ module Selenium
           end
         end
 
+        def browser_family
+          case browser
+          when :chrome, :edge
+            :chromium
+          when :safari, :safari_preview
+            :safari
+          else
+            browser
+          end
+        end
+
         def browser_version
           ENV.fetch('WD_BROWSER_VERSION', 'stable')
         end
@@ -72,12 +88,11 @@ module Selenium
           @driver_instance || create_driver!(...)
         end
 
-        def reset_driver!(time: 0, **opts, &block)
+        def reset_driver!(**opts, &block)
           # do not reset if the test was marked skipped
           return if opts.delete(:example)&.metadata&.fetch(:skip, nil)
 
           quit_driver
-          sleep time
           driver_instance(**opts, &block)
         end
 
@@ -99,17 +114,9 @@ module Selenium
         end
 
         def remote_server
-          args = if ENV.key?('CHROMEDRIVER_BINARY')
-                   ["-Dwebdriver.chrome.driver=#{rlocation(ENV['CHROMEDRIVER_BINARY'])}"]
-                 elsif ENV.key?('MSEDGEDRIVER_BINARY')
-                   ["-Dwebdriver.edge.driver=#{rlocation(ENV['MSEDGEDRIVER_BINARY'])}"]
-                 elsif ENV.key?('GECKODRIVER_BINARY')
-                   ["-Dwebdriver.gecko.driver=#{rlocation(ENV['GECKODRIVER_BINARY'])}"]
-                 else
-                   %w[--selenium-manager true]
-                 end
+          args = driver_path ? %w[--detect-drivers false] : %w[--selenium-manager true]
           args += %w[--enable-managed-downloads true]
-          args += version_stereotype_args unless browser_version == 'stable'
+          args += driver_configuration if driver_path || browser_version != 'stable'
 
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
@@ -122,12 +129,30 @@ module Selenium
           )
         end
 
-        def version_stereotype_args
-          stereotype = {browserName: w3c_browser_name, browserVersion: browser_version}.to_json
-          ['--driver-configuration',
-           "display-name=#{browser} #{browser_version}",
-           'max-sessions=1',
-           "stereotype=#{stereotype}"]
+        def driver_configuration
+          stereotype = {browserName: w3c_browser_name}
+          stereotype[:browserVersion] = browser_version unless browser_version == 'stable'
+          stereotype[options_key] = {binary: browser_path} if browser_path
+
+          config = ['--driver-configuration',
+                    "display-name=#{browser} #{browser_version}",
+                    'max-sessions=5']
+          config << "webdriver-executable=#{driver_path}" if driver_path
+          config << "stereotype=#{stereotype.to_json}"
+          config
+        end
+
+        def driver_path
+          env = {chrome: 'CHROMEDRIVER_BINARY', edge: 'MSEDGEDRIVER_BINARY', firefox: 'GECKODRIVER_BINARY'}[browser]
+          runfiles_path(env) if env
+        end
+
+        def browser_path
+          runfiles_path("#{browser.to_s.upcase}_BINARY")
+        end
+
+        def options_key
+          {chrome: 'goog:chromeOptions', edge: 'ms:edgeOptions', firefox: 'moz:firefoxOptions'}[browser]
         end
 
         def w3c_browser_name
@@ -137,12 +162,17 @@ module Selenium
         def bazel_java
           return unless ENV.key?('WD_BAZEL_JAVA_LOCATION')
 
-          java_path = File.read(File.expand_path(ENV.fetch('WD_BAZEL_JAVA_LOCATION'))).chomp
-          rlocation(java_path)
+          # $(JAVA) is an exec path (external/<repo>/...); strip the prefix to a canonical rlocation
+          # path, and fall back to the raw path on a lookup miss so we never realpath nil.
+          java_path = File.read(File.expand_path(ENV.fetch('WD_BAZEL_JAVA_LOCATION'))).chomp.sub(%r{^external/}, '')
+          resolved = runfiles.rlocation(java_path) || java_path
+
+          # Resolve the JDK symlink to its real path to dodge a Windows JVM bug mapping lib\modules.
+          Platform.windows? && File.exist?(resolved) ? File.realpath(resolved) : resolved
         end
 
         def rbe?
-          Dir.pwd.start_with?('/mnt/engflow')
+          ENV['REMOTE_BUILD'] == '1'
         end
 
         def reset_remote_server
@@ -200,13 +230,15 @@ module Selenium
           @root ||= Pathname.new('../../../../../../../').realpath(__FILE__)
         end
 
-        def create_driver!(listener: nil, http_client: nil, **, &block)
+        def create_driver!(listener: nil, http_client: nil, service: nil, **, &block)
           check_for_previous_error
           http_client ||= Remote::Http::Default.new(read_timeout: 30)
+          @safari_pairing_attempts ||= 0
 
           method = :"#{driver}_driver"
-          opts = {options: build_options(**), listener: listener, http_client: http_client}
+          opts = {options: build_options(**), listener: listener, http_client: http_client, service: service}.compact
           instance = private_methods.include?(method) ? send(method, **opts) : WebDriver::Driver.for(driver, **opts)
+          @safari_pairing_attempts = 0
           @create_driver_error_count -= 1 unless @create_driver_error_count.zero?
           if block
             begin
@@ -218,6 +250,7 @@ module Selenium
             @driver_instance = instance
           end
         rescue StandardError => e
+          retry if safari_pairing_retry?(e)
           @create_driver_error = e
           @create_driver_error_count += 1
           raise e
@@ -246,6 +279,21 @@ module Selenium
         end
 
         MAX_ERRORS = 4
+
+        # Safari Driver is slow to release previous sessions especially on Grid.
+        SAFARI_PAIRING_RETRIES = 5
+        SAFARI_PAIRING_INTERVAL = 1
+
+        def safari_pairing_retry?(error)
+          msg = 'instance is already paired'
+          return false unless browser.to_s.include?('safari') && error.message.to_s.include?(msg)
+          return false if @safari_pairing_attempts >= SAFARI_PAIRING_RETRIES
+
+          @safari_pairing_attempts += 1
+          WebDriver.logger.warn("Safari pairing busy; retry #{@safari_pairing_attempts}/#{SAFARI_PAIRING_RETRIES}")
+          sleep SAFARI_PAIRING_INTERVAL
+          true
+        end
 
         class DriverInstantiationError < StandardError
         end
@@ -279,7 +327,7 @@ module Selenium
           service ||= WebDriver::Service.chrome
           service.args << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
           service.args << '--verbose' if WebDriver.logger.debug?
-          service.executable_path = rlocation(ENV['CHROMEDRIVER_BINARY']) if ENV.key?('CHROMEDRIVER_BINARY')
+          service.executable_path = runfiles_path('CHROMEDRIVER_BINARY') if ENV.key?('CHROMEDRIVER_BINARY')
           WebDriver::Driver.for(:chrome, service: service, **)
         end
 
@@ -287,14 +335,14 @@ module Selenium
           service ||= WebDriver::Service.edge
           service.args << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
           service.args << '--verbose' if WebDriver.logger.debug?
-          service.executable_path = rlocation(ENV['MSEDGEDRIVER_BINARY']) if ENV.key?('MSEDGEDRIVER_BINARY')
+          service.executable_path = runfiles_path('MSEDGEDRIVER_BINARY') if ENV.key?('MSEDGEDRIVER_BINARY')
           WebDriver::Driver.for(:edge, service: service, **)
         end
 
         def firefox_driver(service: nil, **)
           service ||= WebDriver::Service.firefox
           service.args.push('--log', 'trace') if WebDriver.logger.debug?
-          service.executable_path = rlocation(ENV['GECKODRIVER_BINARY']) if ENV.key?('GECKODRIVER_BINARY')
+          service.executable_path = runfiles_path('GECKODRIVER_BINARY') if ENV.key?('GECKODRIVER_BINARY')
           WebDriver::Driver.for(:firefox, service: service, **)
         end
 
@@ -311,9 +359,9 @@ module Selenium
         end
 
         def chrome_options(args: [], **opts)
-          opts[:browser_version] = browser_version unless ENV.key?('CHROME_BINARY')
+          opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
-          opts[:binary] ||= rlocation(ENV['CHROME_BINARY']) if ENV.key?('CHROME_BINARY')
+          opts[:binary] ||= runfiles_path('CHROME_BINARY') if ENV.key?('CHROME_BINARY')
           args << '--headless' if ENV['HEADLESS']
           args << '--no-sandbox' unless Platform.windows?
           args << '--disable-dev-shm-usage' if GlobalTestEnv.rbe?
@@ -322,9 +370,9 @@ module Selenium
         end
 
         def edge_options(args: [], **opts)
-          opts[:browser_version] = browser_version unless ENV.key?('EDGE_BINARY')
+          opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
-          opts[:binary] ||= rlocation(ENV['EDGE_BINARY']) if ENV.key?('EDGE_BINARY')
+          opts[:binary] ||= runfiles_path('EDGE_BINARY') if ENV.key?('EDGE_BINARY')
           args << '--headless' if ENV['HEADLESS']
           args << '--no-sandbox' unless Platform.windows?
           args << '--disable-dev-shm-usage' if GlobalTestEnv.rbe?
@@ -333,9 +381,9 @@ module Selenium
         end
 
         def firefox_options(args: [], **opts)
-          opts[:browser_version] = browser_version unless ENV.key?('FIREFOX_BINARY')
+          opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
-          opts[:binary] ||= rlocation(ENV['FIREFOX_BINARY']) if ENV.key?('FIREFOX_BINARY')
+          opts[:binary] ||= runfiles_path('FIREFOX_BINARY') if ENV.key?('FIREFOX_BINARY')
           opts[:unhandled_prompt_behavior] ||= 'ignore'
           args << '--headless' if ENV['HEADLESS']
           WebDriver::Options.firefox(args: args, **opts)
@@ -346,9 +394,10 @@ module Selenium
           WebDriver::Options.ie(**opts)
         end
 
-        def safari_preview_options(**)
+        def safari_preview_options(**opts)
           WebDriver::Safari.technology_preview!
-          WebDriver::Options.safari(**)
+          opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
+          WebDriver::Options.safari(**opts)
         end
 
         def random_port
@@ -362,20 +411,16 @@ module Selenium
           sock.close
         end
 
-        # Resolves a Bazel rootpath to an absolute path using the runfiles tree.
-        # $(location) returns rootpath like "external/<repo>/<path>" but Bazel 9
-        # runfiles use rlocation paths like "<repo>/<path>" (no "external/" prefix).
-        def rlocation(path)
-          return path if path.nil? || File.exist?(path)
+        def runfiles
+          @runfiles ||= Bazel::Runfiles.create
+        end
 
-          runfiles_dir = ENV.fetch('RUNFILES_DIR', nil)
-          return path unless runfiles_dir
+        def runfiles_path(env_key)
+          value = ENV.fetch(env_key, nil)
+          return if value.nil? || value.empty? # a cleared --test_env passes "", which rlocation rejects
+          return value if File.exist?(value) # honor an on-disk override for local runs without runfiles
 
-          rlocation_path = path.sub(%r{^external/}, '')
-          resolved = File.join(runfiles_dir, rlocation_path)
-          return resolved if File.exist?(resolved)
-
-          path
+          runfiles.rlocation(value) || raise("runfiles could not resolve #{env_key}=#{value.inspect}")
         end
       end
     end # SpecSupport

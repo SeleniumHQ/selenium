@@ -1,3 +1,41 @@
+v4.47.0
+======
+* Support CDP versions: v149, v150, v151
+* [build] Fix GeckoDriver rejecting system-access via capabilities (#17811)
+* [build] Download and bundle Selenium Manager SBOM and NOTICE in each package (#17820)
+* [grid] honor client-advertised se:remoteUrl for reachable BiDi/CDP/VNC URLs (#17790)
+* prevent CDP access with Firefox (#17849)
+* [bidi] Don't warn if there are no subscribers (#17857)
+* pass --enable-chrome-logs unless CHROME_LOG_FILE is set (#17858)
+* deprecate invalid Firefox profile code (#17871)
+* [build] Automated Browser Version Update with CDP (#17873)
+* support SE_*DRIVER environment variables to set driver locations (#17875)
+* [bidi] Make BiDi transport factories composable (#17877)
+* [bidi] Remove optional command timeout in command options (#17891)
+
+v4.46.0
+======
+* Support CDP versions: v148, v149, v150
+* Thread safe product info determination (#17684)
+* [bidi] Split event stream backed subscription and enumeration (#17705)
+
+v4.45.0
+======
+* Support CDP versions: v147, v148, v149
+* update system.text.json to 8.0.6 (#17477)
+* include snupkg files when packaging things up and allow the use of sourcelink (#17467)
+* Direct dependency on Microsoft.Bcl.AsyncInterfaces (#17519)
+* Move .NET bindings to use new Typescript atoms for isShown,g… (#17529)
+* [bidi] Add Download ID in events for downloading begin/end (#17531)
+* [bidi] Immutable user facing collections (#17533)
+* [bidi] Possibility to use any external transport (#17625)
+* [test] Introduce fake BiDi transport (#17627)
+* [bidi] Additional json data for commands/results (#17614)
+* [bidi] Additional json data for event args (#17633)
+* [bidi] Better exception message in case of malformed capability url (#17635)
+* [bidi] Fix reflection based deserialization of additional data (#17648)
+* [bidi] Remove last obsoleted Type helper in Input module (#17652)
+
 v4.44.0
 ======
 * Support CDP versions: v146, v147, v148

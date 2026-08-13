@@ -29,7 +29,6 @@ module Selenium
       }.freeze
 
       ALLOWED = {type: 'proxyType',
-                 ftp: 'ftpProxy',
                  http: 'httpProxy',
                  no_proxy: 'noProxy',
                  pac: 'proxyAutoconfigUrl',
@@ -75,12 +74,6 @@ module Selenium
         other.is_a?(self.class) && as_json == other.as_json
       end
       alias eql? ==
-
-      def ftp=(value)
-        WebDriver.logger.deprecate('FTP proxy support', nil, id: :ftp_proxy)
-        self.type = :manual
-        @ftp = value
-      end
 
       def http=(value)
         self.type = :manual
@@ -143,9 +136,8 @@ module Selenium
       def as_json(*)
         json_result = {
           'proxyType' => TYPES[type].downcase,
-          'ftpProxy' => ftp,
           'httpProxy' => http,
-          'noProxy' => no_proxy.is_a?(String) ? no_proxy.split(', ') : no_proxy,
+          'noProxy' => no_proxy.is_a?(String) ? no_proxy.split(',').map(&:strip).reject(&:empty?) : no_proxy,
           'proxyAutoconfigUrl' => pac,
           'sslProxy' => ssl,
           'autodetect' => auto_detect,

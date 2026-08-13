@@ -1,0 +1,11 @@
+load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
+
+copy_to_bin(
+    name = "bidi_enhancements_manifest",
+    srcs = ["bidi_enhancements_manifest.json"],
+    visibility = ["//javascript/selenium-webdriver:__subpackages__"],
+)
+
+exports_files([
+    "bidi_enhancements_manifest.json",
+])

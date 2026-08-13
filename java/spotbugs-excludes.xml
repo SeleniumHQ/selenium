@@ -140,6 +140,31 @@
   </Match>
 
   <Match>
+    <Class name="~org.openqa.selenium.remote.ErrorHandler.*"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="~org.openqa.selenium.remote.RemoteWebElement.*"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.remote.HttpCommandExecutor"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="~org.openqa.selenium.remote.RemoteWebDriver.*"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="~org.openqa.selenium.remote.ElementLocation.*"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
+  <Match>
     <Class name="org.openqa.selenium.safari.SafariDriverService"/>
     <Bug pattern="DMI_HARDCODED_ABSOLUTE_FILENAME"/>
   </Match>
@@ -227,6 +252,51 @@
   <Match>
     <Class name="org.openqa.selenium.remote.http.jdk.JdkHttpClient"/>
     <Bug pattern="BC_VACUOUS_INSTANCEOF"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.internal.Require"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.net.HostIdentifier"/>
+    <Bug pattern="USO_UNSAFE_STATIC_METHOD_SYNCHRONIZATION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.docker.client.CreateContainer"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.firefox.GeckoDriverService"/>
+    <Bug pattern="NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.grid.node.local.LocalNode"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="~org.openqa.selenium.json.InstanceCoercer.*"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="~org.openqa.selenium.remote.http.jdk.JdkHttpClient.*"/>
+    <Bug pattern="USO_UNSAFE_OBJECT_SYNCHRONIZATION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.environment.GlobalTestEnvironment"/>
+    <Bug pattern="USO_UNSAFE_STATIC_METHOD_SYNCHRONIZATION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.environment.DomainHelper"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
   </Match>
 
 </FindBugsFilter>

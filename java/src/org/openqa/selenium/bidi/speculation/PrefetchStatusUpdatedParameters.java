@@ -18,7 +18,9 @@
 package org.openqa.selenium.bidi.speculation;
 
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class PrefetchStatusUpdatedParameters {
 
   private final String context;

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
@@ -28,6 +29,7 @@ import org.openqa.selenium.json.TypeToken;
 /**
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#type-network-ResponseData">BiDi spec</a>
  */
+@Beta
 public class ResponseData {
   private final String url;
 

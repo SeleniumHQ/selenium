@@ -54,8 +54,15 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
-/** Defines common error codes for the wire protocol. */
-@Deprecated(forRemoval = true)
+/**
+ * Defines common error codes for the wire protocol.
+ *
+ * @deprecated The JSON Wire Protocol is no longer used; use {@link ErrorCodec} for mapping between
+ *     W3C states and exceptions. Removal is tracked by <a
+ *     href="https://github.com/SeleniumHQ/selenium/issues/17638">#17638</a> and is gated on
+ *     providing a replacement extensibility seam for downstream consumers.
+ */
+@Deprecated
 public class ErrorCodes {
 
   public static final String SUCCESS_STRING = "success";

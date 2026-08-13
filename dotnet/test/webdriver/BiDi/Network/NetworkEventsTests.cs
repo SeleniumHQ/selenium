@@ -32,7 +32,7 @@ internal class NetworkEventsTests : BiDiTestFixture
 
         await using var subscription = await context.Network.BeforeRequestSent.SubscribeAsync(e => tcs.TrySetResult(e));
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         var req = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
@@ -50,7 +50,7 @@ internal class NetworkEventsTests : BiDiTestFixture
 
         await using var subscription = await context.Network.ResponseStarted.SubscribeAsync(e => tcs.TrySetResult(e));
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         var res = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
@@ -69,7 +69,7 @@ internal class NetworkEventsTests : BiDiTestFixture
 
         await using var subscription = await context.Network.ResponseCompleted.SubscribeAsync(e => tcs.TrySetResult(e));
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         var res = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
@@ -87,7 +87,7 @@ internal class NetworkEventsTests : BiDiTestFixture
     {
         TaskCompletionSource<BeforeRequestSentEventArgs> tcs = new();
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         driver.Manage().Cookies.AddCookie(new("foo", "bar"));
 
@@ -111,7 +111,7 @@ internal class NetworkEventsTests : BiDiTestFixture
 
         await using var subscription = await context.Network.AuthRequired.SubscribeAsync(e => tcs.TrySetResult(e));
 
-        driver.Url = UrlBuilder.WhereIs("basicAuth");
+        driver.Url = Urls.AuthenticationPage;
 
         var res = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 

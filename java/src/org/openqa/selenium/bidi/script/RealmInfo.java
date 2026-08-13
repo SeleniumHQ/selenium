@@ -18,9 +18,11 @@
 package org.openqa.selenium.bidi.script;
 
 import java.util.Optional;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
+@Beta
 public class RealmInfo {
 
   private final String realmId;

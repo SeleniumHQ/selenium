@@ -17,6 +17,7 @@
 
 import base64
 import os
+from collections.abc import Callable
 from unittest.mock import patch
 from urllib import parse
 
@@ -27,9 +28,19 @@ from urllib3.util import Retry, Timeout
 
 from selenium import __version__
 from selenium.webdriver import Proxy
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
+from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.proxy import ProxyType
+from selenium.webdriver.edge.options import Options as EdgeOptions
+from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
 from selenium.webdriver.remote.client_config import AuthType
 from selenium.webdriver.remote.remote_connection import ClientConfig, RemoteConnection
+from selenium.webdriver.remote.webdriver import get_remote_connection
+from selenium.webdriver.safari.options import Options as SafariOptions
+from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 
 
 @pytest.fixture
@@ -220,7 +231,9 @@ def test_get_proxy_url_https_auth(mock_proxy_auth_settings):
 def test_get_connection_manager_without_proxy(mock_proxy_settings_missing):
     remote_connection = RemoteConnection("http://remote", keep_alive=False)
     conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, PoolManager)
+    # ProxyManager and SOCKSProxyManager both subclass PoolManager, so isinstance
+    # cannot tell a direct connection from a proxied one.
+    assert type(conn) is PoolManager
 
 
 def test_get_connection_manager_for_certs_and_timeout():
@@ -282,31 +295,42 @@ def test_get_connection_manager_with_auth_https_proxy(mock_proxy_auth_settings):
 @pytest.mark.parametrize(
     "url",
     [
-        "*",
-        ".localhost",
-        "localhost:80",
-        "localhost",
-        "LOCALHOST",
-        "LOCALHOST:80",
         "http://localhost",
+        "http://localhost:80",
         "https://localhost",
-        "test.localhost",
-        " localhost",
-        "127.0.0.1",
-        "127.0.0.2",
-        "::1",
+        "http://LOCALHOST",
+        "http://LOCALHOST:80",
+        "http://test.localhost",
+        "http://127.0.0.1",
+        "http://65.253.214.253",
+        "http://[::1]",
     ],
 )
 def test_get_connection_manager_when_no_proxy_set(mock_no_proxy_settings, url):
     remote_connection = RemoteConnection(url)
-    conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, PoolManager)
+    assert remote_connection.client_config.get_proxy_url() is None
+    assert type(remote_connection._get_connection_manager()) is PoolManager
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://127.0.0.2",
+        "http://notlocalhost.com",
+        "http://localhost.evil.com",
+    ],
+)
+def test_get_connection_manager_when_no_proxy_does_not_match(mock_no_proxy_settings, url):
+    """A host that no_proxy does not cover must still be reached through the proxy."""
+    remote_connection = RemoteConnection(url)
+    assert remote_connection.client_config.get_proxy_url() == "http://http_proxy.com:8080"
+    assert isinstance(remote_connection._get_connection_manager(), ProxyManager)
 
 
 def test_ignore_proxy_env_vars(mock_proxy_settings):
     remote_connection = RemoteConnection("http://remote", ignore_proxy=True)
     conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, PoolManager)
+    assert type(conn) is PoolManager
 
 
 def test_get_socks_proxy_when_set(mock_socks_proxy_settings):
@@ -606,3 +630,47 @@ def test_proxy_auth_with_multiple_special_characters():
 
         assert conn.proxy_headers == expected_headers
         assert conn.proxy_headers["proxy-authorization"] == f"Basic {expected_auth}"
+
+
+@pytest.mark.parametrize(
+    ("options", "prepare_options", "expected_handler"),
+    [
+        pytest.param(ChromeOptions(), None, ChromeRemoteConnection, id="chrome"),
+        pytest.param(EdgeOptions(), None, EdgeRemoteConnection, id="edge"),
+        pytest.param(FirefoxOptions(), None, FirefoxRemoteConnection, id="firefox"),
+        pytest.param(SafariOptions(), None, SafariRemoteConnection, id="safari"),
+        pytest.param(
+            SafariOptions(),
+            lambda o: setattr(o, "use_technology_preview", True),
+            SafariRemoteConnection,
+            id="safari-technology-preview",
+        ),
+        pytest.param(
+            EdgeOptions(),
+            lambda o: setattr(o, "use_webview", True),
+            EdgeRemoteConnection,
+            id="edge-webview2",
+        ),
+    ],
+)
+def test_get_remote_connection_selects_browser_specific_handler(
+    options: BaseOptions,
+    prepare_options: Callable[[BaseOptions], None] | None,
+    expected_handler: type[RemoteConnection],
+) -> None:
+    """Test that each browserName, including variant capabilities, selects its RemoteConnection handler.
+
+    Args:
+        options: Browser options whose emitted browserName drives handler selection.
+        prepare_options: Callable that mutates the options to enable a variant, or None for none.
+        expected_handler: RemoteConnection subclass the selection is expected to resolve to.
+    """
+    if prepare_options:
+        prepare_options(options)
+    conn = get_remote_connection(
+        options.to_capabilities(),
+        command_executor="http://localhost:4444",
+        keep_alive=True,
+        ignore_local_proxy=True,
+    )
+    assert type(conn) is expected_handler

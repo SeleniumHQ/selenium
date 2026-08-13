@@ -52,9 +52,9 @@ window.bot.locators.typescript.findElements = `
 
 const input = fs.readFileSync(inputPath, 'utf8')
 
-if (!input.trimStart().startsWith('(function ()')) {
+if (!input.trimStart().startsWith('(function ')) {
   throw new Error(
-    `Unexpected compiled output format. Expected it to start with "(function ()", got: ${input.slice(0, 80)}`,
+    `Unexpected compiled output format. Expected it to start with "(function ", got: ${input.slice(0, 80)}`,
   )
 }
 

@@ -18,7 +18,6 @@
 package org.openqa.selenium.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.byLessThan;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
@@ -193,16 +192,12 @@ class JsonTest {
   }
 
   @Test
-  void canNotPopulateAnObjectOfAClassWithNoDefaultConstructor() {
+  void canPopulateAnObjectOfAClassWithANamedConstructor() {
     String raw = "{\"value\": \"time\"}";
 
-    assertThatExceptionOfType(JsonException.class)
-        .isThrownBy(() -> new Json().toType(raw, NoDefaultConstructor.class))
-        .withMessage("Unable to parse: {\"value\": \"time\"}")
-        .havingCause()
-        .isInstanceOf(JsonException.class)
-        .withMessageStartingWith(
-            "Unable to find type coercer for class %s", NoDefaultConstructor.class.getTypeName());
+    NoDefaultConstructor bean = new Json().toType(raw, NoDefaultConstructor.class);
+
+    assertThat(bean.getValue()).isEqualTo("time");
   }
 
   @Test

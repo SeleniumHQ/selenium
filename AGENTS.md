@@ -2,14 +2,19 @@
 Guidance for AI agents working in the Selenium monorepo.
 Language-specific details live in respective subdirectories.
 -->
-See @.local/AGENTS.md for additional guidance
+## Overview
 
 Selenium is a Bazel-built monorepo implementing the W3C WebDriver (and related) protocols,
 shipping multiple language bindings plus Grid and Selenium Manager.
 The repository README is aimed at contributors; end-user docs live elsewhere.
 
+### Local contributor customization
+- The `.local/` directory is available for customization, generated artifacts, scratch work, and temporary files. It is ignored by Git except for `.local/README.md`.
+- A contributor may create `.local/AGENTS.md` for personal repo-specific instructions and preferences. Before beginning any task, check whether `.local/AGENTS.md` exists; if it exists, read it with your file-reading tool and apply it as the contributor's local instruction overlay.
+- If `.local/agent/skills/` exists, inspect its `*/SKILL.md` files and treat them as additional user-defined skills.
+
 ## Invariants (don't violate unless explicitly asked)
-- Maintain API/ABI compatibility - users upgrade by changing only version number
+- Maintain API/ABI compatibility by default (users upgrade by changing only the version number); public functionality may be removed only after it has gone through the [Deprecation policy](#deprecation-policy) below
 - Avoid repo-wide refactors/formatting; prefer small, reversible diffs
 
 ## Toolchain
@@ -20,6 +25,8 @@ The repository README is aimed at contributors; end-user docs live elsewhere.
 ## Execution model
 - Use `bazel query` to explore build graph before reading files
 - Attempt to execute Bazel commands directly. If prevented due to network/toolchain restrictions within the sandbox, fall back to suggesting copy/paste commands for the user on a separate line.
+- When the default output directory is restricted or when working in a git worktree, isolate build output with `--output_base`. It is a startup flag, so it goes *before* the command, and anchor it to the worktree root so it resolves the same from any directory: `bazel --output_base="$(git rev-parse --show-toplevel)/.local/output-base" build //...` (not after `build`/`test`/`query`).
+
 ## Repo layout
 Bindings (see `AGENTS.md` in each directory for language-specific details):
 - Java: `java/`
@@ -36,10 +43,6 @@ Shared/high-risk areas:
 - `scripts/`, `rake_tasks/`, `.github/`, `Rakefile` (tooling/build)
 - `third_party/` treat as read-only
 - `bazel-*/` treat as generated output
-
-### Agent workspace
-The `.local/` directory (gitignored) is available for generated artifacts or temporary files:
-- Use `--output_base=.local/bazel-out` if bazel output directory restricted
 
 ## Cross-binding consistency checks
 When changing user-visible behavior, compare with at least one other binding:
@@ -66,27 +69,15 @@ See language-specific AGENTS.md for applicable logging usage
 This project does not follow semantic versioning (semver); before removing public functionality, mark it as deprecated with a message pointing to the alternative.
 See language-specific AGENTS.md for applicable deprecation usage
 
-## Formatting
-After making code changes, always run (or instruct the user to run):
-```
-./go format
-```
-This invokes the Rake `:format` task, which:
-- Runs `buildifier` on all Bazel (`BUILD`, `*.bzl`, `WORKSPACE`) files — always, for every change
-- Runs `update_copyright` to add/refresh Apache license headers — always, for every change
-- Runs formatters for all bindings by default (pass `-<lang>` flags to skip specific ones, e.g. `-java`)
-
-`./go format` auto-fixes files in place. After running it, check `git diff` to see if any files were
-modified — if so, those changes must be committed. CI runs `./go format` then fails if `git diff` is
-non-empty, so un-formatted code will fail CI.
-For stricter lint checks beyond formatting, use `./go lint`.
-
 ## General Guidelines
 - Comments should explain *why*, not *what* - prefer well-named methods over comments
 - PRs should focus on one thing; we squash PRs to default `trunk` branch
 - Prefer copying files to deleting and recreating to maintain git history
 - Avoid running `bazel clean --expunge`
-- Run or suggest running `./go format` before pushing to prevent CI failures
+- Formatting: 
+  - `./scripts/format.sh` without arguments will run everything similar to running `./go format` but with failure information; With `--pre-commit` flag it only checks staged changes; With `--pre-push` flag it only checks committed changes with trunk.
+  - If `./scripts/format.sh` is already referenced in a pre-commit or pre-push hook, let the hooks handle formatting 
+  - If not, run or suggest `./scripts/format.sh --pre-push` before pushing to avoid CI formatter failures
 
 ## High risk changes (request verification before modifying unless explicitly instructed)
 - Everything referenced above as high risk
@@ -97,3 +88,6 @@ For stricter lint checks beyond formatting, use `./go lint`.
 ## After making code changes
 - Call out any high risk areas touched
 - Note cross-binding impact and any follow-up issues needed
+
+## Reviewing pull requests
+See `.github/pr_review.md` for agentic review priorities and scope.

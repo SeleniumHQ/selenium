@@ -19,11 +19,8 @@ package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,8 +31,6 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.bidi.BiDi;
-import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
@@ -43,7 +38,6 @@ import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
@@ -71,8 +65,6 @@ public class FirefoxDriver extends RemoteWebDriver
   private final HasExtensions extensions;
   private final HasFullPageScreenshot fullPageScreenshot;
   private final HasContext context;
-  private final Optional<URI> biDiUri;
-  private final Optional<BiDi> biDi;
 
   /**
    * Creates a new FirefoxDriver using the {@link GeckoDriverService#createDefaultService)} server
@@ -140,25 +132,7 @@ public class FirefoxDriver extends RemoteWebDriver
         new AddHasFullPageScreenshot().getImplementation(getCapabilities(), getExecuteMethod());
     context = new AddHasContext().getImplementation(getCapabilities(), getExecuteMethod());
 
-    Capabilities capabilities = super.getCapabilities();
-
-    Optional<String> webSocketUrl =
-        Optional.ofNullable((String) capabilities.getCapability("webSocketUrl"));
-
-    this.biDiUri =
-        webSocketUrl.map(
-            uri -> {
-              try {
-                return new URI(uri);
-              } catch (URISyntaxException e) {
-                LOG.warning(e.getMessage());
-              }
-              return null;
-            });
-
-    this.biDi = createBiDi(clientConfig, biDiUri);
-
-    this.capabilities = new ImmutableCapabilities(capabilities);
+    this.capabilities = new ImmutableCapabilities(super.getCapabilities());
   }
 
   @Beta
@@ -240,37 +214,6 @@ public class FirefoxDriver extends RemoteWebDriver
   public void setContext(FirefoxCommandContext commandContext) {
     Require.nonNull("Firefox Command Context", commandContext);
     context.setContext(commandContext);
-  }
-
-  private Optional<BiDi> createBiDi(ClientConfig clientConfig, Optional<URI> biDiUri) {
-    return biDiUri.map(
-        (URI wsUri) -> {
-          HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-          ClientConfig wsConfig = clientConfig.baseUri(wsUri);
-          HttpClient wsClient = clientFactory.createClient(wsConfig);
-
-          org.openqa.selenium.bidi.Connection biDiConnection =
-              new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
-
-          return new BiDi(biDiConnection, wsConfig.wsTimeout());
-        });
-  }
-
-  @Override
-  public Optional<BiDi> maybeGetBiDi() {
-    return biDi;
-  }
-
-  @Override
-  public BiDi getBiDi() {
-    if (biDiUri.isEmpty()) {
-      throw new BiDiException(
-          "Check if this browser version supports BiDi and if the 'webSocketUrl: true' capability"
-              + " is set.");
-    }
-
-    return maybeGetBiDi()
-        .orElseThrow(() -> new BiDiException("Unable to initialize Bidi connection"));
   }
 
   @Override

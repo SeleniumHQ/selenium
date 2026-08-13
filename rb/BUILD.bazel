@@ -4,7 +4,6 @@ load(
     "rb_binary",
     "rb_gem_build",
     "rb_gem_push",
-    "rb_test",
 )
 load("//common:defs.bzl", "copy_file")
 
@@ -28,6 +27,18 @@ copy_file(
     name = "manager-windows",
     src = "//common/manager:selenium-manager-windows",
     out = "bin/windows/selenium-manager.exe",
+)
+
+copy_file(
+    name = "manager-sbom",
+    src = "//common/manager:selenium-manager-sbom",
+    out = "bin/selenium-manager.cdx.json",
+)
+
+copy_file(
+    name = "manager-notice",
+    src = "//common/manager:selenium-manager-notice",
+    out = "bin/selenium-manager-THIRD-PARTY-NOTICES.txt",
 )
 
 select_file(
@@ -66,6 +77,8 @@ rb_gem_build(
         ":license",
         ":manager-linux",
         ":manager-macos",
+        ":manager-notice",
+        ":manager-sbom",
         ":manager-windows",
         ":notice",
     ],
@@ -81,6 +94,7 @@ rb_gem_build(
         "//rb/lib/selenium/webdriver:bidi",
         "//rb/lib/selenium/webdriver:chrome",
         "//rb/lib/selenium/webdriver:common",
+        "//rb/lib/selenium/webdriver:devtools",
         "//rb/lib/selenium/webdriver:edge",
         "//rb/lib/selenium/webdriver:firefox",
         "//rb/lib/selenium/webdriver:ie",
@@ -178,15 +192,30 @@ rb_binary(
 )
 
 rb_binary(
-    name = "bundle-update",
+    name = "bundle-lock",
     args = [
-        "rb/support/bundle_update.rb",
+        "rb/support/bundle.rb",
+        "lock",
     ],
     data = [
         "Gemfile",
     ],
     deps = [
-        "//rb/support:bundle_update",
+        "//rb/support:bundle",
+    ],
+)
+
+rb_binary(
+    name = "bundle-update",
+    args = [
+        "rb/support/bundle.rb",
+        "update",
+    ],
+    data = [
+        "Gemfile",
+    ],
+    deps = [
+        "//rb/support:bundle",
     ],
 )
 
@@ -210,18 +239,6 @@ _LINT_DEPS = [
     "//rb/spec",
     "@bundle",
 ]
-
-rb_test(
-    name = "lint",
-    args = ["--autocorrect"] + _LINT_ARGS,
-    data = _LINT_DATA,
-    main = "@bundle//bin:rubocop",
-    tags = [
-        "no-sandbox",
-        "skip-rbe",
-    ],
-    deps = _LINT_DEPS,
-)
 
 rb_binary(
     name = "rubocop",

@@ -369,7 +369,7 @@ public class LocalDistributor extends Distributor implements Closeable {
           span.addEvent(sessionCreatedMessage, attributeMap);
           LOG.info(
               String.format(
-                  "%s. Id: %s %n Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
+                  "%s. Id: %s %n Caps: %s", sessionCreatedMessage, sessionId, sessionCaps.asMap()));
 
           return Either.right(response);
         } catch (SessionNotCreatedException e) {

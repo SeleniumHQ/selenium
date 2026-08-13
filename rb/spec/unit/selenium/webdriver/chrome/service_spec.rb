@@ -25,6 +25,7 @@ module Selenium
       describe Service do
         describe '#new' do
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
+          let(:debug_args) { ENV.key?('SE_DEBUG') ? ['--verbose'] : [] }
 
           before do
             allow(Platform).to receive(:assert_executable)
@@ -52,10 +53,16 @@ module Selenium
             expect(service.host).to eq Platform.localhost
           end
 
-          it 'does not create args by default' do
+          it 'enables chrome logs by default' do
             service = described_class.new
 
-            expect(service.extra_args).to be_empty
+            expect(service.extra_args).to eq(['--enable-chrome-logs'] + debug_args)
+          end
+
+          it 'does not duplicate --enable-chrome-logs when provided' do
+            service = described_class.new(args: ['--enable-chrome-logs'])
+
+            expect(service.extra_args).to eq(['--enable-chrome-logs'] + debug_args)
           end
 
           it 'uses sets log path to stdout' do
@@ -74,21 +81,22 @@ module Selenium
             service = described_class.new(log: '/path/to/log.txt')
 
             expect(service.log).to be_nil
-            expect(service.args).to eq ['--log-path=/path/to/log.txt']
+            expect(service.args).to eq(['--enable-chrome-logs'] + debug_args + ['--log-path=/path/to/log.txt'])
           end
 
           it 'uses provided args' do
             service = described_class.new(args: ['--foo', '--bar'])
 
-            expect(service.extra_args).to eq ['--foo', '--bar']
+            expect(service.extra_args).to eq(['--foo', '--bar', '--enable-chrome-logs'] + debug_args)
           end
 
           context 'when SE_DEBUG is set' do
             around do |example|
+              original_debug = ENV.fetch('SE_DEBUG', nil)
               ENV['SE_DEBUG'] = '1'
               example.run
             ensure
-              ENV.delete('SE_DEBUG')
+              original_debug ? ENV['SE_DEBUG'] = original_debug : ENV.delete('SE_DEBUG')
             end
 
             it 'adds --verbose flag' do
@@ -131,7 +139,7 @@ module Selenium
           it 'errors when :url is provided' do
             expect {
               driver.new(url: 'http://example.com:4321')
-            }.to raise_error(ArgumentError, "Can't initialize Selenium::WebDriver::Chrome::Driver with :url")
+            }.to raise_error(ArgumentError, /Can't set the server URL for/)
           end
 
           it 'is created when :url is not provided' do
@@ -148,28 +156,6 @@ module Selenium
 
             driver.new(service: service)
             expect(described_class).not_to have_received(:new)
-          end
-
-          context 'with a path env variable' do
-            let(:service) { described_class.new }
-            let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
-
-            before do
-              ENV['SE_CHROMEDRIVER'] = service_path
-            end
-
-            after { ENV.delete('SE_CHROMEDRIVER') }
-
-            it 'uses the path from the environment' do
-              expect(service.executable_path).to match(/chromedriver/)
-            end
-
-            it 'updates the path after setting the environment variable' do
-              ENV['SE_CHROMEDRIVER'] = '/foo/bar'
-              service.executable_path = service_path
-
-              expect(service.executable_path).to match(/chromedriver/)
-            end
           end
         end
       end

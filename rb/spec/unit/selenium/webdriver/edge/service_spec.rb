@@ -23,6 +23,8 @@ module Selenium
   module WebDriver
     module Edge
       describe Service do
+        let(:debug_args) { ENV.key?('SE_DEBUG') ? ['--verbose'] : [] }
+
         describe '#new' do
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
 
@@ -51,10 +53,16 @@ module Selenium
             expect(service.host).to eq Platform.localhost
           end
 
-          it 'does not create args by default' do
+          it 'enables chrome logs by default' do
             service = described_class.new
 
-            expect(service.extra_args).to be_empty
+            expect(service.extra_args).to eq(['--enable-chrome-logs'] + debug_args)
+          end
+
+          it 'does not duplicate --enable-chrome-logs when provided' do
+            service = described_class.new(args: ['--enable-chrome-logs'])
+
+            expect(service.extra_args).to eq(['--enable-chrome-logs'] + debug_args)
           end
 
           it 'uses sets log path to stdout' do
@@ -73,21 +81,22 @@ module Selenium
             service = described_class.chrome(log: '/path/to/log.txt')
 
             expect(service.log).to be_nil
-            expect(service.args).to eq ['--log-path=/path/to/log.txt']
+            expect(service.args).to eq(['--enable-chrome-logs'] + debug_args + ['--log-path=/path/to/log.txt'])
           end
 
           it 'uses provided args' do
             service = described_class.new(args: ['--foo', '--bar'])
 
-            expect(service.extra_args).to eq ['--foo', '--bar']
+            expect(service.extra_args).to eq(['--foo', '--bar', '--enable-chrome-logs'] + debug_args)
           end
 
           context 'when SE_DEBUG is set' do
             around do |example|
+              original_debug = ENV.fetch('SE_DEBUG', nil)
               ENV['SE_DEBUG'] = '1'
               example.run
             ensure
-              ENV.delete('SE_DEBUG')
+              original_debug ? ENV['SE_DEBUG'] = original_debug : ENV.delete('SE_DEBUG')
             end
 
             it 'adds --verbose flag' do
@@ -132,7 +141,7 @@ module Selenium
 
             expect {
               driver.new(url: 'http://example.com:4321')
-            }.to raise_error(ArgumentError, "Can't initialize Selenium::WebDriver::Edge::Driver with :url")
+            }.to raise_error(ArgumentError, /Can't set the server URL for/)
 
             expect(described_class).not_to have_received(:new)
           end
@@ -157,29 +166,7 @@ module Selenium
             service = described_class.chrome(log: '/path/to/log.txt')
 
             expect(service.log).to be_nil
-            expect(service.args).to eq ['--log-path=/path/to/log.txt']
-          end
-
-          context 'with a path env variable' do
-            let(:service) { described_class.new }
-            let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
-
-            before do
-              ENV['SE_EDGEDRIVER'] = service_path
-            end
-
-            after { ENV.delete('SE_EDGEDRIVER') }
-
-            it 'uses the path from the environment' do
-              expect(service.executable_path).to match(/edgedriver/)
-            end
-
-            it 'updates the path after setting the environment variable' do
-              ENV['SE_EDGEDRIVER'] = '/foo/bar'
-              service.executable_path = service_path
-
-              expect(service.executable_path).to match(/edgedriver/)
-            end
+            expect(service.args).to eq(['--enable-chrome-logs'] + debug_args + ['--log-path=/path/to/log.txt'])
           end
         end
       end

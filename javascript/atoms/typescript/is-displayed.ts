@@ -41,11 +41,16 @@ interface Coordinate {
   y: number;
 }
 
-(function (): (elem: Element, optIgnoreOpacity?: boolean) => boolean {
-  // Cache the tagName descriptor once to avoid repeated property lookups during
-  // DOM traversal. This guards against form children that shadow tagName on their
-  // owner form (e.g. <form><input name="tagName">).
+(function isShownElement(elem: Element, optIgnoreOpacity?: boolean): boolean {
+  // Guards against form children that shadow tagName (e.g. <form><input name="tagName">).
   var tagNameDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'tagName');
+
+  // Per-call memoisation caches. Scoped here so they live only for the
+  // duration of this synchronous call — no stale-data risk, no GC pressure
+  // between invocations.
+  var computedStyleCache = new Map<Element, CSSStyleDeclaration | null>();
+  var clientRectCache = new Map<Element, Rect>();
+  var displayedCache = new Map<Node, boolean>();
 
   function toUpperCaseTag(tagName?: string): string | undefined {
     return tagName ? tagName.toUpperCase() : undefined;
@@ -83,11 +88,12 @@ interface Coordinate {
   }
 
   function getEffectiveStyle(elem: Element, propertyName: string): string | null {
-    var win = elem.ownerDocument.defaultView;
-    if (!win) {
-      return null;
+    var computed = computedStyleCache.get(elem);
+    if (computed === undefined) {
+      var win = elem.ownerDocument.defaultView;
+      computed = win ? (win.getComputedStyle(elem) || null) : null;
+      computedStyleCache.set(elem, computed);
     }
-    var computed = win.getComputedStyle(elem);
     if (!computed) {
       return null;
     }
@@ -126,33 +132,42 @@ interface Coordinate {
   }
 
   function getClientRect(elem: Element): Rect {
+    var cachedRect = clientRectCache.get(elem);
+    if (cachedRect) {
+      return cachedRect;
+    }
+
+    var rect: Rect;
     var imageMap = maybeFindImageMap(elem);
     if (imageMap) {
-      return imageMap.rect;
+      rect = imageMap.rect;
+    } else {
+      var elemTagName = typeof (elem as Element).tagName === 'string' ? (elem as Element).tagName : '';
+      if (elemTagName.toUpperCase() === 'HTML') {
+        var doc = (elem as Element).ownerDocument;
+        // In quirks mode (no DOCTYPE), viewport dimensions come from document.body;
+        // documentElement.clientWidth/Height is unreliable and can be 0.
+        var sizeElem = doc.compatMode === 'CSS1Compat' ? doc.documentElement : (doc.body || doc.documentElement);
+        rect = createRect(0, 0, sizeElem.clientWidth, sizeElem.clientHeight);
+      } else {
+        try {
+          var nativeRect = (elem as Element).getBoundingClientRect();
+          rect = {
+            left: nativeRect.left,
+            top: nativeRect.top,
+            right: nativeRect.right,
+            bottom: nativeRect.bottom,
+            width: nativeRect.right - nativeRect.left,
+            height: nativeRect.bottom - nativeRect.top,
+          };
+        } catch (_error) {
+          rect = createRect(0, 0, 0, 0);
+        }
+      }
     }
 
-    var elemTagName = typeof (elem as Element).tagName === 'string' ? (elem as Element).tagName : '';
-    if (elemTagName.toUpperCase() === 'HTML') {
-      var doc = (elem as Element).ownerDocument;
-      // In quirks mode (no DOCTYPE), viewport dimensions come from document.body;
-      // documentElement.clientWidth/Height is unreliable and can be 0.
-      var sizeElem = doc.compatMode === 'CSS1Compat' ? doc.documentElement : (doc.body || doc.documentElement);
-      return createRect(0, 0, sizeElem.clientWidth, sizeElem.clientHeight);
-    }
-
-    try {
-      var nativeRect = (elem as Element).getBoundingClientRect();
-      return {
-        left: nativeRect.left,
-        top: nativeRect.top,
-        right: nativeRect.right,
-        bottom: nativeRect.bottom,
-        width: nativeRect.right - nativeRect.left,
-        height: nativeRect.bottom - nativeRect.top,
-      };
-    } catch (_error) {
-      return createRect(0, 0, 0, 0);
-    }
+    clientRectCache.set(elem, rect);
+    return rect;
   }
 
   function getAreaRelativeRect(area: HTMLAreaElement): Rect {
@@ -189,14 +204,9 @@ interface Coordinate {
   }
 
   function findImageUsingMap(mapName: string, doc: Document): Element | null {
-    var elements = doc.getElementsByTagName('*');
-    for (var index = 0; index < elements.length; index += 1) {
-      var useMap = elements[index].getAttribute('usemap');
-      if (useMap === '#' + mapName) {
-        return elements[index];
-      }
-    }
-    return null;
+    // Use querySelector instead of a full-DOM scan; escape the map name so
+    // special characters in the CSS attribute value string are handled safely.
+    return doc.querySelector('[usemap="#' + mapName.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"]');
   }
 
   function maybeFindImageMap(elem: Element): ImageMapResult | null {
@@ -460,35 +470,44 @@ interface Coordinate {
     return !hiddenByOverflow(elem);
   }
 
-  return function isShownElement(elem: Element, optIgnoreOpacity?: boolean): boolean {
-    function displayed(node: Node): boolean {
-      if (isElement(node)) {
-        var display = getEffectiveStyle(node, 'display');
-        var contentVisibility = getEffectiveStyle(node, 'content-visibility');
-        if (display === 'none' || contentVisibility === 'hidden') {
-          return false;
-        }
-      }
-
-      var parent = getParentNodeInComposedDom(node);
-      if (typeof ShadowRoot === 'function' && parent instanceof ShadowRoot) {
-        if (parent.host.shadowRoot && parent.host.shadowRoot !== parent) {
-          return false;
-        }
-        parent = parent.host;
-      }
-
-      if (parent && (parent.nodeType === Node.DOCUMENT_NODE || parent.nodeType === Node.DOCUMENT_FRAGMENT_NODE)) {
-        return true;
-      }
-
-      if (isElement(parent, 'DETAILS') && !(<HTMLDetailsElement>parent).open && !isElement(node, 'SUMMARY')) {
-        return false;
-      }
-
-      return !!parent && displayed(parent);
+  function displayed(node: Node): boolean {
+    var cached = displayedCache.get(node);
+    if (cached !== undefined) {
+      return cached;
     }
 
-    return isShownInternal(elem, !!optIgnoreOpacity, displayed);
-  };
-})();
+    if (isElement(node)) {
+      var display = getEffectiveStyle(node, 'display');
+      var contentVisibility = getEffectiveStyle(node, 'content-visibility');
+      if (display === 'none' || contentVisibility === 'hidden') {
+        displayedCache.set(node, false);
+        return false;
+      }
+    }
+
+    var parent = getParentNodeInComposedDom(node);
+    if (typeof ShadowRoot === 'function' && parent instanceof ShadowRoot) {
+      if (parent.host.shadowRoot && parent.host.shadowRoot !== parent) {
+        displayedCache.set(node, false);
+        return false;
+      }
+      parent = parent.host;
+    }
+
+    if (parent && (parent.nodeType === Node.DOCUMENT_NODE || parent.nodeType === Node.DOCUMENT_FRAGMENT_NODE)) {
+      displayedCache.set(node, true);
+      return true;
+    }
+
+    if (isElement(parent, 'DETAILS') && !(<HTMLDetailsElement>parent).open && !isElement(node, 'SUMMARY')) {
+      displayedCache.set(node, false);
+      return false;
+    }
+
+    var result = !!parent && displayed(parent);
+    displayedCache.set(node, result);
+    return result;
+  }
+
+  return isShownInternal(elem, !!optIgnoreOpacity, displayed);
+})

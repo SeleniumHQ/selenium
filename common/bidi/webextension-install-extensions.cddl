@@ -1,0 +1,7 @@
+; Firefox vendor fields for webExtension.install, matching Mozilla's agreed CDDL (bug 2057588,
+; pending merge). Once it lands, repoint vendor_cddl_files at Mozilla's file and delete this.
+; https://bugzilla.mozilla.org/show_bug.cgi?id=2057588
+webExtension.InstallParametersExtension //= (
+  ? "moz:allowPrivateBrowsing": bool .default false,
+  ? "moz:permanent": bool .default false,
+)

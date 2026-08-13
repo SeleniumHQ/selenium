@@ -21,18 +21,18 @@ on:
         required: false
         type: string
         default: ubuntu
-      browser:
-        description: One of chrome, firefox, or edge
-        required: false
-        type: string
-        default: ''
-      caching:
-        description: Toggle caching of Bazel
+      needs-display:
+        description: Whether this job drives a browser and needs display/driver setup
         required: false
         type: boolean
-        default: true
+        default: false
+      safari-preview:
+        description: Whether this job needs Safari Technology Preview installed (macos only)
+        required: false
+        type: boolean
+        default: false
       node-version:
-        description: Custom Node version to install
+        description: Custom Node version to use
         required: false
         type: string
         default: ''
@@ -43,6 +43,11 @@ on:
         default: ''
       ruby-version:
         description: Custom Ruby version to use
+        required: false
+        type: string
+        default: ''
+      download-artifact-name:
+        description: Name of an artifact to download into the workspace before running
         required: false
         type: string
         default: ''
@@ -76,16 +81,27 @@ on:
         required: false
         type: string
         default: ''
+      cache-save:
+        description: Save the Bazel cache after the run (avoids multiple jobs clobbering it)
+        required: false
+        type: boolean
+        default: false
       gem-trusted-publishing:
         description: Exchange GitHub OIDC token for a RubyGems API token (requires trusted publisher configured on rubygems.org)
         required: false
         type: boolean
         default: false
+    outputs:
+      output:
+        description: Value the run script writes to $GITHUB_OUTPUT as "output=..."; empty when unused
+        value: ${{ jobs.bazel.outputs.output }}
 
 jobs:
   bazel:
     name: ${{ inputs.name }}
     runs-on: ${{ contains(inputs.os, '-') && inputs.os || format('{0}-latest', inputs.os) }}
+    outputs:
+      output: ${{ steps.run-bazel.outputs.output }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
@@ -95,35 +111,9 @@ jobs:
       GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     steps:
-      - name: Remove extra tools to free disk space
-        if: inputs.os == 'ubuntu'
-        run: |
-          echo "Removing extra tools to free disk space..."
-          echo "Space before: $(df -BG / | tail -1 | awk '{print $4}')"
-          sudo rm -rf /opt/ghc || true
-          sudo rm -rf /usr/local/.ghcup || true
-          sudo rm -rf /usr/local/share/boost || true
-          sudo rm -rf /usr/share/swift || true
-          sudo rm -rf /usr/local/julia* || true
-          sudo rm -rf /usr/lib/google-cloud-sdk || true
-          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
-          docker image prune -af 2>/dev/null || true
-          sync
-          after=$(df -BG / | tail -1 | awk '{print $4}')
-          echo "Space after: ${after}"
-      - name: Remove extra tools to free disk space (Windows)
-        if: inputs.os == 'windows'
-        shell: pwsh
-        run: |
-          Write-Host "Removing extra tools to free disk space..."
-          Write-Host "Space before: C: $([math]::Round((Get-PSDrive C).Free / 1GB, 1))GB free, D: $([math]::Round((Get-PSDrive D).Free / 1GB, 1))GB free"
-          Remove-Item -Path "C:\Miniconda" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "C:\tools\ghc" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "C:\Program Files\LLVM" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "C:\Program Files\PostgreSQL" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "C:\Program Files\MongoDB" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "C:\Program Files\MySQL" -Recurse -Force -ErrorAction SilentlyContinue
-          Write-Host "Space after: C: $([math]::Round((Get-PSDrive C).Free / 1GB, 1))GB free, D: $([math]::Round((Get-PSDrive D).Free / 1GB, 1))GB free"
+      - name: Configure Selenium Manager cache path
+        shell: bash
+        run: echo "SE_CACHE_PATH=$RUNNER_TEMP/selenium-cache" >> "$GITHUB_ENV"
       - name: Calculate fetch depth
         id: depth
         shell: bash
@@ -160,6 +150,25 @@ jobs:
         run: git pull origin "$GIT_REF"
         env:
           GIT_REF: ${{ github.ref }}
+      - name: Delete browsers and drivers
+        if: startsWith(inputs.os, 'ubuntu') || inputs.os == 'macos'
+        run: ./scripts/github-actions/delete-browsers-drivers.sh
+      - name: Delete drivers (Windows)
+        if: inputs.os == 'windows'
+        shell: pwsh
+        run: ./scripts/github-actions/delete-browsers-drivers.ps1
+      - name: Free disk space
+        if: inputs.os == 'ubuntu'
+        shell: bash
+        run: |
+          . ./scripts/github-actions/disk-status.sh
+          if [ "$AVAIL_GB" -lt 25 ]; then
+            ./scripts/github-actions/free-disk-space.sh
+          fi
+      - name: Disk status before cache restore
+        if: inputs.os != 'macos'
+        shell: bash
+        run: . ./scripts/github-actions/disk-status.sh
       - name: Restore cache
         if: inputs.cache-name != ''
         uses: actions/cache/restore@v5
@@ -167,104 +176,65 @@ jobs:
           path: ${{ inputs.cache-name }}
           key: ${{ inputs.cache-name }}-
           restore-keys: ${{ inputs.cache-name }}-
-      - name: Remove driver directories Windows
-        if: inputs.os == 'windows'
-        run: |
-          rm "$env:ChromeWebDriver" -r -v
-          rm "$env:EdgeWebDriver" -r -v
-          rm "$env:GeckoWebDriver" -r -v
-      - name: Remove driver directories Non-Windows
-        if: inputs.os != 'windows'
-        run: |
-          sudo rm -rf "$CHROMEWEBDRIVER" "$EDGEWEBDRIVER" "$GECKOWEBDRIVER"
+      - name: Download artifact
+        if: inputs.download-artifact-name != ''
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ inputs.download-artifact-name }}
+        continue-on-error: true
       - name: Set Python version
         if: inputs.python-version != ''
         run: echo '${{ inputs.python-version }}' > py/.python-version
       - name: Set Ruby version
         if: inputs.ruby-version != ''
         run: echo '${{ inputs.ruby-version }}' > rb/.ruby-version
-      - name: Setup Node
+      - name: Set Node version
         if: inputs.node-version != ''
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ inputs.node-version }}
+        run: echo '${{ inputs.node-version }}' > .nvmrc
       - name: Setup Bazel with caching
-        id: setup-bazel-cached
-        if: inputs.caching
         continue-on-error: true
+        timeout-minutes: 10
         uses: bazel-contrib/setup-bazel@0.19.0
         with:
-          cache-save: ${{ github.ref_name == 'trunk' }}
+          cache-save: ${{ inputs.cache-save }}
           bazelisk-cache: true
           bazelrc: common --color=yes
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
           output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
-          cache-version: 2
           disk-cache: false
-          external-cache: |
-            manifest:
-              crates: rust/Cargo.Bazel.lock
-              "rules_ruby++ruby+ruby": false
-              "+pin_browsers_extension+linux_beta_chrome": false
-              "+pin_browsers_extension+linux_beta_chromedriver": true
-              "+pin_browsers_extension+linux_beta_firefox": false
-              "+pin_browsers_extension+linux_chrome": false
-              "+pin_browsers_extension+linux_chromedriver": true
-              "+pin_browsers_extension+linux_edge": false
-              "+pin_browsers_extension+linux_edgedriver": true
-              "+pin_browsers_extension+linux_firefox": false
-              "+pin_browsers_extension+linux_geckodriver": true
-              "+pin_browsers_extension+mac_beta_chrome": false
-              "+pin_browsers_extension+mac_beta_chromedriver": false
-              "+pin_browsers_extension+mac_beta_firefox": false
-              "+pin_browsers_extension+mac_chrome": false
-              "+pin_browsers_extension+mac_chromedriver": false
-              "+pin_browsers_extension+mac_edge": false
-              "+pin_browsers_extension+mac_edgedriver": false
-              "+pin_browsers_extension+mac_firefox": false
-              "+pin_browsers_extension+mac_geckodriver": false
+          external-cache: false
           repository-cache: true
-      - name: Report Bazel cache setup failure
-        if: steps.setup-bazel-cached.outcome == 'failure'
-        shell: bash
-        run: |
-          echo "::warning::Bazel cache setup failed — falling back to setup without cache"
-          echo "=== Disk space at time of cache failure ==="
-          df -h "$GITHUB_WORKSPACE" || true
-          if [[ "$RUNNER_OS" == "Windows" ]]; then df -h /c || true; fi
-      - name: Setup Bazel without caching
-        if: inputs.caching == false || steps.setup-bazel-cached.outcome == 'failure'
-        uses: bazel-contrib/setup-bazel@0.19.0
-        with:
-          cache-save: false
-          bazelisk-cache: true
-          external-cache: |
-            manifest:
-              crates: rust/Cargo.Bazel.lock
-          repository-cache: true
-          bazelrc: common --color=yes
-      - name: Disk usage after cache restore
+      - name: Disk status after cache restore
         if: inputs.os != 'macos'
         shell: bash
-        run: |
-          df -h "$GITHUB_WORKSPACE"
-          if [[ "$RUNNER_OS" == "Windows" ]]; then df -h /c; fi
+        run: . ./scripts/github-actions/disk-status.sh
       - name: Setup Fluxbox and Xvfb
-        if: inputs.os == 'ubuntu' && inputs.browser != ''
+        if: inputs.needs-display && inputs.os == 'ubuntu'
         run: |
-          sudo apt-get update && sudo apt-get -y install fluxbox
+          sudo apt-get update && sudo apt-get -y install fluxbox x11-utils
           Xvfb :99 &
+          # X server must start before fluxbox
+          for _ in $(seq 1 30); do
+            xdpyinfo -display :99 >/dev/null 2>&1 && break
+            sleep 0.5
+          done
+          xdpyinfo -display :99 >/dev/null 2>&1 || { echo "::error::X server :99 failed to start"; exit 1; }
           fluxbox -display :99 &
           echo "DISPLAY=:99" >> "$GITHUB_ENV"
       - name: Set resolution
-        if: inputs.os == 'windows' && inputs.browser != ''
+        if: inputs.needs-display && inputs.os == 'windows'
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
       - name: Disable 8dot3 short names
         if: inputs.os == 'windows'
         run: fsutil 8dot3name set 0
       - name: Setup Safari
-        if: inputs.browser == 'safari'
+        if: inputs.needs-display && inputs.os == 'macos'
         run: sudo safaridriver --enable
+      - name: Setup Safari Technology Preview
+        if: inputs.safari-preview && inputs.os == 'macos'
+        run: |
+          brew install --cask safari-technology-preview
+          sudo "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver" --enable
       - name: Import GPG key
         if: inputs.gpg-sign
         uses: crazy-max/ghaction-import-gpg@v7
@@ -274,26 +244,9 @@ jobs:
       - name: Configure RubyGems credentials via OIDC
         if: inputs.gem-trusted-publishing
         uses: rubygems/configure-rubygems-credentials@main
-      - name: Check disk space before build
-        if: inputs.os != 'macos'
-        shell: bash
-        run: |
-          df -h "$GITHUB_WORKSPACE"
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            # On Windows the workspace is on D: but C: is the constrained drive
-            avail=$(df -k /c | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
-            echo "Available disk space before build (C:): ${avail}GB"
-            df -h /c
-          else
-            avail=$(df -k "$GITHUB_WORKSPACE" | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
-            echo "Available disk space before build: ${avail}GB"
-          fi
-          if [ "$avail" -lt 10 ]; then
-            echo "::error::Insufficient disk space: ${avail}GB available (need >=10GB)"
-            exit 1
-          fi
       - name: Run Bazel
         id: run-bazel
+        continue-on-error: true
         shell: bash
         env:
           MSYS_NO_PATHCONV: 1
@@ -304,18 +257,19 @@ jobs:
             ${{ inputs.run }}
           } 2>&1 | tee build/bazel-console.log
       - name: Rerun failures with debug
-        if: failure() && steps.run-bazel.outcome == 'failure'
+        id: rerun-failures
+        if: steps.run-bazel.outcome == 'failure'
         shell: bash
         run: ./scripts/github-actions/rerun-failures.sh '${{ inputs.run }}' '${{ inputs.rerun-with-debug }}'
       - name: Collect failed test logs
-        if: failure() && steps.run-bazel.outcome == 'failure'
+        if: always() && steps.run-bazel.outcome == 'failure'
         shell: bash
         run: ./scripts/github-actions/collect-test-logs.sh
       - name: Upload failed test logs
-        if: failure() && steps.run-bazel.outcome == 'failure'
+        if: always() && steps.run-bazel.outcome == 'failure'
         uses: actions/upload-artifact@v7
         with:
-          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ inputs.browser }}
+          name: test-logs-${{ inputs.os }}-${{ inputs.name }}
           retention-days: 7
           path: build/failures/**
       - name: Start SSH session
@@ -337,13 +291,11 @@ jobs:
           path: ${{ inputs.artifact-path || 'changes.patch' }}
           retention-days: 6
           if-no-files-found: ${{ inputs.artifact-path != '' && 'error' || 'ignore' }}
-      - name: Check disk space
+      - name: Low Disk Warning
         if: always()
         shell: bash
         run: |
-          avail=$(df -k "$GITHUB_WORKSPACE" | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
-          echo "Remaining disk space: ${avail}GB"
-          if [ "$avail" -lt 5 ]; then
-            echo "::error::Low disk space: ${avail}GB remaining"
-            exit 1
+          . ./scripts/github-actions/disk-status.sh
+          if [ "$AVAIL_GB" -lt 5 ]; then
+            echo "::warning::Low disk space: ${AVAIL_GB}GB remaining"
           fi
