@@ -572,7 +572,9 @@ class WebDriver(BaseWebDriver):
         try:
             self._quiescence_script_id = self.script._add_preload_script(_load_quiescence_preload())
         except Exception as exc:
-            logger.debug("Could not register quiescence preload script: %s", exc)
+            # Warned, not debugged: readiness has silently turned itself off
+            # for this session and every later report will be lower fidelity.
+            logger.warning("Could not register quiescence preload script: %s", exc)
 
     def wait_for_dom_settled(
         self,
