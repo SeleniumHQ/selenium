@@ -644,15 +644,18 @@ class WebDriver(BaseWebDriver):
         element: WebElement,
         interaction: str = "click",
         timeout: float = 10,
+        settled: bool = False,
     ) -> dict:
         """Block until `element` is safe to act on.
 
-        Composes the DOM-mutation quiescence oracle with an element-level
-        actionability check: resolves once the document has stopped
-        meaningfully mutating *and* the element itself is visible, enabled,
-        (editable, for ``interaction="type"``/``"clear"``), in view,
-        unobstructed, and not moving. Scrolls the element into view once if it
-        starts out of viewport.
+        Resolves once the element itself is visible, enabled, (editable, for
+        ``interaction="type"``/``"clear"``), in view, unobstructed, and not
+        moving. Scrolls the element into view if it starts out of viewport.
+
+        Page settledness is a separate signal and is *not* required by default:
+        an application that long-polls or animates continuously never settles,
+        so requiring it would make every interaction pay the settle timeout for
+        a signal that says nothing about this element.
 
         Args:
             element: The element to check.
@@ -660,6 +663,10 @@ class WebDriver(BaseWebDriver):
                 default; ``"type"``/``"clear"`` additionally require the
                 element to be editable).
             timeout: Seconds to wait before giving up.
+            settled: Also require the document to stop meaningfully mutating
+                first. For a page known to quiesce, such as one doing a slow
+                re-render. A page that never settles reports ``ready=False``
+                with the cause rather than acting anyway.
 
         Returns:
             A dict: ``{ready, interactionPoint, reason, elapsedMs}``.
@@ -682,11 +689,12 @@ class WebDriver(BaseWebDriver):
             return self.execute_async_script(
                 "const done = arguments[arguments.length - 1];"
                 "window.__quiescence.waitUntilActionable(arguments[0], {"
-                "  interaction: arguments[1], timeoutMs: arguments[2]"
+                "  interaction: arguments[1], timeoutMs: arguments[2], settled: arguments[3]"
                 "}).then(done);",
                 element,
                 interaction,
                 int(timeout * 1000),
+                settled,
             )
         finally:
             if previous_script_timeout is not None:
