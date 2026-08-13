@@ -86,5 +86,5 @@ These are the alternatives considered and not taken; the accepted choice is the 
 
 ## Consequences
 
-- Since the implementation must work with the Grid, bindings will have to convert path or archive to Base64
-  before sending to target
+- Because the browser may run on a different host than the client (Grid), the implementation cannot pass a
+  client-local path; the extension has to be delivered to the target host itself.
