@@ -31,7 +31,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.UUID;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -39,6 +38,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -617,8 +617,7 @@ class LocalNodeTest {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(
             () ->
-                localFsNode.downloadFile(
-                    new HttpRequest(GET, "/session/" + id + "/se/files"), id))
+                localFsNode.downloadFile(new HttpRequest(GET, "/session/" + id + "/se/files"), id))
         .withMessageContaining("enable-managed-downloads");
     assertThat(factory.session.lastRequest).isNull();
   }
