@@ -22,16 +22,19 @@ behavior so the bindings converge.
 ## Decision
 
 The API covers two things, both on one accessor, `driver.script`: **running scripts** (decisions
-1–3) and **subscribing to the page's console, error, and DOM-mutation events** (decisions 4–7). The
-accessor is protocol-neutral — nothing below returns a BiDi type — and hosts the console and error
-events itself, not a separate `log`. Each decision states what every binding provides; call shapes
-are per-language idiom.
+1–2) and **subscribing to page events** — console messages, uncaught errors, DOM mutations, and any
+event a page-side script defines (decisions 3–7); a final decision (8) scopes every one of them to a
+context. The accessor is protocol-neutral — nothing
+below returns a BiDi type — and hosts the console and error events itself, not a separate `log`. Each
+decision states what every binding provides; call shapes are per-language idiom.
 
 **Running scripts**
 
-1. **`execute(script, *args)` runs a script and returns its result.** `script` is either a source
-   string or a registered handle; whether the source is resent or referenced from a prior
-   registration is a per-language detail.
+1. **`execute(script, *args)` runs a script and returns its result — there is no `execute_async`.**
+   `script` is a source string or a handle from `pin`. A returned promise is awaited, so one method
+   covers both sync and async, and async-versus-sync is a per-language return-type detail, not a
+   second method. Passing a handle invokes the pinned script without resending its source — the
+   original point of pinning — so a large atom travels once and each call carries only the invocation.
 
 ```ruby
 driver.script.execute("return document.title")
@@ -40,36 +43,29 @@ driver.script.execute("return document.title")
 driver.script().execute("return document.title");
 ```
 
-2. **`pin(source)` registers a script to run on demand.** It returns a handle that `execute` runs
-   without resending the source; a pinned script runs only when executed, and `unpin` discards it.
+2. **`pin(source)` registers a script the browser keeps on every future page** — run before the
+   page's own scripts on each navigation and in every new browsing context for the rest of the
+   session. It does not apply to the already-loaded page; `execute` runs things now. It returns a
+   handle: pass it to `execute` to invoke the pinned script without resending the source, or to
+   `unpin` to discard it. A pinned callable is defined on each load and invoked on demand through its
+   handle; a self-running script simply takes effect on each load.
 
 ```ruby
-pinned = driver.script.pin("return document.title")
-driver.script.execute(pinned)
-driver.script.unpin(pinned)
+displayed = driver.script.pin("(el) => el.offsetParent !== null")  # the atom rides on every future page
+driver.get("https://example.com")
+driver.script.execute(displayed, driver.find_element(id: "menu")) # invoked by handle; atom not resent
+driver.script.unpin(displayed)
 ```
 ```java
-PinnedScript pinned = driver.script().pin("return document.title");
-driver.script().execute(pinned);
-driver.script().unpin(pinned);
-```
-
-3. **`preload(source)` registers a script to run automatically** — before the page's own scripts on
-   every navigation, and immediately when registered on the current page. It returns a handle that
-   `remove_preload` discards; a preload script runs only on its own, never by handle.
-
-```ruby
-loaded = driver.script.preload("window.__inject = true")
-driver.script.remove_preload(loaded)
-```
-```java
-PreloadScript loaded = driver.script().preload("window.__inject = true");
-driver.script().removePreload(loaded);
+PinnedScript displayed = driver.script().pin("(el) => el.offsetParent !== null");
+driver.get("https://example.com");
+driver.script().execute(displayed, driver.findElement(By.id("menu")));
+driver.script().unpin(displayed);
 ```
 
 **Subscribing to events**
 
-4. **Console messages and JavaScript errors are separate handlers**, even though one `log` event
+3. **Console messages and JavaScript errors are separate handlers**, even though one `log` event
    feeds both — a console subscriber receives console output, not the page's uncaught errors.
    **DOM-mutation handlers select which changes to observe** — attribute, child-list,
    character-data, or any combination; with none named, all are observed.
@@ -85,9 +81,31 @@ driver.script().addJavaScriptErrorHandler(e -> log(e.getStacktrace()));
 driver.script().addDomMutationHandler(m -> log(m.getAttributeName()), MutationType.ATTRIBUTES);
 ```
 
-5. **Registering returns an object, not a bare id.** `pin`, `preload`, and each `add_*` handler
-   return an object, so a registration can carry more than an identifier; the object is passed back
-   to its remover — `unpin`, `remove_preload`, `remove_*_handler` — to detach it.
+4. **`add_event_handler(name, script)` subscribes to events a page-side script defines.** The script
+   is handed a callback; each call delivers its argument to the handler unchanged — the raw value the
+   script emitted, not a shaped payload. This is the general mechanism the DOM-mutation handler is a
+   specialization of, exposed for events no binding pre-defines. The handler runs the script now and,
+   unless limited to the current context, keeps it on every future load so it survives navigation;
+   `remove_event_handler` detaches the subscription and stops future loads.
+
+```ruby
+h = driver.script.add_event_handler("paint",
+      "(emit) => new PerformanceObserver(l => emit(l.getEntries())).observe({type: 'paint'})") do |entries|
+  log(entries)
+end
+driver.script.remove_event_handler(h)
+```
+```java
+Registration h = driver.script().addEventHandler("paint",
+    "(emit) => new PerformanceObserver(l => emit(l.getEntries())).observe({type: 'paint'})",
+    entries -> log(entries));
+driver.script().removeEventHandler(h);
+```
+
+5. **Registering returns an object, not a bare id.** `pin` and each `add_*` handler return an object,
+   so a registration can carry more than an identifier; the object is passed back to its remover —
+   `unpin`, `remove_*_handler` — to detach it, and `pin`'s object is also what `execute` takes to run
+   the pinned script.
 
 ```ruby
 handler = driver.script.add_console_message_handler { |m| log(m.text) }
@@ -98,18 +116,23 @@ Registration handler = driver.script().addConsoleMessageHandler(m -> log(m.getTe
 driver.script().removeConsoleMessageHandler(handler);
 ```
 
-6. **Each event carries a shaped payload — not the raw protocol entry.** It includes an explicit
-   source location and stack trace: console message (level, text, type, arguments, source, stack
-   trace), JavaScript error (message, source, stack trace), DOM mutation (target element, mutation
-   kind, and the fields for that kind — an attribute name with its old and new value, the old and new
-   character data, or the added and removed nodes).
+6. **Each event carries a shaped payload — not the raw protocol entry — and every payload names its
+   origin.** The origin is the source realm (always present) and the browsing context (present when
+   the event has one: window-backed events carry it, while shared- and service-worker events do not
+   and are placed by realm plus — once the protocol requires it — user context). Beyond origin, a
+   console message carries level, text, type, and arguments; a JavaScript error carries its message
+   and stack trace; a DOM mutation carries the target element, the mutation kind, and the fields for
+   that kind — an attribute name with its old and new value, the old and new character data, or the
+   added and removed nodes. Only the JavaScript error carries a stack trace; a console message does
+   not.
 
 ```ruby
-driver.script.add_console_message_handler { |m| log(m.level, m.text, m.source.url, m.stacktrace) }
+driver.script.add_console_message_handler { |m| log(m.level, m.text, m.context) }
+driver.script.add_javascript_error_handler { |e| log(e.message, e.stacktrace) }
 ```
 ```java
-driver.script().addConsoleMessageHandler(m ->
-    log(m.getLevel(), m.getText(), m.getSource().getUrl(), m.getStacktrace()));
+driver.script().addConsoleMessageHandler(m -> log(m.getLevel(), m.getText(), m.getContext()));
+driver.script().addJavaScriptErrorHandler(e -> log(e.getMessage(), e.getStacktrace()));
 ```
 
 7. **An uncaught exception in a handler is logged, not raised** — a passive monitor must not fail the
@@ -122,12 +145,32 @@ driver.script.add_console_message_handler { |m| raise "boom" }   # logged; the s
 driver.script().addConsoleMessageHandler(m -> { throw new RuntimeException("boom"); }); // logged
 ```
 
+**Scoping**
+
+8. **Every operation is scoped to a context.** Running a script, pinning a script, and adding a
+   handler default to the current browsing context and accept an optional scope — another browsing
+   context, or a user context — so a call can target a background tab or a whole profile. There is no
+   separate worker parameter: a dedicated worker is reached through the browsing context that owns
+   it, and shared and service workers, which have no browsing context of their own, are reached
+   through the user context.
+
+```ruby
+tab = driver.window_handle
+driver.script.execute("return document.title", context: tab)
+driver.script.add_console_message_handler(context: tab) { |m| log(m.text) }
+```
+```java
+String tab = driver.getWindowHandle();
+driver.script().execute("return document.title", tab);
+driver.script().addConsoleMessageHandler(tab, m -> log(m.getText()));
+```
+
 ## Considered options
 
 - **A separate `log` accessor for the console and error events.**
   - These come from the BiDi `log` domain, so a `log` accessor mirrors the protocol and reads naturally to someone thinking in spec terms. But it splits console and error away from the DOM-mutation event and the scripts they are used alongside, spreading one workflow over two objects; and `log` already means browser logs in Selenium (`manage().logs()`, log levels), so `driver.log` would be read as that. Keeping everything on `script` avoids both.
-- **A single `pin` covering run-always and run-on-demand.**
-  - Fewer commands, and it matches what Java and JavaScript ship today. But those are the bindings that quietly took the run-always meaning while Python took run-by-handle — the shared name is what let them diverge without anyone noticing. Two named commands make the choice explicit and force each binding to say which it implements.
+- **A separate `preload` command alongside `pin`.**
+  - It looks like two behaviors — `pin` a script to call by handle, versus `preload` one that runs on every page — so two names seem to fit, and today's bindings lean that way (Java and JavaScript `pin` auto-runs, Python `pin` is a handle). But it is one mechanism: `pin` keeps a script on every page, and whether it runs on its own or waits to be called is a property of the script, not the command — a pinned helper that only defines a function is exactly run-on-demand, invoked through `execute`. A second command would split one concept across two names for no behavior the first cannot express.
 - **A single merged console/error handler.**
   - One subscription maps directly to the `log.entryAdded` event that carries both, so it is the least to implement. But a user almost always wants console output or uncaught errors, not both interleaved, and a merged handler makes every subscriber re-filter by type; splitting moves that demultiplex into the binding, done once instead of by every user.
 - **Returning a bare id from `add`.**
@@ -135,13 +178,26 @@ driver.script().addConsoleMessageHandler(m -> { throw new RuntimeException("boom
 - **Observing attribute mutations only.**
   - It is what most bindings ship, and attribute changes are the common case. But `MutationObserver` reports child-list and character-data natively, so attributes-only discards capability the browser already provides, and Python already exposes the full set. Selecting types per handler keeps the common case a one-liner without capping the rest.
 - **Exposing the raw protocol entry as the payload.**
-  - A direct passthrough — no shaping code, and it tracks the spec automatically. But the raw entry differs field by field across the `log` and `script` domains and omits the resolved source location and stack trace these events are usually consumed for; a shaped payload gives the same fields in every binding and extracts them once.
+  - A direct passthrough — no shaping code, and it tracks the spec automatically. But the raw entry differs field by field across the `log` and `script` domains and leaves the consumer to resolve the origin and the fields these events are read for; a shaped payload gives the same fields in every binding and extracts them once.
+- **A separate worker or realm scope, alongside browsing and user context.**
+  - Workers are where scripts and logs often run, so a dedicated worker or realm coordinate looks like the natural way to target them. But the protocol scopes subscriptions only by browsing context and user context: a dedicated worker rides the browsing context that owns it, and shared and service workers ride the user context. A third coordinate would model an address the wire does not have, and the two contexts already reach every realm.
 
 ## Consequences
 
-- Convergence is mostly reclassifying what exists: Java and JavaScript rename today's `pin` (a
-  preload script) to `preload`, add a run-by-handle `pin`, and return registration objects instead
-  of ids; Python adds `preload` and drops its second payload shape; Ruby adds `execute`, `pin`,
-  `preload`, and the DOM-mutation handler; .NET builds the high-level surface it lacks.
+- Convergence is mostly reclassifying what exists: Java, JavaScript, and Python keep `pin` but return
+  a registration object instead of a bare id and settle on one behavior — a script the browser keeps
+  on every page, invoked through `execute` when it only defines a callable; Python also drops its
+  second payload shape; Ruby adds `execute`, `pin`, and the DOM-mutation handler; .NET builds the
+  high-level surface it lacks.
+- `add_event_handler` is new surface every binding adds; the DOM-mutation handler becomes its first
+  built-in specialization (a pinned observer plus payload shaping) rather than a separate mechanism,
+  and custom async events no longer force a drop to the low-level module.
 - `execute` overlaps the existing `execute_script`; whether it supersedes that method is a separate
   migration decision, not settled here.
+- Scoping adds a parameter, not just a rename: every binding threads an optional browsing-context or
+  user-context scope through `execute`, `pin`, and the handlers, where most expose only the current
+  context today.
+- Preload removal is future-only: `unpin` (and detaching a handler) stops the script from arming
+  later loads but does not undo what already ran — an observer injected into the current page keeps
+  running until navigation. A handler that must stop cleanly on the live page has to build teardown
+  into the injected script; the record does not promise retroactive removal.
