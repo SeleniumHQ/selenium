@@ -541,6 +541,15 @@
     unobservable: [],          // {reason} for closed shadow roots / canvas, etc.
     lastMeaningfulTs: 0,
   };
+  // A preload script runs before any page script, so the document is still
+  // 'loading' when the ledger starts and nothing the page does is missed.
+  // Installing any later -- the injection fallback, where preload
+  // registration was unavailable -- means the work already in flight was
+  // never seen, and "quiet" is then only evidence about the future. Record it
+  // rather than let the report read as a clean bill of health.
+  if (global.document && global.document.readyState !== 'loading') {
+    domState.unobservable.push({ reason: 'late-install', ts: native.now() });
+  }
   function stableTargetPath(node, maxDepth) {
     maxDepth = maxDepth || 6;
     const parts = [];
@@ -1173,6 +1182,7 @@
           quiet,
           blockers: quiet ? [] : getBlockers(),
           elapsedMs: native.now() - started,
+          unobservable: domState.unobservable.slice(),
         });
       };
       const armSettle = () => {
@@ -1203,6 +1213,7 @@
         blockers: res.blockers,
         activeRegions: dom.activeRegions,
         elapsedMs: native.now() - started,
+        unobservable: dom.unobservable,
       }));
     });
   }
