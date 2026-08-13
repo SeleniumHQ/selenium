@@ -34,8 +34,13 @@ module Selenium
       RESPONSE_WAIT_INTERVAL = 0.1
 
       MAX_LOG_MESSAGE_SIZE = 9999
+      MAX_FRAME_SIZE = 100 * 1024 * 1024 # 100 MB; DevTools payloads can be large
 
       def initialize(url:)
+        # websocket-ruby exposes max_frame_size only as a global; bump it for devtools use
+        # only when the current limit is lower so user-configured values are not overridden
+        WebSocket.max_frame_size = MAX_FRAME_SIZE if WebSocket.max_frame_size < MAX_FRAME_SIZE
+
         @callback_threads = ThreadGroup.new
 
         @callbacks_mtx = Mutex.new
@@ -142,6 +147,10 @@ module Selenium
                 @callback_threads.add(callback_thread(message['params'], &callback))
               end
             end
+
+            # websocket-ruby rescues TooLong internally and returns nil from next;
+            # raise the stored error so the loop exits instead of spinning at 100% cpu
+            raise incoming_frame.error if incoming_frame.error?
           end
         rescue *CONNECTION_ERRORS, WebSocket::Error => e
           WebDriver.logger.debug "WebSocket listener closed: #{e.class}: #{e.message}", id: :ws
