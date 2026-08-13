@@ -900,9 +900,9 @@ public class LocalNode extends Node implements Closeable {
 
   @Override
   public HttpResponse downloadFile(HttpRequest req, SessionId id) {
-    // When the browser runs in a separate environment from the Node (e.g. a Docker container or a
-    // Kubernetes Pod), the download file command needs to be forwarded to that environment as well,
-    // since the Node does not share a filesystem with the browser.
+    // When the browser runs in a separate environment from the Node (e.g. a Docker container, a
+    // Kubernetes Pod, or a relayed remote endpoint), the download file command needs to be
+    // forwarded to that environment, since the Node does not share a filesystem with the browser.
     SessionSlot slot = currentSessions.getIfPresent(id);
     if (slot != null && slot.getSession() != null && slot.getSession().isRemoteFileSystem()) {
       return executeWebDriverCommand(req);
@@ -1109,10 +1109,11 @@ public class LocalNode extends Node implements Closeable {
   @Override
   public HttpResponse uploadFile(HttpRequest req, SessionId id) {
 
-    // When the browser runs in a separate environment from the Node (e.g. a Docker container or a
-    // Kubernetes Pod), the upload file command needs to be forwarded to that environment as well,
-    // since the Node does not share a filesystem with the browser. Otherwise the file would be
-    // written to the Node's filesystem and be unreachable from the browser when sendKeys runs.
+    // When the browser runs in a separate environment from the Node (e.g. a Docker container, a
+    // Kubernetes Pod, or a relayed remote endpoint), the upload file command needs to be forwarded
+    // to that environment, since the Node does not share a filesystem with the browser. Otherwise
+    // the file would be written to the Node's filesystem and be unreachable from the browser when
+    // sendKeys runs.
     SessionSlot slot = currentSessions.getIfPresent(id);
     if (slot != null && slot.getSession() != null && slot.getSession().isRemoteFileSystem()) {
       return executeWebDriverCommand(req);

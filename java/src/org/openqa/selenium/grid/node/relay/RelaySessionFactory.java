@@ -216,7 +216,16 @@ public class RelaySessionFactory implements SessionFactory {
                 upstream,
                 stereotype,
                 mergedCapabilities,
-                Instant.now()) {});
+                Instant.now()) {
+              @Override
+              public boolean isRemoteFileSystem() {
+                // The relay forwards the session to an external endpoint (for example a cloud
+                // provider or an Appium device farm) that does not share the Node's filesystem, so
+                // file upload and download commands must be forwarded to that endpoint rather than
+                // handled on the Node's own filesystem.
+                return true;
+              }
+            });
       } catch (Exception e) {
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);

@@ -351,4 +351,58 @@ public class RelaySessionFactoryTest {
     assertThat(result.right().getCapabilities().getCapability("se:remoteUrl"))
         .isEqualTo("http://localhost:4444");
   }
+
+  @Test
+  void relaySessionReportsRemoteFileSystemSoFileCommandsAreForwarded() {
+    String fakeSessionId = UUID.randomUUID().toString();
+
+    Map<String, Object> responsePayload =
+        Map.of(
+            "value",
+            Map.of(
+                "sessionId",
+                fakeSessionId,
+                "capabilities",
+                Map.of("browserName", "chrome", "platformName", "android")));
+
+    Route route =
+        Route.post("/session")
+            .to(
+                () ->
+                    req -> {
+                      HttpResponse response = new HttpResponse();
+                      response.setStatus(200);
+                      response.setContent(Contents.asJson(responsePayload));
+                      return response;
+                    });
+
+    PassthroughHttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(route);
+    Tracer tracer = DefaultTestTracer.createTracer();
+
+    Capabilities stereotype =
+        new ImmutableCapabilities("browserName", "chrome", "platformName", "android");
+
+    RelaySessionFactory factory =
+        new RelaySessionFactory(
+            tracer,
+            clientFactory,
+            Duration.ofSeconds(300),
+            URI.create("http://localhost:4723"),
+            null,
+            "",
+            stereotype);
+
+    Capabilities requestCaps =
+        new ImmutableCapabilities("browserName", "chrome", "platformName", "android");
+
+    CreateSessionRequest sessionRequest =
+        new CreateSessionRequest(Set.of(Dialect.W3C), requestCaps, Map.of());
+
+    Either<WebDriverException, ActiveSession> result = factory.apply(sessionRequest);
+
+    assertThat(result.isRight()).isTrue();
+    // The browser runs on an external endpoint that does not share the Node's filesystem, so
+    // LocalNode must forward file upload/download commands to it instead of handling them locally.
+    assertThat(result.right().isRemoteFileSystem()).isTrue();
+  }
 }
