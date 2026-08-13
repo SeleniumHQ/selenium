@@ -53,6 +53,33 @@ module Selenium
         end
       end
 
+      describe '#close' do
+        let(:socket) { StringIO.new }
+
+        before do
+          connection.instance_variable_set(:@closing_mtx, Mutex.new)
+          connection.instance_variable_set(:@socket, socket)
+          connection.instance_variable_set(:@callback_threads, ThreadGroup.new)
+        end
+
+        it 'still closes the socket when the listener already initiated shutdown' do
+          connection.instance_variable_set(:@closing, true)
+
+          connection.close
+
+          expect(socket).to be_closed
+        end
+      end
+
+      describe '#send_cmd' do
+        it 'fails fast when the connection is closing' do
+          connection.instance_variable_set(:@closing, true)
+
+          expect { connection.send_cmd(method: 'foo') }
+            .to raise_error(Error::WebDriverError, /closed/)
+        end
+      end
+
       describe '#frame_dropped?' do
         let(:incoming_frame) { WebSocket::Frame::Incoming::Client.new(version: 13) }
         let(:socket) { StringIO.new }
