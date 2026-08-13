@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.data;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -815,5 +816,50 @@ class DefaultSlotMatcherTest {
             "appium:automationName", "Windows", CapabilityType.PLATFORM_NAME, Platform.WINDOWS);
 
     assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
+  }
+
+  @Test
+  void automationNameDoesNotMatchWhenNestedInsideOptionsMap() {
+    /*
+    A plain browser stereotype must not match a request that nests automationName inside an
+    options map (e.g. appium:options) instead of sending it as a top-level capability.
+     */
+    Capabilities stereotype =
+        new ImmutableCapabilities(
+            CapabilityType.BROWSER_NAME,
+            "MicrosoftEdge",
+            CapabilityType.PLATFORM_NAME,
+            Platform.WIN10);
+
+    Capabilities capabilities =
+        new ImmutableCapabilities(
+            "appium:options",
+            Map.of("automationName", "Windows"),
+            CapabilityType.PLATFORM_NAME,
+            Platform.WINDOWS);
+
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
+  }
+
+  @Test
+  void automationNameStillMatchesWhenNestedInsideOptionsMapForAppiumAwareStereotype() {
+    /*
+    An Appium-aware stereotype may still match a request nesting automationName inside an
+    options map, consistent with existing relay-node matching behavior.
+     */
+    Capabilities stereotype =
+        new ImmutableCapabilities(
+            CapabilityType.PLATFORM_NAME, Platform.ANDROID, "appium:platformVersion", "14");
+
+    Capabilities capabilities =
+        new ImmutableCapabilities(
+            CapabilityType.PLATFORM_NAME,
+            Platform.ANDROID,
+            "appium:platformVersion",
+            "14",
+            "appium:options",
+            Map.of("automationName", "uiautomator2"));
+
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
   }
 }

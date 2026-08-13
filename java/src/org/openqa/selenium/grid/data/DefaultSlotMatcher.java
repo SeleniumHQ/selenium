@@ -21,6 +21,7 @@ import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.openqa.selenium.Capabilities;
 
@@ -212,7 +213,18 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
       return true;
     }
     return capabilities.getCapabilityNames().stream()
-        .noneMatch(name -> name.equals("automationName") || name.endsWith(":automationName"));
+        .noneMatch(name -> requestsAutomationName(name, capabilities.getCapability(name)));
+  }
+
+  private boolean requestsAutomationName(String name, Object value) {
+    if (name.equals("automationName") || name.endsWith(":automationName")) {
+      return true;
+    }
+    // automationName is sometimes nested inside an options map (e.g. appium:options) rather
+    // than sent as its own top-level capability.
+    return name.toLowerCase().contains("options")
+        && value instanceof Map
+        && ((Map<?, ?>) value).containsKey("automationName");
   }
 
   public static Boolean matchConditionToRemoveCapability(Capabilities capabilities) {
