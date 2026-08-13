@@ -1039,6 +1039,7 @@
     return { point, obstructedBy: nodePreview(top), reason: 'obstructed' };
   }
   const INTERACTION_BACKOFF_MS = [0, 0, 20, 50, 100, 100, 500];
+  const SCROLL_RETRY_MS = 250;
   function reasonFor(state, hit) {
     const preview = nodePreview(state.el);
     if (!state.visible) return 'not visible: ' + preview;
@@ -1066,7 +1067,7 @@
     const started = native.now();
     return new Promise((resolve) => {
       let attempt = 0;
-      let scrolled = false;
+      let lastScrollAt = 0;
       function done(ready, point, reason, perpetualMotion) {
         resolve({
           ready,
@@ -1082,8 +1083,13 @@
         state.requiresEditable = requiresEditable;
         state.requiresEnabled = requiresEnabled;
         const hit = interactionPoint(el);
-        if (hit.reason === 'notinview' && autoScroll && !scrolled) {
-          scrolled = true;
+        // Retried, not one-shot: a layout that restores its own scroll
+        // position puts the element straight back out of view, and one scroll
+        // then buys nothing. The cooldown keeps this from fighting a smooth
+        // scroll still in progress, or a scroll-jacking page, every tick.
+        if (hit.reason === 'notinview' && autoScroll
+            && (native.now() - lastScrollAt) >= SCROLL_RETRY_MS) {
+          lastScrollAt = native.now();
           try { el.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (_) { /* ignore */ }
         }
         const ready = state.visible && (!requiresEnabled || state.enabled)
