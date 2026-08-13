@@ -74,11 +74,12 @@ network.clearRequestHandlers();
    wants one may write it inside the callable.
 
    Everything specified by a url pattern argument must be resolvable by the
-   remote end; no filtering is done client-side. Patterns are passed to the
-   remote as given, and input that is not a valid pattern errors. A binding may
-   log a warning when a value looks like a glob, to flag that Selenium passes it
-   through rather than expanding it; that detection is optional and left to the
-   binding rather than specified here.
+   remote end. A binding may serialize a supported input into the remote's
+   pattern form, but it does no URL matching or pattern expansion of its own;
+   patterns are forwarded to the remote for evaluation, and input that is not a
+   valid pattern errors. A binding may log a warning when a value looks like a
+   glob, to flag that Selenium forwards it rather than expanding it; that
+   detection is optional and left to the binding rather than specified here.
 
 ```ruby
 # A pattern string or components — an event matches any of them
