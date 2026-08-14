@@ -226,7 +226,10 @@ public class DockerSessionFactory implements SessionFactory {
       LOG.info(String.format("Server is ready (container id: %s)", container.getId()));
 
       Command command =
-          new Command(null, DriverCommand.NEW_SESSION(sessionRequest.getDesiredCapabilities()));
+          new Command(
+              null,
+              DriverCommand.NEW_SESSION(
+                  SessionFactory.stripPerHopCapabilities(sessionRequest.getDesiredCapabilities())));
       ProtocolHandshake.Result result;
       Response response;
       try {
