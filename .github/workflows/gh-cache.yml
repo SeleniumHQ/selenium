@@ -3,6 +3,9 @@ name: GitHub Cache
 on:
   push:
     branches: [trunk]
+    # Browser pins (common/repositories.bzl, common/browsers.bzl) are deliberately
+    # absent: this job populates with --pin_browsers=false, so those repositories
+    # are never fetched and a run triggered by them has nothing new to cache.
     paths:
       - 'MODULE.bazel'
       - 'multitool.lock.json'
@@ -12,8 +15,6 @@ on:
       - 'py/requirements_lock.txt'
       - 'rb/Gemfile.lock'
       - 'dotnet/paket.lock'
-      - 'common/repositories.bzl'
-      - 'common/browsers.bzl'
   schedule:
     - cron: '30 6 * * *'
   workflow_dispatch:
