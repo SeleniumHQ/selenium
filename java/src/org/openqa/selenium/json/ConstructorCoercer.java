@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
@@ -43,6 +44,66 @@ import org.openqa.selenium.internal.Require;
 class ConstructorCoercer extends TypeCoercer<Object> {
 
   private static final Logger LOG = Logger.getLogger(ConstructorCoercer.class.getName());
+
+  // A JSON property name is attacker-controlled input, so it is never logged verbatim: a raw
+  // \r or \n could forge what looks like a separate log line, and an unbounded key could blow up
+  // log storage. Escaping control characters and capping length neutralizes both.
+  private static final int MAX_LOGGED_KEY_LENGTH = 200;
+
+  private static String sanitizeForLog(String value) {
+    String truncated =
+        value.length() > MAX_LOGGED_KEY_LENGTH
+            ? value.substring(0, MAX_LOGGED_KEY_LENGTH) + "...(truncated)"
+            : value;
+    StringBuilder sanitized = new StringBuilder(truncated.length());
+    for (int i = 0; i < truncated.length(); i++) {
+      char c = truncated.charAt(i);
+      switch (c) {
+        case '\n':
+          sanitized.append("\\n");
+          break;
+        case '\r':
+          sanitized.append("\\r");
+          break;
+        case '\t':
+          sanitized.append("\\t");
+          break;
+        default:
+          if (c < 0x20 || c == 0x7f) {
+            sanitized.append(String.format("\\u%04x", (int) c));
+          } else {
+            sanitized.append(c);
+          }
+      }
+    }
+    return sanitized.toString();
+  }
+
+  // A payload with many undeclared keys must not turn into one log record per key — that is
+  // log-amplification the caller controls the size of. One summary record, capped at the first
+  // few keys plus a total count, keeps the cost bounded regardless of how many keys arrive.
+  private static final int MAX_LOGGED_UNKNOWN_KEYS = 10;
+
+  private static String describeUnknownFields(Class<?> declaringClass, List<String> unknownKeys) {
+    StringBuilder message =
+        new StringBuilder(declaringClass.getSimpleName())
+            .append(": dropped ")
+            .append(unknownKeys.size())
+            .append(" undeclared field")
+            .append(unknownKeys.size() == 1 ? "" : "s")
+            .append(": [");
+    int shown = Math.min(unknownKeys.size(), MAX_LOGGED_UNKNOWN_KEYS);
+    for (int i = 0; i < shown; i++) {
+      if (i > 0) {
+        message.append(", ");
+      }
+      message.append(sanitizeForLog(unknownKeys.get(i)));
+    }
+    if (unknownKeys.size() > shown) {
+      message.append(", ...");
+    }
+    return message.append("]").toString();
+  }
 
   private final JsonTypeCoercer coercer;
 
@@ -179,12 +240,18 @@ class ConstructorCoercer extends TypeCoercer<Object> {
     private final Constructor<?> constructor;
     private final Parameter[] parameters;
     private final Map<String, Integer> parameterIndexes;
+    // Computed once here rather than re-checked reflectively on every create() call: the
+    // JsonTypeCoercer caches the coercer built for a type, so this candidate — and this flag —
+    // is reused for every future deserialization of that type, not just the first one.
+    private final boolean warnsOnUnknownFields;
 
     ConstructorCandidate(Constructor<?> constructor) {
       this.constructor = constructor;
       this.constructor.setAccessible(true);
       this.parameters = constructor.getParameters();
       this.parameterIndexes = getParameterIndexes(parameters);
+      this.warnsOnUnknownFields =
+          constructor.getDeclaringClass().isAnnotationPresent(WarnOnUnknownFields.class);
     }
 
     int parameterCount() {
@@ -222,15 +289,18 @@ class ConstructorCoercer extends TypeCoercer<Object> {
         values[i] = value;
       }
 
-      if (constructor.getDeclaringClass().isAnnotationPresent(WarnOnUnknownFields.class)) {
+      if (warnsOnUnknownFields && LOG.isLoggable(Level.WARNING)) {
+        // Gated on isLoggable so a disabled WARNING level skips even collecting the unknown
+        // keys, not just building the message — the collection itself scales with an
+        // attacker-controlled payload size.
+        List<String> unknownKeys = new ArrayList<>();
         for (String key : properties.keySet()) {
           if (!parameterIndexes.containsKey(key)) {
-            LOG.warning(
-                constructor.getDeclaringClass().getSimpleName()
-                    + ": dropping undeclared field \""
-                    + key
-                    + "\"");
+            unknownKeys.add(key);
           }
+        }
+        if (!unknownKeys.isEmpty()) {
+          LOG.warning(describeUnknownFields(constructor.getDeclaringClass(), unknownKeys));
         }
       }
 
