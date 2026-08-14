@@ -20,11 +20,15 @@ package org.openqa.selenium.json;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.jspecify.annotations.Nullable;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -227,8 +231,77 @@ class ConstructorCoercerTest {
     assertThat(bean.value).isEqualTo("fromJson");
   }
 
+  @Test
+  void unannotatedTypeSilentlyIgnoresAnUnknownField() {
+    String raw = "{\"value\": \"time\", \"mystery\": \"field\"}";
+    List<LogRecord> records =
+        captureLogRecords(() -> new Json().toType(raw, NoDefaultConstructor.class));
+
+    assertThat(records).isEmpty();
+  }
+
+  @Test
+  void warnsOnUnknownFieldOptsInToALogWarning() {
+    String raw = "{\"value\": \"time\", \"mystery\": \"field\"}";
+    List<LogRecord> records = captureLogRecords(() -> new Json().toType(raw, WarnOnUnknown.class));
+
+    assertThat(records).anySatisfy(r -> assertThat(r.getMessage()).contains("mystery"));
+  }
+
+  @Test
+  void warnsOnUnknownFieldStillPopulatesTheKnownFields() {
+    String raw = "{\"value\": \"time\", \"mystery\": \"field\"}";
+
+    WarnOnUnknown bean = new Json().toType(raw, WarnOnUnknown.class);
+
+    assertThat(bean.value).isEqualTo("time");
+  }
+
+  @Test
+  void warnsOnUnknownFieldDoesNotWarnWhenEveryFieldIsDeclared() {
+    String raw = "{\"value\": \"time\"}";
+    List<LogRecord> records = captureLogRecords(() -> new Json().toType(raw, WarnOnUnknown.class));
+
+    assertThat(records).isEmpty();
+  }
+
+  private static List<LogRecord> captureLogRecords(Runnable action) {
+    Logger logger = Logger.getLogger(ConstructorCoercer.class.getName());
+    List<LogRecord> records = new ArrayList<>();
+    Handler handler =
+        new Handler() {
+          @Override
+          public void publish(LogRecord record) {
+            records.add(record);
+          }
+
+          @Override
+          public void flush() {}
+
+          @Override
+          public void close() {}
+        };
+    logger.addHandler(handler);
+    try {
+      action.run();
+    } finally {
+      logger.removeHandler(handler);
+    }
+    return records;
+  }
+
   public enum Flavor {
     CHEDDAR
+  }
+
+  @WarnOnUnknownFields
+  public static class WarnOnUnknown {
+
+    private final String value;
+
+    public WarnOnUnknown(String value) {
+      this.value = value;
+    }
   }
 
   public static class NoDefaultConstructor {
