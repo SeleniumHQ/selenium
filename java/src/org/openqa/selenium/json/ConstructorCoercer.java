@@ -35,10 +35,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.openqa.selenium.internal.Require;
 
 class ConstructorCoercer extends TypeCoercer<Object> {
+
+  private static final Logger LOG = Logger.getLogger(ConstructorCoercer.class.getName());
 
   private final JsonTypeCoercer coercer;
 
@@ -203,6 +206,18 @@ class ConstructorCoercer extends TypeCoercer<Object> {
         }
 
         values[i] = value;
+      }
+
+      if (constructor.getDeclaringClass().isAnnotationPresent(WarnOnUnknownFields.class)) {
+        for (String key : properties.keySet()) {
+          if (!parameterIndexes.containsKey(key)) {
+            LOG.warning(
+                constructor.getDeclaringClass().getSimpleName()
+                    + ": dropping undeclared field \""
+                    + key
+                    + "\"");
+          }
+        }
       }
 
       try {
