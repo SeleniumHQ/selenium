@@ -77,9 +77,10 @@ network.clearRequestHandlers();
    remote end. A binding may serialize a supported input into the remote's
    pattern form, but it does no URL matching or pattern expansion of its own;
    patterns are forwarded to the remote for evaluation, and input that is not a
-   valid pattern errors. A binding may log a warning when a value looks like a
-   glob, to flag that Selenium forwards it rather than expanding it; that
-   detection is optional and left to the binding rather than specified here.
+   valid pattern errors locally before anything is sent. A binding may log a
+   warning when a value looks like a glob, to flag that Selenium forwards it
+   rather than expanding it; that detection is optional and left to the binding
+   rather than specified here.
 
 ```ruby
 # A pattern string or components — an event matches any of them
@@ -343,9 +344,12 @@ network.addRequestHandler(otherTab, r -> { if (blocked(r.url())) r.fail(); });
 - **Failure (decision 7).**
   - Log the exception instead of raising it — but an uncaught exception is the handler's own bug, so
     it should error, not disappear into a log.
-  - End the whole session on any uncaught exception, as an unhandled rejection effectively does in
-    Playwright — disproportionate to one handler's bug: it closes the browser, whereas decision 7
-    surfaces the error, stops only this event's chain, and leaves the session running.
+  - End the whole session on any uncaught exception — disproportionate to one handler's bug: it closes
+    the browser, whereas decision 7 surfaces the error, stops only this event's chain, and leaves the
+    session running.
+  - Leave the request unresolved on a throw, as Playwright does — a handler that raises without
+    settling leaves the request hanging until it times out. Decision 7 submits the staged state instead
+    so the browser is never left waiting.
   - Keep running the remaining handlers after the throw, or discard what is staged and send the
     browser's original request — the first runs a chain past a fault the user is already being told
     about, the second throws away changes from handlers that completed cleanly; stopping and submitting
