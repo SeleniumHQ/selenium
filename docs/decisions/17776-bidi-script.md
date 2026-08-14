@@ -23,8 +23,8 @@ behavior so the bindings converge.
 
 The API covers two things, both on one accessor, `driver.script`: **running scripts** (decisions
 1–2) and **subscribing to page events** — console messages, uncaught errors, DOM mutations, and any
-event a page-side script defines (decisions 3–7); a final decision (8) scopes every one of them to a
-context. The accessor is protocol-neutral — nothing
+event a page-side script defines (decisions 3–7); a final decision (8) says where each one runs — a
+window handle for events, a realm for `execute`. The accessor is protocol-neutral — nothing
 below returns a BiDi type — and hosts the console and error events itself, not a separate `log`. Each
 decision states what every binding provides; call shapes are per-language idiom.
 
@@ -116,22 +116,22 @@ Registration handler = driver.script().addConsoleMessageHandler(m -> log(m.getTe
 driver.script().removeConsoleMessageHandler(handler);
 ```
 
-6. **Each event carries a shaped payload — not the raw protocol entry — and every payload names its
-   origin.** The origin is the source realm (always present) and the browsing context (present when
-   the event has one: window-backed events carry it, while shared- and service-worker events do not
-   and are placed by realm plus — once the protocol requires it — user context). Beyond origin, a
-   console message carries level, text, type, and arguments; a JavaScript error carries its message
-   and stack trace; a DOM mutation carries the target element, the mutation kind, and the fields for
-   that kind — an attribute name with its old and new value, the old and new character data, or the
-   added and removed nodes. Only the JavaScript error carries a stack trace; a console message does
-   not.
+6. **Each event the API defines carries a shaped payload — not the raw protocol entry — and every
+   payload names its origin.** The origin is the source realm (always present) and the window handle
+   it belongs to (present for a tab-level event; a worker-realm event carries the realm alone). Beyond
+   origin, a console message carries level, text, type, and arguments; a JavaScript error carries its
+   message and stack trace; a DOM mutation carries the target element, the mutation kind, and the
+   fields for that kind — an attribute name with its old and new value, the old and new character
+   data, or the added and removed nodes. Only the JavaScript error carries a stack trace; a console
+   message does not. `add_event_handler` is the exception to the shaping: it delivers whatever its
+   script emits, unshaped (decision 4).
 
 ```ruby
-driver.script.add_console_message_handler { |m| log(m.level, m.text, m.context) }
+driver.script.add_console_message_handler { |m| log(m.level, m.text, m.realm) }
 driver.script.add_javascript_error_handler { |e| log(e.message, e.stacktrace) }
 ```
 ```java
-driver.script().addConsoleMessageHandler(m -> log(m.getLevel(), m.getText(), m.getContext()));
+driver.script().addConsoleMessageHandler(m -> log(m.getLevel(), m.getText(), m.getRealm()));
 driver.script().addJavaScriptErrorHandler(e -> log(e.getMessage(), e.getStacktrace()));
 ```
 
@@ -147,22 +147,19 @@ driver.script().addConsoleMessageHandler(m -> { throw new RuntimeException("boom
 
 **Scoping**
 
-8. **Every operation is scoped to a context.** Running a script, pinning a script, and adding a
-   handler default to the current browsing context and accept an optional scope — another browsing
-   context, or a user context — so a call can target a background tab or a whole profile. There is no
-   separate worker parameter: a dedicated worker is reached through the browsing context that owns
-   it, and shared and service workers, which have no browsing context of their own, are reached
-   through the user context.
+8. **Events attach to a window handle; `execute` runs in a realm.** A handler defaults to the current
+   top-level navigable and takes an optional **window handle** to watch another tab. `execute`
+   defaults to the current realm and takes an optional **realm** — a frame, a web worker, or a
+   service worker, not only a tab — since a script can run wherever one of those exists. How window
+   handles, realms, and user contexts relate more fully is out of scope for this record.
 
 ```ruby
-tab = driver.window_handle
-driver.script.execute("return document.title", context: tab)
-driver.script.add_console_message_handler(context: tab) { |m| log(m.text) }
+driver.script.add_console_message_handler(window_handle: tab) { |m| log(m.text) }  # tab: a window handle
+driver.script.execute("return self.location.href", realm: worker)                  # realm: frame/worker/tab
 ```
 ```java
-String tab = driver.getWindowHandle();
-driver.script().execute("return document.title", tab);
-driver.script().addConsoleMessageHandler(tab, m -> log(m.getText()));
+driver.script().addConsoleMessageHandler(tab, m -> log(m.getText()));      // tab: a window handle
+driver.script().execute("return self.location.href", worker);              // worker: a frame/worker/tab realm
 ```
 
 ## Considered options
@@ -179,8 +176,8 @@ driver.script().addConsoleMessageHandler(tab, m -> log(m.getText()));
   - It is what most bindings ship, and attribute changes are the common case. But `MutationObserver` reports child-list and character-data natively, so attributes-only discards capability the browser already provides, and Python already exposes the full set. Selecting types per handler keeps the common case a one-liner without capping the rest.
 - **Exposing the raw protocol entry as the payload.**
   - A direct passthrough — no shaping code, and it tracks the spec automatically. But the raw entry differs field by field across the `log` and `script` domains and leaves the consumer to resolve the origin and the fields these events are read for; a shaped payload gives the same fields in every binding and extracts them once.
-- **A separate worker or realm scope, alongside browsing and user context.**
-  - Workers are where scripts and logs often run, so a dedicated worker or realm coordinate looks like the natural way to target them. But the protocol scopes subscriptions only by browsing context and user context: a dedicated worker rides the browsing context that owns it, and shared and service workers ride the user context. A third coordinate would model an address the wire does not have, and the two contexts already reach every realm.
+- **A single `context` argument shared by `execute` and the handlers.**
+  - One scope parameter everywhere is simplest to describe. But the two targets differ: an event attaches to a top-level navigable — a tab — while `execute` can run in a frame, a web worker, or a service worker, which are realms. Collapsing both into one `context` blurs a distinction users have to get right, so events take a window handle and `execute` takes a realm.
 
 ## Consequences
 
@@ -194,9 +191,9 @@ driver.script().addConsoleMessageHandler(tab, m -> log(m.getText()));
   and custom async events no longer force a drop to the low-level module.
 - `execute` overlaps the existing `execute_script`; whether it supersedes that method is a separate
   migration decision, not settled here.
-- Scoping adds a parameter, not just a rename: every binding threads an optional browsing-context or
-  user-context scope through `execute`, `pin`, and the handlers, where most expose only the current
-  context today.
+- Scoping adds a parameter, not just a rename: handlers take an optional window handle and `execute`
+  an optional realm, where most bindings expose only the current one today. How window handles,
+  realms, and user contexts relate is out of scope here.
 - Preload removal is future-only: `unpin` (and detaching a handler) stops the script from arming
   later loads but does not undo what already ran — an observer injected into the current page keeps
   running until navigation. A handler that must stop cleanly on the live page has to build teardown
