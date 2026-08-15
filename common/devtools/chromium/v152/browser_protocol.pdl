@@ -313,6 +313,57 @@ experimental domain Accessibility
       # Updated node data.
       array of AXNode nodes
 
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# A domain for ad-related metrics and data.
+experimental domain Ads
+  depends on Network
+  depends on Page
+  depends on Runtime
+
+  # Ad frame data.
+  type AdFrameData extends object
+    properties
+      # The DevTools frame token.
+      Page.FrameId frameId
+      # The initial origin of the frame. To minimize the payload size, this is
+      # only sent once per frame.
+      optional string initialOrigin
+      # The network bytes of the frame.
+      number networkBytes
+      # The CPU time of the frame, in milliseconds.
+      number cpuTime
+
+  # Ad metrics for a page.
+  type AdMetrics extends object
+    properties
+      # The viewport ad density by area, represented as a percentage (an integer
+      # between 0 and 100).
+      integer viewportAdDensityByArea
+      # The time-weighted average of the viewport ad density by area, measured
+      # across the duration of the page.
+      number averageViewportAdDensityByArea
+      # The number of ads currently visible within the viewport.
+      integer viewportAdCount
+      # The time-weighted average of the viewport ad count, measured across the
+      # duration of the page.
+      number averageViewportAdCount
+      # The total ad CPU usage, in milliseconds.
+      number totalAdCpuTime
+      # The total ad network bytes.
+      number totalAdNetworkBytes
+      # The list of ad frames that have been updated since the last event.
+      array of AdFrameData updateAdFrames
+      # The list of ad frame IDs that have been removed since the last event.
+      array of Page.FrameId removeAdFrames
+
+  # Retrieves ad metrics for the current page.
+  command getAdMetrics
+    returns
+      AdMetrics metrics
+
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -635,7 +686,6 @@ experimental domain Audits
 
   type MixedContentResourceType extends string
     enum
-      AttributionSrc
       Audio
       Beacon
       CSPReport
@@ -781,31 +831,6 @@ experimental domain Audits
       optional Network.IPAddressSpace resourceIPAddressSpace
       optional Network.ClientSecurityState clientSecurityState
 
-  type AttributionReportingIssueType extends string
-    enum
-      PermissionPolicyDisabled
-      UntrustworthyReportingOrigin
-      InsecureContext
-      # TODO(apaseltiner): Rename this to InvalidRegisterSourceHeader
-      InvalidHeader
-      InvalidRegisterTriggerHeader
-      SourceAndTriggerHeaders
-      SourceIgnored
-      TriggerIgnored
-      OsSourceIgnored
-      OsTriggerIgnored
-      InvalidRegisterOsSourceHeader
-      InvalidRegisterOsTriggerHeader
-      WebAndOsHeaders
-      NoWebOrOsSupport
-      NavigationRegistrationWithoutTransientUserActivation
-      InvalidInfoHeader
-      NoRegisterSourceHeader
-      NoRegisterTriggerHeader
-      NoRegisterOsSourceHeader
-      NoRegisterOsTriggerHeader
-      NavigationRegistrationUniqueScopeAlreadySet
-
   type SharedDictionaryError extends string
     enum
       UseErrorCrossOriginNoCorsRequest
@@ -827,6 +852,7 @@ experimental domain Audits
       WriteErrorNonSecureContext
       WriteErrorNonStringIdField
       WriteErrorNonStringInMatchDestList
+      WriteErrorInvalidMatchDestList
       WriteErrorNonStringMatchField
       WriteErrorNonTokenTypeField
       WriteErrorRequestAborted
@@ -857,6 +883,10 @@ experimental domain Audits
       ValidationFailedInvalidLength
       ValidationFailedSignatureMismatch
       ValidationFailedIntegrityMismatch
+      SignatureBaseUnknownDerivedComponent
+      SignatureBaseMissingHeader
+      SignatureBaseInvalidUnencodedDigest
+      SignatureBaseUnsupportedComponent
 
   type UnencodedDigestError extends string
     enum
@@ -873,15 +903,6 @@ experimental domain Audits
       InvalidAllowlistItemType
       ReportingEndpointNotToken
       InvalidUrlPattern
-
-  # Details for issues around "Attribution Reporting API" usage.
-  # Explainer: https://github.com/WICG/attribution-reporting-api
-  type AttributionReportingIssueDetails extends object
-    properties
-      AttributionReportingIssueType violationType
-      optional AffectedRequest request
-      optional DOM.BackendNodeId violatingNodeId
-      optional string invalidParameter
 
 # Details for issues about documents in Quirks Mode
 # or Limited Quirks Mode that affects page layouting.
@@ -936,6 +957,7 @@ experimental domain Audits
       FormInputHasWrongButWellIntendedAutocompleteValueError
       ResponseWasBlockedByORB
       NavigationEntryMarkedSkippable
+      BackUINavigationWouldSkipAd
       AutofillAndManualTextPolicyControlledFeaturesInfo
       AutofillPolicyControlledFeatureInfo
       ManualTextPolicyControlledFeatureInfo
@@ -1066,6 +1088,73 @@ experimental domain Audits
       InvalidAccountsResponse
       NoReturningUserFromFetchedAccounts
 
+  type EmailVerificationRequestIssueDetails extends object
+    properties
+      EmailVerificationRequestIssueReason emailVerificationRequestIssueReason
+
+  # Represents the failure reason when an email verification request fails.
+  # Should be updated alongside EmailVerificationRequestResult in
+  # third_party/blink/public/mojom/devtools/inspector_issue.mojom.
+  type EmailVerificationRequestIssueReason extends string
+    enum
+      InvalidEmail
+      DnsFetchFailed
+      DnsInvalidRecord
+      WellKnownHttpNotFound
+      WellKnownNoResponse
+      WellKnownInvalidResponse
+      WellKnownListEmpty
+      WellKnownInvalidContentType
+      WellKnownMissingIssuanceEndpoint
+      WellKnownIssuanceEndpointCrossOrigin
+      WellKnownUnsupportedSigningAlgorithm
+      TokenHttpNotFound
+      TokenNoResponse
+      TokenInvalidResponse
+      TokenInvalidContentType
+      TokenMalformedSdJwt
+      TokenInvalidSdJwt
+      KeyBindingSigningFailed
+      RpOriginIsOpaque
+      WellKnownMissingAccountsEndpoint
+      UserLoggedOut
+      WellKnownAccountsEndpointCrossOrigin
+      AccountsHttpNotFound
+      AccountsNoResponse
+      AccountsInvalidResponse
+      AccountsInvalidContentType
+      AccountsEmptyList
+      EmailVerificationWellKnownHttpNotFound
+      EmailVerificationWellKnownNoResponse
+      EmailVerificationWellKnownInvalidResponse
+      EmailVerificationWellKnownInvalidContentType
+      JwksHttpNotFound
+      JwksInvalidResponse
+      TokenVerificationSdJwtUnsupportedHeaderAlg
+      TokenVerificationSdJwtInvalidTyp
+      TokenVerificationSdJwtMissingIss
+      TokenVerificationSdJwtMissingIat
+      TokenVerificationSdJwtMissingCnf
+      TokenVerificationSdJwtMissingEmail
+      TokenVerificationSdJwtInvalidIssuedAt
+      TokenVerificationSdJwtInvalidIssuer
+      TokenVerificationSdJwtJwksMissingKeys
+      TokenVerificationSdJwtSignatureFailed
+      TokenVerificationSdJwtInvalidEmailVerified
+      TokenVerificationSdJwtInvalidEmail
+      TokenVerificationSdJwtInvalidHolderKey
+      TokenVerificationKbInvalidTyp
+      TokenVerificationKbMissingAud
+      TokenVerificationKbMissingNonce
+      TokenVerificationKbMissingIat
+      TokenVerificationKbMissingSdHash
+      TokenVerificationKbInvalidIssuedAt
+      TokenVerificationKbInvalidAudience
+      TokenVerificationKbInvalidNonce
+      TokenVerificationKbInvalidSdHash
+      TokenVerificationKbMissingCnf
+      TokenVerificationKbSignatureFailed
+
   # This issue tracks client hints related issues. It's used to deprecate old
   # features, encourage the use of new ones, and provide general guidance.
   type ClientHintIssueDetails extends object
@@ -1181,6 +1270,8 @@ experimental domain Audits
       FontSizeTooSmall
       FontSizeTooLarge
       InvalidSizeValue
+      NonSecureContext
+      MissingTransientUserActivation
 
   # This issue warns about improper usage of the <permission> element.
   type PermissionElementIssueDetails extends object
@@ -1214,6 +1305,16 @@ experimental domain Audits
       # The stack trace at the time of the intervention.
       optional Runtime.StackTrace stackTrace
 
+  # Details for issues about lazy-loaded images without explicit dimensions.
+  type LazyLoadImageIssueDetails extends object
+    properties
+      # DOM node of the problematic HTMLImageElement.
+      DOM.BackendNodeId nodeId
+      # URL or src attribute of the image.
+      string url
+      # Frame containing the image.
+      Page.FrameId frameId
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
@@ -1226,7 +1327,6 @@ experimental domain Audits
       ContentSecurityPolicyIssue
       SharedArrayBufferIssue
       CorsIssue
-      AttributionReportingIssue
       QuirksModeIssue
       PartitioningBlobURLIssue
       # Deprecated
@@ -1249,6 +1349,8 @@ experimental domain Audits
       PermissionElementIssue
       PerformanceIssue
       SelectivePermissionsInterventionIssue
+      EmailVerificationRequestIssue
+      LazyLoadImageIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -1262,7 +1364,6 @@ experimental domain Audits
       optional ContentSecurityPolicyIssueDetails contentSecurityPolicyIssueDetails
       optional SharedArrayBufferIssueDetails sharedArrayBufferIssueDetails
       optional CorsIssueDetails corsIssueDetails
-      optional AttributionReportingIssueDetails attributionReportingIssueDetails
       optional QuirksModeIssueDetails quirksModeIssueDetails
       optional PartitioningBlobURLIssueDetails partitioningBlobURLIssueDetails
       deprecated optional NavigatorUserAgentIssueDetails navigatorUserAgentIssueDetails
@@ -1284,6 +1385,8 @@ experimental domain Audits
       optional PermissionElementIssueDetails permissionElementIssueDetails
       optional PerformanceIssueDetails performanceIssueDetails
       optional SelectivePermissionsInterventionIssueDetails selectivePermissionsInterventionIssueDetails
+      optional EmailVerificationRequestIssueDetails emailVerificationRequestIssueDetails
+      optional LazyLoadImageIssueDetails lazyLoadImageIssueDetails
 
   # A unique id for a DevTools inspector issue. Allows other entities (e.g.
   # exceptions, CDP message, console messages, etc.) to reference an issue.
@@ -2090,24 +2193,6 @@ domain Browser
     parameters
       string url
 
-  experimental type PrivacySandboxAPI extends string
-    enum
-      BiddingAndAuctionServices
-      TrustedKeyValue
-
-  # Configures encryption keys used with a given privacy sandbox API to talk
-  # to a trusted coordinator.  Since this is intended for test automation only,
-  # coordinatorOrigin must be a .test domain. No existing coordinator
-  # configuration for the origin may exist.
-  command addPrivacySandboxCoordinatorKeyConfig
-    parameters
-      PrivacySandboxAPI api
-      string coordinatorOrigin
-      string keyConfig
-      # BrowserContext to perform the action in. When omitted, default browser
-      # context is used.
-      optional BrowserContextID browserContextId
-
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -2192,6 +2277,18 @@ experimental domain CSS
       # Specificity of the selector.
       experimental optional Specificity specificity
 
+  # Contribution of an individual simple selector to specificity.
+  experimental type SpecificityComponent extends object
+    properties
+      # The simple selector text that contributes to specificity.
+      string text
+      # The a component contribution.
+      integer a
+      # The b component contribution.
+      integer b
+      # The c component contribution.
+      integer c
+
   # Specificity:
   # https://drafts.csswg.org/selectors/#specificity-rules
   experimental type Specificity extends object
@@ -2203,6 +2300,8 @@ experimental domain CSS
       integer b
       # The c component, which represents the number of type selectors and pseudo-elements.
       integer c
+      # Per-simple-selector contributions used to explain this specificity.
+      experimental optional array of SpecificityComponent components
 
   # Selector list data.
   type SelectorList extends object
@@ -2448,7 +2547,10 @@ experimental domain CSS
   experimental type CSSContainerQuery extends object
     properties
       # Container query text.
-      string text
+      # Contains the query part without the container name for a single query.
+      # Deprecated in favor of conditionText which contains the full prelude
+      # after @container.
+      deprecated string text
       # The associated rule header range in the enclosing stylesheet (if
       # available).
       optional SourceRange range
@@ -2464,6 +2566,8 @@ experimental domain CSS
       optional boolean queriesScrollState
       # true if the query contains anchored() queries.
       optional boolean queriesAnchored
+      # CSSContainerRule.conditionText
+      string conditionText
 
   # CSS Supports at-rule descriptor.
   experimental type CSSSupports extends object
@@ -2633,6 +2737,7 @@ experimental domain CSS
         font-face
         font-feature-values
         font-palette-values
+        counter-style
       # Subsection of font-feature-values, if this is a subsection.
       optional enum subsection
         # LINT.IfChange(FontVariantAlternatesFeatureType)
@@ -3036,7 +3141,17 @@ experimental domain CSS
       CSSMedia media
 
   # Modifies the expression of a container query.
-  experimental command setContainerQueryText
+  # Deprecated. Use setContainerQueryConditionText instead.
+  experimental deprecated command setContainerQueryText
+    parameters
+      DOM.StyleSheetId styleSheetId
+      SourceRange range
+      string text
+    returns
+      # The resulting CSS container query rule after modification.
+      CSSContainerQuery containerQuery
+
+  experimental command setContainerQueryConditionText
     parameters
       DOM.StyleSheetId styleSheetId
       SourceRange range
@@ -3450,8 +3565,11 @@ domain DOM
       file-selector-button
       details-content
       picker
+      select-listbox
       permission-icon
       overscroll-area-parent
+      overscroll-backdrop
+      skeleton
 
   # Shadow root type.
   type ShadowRootType extends string
@@ -4189,6 +4307,11 @@ domain DOM
       # If true, opens the popover and keeps it open. If false, closes the
       # popover if it was previously force-opened.
       boolean enable
+      # Optional ID of the element invoking this popover, used to establish the implicit anchor.
+      # If not provided, it will fall back to the first invoker in the document, preferring
+      # elements with a popovertarget attribute over those with a commandfor attribute. Note that
+      # if there are multiple invokers, this is just an estimate.
+      optional BackendNodeId invokerNodeId
     returns
       # List of popovers that were closed in order to respect popover stacking order.
       array of NodeId nodeIds
@@ -4925,6 +5048,37 @@ experimental domain DeviceOrientation
       # Mock gamma
       number gamma
 
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+#
+# Contributing to Chrome DevTools Protocol: https://goo.gle/devtools-contribution-guide-cdp
+
+# This domain allows interacting with the Digital Credentials API for automation.
+experimental domain DigitalCredentials
+  # The type of virtual wallet action.
+  type VirtualWalletAction extends string
+    enum
+      respond
+      decline
+      wait
+      clear
+
+  # Sets the behavior of the virtual wallet for digital credential requests
+  # issued from this frame.
+  command setVirtualWalletBehavior
+    parameters
+      # The action of the virtual wallet.
+      VirtualWalletAction action
+      # The protocol identifier (e.g. "openid4vp"). Required when |action| is
+      # "respond", forbidden otherwise.
+      optional string protocol
+      # The response data object returned by the wallet.
+      # Required when |action| is "respond", forbidden otherwise.
+      optional object response
+      # The frame to scope the virtual wallet behavior to.
+      optional Page.FrameId frameId
+
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -5363,7 +5517,6 @@ domain Emulation
       PressureSource source
       optional PressureMetadata metadata
 
-  # TODO: OBSOLETE: To remove when setPressureDataOverride is merged.
   # Provides a given pressure state that will be processed and eventually be
   # delivered to PressureObserver users. |source| must have been previously
   # overridden by setPressureSourceOverrideEnabled.
@@ -5371,15 +5524,6 @@ domain Emulation
     parameters
       PressureSource source
       PressureState state
-
-  # Provides a given pressure data set that will be processed and eventually be
-  # delivered to PressureObserver users. |source| must have been previously
-  # overridden by setPressureSourceOverrideEnabled.
-  experimental command setPressureDataOverride
-    parameters
-      PressureSource source
-      PressureState state
-      optional number ownContributionEstimate
 
   # Overrides the Idle state.
   command setIdleOverride
@@ -8051,14 +8195,6 @@ domain Network
       None
       # The cookie should have been blocked by 3PCD but is exempted by explicit user setting.
       UserSetting
-      # The cookie should have been blocked by 3PCD but is exempted by metadata mitigation.
-      TPCDMetadata
-      # The cookie should have been blocked by 3PCD but is exempted by Deprecation Trial mitigation.
-      TPCDDeprecationTrial
-      # The cookie should have been blocked by 3PCD but is exempted by Top-level Deprecation Trial mitigation.
-      TopLevelTPCDDeprecationTrial
-      # The cookie should have been blocked by 3PCD but is exempted by heuristics mitigation.
-      TPCDHeuristics
       # The cookie should have been blocked by 3PCD but is exempted by Enterprise Policy.
       EnterprisePolicy
       # The cookie should have been blocked by 3PCD but is exempted by Storage Access API.
@@ -9470,10 +9606,12 @@ domain Network
   experimental type DeviceBoundSessionEventId extends string
 
   # A fetch result for a device bound session creation or refresh.
+  # LINT.IfChange(DeviceBoundSessionFetchResult)
   experimental type DeviceBoundSessionFetchResult extends string
     enum
       Success
-      KeyError
+      SigningKeyGenerationError
+      AttestationKeyGenerationError
       SigningError
       TransientSigningError
       ServerRequestedTermination
@@ -9541,6 +9679,11 @@ domain Network
       InvalidFederatedSessionProviderFailedToRestoreKey
       FailedToUnwrapKey
       SessionDeletedDuringRefresh
+      CrossOriginRegistrationSiteNotIncluded
+      InvalidPreProvisionedKeyInitiatorMissing
+      PreProvisionedKeyAccessNotGranted
+      PreProvisionedKeyNotFound
+  # LINT.ThenChange(//content/browser/devtools/protocol/network_handler.cc:DeviceBoundSessionFetchResult)
 
   # Details about a failed device bound session network request.
   experimental type DeviceBoundSessionFailedRequest extends object
@@ -9577,7 +9720,6 @@ domain Network
         InitializedService
         Unreachable
         ServerError
-        RefreshQuotaExceeded
         FatalError
         SigningQuotaExceeded
         RefreshedAsWaiter
@@ -9915,6 +10057,36 @@ experimental domain Overlay
       # The content box highlight outline color (default: transparent).
       optional DOM.RGBA outlineColor
 
+  # Supported display cutout shapes.
+  type DisplayCutoutShape extends string
+    enum
+      pill
+      notch
+      circle
+      rectangle
+
+  # Configuration for a display cutout.
+  type DisplayCutoutConfig extends object
+    properties
+      # A rectangle representing the cutout bounds.
+      DOM.Rect rect
+      # Shape used to draw the cutout.
+      DisplayCutoutShape shape
+      # Border radius for rounded cutout shapes.
+      optional integer borderRadius
+      # Upper shoulder radius for notch cutout shapes.
+      optional integer upperRadius
+      # Lower transition radius for notch cutout shapes.
+      optional integer lowerRadius
+      # Center x coordinate for circle cutout shapes.
+      optional integer cx
+      # Center y coordinate for circle cutout shapes.
+      optional integer cy
+      # Radius for circle cutout shapes.
+      optional integer radius
+      # The cutout fill color (default: black).
+      optional DOM.RGBA contentColor
+
   # Configuration for Window Controls Overlay
   type WindowControlsOverlayConfig extends object
     properties
@@ -10183,6 +10355,12 @@ experimental domain Overlay
       # hinge data, null means hideHinge
       optional HingeConfig hingeConfig
 
+  # Add a display cutout overlay.
+  command setShowDisplayCutout
+    parameters
+      # display cutout data, null means hide display cutout
+      optional DisplayCutoutConfig displayCutoutConfig
+
   # Show elements in isolation mode with overlays.
   command setShowIsolatedElements
     parameters
@@ -10448,7 +10626,6 @@ domain Page
       all-screens-capture
       ambient-light-sensor
       aria-notify
-      attribution-reporting
       autofill
       autoplay
       bluetooth
@@ -10491,7 +10668,6 @@ domain Page
       digital-credentials-get
       direct-sockets
       direct-sockets-multicast
-      direct-sockets-private
       display-capture
       document-domain
       encrypted-media
@@ -10549,6 +10725,7 @@ domain Page
       usb-unrestricted
       vertical-scroll
       web-app-installation
+      webnn
       web-printing
       web-share
       window-management
@@ -11014,6 +11191,13 @@ domain Page
       # Whether or not universal access should be granted to the isolated world. This is a powerful
       # option, use with caution.
       optional boolean grantUniveralAccess
+      # An optional content security policy to set for the isolated world.
+      # If omitted, any existing CSP for the world will be cleared.
+      # Note that clearing or updating the CSP does not immediately affect the active
+      # context in the same document because LocalDOMWindow caches the
+      # ContentSecurityPolicy object. The change takes effect on subsequent
+      # navigations when a new window context is created.
+      optional string contentSecurityPolicy
     returns
       # Execution context of the isolated world.
       Runtime.ExecutionContextId executionContextId
@@ -12498,6 +12682,7 @@ experimental domain Preload
       PrefetchIneligibleRetryAfter
       PrefetchIsPrivacyDecoy
       PrefetchIsStale
+      PrefetchNotEligibleBlockedByConnectionAllowlist
       PrefetchNotEligibleBrowserContextOffTheRecord
       PrefetchNotEligibleDataSaverEnabled
       PrefetchNotEligibleExistingProxy
@@ -12522,6 +12707,7 @@ experimental domain Preload
       # The prefetch finished successfully but was never used.
       PrefetchSuccessfulButNotUsed
       PrefetchNotUsedProbeFailed
+      PrefetchCancelledOnUserNavigation
 
   # Fired when a prefetch attempt is updated.
   event prefetchStatusUpdated
@@ -12928,7 +13114,6 @@ experimental domain SmartCardEmulation
       shutdown
 
       # Maps to SCARD_E_UNKNOWN_CARD.
-      # TODO(crbug.com/472114998): Rename Mojo's kUnknownError to kUnknownCard to match.
       unknown-card
 
       # Error code that is not mapped in this enum.
@@ -13308,7 +13493,6 @@ experimental domain Storage
       websql
       service_workers
       cache_storage
-      interest_groups
       shared_storage
       storage_buckets
       all
@@ -13329,45 +13513,12 @@ experimental domain Storage
       string issuerOrigin
       number count
 
-  # Protected audience interest group auction identifier.
-  type InterestGroupAuctionId extends string
-
-  # Enum of interest group access types.
-  type InterestGroupAccessType extends string
-    enum
-      join
-      leave
-      update
-      loaded
-      bid
-      win
-      additionalBid
-      additionalBidWin
-      topLevelBid
-      topLevelAdditionalBid
-      clear
-
-  # Enum of auction events.
-  type InterestGroupAuctionEventType extends string
-    enum
-      started
-      configResolved
-
-  # Enum of network fetches auctions can do.
-  type InterestGroupAuctionFetchType extends string
-    enum
-      bidderJs
-      bidderWasm
-      sellerJs
-      bidderTrustedSignals
-      sellerTrustedSignals
 
   # Enum of shared storage access scopes.
   type SharedStorageAccessScope extends string
     enum
       window
       sharedStorageWorklet
-      protectedAudienceWorklet
       header
 
   # Enum of shared storage access methods.
@@ -13672,29 +13823,6 @@ experimental domain Storage
       # True if any tokens were deleted, false otherwise.
       boolean didDeleteTokens
 
-  # Gets details for a named interest group.
-  experimental command getInterestGroupDetails
-    parameters
-      string ownerOrigin
-      string name
-    returns
-      # This largely corresponds to:
-      # https://wicg.github.io/turtledove/#dictdef-generatebidinterestgroup
-      # but has absolute expirationTime instead of relative lifetimeMs and
-      # also adds joiningOrigin.
-      object details
-
-  # Enables/Disables issuing of interestGroupAccessed events.
-  experimental command setInterestGroupTracking
-    parameters
-      boolean enable
-
-  # Enables/Disables issuing of interestGroupAuctionEventOccurred and
-  # interestGroupAuctionNetworkRequestCreated.
-  experimental command setInterestGroupAuctionTracking
-    parameters
-      boolean enable
-
   # Gets metadata for an origin's shared storage.
   experimental command getSharedStorageMetadata
     parameters
@@ -13802,48 +13930,6 @@ experimental domain Storage
       # Storage bucket to update.
       string bucketId
 
-  # One of the interest groups was accessed. Note that these events are global
-  # to all targets sharing an interest group store.
-  event interestGroupAccessed
-    parameters
-      Network.TimeSinceEpoch accessTime
-      InterestGroupAccessType type
-      string ownerOrigin
-      string name
-      # For topLevelBid/topLevelAdditionalBid, and when appropriate,
-      # win and additionalBidWin
-      optional string componentSellerOrigin
-      # For bid or somethingBid event, if done locally and not on a server.
-      optional number bid
-      optional string bidCurrency
-      # For non-global events --- links to interestGroupAuctionEvent
-      optional InterestGroupAuctionId uniqueAuctionId
-
-  # An auction involving interest groups is taking place. These events are
-  # target-specific.
-  event interestGroupAuctionEventOccurred
-    parameters
-      Network.TimeSinceEpoch eventTime
-      InterestGroupAuctionEventType type
-      InterestGroupAuctionId uniqueAuctionId
-      # Set for child auctions.
-      optional InterestGroupAuctionId parentAuctionId
-      # Set for started and configResolved
-      optional object auctionConfig
-
-  # Specifies which auctions a particular network fetch may be related to, and
-  # in what role. Note that it is not ordered with respect to
-  # Network.requestWillBeSent (but will happen before loadingFinished
-  # loadingFailed).
-  event interestGroupAuctionNetworkRequestCreated
-    parameters
-      InterestGroupAuctionFetchType type
-      Network.RequestId requestId
-      # This is the set of the auctions using the worklet that issued this
-      # request.  In the case of trusted signals, it's possible that only some of
-      # them actually care about the keys being queried.
-      array of InterestGroupAuctionId auctions
-
   # Shared storage was accessed by the associated page.
   # The following parameters are included in all events.
   event sharedStorageAccessed
@@ -13908,12 +13994,6 @@ experimental domain Storage
   experimental command getRelatedWebsiteSets
     returns
       array of RelatedWebsiteSet sets
-
-  command setProtectedAudienceKAnonymity
-    parameters
-      string owner
-      string name
-      array of binary hashes
 
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
@@ -14084,6 +14164,9 @@ domain Target
       # Provides additional details for specific target types. For example, for
       # the type of "page", this may be set to "prerender".
       experimental optional string subtype
+      # Embedder-specific target metadata. This is only set for targets of
+      # type "tab".
+      experimental optional object embedderData
 
   # A filter used by target query/discovery/auto-attach operations.
   experimental type FilterEntry extends object
@@ -14218,13 +14301,11 @@ domain Target
       # present in the tab UI strip. Cannot be created with `forTab: true`, `newWindow: true` or
       # `background: false`. The life-time of the tab is limited to the life-time of the session.
       experimental optional boolean hidden
-      # If specified, the option is used to determine if the new target should
-      # be focused or not. By default, the focus behavior depends on the
-      # value of the background field. For example, background=false and focus=false
-      # will result in the target tab being opened but the browser window remain
-      # unchanged (if it was in the background, it will remain in the background)
-      # and background=false with focus=undefined will result in the window being focused.
-      # Using background: true and focus: true is not supported and will result in an error.
+      # If specified, determines whether the new target should be focused.
+      # By default, the focus behavior depends on the `background` parameter:
+      # - If `background` is false (default) and `focus` is omitted, the new target is focused and the browser window is brought to the foreground.
+      # - If `background` is false and `focus` is false, the target is opened but the browser window's focus remains unchanged (e.g., if the window was in the background, it stays there).
+      # - If `background` is true, setting `focus` to true is not supported and will result in an error.
       experimental optional boolean focus
     returns
       # The id of the page opened.
@@ -14394,8 +14475,8 @@ domain Target
       # This can be the page or tab target ID.
       TargetID targetId
       # The id of the panel we want DevTools to open initially. Currently
-      # supported panels are elements, console, network, sources, resources
-      # and performance.
+      # supported panels are elements, console, network, sources, resources,
+      # timeline, chrome-recorder, heap-profiler, lighthouse, and security.
       optional string panelId
     returns
       # The targetId of DevTools page target.
@@ -14562,6 +14643,17 @@ domain Tracing
       experimental optional binary perfettoConfig
       # Backend type (defaults to `auto`)
       experimental optional TracingBackend tracingBackend
+      # Maximum width and height (in pixels) of each captured screenshot.
+      # Only used when the `disabled-by-default-devtools.screenshot` category is
+      # enabled. Defaults to 500. The combined memory footprint of screenshots
+      # (`screenshotMaxSize` * `screenshotMaxSize` * 4 * `screenshotMaxCount`)
+      # is clamped to the existing per-session budget.
+      experimental optional integer screenshotMaxSize
+      # Maximum number of screenshots captured during a single tracing session.
+      # Only used when the `disabled-by-default-devtools.screenshot` category is
+      # enabled. Defaults to 450. Clamped together with `screenshotMaxSize` to
+      # stay within the per-session screenshot memory budget.
+      experimental optional integer screenshotMaxCount
 
   experimental event bufferUsage
     parameters
@@ -14868,6 +14960,11 @@ experimental domain WebAuthn
       # https://fidoalliance.org/specs/fido-v2.2-rd-20241003/fido-client-to-authenticator-protocol-v2.2-rd-20241003.html#sctn-hmac-secret-make-cred-extension
       # Defaults to false.
       optional boolean hasHmacSecretMc
+      # If set to true, the authenticator will support the cmtgKey (Credential
+      # Manager Trust Group Key) extension.
+      # https://github.com/w3c/webauthn/pull/2377
+      # Defaults to false.
+      optional boolean hasCmtgKey
       # If set to true, tests of user presence will succeed immediately.
       # Otherwise, they will not be resolved. Defaults to true.
       optional boolean automaticPresenceSimulation
@@ -14895,10 +14992,11 @@ experimental domain WebAuthn
       # An opaque byte sequence with a maximum size of 64 bytes mapping the
       # credential to a specific user.
       optional binary userHandle
-      # Signature counter. This is incremented by one for each successful
-      # assertion.
+      # Signature counter. Must be equal to or greater than -1.
+      # If -1, the credential won't have an associated signature counter, and
+      # every assertion operation will report a value of 0.
       # See https://w3c.github.io/webauthn/#signature-counter
-      integer signCount
+      optional integer signCount
       # The large blob associated with the credential.
       # See https://w3c.github.io/webauthn/#sctn-large-blob-extension
       optional binary largeBlob
@@ -14917,6 +15015,12 @@ experimental domain WebAuthn
       # not set.
       # https://w3c.github.io/webauthn/#dom-publickeycredentialuserentity-displayname
       optional string userDisplayName
+      # The CMTG keys associated with the credential.
+      optional array of binary cmtgKeys
+      # The 0-based index of the active key in cmtgKeys.
+      optional integer activeCmtgKeyIndex
+      # If true, the authenticator will generate a new CMTG key on the next operation.
+      optional boolean generateCmtgKeyOnNextOperation
 
   # Enable the WebAuthn domain and start intercepting credential storage and
   # retrieval with a virtual authenticator.
@@ -15013,6 +15117,13 @@ experimental domain WebAuthn
       binary credentialId
       optional boolean backupEligibility
       optional boolean backupState
+      optional integer activeCmtgKeyIndex
+      optional boolean generateCmtgKeyOnNextOperation
+      # Must be equal to or greater than -1.
+      # If -1, the signature counter is removed from the credential, and every
+      # assertion operation will report a value of 0.
+      # See https://w3c.github.io/webauthn/#signature-counter
+      optional integer signCount
 
   # Triggered when a credential is added to an authenticator.
   event credentialAdded
