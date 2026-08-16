@@ -76,7 +76,7 @@ module Selenium
           connection.instance_variable_set(:@closing, true)
 
           expect { connection.send_cmd(method: 'foo') }
-            .to raise_error(Error::WebDriverError, /closed/)
+            .to raise_error(IOError, /closed/)
         end
       end
 

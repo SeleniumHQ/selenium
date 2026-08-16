@@ -100,7 +100,8 @@ module Selenium
       end
 
       def send_cmd(**payload)
-        raise Error::WebDriverError, 'WebSocket connection is closed' if @closing
+        # IOError to match what writing to an already-closed socket raises
+        raise IOError, 'WebSocket connection is closed' if @closing
 
         id = next_id
         data = payload.merge(id: id)
@@ -115,7 +116,7 @@ module Selenium
         end
 
         wait.until do
-          raise Error::WebDriverError, 'WebSocket connection closed while waiting for a response' if @closing
+          raise IOError, 'WebSocket connection closed while waiting for a response' if @closing
 
           @messages_mtx.synchronize { messages.delete(id) }
         end
