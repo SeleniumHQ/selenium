@@ -26,6 +26,7 @@ py_binary(
     ],
     args = [
         "upload",
+        "--verbose",
         "$(location :selenium-wheel)",
         "$(location :selenium-sdist)",
     ],
@@ -46,6 +47,7 @@ py_binary(
     ],
     args = [
         "upload",
+        "--verbose",
         "--repository",
         "testpypi",
         "$(location :selenium-wheel)",
