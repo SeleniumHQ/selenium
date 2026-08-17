@@ -615,27 +615,48 @@ public class BiDiGenerator {
       String pkg = domainPackage(domain);
       String cls = simpleNameOf(typeName);
       boolean needsToMap = senderTypes.contains(typeName);
+      boolean isReceivable = receivableTypes.contains(typeName);
+      boolean extensible = Boolean.TRUE.equals(node.get("extensible"));
+      List<Map<String, Object>> rawFields =
+          (List<Map<String, Object>>)
+              Optional.ofNullable(node.get("fields")).orElse(Collections.emptyList());
+      boolean hasReservedWordField =
+          rawFields.stream().map(this::parseField).anyMatch(f -> !f.name.equals(f.wire));
+      // A receivable, non-extensible type deserializes through ConstructorCoercer (no generated
+      // fromJson of its own, unless a reserved-word field forces one — that bypasses
+      // ConstructorCoercer entirely via StaticInitializerCoercer, so the annotation would be
+      // inert there). Everywhere else, this opts the type into the "warn instead of silently
+      // ignoring" half of undeclared-field handling — extensible types don't need it, since they
+      // capture rather than drop.
+      boolean warnsOnUnknownFields = isReceivable && !extensible && !hasReservedWordField;
 
       StringBuilder sb = new StringBuilder();
       sb.append(LICENSE);
       sb.append("package ").append(pkg).append(";\n\n");
-      if (needsToMap) {
-        sb.append("import java.util.Collections;\n");
-        sb.append("import java.util.LinkedHashMap;\n");
-      }
+      // Collections/LinkedHashMap/Set are imported unconditionally rather than gated on
+      // needsToMap: a nested synthetic class in this same file may independently need them for
+      // toMap() or an extensible type's extras map (see appendRecordBody), and computing that
+      // file-wide isn't worth it against a harmless unused import.
+      sb.append("import java.util.Collections;\n");
+      sb.append("import java.util.LinkedHashMap;\n");
       // Always imported: needed by fromJson() (see appendFromJson) whenever this class, or any
       // nested synthetic class in this file, has an escaped-reserved-word field.
       sb.append("import java.util.Map;\n");
       sb.append("import java.util.Objects;\n");
       sb.append("import java.util.Optional;\n");
+      sb.append("import java.util.Set;\n");
       sb.append("import org.jspecify.annotations.Nullable;\n");
       sb.append("import org.openqa.selenium.Beta;\n");
       // BiDiException is needed by nested enum fromString() methods and union fromMap() methods.
       sb.append("import org.openqa.selenium.bidi.BiDiException;\n");
       sb.append("import org.openqa.selenium.json.Json;\n");
-      sb.append("import org.openqa.selenium.json.TypeToken;\n\n");
+      sb.append("import org.openqa.selenium.json.TypeToken;\n");
+      sb.append("import org.openqa.selenium.json.WarnOnUnknownFields;\n\n");
       sb.append(API_JAVADOC);
       sb.append("@Beta\n");
+      if (warnsOnUnknownFields) {
+        sb.append("@WarnOnUnknownFields\n");
+      }
       // Unions are generated as interfaces, so a type belonging to more than one union (e.g.
       // PrimitiveProtocolValue in both RemoteValue and LocalValue) genuinely implements all of
       // them — no single-inheritance conflict to work around.
@@ -671,8 +692,19 @@ public class BiDiGenerator {
           fields.stream().filter(f -> f.required).collect(Collectors.toList());
       List<FieldInfo> optional =
           fields.stream().filter(f -> !f.required).collect(Collectors.toList());
-      boolean hasOptionals = !optional.isEmpty();
       boolean needsToMap = senderTypes.contains(typeName);
+      boolean isReceivable = receivableTypes.contains(typeName);
+      // An extra field may be sent only on an extensible type that is itself sendable, and an
+      // extensible, receivable type must preserve an undeclared field rather than drop it. The
+      // two are independent — a type can need either, both, or neither. Either one means a
+      // caller-built instance is not fully known up front, exactly like an optional field, so it
+      // folds into hasOptionals below and reuses the same sender-mutable / receiver-immutable /
+      // bidirectional-Builder split.
+      boolean extensible = Boolean.TRUE.equals(node.get("extensible"));
+      boolean needsExtrasSend = extensible && needsToMap;
+      boolean needsExtrasCapture = extensible && isReceivable;
+      boolean needsExtras = needsExtrasSend || needsExtrasCapture;
+      boolean hasOptionals = !optional.isEmpty() || needsExtras;
       List<String> parentUnionRefs = reachableParents(typeName);
 
       // A type reachable only from outbound command params (senderTypes) is caller-owned start
@@ -680,10 +712,9 @@ public class BiDiGenerator {
       // below, unchanged from before). A type reachable only from inbound results/events is
       // simplified the other way: since the caller never builds one, it gets no setters and no
       // public constructor at all — only the deserializer's. A type reachable from *both* is the
-      // only case that must not expose mutation on a received instance (BiDi low-level
-      // behavioral contract, item 12): it becomes a fully immutable value class, with a separate
-      // nested Builder (see appendBuilder) as the only way to construct an outbound instance.
-      boolean isReceivable = receivableTypes.contains(typeName);
+      // only case that must not expose mutation on a received instance: it becomes a fully
+      // immutable value class, with a separate nested Builder (see appendBuilder) as the only way
+      // to construct an outbound instance.
       boolean immutable = hasOptionals && isReceivable;
       boolean needsBuilder = immutable && needsToMap;
 
@@ -708,9 +739,9 @@ public class BiDiGenerator {
         if (!f.required && isNullable(f.typeRef)) {
           // Tracks whether the field was ever explicitly set, independent of the value —
           // Optional<T> alone cannot distinguish "never set" from "explicitly set to null",
-          // and toMap() needs that distinction to send an explicit null on the wire (R2/R7).
-          // Only needed for fields the schema actually declares nullable; an optional field
-          // whose type is never null-able has no legal "explicit null" wire state to represent.
+          // and toMap() needs that distinction to send an explicit null on the wire. Only needed
+          // for fields the schema actually declares nullable; an optional field whose type is
+          // never null-able has no legal "explicit null" wire state to represent.
           sb.append(m)
               .append("private ")
               .append(immutable ? "final " : "")
@@ -719,7 +750,24 @@ public class BiDiGenerator {
               .append("Set;\n");
         }
       }
-      if (!fields.isEmpty()) sb.append("\n");
+      // The "junk drawer" for a field the spec doesn't declare. Final and constructor-populated
+      // whenever the type is receivable — its only value on a deserialized instance comes off
+      // the wire; otherwise it is caller-populated directly via addExtension.
+      if (needsExtras) {
+        sb.append(m)
+            .append("private final Map<String, Object> extensions")
+            .append(needsExtrasCapture ? ";\n" : " = new LinkedHashMap<>();\n");
+        // Every field this type declares, by wire key — the line between "declared" (typed
+        // field) and "extra" (goes in the map above), used by both the outbound collision check
+        // (addExtension) and the inbound capture (fromJson).
+        sb.append(m).append("private static final Set<String> DEFINED_FIELDS =\n");
+        sb.append(m)
+            .append("    Set.of(")
+            .append(
+                fields.stream().map(f -> "\"" + f.wire + "\"").collect(Collectors.joining(", ")))
+            .append(");\n");
+      }
+      if (!fields.isEmpty() || needsExtras) sb.append("\n");
 
       // User-facing constructor (required fields only) — sender-only types alone; an immutable
       // type has no way to be constructed except its Builder (if it has one) or the deserializer.
@@ -739,27 +787,43 @@ public class BiDiGenerator {
 
       // Package-private constructor for ConstructorCoercer deserialization (not public API).
       // When there is a user-facing constructor (any record with optional fields gets one, even
-      // if it ends up no-arg), this one is intentionally hidden.
-      String deserCtorAccess = hasOptionals ? "" : "public ";
-      sb.append(m).append(deserCtorAccess).append(cls).append("(");
-      if (fields.isEmpty()) {
-        sb.append(") {}\n\n");
-      } else {
-        List<String> ctorParams =
-            fields.stream()
-                .map(f -> paramDecl(f, domain))
-                .collect(Collectors.toCollection(ArrayList::new));
-        if (needsBuilder) {
-          for (FieldInfo f : nullableOptional) {
-            ctorParams.add("Optional<Boolean> " + f.name + "SetOverride");
+      // if it ends up no-arg), this one is intentionally hidden. Skipped entirely when it would
+      // be a no-op duplicate of that public constructor: the public ctor's params are exactly
+      // `required`, and this one's are `required` (+ optional, + a needsBuilder SetOverride each,
+      // + extensions when needsExtrasCapture) — identical only when there are no real optional
+      // fields to add and no extras param either, which happens for a sender-only type whose only
+      // reason for hasOptionals is needsExtrasSend (not receivable, so no "extensions" ctor
+      // param), regardless of whether it has zero or several required fields.
+      boolean deserCtorDuplicatesPublic =
+          hasOptionals && !immutable && optional.isEmpty() && !needsExtrasCapture;
+      if (!deserCtorDuplicatesPublic) {
+        String deserCtorAccess = hasOptionals ? "" : "public ";
+        sb.append(m).append(deserCtorAccess).append(cls).append("(");
+        if (fields.isEmpty() && !needsExtrasCapture) {
+          sb.append(") {}\n\n");
+        } else {
+          List<String> ctorParams =
+              fields.stream()
+                  .map(f -> paramDecl(f, domain))
+                  .collect(Collectors.toCollection(ArrayList::new));
+          if (needsBuilder) {
+            for (FieldInfo f : nullableOptional) {
+              ctorParams.add("Optional<Boolean> " + f.name + "SetOverride");
+            }
           }
+          if (needsExtrasCapture) {
+            ctorParams.add("Map<String, Object> extensions");
+          }
+          sb.append(String.join(", ", ctorParams));
+          sb.append(") {\n");
+          for (FieldInfo f : fields) {
+            appendConstructorAssignment(sb, f, domain, m + "  ", needsBuilder);
+          }
+          if (needsExtrasCapture) {
+            sb.append(m).append("  this.extensions = extensions;\n");
+          }
+          sb.append(m).append("}\n\n");
         }
-        sb.append(String.join(", ", ctorParams));
-        sb.append(") {\n");
-        for (FieldInfo f : fields) {
-          appendConstructorAssignment(sb, f, domain, m + "  ", needsBuilder);
-        }
-        sb.append(m).append("}\n\n");
       }
 
       // Fluent setters for optional fields — sender-only types only. An immutable/receivable
@@ -789,6 +853,18 @@ public class BiDiGenerator {
           sb.append(m).append("  return this;\n");
           sb.append(m).append("}\n\n");
         }
+        if (needsExtrasSend) {
+          // An extra field may only be sent on an extensible type, and never one that shadows a
+          // declared field — that would leave two representations of one key.
+          sb.append(m)
+              .append("public ")
+              .append(cls)
+              .append(" addExtension(String key, Object value) {\n");
+          appendExtensionCollisionCheck(sb, m + "  ");
+          sb.append(m).append("  this.extensions.put(key, value);\n");
+          sb.append(m).append("  return this;\n");
+          sb.append(m).append("}\n\n");
+        }
       }
 
       // Getters
@@ -803,13 +879,18 @@ public class BiDiGenerator {
         sb.append(m).append("  return ").append(f.name).append(";\n");
         sb.append(m).append("}\n\n");
       }
+      if (needsExtras) {
+        sb.append(m).append("public Map<String, Object> getExtensions() {\n");
+        sb.append(m).append("  return Collections.unmodifiableMap(extensions);\n");
+        sb.append(m).append("}\n\n");
+      }
 
       // toMap() only for types sent as command params
       if (needsToMap) {
         boolean overrides = parentUnionRefs.stream().anyMatch(senderTypes::contains);
         if (overrides) sb.append(m).append("@Override\n");
         sb.append(m).append("public Map<String, Object> toMap() {\n");
-        if (fields.isEmpty()) {
+        if (fields.isEmpty() && !needsExtrasSend) {
           sb.append(m).append("  return Collections.emptyMap();\n");
         } else {
           sb.append(m).append("  Map<String, Object> map = new LinkedHashMap<>();\n");
@@ -825,10 +906,10 @@ public class BiDiGenerator {
           for (FieldInfo f : optional) {
             if (isNullable(f.typeRef)) {
               // A field that was never set is omitted from the wire entirely; a field that was
-              // explicitly set to null must serialize as an explicit null (R2/R7) rather than
-              // also being omitted, so presence (xSet) and value-nullability are checked
-              // separately. Only fields the schema declares nullable get this treatment — an
-              // optional field whose type is never null-able has no legal null wire state.
+              // explicitly set to null must serialize as an explicit null rather than also being
+              // omitted, so presence (xSet) and value-nullability are checked separately. Only
+              // fields the schema declares nullable get this treatment — an optional field whose
+              // type is never null-able has no legal null wire state.
               String serExpr = serializeExpr(f.name + ".get()", f.typeRef, domain);
               sb.append(m).append("  if (").append(f.name).append("Set) {\n");
               sb.append(m)
@@ -852,13 +933,16 @@ public class BiDiGenerator {
                   .append("));\n");
             }
           }
+          if (needsExtrasSend) {
+            sb.append(m).append("  extensions.forEach(map::put);\n");
+          }
           sb.append(m).append("  return Collections.unmodifiableMap(map);\n");
         }
         sb.append(m).append("}\n\n");
       }
 
       if (needsBuilder) {
-        appendBuilder(sb, cls, fields, required, optional, domain, m);
+        appendBuilder(sb, cls, fields, required, optional, domain, m, needsExtras);
       }
 
       // A field whose spec name collides with a Java reserved word (e.g.
@@ -869,15 +953,37 @@ public class BiDiGenerator {
       // "this" for a parameter named "this_" — that field would silently deserialize as absent.
       // fromJson reads every field by its wire key directly and calls the all-fields constructor,
       // bypassing that name-matching entirely; StaticInitializerCoercer picks up a class's own
-      // "fromJson" ahead of ConstructorCoercer whenever one is present.
-      boolean needsFromJson = fields.stream().anyMatch(f -> !f.name.equals(f.wire));
+      // "fromJson" ahead of ConstructorCoercer whenever one is present. A type that must preserve
+      // undeclared fields on receipt needs the same bypass for the same reason: ConstructorCoercer
+      // has no notion of "collect whatever's left over."
+      boolean needsFromJson =
+          fields.stream().anyMatch(f -> !f.name.equals(f.wire)) || needsExtrasCapture;
       if (needsFromJson) {
-        appendFromJson(sb, cls, fields, domain, m);
+        appendFromJson(
+            sb, cls, fields, domain, m, needsBuilder, nullableOptional, needsExtrasCapture);
       }
     }
 
+    // A caller-added extension must never shadow a declared field's wire key — that would leave
+    // two representations of the same key with no defined precedence.
+    private void appendExtensionCollisionCheck(StringBuilder sb, String bodyIndent) {
+      sb.append(bodyIndent).append("if (DEFINED_FIELDS.contains(key)) {\n");
+      sb.append(bodyIndent)
+          .append(
+              "  throw new BiDiException(\"Cannot add an extension for a declared field: \" +"
+                  + " key);\n");
+      sb.append(bodyIndent).append("}\n");
+    }
+
     private void appendFromJson(
-        StringBuilder sb, String cls, List<FieldInfo> fields, String domain, String m) {
+        StringBuilder sb,
+        String cls,
+        List<FieldInfo> fields,
+        String domain,
+        String m,
+        boolean needsBuilder,
+        List<FieldInfo> nullableOptional,
+        boolean needsExtrasCapture) {
       sb.append("\n")
           .append(m)
           .append("private static ")
@@ -898,11 +1004,33 @@ public class BiDiGenerator {
             .append(decodeType)
             .append(">() {}.getType());\n");
       }
+      List<String> ctorArgs =
+          fields.stream().map(f -> f.name).collect(Collectors.toCollection(ArrayList::new));
+      if (needsBuilder) {
+        // The shared constructor's <field>SetOverride params exist so Builder.build() can state
+        // explicit-null-vs-never-set for certain; fromJson has no such certainty (a missing key
+        // and an absent Optional look identical here — a separate, pre-existing limitation), so
+        // it always defers to the constructor's own Optional.isPresent()-derived fallback.
+        for (int i = 0; i < nullableOptional.size(); i++) {
+          ctorArgs.add("Optional.empty()");
+        }
+      }
+      if (needsExtrasCapture) {
+        // Anything present on the wire that isn't one of this type's declared fields is
+        // preserved, not dropped, because the type is extensible.
+        sb.append(m).append("  Map<String, Object> extensions = new LinkedHashMap<>();\n");
+        sb.append(m).append("  for (Map.Entry<String, Object> entry : map.entrySet()) {\n");
+        sb.append(m).append("    if (!DEFINED_FIELDS.contains(entry.getKey())) {\n");
+        sb.append(m).append("      extensions.put(entry.getKey(), entry.getValue());\n");
+        sb.append(m).append("    }\n");
+        sb.append(m).append("  }\n");
+        ctorArgs.add("extensions");
+      }
       sb.append(m)
           .append("  return new ")
           .append(cls)
           .append("(")
-          .append(fields.stream().map(f -> f.name).collect(Collectors.joining(", ")))
+          .append(String.join(", ", ctorArgs))
           .append(");\n");
       sb.append(m).append("}\n");
     }
@@ -910,10 +1038,9 @@ public class BiDiGenerator {
     // Generates a nested public Builder for a type used both to send command params and to
     // receive results/events (senderTypes ∩ receivableTypes) — the only case where a caller
     // needs a mutable way to construct an instance, while a received instance itself stays fully
-    // immutable (BiDi low-level behavioral contract, item 12). All validation (required-field
-    // presence, const-value checks) lives in the outer class's single constructor, which build()
-    // delegates to — so a Builder-constructed instance is validated exactly like a deserialized
-    // one, through the same code path.
+    // immutable. All validation (required-field presence, const-value checks) lives in the outer
+    // class's single constructor, which build() delegates to — so a Builder-constructed instance
+    // is validated exactly like a deserialized one, through the same code path.
     private void appendBuilder(
         StringBuilder sb,
         String cls,
@@ -921,7 +1048,8 @@ public class BiDiGenerator {
         List<FieldInfo> required,
         List<FieldInfo> optional,
         String domain,
-        String m) {
+        String m,
+        boolean needsExtras) {
       sb.append(m)
           .append("public static Builder builder(")
           .append(
@@ -953,6 +1081,10 @@ public class BiDiGenerator {
           sb.append(bm).append("private boolean ").append(f.name).append("Set;\n");
         }
       }
+      if (needsExtras) {
+        sb.append(bm)
+            .append("private final Map<String, Object> extensions = new LinkedHashMap<>();\n");
+      }
       sb.append("\n");
 
       sb.append(bm)
@@ -983,6 +1115,16 @@ public class BiDiGenerator {
         sb.append(bm).append("}\n\n");
       }
 
+      if (needsExtras) {
+        // An extra field may only be sent on an extensible type, and never one that shadows a
+        // declared field — that would leave two representations of the same wire key.
+        sb.append(bm).append("public Builder addExtension(String key, Object value) {\n");
+        appendExtensionCollisionCheck(sb, bm + "  ");
+        sb.append(bm).append("  this.extensions.put(key, value);\n");
+        sb.append(bm).append("  return this;\n");
+        sb.append(bm).append("}\n\n");
+      }
+
       List<FieldInfo> nullableOptional =
           optional.stream().filter(f -> isNullable(f.typeRef)).collect(Collectors.toList());
       sb.append(bm).append("public ").append(cls).append(" build() {\n");
@@ -993,6 +1135,9 @@ public class BiDiGenerator {
               .collect(Collectors.toCollection(ArrayList::new));
       for (FieldInfo f : nullableOptional) {
         buildArgs.add("Optional.of(" + f.name + "Set)");
+      }
+      if (needsExtras) {
+        buildArgs.add("extensions");
       }
       sb.append(String.join(", ", buildArgs));
       sb.append(");\n");
@@ -1431,7 +1576,7 @@ public class BiDiGenerator {
     // @Nullable on its constructor parameter: ConstructorCoercer's null-value check
     // (org.openqa.selenium.json.ConstructorCoercer#isNullable) reads it off the parameter's
     // annotated type to allow a present key with a null value through, distinct from the
-    // key-presence check that "required" already governs (R4).
+    // key-presence check that "required" already governs.
     private String paramDecl(FieldInfo f, String domain) {
       String jt = fieldJavaType(f, domain);
       return f.required && isNullable(f.typeRef)
