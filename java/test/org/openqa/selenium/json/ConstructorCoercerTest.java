@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
@@ -333,11 +334,23 @@ class ConstructorCoercerTest {
           @Override
           public void close() {}
         };
+    handler.setLevel(Level.ALL);
+
+    // ConstructorCoercer gates on LOG.isLoggable(Level.WARNING) — ambient JVM/global logging
+    // config (an unrelated test, a different logging.properties) must not be able to suppress
+    // that gate out from under this test, so the level is pinned for the duration and restored
+    // afterward rather than left to whatever happened to be configured.
+    Level previousLevel = logger.getLevel();
+    boolean previousUseParentHandlers = logger.getUseParentHandlers();
+    logger.setLevel(Level.ALL);
+    logger.setUseParentHandlers(false);
     logger.addHandler(handler);
     try {
       action.run();
     } finally {
       logger.removeHandler(handler);
+      logger.setUseParentHandlers(previousUseParentHandlers);
+      logger.setLevel(previousLevel);
     }
     return records;
   }

@@ -84,22 +84,25 @@ class ConstructorCoercer extends TypeCoercer<Object> {
   // few keys plus a total count, keeps the cost bounded regardless of how many keys arrive.
   private static final int MAX_LOGGED_UNKNOWN_KEYS = 10;
 
-  private static String describeUnknownFields(Class<?> declaringClass, List<String> unknownKeys) {
+  // sampleKeys holds at most MAX_LOGGED_UNKNOWN_KEYS entries — the caller stops appending once
+  // it hits that cap, so this never buffers more than it will ever print. unknownCount is the
+  // true total, tracked separately so a capped sample never has to lie about how many there were.
+  private static String describeUnknownFields(
+      Class<?> declaringClass, int unknownCount, List<String> sampleKeys) {
     StringBuilder message =
         new StringBuilder(declaringClass.getSimpleName())
             .append(": dropped ")
-            .append(unknownKeys.size())
+            .append(unknownCount)
             .append(" undeclared field")
-            .append(unknownKeys.size() == 1 ? "" : "s")
+            .append(unknownCount == 1 ? "" : "s")
             .append(": [");
-    int shown = Math.min(unknownKeys.size(), MAX_LOGGED_UNKNOWN_KEYS);
-    for (int i = 0; i < shown; i++) {
+    for (int i = 0; i < sampleKeys.size(); i++) {
       if (i > 0) {
         message.append(", ");
       }
-      message.append(sanitizeForLog(unknownKeys.get(i)));
+      message.append(sanitizeForLog(sampleKeys.get(i)));
     }
-    if (unknownKeys.size() > shown) {
+    if (unknownCount > sampleKeys.size()) {
       message.append(", ...");
     }
     return message.append("]").toString();
@@ -290,17 +293,23 @@ class ConstructorCoercer extends TypeCoercer<Object> {
       }
 
       if (warnsOnUnknownFields && LOG.isLoggable(Level.WARNING)) {
-        // Gated on isLoggable so a disabled WARNING level skips even collecting the unknown
-        // keys, not just building the message — the collection itself scales with an
-        // attacker-controlled payload size.
-        List<String> unknownKeys = new ArrayList<>();
+        // Gated on isLoggable so a disabled WARNING level skips even scanning for unknown
+        // keys, not just building the message — that scan scales with an attacker-controlled
+        // payload size. sampleKeys itself never grows past what the message will ever print;
+        // unknownCount tracks the true total separately, uncapped, since counting costs nothing.
+        int unknownCount = 0;
+        List<String> sampleKeys = new ArrayList<>(MAX_LOGGED_UNKNOWN_KEYS);
         for (String key : properties.keySet()) {
           if (!parameterIndexes.containsKey(key)) {
-            unknownKeys.add(key);
+            unknownCount++;
+            if (sampleKeys.size() < MAX_LOGGED_UNKNOWN_KEYS) {
+              sampleKeys.add(key);
+            }
           }
         }
-        if (!unknownKeys.isEmpty()) {
-          LOG.warning(describeUnknownFields(constructor.getDeclaringClass(), unknownKeys));
+        if (unknownCount > 0) {
+          LOG.warning(
+              describeUnknownFields(constructor.getDeclaringClass(), unknownCount, sampleKeys));
         }
       }
 
