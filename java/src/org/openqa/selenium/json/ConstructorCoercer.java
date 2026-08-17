@@ -35,11 +35,78 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 class ConstructorCoercer extends TypeCoercer<Object> {
+
+  private static final Logger LOG = Logger.getLogger(ConstructorCoercer.class.getName());
+
+  // A JSON property name is attacker-controlled input, so it is never logged verbatim: a raw
+  // \r or \n could forge what looks like a separate log line, and an unbounded key could blow up
+  // log storage. Escaping control characters and capping length neutralizes both.
+  private static final int MAX_LOGGED_KEY_LENGTH = 200;
+
+  private static String sanitizeForLog(String value) {
+    String truncated =
+        value.length() > MAX_LOGGED_KEY_LENGTH
+            ? value.substring(0, MAX_LOGGED_KEY_LENGTH) + "...(truncated)"
+            : value;
+    StringBuilder sanitized = new StringBuilder(truncated.length());
+    for (int i = 0; i < truncated.length(); i++) {
+      char c = truncated.charAt(i);
+      switch (c) {
+        case '\n':
+          sanitized.append("\\n");
+          break;
+        case '\r':
+          sanitized.append("\\r");
+          break;
+        case '\t':
+          sanitized.append("\\t");
+          break;
+        default:
+          if (c < 0x20 || c == 0x7f) {
+            sanitized.append(String.format("\\u%04x", (int) c));
+          } else {
+            sanitized.append(c);
+          }
+      }
+    }
+    return sanitized.toString();
+  }
+
+  // A payload with many undeclared keys must not turn into one log record per key — that is
+  // log-amplification the caller controls the size of. One summary record, capped at the first
+  // few keys plus a total count, keeps the cost bounded regardless of how many keys arrive.
+  private static final int MAX_LOGGED_UNKNOWN_KEYS = 10;
+
+  // sampleKeys holds at most MAX_LOGGED_UNKNOWN_KEYS entries — the caller stops appending once
+  // it hits that cap, so this never buffers more than it will ever print. unknownCount is the
+  // true total, tracked separately so a capped sample never has to lie about how many there were.
+  private static String describeUnknownFields(
+      Class<?> declaringClass, int unknownCount, List<String> sampleKeys) {
+    StringBuilder message =
+        new StringBuilder(declaringClass.getSimpleName())
+            .append(": dropped ")
+            .append(unknownCount)
+            .append(" undeclared field")
+            .append(unknownCount == 1 ? "" : "s")
+            .append(": [");
+    for (int i = 0; i < sampleKeys.size(); i++) {
+      if (i > 0) {
+        message.append(", ");
+      }
+      message.append(sanitizeForLog(sampleKeys.get(i)));
+    }
+    if (unknownCount > sampleKeys.size()) {
+      message.append(", ...");
+    }
+    return message.append("]").toString();
+  }
 
   private final JsonTypeCoercer coercer;
 
@@ -176,12 +243,18 @@ class ConstructorCoercer extends TypeCoercer<Object> {
     private final Constructor<?> constructor;
     private final Parameter[] parameters;
     private final Map<String, Integer> parameterIndexes;
+    // Computed once here rather than re-checked reflectively on every create() call: the
+    // JsonTypeCoercer caches the coercer built for a type, so this candidate — and this flag —
+    // is reused for every future deserialization of that type, not just the first one.
+    private final boolean warnsOnUnknownFields;
 
     ConstructorCandidate(Constructor<?> constructor) {
       this.constructor = constructor;
       this.constructor.setAccessible(true);
       this.parameters = constructor.getParameters();
       this.parameterIndexes = getParameterIndexes(parameters);
+      this.warnsOnUnknownFields =
+          constructor.getDeclaringClass().isAnnotationPresent(WarnOnUnknownFields.class);
     }
 
     int parameterCount() {
@@ -217,6 +290,27 @@ class ConstructorCoercer extends TypeCoercer<Object> {
         }
 
         values[i] = value;
+      }
+
+      if (warnsOnUnknownFields && LOG.isLoggable(Level.WARNING)) {
+        // Gated on isLoggable so a disabled WARNING level skips even scanning for unknown
+        // keys, not just building the message — that scan scales with an attacker-controlled
+        // payload size. sampleKeys itself never grows past what the message will ever print;
+        // unknownCount tracks the true total separately, uncapped, since counting costs nothing.
+        int unknownCount = 0;
+        List<String> sampleKeys = new ArrayList<>(MAX_LOGGED_UNKNOWN_KEYS);
+        for (String key : properties.keySet()) {
+          if (!parameterIndexes.containsKey(key)) {
+            unknownCount++;
+            if (sampleKeys.size() < MAX_LOGGED_UNKNOWN_KEYS) {
+              sampleKeys.add(key);
+            }
+          }
+        }
+        if (unknownCount > 0) {
+          LOG.warning(
+              describeUnknownFields(constructor.getDeclaringClass(), unknownCount, sampleKeys));
+        }
       }
 
       try {
