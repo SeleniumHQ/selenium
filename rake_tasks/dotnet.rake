@@ -122,6 +122,7 @@ end
 
 desc 'Update .NET dependencies to latest versions'
 task :update do
+  # Effectively a no-op while paket.dependencies uses exact versions and STRATEGY: MIN
   Bazel.execute('run', [], '//dotnet:paket-update')
   Rake::Task['dotnet:pin'].invoke
 end

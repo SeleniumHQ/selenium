@@ -170,6 +170,9 @@ task :version, [:version] do |_task, arguments|
   file = 'rb/lib/selenium/webdriver/version.rb'
   text = File.read(file).gsub(old_version, new_version)
   File.open(file, 'w') { |f| f.puts text }
+
+  Rake::Task['rb:pin'].reenable
+  Rake::Task['rb:pin'].invoke
 end
 
 desc 'Format Ruby code with rubocop (safe auto-correct only)'
@@ -246,7 +249,7 @@ task :pin, [:force] do |_task, arguments|
   File.write(module_bazel, new_content)
 end
 
-desc 'Update Ruby dependencies and sync checksums to MODULE.bazel'
+desc 'Update Ruby dependencies to latest versions within specified range'
 task :update do
   puts 'updating and pinning gem versions'
   Bazel.execute('run', [], '//rb:bundle-update')
