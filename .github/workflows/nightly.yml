@@ -68,7 +68,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [java, python, ruby, dotnet, javascript]
+        language:
+          - java
+          # - python
+          - ruby
+          - dotnet
+          - javascript
     uses: ./.github/workflows/bazel.yml
     with:
       name: Nightly ${{ matrix.language }} Release
