@@ -57,10 +57,6 @@ public abstract class Module {
     return handle.subscribe(event, handler);
   }
 
-  public final <X> String subscribe(Event<X> event, Consumer<X> handler, SubscriptionScope scope) {
-    return handle.subscribe(event, handler, scope);
-  }
-
   /**
    * Cancels a previously registered event subscription.
    *
