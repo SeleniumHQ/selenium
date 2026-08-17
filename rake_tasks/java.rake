@@ -279,22 +279,6 @@ task :release do |_task, arguments|
   args = arguments.to_a
   nightly = args.delete('nightly')
 
-  unless nightly
-    already_published = begin
-      Rake::Task['java:verify'].invoke
-      true
-    rescue StandardError
-      false
-    ensure
-      Rake::Task['java:verify'].reenable
-    end
-
-    if already_published
-      puts 'Java packages already published — skipping release.'
-      next
-    end
-  end
-
   Rake::Task['java:check_credentials'].invoke(*(nightly ? ['nightly'] : []))
 
   ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
@@ -330,7 +314,19 @@ end
 desc 'Verify Java packages are published on Maven Central'
 task :verify do
   base = 'https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java'
-  SeleniumRake.verify_package_published("#{base}/#{java_version}/selenium-java-#{java_version}.pom")
+  deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 600
+
+  begin
+    SeleniumRake.verify_package_published("#{base}/#{java_version}/selenium-java-#{java_version}.pom")
+  rescue StandardError => e
+    if Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
+      raise "#{e.message}; check https://central.sonatype.com/publishing/deployments"
+    end
+
+    puts "  #{e.message}; Maven Central may still be indexing, retrying in 15s"
+    sleep 15
+    retry
+  end
 end
 
 desc 'Install jars to local m2 directory'
