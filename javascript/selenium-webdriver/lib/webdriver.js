@@ -35,7 +35,6 @@ const http = require('../http/index')
 const fs = require('node:fs')
 const { Capabilities } = require('./capabilities')
 const path = require('node:path')
-const util = require('node:util')
 const { NoSuchElementError } = require('./error')
 const cdpTargets = ['page', 'browser']
 const { Credential } = require('./virtual_authenticator')
@@ -690,6 +689,16 @@ class WebDriver {
     this.authenticatorId_ = null
 
     this.pinnedScripts_ = {}
+  }
+
+  /**
+   * The shared logger deprecation notices (e.g. {@link WebDriver#getBidi})
+   * are emitted through — a class-level accessor since a deprecation can be
+   * reported from a static/prototype context with no driver instance at hand.
+   * @return {!./logging.Logger}
+   */
+  static get logger() {
+    return logging.getLogger('webdriver.WebDriver')
   }
 
   /**
@@ -1787,9 +1796,14 @@ class WebDriver {
  * @name WebDriver#getBidi
  * @returns {Promise<import('../bidi')>}
  */
-WebDriver.prototype.getBidi = util.deprecate(function () {
+WebDriver.prototype.getBidi = function () {
+  WebDriver.logger.deprecate(
+    'webdriver-getBidi',
+    'WebDriver#getBidi() is deprecated. Use a composed BiDi module instead, e.g. Network.create(driver) or ' +
+      "require('selenium-webdriver/bidi/network').",
+  )
   return getBidiConnection(this)
-}, 'WebDriver#getBidi() is deprecated. Use a composed BiDi module instead, e.g. Network.create(driver) or ' + "require('selenium-webdriver/bidi/network'). See docs/decisions/17670-bidi-implementation-boundaries.md.")
+}
 
 /**
  * Interface for navigating back and forth in the browser history.
