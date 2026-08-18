@@ -317,15 +317,19 @@ module Selenium
           describe '#set_viewport' do
             it 'sets the viewport size and device pixel ratio',
                pending_if: {browser_family: :safari,
-                            exception: {class: RSpec::Expectations::ExpectationNotMetError},
-                            reason: 'Safari accepts browsingContext.setViewport but does not resize the window'} do
+                            reason: 'Safari accepts browsingContext.setViewport but returns undefined for the ' \
+                                    'window size, so the resize cannot be verified'} do
               browsing_context.set_viewport(
                 context: driver.window_handle,
                 viewport: BrowsingContext::Viewport.new(width: 800, height: 600),
                 device_pixel_ratio: 2.0
               )
 
-              expect(evaluate('[window.innerWidth, window.innerHeight]').result.value.map(&:value)).to eq([800, 600])
+              expect(evaluate('[window.innerWidth, window.innerHeight]').result).to eq(
+                Script::ArrayRemoteValue.new(
+                  value: [Script::NumberValue.new(value: 800), Script::NumberValue.new(value: 600)]
+                )
+              )
             end
 
             it 'clears the viewport override' do

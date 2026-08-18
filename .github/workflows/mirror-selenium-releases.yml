@@ -14,6 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
       with:
+        ref: trunk
         persist-credentials: false
     - name: Read api.github.com and filter response
       run: |
@@ -54,4 +55,4 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
-        branch: ${{ github.ref }}
+        branch: trunk

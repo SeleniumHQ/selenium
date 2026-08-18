@@ -7,7 +7,7 @@ require 'net/http'
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v149:v149.publish
+  //java/src/org/openqa/selenium/devtools/v152:v152.publish
   //java/src/org/openqa/selenium/devtools/v150:v150.publish
   //java/src/org/openqa/selenium/devtools/v151:v151.publish
   //java/src/org/openqa/selenium/devtools/latest:latest.publish
@@ -281,12 +281,10 @@ task :release do |_task, arguments|
 
   unless nightly
     already_published = begin
-      Rake::Task['java:verify'].invoke
+      SeleniumRake.verify_package_published(maven_central_pom_url)
       true
     rescue StandardError
       false
-    ensure
-      Rake::Task['java:verify'].reenable
     end
 
     if already_published
@@ -327,10 +325,26 @@ task :release do |_task, arguments|
   trigger_sonatype_publish(token)
 end
 
+def maven_central_pom_url
+  base = 'https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java'
+  "#{base}/#{java_version}/selenium-java-#{java_version}.pom"
+end
+
 desc 'Verify Java packages are published on Maven Central'
 task :verify do
-  base = 'https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java'
-  SeleniumRake.verify_package_published("#{base}/#{java_version}/selenium-java-#{java_version}.pom")
+  deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 600
+
+  begin
+    SeleniumRake.verify_package_published(maven_central_pom_url)
+  rescue StandardError => e
+    if Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
+      raise "#{e.class}: #{e.message}; check https://central.sonatype.com/publishing/deployments"
+    end
+
+    puts "  #{e.class}: #{e.message}; Maven Central may still be indexing, retrying in 15s"
+    sleep 15
+    retry
+  end
 end
 
 desc 'Install jars to local m2 directory'

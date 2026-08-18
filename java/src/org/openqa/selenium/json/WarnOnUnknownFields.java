@@ -15,15 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v149;
+package org.openqa.selenium.json;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@AutoService(CdpInfo.class)
-public class v149CdpInfo extends CdpInfo {
-
-  public v149CdpInfo() {
-    super(149, v149Domains::new);
-  }
-}
+/**
+ * Opts a type into a {@link ConstructorCoercer} check: a JSON property that does not correspond to
+ * any constructor parameter is logged as a warning instead of passing silently unnoticed.
+ * Unannotated types keep today's behavior — an unrecognized property is simply never looked at.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
+public @interface WarnOnUnknownFields {}
