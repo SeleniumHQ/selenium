@@ -259,6 +259,31 @@ describe('logging', function () {
         const log = mgr.getLogger('foo')
         assert.throws(() => log.deprecate('', 'message'), TypeError)
       })
+
+      it('does not claim the id under the default OFF level — nothing was actually reported', function () {
+        const log = mgr.getLogger('foo') // level unset — inherits root's default OFF
+        const cb = sinon.spy()
+        log.addHandler(cb)
+
+        log.deprecate('some-thing', 'first message')
+
+        assert.strictEqual(cb.callCount, 0)
+      })
+
+      it('still reports a call made once logging is enabled after an earlier suppressed call', function () {
+        const log = mgr.getLogger('foo') // starts OFF
+        const cb = sinon.spy()
+        log.addHandler(cb)
+
+        log.deprecate('some-thing', 'suppressed — logging is still off')
+        assert.strictEqual(cb.callCount, 0)
+
+        log.setLevel(logging.Level.WARNING)
+        log.deprecate('some-thing', 'now visible')
+
+        assert.strictEqual(cb.callCount, 1)
+        assert.strictEqual(cb.getCall(0).args[0].message, '[foo] [some-thing] now visible')
+      })
     })
   })
 

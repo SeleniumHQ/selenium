@@ -695,10 +695,10 @@ class WebDriver {
    * The shared logger deprecation notices (e.g. {@link WebDriver#getBidi})
    * are emitted through — a class-level accessor since a deprecation can be
    * reported from a static/prototype context with no driver instance at hand.
-   * @return {!./logging.Logger}
+   * @return {!./logging.Logger} the shared `selenium.webdriver.webdriver` logger.
    */
   static get logger() {
-    return logging.getLogger('webdriver.WebDriver')
+    return logging.getLogger('selenium.webdriver.webdriver')
   }
 
   /**
