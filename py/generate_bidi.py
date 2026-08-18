@@ -663,7 +663,8 @@ class CddlModule:
             local_imports.append("from selenium.webdriver.common.bidi.common import command_builder")
         if self.events:
             local_imports.append(
-                "from selenium.webdriver.common.bidi._event_manager import EventConfig, _EventWrapper, _EventManager"
+                "from selenium.webdriver.common.bidi._event_manager import "
+                "EventConfig, Subscription, _EventWrapper, _EventManager"
             )
 
         code += "\n".join(stdlib_imports) + "\n"

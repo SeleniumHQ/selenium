@@ -1191,3 +1191,41 @@ def test_no_event_after_handler_removal(driver):
         new_events = len(helper.events_received) - events_before
 
     assert new_events == 0, f"Expected 0 new events after removal, got {new_events}"
+
+
+def test_expect_user_prompt_captures_prompt(driver, pages):
+    """The prompt handler is registered before the action that opens it."""
+    context_id = driver.current_window_handle
+    create_alert_page(driver, pages)
+
+    with driver.browsing_context.expect_user_prompt() as prompt_info:
+        driver.find_element(By.ID, "alert").click()
+
+    prompt = prompt_info.value
+    assert prompt.type == "alert"
+    assert prompt.context == context_id
+
+    driver.browsing_context.handle_user_prompt(context=prompt.context, accept=True)
+    assert "Alerts" in driver.title
+
+
+@pytest.mark.xfail_firefox
+def test_expect_download_captures_finished_download(driver, pages, tmp_path):
+    """DownloadWillBegin and downloadEnd are correlated into one Download."""
+    try:
+        driver.browser.set_download_behavior(allowed=True, destination_folder=tmp_path)
+        url = pages.url("downloads/download.html")
+        driver.browsing_context.navigate(context=driver.current_window_handle, url=url, wait=ReadinessState.COMPLETE)
+
+        with driver.browsing_context.expect_download() as download_info:
+            driver.find_element(By.ID, "file-1").click()
+
+        download = download_info.value
+        assert download.failure() is None
+        assert download.suggested_filename == "file_1.txt"
+        assert download.path() is not None and download.path().exists()
+
+        download.save_as(tmp_path / "copied.txt")
+        assert (tmp_path / "copied.txt").exists()
+    finally:
+        driver.browser.set_download_behavior(allowed=None)

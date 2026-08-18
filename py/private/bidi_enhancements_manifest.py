@@ -268,6 +268,97 @@ class SetClientWindowStateParameters:
         cmd = command_builder("browsingContext.setViewport", params)
         result = self._conn.execute(cmd)
         return result''',
+            '''    def expect_user_prompt(self, predicate=None, timeout=30, contexts=None):
+        """Return a subscription capturing the next matching user prompt.
+
+        The handler is registered immediately, so a prompt opened by an
+        action inside the ``with`` block cannot be missed::
+
+            with driver.browsing_context.expect_user_prompt() as prompt_info:
+                driver.find_element(By.ID, "delete").click()
+            prompt = prompt_info.value
+            driver.browsing_context.handle_user_prompt(prompt.context, accept=True)
+
+        Args:
+            predicate: Optional filter over the
+                :class:`UserPromptOpenedParameters`; the first prompt for
+                which it returns true is captured. ``None`` matches every
+                prompt.
+            timeout: Seconds to wait for a match before raising
+                ``TimeoutException``.
+            contexts: Optional browsing context IDs to subscribe to.
+
+        Returns:
+            A :class:`Subscription` whose ``value`` is the matching
+            :class:`UserPromptOpenedParameters`.
+        """
+        return self._event_manager.expect(
+            "user_prompt_opened",
+            predicate=predicate,
+            timeout=timeout,
+            contexts=contexts,
+        )''',
+            '''    def expect_download(self, timeout=30, contexts=None):
+        """Return a subscription capturing the next finished download.
+
+        The handlers are registered immediately, so a download triggered by
+        an action inside the ``with`` block cannot be missed.  The
+        ``browsingContext.downloadWillBegin`` and ``downloadEnd`` events are
+        correlated by navigation ID into a single :class:`Download`::
+
+            with driver.browsing_context.expect_download() as download_info:
+                driver.find_element(By.ID, "export").click()
+            download = download_info.value
+            download.save_as("/tmp/" + download.suggested_filename)
+
+        Args:
+            timeout: Seconds to wait for the download to finish before
+                raising ``TimeoutException``.
+            contexts: Optional browsing context IDs to subscribe to.
+
+        Returns:
+            A :class:`Subscription` whose ``value`` is the finished
+            :class:`Download`.
+        """
+        suggested_filenames = {}
+
+        def _record_begin(params):
+            if isinstance(params, dict):
+                suggested_filenames[params.get("navigation")] = params.get("suggestedFilename")
+
+        begin_callback_id = self._event_manager.add_event_handler(
+            "download_will_begin", _record_begin, contexts, raw=True
+        )
+
+        def _assemble(params):
+            # downloadWillBegin precedes downloadEnd for the same navigation,
+            # so the suggested filename is recorded by the time we assemble.
+            params = params if isinstance(params, dict) else {}
+            navigation = params.get("navigation")
+            return Download(
+                url=params.get("url"),
+                suggested_filename=suggested_filenames.get(navigation),
+                filepath=params.get("filepath"),
+                status=params.get("status"),
+                context=params.get("context"),
+                navigation=navigation,
+            )
+
+        try:
+            subscription = self._event_manager.expect(
+                "download_end",
+                timeout=timeout,
+                transform=_assemble,
+                raw=True,
+                contexts=contexts,
+            )
+        except Exception:
+            self._event_manager.remove_event_handler("download_will_begin", begin_callback_id)
+            raise
+        subscription.add_cleanup(
+            lambda: self._event_manager.remove_event_handler("download_will_begin", begin_callback_id)
+        )
+        return subscription''',
         ],
         # Non-CDDL download event dataclasses (Chromium-specific)
         "extra_dataclasses": [
@@ -309,6 +400,40 @@ class DownloadEndParams:
             filepath=params.get("filepath"),
         )
         return cls(download_params=dp)''',
+            '''@dataclass
+class Download:
+    """A finished browser download, assembled from the
+    ``browsingContext.downloadWillBegin`` and ``downloadEnd`` events."""
+
+    url: str | None = None
+    suggested_filename: str | None = None
+    filepath: str | None = None
+    status: str | None = None
+    context: Any | None = None
+    navigation: Any | None = None
+
+    def path(self):
+        """The on-disk path of the downloaded file, or ``None``."""
+        from pathlib import Path
+
+        return Path(self.filepath) if self.filepath else None
+
+    def save_as(self, destination):
+        """Copy the downloaded file to ``destination`` and return the new path.
+
+        Raises:
+            ValueError: If the download produced no file on disk (for
+                example when it was canceled).
+        """
+        if not self.filepath:
+            raise ValueError(f"Download has no file on disk (status={self.status!r})")
+        import shutil
+
+        return shutil.copy(self.filepath, destination)
+
+    def failure(self) -> str | None:
+        """``None`` when the download completed, otherwise the status."""
+        return None if self.status == "complete" else self.status''',
         ],
         # Download events are now in the CDDL spec, so no extra_events needed
     },
@@ -1014,6 +1139,36 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
             '''    def clear_dom_mutation_handlers(self) -> None:
         """Remove all DOM mutation handlers."""
         self._dom_mutation_handlers.clear_handlers()''',
+            '''    def expect_console_message(self, predicate=None, timeout=30):
+        """Return a subscription capturing the next matching console message.
+
+        The handler is registered immediately, so a message logged by an
+        action inside the ``with`` block cannot be missed::
+
+            with driver.script.expect_console_message(
+                lambda msg: msg.level == "error"
+            ) as message_info:
+                driver.find_element(By.ID, "trigger").click()
+            message = message_info.value
+
+        Args:
+            predicate: Optional filter over the :class:`ConsoleMessage`; the
+                first message for which it returns true is captured. ``None``
+                matches every console message.
+            timeout: Seconds to wait for a match before raising
+                ``TimeoutException``.
+
+        Returns:
+            A :class:`Subscription` whose ``value`` is the matching
+            :class:`ConsoleMessage`.
+        """
+        return Subscription(
+            register=lambda callback: self._log_handlers.add_handler(callback, LogHandlerRegistry.CONSOLE),
+            unregister=self._log_handlers.remove_handler,
+            predicate=predicate,
+            timeout=timeout,
+            description="console message",
+        )''',
         ],
     },
     "network": {
@@ -1069,6 +1224,7 @@ disownDataParameters = DisownDataParameters''',
     Response,
     ResponseHandlerRegistry,
     looks_like_url_glob,
+    to_url_predicate,
 )""",
         ],
         # Override auth_required to use raw dict so _auth_callback receives all
@@ -1413,6 +1569,73 @@ disownDataParameters = DisownDataParameters''',
         intercept_id = self._handler_intercepts.pop(callback_id, None)
         if intercept_id:
             self._remove_intercept(intercept_id)''',
+            '''    def expect_request(self, url_or_predicate=None, timeout=30, contexts=None):
+        """Return a subscription capturing the next matching request.
+
+        The handler is registered immediately, so a request triggered by an
+        action inside the ``with`` block cannot be missed::
+
+            with driver.network.expect_request("**/api/**") as request_info:
+                driver.find_element(By.ID, "load").click()
+            request = request_info.value
+
+        The captured :class:`Request` is observational: the request is not
+        intercepted, so its mutation methods must not be used.
+
+        Args:
+            url_or_predicate: A URL glob (``*``, ``**``, ``?``) matched
+                against the request URL, or a predicate over the
+                :class:`Request`. ``None`` matches every request.
+            timeout: Seconds to wait for a match before raising
+                ``TimeoutException``.
+            contexts: Optional browsing context IDs to subscribe to.
+
+        Returns:
+            A :class:`Subscription` whose ``value`` is the matching
+            :class:`Request`.
+        """
+        return self._event_manager.expect(
+            "before_request_sent",
+            predicate=to_url_predicate(url_or_predicate),
+            timeout=timeout,
+            transform=lambda params: Request(self._conn, params),
+            raw=True,
+            contexts=contexts,
+        )''',
+            '''    def expect_response(self, url_or_predicate=None, timeout=30, contexts=None):
+        """Return a subscription capturing the next matching completed response.
+
+        The handler is registered immediately, so a response triggered by an
+        action inside the ``with`` block cannot be missed::
+
+            with driver.network.expect_response("**/api/**") as response_info:
+                driver.find_element(By.ID, "load").click()
+            response = response_info.value
+            assert response.status == 200
+
+        The captured :class:`Response` is observational: the response has
+        already completed, so its mutation methods must not be used.
+
+        Args:
+            url_or_predicate: A URL glob (``*``, ``**``, ``?``) matched
+                against the response URL, or a predicate over the
+                :class:`Response`. ``None`` matches every response.
+            timeout: Seconds to wait for a match before raising
+                ``TimeoutException``.
+            contexts: Optional browsing context IDs to subscribe to.
+
+        Returns:
+            A :class:`Subscription` whose ``value`` is the matching
+            :class:`Response`.
+        """
+        return self._event_manager.expect(
+            "response_completed",
+            predicate=to_url_predicate(url_or_predicate),
+            timeout=timeout,
+            transform=lambda params: Response(self._conn, params),
+            raw=True,
+            contexts=contexts,
+        )''',
         ],
     },
     "storage": {

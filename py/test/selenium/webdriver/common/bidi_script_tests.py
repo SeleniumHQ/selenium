@@ -1621,3 +1621,21 @@ class TestBidiScriptAlignment:
             assert "missingFunction" in result.error.message
         finally:
             driver.script.unpin(pinned)
+
+
+def test_expect_console_message_captures_message(driver, pages):
+    pages.load("blank.html")
+
+    with driver.script.expect_console_message() as message_info:
+        driver.execute_script("console.log('expected message');")
+
+    assert message_info.value.text == "expected message"
+
+
+def test_expect_console_message_predicate_filters(driver, pages):
+    pages.load("blank.html")
+
+    with driver.script.expect_console_message(lambda message: message.text == "needle") as message_info:
+        driver.execute_script("console.log('haystack'); console.log('needle');")
+
+    assert message_info.value.text == "needle"
