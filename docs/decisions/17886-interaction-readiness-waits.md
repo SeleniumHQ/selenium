@@ -132,8 +132,7 @@ reach the functionality. The wait lives inside the interaction commands, where t
 have to know it is there; everything else is reached through decision 5.
 
 **5. Readiness state is exposed as snapshots and as events, not only as waits.** Both signals are
-readable from the `script` domain, so users can compose them with the waiting strategy they already
-have:
+readable without waiting, so users can compose them with the waiting strategy they already have:
 
 - A snapshot call returns the current record — pending work classes, still-mutating regions, or for
   an element the per-check result and the obstructing element — without waiting. This is what makes
@@ -142,6 +141,29 @@ have:
   (`java/src/org/openqa/selenium/remote/RemoteScript.java:85`): preload script, `ChannelValue`,
   `script.onMessage`. This is the same machinery the readiness observer already needs, so a
   settledness event is a payload change rather than new plumbing.
+
+Each accessor is placed by the scope of the state it describes: document state on the `script`
+domain, element state on the element itself. Nothing takes an element as an argument to a call that
+does not belong to it, which is what decision 4 objects to. The mechanism is the `script` domain in
+both cases.
+
+```python
+# document state
+driver.script.pending_work()                                  -> PendingWork
+driver.script.settledness(root=None, settle_window=None)      -> Settledness
+driver.script.add_settled_handler(callback)                   -> int   # id
+driver.script.remove_settled_handler(id)                      -> None
+
+# element state
+element.actionability(interaction="click")                    -> Actionability
+```
+
+Names are spelled here in Python and are illustrative: each binding uses its own casing and its own
+optional-argument idiom, and the names themselves are the follow-up in the Consequences. What the
+record fixes is the placement, the arguments and the return shape, so that five bindings expose the
+same thing under five spellings. `settle_window` defaults to the session's configured window and
+`root` to the document, so the common call takes no arguments; `interaction` defaults to `click` and
+accepts the same values the atom accepts.
 
 This shape does not assume an asynchronous script API. It fits the script module's planned
 synchronous execution with handlers for asynchronous behavior, and it means no client library is
@@ -165,11 +187,49 @@ exposes a small set of named exports rather than one combined entry point. Each 
 the arguments belonging to it and returns only its own result — pending work for a document,
 settledness given a root and a settle window, actionability given an element and an interaction — so
 a binding that wants an actionability snapshot neither constructs arguments for settledness nor
-interprets a record containing it. Bindings pass arguments and marshal results; no binding adds
-logic of its own. One artifact is what holds the heuristics together: what counts as meaningful
-mutation, when a spinner is inert and how obstruction is hit-tested share definitions, will not stay
-identical across five hand-written ports, and are one thing to hand to the BiDi working group. The
-exports are what keep a caller from taking on the parts it did not ask for.
+interprets a record containing it:
+
+```ts
+export function pendingWork(doc: Document): PendingWork;
+export function settledness(root: Node, settleWindowMs: number): Settledness;
+export function actionability(element: Element, interaction: Interaction): Actionability;
+
+type Interaction = 'click' | 'type' | 'clear' | 'submit' | 'hover' | 'drop' | 'screenshot';
+
+type PendingWork = {
+  quiet: boolean;
+  observed: boolean;   // false when no preload script ran: history is unavailable (decision 9)
+  active: { timers: number; intervals: number; animationFrames: number;
+            requests: number; sockets: number; animations: number };
+  inert:  { timers: number; intervals: number; animationFrames: number };
+};
+
+type Settledness = {
+  settled: boolean;
+  quietForMs: number;
+  pendingWork: PendingWork;
+  mutating: Array<{ path: string; sinceMs: number;
+                    reason: 'mutation' | 'animation' | 'transition' }>;
+};
+
+type Actionability = {
+  actionable: boolean;
+  checks: Record<'visible' | 'enabled' | 'editable' | 'inViewport' | 'unobstructed' | 'stable',
+                 boolean | null>;   // null where the check does not apply to this interaction
+  interactionPoint: { x: number; y: number } | null;
+  obstructedBy: Element | null;
+};
+```
+
+`Settledness` nests `PendingWork` because the ledger is its input (decision 1); `Actionability`
+nests neither, which is what makes the interaction path cheap. Every export is synchronous and
+returns a decided answer for the instant it is called — the waiting is the caller's, so the same
+export serves a binding's internal wait, a user's snapshot and a `WebDriverWait` predicate. Bindings
+pass arguments and marshal results; no binding adds logic of its own. One artifact is what holds the
+heuristics together: what counts as meaningful mutation, when a spinner is inert and how obstruction
+is hit-tested share definitions, will not stay identical across five hand-written ports, and are one
+thing to hand to the BiDi working group. The exports are what keep a caller from taking on the parts
+it did not ask for.
 
 **9. The atom is installed as a preload script, and degrades explicitly.** Registration is
 per-binding plumbing that must never affect navigation: if it fails, the failure is logged once and
@@ -184,6 +244,65 @@ asynchronously by a periodic callback are misattributed, and workers, `MessageCh
 server-sent events, WebTransport, IndexedDB and canvas-only animation frames are not tracked.
 Selenium takes this to the WebDriver BiDi working group; if it lands, the bindings keep their API,
 and drop the polyfill.
+
+### Illustrative usage
+
+Names and casing are per-binding and not fixed by this record; the calls below show the shape of
+each access route.
+
+The primary route is that there is no call. A session asks for readiness once, and interaction code
+is unchanged:
+
+```python
+options = ChromeOptions()
+options.enable_bidi = True
+options.interaction_readiness = True      # se:interactionReadiness
+driver = webdriver.Chrome(options=options)
+
+driver.get("https://example.com/app")
+driver.find_element(By.ID, "submit").click()   # waits for actionability, then dispatches
+```
+
+When it expires, the error is the one the command raises today, and the subclass carries the reason:
+
+```python
+try:
+    driver.find_element(By.ID, "submit").click()
+except ElementClickInterceptedException as e:
+    # ReadinessTimeoutError subclass: "not actionable after 10s: unobstructed=False,
+    # obstructed by div.modal-backdrop at (412, 260)"
+    print(e)
+```
+
+A snapshot composes with the waiting strategy the user already has, and answers "what is it
+waiting for" without one:
+
+```python
+WebDriverWait(driver, 10).until(
+    lambda d: d.find_element(By.ID, "submit").actionability("click").actionable
+)
+
+state = driver.script.settledness()
+if not state.settled:
+    print(state.pending_work.active, [m.path for m in state.mutating])
+```
+
+A handler reports settling as it happens, on the `add_dom_mutation_handler` pattern:
+
+```java
+driver.script().addSettledHandler(settled ->
+    log.fine("settled after " + settled.getQuietForMs() + "ms"));
+```
+
+Settledness as a page load strategy, per session and overridden for one action:
+
+```python
+options.page_load_strategy = "settled"     # consumed locally; "normal" goes on the wire
+driver.get("https://example.com/dashboard")
+
+driver.get("https://example.com/stream", wait="none")   # never settles; do not wait for it
+driver.find_element(By.ID, "refresh").click(wait="settled")
+```
 
 ## Considered options
 
@@ -303,9 +422,9 @@ and drop the polyfill.
   capability off, and preload registration failing.
 - Follow-up decisions this makes necessary: whether readiness becomes the default for BiDi sessions
   and in which release; whether `ExpectedConditions.elementToBeClickable` and its equivalents are
-  deprecated; whether classic sessions ever get a reduced-fidelity variant; the concrete names and
-  signatures for the snapshot and handler surface; and the shape of the BiDi `quiescence` module
-  proposal.
+  deprecated; whether classic sessions ever get a reduced-fidelity variant; the per-binding
+  spelling of the snapshot and handler surface, whose placement, arguments and return shapes this
+  record fixes but whose names it does not; and the shape of the BiDi `quiescence` module proposal.
 
 ## Appendix
 
