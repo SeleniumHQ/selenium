@@ -96,10 +96,13 @@ class WebSocketConnection:
         self._id = 0
         self._id_lock = threading.Lock()
         self._messages = {}
-        self._started = False
+        self._started = threading.Event()
+        self._events = {}
+        self._events_lock = threading.Lock()
 
         self._start_ws()
-        self._wait_until(lambda: self._started)
+        if not self._started.wait(timeout=self.response_wait_timeout):
+            raise WebDriverException("Timed out waiting for connection to start")
 
     def close(self):
         # Close the socket first so ``run_forever`` returns; only then join the
@@ -112,13 +115,18 @@ class WebSocketConnection:
                 logger.debug(f"Error while closing websocket connection: {e}")
         if self._ws_thread is not None:
             self._ws_thread.join(timeout=self.response_wait_timeout)
-        self._started = False
+        self._started.clear()
         self._ws = None
 
     def execute(self, command):
         with self._id_lock:
             self._id += 1
             current_id = self._id
+
+        event = threading.Event()
+        with self._events_lock:
+            self._events[current_id] = event
+
         payload = self._serialize_command(command)
         payload["id"] = current_id
         if self.session_id:
@@ -128,8 +136,9 @@ class WebSocketConnection:
         logger.debug(f"-> {data}"[: self._max_log_message_size])
         self._ws.send(data)
 
-        self._wait_until(lambda: current_id in self._messages)
-        if current_id not in self._messages:
+        if not event.wait(timeout=self.response_wait_timeout):
+            with self._events_lock:
+                self._events.pop(current_id, None)
             raise WebDriverException(f"Timed out waiting for response to BiDi command {current_id}")
         response = self._messages.pop(current_id)
 
@@ -177,7 +186,7 @@ class WebSocketConnection:
 
     def _start_ws(self):
         def on_open(ws):
-            self._started = True
+            self._started.set()
 
         def on_message(ws, message):
             self._process_message(message)
@@ -201,21 +210,14 @@ class WebSocketConnection:
         logger.debug(f"<- {message}"[: self._max_log_message_size])
 
         if "id" in message:
-            self._messages[message["id"]] = message
+            msg_id = message["id"]
+            self._messages[msg_id] = message
+            with self._events_lock:
+                event = self._events.pop(msg_id, None)
+            if event:
+                event.set()
 
         if "method" in message:
             params = message["params"]
             for callback in self.callbacks.get(message["method"], []):
                 Thread(target=callback, args=(params,), daemon=True).start()
-
-    def _wait_until(self, condition):
-        timeout = self.response_wait_timeout
-        interval = self.response_wait_interval
-
-        while timeout > 0:
-            result = condition()
-            if result:
-                return result
-            else:
-                timeout -= interval
-                sleep(interval)

@@ -45,6 +45,7 @@ module Selenium
         @closing = false
         @session_id = nil
         @url = url
+        @pending_responses = {}
 
         process_handshake
         @socket_thread = attach_socket_listener
@@ -103,13 +104,33 @@ module Selenium
         data = JSON.generate(data)
         out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
 
+        cond = ConditionVariable.new
+        @messages_mtx.synchronize do
+          @pending_responses[id] = { cond: cond, response: nil }
+        end
+
         begin
           socket.write(out_frame.to_s)
         rescue *CONNECTION_ERRORS => e
+          @messages_mtx.synchronize { @pending_responses.delete(id) }
           raise e, "WebSocket is closed (#{e.class}: #{e.message})"
         end
 
-        wait.until { @messages_mtx.synchronize { messages.delete(id) } }
+        @messages_mtx.synchronize do
+          timeout_at = Process.clock_gettime(Process::CLOCK_MONOTONIC) + RESPONSE_WAIT_TIMEOUT
+          while @pending_responses[id] && @pending_responses[id][:response].nil?
+            remaining = timeout_at - Process.clock_gettime(Process::CLOCK_MONOTONIC)
+            if remaining <= 0
+              @pending_responses.delete(id)
+              raise Error::TimeoutError, "timed out after #{RESPONSE_WAIT_TIMEOUT} seconds waiting for response to command #{id}"
+            end
+            cond.wait(@messages_mtx, remaining)
+          end
+          entry = @pending_responses.delete(id)
+          raise Error::TimeoutError, "timed out after #{RESPONSE_WAIT_TIMEOUT} seconds waiting for response to command #{id}" unless entry && entry[:response]
+
+          entry[:response]
+        end
       end
 
       private
@@ -159,7 +180,17 @@ module Selenium
         return {} if message.empty?
 
         msg = JSON.parse(message)
-        @messages_mtx.synchronize { messages[msg['id']] = msg if msg.key?('id') }
+        if msg.key?('id')
+          msg_id = msg['id']
+          @messages_mtx.synchronize do
+            if @pending_responses.key?(msg_id)
+              @pending_responses[msg_id][:response] = msg
+              @pending_responses[msg_id][:cond].signal
+            else
+              messages[msg_id] = msg
+            end
+          end
+        end
 
         WebDriver.logger.debug "WebSocket <- #{msg}"[...MAX_LOG_MESSAGE_SIZE], id: :ws
         msg
