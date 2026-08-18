@@ -84,11 +84,12 @@ class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void testRelayNodeMatchByRemovingBrowserNameWhenAppSet() {
+  public void testRelayNodeDoesNotBypassBrowserNameWhenAppSet() {
     /*
-    Relay node stereotype does not have browserName (where user wants to restrict to run a native app only)
-    Request capabilities have both browserName (it might initialize by ChromeOptions) and app set
-    The browserName will be filter out when validating match
+    DefaultSlotMatcher requires explicit parity: a stereotype that doesn't declare browserName
+    or automationName must not match a request carrying app-relay capabilities. The old
+    "filter out browserName when app is set" leniency now lives in AppiumRelaySlotMatcher,
+    which relay-node operators can opt into via the "slot-matcher" config.
      */
     Capabilities stereotype =
         new ImmutableCapabilities(
@@ -105,16 +106,16 @@ class DefaultSlotMatcherTest {
             "link.to.apk",
             "appium:automationName",
             "uiautomator2");
-    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
   }
 
   @Test
-  public void testRelayNodeNotMatchHybridBrowserVersionWhenStereotypeWithoutBrowserName() {
+  public void testRelayNodeRequiresExplicitAutomationNameParity() {
     /*
-    Relay node 1 has stereotype does not have browserName (where user wants to restrict to run a native app only)
-    Request capabilities want to run a hybrid app (browserName is set) and app isn't set
-    Request capabilities should not match the stereotype
-    Relay node 2 has stereotype with browserName set should match the request capabilities
+    Neither relay stereotype declares automationName, so neither matches a hybrid request that
+    specifies it -- even the stereotype declaring browserName. Unlike the old gated behavior,
+    being Appium-aware (declaring appium:platformVersion) is not enough on its own; the
+    stereotype must declare the same automationName the request asks for.
      */
     Capabilities stereotype1 =
         new ImmutableCapabilities(
@@ -138,7 +139,7 @@ class DefaultSlotMatcherTest {
             Platform.ANDROID,
             "appium:platformVersion",
             "14");
-    assertThat(slotMatcher.matches(stereotype2, capabilities)).isTrue();
+    assertThat(slotMatcher.matches(stereotype2, capabilities)).isFalse();
   }
 
   @Test
@@ -163,9 +164,7 @@ class DefaultSlotMatcherTest {
             CapabilityType.PLATFORM_NAME,
             Platform.ANDROID,
             "platformVersion",
-            "15",
-            "appium:automationName",
-            "uiautomator2");
+            "15");
     assertThat(slotMatcher.matches(stereotype1, capabilities)).isFalse();
     Capabilities stereotype2 =
         new ImmutableCapabilities(
@@ -775,28 +774,6 @@ class DefaultSlotMatcherTest {
   }
 
   @Test
-  void automationNameStillMatchesForExtensionAwareStereotypeMissingAutomationName() {
-    /*
-    An Appium-aware stereotype may still match a request carrying automationName even if it
-    doesn't declare that capability itself.
-     */
-    Capabilities stereotype =
-        new ImmutableCapabilities(
-            CapabilityType.PLATFORM_NAME, Platform.ANDROID, "appium:platformVersion", "14");
-
-    Capabilities capabilities =
-        new ImmutableCapabilities(
-            CapabilityType.PLATFORM_NAME,
-            Platform.ANDROID,
-            "appium:platformVersion",
-            "14",
-            "appium:automationName",
-            "uiautomator2");
-
-    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
-  }
-
-  @Test
   void automationNameDoesNotMatchWhenStereotypeHasUnrelatedExtensionCapability() {
     /*
     A stereotype's unrelated, non-Appium extension capability must not be treated as a signal
@@ -839,27 +816,5 @@ class DefaultSlotMatcherTest {
             Platform.WINDOWS);
 
     assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
-  }
-
-  @Test
-  void automationNameStillMatchesWhenNestedInsideOptionsMapForAppiumAwareStereotype() {
-    /*
-    An Appium-aware stereotype may still match a request nesting automationName inside an
-    options map, consistent with existing relay-node matching behavior.
-     */
-    Capabilities stereotype =
-        new ImmutableCapabilities(
-            CapabilityType.PLATFORM_NAME, Platform.ANDROID, "appium:platformVersion", "14");
-
-    Capabilities capabilities =
-        new ImmutableCapabilities(
-            CapabilityType.PLATFORM_NAME,
-            Platform.ANDROID,
-            "appium:platformVersion",
-            "14",
-            "appium:options",
-            Map.of("automationName", "uiautomator2"));
-
-    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
   }
 }

@@ -95,14 +95,13 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
     // At the end, a simple browser, browserVersion and platformName match
     boolean browserNameMatch =
         (capabilities.getBrowserName() == null || capabilities.getBrowserName().isEmpty())
-            || Objects.equals(stereotype.getBrowserName(), capabilities.getBrowserName())
-            || matchConditionToRemoveCapability(capabilities);
+            || Objects.equals(stereotype.getBrowserName(), capabilities.getBrowserName());
     boolean browserVersionMatch =
         (capabilities.getBrowserVersion() == null
                 || capabilities.getBrowserVersion().isEmpty()
                 || Objects.equals(capabilities.getBrowserVersion(), "stable"))
-            || browserVersionMatch(stereotype.getBrowserVersion(), capabilities.getBrowserVersion())
-            || matchConditionToRemoveCapability(capabilities);
+            || browserVersionMatch(
+                stereotype.getBrowserVersion(), capabilities.getBrowserVersion());
     boolean platformNameMatch =
         capabilities.getPlatformName() == null
             || Objects.equals(stereotype.getPlatformName(), capabilities.getPlatformName())
@@ -111,11 +110,11 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
     return browserNameMatch && browserVersionMatch && platformNameMatch;
   }
 
-  private boolean browserVersionMatch(String stereotype, String capabilities) {
+  boolean browserVersionMatch(String stereotype, String capabilities) {
     return new SemanticVersionComparator().compare(stereotype, capabilities) == 0;
   }
 
-  private Boolean initialMatch(Capabilities stereotype, Capabilities capabilities) {
+  Boolean initialMatch(Capabilities stereotype, Capabilities capabilities) {
     return stereotype.getCapabilityNames().stream()
         // Matching of extension capabilities is implementation independent. Skip them
         .filter(name -> !name.contains(":"))
@@ -141,7 +140,7 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
         .orElse(true);
   }
 
-  private Boolean managedDownloadsEnabled(Capabilities stereotype, Capabilities capabilities) {
+  Boolean managedDownloadsEnabled(Capabilities stereotype, Capabilities capabilities) {
     // First lets check if user wanted a Node with managed downloads enabled
     Object raw = capabilities.getCapability(ENABLE_DOWNLOADS);
     if (raw == null || !Boolean.parseBoolean(raw.toString())) {
@@ -154,7 +153,7 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
     return raw != null && Boolean.parseBoolean(raw.toString());
   }
 
-  private Boolean platformVersionMatch(Capabilities stereotype, Capabilities capabilities) {
+  Boolean platformVersionMatch(Capabilities stereotype, Capabilities capabilities) {
     /*
      This platform version match is not W3C compliant but users can add Appium servers as
      Nodes, so we avoid delaying the match until the Slot, which makes the whole matching
@@ -171,7 +170,7 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
         .orElse(true);
   }
 
-  private Boolean extensionCapabilitiesMatch(Capabilities stereotype, Capabilities capabilities) {
+  Boolean extensionCapabilitiesMatch(Capabilities stereotype, Capabilities capabilities) {
     /*
      We match extension capabilities when they are not prefixed with any of the
      EXTENSION_CAPABILITIES_PREFIXES items. Also, we match them only when the capabilities
@@ -201,30 +200,37 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
         .orElse(true);
   }
 
-  private Boolean automationNameMatch(Capabilities stereotype, Capabilities capabilities) {
+  Boolean automationNameMatch(Capabilities stereotype, Capabilities capabilities) {
     /*
-     A stereotype with no Appium-related capabilities at all has no relationship to a
-     requested automationName, so it should not match.
+     If the request specifies automationName (directly or nested in an options map), the
+     stereotype must declare the same value -- including the case where the stereotype
+     doesn't declare it at all. See https://github.com/SeleniumHQ/selenium/issues/17845.
     */
-    boolean stereotypeIsAppiumAware =
-        stereotype.getCapabilityNames().stream()
-            .anyMatch(name -> name.contains("platformVersion") || name.startsWith("appium:"));
-    if (stereotypeIsAppiumAware) {
+    Object requestedAutomationName = automationNameValue(capabilities);
+    if (requestedAutomationName == null) {
       return true;
     }
-    return capabilities.getCapabilityNames().stream()
-        .noneMatch(name -> requestsAutomationName(name, capabilities.getCapability(name)));
+    return Objects.equals(requestedAutomationName, automationNameValue(stereotype));
   }
 
-  private boolean requestsAutomationName(String name, Object value) {
+  static Object automationNameValue(Capabilities capabilities) {
+    return capabilities.getCapabilityNames().stream()
+        .map(name -> automationNameValueFor(name, capabilities.getCapability(name)))
+        .filter(Objects::nonNull)
+        .findFirst()
+        .orElse(null);
+  }
+
+  private static Object automationNameValueFor(String name, Object value) {
     if (name.equals("automationName") || name.endsWith(":automationName")) {
-      return true;
+      return value;
     }
     // automationName is sometimes nested inside an options map (e.g. appium:options) rather
     // than sent as its own top-level capability.
-    return name.toLowerCase().contains("options")
-        && value instanceof Map
-        && ((Map<?, ?>) value).containsKey("automationName");
+    if (name.toLowerCase().contains("options") && value instanceof Map) {
+      return ((Map<?, ?>) value).get("automationName");
+    }
+    return null;
   }
 
   public static Boolean matchConditionToRemoveCapability(Capabilities capabilities) {
