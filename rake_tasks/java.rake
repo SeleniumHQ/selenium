@@ -338,10 +338,10 @@ task :verify do
     SeleniumRake.verify_package_published(maven_central_pom_url)
   rescue StandardError => e
     if Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
-      raise "#{e.message}; check https://central.sonatype.com/publishing/deployments"
+      raise "#{e.class}: #{e.message}; check https://central.sonatype.com/publishing/deployments"
     end
 
-    puts "  #{e.message}; Maven Central may still be indexing, retrying in 15s"
+    puts "  #{e.class}: #{e.message}; Maven Central may still be indexing, retrying in 15s"
     sleep 15
     retry
   end
