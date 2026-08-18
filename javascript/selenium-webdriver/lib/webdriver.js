@@ -41,7 +41,7 @@ const cdpTargets = ['page', 'browser']
 const { Credential } = require('./virtual_authenticator')
 const webElement = require('./webelement')
 const { isObject } = require('./util')
-const BIDI = require('../bidi')
+const { getBidiConnection, closeBidiConnection } = require('./bidi_connection')
 const { PinnedScript } = require('./pinnedScript')
 const JSZip = require('jszip')
 const Script = require('./script')
@@ -795,10 +795,8 @@ class WebDriver {
         this._cdpWsConnection.close()
       }
 
-      // Close the BiDi websocket connection
-      if (this._bidiConnection !== undefined) {
-        this._bidiConnection.close()
-      }
+      // Close the BiDi websocket connection, if one was ever opened
+      closeBidiConnection(this)
     })
   }
 
@@ -1314,22 +1312,6 @@ class WebDriver {
   }
 
   /**
-   * Initiates bidi connection using 'webSocketUrl'. Internal implementation
-   * backing the deprecated {@link WebDriver#getBidi}; composed BiDi modules
-   * (bidi/*.js factories, generated `<Domain>.create(driver)` classes) call
-   * this directly so they don't trip the deprecation warning on that method.
-   * @returns {Promise<BIDI>}
-   */
-  async _getBidiConnection() {
-    if (this._bidiConnection === undefined) {
-      const caps = await this.getCapabilities()
-      let WebSocketUrl = caps['map_'].get('webSocketUrl')
-      this._bidiConnection = new BIDI(WebSocketUrl.replace('localhost', '127.0.0.1'))
-    }
-    return this._bidiConnection
-  }
-
-  /**
    * Retrieves 'webSocketDebuggerUrl' by sending a http request using debugger address
    * @param {string} debuggerAddress
    * @param target
@@ -1803,13 +1785,11 @@ class WebDriver {
  * `require('selenium-webdriver/bidi/network')`.
  * @function
  * @name WebDriver#getBidi
- * @returns {Promise<BIDI>}
+ * @returns {Promise<import('../bidi')>}
  */
-WebDriver.prototype.getBidi = util.deprecate(
-  WebDriver.prototype._getBidiConnection,
-  'WebDriver#getBidi() is deprecated. Use a composed BiDi module instead, e.g. Network.create(driver) or ' +
-    "require('selenium-webdriver/bidi/network'). See docs/decisions/17670-bidi-implementation-boundaries.md.",
-)
+WebDriver.prototype.getBidi = util.deprecate(function () {
+  return getBidiConnection(this)
+}, 'WebDriver#getBidi() is deprecated. Use a composed BiDi module instead, e.g. Network.create(driver) or ' + "require('selenium-webdriver/bidi/network'). See docs/decisions/17670-bidi-implementation-boundaries.md.")
 
 /**
  * Interface for navigating back and forth in the browser history.
