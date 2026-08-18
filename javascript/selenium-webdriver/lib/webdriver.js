@@ -804,7 +804,8 @@ class WebDriver {
         this._cdpWsConnection.close()
       }
 
-      // Close the BiDi websocket connection, if one was ever opened
+      // Not awaited: the session is already torn down by this point, so
+      // closing our end of the socket doesn't need to gate quit() completing.
       closeBidiConnection(this)
     })
   }
@@ -1787,23 +1788,32 @@ class WebDriver {
 /**
  * Returns the WebDriver BiDi connection for this session.
  *
- * @deprecated BiDi is an internal implementation detail (see
- * docs/decisions/17670-bidi-implementation-boundaries.md) — this accessor hands
+ * @deprecated BiDi is an internal implementation detail — this accessor hands
  * back the raw transport directly, which is no longer supported public API.
  * Use a composed BiDi module instead, e.g. `Network.create(driver)` or
  * `require('selenium-webdriver/bidi/network')`.
  * @function
  * @name WebDriver#getBidi
- * @returns {Promise<import('../bidi')>}
+ * @returns {Promise<import('../bidi')>} A promise resolving to this session's raw
+ *     BiDi connection, opened on first access and reused afterward.
  */
-WebDriver.prototype.getBidi = function () {
-  WebDriver.logger.deprecate(
-    'webdriver-getBidi',
-    'WebDriver#getBidi() is deprecated. Use a composed BiDi module instead, e.g. Network.create(driver) or ' +
-      "require('selenium-webdriver/bidi/network').",
-  )
-  return getBidiConnection(this)
-}
+// Object.defineProperty, not `WebDriver.prototype.getBidi = function () {...}`:
+// a plain assignment creates an enumerable property, but a method declared in
+// the class body (like every other method here) is non-enumerable — so BiDi
+// would become more discoverable off the driver than it was before.
+Object.defineProperty(WebDriver.prototype, 'getBidi', {
+  value: function () {
+    WebDriver.logger.deprecate(
+      'webdriver-getBidi',
+      'WebDriver#getBidi() is deprecated. Use a composed BiDi module instead, e.g. Network.create(driver) or ' +
+        "require('selenium-webdriver/bidi/network').",
+    )
+    return getBidiConnection(this)
+  },
+  writable: true,
+  enumerable: false,
+  configurable: true,
+})
 
 /**
  * Interface for navigating back and forth in the browser history.

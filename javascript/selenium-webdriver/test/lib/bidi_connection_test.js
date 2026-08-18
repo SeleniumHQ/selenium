@@ -19,7 +19,9 @@
 
 const assert = require('node:assert')
 const { WebSocketServer } = require('ws')
-const { getBidiConnection, closeBidiConnection } = require('../../lib/bidi_connection')
+const { getBidiConnection, closeBidiConnection } = require('selenium-webdriver/lib/bidi_connection')
+const { WebDriver } = require('selenium-webdriver/lib/webdriver')
+const { Session } = require('selenium-webdriver/lib/session')
 
 function startEchoServer() {
   return new Promise((resolve) => {
@@ -92,5 +94,33 @@ describe('bidi_connection', function () {
     // quit() calls this fire-and-forget (no await/catch at the call site), so
     // it must swallow the earlier failure rather than re-throwing it.
     await assert.doesNotReject(closeBidiConnection(driver))
+  })
+
+  it('quit() closes the BiDi connection stored outside the driver instance', async function () {
+    const started = await startEchoServer()
+    server = started.server
+
+    // Resolves only once the server observes the client actually closing the
+    // socket — if quit() stopped delegating to closeBidiConnection(), this
+    // would never resolve and the test would time out rather than pass.
+    const serverSawClose = new Promise((resolve) => {
+      server.on('connection', (ws) => ws.on('close', () => resolve(true)))
+    })
+
+    const session = new Session('test-session-id', { webSocketUrl: started.url })
+    const driver = new WebDriver(session, { execute: async () => null })
+
+    // Open the connection the same way a composed BiDi module would (via the
+    // driver, not by calling getBidiConnection/closeBidiConnection directly),
+    // so there is a real connection for quit() to close. getBidiConnection()
+    // resolves as soon as the BiDi instance is constructed, not once its
+    // websocket handshake actually completes — wait for that too, or closing
+    // immediately can race the handshake and the server never sees 'connection'.
+    const connection = await getBidiConnection(driver)
+    await connection.waitForConnection()
+
+    await driver.quit()
+
+    assert.strictEqual(await serverSawClose, true, "quit() should close the driver's BiDi connection")
   })
 })

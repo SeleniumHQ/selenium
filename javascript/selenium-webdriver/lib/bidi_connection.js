@@ -32,8 +32,9 @@ const connections = new WeakMap()
 
 /**
  * Returns the BiDi connection for `driver`, creating it on first access.
- * @param {object} driver
- * @returns {Promise<BiDi>}
+ * @param {object} driver The WebDriver instance to obtain a BiDi connection for.
+ * @returns {Promise<BiDi>} A promise resolving to `driver`'s BiDi connection, shared
+ *     with any other in-flight or already-resolved call for the same driver.
  */
 function getBidiConnection(driver) {
   if (!connections.has(driver)) {
@@ -62,8 +63,9 @@ async function createConnection(driver) {
  * Callers (e.g. quit()) invoke this fire-and-forget, so it must never reject:
  * if the original connection attempt itself had failed, `pending` is already
  * rejected and there is nothing live to close.
- * @param {object} driver
- * @returns {Promise<void>}
+ * @param {object} driver The WebDriver instance whose BiDi connection should be closed.
+ * @returns {Promise<void>} A promise that always resolves, once any open connection
+ *     has been closed (or immediately, if none was ever opened).
  */
 async function closeBidiConnection(driver) {
   const pending = connections.get(driver)
