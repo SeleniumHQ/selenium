@@ -58,6 +58,19 @@ public abstract class Module {
   }
 
   /**
+   * Subscribes to a BiDi event, scoped to the given browsing and/or user contexts.
+   *
+   * @param event the event to subscribe to
+   * @param handler invoked with the event's parameters each time it fires
+   * @param scope which browsing contexts and/or user contexts the subscription applies to
+   * @param <X> the event's parameter type
+   * @return a subscription id that can be passed to {@link #unsubscribe(String)}
+   */
+  public final <X> String subscribe(Event<X> event, Consumer<X> handler, SubscriptionScope scope) {
+    return handle.subscribe(event, handler, scope);
+  }
+
+  /**
    * Cancels a previously registered event subscription.
    *
    * @param subscriptionId a subscription id previously returned by {@link #subscribe}
