@@ -45,6 +45,18 @@ class SharedReferenceTest {
   }
 
   @Test
+  void reusingTheBuilderAfterBuildDoesNotMutateThePreviouslyBuiltInstance() {
+    SharedReference.Builder builder =
+        SharedReference.builder("shared-1").addExtension("vendorHint", "chrome");
+
+    SharedReference first = builder.build();
+    builder.addExtension("secondHint", "firefox");
+
+    assertThat(first.getExtensions()).containsExactly(Map.entry("vendorHint", "chrome"));
+    assertThat(first.toMap()).containsEntry("vendorHint", "chrome").doesNotContainKey("secondHint");
+  }
+
+  @Test
   void builderRejectsAnExtensionThatShadowsADeclaredField() {
     SharedReference.Builder builder = SharedReference.builder("shared-1");
 
