@@ -24,11 +24,14 @@ Two forces are in tension. Cookies are fully covered by the BiDi protocol. But
 requires running script (`script.evaluate`) in each origin. A storage-state feature must
 be honest about that split rather than implying protocol support it does not have.
 
-In the layering of [17709](17709-bidi-api-layering.md) this is a **Layer 2** decision: an
-explicit BiDi module offered *beside* the Classic cookie API (`driver.manage().addCookie()`,
-which stays the Layer 1 surface and may itself become BiDi-backed), not a replacement for it.
-It earns first-class surface because it does things the Classic API cannot express —
-`storage_state` save/restore and partition-scoped cookies (a specific user context).
+Under [17670](17670-bidi-implementation-boundaries.md) this record specifies **supported,
+protocol-neutral API**, not a BiDi-shaped module offered beside it: the surface named here
+must not reference BiDi or hand the user a BiDi type, and the internal BiDi implementation
+stays reachable only by composing it with the driver. It is additive to the Classic cookie
+API (`driver.manage().addCookie()`, which is already conformant and may itself become
+BiDi-backed) rather than a replacement, and earns first-class surface because it does things
+the Classic API cannot express — `storage_state` save/restore and cookies scoped to a
+specific user context.
 
 ## Decision
 
@@ -38,21 +41,26 @@ Bindings expose two cohesive storage conveniences:
    partition descriptors. It carries the familiar fields — `name`, `value`, `domain`,
    `path`, `secure`, `http_only`, `same_site`, and an expiry expressed in the binding's
    natural way (`expiry`/`max_age`). `get_cookies` returns these typed objects, not raw
-   wire dicts. The low-level command remains available for advanced cases (explicit
-   partitioning — e.g. targeting a specific user context, see
-   [17681](17681-browsing-contexts-exposed-as-handle-objects.md) — and raw byte values).
+   wire dicts. The type lives in a protocol-neutral namespace — never a BiDi-named one.
+   Scoping a cookie to a user context is part of this surface (see
+   [17681](17681-browsing-contexts-exposed-as-handle-objects.md)); cases it deliberately
+   does not cover — arbitrary partition descriptors, raw byte values — are served by the
+   internal implementation composed with the driver, not by extra parameters here.
 
-2. A **`storage_state` save/restore** pair. `save_state` captures cookies (via
-   `storage.getCookies`) **and** per-origin `localStorage` (via `script.evaluate`) into a
-   serializable document (JSON on disk or an in-memory object). `load_state` re-applies
-   them into the current session. Documentation MUST state plainly that cookies come from
-   the BiDi protocol while web storage is captured by executing script, and that IndexedDB
-   is out of scope unless/until added.
+2. A **`storage_state` save/restore** pair. `save_state` captures cookies **and** per-origin
+   `localStorage` into a serializable document (JSON on disk or an in-memory object).
+   `load_state` re-applies them into the current session. Documentation MUST state plainly
+   what is and is not captured: IndexedDB is out of scope unless/until added, and because web
+   storage is read from the page rather than from the protocol, only origins the session has
+   actually loaded are captured. Which protocol services each part is an implementation
+   detail users do not need to know ([17670](17670-bidi-implementation-boundaries.md)); the
+   *limits it imposes on them* are not, and must be documented.
 
 Code sketch — Python (reference implementation):
 
 ```python
-from selenium.webdriver.common.bidi.storage import Cookie
+# neutral namespace — the exact path is per binding, but never BiDi-named
+from selenium.webdriver.common.storage import Cookie
 
 # Typed cookie — no BytesValue / partition ceremony
 driver.storage.set_cookie(Cookie(
@@ -62,7 +70,7 @@ driver.storage.set_cookie(Cookie(
 cookies = driver.storage.get_cookies(domain="example.com")  # -> list[Cookie]
 
 # Auth reuse
-driver.storage.save_state("auth.json")   # cookies (BiDi) + localStorage (script.evaluate)
+driver.storage.save_state("auth.json")   # cookies + per-origin localStorage
 # ... later, in a fresh session on the same origin ...
 driver.storage.load_state("auth.json")
 ```
@@ -79,11 +87,11 @@ await driver.storage().loadState(state);
 
 - **Typed `Cookie` + `storage_state` capturing cookies and `localStorage` (chosen)** —
   removes the `BytesValue`/partition ceremony for the common case and delivers the
-  high-value auth-reuse pattern, while being explicit about the protocol/script split.
+  high-value auth-reuse pattern, while being explicit about what it does and does not capture.
 - **Cookie convenience only, no `storage_state`** — easy, but leaves the most-requested
   workflow (skip login by restoring state) unsolved. Rejected: misses the main prize.
-- **`storage_state` over cookies only (no web storage)** — purely BiDi, no script
-  dependency, but apps that keep auth tokens in `localStorage` would silently fail to
+- **`storage_state` over cookies only (no web storage)** — no dependency on executing
+  script, but apps that keep auth tokens in `localStorage` would silently fail to
   restore, which is worse than not offering it. Rejected: correctness over convenience.
 - **Plain dicts instead of a typed `Cookie`** — no new type to learn, but keeps users
   hand-assembling `BytesValue` and gives no discoverable field set or validation.
@@ -95,10 +103,13 @@ await driver.storage().loadState(state);
 - A new `Cookie` value type per binding; `get_cookies` return type becomes typed objects
   (additive where today's API returned raw dicts — bindings already returning a cookie
   type are unaffected; document the shape).
-- `storage_state` carries a **documented limitation**: web storage is script-captured and
-  IndexedDB is excluded. This is a deliberate, recorded scope boundary, not a bug.
-- The `script.evaluate` dependency means `save_state`/`load_state` touch each origin's
-  document; behaviour across many origins should be specified per binding.
+- `storage_state` carries a **documented limitation**: web storage is captured from the page
+  and IndexedDB is excluded. This is a deliberate, recorded scope boundary, not a bug.
+- Because web storage is read by executing script, `save_state`/`load_state` touch each
+  origin's document; behaviour across many origins should be specified per binding.
+- A `Cookie` type in a neutral namespace is required by
+  [17670](17670-bidi-implementation-boundaries.md); bindings that today return the BiDi
+  cookie type from a supported surface bring it in line under the deprecation policy.
 
 ## Binding status
 
@@ -116,5 +127,6 @@ BiDi cookie surface: `storage.getCookies` (filterable), `storage.setCookie`
 (`PartialCookie` with `value: network.BytesValue`, optional
 `storage.PartitionDescriptor`), `storage.deleteCookies`. Web storage (`localStorage`,
 `sessionStorage`) and IndexedDB have **no** BiDi commands; `storage_state` captures
-`localStorage` by evaluating script per origin — this is the explicit reason the decision
-documents the split rather than presenting a single uniform mechanism.
+`localStorage` by evaluating script per origin. This appendix describes the internal
+implementation, which is why the decision documents the resulting *user-visible* limits
+rather than the mechanism.
