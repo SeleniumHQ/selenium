@@ -279,6 +279,20 @@ task :release do |_task, arguments|
   args = arguments.to_a
   nightly = args.delete('nightly')
 
+  unless nightly
+    already_published = begin
+      SeleniumRake.verify_package_published(maven_central_pom_url)
+      true
+    rescue StandardError
+      false
+    end
+
+    if already_published
+      puts 'Java packages already published — skipping release.'
+      next
+    end
+  end
+
   Rake::Task['java:check_credentials'].invoke(*(nightly ? ['nightly'] : []))
 
   ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
@@ -311,13 +325,17 @@ task :release do |_task, arguments|
   trigger_sonatype_publish(token)
 end
 
+def maven_central_pom_url
+  base = 'https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java'
+  "#{base}/#{java_version}/selenium-java-#{java_version}.pom"
+end
+
 desc 'Verify Java packages are published on Maven Central'
 task :verify do
-  base = 'https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java'
   deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 600
 
   begin
-    SeleniumRake.verify_package_published("#{base}/#{java_version}/selenium-java-#{java_version}.pom")
+    SeleniumRake.verify_package_published(maven_central_pom_url)
   rescue StandardError => e
     if Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
       raise "#{e.message}; check https://central.sonatype.com/publishing/deployments"
