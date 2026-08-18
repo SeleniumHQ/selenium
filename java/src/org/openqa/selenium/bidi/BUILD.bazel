@@ -60,7 +60,7 @@ genrule(
     name = "generate-bidi",
     srcs = ["//javascript/selenium-webdriver:create-bidi-src_schema"],
     outs = ["bidi-generated.srcjar"],
-    cmd = "$(execpath :bidi-client-generator) $(location //javascript/selenium-webdriver:create-bidi-src_schema) $@",
+    cmd = "\"$(execpath :bidi-client-generator)\" \"$(location //javascript/selenium-webdriver:create-bidi-src_schema)\" \"$@\"",
     tools = [":bidi-client-generator"],
 )
 

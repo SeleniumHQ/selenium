@@ -820,7 +820,12 @@ public class BiDiGenerator {
             appendConstructorAssignment(sb, f, domain, m + "  ", needsBuilder);
           }
           if (needsExtrasCapture) {
-            sb.append(m).append("  this.extensions = extensions;\n");
+            // Copy rather than alias: when this constructor is called from a Builder's build(),
+            // the argument is the Builder's own live, mutable map — a later addExtension() call
+            // on a reused Builder must not be able to mutate an already-built instance out from
+            // under it (the BiDi low-level behavioral contract requires a built/received instance
+            // to stay immutable).
+            sb.append(m).append("  this.extensions = new LinkedHashMap<>(extensions);\n");
           }
           sb.append(m).append("}\n\n");
         }
