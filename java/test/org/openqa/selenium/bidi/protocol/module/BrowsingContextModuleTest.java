@@ -160,8 +160,18 @@ class BrowsingContextModuleTest extends JupiterTestBase {
     BrowsingContext browsingContext = new BrowsingContext(driver);
     String windowHandle = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
 
+    // CONTEXT_DESTROYED can only be subscribed globally (Module.subscribe has no per-context
+    // overload), so an unrelated context closing during the test — e.g. a browser onboarding tab
+    // some grid nodes auto-close shortly after launch — can also complete this. Filter to the
+    // context this test closed instead of completing on the first event received.
     CompletableFuture<Info> future = new CompletableFuture<>();
-    browsingContext.subscribe(BrowsingContext.CONTEXT_DESTROYED, future::complete);
+    browsingContext.subscribe(
+        BrowsingContext.CONTEXT_DESTROYED,
+        info -> {
+          if (windowHandle.equals(info.getContext())) {
+            future.complete(info);
+          }
+        });
 
     driver.close();
 
