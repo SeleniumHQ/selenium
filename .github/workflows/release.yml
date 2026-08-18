@@ -143,10 +143,6 @@ jobs:
       gem-trusted-publishing: ${{ matrix.language == 'ruby' }}
       node-version: ${{ matrix.language == 'javascript' && '24.14.1' || '' }}
       run: |
-        if [ "${{ matrix.language == 'java' && (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == 'java') && github.run_attempt > 1 }}" = "true" ]; then
-          echo "::error::Java release is not yet rerun-safe — check/drop the staging repo at https://central.sonatype.com/publishing/deployments and publish manually"
-          exit 1
-        fi
         if [ "${{ needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language }}" = "true" ]; then
           ./go ${{ matrix.language }}:release
         else
