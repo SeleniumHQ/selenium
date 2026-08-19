@@ -39,12 +39,14 @@ awk -v out="$RESULTS" '
   }
 ' build/bazel-console.log
 
-# _run2.txt exists only once rerun-failures.sh has actually rerun something.
-# Anything that failed the main run and passed the rerun was flaky across the
-# whole sequence, and the rerun contributes the passing attempt: failing twice
-# before it goes green is 2 of 3.
-if [ -f "$FAILURES/_run2.txt" ]; then
-  comm -23 <(sort "$FAILURES/_run1.txt") <(sort "$FAILURES/_run2.txt") > "$FAILURES/_recovered.txt"
+# A target counts as recovered only when the rerun actually reported it passing.
+# Inferring it from absence in _run2.txt would also sweep up a rerun that timed
+# out, came back incomplete, or aborted before printing any summary at all --
+# _run2.txt records FAILED only, so all of those look identical to a pass.
+if [ -f build/bazel-console2.log ]; then
+  awk '{ gsub(/\033\[[0-9;]*m/, "") }
+       $1 ~ /^\/\// && $2 == "PASSED" && $3 == "in" { print $1 }' build/bazel-console2.log \
+    | sort -u > "$FAILURES/_recovered.txt"
   awk -F'\t' -v recovered="$FAILURES/_recovered.txt" '
     BEGIN { while ((getline t < recovered) > 0) { recover[t] = 1 } }
     $1 in recover { print $1 "\trerun-recovered\t" $3 "\t" ($4 + 1); next }
