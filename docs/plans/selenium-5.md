@@ -19,7 +19,7 @@ it. An ADR does not name a milestone; this charter records what belongs to Selen
 
 ## Required for release
 
-### BiDi support boundary — _ADR pending_
+### BiDi support boundary — [17670](../decisions/17670-bidi-implementation-boundaries.md)
 
 How the WebDriver BiDi protocol is exposed to users across the bindings. The ADR sets where the
 boundary sits between supported Selenium API and internal implementation, and how each binding
