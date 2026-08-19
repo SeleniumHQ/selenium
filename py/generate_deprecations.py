@@ -91,7 +91,7 @@ def _is_deprecation_warning(node):
     if name != "warn":
         return False
 
-    categories = [arg for arg in node.args[1:]]
+    categories = list(node.args[1:])
     categories += [kw.value for kw in node.keywords if kw.arg == "category"]
     for category in categories:
         category_name = category.attr if isinstance(category, ast.Attribute) else getattr(category, "id", None)

@@ -1,6 +1,6 @@
 {
   "binding": "python",
-  "version": "4.48.0.202608101808",
+  "version": "4.50.0.202609091537",
   "policy": "https://github.com/SeleniumHQ/selenium/blob/trunk/AGENTS.md#deprecation-policy",
   "description": "Deprecated APIs in the Selenium Python bindings and their replacements, extracted from the deprecation warnings in the source of this release. An API listed here still works but will be removed; use the replacement instead.",
   "deprecations": [
