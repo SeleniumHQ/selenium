@@ -122,7 +122,14 @@ def split_message(message):
 
 
 def find_deprecations(source, module):
-    """Return every deprecation declared in one module's source, in source order."""
+    """Return every deprecation declared in one module's source, in source order.
+
+    Line numbers order the result but are deliberately not part of it. The dataset
+    is committed, so a published line number would be wrong the moment any edit
+    above it shifted the code, and every such edit anywhere in the bindings would
+    have to be accompanied by a regenerated dataset. `api` addresses an entry
+    without going stale.
+    """
     tree = ast.parse(source)
     deprecations = []
 
@@ -141,18 +148,20 @@ def find_deprecations(source, module):
                 if message:
                     deprecated, replacement = split_message(message)
                     deprecations.append(
-                        {
-                            "module": module,
-                            "api": ".".join([module] + scope) if scope else module,
-                            "deprecated": deprecated,
-                            "replacement": replacement,
-                            "message": " ".join(message.split()),
-                            "line": child.lineno,
-                        }
+                        (
+                            child.lineno,
+                            {
+                                "module": module,
+                                "api": ".".join([module] + scope) if scope else module,
+                                "deprecated": deprecated,
+                                "replacement": replacement,
+                                "message": " ".join(message.split()),
+                            },
+                        )
                     )
             stack.append((child, child_scope))
 
-    return sorted(deprecations, key=lambda entry: entry["line"])
+    return [entry for _, entry in sorted(deprecations, key=lambda pair: pair[0])]
 
 
 def collect(package_root):

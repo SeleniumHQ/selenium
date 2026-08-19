@@ -129,6 +129,24 @@ def test_maps_a_source_path_to_its_module_name(path, expected):
     assert gd.module_name(path, "selenium") == expected
 
 
+def test_omits_line_numbers_so_the_dataset_survives_edits_above_a_warning():
+    """A published line number would be stale after any edit that shifted the code.
+
+    CI evaluates a pull request as its merge with trunk, so a line number in the
+    committed dataset breaks on trunk moving, not just on this branch changing.
+    """
+    source = """
+import warnings
+
+
+def f():
+    warnings.warn("f is deprecated, use g instead", DeprecationWarning)
+"""
+    (entry,) = gd.find_deprecations(source, "selenium.foo")
+
+    assert "line" not in entry
+
+
 def test_the_published_dataset_matches_the_source():
     """The dataset is committed, so it can drift; regenerate with `./go py:docs_generate`."""
     py_dir = pathlib.Path(gd.__file__).resolve().parent
@@ -137,4 +155,6 @@ def test_the_published_dataset_matches_the_source():
         pytest.skip("deprecations.json is not present in the runfiles")
 
     expected = gd.collect(str(py_dir / "selenium"))
-    assert json.loads(published.read_text())["deprecations"] == expected
+    assert json.loads(published.read_text())["deprecations"] == expected, (
+        "deprecations.json is out of date; regenerate it with `./go py:docs_generate`"
+    )

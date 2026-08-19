@@ -9,128 +9,112 @@
       "api": "selenium.webdriver.common.log.Log.mutation_events",
       "deprecated": "mutation_events",
       "replacement": "use driver.script.add_dom_mutation_handler() instead",
-      "message": "mutation_events is deprecated, use driver.script.add_dom_mutation_handler() instead",
-      "line": 75
+      "message": "mutation_events is deprecated, use driver.script.add_dom_mutation_handler() instead"
     },
     {
       "module": "selenium.webdriver.common.log",
       "api": "selenium.webdriver.common.log.Log.add_js_error_listener",
       "deprecated": "add_js_error_listener",
       "replacement": "use driver.script.add_javascript_error_handler() instead",
-      "message": "add_js_error_listener is deprecated, use driver.script.add_javascript_error_handler() instead",
-      "line": 123
+      "message": "add_js_error_listener is deprecated, use driver.script.add_javascript_error_handler() instead"
     },
     {
       "module": "selenium.webdriver.common.log",
       "api": "selenium.webdriver.common.log.Log.add_listener",
       "deprecated": "add_listener",
       "replacement": "use driver.script.add_console_message_handler() instead",
-      "message": "add_listener is deprecated, use driver.script.add_console_message_handler() instead",
-      "line": 154
+      "message": "add_listener is deprecated, use driver.script.add_console_message_handler() instead"
     },
     {
       "module": "selenium.webdriver.common.options",
       "api": "selenium.webdriver.common.options.ArgOptions.ignore_local_proxy_environment_variables",
       "deprecated": "using ignore_local_proxy_environment_variables in Options",
       "replacement": "instead, create a Proxy instance with ProxyType.DIRECT to ignore proxy settings, pass the proxy instance into a ClientConfig constructor, pass the client config instance into the Webdriver constructor",
-      "message": "using ignore_local_proxy_environment_variables in Options has been deprecated, instead, create a Proxy instance with ProxyType.DIRECT to ignore proxy settings, pass the proxy instance into a ClientConfig constructor, pass the client config instance into the Webdriver constructor",
-      "line": 416
+      "message": "using ignore_local_proxy_environment_variables in Options has been deprecated, instead, create a Proxy instance with ProxyType.DIRECT to ignore proxy settings, pass the proxy instance into a ClientConfig constructor, pass the client config instance into the Webdriver constructor"
     },
     {
       "module": "selenium.webdriver.remote.remote_connection",
       "api": "selenium.webdriver.remote.remote_connection.RemoteConnection.get_timeout",
       "deprecated": "get_timeout() in RemoteConnection",
       "replacement": "get timeout from client_config instead",
-      "message": "get_timeout() in RemoteConnection is deprecated, get timeout from client_config instead",
-      "line": 179
+      "message": "get_timeout() in RemoteConnection is deprecated, get timeout from client_config instead"
     },
     {
       "module": "selenium.webdriver.remote.remote_connection",
       "api": "selenium.webdriver.remote.remote_connection.RemoteConnection.set_timeout",
       "deprecated": "set_timeout() in RemoteConnection",
       "replacement": "set timeout in client_config instead",
-      "message": "set_timeout() in RemoteConnection is deprecated, set timeout in client_config instead",
-      "line": 193
+      "message": "set_timeout() in RemoteConnection is deprecated, set timeout in client_config instead"
     },
     {
       "module": "selenium.webdriver.remote.remote_connection",
       "api": "selenium.webdriver.remote.remote_connection.RemoteConnection.reset_timeout",
       "deprecated": "reset_timeout() in RemoteConnection",
       "replacement": "use reset_timeout() in client_config instead",
-      "message": "reset_timeout() in RemoteConnection is deprecated, use reset_timeout() in client_config instead",
-      "line": 203
+      "message": "reset_timeout() in RemoteConnection is deprecated, use reset_timeout() in client_config instead"
     },
     {
       "module": "selenium.webdriver.remote.remote_connection",
       "api": "selenium.webdriver.remote.remote_connection.RemoteConnection.get_certificate_bundle_path",
       "deprecated": "get_certificate_bundle_path() in RemoteConnection",
       "replacement": "get ca_certs from client_config instead",
-      "message": "get_certificate_bundle_path() in RemoteConnection is deprecated, get ca_certs from client_config instead",
-      "line": 219
+      "message": "get_certificate_bundle_path() in RemoteConnection is deprecated, get ca_certs from client_config instead"
     },
     {
       "module": "selenium.webdriver.remote.remote_connection",
       "api": "selenium.webdriver.remote.remote_connection.RemoteConnection.set_certificate_bundle_path",
       "deprecated": "set_certificate_bundle_path() in RemoteConnection",
       "replacement": "set ca_certs in client_config instead",
-      "message": "set_certificate_bundle_path() in RemoteConnection is deprecated, set ca_certs in client_config instead",
-      "line": 235
+      "message": "set_certificate_bundle_path() in RemoteConnection is deprecated, set ca_certs in client_config instead"
     },
     {
       "module": "selenium.webdriver.remote.remote_connection",
       "api": "selenium.webdriver.remote.remote_connection.RemoteConnection.__init__",
       "deprecated": "setting remote_server_addr in RemoteConnection()",
       "replacement": "set in client_config instead",
-      "message": "setting remote_server_addr in RemoteConnection() is deprecated, set in client_config instead",
-      "line": 338
+      "message": "setting remote_server_addr in RemoteConnection() is deprecated, set in client_config instead"
     },
     {
       "module": "selenium.webdriver.remote.remote_connection",
       "api": "selenium.webdriver.remote.remote_connection.RemoteConnection.__init__",
       "deprecated": "setting keep_alive in RemoteConnection()",
       "replacement": "set in client_config instead",
-      "message": "setting keep_alive in RemoteConnection() is deprecated, set in client_config instead",
-      "line": 345
+      "message": "setting keep_alive in RemoteConnection() is deprecated, set in client_config instead"
     },
     {
       "module": "selenium.webdriver.remote.remote_connection",
       "api": "selenium.webdriver.remote.remote_connection.RemoteConnection.__init__",
       "deprecated": "setting ignore_certificates in RemoteConnection()",
       "replacement": "set in client_config instead",
-      "message": "setting ignore_certificates in RemoteConnection() is deprecated, set in client_config instead",
-      "line": 352
+      "message": "setting ignore_certificates in RemoteConnection() is deprecated, set in client_config instead"
     },
     {
       "module": "selenium.webdriver.remote.remote_connection",
       "api": "selenium.webdriver.remote.remote_connection.RemoteConnection.__init__",
       "deprecated": "setting init_args_for_pool_manager in RemoteConnection()",
       "replacement": "set in client_config instead",
-      "message": "setting init_args_for_pool_manager in RemoteConnection() is deprecated, set in client_config instead",
-      "line": 359
+      "message": "setting init_args_for_pool_manager in RemoteConnection() is deprecated, set in client_config instead"
     },
     {
       "module": "selenium.webdriver.remote.webdriver",
       "api": "selenium.webdriver.remote.webdriver.WebDriver.pin_script",
       "deprecated": "pin_script",
       "replacement": "use driver.script.pin() instead",
-      "message": "pin_script is deprecated, use driver.script.pin() instead",
-      "line": 547
+      "message": "pin_script is deprecated, use driver.script.pin() instead"
     },
     {
       "module": "selenium.webdriver.remote.webdriver",
       "api": "selenium.webdriver.remote.webdriver.WebDriver.unpin",
       "deprecated": "unpin",
       "replacement": "use driver.script.unpin() instead",
-      "message": "unpin is deprecated, use driver.script.unpin() instead",
-      "line": 565
+      "message": "unpin is deprecated, use driver.script.unpin() instead"
     },
     {
       "module": "selenium.webdriver.remote.webdriver",
       "api": "selenium.webdriver.remote.webdriver.WebDriver.get_pinned_scripts",
       "deprecated": "get_pinned_scripts",
       "replacement": "use driver.script.pin() to manage preload scripts instead",
-      "message": "get_pinned_scripts is deprecated, use driver.script.pin() to manage preload scripts instead",
-      "line": 584
+      "message": "get_pinned_scripts is deprecated, use driver.script.pin() to manage preload scripts instead"
     }
   ]
 }
