@@ -57,6 +57,7 @@ from selenium.webdriver.common.bidi.session import Session
 from selenium.webdriver.common.bidi.storage import Storage
 from selenium.webdriver.common.bidi.webextension import WebExtension
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.cookie import Cookie
 from selenium.webdriver.common.options import ArgOptions, BaseOptions
 from selenium.webdriver.remote.bidi_connection import BidiConnection
 from selenium.webdriver.remote.client_config import ClientConfig
@@ -729,7 +730,7 @@ class WebDriver(BaseWebDriver):
         """Refreshes the current page."""
         self.execute(Command.REFRESH)
 
-    def get_cookies(self) -> list[dict]:
+    def get_cookies(self) -> list[Cookie]:
         """Get all cookies visible to the current WebDriver instance.
 
         Returns:
@@ -738,7 +739,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_ALL_COOKIES)["value"]
 
-    def get_cookie(self, name) -> dict | None:
+    def get_cookie(self, name: str) -> Cookie | None:
         """Get a single cookie by name (case-sensitive,).
 
         Returns:
@@ -777,7 +778,7 @@ class WebDriver(BaseWebDriver):
         """Delete all cookies in the scope of the session."""
         self.execute(Command.DELETE_ALL_COOKIES)
 
-    def add_cookie(self, cookie_dict) -> None:
+    def add_cookie(self, cookie_dict: Cookie) -> None:
         """Adds a cookie to your current session.
 
         Args:

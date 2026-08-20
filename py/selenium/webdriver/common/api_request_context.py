@@ -29,6 +29,8 @@ from typing import TYPE_CHECKING, Any
 import urllib3
 from urllib3.util.retry import Retry
 
+from selenium.webdriver.common.cookie import Cookie
+
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
 
@@ -98,7 +100,7 @@ class APIResponse:
         self._body = b""
 
 
-def _cookie_matches(cookie: dict, url: str, default_domain: str = "") -> bool:
+def _cookie_matches(cookie: Cookie, url: str, default_domain: str = "") -> bool:
     """Check if a browser cookie should be sent with a request to the given URL.
 
     Evaluates expiry, domain, path, and secure attribute matching per RFC 6265.
@@ -151,7 +153,7 @@ def _cookie_matches(cookie: dict, url: str, default_domain: str = "") -> bool:
     return True
 
 
-def _parse_set_cookie(header_value: str) -> dict:
+def _parse_set_cookie(header_value: str) -> Cookie:
     """Parse a single Set-Cookie header value into a cookie dict.
 
     Uses manual parsing instead of http.cookies.SimpleCookie which is too
@@ -171,7 +173,7 @@ def _parse_set_cookie(header_value: str) -> dict:
     name = name_value[:eq_idx].strip()
     value = name_value[eq_idx + 1 :].strip()
 
-    cookie: dict[str, Any] = {"name": name, "value": value}
+    cookie: Cookie = {"name": name, "value": value}
     has_max_age = False
 
     for part in parts[1:]:
@@ -455,7 +457,7 @@ class _BaseRequestContext:
             body=resp.data,
         )
 
-    def _get_cookies_for_request(self, url: str) -> list[dict]:
+    def _get_cookies_for_request(self, url: str) -> list[Cookie]:
         """Get cookies that should be sent with the request. Overridden by subclasses."""
         return []
 
@@ -558,7 +560,7 @@ class APIRequestContext(_BaseRequestContext):
         Returns:
             An _IsolatedAPIRequestContext instance.
         """
-        cookies: list[dict] = []
+        cookies: list[Cookie] = []
         if storage_state is not None:
             if isinstance(storage_state, (str, pathlib.Path)):
                 file_path = pathlib.Path(storage_state)
@@ -604,7 +606,7 @@ class APIRequestContext(_BaseRequestContext):
                 raise OSError(f"Cannot write storage state to {file_path}: {e}") from e
         return state
 
-    def _get_cookies_for_request(self, url: str) -> list[dict]:
+    def _get_cookies_for_request(self, url: str) -> list[Cookie]:
         """Get matching browser cookies for the request URL."""
         try:
             browser_cookies = self._driver.get_cookies()
@@ -657,7 +659,7 @@ class _IsolatedAPIRequestContext(_BaseRequestContext):
         self,
         base_url: str = "",
         extra_headers: dict[str, str] | None = None,
-        cookies: list[dict] | None = None,
+        cookies: list[Cookie] | None = None,
         timeout: float = 30.0,
         max_redirects: int = 10,
         fail_on_status_code: bool = False,
@@ -669,13 +671,13 @@ class _IsolatedAPIRequestContext(_BaseRequestContext):
             max_redirects=max_redirects,
             fail_on_status_code=fail_on_status_code,
         )
-        self._cookies: list[dict] = cookies or []
+        self._cookies: list[Cookie] = cookies or []
 
     def get_storage_state(self) -> dict[str, Any]:
         """Return the current cookies as a storage state dict."""
         return {"cookies": list(self._cookies)}
 
-    def _get_cookies_for_request(self, url: str) -> list[dict]:
+    def _get_cookies_for_request(self, url: str) -> list[Cookie]:
         """Get matching cookies from the internal jar."""
         # For isolated contexts, use the request hostname as default domain
         default_domain = urllib.parse.urlparse(url).hostname or ""
