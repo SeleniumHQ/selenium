@@ -18,14 +18,17 @@
 import dataclasses
 import json
 import logging
+import queue
 import threading
 from ssl import CERT_NONE
 from threading import Thread
-from time import sleep
 
 from websocket import WebSocketApp
 
 from selenium.common import WebDriverException
+
+# Sentinel pushed onto the event queue to tell the dispatcher thread to stop.
+_DISPATCHER_SHUTDOWN = object()
 
 
 def _snake_to_camel(name: str) -> str:
@@ -89,17 +92,41 @@ class WebSocketConnection:
 
         self.url = url
         self.response_wait_timeout = timeout
+        # Retained for backwards compatibility; the connection no longer
+        # busy-waits, so the interval no longer influences response latency.
         self.response_wait_interval = interval
 
-        self.callbacks = {}
         self.session_id = None
+        self._ws = None
+        self._ws_thread = None
+
         self._id = 0
         self._id_lock = threading.Lock()
+
+        # Command responses keyed by id, alongside a per-request ``Event`` the
+        # receive thread sets when the matching response arrives. Both are
+        # guarded by ``_response_lock`` so caller threads and the receive thread
+        # share them safely instead of relying on the GIL.
         self._messages = {}
-        self._started = False
+        self._response_events = {}
+        self._response_lock = threading.Lock()
+
+        # Event callbacks, guarded by ``_callbacks_lock``. Incoming events are
+        # handed to a single long-lived dispatcher thread: this preserves event
+        # ordering, bounds thread usage to one regardless of event volume (no
+        # thread-per-event exhaustion), and lets us surface callback exceptions
+        # instead of losing them on an orphaned thread.
+        self.callbacks = {}
+        self._callbacks_lock = threading.Lock()
+        self._dispatch_queue = queue.Queue()
+        self._dispatcher_thread = Thread(target=self._dispatch_events, daemon=True, name="BiDi-event-dispatcher")
+        self._dispatcher_thread.start()
+
+        self._open_event = threading.Event()
 
         self._start_ws()
-        self._wait_until(lambda: self._started)
+        if not self._open_event.wait(self.response_wait_timeout):
+            raise WebDriverException("Timed out waiting for the BiDi websocket connection to open")
 
     def close(self):
         # Close the socket first so ``run_forever`` returns; only then join the
@@ -112,7 +139,25 @@ class WebSocketConnection:
                 logger.debug(f"Error while closing websocket connection: {e}")
         if self._ws_thread is not None:
             self._ws_thread.join(timeout=self.response_wait_timeout)
-        self._started = False
+
+        # Stop the dispatcher thread now the receive thread is done producing events.
+        self._dispatch_queue.put(_DISPATCHER_SHUTDOWN)
+        if self._dispatcher_thread is not None:
+            self._dispatcher_thread.join(timeout=self.response_wait_timeout)
+
+        # Drop registered handlers so nothing fires after close, and wake any
+        # callers still blocked on a response so they fail fast rather than
+        # waiting out the full timeout.
+        with self._callbacks_lock:
+            self.callbacks.clear()
+        with self._response_lock:
+            self._messages.clear()
+            pending = list(self._response_events.values())
+            self._response_events.clear()
+        for response_event in pending:
+            response_event.set()
+
+        self._open_event.clear()
         self._ws = None
 
     def execute(self, command):
@@ -126,12 +171,21 @@ class WebSocketConnection:
 
         data = json.dumps(payload, cls=_BiDiEncoder)
         logger.debug(f"-> {data}"[: self._max_log_message_size])
+
+        # Register the waiter before sending so a fast response can't arrive
+        # before we are ready to receive it.
+        response_event = threading.Event()
+        with self._response_lock:
+            self._response_events[current_id] = response_event
+
         self._ws.send(data)
 
-        self._wait_until(lambda: current_id in self._messages)
-        if current_id not in self._messages:
+        response_event.wait(self.response_wait_timeout)
+        with self._response_lock:
+            self._response_events.pop(current_id, None)
+            response = self._messages.pop(current_id, None)
+        if response is None:
             raise WebDriverException(f"Timed out waiting for response to BiDi command {current_id}")
-        response = self._messages.pop(current_id)
 
         if "error" in response:
             error = response["error"]
@@ -146,21 +200,20 @@ class WebSocketConnection:
 
     def add_callback(self, event, callback):
         event_name = event.event_class
-        if event_name not in self.callbacks:
-            self.callbacks[event_name] = []
 
         def _callback(params):
             callback(event.from_json(params))
 
-        self.callbacks[event_name].append(_callback)
+        with self._callbacks_lock:
+            self.callbacks.setdefault(event_name, []).append(_callback)
         return id(_callback)
 
     on = add_callback
 
     def remove_callback(self, event, callback_id):
         event_name = event.event_class
-        if event_name in self.callbacks:
-            for callback in self.callbacks[event_name]:
+        with self._callbacks_lock:
+            for callback in self.callbacks.get(event_name, []):
                 if id(callback) == callback_id:
                     self.callbacks[event_name].remove(callback)
                     return
@@ -177,7 +230,7 @@ class WebSocketConnection:
 
     def _start_ws(self):
         def on_open(ws):
-            self._started = True
+            self._open_event.set()
 
         def on_message(ws, message):
             self._process_message(message)
@@ -201,21 +254,31 @@ class WebSocketConnection:
         logger.debug(f"<- {message}"[: self._max_log_message_size])
 
         if "id" in message:
-            self._messages[message["id"]] = message
+            message_id = message["id"]
+            with self._response_lock:
+                self._messages[message_id] = message
+                response_event = self._response_events.get(message_id)
+            if response_event is not None:
+                response_event.set()
 
         if "method" in message:
-            params = message["params"]
-            for callback in self.callbacks.get(message["method"], []):
-                Thread(target=callback, args=(params,), daemon=True).start()
+            # Hand events to the single dispatcher thread instead of spawning a
+            # thread per event; this keeps ordering and avoids the receive thread
+            # being blocked by a slow callback.
+            self._dispatch_queue.put((message["method"], message["params"]))
 
-    def _wait_until(self, condition):
-        timeout = self.response_wait_timeout
-        interval = self.response_wait_interval
-
-        while timeout > 0:
-            result = condition()
-            if result:
-                return result
-            else:
-                timeout -= interval
-                sleep(interval)
+    def _dispatch_events(self):
+        while True:
+            item = self._dispatch_queue.get()
+            if item is _DISPATCHER_SHUTDOWN:
+                break
+            method, params = item
+            with self._callbacks_lock:
+                callbacks = list(self.callbacks.get(method, []))
+            for callback in callbacks:
+                try:
+                    callback(params)
+                except Exception:
+                    # Never let one handler's failure kill the dispatcher or
+                    # silently vanish: log it and keep delivering other events.
+                    logger.error(f"Unhandled exception in BiDi event callback for '{method}'", exc_info=True)
