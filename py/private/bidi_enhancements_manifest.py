@@ -1878,7 +1878,9 @@ class PointerDownAction:
             "Provides control over browser permission grants during automated tests,\n"
             "as specified by the W3C Permissions specification.\n\n"
             "Typical usage::\n\n"
-            "    driver.permissions.set_permission('geolocation', 'granted', origin)\n"
+            "    driver.permissions.grant('geolocation', origin=origin)\n\n"
+            "    with driver.permissions.override('geolocation', 'granted', origin=origin):\n"
+            "        ...  # geolocation is granted; reset to prompt on exit\n"
         ),
         "class_docstrings": {
             "PermissionState": (
@@ -1891,6 +1893,9 @@ class PointerDownAction:
                 "BiDi interface for controlling browser permissions.\n\nAccess via ``driver.permissions``."
             ),
         },
+        "extra_init_code": [
+            "self._manager = PermissionsManager(self, self._driver)",
+        ],
         "extra_dataclasses": [
             '''class PermissionDescriptor:
     """Descriptor identifying a permission by name.
@@ -1904,15 +1909,20 @@ class PointerDownAction:
 
     def __repr__(self) -> str:
         return f"PermissionDescriptor(name={self.name!r})"''',
+            # PermissionsManager and PermissionOverrideContext live in the static
+            # helper module _permissions_handlers.py (staged via create-bidi-src
+            # extra_srcs) so the implementation is lintable and unit-testable as
+            # real code.
+            """from selenium.webdriver.common.bidi._permissions_handlers import PermissionsManager""",
         ],
         "extra_methods": [
             '''    def set_permission(
         self,
         descriptor: "PermissionDescriptor | str",
         state: "PermissionState | str",
+        *,
         origin: str | None = None,
         user_context: str | None = None,
-        *,
         embedded_origin: str | None = None,
     ) -> None:
         """Set a browser permission.
@@ -1920,8 +1930,9 @@ class PointerDownAction:
         Args:
             descriptor: The permission descriptor or permission name as a string.
             state: The desired permission state (granted, denied, or prompt).
-            origin: The origin to scope the permission to.
-            user_context: Optional user context ID to scope the permission.
+            origin: Keyword-only. The origin to scope the permission to.
+            user_context: Keyword-only. Optional user context ID to scope the
+                permission.
             embedded_origin: Keyword-only. Embedded origin for cross-origin
                 iframes; scopes the permission to that iframe's origin.
 
@@ -1951,6 +1962,92 @@ class PointerDownAction:
 
         cmd = command_builder("permissions.setPermission", params)
         self._conn.execute(cmd)''',
+            '''    def grant(
+        self,
+        descriptor: "PermissionDescriptor | str | list",
+        *,
+        origin: str | None = None,
+        user_context: str | None = None,
+    ) -> None:
+        """Grant one or more permissions.
+
+        Each override is tracked so :meth:`reset` (with no descriptor) can
+        clean them all up.
+
+        Args:
+            descriptor: A single permission name string, a single
+                ``PermissionDescriptor``, or an iterable of either.
+            origin: Optional origin to scope the grant(s) to.
+            user_context: Optional user context ID to scope the grant(s) to.
+        """
+        self._manager.grant(descriptor, origin=origin, user_context=user_context)''',
+            '''    def deny(
+        self,
+        descriptor: "PermissionDescriptor | str",
+        *,
+        origin: str | None = None,
+        user_context: str | None = None,
+    ) -> None:
+        """Deny a permission.
+
+        Shorthand for ``set_permission(descriptor, 'denied', ...)``.
+        The override is tracked so :meth:`reset` can clean it up later.
+
+        Args:
+            descriptor: The permission name string or a ``PermissionDescriptor``.
+            origin: Optional origin to scope the denial to.
+            user_context: Optional user context ID to scope the denial to.
+        """
+        self._manager.deny(descriptor, origin=origin, user_context=user_context)''',
+            '''    def reset(
+        self,
+        descriptor: "PermissionDescriptor | str | list | None" = None,
+        *,
+        origin: str | None = None,
+        user_context: str | None = None,
+    ) -> None:
+        """Reset one or more permissions to ``prompt`` (the browser default).
+
+        Called with no positional argument, resets every tracked override.
+        Only overrides applied through :meth:`grant`, :meth:`deny`, or
+        :meth:`override` are tracked; overrides applied directly via
+        :meth:`set_permission` are not.
+
+        Args:
+            descriptor: A single permission name string, a single
+                ``PermissionDescriptor``, an iterable of either, or ``None``
+                (default) to reset all tracked overrides.
+            origin: Optional origin the override was scoped to (ignored when
+                resetting all).
+            user_context: Optional user context ID the override was scoped to
+                (ignored when resetting all).
+        """
+        self._manager.reset(descriptor, origin=origin, user_context=user_context)''',
+            '''    def override(
+        self,
+        descriptor: "PermissionDescriptor | str",
+        state: "PermissionState | str",
+        *,
+        origin: str | None = None,
+        user_context: str | None = None,
+    ):
+        """Return a context manager that applies *state* on enter and resets on exit.
+
+        Args:
+            descriptor: The permission name string or a ``PermissionDescriptor``.
+            state: The desired permission state (``"granted"``, ``"denied"``, or
+                ``"prompt"``).
+            origin: Optional origin to scope the override to.
+            user_context: Optional user context ID to scope the override to.
+
+        Example::
+
+            with driver.permissions.override("geolocation", "granted", origin=origin):
+                # geolocation is granted inside this block
+                ...
+            # geolocation is reset to prompt here
+        """
+        return self._manager.override(descriptor, state, origin=origin, user_context=user_context)''',
         ],
     },
     "bluetooth": {

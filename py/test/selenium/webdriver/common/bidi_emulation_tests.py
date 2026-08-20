@@ -46,7 +46,7 @@ def get_browser_timezone_offset(driver):
 
 def get_browser_geolocation(driver, user_context=None):
     origin = driver.execute_script("return window.location.origin;")
-    driver.permissions.set_permission("geolocation", PermissionState.GRANTED, origin, user_context=user_context)
+    driver.permissions.set_permission("geolocation", PermissionState.GRANTED, origin=origin, user_context=user_context)
 
     return driver.execute_async_script("""
         const callback = arguments[arguments.length - 1];

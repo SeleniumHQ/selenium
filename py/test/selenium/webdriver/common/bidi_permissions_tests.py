@@ -51,7 +51,7 @@ def test_can_set_permission_to_granted(driver, pages):
     origin = get_origin(driver)
 
     # Set geolocation permission to granted
-    driver.permissions.set_permission("geolocation", PermissionState.GRANTED, origin)
+    driver.permissions.set_permission("geolocation", PermissionState.GRANTED, origin=origin)
 
     result = get_geolocation_permission(driver)
     assert result == PermissionState.GRANTED
@@ -64,7 +64,7 @@ def test_can_set_permission_to_denied(driver, pages):
     origin = get_origin(driver)
 
     # Set geolocation permission to denied
-    driver.permissions.set_permission("geolocation", PermissionState.DENIED, origin)
+    driver.permissions.set_permission("geolocation", PermissionState.DENIED, origin=origin)
 
     result = get_geolocation_permission(driver)
     assert result == PermissionState.DENIED
@@ -77,8 +77,8 @@ def test_can_set_permission_to_prompt(driver, pages):
     origin = get_origin(driver)
 
     # First set to denied, then to prompt since most of the time the default state is prompt
-    driver.permissions.set_permission("geolocation", PermissionState.DENIED, origin)
-    driver.permissions.set_permission("geolocation", PermissionState.PROMPT, origin)
+    driver.permissions.set_permission("geolocation", PermissionState.DENIED, origin=origin)
+    driver.permissions.set_permission("geolocation", PermissionState.PROMPT, origin=origin)
 
     result = get_geolocation_permission(driver)
     assert result == PermissionState.PROMPT
@@ -107,7 +107,7 @@ def test_can_set_permission_for_user_context(driver, pages):
 
     # Set permission only for the user context using PermissionDescriptor
     descriptor = PermissionDescriptor("geolocation")
-    driver.permissions.set_permission(descriptor, PermissionState.GRANTED, origin, user_context)
+    driver.permissions.set_permission(descriptor, PermissionState.GRANTED, origin=origin, user_context=user_context)
 
     # Check that the original window's permission hasn't changed
     driver.switch_to.window(original_window)
@@ -132,7 +132,7 @@ def test_invalid_permission_state_raises_error(driver, pages):
     descriptor = PermissionDescriptor("geolocation")
 
     with pytest.raises(ValueError, match="Invalid permission state"):
-        driver.permissions.set_permission(descriptor, "invalid_state", origin)
+        driver.permissions.set_permission(descriptor, "invalid_state", origin=origin)
 
 
 def test_permission_states_constants():
@@ -142,25 +142,18 @@ def test_permission_states_constants():
     assert PermissionState.PROMPT == "prompt"
 
 
-def test_embedded_origin_is_keyword_only(driver, pages):
-    """Verify embedded_origin cannot be passed positionally (backwards compat guard).
+def test_scoping_args_are_keyword_only(driver, pages):
+    """Verify origin, user_context, and embedded_origin are all keyword-only.
 
-    Existing call sites use set_permission(descriptor, state, origin, user_context)
-    as four positional args. embedded_origin must not occupy that 4th slot.
+    Only descriptor and state may be passed positionally; everything that scopes
+    the permission must be a keyword argument, matching the grant/deny/reset API.
     """
     pages.load("blank.html")
     origin = get_origin(driver)
-    user_context = driver.browser.create_user_context()
 
-    try:
-        # This is the pre-existing positional call pattern — must still work
-        driver.permissions.set_permission("geolocation", PermissionState.DENIED, origin, user_context)
-    finally:
-        driver.browser.remove_user_context(user_context)
-
-    # embedded_origin is keyword-only — a 5th positional arg must raise TypeError
+    # origin passed positionally must raise TypeError
     with pytest.raises(TypeError):
-        driver.permissions.set_permission("geolocation", PermissionState.DENIED, origin, None, origin)
+        driver.permissions.set_permission("geolocation", PermissionState.DENIED, origin)
 
 
 def test_can_set_permission_with_embedded_origin(driver, pages):
@@ -177,9 +170,176 @@ def test_can_set_permission_with_embedded_origin(driver, pages):
     driver.permissions.set_permission(
         "geolocation",
         PermissionState.GRANTED,
-        origin,
+        origin=origin,
         embedded_origin=origin,
     )
 
     result = get_geolocation_permission(driver)
     assert result == PermissionState.GRANTED
+
+
+# ---------------------------------------------------------------------------
+# Convenience methods: grant / deny / reset
+# ---------------------------------------------------------------------------
+
+
+def test_grant_sets_permission_to_granted(driver, pages):
+    """Test that grant() sets a permission to the granted state."""
+    pages.load("blank.html")
+    origin = get_origin(driver)
+
+    driver.permissions.grant("geolocation", origin=origin)
+
+    assert get_geolocation_permission(driver) == PermissionState.GRANTED
+
+
+def test_deny_sets_permission_to_denied(driver, pages):
+    """Test that deny() sets a permission to the denied state."""
+    pages.load("blank.html")
+    origin = get_origin(driver)
+
+    driver.permissions.deny("geolocation", origin=origin)
+
+    assert get_geolocation_permission(driver) == PermissionState.DENIED
+
+
+def test_reset_restores_prompt(driver, pages):
+    """Test that reset() with a descriptor restores the permission to prompt."""
+    pages.load("blank.html")
+    origin = get_origin(driver)
+
+    driver.permissions.deny("geolocation", origin=origin)
+    driver.permissions.reset("geolocation", origin=origin)
+
+    assert get_geolocation_permission(driver) == PermissionState.PROMPT
+
+
+def test_grant_with_list_grants_multiple_permissions(driver, pages):
+    """Test that grant() with a list grants all listed permissions."""
+    pages.load("blank.html")
+    origin = get_origin(driver)
+
+    driver.permissions.grant(["geolocation", "notifications"], origin=origin)
+
+    assert get_geolocation_permission(driver) == PermissionState.GRANTED
+
+
+def test_grant_with_permission_descriptor(driver, pages):
+    """Test that grant() accepts a PermissionDescriptor as well as a string."""
+    pages.load("blank.html")
+    origin = get_origin(driver)
+
+    driver.permissions.grant(PermissionDescriptor("geolocation"), origin=origin)
+
+    assert get_geolocation_permission(driver) == PermissionState.GRANTED
+
+
+def test_grant_with_user_context(driver, pages):
+    """Test that grant() with user_context scopes the override to that context only."""
+    user_context = driver.browser.create_user_context()
+    context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
+
+    pages.load("blank.html")
+    original_window = driver.current_window_handle
+    driver.switch_to.window(context_id)
+    pages.load("blank.html")
+    origin = get_origin(driver)
+
+    driver.switch_to.window(original_window)
+    original_permission = get_geolocation_permission(driver)
+
+    driver.permissions.grant("geolocation", origin=origin, user_context=user_context)
+
+    driver.switch_to.window(original_window)
+    assert get_geolocation_permission(driver) == original_permission
+
+    driver.switch_to.window(context_id)
+    assert get_geolocation_permission(driver) == PermissionState.GRANTED
+
+    driver.browsing_context.close(context_id)
+    driver.browser.remove_user_context(user_context)
+
+
+# ---------------------------------------------------------------------------
+# reset (no-arg and list forms)
+# ---------------------------------------------------------------------------
+
+
+def test_reset_with_no_args_clears_all_tracked_overrides(driver, pages):
+    """Test that reset() with no argument resets all overrides applied via grant/deny."""
+    pages.load("blank.html")
+    origin = get_origin(driver)
+
+    driver.permissions.grant("geolocation", origin=origin)
+    assert get_geolocation_permission(driver) == PermissionState.GRANTED
+
+    driver.permissions.reset()
+
+    assert get_geolocation_permission(driver) == PermissionState.PROMPT
+
+
+def test_reset_with_list_resets_multiple_permissions(driver, pages):
+    """Test that reset() with a list resets each listed permission to prompt."""
+    pages.load("blank.html")
+    origin = get_origin(driver)
+
+    driver.permissions.grant("geolocation", origin=origin)
+    driver.permissions.reset(["geolocation"], origin=origin)
+
+    assert get_geolocation_permission(driver) == PermissionState.PROMPT
+
+
+def test_reset_no_args_only_affects_tracked_overrides(driver, pages):
+    """Test that reset() does not disturb permissions set via set_permission directly."""
+    pages.load("blank.html")
+    origin = get_origin(driver)
+
+    # set_permission is not tracked by the manager
+    driver.permissions.set_permission("geolocation", PermissionState.GRANTED, origin=origin)
+
+    # reset() with no args is a no-op here (nothing tracked)
+    driver.permissions.reset()
+
+    # The permission set via set_permission is unaffected
+    assert get_geolocation_permission(driver) == PermissionState.GRANTED
+
+
+# ---------------------------------------------------------------------------
+# override context manager
+# ---------------------------------------------------------------------------
+
+
+def test_override_grants_within_block_and_resets_after(driver, pages):
+    """Test that override() applies the state on enter and resets to prompt on exit."""
+    pages.load("blank.html")
+    origin = get_origin(driver)
+
+    with driver.permissions.override("geolocation", "granted", origin=origin):
+        assert get_geolocation_permission(driver) == PermissionState.GRANTED
+
+    assert get_geolocation_permission(driver) == PermissionState.PROMPT
+
+
+def test_override_resets_even_after_exception(driver, pages):
+    """Test that override() resets the permission even when the body raises."""
+    pages.load("blank.html")
+    origin = get_origin(driver)
+
+    try:
+        with driver.permissions.override("geolocation", "granted", origin=origin):
+            raise RuntimeError("simulated failure")
+    except RuntimeError:
+        pass
+
+    assert get_geolocation_permission(driver) == PermissionState.PROMPT
+
+
+def test_override_with_permission_descriptor(driver, pages):
+    """Test that override() accepts a PermissionDescriptor as well as a string."""
+    pages.load("blank.html")
+    origin = get_origin(driver)
+
+    with driver.permissions.override(PermissionDescriptor("geolocation"), "denied", origin=origin):
+        assert get_geolocation_permission(driver) == PermissionState.DENIED
+
+    assert get_geolocation_permission(driver) == PermissionState.PROMPT
