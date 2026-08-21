@@ -53,7 +53,7 @@ bazel test //py/... --test_output=streamed  # Live output for debugging
 bazel test //py:test-chrome --headless
 
 # Run a specific test in a test file
-bazel test //py:test/selenium/webdriver/common/bidi_browsing_context_tests-chrome-bidi \
+bazel test //py:test/selenium/webdriver/common/bidi/browsing_context_tests-chrome-bidi \
   --test_arg=-k \
   --test_arg=test_get_tree_with_child \
 
