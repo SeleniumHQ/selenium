@@ -39,7 +39,7 @@ is what we advertise today.
    parameters are deprecated in favor of them.
 
 3. **Raise when the target cannot honor the request.** When a browser or transport cannot fulfill a
-   request, it raises rather than silently doing less — such as `installWebExtension` on Chrome without
+   request, it raises rather than silently doing less — such as `installWebExtension` on Chromium without
    BiDi.
 
 ## Considered options
@@ -57,7 +57,7 @@ These are the alternatives considered and not taken; the accepted choice is the 
   method on the driver directly
 
 **Conditional availability**
-- **Expose the method only where it works** — hide it on a Chrome session without BiDi rather than
+- **Expose the method only where it works** — hide it on a Chromium session without BiDi rather than
   raising. Not taken: Java cannot conditionally implement the interface, and doing it only in a binding
   that can (Ruby) would make it the odd one out; a uniform surface that raises a clear error is simpler.
 
@@ -86,5 +86,7 @@ These are the alternatives considered and not taken; the accepted choice is the 
 
 ## Consequences
 
-- Because the browser may run on a different host than the client (Grid), the implementation cannot pass a
-  client-local path; the extension has to be delivered to the target host itself.
+- Because the remote end may run on a different host than the client (for example a Grid node), the
+  implementation cannot pass a client-local filesystem path; it must deliver the extension to the remote
+  end and reference it in a form the remote end can resolve — inline content, or a location obtained by
+  uploading to the remote end first.
