@@ -21,8 +21,7 @@ module Selenium
   module WebDriver
     class BiDi
       # Wire round-trip runtime for the generated protocol layer: the value-type bases
-      # (Record, Union), the omit sentinel (UNSET), outbound enum validation, and the
-      # strict-inbound toggle.
+      # (Record, Union), the omit sentinel (UNSET), and outbound enum validation.
       #
       # @api private
       module Serialization
@@ -33,17 +32,6 @@ module Selenium
         UNSET = ::Object.new
         def UNSET.inspect = 'UNSET'
         UNSET.freeze
-
-        # Strict inbound mode. Off by default: a required field missing from a response is
-        # tolerated as omitted and warned, so a schema ahead of the browser does not block the
-        # caller. When SE_BIDI_STRICT is set to anything but 0/false, that same case escalates
-        # to an error for callers who want it.
-        #
-        # @api private
-        def self.strict?
-          value = ENV.fetch('SE_BIDI_STRICT', '').strip.downcase
-          !value.empty? && value != '0' && value != 'false'
-        end
 
         # Validates an outbound enum argument: +value+ is a symbol (or list of symbols) that
         # must be a key of the enum hash (+{symbol => wire_token}+), so a bad value fails

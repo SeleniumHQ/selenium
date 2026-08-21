@@ -630,23 +630,16 @@ module Selenium
           end
 
           # RequestDeviceInfo is a minimal record: a required `id` and a required-and-nullable `name`.
-          describe 'inbound required-field tolerance' do
-            it 'tolerates a missing required-nullable field as omitted (UNSET, not null) and warns' do
-              parsed = nil
-              expect { parsed = Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1') }
-                .to have_warning(:bidi_missing_required)
-              explicit = Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1', 'name' => nil)
-
-              expect(parsed.name).to equal(Serialization::UNSET)
-              expect(explicit.name).to be_nil
-            end
-
-            it 'escalates a missing required field to an error in strict mode (SE_BIDI_STRICT)' do
-              allow(ENV).to receive(:fetch).and_call_original
-              allow(ENV).to receive(:fetch).with('SE_BIDI_STRICT', '').and_return('true')
-
+          describe 'inbound required fields' do
+            it 'raises when a required field is missing from the response' do
               expect { Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1') }
                 .to raise_error(Error::SerializationError, /RequestDeviceInfo#name is required but was missing/)
+            end
+
+            it 'accepts an explicit null for a required-and-nullable field' do
+              parsed = Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1', 'name' => nil)
+
+              expect(parsed.name).to be_nil
             end
           end
         end
