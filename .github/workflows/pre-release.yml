@@ -122,7 +122,7 @@ jobs:
     with:
       name: Update devtools
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
-      run: ./go update_cdp ${{ inputs.chrome_channel }}
+      run: ./go update_cdp ${{ inputs.chrome_channel }} && ./go rb:pin
       artifact-name: patch-devtools
 
   commit-devtools:
@@ -140,23 +140,9 @@ jobs:
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
-  update-dependencies:
-    name: Run Dependency Updates
-    needs: [parse-tag, commit-versions, commit-devtools]
-    if: >-
-      always() &&
-      needs.commit-versions.result == 'success' &&
-      (needs.parse-tag.outputs.language != 'all' || needs.commit-devtools.result == 'success')
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Run dependency updates
-      ref: staging/release-${{ needs.parse-tag.outputs.tag }}
-      run: ./go ${{ needs.parse-tag.outputs.language }}:update${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:update' || '' }}
-      artifact-name: patch-dep-updates
-
   calculate-changelog-depth:
     name: Calculate Changelog Depth
-    needs: [parse-tag, commit-versions, commit-devtools, update-dependencies]
+    needs: [parse-tag, commit-versions, commit-devtools]
     if: >-
       always() &&
       needs.commit-versions.result == 'success' &&
@@ -225,9 +211,6 @@ jobs:
           - task: manager
             name: Selenium Manager Binaries
             run: ./go update_manager
-          - task: multitool
-            name: Multitool
-            run: ./go update_multitool
           - task: cddl
             name: CDDL Spec Files
             run: ./go update_cddl
@@ -247,10 +230,9 @@ jobs:
 
   create-pr:
     name: Create Pull Request
-    needs: [parse-tag, update-dependencies, update-changelogs, release-updates]
+    needs: [parse-tag, update-changelogs, release-updates]
     if: >-
       always() && !cancelled() &&
-      needs.update-dependencies.result == 'success' &&
       needs.update-changelogs.result == 'success' &&
       needs.release-updates.result != 'failure'
     runs-on: ubuntu-latest
@@ -286,12 +268,10 @@ jobs:
           apply_patch versions "bump versions"
           apply_patch devtools "update devtools versions"
           apply_patch cddl "update cddl spec files"
-          apply_patch dep-updates "update dependencies"
           apply_patch changelogs "changelogs updated"
           apply_patch rust-changelogs "rust changelogs updated"
           apply_patch browsers "update pinned browser versions"
           apply_patch manager "update selenium manager versions"
-          apply_patch multitool "update multitool binaries"
           apply_patch authors "update authors file"
           rm -rf patches
       - name: Create Pull Request
@@ -318,12 +298,10 @@ jobs:
             | Versions | ${{ steps.apply.outputs.versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | CDP version | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.devtools == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
             | CDDL spec files | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.cddl == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
-            | Binding Dependencies | ${{ steps.apply.outputs.dep-updates == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Changelogs | ${{ steps.apply.outputs.changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Rust Changelogs | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.rust-changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
             | Pinned Browsers | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.browsers == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
             | Selenium Manager | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.manager == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
-            | Multitool binaries | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.multitool == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
             | Authors | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.authors == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
 
             ---
@@ -346,7 +324,7 @@ jobs:
 
   unlock-trunk-on-failure:
     name: Unlock Trunk on Failure
-    needs: [parse-tag, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, update-devtools, commit-devtools, update-dependencies, calculate-changelog-depth, update-changelogs, release-updates, create-pr]
+    needs: [parse-tag, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, update-devtools, commit-devtools, calculate-changelog-depth, update-changelogs, release-updates, create-pr]
     if: always() && needs.restrict-trunk.result == 'success' && needs.create-pr.result != 'success'
     uses: ./.github/workflows/restrict-trunk.yml
     with:
@@ -359,7 +337,7 @@ jobs:
   on-prerelease-failure:
     name: On Pre-release Failure
     runs-on: ubuntu-latest
-    needs: [parse-tag, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, update-devtools, commit-devtools, update-dependencies, calculate-changelog-depth, update-changelogs, release-updates, create-pr]
+    needs: [parse-tag, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, update-devtools, commit-devtools, calculate-changelog-depth, update-changelogs, release-updates, create-pr]
     if: failure() || cancelled()
     steps:
       - name: Slack Notification
@@ -374,7 +352,6 @@ jobs:
             • Selenium Manager: ${{ needs.selenium-manager.result }}
             • Versions: ${{ needs.commit-versions.result }}
             • Devtools: ${{ needs.commit-devtools.result }}
-            • Dependencies: ${{ needs.update-dependencies.result }}
             • Changelogs: ${{ needs.update-changelogs.result }}
             • Release Updates: ${{ needs.release-updates.result }}
             • Create PR: ${{ needs.create-pr.result }}

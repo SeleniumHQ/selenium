@@ -148,7 +148,7 @@ task :pin do
   Bazel.execute('run', [], '//py:requirements.update')
 end
 
-desc 'Update Python dependencies within declared ranges'
+desc 'Update Python dependencies to latest versions within specified range'
 task :update do
   Bazel.execute('run', ['--', '--upgrade'], '//py:requirements.update')
 end

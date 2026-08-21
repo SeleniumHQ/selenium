@@ -428,7 +428,7 @@ task :docs_generate do
   Bazel.execute('build', [], '//java/src/org/openqa/selenium/grid:all-javadocs')
 end
 
-desc 'Update Maven dependencies'
+desc 'Update Maven dependencies to latest versions'
 task :update do
   puts 'Updating Maven dependencies'
   # Make sure things are in a good state to start with

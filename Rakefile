@@ -76,11 +76,6 @@ task :update_multitool do |_task, _arguments|
   Bazel.execute('run', [], '//scripts:update_multitool_binaries')
 end
 
-desc 'Update dependencies for release'
-task :release_update do |_task, _arguments|
-  Rake::Task[:update_multitool].invoke
-end
-
 desc 'Update pinned CDDL spec files from w3c/webref'
 task :update_cddl do |_task, _arguments|
   puts 'Updating pinned CDDL spec references'
@@ -107,10 +102,18 @@ task :authors do
      'sort -uf > AUTHORS.tmp && mv AUTHORS.tmp AUTHORS'
 end
 
-# Example: `./go release_updates selenium-4.31.0 early-stable`
-# Example: `./go release_updates selenium-4.31.1-ruby`
+desc 'Update dependencies for all bindings and Rust, plus pinned multitool binaries'
+task :update do
+  Rake::Task['all:update'].invoke
+  Rake::Task['rust:update'].invoke
+  Rake::Task['update_multitool'].invoke
+end
+
+# Equivalent to `.github/workflows/pre-release.yml` in a single command
+# Example: `./go pre_release selenium-4.31.0 early-stable`
+# Example: `./go pre_release selenium-4.31.1-ruby`
 desc 'Update everything in preparation for a release'
-task :release_updates, [:tag, :channel] do |_task, arguments|
+task :pre_release, [:tag, :channel] do |_task, arguments|
   parsed = SeleniumRake.parse_tag(arguments[:tag])
   version = parsed[:version]
   language = parsed[:language]
@@ -120,15 +123,12 @@ task :release_updates, [:tag, :channel] do |_task, arguments|
     Rake::Task['update_cdp'].invoke(arguments[:channel])
     Rake::Task['update_cddl'].invoke
     Rake::Task['update_manager'].invoke
-    Rake::Task['update_multitool'].invoke
     Rake::Task['authors'].invoke
     Rake::Task['rust:version'].invoke(version)
-    Rake::Task['rust:update'].invoke
     Rake::Task['rust:changelogs'].invoke
   end
 
   Rake::Task["#{language}:version"].invoke(version)
-  Rake::Task["#{language}:update"].invoke
   Rake::Task["#{language}:changelogs"].invoke
 end
 
