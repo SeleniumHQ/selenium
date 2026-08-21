@@ -139,6 +139,7 @@ MODULE.bazel.lock
 /.vscode/
 /.scannerwork/
 /.bazelrc.local
+/.bazelbsp/
 
 # Engflow
 *.crt
