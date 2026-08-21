@@ -19,8 +19,9 @@ feed) are out of scope, as is any ergonomic sugar over these types that a higher
 
 ## Decision
 
-In this record, "the spec" is the declared schema the layer validates against, which includes all relevant
-published WebDriver BiDi specifications and any vendor-defined extensions. The spec fixes the layer's
+In this record, "the spec" is the declared schema the layer validates against, which must include all
+relevant published WebDriver BiDi specifications and any vendor-defined extensions it supports, and may
+include project-maintained overrides where additional flexibility is needed. The spec fixes the layer's
 baseline: spec strings reach the wire verbatim, an *omitted* field stays distinct from an explicit `null`,
 and a union resolves by the rule the spec declares. What it leaves open,
 this record decides in three parts. The first is the typed **representation** the layer exposes; the other
@@ -68,15 +69,15 @@ error instead of sending it (caught at compile time where a binding's types allo
 
 ### Inbound
 
-An inbound payload is the remote end's responsibility; the layer must tolerate what it can accurately
-represent and reject only what it cannot, providing flexibility for a remote end on a spec version newer or
-older than the one the binding validates against.
+An inbound payload is the remote end's responsibility; the layer must tolerate what it can faithfully
+represent and reject what it cannot. It tolerates a field the spec does not declare (decision 9), so a
+remote end on a newer spec version does not break the binding; it rejects a malformed value (decision 7) or
+a missing required field (decision 8), neither of which yields a valid typed object.
 
 7. **Reject an invalid value.** A value that is present but not a valid instance (decision 4)
    cannot yield a valid object, so the layer must raise an error.
-8. **Tolerate a missing required field.** The layer must represent the missing field as *omitted* rather
-   than an explicit `null` or a substituted placeholder. By default it must log a warning with the
-   details; an optional strict mode may raise an error instead.
+8. **Reject a missing required field.** A required field absent from an inbound payload is an error: the
+   layer must raise rather than substitute a placeholder or represent the field as *omitted*.
 9. **Tolerate an undeclared field.** If the type is declared extensible, the layer must preserve the
    field in the type's map (decision 1). If it is not, the layer must log a warning that an undeclared field
    was received, and drop it.
@@ -108,10 +109,6 @@ unrecognized error code included, even if that reason would otherwise fail one o
 - **Defer outbound validation to the server** (decision 5). Send the command and let the remote end return
   the error the spec defines. Rejected: a local error is clearer and cheaper than a round-trip, and a static
   binding gets it for free.
-- **Enforce required-ness in the object's constructor** (decisions 5 and 8). Let the object reject a missing
-  field itself rather than at the serialization boundary. Rejected: constructor enforcement is symmetric:
-  it rejects an incomplete inbound payload as readily as an outbound one, making tolerated absence
-  impossible. A permissive object with enforcement at the boundaries is what lets the two directions differ.
 - **Tolerate malformed values, not only absence** (decision 7). Best-effort a wrong-typed or unmappable
   value rather than erroring. Rejected: unlike a missing field, a present-but-invalid value cannot yield a
   valid typed object, and tolerating it means a placeholder or a broken object, the failure this layer
@@ -124,16 +121,14 @@ unrecognized error code included, even if that reason would otherwise fail one o
   still layer one on top. This covers only a carrier for a discriminator the spec does not declare; a shared
   carrier for a declared variant a binding has not modeled distinctly is the decision-1 representation
   choice, not this behavior.
-- **Enforce required-ness inbound too** (decision 8). Error on a missing required field as the outbound path
-  does. Rejected: the remote end is not ours to control, so a browser lagging a newly-required field would
-  cost the caller the whole message until Selenium regenerated and shipped a fix, a hard block over a value
-  no caller depended on. Tolerating absence costs the caller nothing and never blocks them.
-- **Keep inbound strict, relaxing reactively via a manifest** (decision 8). Type inbound required-ness as
-  present-or-error, and annotate the specific lagging fields in a checked-in manifest so the generator
-  relaxes only those. Rejected: inbound strictness has no user-facing value, and even scoped to one field it
-  still blocks the caller until the project notices the lag, annotates it, and ships a release, a reactive
-  burden Selenium cannot promise. Tolerating absence and warning preserves the same signal with nothing to
-  maintain.
+- **Tolerate a missing required field inbound** (decision 8). Represent an absent required field as
+  *omitted* and warn, rather than erroring, so a remote end lagging a newly-required field does not cost the
+  caller the message. Rejected: a static, generated binding cannot hold a required field as *omitted*
+  without typing it away from its declared shape (a required-nullable field then needs an extra
+  omitted-vs-null state), and no clean option exists for this in Java, so the tolerance is not implementable
+  consistently across bindings. Erroring keeps required-ness symmetric and matches every binding, including
+  the webdriverbidi-net reference; a lagging field is handled by a project schema override, not by runtime
+  tolerance.
 - **Surface message-level extras in this layer** (decision 9) rather than leaving them to the transport.
   Rejected: the envelope is the transport's; this layer governs per-type extensibility only.
 - **Retain extras only where they can be sent back** (decision 9), narrower than every extensible type.
@@ -149,11 +144,9 @@ unrecognized error code included, even if that reason would otherwise fail one o
 - Outbound validity differs in cost by binding: a static binding gets it from construction, while a
   dynamic binding must enforce it with an explicit runtime check. The contract requires the behavior from
   both; where a dynamic binding does not yet check, that is a gap to close, not an exemption.
-- Required-ness is asymmetric: a required field must be present to send (decision 5) but is tolerated when
-  absent on receipt (decision 8); the layer validates what it controls and accepts what it does not.
-- Tolerating absence constrains the type, not just the deserializer: a static binding cannot type an inbound
-  field non-null yet leave it *omitted* when missing. A nullable slot suffices for most fields (real data is
-  never `null` there, so an *absent* field maps to `null` = *omitted*; a wire-level explicit `null` stays
-  invalid per decision 7); a required *nullable* field (network `context`/`navigation`,
-  response sizes, log `text`, ~30 in all) instead needs *omitted* kept distinct from `null`. The trigger is
-  schema-detectable (`required ∧ nullable`).
+- Required-ness is symmetric: a required field must be present and valid in both directions (decisions 5
+  and 8). A static binding enforces it on the type itself, typing each field by its declared shape with no
+  omitted-vs-null representation, which is what makes the contract implementable in a generated static
+  binding like Java. The cost is backward compatibility: a remote end that omits a newly-required field
+  errors the whole message; relaxing that field with a project override degrades it to a missing field
+  rather than a failed session.
