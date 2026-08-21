@@ -26,7 +26,7 @@ ordering, multi-handler resolution, error handling, and what an event exposes ar
 | JavaScript | No request or response handler API. |
 
 Handlers are reached through `driver.network`, the supported protocol-neutral API established by the
-BiDi implementation boundaries decision ([#17670](https://github.com/SeleniumHQ/selenium/pull/17670));
+BiDi implementation boundaries decision ([17670](17670-bidi-implementation-boundaries.md));
 nothing here exposes a protocol type.
 
 ## Decision
@@ -133,9 +133,11 @@ network.addAuthentication(UsernameAndPassword.of("user", "pass"),
 ```
 
 4. **When a handler settles a disposition, the first to do so resolves the event and
-   stops the chain.** The user settles the event by acting on the object the callable receives. A
-   handler that only stages mutations does not settle; it passes the event to the next handler
-   (decision 5).
+   stops the chain.** An event's chain is the registered handlers whose URL patterns (decision 2) and
+   scope (decision 11) match it; a handler outside the event's scope is not consulted, even when a
+   broader handler is what caused the event to be intercepted. The user settles the event by acting on
+   the object the callable receives. A handler that only stages mutations does not settle; it passes
+   the event to the next handler (decision 5).
    * A request has three: `fail` (BiDi's `FailRequest`) ends it with an error;
      `respond` (`ProvideResponse`) replies with a mock, so nothing reaches the server; `submit`
      (`ContinueRequest`) sends it on, with any staged mutations, and consults no further handler.
@@ -269,34 +271,27 @@ network.add_request_handler(collect_body: true) { |r| log(r.body) }
 network.addRequestHandler(new BodyCollection(), r -> log(r.body()));
 ```
 
-11. **Handlers are scoped to one top-level browsing context by default.** A handler applies to the
-    top-level browsing context the session is on when it is registered — the current window handle.
-    Being switched into a frame does not narrow that: a frame is not a scope the protocol can express,
-    since it rejects a child context outright when an intercept is registered and widens one to its
-    top-level context when an event is subscribed to. Narrowing to a frame belongs in the callable.
+11. **Handlers are scoped to one window handle by default.** A window handle is a top-level browsing
+    context; by default a handler applies to the one the session is on when it is registered. Being
+    switched into a frame does not narrow that; a frame is not a scope this API expresses, so narrowing
+    to one belongs in the callable.
 
-    To scope a handler elsewhere the user passes **either** a browsing context **or** a user context,
-    never both — the two are mutually exclusive in the protocol, which errors when given both. A
-    browsing context targets that one tab, including a background tab that does not have focus. A user
-    context targets every top-level browsing context in that isolation partition, including ones
-    opened after the handler is registered, which makes it the unit for interception that spans a
-    partition rather than a known tab.
-
-    The value a binding takes for the browsing context is the same one that scopes script and log
-    events — a window handle ([#17776](https://github.com/SeleniumHQ/selenium/pull/17776)), or the
-    browsing-context handle object where a binding exposes one
-    ([#17681](https://github.com/SeleniumHQ/selenium/pull/17681)). This record does not add a third
-    spelling.
+    To scope a handler elsewhere the user passes either a window handle or a user context, never both.
+    A window handle targets that one tab, including a background tab that does not have focus. A user
+    context targets every window handle it contains, including ones opened later, so it scopes
+    interception to a whole user context rather than a single known tab. The two are mutually
+    exclusive: a handler is scoped by one or the other, and a binding rejects being given both. A
+    handler must only act on events within its scope.
 
 ```ruby
-# Either a browsing context or a user context, never both
+# Either a window handle or a user context, never both
 network.add_request_handler(window_handle: other_tab) { |r| r.fail if blocked?(r.url) }
 network.add_request_handler(user_context: isolated) { |r| r.fail if blocked?(r.url) }
 ```
 
 ```java
 network.addRequestHandler(otherTab, r -> { if (blocked(r.url())) r.fail(); });   // one tab
-network.addRequestHandler(isolated, r -> { if (blocked(r.url())) r.fail(); });   // whole partition
+network.addRequestHandler(isolated, r -> { if (blocked(r.url())) r.fail(); });   // whole user context
 ```
 
 ## Considered options
@@ -387,14 +382,13 @@ network.addRequestHandler(isolated, r -> { if (blocked(r.url())) r.fail(); });  
 - **Context scoping (decision 11).**
   - No scoping, so every handler applies globally — cannot target a specific tab, a background tab, or
     a user context, which network work spanning several contexts needs.
-  - Scope only by browsing context — a user context is the natural unit for interception that spans a
-    partition, and it also covers tabs opened later, so either unit is accepted.
-  - Accept a browsing context and a user context together and intersect them — the protocol rejects
-    the combination as `invalid argument`, so there is nothing to send; and a handler scoped to one tab
-    is already narrower than any partition that tab belongs to.
-  - Scope to a frame rather than a top-level browsing context — not expressible: an intercept rejects a
-    child context and a subscription widens one to its top-level context, so a frame-scoped handler
-    would quietly behave as a tab-scoped one.
+  - Scope only by window handle — a user context is the natural unit for interception that spans
+    several tabs and covers tabs opened later, so either unit is accepted.
+  - Accept a window handle and a user context together — the two are mutually exclusive, and a handler
+    scoped to one tab is already narrower than the user context that tab belongs to, so combining them
+    has no meaning.
+  - Scope to a frame rather than a window handle — not a scope this API expresses; narrowing to a
+    frame goes in the callable.
 
 ## Consequences
 
@@ -406,13 +400,10 @@ network.addRequestHandler(isolated, r -> { if (blocked(r.url())) r.fail(); });  
   committed only when it returns cleanly rather than accumulated on one shared event object.
 - Authentication handlers gain a callable form in addition to static credentials, so credentials can
   be produced — or the challenge cancelled — per challenge.
-- Handlers can be scoped to a single top-level browsing context or to a user context, so interception
-  can target a background tab or a whole isolated partition rather than only the current tab. Because
-  the two are mutually exclusive, a binding rejects being given both rather than forwarding them.
-- The protocol has no user-context parameter for network interception
-  ([w3c/webdriver-bidi#845](https://github.com/w3c/webdriver-bidi/issues/845)) — only for event
-  subscription. Until that lands, a binding honoring a user-context scope resolves it to that
-  partition's top-level browsing contexts itself, and keeps doing so as contexts are created, so the
-  handler covers tabs opened later.
+- Handlers can be scoped to a single window handle or to a user context, so interception can target a
+  background tab or a whole user context rather than only the current tab. The two are mutually
+  exclusive, so a binding rejects being given both.
+- Handlers with different scopes coexist: each acts only on events in its own scope, so an event a
+  broadly scoped handler intercepts does not invoke a narrower handler whose scope excludes it.
 - This changes handler behavior that several bindings already ship, so it is not backwards
   compatible.
