@@ -1,7 +1,8 @@
 # 17817. The driver installs web extensions directly
 
-- Status: Proposed
+- Status: Accepted
 - Discussion: https://github.com/SeleniumHQ/selenium/pull/17817
+- Tracking: https://github.com/SeleniumHQ/selenium/issues/17933
 
 ## Context
 
