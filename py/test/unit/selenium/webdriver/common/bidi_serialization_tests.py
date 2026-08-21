@@ -163,6 +163,7 @@ class Rect(Record):
 @register("test.Shape")
 class Shape(Union):
     _PRESENCE = (("test.Circle", ("radius",)), ("test.Rect", ("width", "height")))
+    _SCALAR_VALUES = frozenset({"blob"})
 
 
 @register("test.BareOrObject")
@@ -285,7 +286,7 @@ def test_round_trips_through_the_wire():
     assert Point.from_json(Point(x=1, y=2).as_json()) == Point(x=1, y=2)
 
 
-# --- outbound value validation (as_json, ADR decision 1) ---
+# --- outbound value validation (as_json) ---
 
 
 def test_as_json_accepts_valid_outbound_values():
@@ -296,6 +297,11 @@ def test_as_json_accepts_valid_outbound_values():
 def test_as_json_rejects_a_wrong_typed_primitive():
     with pytest.raises(BiDiSerializationError, match=r"Point.x: expected int, got str"):
         Point(x="nope", y=2).as_json()
+
+
+def test_as_json_rejects_a_fractional_value_on_an_integer_field():
+    with pytest.raises(BiDiSerializationError, match=r"Point.x: expected int, got float"):
+        Point(x=1.5, y=2).as_json()
 
 
 def test_as_json_rejects_a_scalar_where_a_list_is_expected():
@@ -337,7 +343,7 @@ def test_as_json_rejects_a_non_variant_object_map_value():
         StringMap(value=[["k", Circle(radius=1)]]).as_json()
 
 
-# --- outbound union fields (ADR decisions 4-5) ---
+# --- outbound union fields ---
 
 
 def test_as_json_serializes_a_valid_union_variant():
@@ -355,9 +361,14 @@ def test_as_json_rejects_a_scalar_on_an_object_only_union_field():
         UnionField(obj="cat").as_json()
 
 
-def test_as_json_allows_a_bare_scalar_on_a_non_object_only_union_field():
-    # Shape has scalar arms (not object-only), so a bare scalar passes as inbound would return it.
-    assert UnionField(shape="whatever").as_json() == {"shape": "whatever"}
+def test_as_json_allows_a_pinned_bare_scalar_on_a_non_object_only_union_field():
+    # Shape has a scalar arm (not object-only), so its pinned literal passes as inbound would return it.
+    assert UnionField(shape="blob").as_json() == {"shape": "blob"}
+
+
+def test_as_json_rejects_an_unpinned_bare_scalar_on_a_non_object_only_union_field():
+    with pytest.raises(BiDiSerializationError, match=r"UnionField.shape: 'whatever' is not one of Shape's arms"):
+        UnionField(shape="whatever").as_json()
 
 
 def test_as_json_accepts_a_transitively_nested_union_variant():
@@ -463,9 +474,10 @@ def test_integer_rejects_a_fractional_float():
         Scalars.from_json({"count": 1.5, "ratio": 1.0, "flag": True, "name": "n"})
 
 
-def test_integer_rejects_even_a_whole_valued_float():
-    with pytest.raises(BiDiSerializationError, match=r"expected int"):
-        Scalars.from_json({"count": 5.0, "ratio": 1.0, "flag": True, "name": "n"})
+def test_integer_accepts_a_whole_valued_float_and_holds_it_as_an_int():
+    parsed = Scalars.from_json({"count": 5.0, "ratio": 1.0, "flag": True, "name": "n"})
+    assert parsed.count == 5
+    assert isinstance(parsed.count, int)
 
 
 def test_integer_rejects_a_bool():
@@ -547,7 +559,7 @@ def test_an_inbound_enum_value_outside_the_schema_raises():
 
 def test_an_extensible_record_keeps_undeclared_properties_silently(caplog):
     # An undeclared field on an extensible type is spec-sanctioned (preserved), not a deviation,
-    # so it is kept without a warning (ADR decision 1/9).
+    # so it is kept without a warning.
     with caplog.at_level(logging.WARNING):
         result = Extensible.from_json({"known": "k", "extra": "e", "more": 1})
     assert result.extensions == {"extra": "e", "more": 1}
@@ -566,13 +578,13 @@ def test_an_extensible_record_merges_captured_keys_back_on_serialization():
 
 
 def test_an_extension_may_not_shadow_a_declared_field_on_serialization():
-    # A key the type declares must never appear in the extras map (ADR decision 1), so an extra
+    # A key the type declares must never appear in the extras map, so an extra
     # cannot overwrite a declared field on the wire.
     with pytest.raises(BiDiSerializationError, match=r"shadows declared field 'known'"):
         Extensible(known="k", extensions={"known": "evil"}).as_json()
 
 
-# --- nullable constants (ADR decision 4, by vocabulary) ---
+# --- nullable constants ---
 
 
 def test_a_nullable_constant_accepts_its_literal_and_null_outbound():

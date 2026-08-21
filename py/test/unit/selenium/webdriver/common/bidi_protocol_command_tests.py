@@ -146,7 +146,7 @@ def test_a_union_discriminator_selects_and_sends_its_variant():
     assert connection.sent == {"method": "network.continueWithAuth", "params": {"request": "r", "action": "cancel"}}
 
 
-# --- extras preserved only for a re-sendable extensible type (ADR item 8) ---
+# --- extras preserved only for a re-sendable extensible type ---
 
 _STRING_VALUE = {"type": "string", "value": "v"}
 
@@ -160,7 +160,7 @@ def test_a_re_sendable_extensible_type_round_trips_unknown_wire_keys():
 
 def test_a_received_only_extensible_type_retains_unknown_wire_keys():
     # network.Cookie is extensible per spec, so it retains unknown keys even though it is only ever
-    # received, never sent back — every extensible type keeps its extras (ADR decision 9).
+    # received, never sent back — every extensible type keeps its extras.
     cookie = Cookie.from_json(
         {
             "name": "n",

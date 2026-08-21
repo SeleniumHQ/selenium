@@ -257,7 +257,7 @@ class Record:
             value = getattr(self, f.name)
             if w.fixed is not UNSET:
                 # A baked discriminator (non-nullable) is forced to its const. A nullable constant
-                # is settable and must be its literal or null (ADR decision 4, by vocabulary).
+                # is settable and must be its literal or null.
                 if w.nullable and value is not UNSET and value is not None and value != w.fixed:
                     raise BiDiSerializationError(
                         f"{type(self).__name__}.{f.name}: {value!r} must be {w.fixed!r} or None"
@@ -294,7 +294,7 @@ class Record:
             declared.add(w.wire)
             value = getattr(self, f.name)
             if value is UNSET:
-                # Outbound requires every required field (ADR decision 1). Enforced here at
+                # Outbound requires every required field. Enforced here at
                 # the boundary, not in the constructor, so the object stays permissive and
                 # inbound can tolerate the same field being absent (see from_json).
                 if w.required:
@@ -306,7 +306,7 @@ class Record:
             payload[w.wire] = _as_json(value)
         if self._EXTENSIBLE:
             extras = getattr(self, "extensions", None) or {}
-            # A key the type declares must never appear in the extras map (ADR decision 1), so an
+            # A key the type declares must never appear in the extras map, so an
             # extra can never shadow a declared field on the wire — whether or not that field is set.
             shadowed = [k for k in extras if k in declared]
             if shadowed:
@@ -338,9 +338,9 @@ class Record:
                 continue
             kwargs[f.name] = _read_field(cls, f.name, w, payload)
         undeclared = [k for k in payload if k not in known]
-        # A missing required field is tolerated and left unset (ADR decision 8). An undeclared field
+        # A missing required field is tolerated and left unset. An undeclared field
         # on an extensible type is spec-sanctioned, not a deviation: it is preserved in the extras
-        # map silently (ADR decision 1/9). On a non-extensible type it is a deviation: warn and drop.
+        # map silently. On a non-extensible type it is a deviation: warn and drop.
         # Each tolerated kind warns at most once per record — never once per key, so a verbose payload
         # cannot flood the log; strict_inbound escalates a genuine deviation to an error.
         if missing_required:
@@ -401,15 +401,23 @@ def _check_scalar(cls: type, name: str, w: _Wire, value: Any) -> Any:
     raise BiDiSerializationError(f"{cls.__name__}.{name}: map key expected {' or '.join(scalars)}, got {got} {value!r}")
 
 
-# JSON value -> the Python types a schema primitive accepts. ``integer`` accepts only an
-# int (a non-integer float like 1.5 is a real mismatch, and even 5.0 is rejected under
-# strict-first — relax reactively if a browser is ever seen sending it). ``number`` accepts
-# an int or a float. ``bool`` is excluded from the numeric checks: it is an ``int`` subclass
-# but is not a number.
+def _is_whole(value: Any) -> bool:
+    # A browser is free to encode a whole number either way (JS has no int/float split), so
+    # ``5`` and ``5.0`` are both integers on the wire; only a fractional value is a mismatch.
+    if isinstance(value, bool):
+        return False
+    if isinstance(value, int):
+        return True
+    return isinstance(value, float) and value.is_integer()
+
+
+# JSON value -> the Python types a schema primitive accepts. A primitive matches by JSON kind,
+# not Python type: ``integer`` admits any whole number, ``number`` an int or a float. ``bool``
+# is excluded from the numeric checks: it is an ``int`` subclass but is not a number.
 _PRIMITIVE_CHECKS = {
     "str": lambda v: isinstance(v, str),
     "bool": lambda v: isinstance(v, bool),
-    "int": lambda v: isinstance(v, int) and not isinstance(v, bool),
+    "int": _is_whole,
     "float": lambda v: isinstance(v, (int, float)) and not isinstance(v, bool),
 }
 
@@ -417,7 +425,7 @@ _PRIMITIVE_CHECKS = {
 def _read_scalar(cls: type, name: str, w: _Wire, raw: Any) -> Any:
     if w.fixed is not UNSET:
         # A nullable constant (a non-nullable one is baked and never read): the wire value must be
-        # the literal, else it is invalid (ADR decision 4, by vocabulary). A null took the nullable
+        # the literal, else it is invalid. A null took the nullable
         # path in _read_field before reaching here.
         if raw != w.fixed:
             raise BiDiSerializationError(f"{cls.__name__}.{name}: {raw!r} is not the constant {w.fixed!r}")
@@ -441,11 +449,14 @@ def _read_scalar(cls: type, name: str, w: _Wire, raw: Any) -> Any:
         if check and not check(raw):
             got = type(raw).__name__
             raise BiDiSerializationError(f"{cls.__name__}.{name}: expected {w.primitive}, got {got} {raw!r}")
+        if w.primitive == "int" and isinstance(raw, float):
+            # A whole number is exact in both types, so the declared type is held with nothing lost.
+            return int(raw)
     return raw
 
 
 def _validate_outbound(owner: str, name: str, w: _Wire, value: Any) -> None:
-    """Reject an outbound value that violates its wire type before it is sent (ADR decision 1).
+    """Reject an outbound value that violates its wire type before it is sent.
 
     A caller mistake — a wrong primitive, a scalar where a list is expected, a raw dict where a
     typed record belongs — surfaces here as a local error rather than a remote protocol error.
@@ -535,6 +546,7 @@ class Union:
     _FALLBACK: str | None = None
     _DISCRIMINATOR_VALUES: frozenset[Any] | None = None
     _OBJECT_ONLY: bool = False
+    _SCALAR_VALUES: frozenset = frozenset()
     _VARIANT_CLASSES: tuple[type, ...] | None = None  # per-subclass cache; see _variant_classes
 
     @classmethod
@@ -576,10 +588,11 @@ class Union:
 
     @classmethod
     def validate_outbound(cls, owner: str, name: str, value: Any) -> None:
-        """Reject an outbound value that is not one of this union's variants (ADR decisions 4-5).
+        """Reject an outbound value that is not one of this union's variants.
 
-        A variant instance passes. A bare scalar passes only for a union that has a scalar arm,
-        never an object-only one. This mirrors inbound dispatch, which errors on the same values.
+        A variant instance passes. A bare scalar passes only for a union that has a scalar arm, and
+        only as one of the literals that arm declares, so a stray string is a caller error rather
+        than a wire round-trip. This mirrors inbound dispatch, which errors on the same values.
         """
         if isinstance(value, Record):
             if not isinstance(value, cls._variant_classes()):
@@ -592,6 +605,9 @@ class Union:
             raise BiDiSerializationError(
                 f"{owner}.{name}: expected an object variant of {cls.__name__}, got {got} {value!r}"
             )
+        if value not in cls._SCALAR_VALUES:
+            expected = ", ".join(repr(v) for v in sorted(cls._SCALAR_VALUES))
+            raise BiDiSerializationError(f"{owner}.{name}: {value!r} is not one of {cls.__name__}'s arms ({expected})")
 
     @classmethod
     def from_json(cls, payload: Any) -> Any:

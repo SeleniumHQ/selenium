@@ -26,8 +26,8 @@ accepts real payloads. Coverage is by wire *shape*, not by domain (the machinery
 is uniform): a plain command result and a deeply nested union/record result.
 
 Event delivery is not covered here: the layer speaks commands (request/response)
-only. Routing pushed events into their generated types is the facade piece ADR
-17701 keeps out of scope, so there is nothing in `_bidi` to exercise yet.
+only. Routing pushed events into their generated types is the facade piece that
+stays out of scope, so there is nothing in `_bidi` to exercise yet.
 """
 
 from selenium.webdriver.common._bidi.browsing_context import (
