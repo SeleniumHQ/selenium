@@ -79,10 +79,10 @@ module Selenium
               construct(**attributes)
             end
 
-            # Inbound: builds from the wire. A missing required field is omitted and warned (or
-            # raised in strict mode, in +wire_value+); enum tokens are mapped back to symbols and an
-            # unrecognized one raises (in +read+); an undeclared property is captured silently
-            # (extensible) or warned and dropped (closed) — strict on shape, lenient on extras.
+            # Inbound: builds from the wire. A missing required field raises (in +wire_value+); enum
+            # tokens are mapped back to symbols and an unrecognized one raises (in +read+); an
+            # undeclared property is captured silently (extensible) or warned and dropped (closed)
+            # — strict on shape, lenient on extras.
             def from_json(json_payload)
               unless json_payload.is_a?(::Hash)
                 raise Error::SerializationError, "#{name} expected an object on the wire, got #{json_payload.inspect}"
@@ -214,24 +214,15 @@ module Selenium
               !UNSET.equal?(field.fixed)
             end
 
+            # A required field absent from the response cannot yield a valid typed object, so it raises
+            # rather than substitute a placeholder or represent the field as omitted; a remote end that
+            # lags the schema is handled by a project schema override, not by runtime tolerance.
             def wire_value(field, json_payload)
               return field.fixed if fixed?(field)
               return read(field, json_payload[field.wire_key]) if json_payload.key?(field.wire_key)
               return UNSET unless field.required
 
-              missing_required(field)
-            end
-
-            # A required field absent from the response is tolerated as omitted (UNSET) and warned, so a
-            # schema ahead of the browser does not block the caller; strict mode (SE_BIDI_STRICT) escalates
-            # to an error for callers who want it. Omitted (UNSET) stays distinct from an explicit null (nil),
-            # which matters for the required-and-nullable fields the schema flags.
-            def missing_required(field)
-              message = "#{name}##{field.name} is required but was missing from the response"
-              raise Error::SerializationError, message if Serialization.strict?
-
-              WebDriver.logger.warn(message, id: :bidi_missing_required)
-              UNSET
+              raise Error::SerializationError, "#{name}##{field.name} is required but was missing from the response"
             end
 
             def read(field, raw)
