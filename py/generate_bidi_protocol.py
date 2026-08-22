@@ -1049,15 +1049,35 @@ def render_module(mod: ModuleIR) -> str:
     return "\n\n\n".join(blocks) + "\n"
 
 
+def exception_class_name(code: str) -> str:
+    """The Python exception class name for a BiDi wire error code."""
+    return "".join(word.capitalize() for word in re.split(r"[^a-zA-Z0-9]+", code) if word) + "Exception"
+
+
+def render_error_codes(schema: Schema) -> str:
+    """Render the wire-code to exception-name map.
+
+    Deliberately pure data: no selenium imports, so the mapping to real exception
+    classes (which has to reconcile with the classic ones) stays hand-written glue.
+    """
+    codes = schema.types["ErrorCode"]["values"]
+    docstring = '"""Wire error codes from the BiDi ``ErrorCode`` enum, mapped to exception class names."""'
+    entries = [f"    {lit(code)}: {lit(exception_class_name(code))}," for code in codes]
+    table = "\n".join(["EXCEPTION_NAMES = {", *entries, "}"])
+    return "\n\n\n".join([_HEADER, docstring, table]) + "\n"
+
+
 def render_all(schema_path: str) -> dict[str, str]:
-    """Render every domain module; returns {filename: contents}.
+    """Render every domain module plus the error-code map; returns {filename: contents}.
 
     The package ``__init__.py`` is hand-written (it carries only the package
     docstring), so it is intentionally not emitted here.
     """
     schema = Schema(json.loads(Path(schema_path).read_text(encoding="utf-8")))
     modules = [build_module(schema, domain) for domain in schema.domains()]
-    return {f"{mod.filename}.py": render_module(mod) for mod in modules}
+    rendered = {f"{mod.filename}.py": render_module(mod) for mod in modules}
+    rendered["error_codes.py"] = render_error_codes(schema)
+    return rendered
 
 
 def main() -> None:

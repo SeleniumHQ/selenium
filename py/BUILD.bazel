@@ -813,12 +813,18 @@ py_library(
     srcs = [":create-bidi-protocol-src"] + [
         "selenium/webdriver/common/_bidi/__init__.py",
         "selenium/webdriver/common/_bidi/domain.py",
+        "selenium/webdriver/common/_bidi/errors.py",
         "selenium/webdriver/common/_bidi/serialization.py",
         "selenium/webdriver/common/_bidi/transport.py",
     ],
     imports = ["."],
     visibility = ["//visibility:public"],
-    deps = [":exceptions"],
+    # :remote for errorhandler's error-code tables, which errors.py reconciles against
+    # rather than keeping a second copy of them.
+    deps = [
+        ":exceptions",
+        ":remote",
+    ],
 )
 
 py_test_suite(

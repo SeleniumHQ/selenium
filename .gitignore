@@ -75,6 +75,7 @@ py/selenium/webdriver/common/_bidi/*
 !py/selenium/webdriver/common/_bidi/serialization.py
 !py/selenium/webdriver/common/_bidi/transport.py
 !py/selenium/webdriver/common/_bidi/domain.py
+!py/selenium/webdriver/common/_bidi/errors.py
 py/selenium/webdriver/common/devtools/**/*
 !py/selenium/webdriver/common/devtools/util.py
 py/selenium/webdriver/common/linux/
