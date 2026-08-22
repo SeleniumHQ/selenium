@@ -321,7 +321,9 @@ jobs:
     if: >-
       always() && !cancelled() &&
       needs.publish.result == 'success' &&
-      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
+      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped') &&
+      needs.update-version.result == 'success' &&
+      (needs.mirror.result == 'success' || needs.mirror.result == 'skipped')
     uses: ./.github/workflows/restrict-trunk.yml
     with:
       restrict: false
