@@ -29,11 +29,6 @@ on:
         required: false
         type: boolean
         default: false
-      skip_notify:
-        description: 'Skip the Slack notification (when the caller reports the outcome itself)'
-        required: false
-        type: boolean
-        default: false
     secrets:
       SELENIUM_CI_TOKEN:
         required: true
@@ -97,7 +92,7 @@ jobs:
   notify:
     name: Send Notification
     needs: [manage-trunk]
-    if: always() && needs.manage-trunk.result == 'success' && !inputs.skip_notify
+    if: always() && needs.manage-trunk.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Slack Notification
