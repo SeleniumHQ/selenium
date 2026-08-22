@@ -78,6 +78,7 @@ jobs:
             scripts/github-actions
           persist-credentials: false
       - name: Verify CDP covers the current Stable Chrome
+        if: needs.parse-tag.outputs.language == 'all'
         run: ./scripts/github-actions/verify_cdp.sh
 
   restrict-trunk:

@@ -5,7 +5,14 @@
 set -euo pipefail
 
 versions_url="https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json"
-major=$(curl -fsS "$versions_url" | jq -r '.channels.Stable.version | split(".")[0]')
+major=$(curl -fsS --retry 3 --retry-delay 2 --max-time 30 "$versions_url" |
+  jq -r '.channels.Stable.version | split(".")[0]')
+
+# Guard the parse so an upstream schema change reads as itself rather than as a hunt for "vnull".
+if ! [[ "$major" =~ ^[0-9]+$ ]]; then
+  echo "::error::Could not parse a stable Chrome major from ${versions_url} (got: '${major}')" >&2
+  exit 1
+fi
 
 root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 if [ ! -d "${root}/common/devtools/chromium/v${major}" ]; then
