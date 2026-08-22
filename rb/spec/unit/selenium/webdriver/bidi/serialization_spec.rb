@@ -404,9 +404,13 @@ module Selenium
                 .to raise_error(ArgumentError, /NavigateParameters#url expected string/)
             end
 
-            it 'rejects a float for an integer field, mirroring the wire integer/number split' do
-              expect { Emulation::ScreenArea.new(width: 5.0, height: 5) }
+            it 'rejects a fractional value for an integer field, mirroring the wire integer/number split' do
+              expect { Emulation::ScreenArea.new(width: 5.5, height: 5) }
                 .to raise_error(ArgumentError, /ScreenArea#width expected integer/)
+            end
+
+            it 'accepts a whole-valued float for an integer field, as the wire may spell it either way' do
+              expect(Emulation::ScreenArea.new(width: 5.0, height: 5).as_json).to eq('width' => 5.0, 'height' => 5)
             end
 
             it 'accepts either an integer or a float for a number field' do
@@ -619,6 +623,12 @@ module Selenium
               parsed = Bluetooth::BluetoothManufacturerData.from_json('key' => 5, 'data' => 'x')
 
               expect(parsed.key).to eq(5)
+            end
+
+            it 'accepts a whole-valued float for an integer-typed field and holds it as an Integer' do
+              parsed = Bluetooth::BluetoothManufacturerData.from_json('key' => 5.0, 'data' => 'x')
+
+              expect(parsed.key).to be_an(::Integer).and eq(5)
             end
 
             # Signal 3: a scalar hidden behind an alias (size -> js-uint -> integer) now carries
