@@ -46,5 +46,7 @@ public interface IBrowsingContextModule
     Task<PrintResult> PrintAsync(BrowsingContext context, PrintOptions? options = null, CancellationToken cancellationToken = default);
     Task<ReloadResult> ReloadAsync(BrowsingContext context, ReloadOptions? options = null, CancellationToken cancellationToken = default);
     Task<SetViewportResult> SetViewportAsync(SetViewportOptions? options = null, CancellationToken cancellationToken = default);
+    Task<StartScreencastResult> StartScreencastAsync(BrowsingContext context, StartScreencastOptions? options = null, CancellationToken cancellationToken = default);
+    Task<StopScreencastResult> StopScreencastAsync(Screencast screencast, StopScreencastOptions? options = null, CancellationToken cancellationToken = default);
     Task<TraverseHistoryResult> TraverseHistoryAsync(BrowsingContext context, int delta, TraverseHistoryOptions? options = null, CancellationToken cancellationToken = default);
 }

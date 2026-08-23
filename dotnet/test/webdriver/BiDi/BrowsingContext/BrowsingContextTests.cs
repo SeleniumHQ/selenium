@@ -341,4 +341,20 @@ internal class BrowsingContextTests : BiDiTestFixture
         Assert.That(pdf, Is.Not.Null);
         Assert.That(pdf.Data.Length, Is.Not.Zero);
     }
+
+    [Test]
+    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
+    public async Task CanStartAndStopScreencast()
+    {
+        var startScreencastResult = await context.StartScreencastAsync();
+
+        Assert.That(startScreencastResult.Screencast, Is.Not.Null);
+        Assert.That(startScreencastResult.Path, Is.Not.Empty);
+
+        var stopScreencastResult = await startScreencastResult.Screencast.StopAsync();
+
+        Assert.That(stopScreencastResult.Path, Is.EqualTo(startScreencastResult.Path));
+        Assert.That(stopScreencastResult.Error, Is.Null);
+    }
 }

@@ -60,6 +60,12 @@ internal sealed class BrowsingContextModule : Module, IBrowsingContextModule
     private static readonly Command<HandleUserPromptParameters, HandleUserPromptResult> HandleUserPromptCommand = new(
         "browsingContext.handleUserPrompt", Default.HandleUserPromptParameters, Default.HandleUserPromptResult);
 
+    private static readonly Command<StartScreencastParameters, StartScreencastResult> StartScreencastCommand = new(
+        "browsingContext.startScreencast", Default.StartScreencastParameters, Default.StartScreencastResult);
+
+    private static readonly Command<StopScreencastParameters, StopScreencastResult> StopScreencastCommand = new(
+        "browsingContext.stopScreencast", Default.StopScreencastParameters, Default.StopScreencastResult);
+
     public async Task<CreateResult> CreateAsync(ContextType type, CreateOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new CreateParameters(type, options?.ReferenceContext, options?.Background, options?.UserContext);
@@ -144,6 +150,20 @@ internal sealed class BrowsingContextModule : Module, IBrowsingContextModule
         return await ExecuteAsync(HandleUserPromptCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
+    public async Task<StartScreencastResult> StartScreencastAsync(BrowsingContext context, StartScreencastOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var @params = new StartScreencastParameters(context, options?.MimeType, options?.Video, options?.Audio);
+
+        return await ExecuteAsync(StartScreencastCommand, @params, options, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<StopScreencastResult> StopScreencastAsync(Screencast screencast, StopScreencastOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var @params = new StopScreencastParameters(screencast);
+
+        return await ExecuteAsync(StopScreencastCommand, @params, options, cancellationToken).ConfigureAwait(false);
+    }
+
     public IEventSource<NavigationStartedEventArgs> NavigationStarted => _navigationStarted ?? Interlocked.CompareExchange(ref _navigationStarted, CreateEventSource(BrowsingContextEvent.NavigationStarted), null) ?? _navigationStarted;
     private IEventSource<NavigationStartedEventArgs>? _navigationStarted;
 
@@ -209,6 +229,10 @@ internal sealed class BrowsingContextModule : Module, IBrowsingContextModule
 [JsonSerializable(typeof(ReloadResult))]
 [JsonSerializable(typeof(SetViewportParameters))]
 [JsonSerializable(typeof(SetViewportResult))]
+[JsonSerializable(typeof(StartScreencastParameters))]
+[JsonSerializable(typeof(StartScreencastResult))]
+[JsonSerializable(typeof(StopScreencastParameters))]
+[JsonSerializable(typeof(StopScreencastResult))]
 [JsonSerializable(typeof(TraverseHistoryParameters))]
 [JsonSerializable(typeof(TraverseHistoryResult))]
 
