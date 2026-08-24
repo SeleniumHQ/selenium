@@ -41,7 +41,6 @@ from selenium.webdriver.common._bidi.serialization import (
     meta,
     register,
     resolve,
-    strict_inbound,
 )
 
 # --- fixtures: value types declared the way the generator emits them ---
@@ -392,41 +391,20 @@ def test_a_unions_variant_classes_are_computed_once_and_cached():
 # --- inbound: required / optional / null ---
 
 
-def test_a_missing_required_field_inbound_is_tolerated_warned_and_left_unset(caplog):
-    with caplog.at_level(logging.WARNING):
-        result = Point.from_json({"x": 1})
-    assert result.x == 1
-    assert result.y is UNSET
-    assert "missing required" in caplog.text
-    assert "'y'" in caplog.text
-
-
-def test_multiple_missing_required_fields_warn_once_for_the_record(caplog):
-    with caplog.at_level(logging.WARNING):
-        result = Point.from_json({})
-    assert result.x is UNSET
-    assert result.y is UNSET
-    missing_warnings = [r for r in caplog.records if "missing required" in r.getMessage()]
-    assert len(missing_warnings) == 1
-    assert "'x'" in caplog.text
-    assert "'y'" in caplog.text
-
-
-def test_strict_inbound_escalates_a_missing_required_field_to_an_error():
-    with strict_inbound(), pytest.raises(BiDiSerializationError, match=r"missing required 'y'"):
+def test_a_missing_required_field_inbound_is_an_error():
+    with pytest.raises(BiDiSerializationError, match=r"missing required 'y'"):
         Point.from_json({"x": 1})
 
 
-def test_strict_inbound_scope_is_restored_after_the_block():
-    with strict_inbound():
-        pass
-    assert Point.from_json({"x": 1}).y is UNSET  # tolerant again
+def test_every_missing_required_field_is_named_in_one_error():
+    with pytest.raises(BiDiSerializationError, match=r"missing required 'x', 'y'"):
+        Point.from_json({})
 
 
 def test_as_json_errors_when_a_required_field_is_unset():
-    # A field the wire omitted is tolerated inbound (left UNSET) but must not go back out:
-    # outbound requires every required field, so re-serializing it errors.
-    incomplete = Point.from_json({"x": 1})
+    # Nothing inbound can leave a required field unset any more, but a caller can pass the
+    # sentinel, and outbound requires every required field, so serializing one errors.
+    incomplete = Point(x=1, y=UNSET)
     with pytest.raises(BiDiSerializationError, match=r"Point.y: required 'y' is not set"):
         incomplete.as_json()
 
@@ -566,13 +544,6 @@ def test_an_extensible_record_keeps_undeclared_properties_silently(caplog):
     assert caplog.records == []
 
 
-def test_strict_inbound_does_not_reject_undeclared_properties_on_an_extensible_record():
-    # Extras are valid on an extensible type, so strict mode must not escalate them to an error.
-    with strict_inbound():
-        result = Extensible.from_json({"known": "k", "extra": "e"})
-    assert result.extensions == {"extra": "e"}
-
-
 def test_an_extensible_record_merges_captured_keys_back_on_serialization():
     assert Extensible(known="k", extensions={"extra": "e"}).as_json() == {"known": "k", "extra": "e"}
 
@@ -612,11 +583,6 @@ def test_a_closed_record_drops_and_warns_on_undeclared_properties(caplog):
         result = Point.from_json({"x": 1, "y": 2, "z": 3})
     assert result == Point(x=1, y=2)
     assert "'z'" in caplog.text
-
-
-def test_strict_inbound_escalates_an_undeclared_property_to_an_error():
-    with strict_inbound(), pytest.raises(BiDiSerializationError, match=r"undeclared 'z'"):
-        Point.from_json({"x": 1, "y": 2, "z": 3})
 
 
 def test_many_undeclared_properties_warn_once_for_the_record_not_once_per_key(caplog):
