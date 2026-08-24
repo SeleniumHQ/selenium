@@ -43,6 +43,7 @@ _OS_SENSITIVE = [
 
 # specs whose classes have both bidi implementations
 _BIDI_IMPLEMENTATIONS = [
+    "driver_spec.rb",
     "navigation_spec.rb",
 ]
 
@@ -124,6 +125,7 @@ _NO_GRID = ["driver_finder_spec.rb"]
     rb_integration_test(
         name = f[:-8],
         srcs = [f],
+        bidi = True,
         tags = ["exclusive-if-local"],
         deps = [
             "//rb/lib/selenium/devtools",

@@ -22,48 +22,66 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      describe Driver, skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :firefox}] do
+      describe Driver, skip_unless: {browser: :firefox} do
         let(:extensions) { '../../../../../../common/extensions/' }
 
-        describe '#print_options' do
-          let(:magic_number) { 'JVBER' }
+        context 'when BiDi is not enabled', skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+          describe '#print_options' do
+            let(:magic_number) { 'JVBER' }
 
-          before { driver.navigate.to url_for('printPage.html') }
+            before { driver.navigate.to url_for('printPage.html') }
 
-          it 'returns base64 for print command' do
-            expect(driver.print_page).to include(magic_number)
+            it 'returns base64 for print command' do
+              expect(driver.print_page).to include(magic_number)
+            end
+
+            it 'prints with orientation' do
+              expect(driver.print_page(orientation: 'landscape')).to include(magic_number)
+            end
+
+            it 'prints with valid params' do
+              expect(driver.print_page(orientation: 'landscape',
+                                       page_ranges: ['1-2'],
+                                       page: {width: 30})).to include(magic_number)
+            end
+
+            it 'prints full page', pending_if: [{platform: :macosx,
+                                                 reason: 'showing half resolution of what expected'}] do
+              viewport_width = driver.execute_script('return window.innerWidth;')
+              viewport_height = driver.execute_script('return window.innerHeight;')
+
+              path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.png"
+              screenshot = driver.save_full_page_screenshot(path)
+              width, height = png_size(screenshot)
+
+              expect(width).to be >= viewport_width
+              expect(height).to be > viewport_height
+            ensure
+              FileUtils.rm_rf(path)
+            end
           end
 
-          it 'prints with orientation' do
-            expect(driver.print_page(orientation: 'landscape')).to include(magic_number)
-          end
+          it 'can get and set context',
+             skip_if: {driver: :remote, reason: 'system access cannot be granted per-session on Grid'} do
+            service = WebDriver::Service.firefox(args: ['--allow-system-access'])
+            reset_driver!(service: service, prefs: {'browser.download.dir': 'foo/bar'}) do |driver|
+              expect(driver.context).to eq 'content'
 
-          it 'prints with valid params' do
-            expect(driver.print_page(orientation: 'landscape',
-                                     page_ranges: ['1-2'],
-                                     page: {width: 30})).to include(magic_number)
-          end
+              driver.context = 'chrome'
+              expect(driver.context).to eq 'chrome'
 
-          it 'prints full page', pending_if: [{platform: :macosx,
-                                               reason: 'showing half resolution of what expected'}] do
-            viewport_width = driver.execute_script('return window.innerWidth;')
-            viewport_height = driver.execute_script('return window.innerHeight;')
-
-            path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.png"
-            screenshot = driver.save_full_page_screenshot(path)
-            width, height = png_size(screenshot)
-
-            expect(width).to be >= viewport_width
-            expect(height).to be > viewport_height
-          ensure
-            FileUtils.rm_rf(path)
+              # This call can not be made when context is set to 'content'
+              dir = driver.execute_script("return Services.prefs.getStringPref('browser.download.dir')")
+              expect(dir).to eq 'foo/bar'
+            end
           end
         end
 
         describe '#install_addon' do
           it 'install and uninstall xpi file' do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__)
-            id = driver.install_addon(ext)
+            id = nil
+            expect { id = driver.install_addon(ext) }.to have_deprecated(:install_addon)
 
             expect(id).to eq 'webextensions-selenium-example-v3@example.com'
             driver.navigate.to url_for('blank.html')
@@ -140,18 +158,53 @@ module Selenium
           end
         end
 
-        it 'can get and set context',
-           skip_if: {driver: :remote, reason: 'system access cannot be granted per-session on Grid'} do
-          service = WebDriver::Service.firefox(args: ['--allow-system-access'])
-          reset_driver!(service: service, prefs: {'browser.download.dir': 'foo/bar'}) do |driver|
-            expect(driver.context).to eq 'content'
+        describe '#install_web_extension' do
+          it 'installs and uninstalls without BiDi enabled' do
+            ext = File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__)
+            extension = driver.install_web_extension(ext)
+            expect(extension.id).to eq 'webextensions-selenium-example-v3@example.com'
 
-            driver.context = 'chrome'
-            expect(driver.context).to eq 'chrome'
+            driver.navigate.to url_for('blank.html')
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
-            # This call can not be made when context is set to 'content'
-            dir = driver.execute_script("return Services.prefs.getStringPref('browser.download.dir')")
-            expect(dir).to eq 'foo/bar'
+            driver.uninstall_web_extension(extension)
+            driver.navigate.refresh
+            expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
+          end
+
+          it 'installs an unsigned directory with permanent: false' do
+            ext = File.expand_path("#{extensions}/webextensions-selenium-example", __dir__)
+            extension = driver.install_web_extension(ext, permanent: false)
+            expect(extension.id).to eq 'webextensions-selenium-example-v3@example.com'
+
+            driver.navigate.to url_for('blank.html')
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
+
+            driver.uninstall_web_extension(extension)
+          end
+
+          context 'with private browsing' do
+            let(:ext) { File.expand_path("#{extensions}/webextensions-selenium-example-signed", __dir__) }
+
+            it 'runs in a private window when allowed' do
+              reset_driver!(prefs: {'browser.privatebrowsing.autostart': true}) do |driver|
+                driver.install_web_extension(ext, allow_private_browsing: true)
+                driver.navigate.to url_for('blank.html')
+
+                injected = driver.find_element(id: 'webextensions-selenium-example')
+                expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
+              end
+            end
+
+            it 'does not run in a private window when disabled' do
+              reset_driver!(prefs: {'browser.privatebrowsing.autostart': true}) do |driver|
+                driver.install_web_extension(ext, allow_private_browsing: false)
+                driver.navigate.to url_for('blank.html')
+                expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
+              end
+            end
           end
         end
       end
