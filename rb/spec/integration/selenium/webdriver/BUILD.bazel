@@ -44,6 +44,7 @@ _OS_SENSITIVE = [
 
 # specs whose classes have both bidi implementations
 _BIDI_IMPLEMENTATIONS = [
+    "driver_spec.rb",
     "navigation_spec.rb",
 ]
 

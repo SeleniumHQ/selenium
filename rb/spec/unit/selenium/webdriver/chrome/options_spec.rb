@@ -283,6 +283,11 @@ module Selenium
             expect(options.as_json).to eq('browserName' => 'chrome', 'goog:chromeOptions' => {})
           end
 
+          it 'does not inject debugging arguments when BiDi is enabled' do
+            bidi_options = described_class.new(web_socket_url: true)
+            expect(bidi_options.as_json['goog:chromeOptions']).not_to have_key('args')
+          end
+
           it 'errors when unrecognized capability is passed' do
             options.add_option(:foo, 'bar')
 

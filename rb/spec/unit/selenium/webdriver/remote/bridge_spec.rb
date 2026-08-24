@@ -134,6 +134,30 @@ module Selenium
           end
         end
 
+        describe '#install_web_extension' do
+          context 'when BiDi is not enabled' do
+            it 'raises a helpful error telling the user to enable BiDi' do
+              expect { bridge.install_web_extension('/tmp/ext') }
+                .to raise_error(Error::WebDriverError, /must be enabled/)
+            end
+
+            it 'raises for a Chromium session, which has no classic install path' do
+              bridge.extend(WebDriver::Chrome::Features)
+              expect { bridge.install_web_extension('/tmp/ext') }
+                .to raise_error(Error::WebDriverError, /must be enabled/)
+            end
+          end
+        end
+
+        describe '#uninstall_web_extension' do
+          context 'when BiDi is not enabled' do
+            it 'raises a helpful error telling the user to enable BiDi' do
+              expect { bridge.uninstall_web_extension('an-id') }
+                .to raise_error(Error::WebDriverError, /must be enabled/)
+            end
+          end
+        end
+
         describe '#quit' do
           it 'respects quit_errors' do
             allow(bridge).to receive(:execute).with(:delete_session).and_raise(IOError)

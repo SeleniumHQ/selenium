@@ -361,5 +361,116 @@ module Selenium
         end
       end
     end
+
+    describe Driver do
+      context 'when BiDi is enabled',
+              skip_unless: {bidi: true, reason: 'extensions install over the webExtension BiDi command'} do
+        let(:extensions) { '../../../../../common/extensions/' }
+
+        after { |example| reset_driver!(example: example) }
+
+        describe '#install_web_extension' do
+          context 'with an unpacked directory' do
+            it 'installs and removes the extension on any browser',
+               pending_if: {driver: :remote,
+                            reason: 'directory path must resolve on the browser host; Grid support added separately'} do
+              ext = File.expand_path("#{extensions}/webextensions-selenium-example-signed", __dir__)
+              extension = driver.install_web_extension(ext)
+              expect(extension.id).not_to be_empty
+
+              driver.navigate.to url_for('blank.html')
+              injected = driver.find_element(id: 'webextensions-selenium-example')
+              expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
+
+              driver.uninstall_web_extension(extension)
+              driver.navigate.refresh
+              expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
+            end
+          end
+
+          context 'with a packed archive' do
+            let(:archive) { File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__) }
+
+            it 'installs and removes an xpi file', skip_unless: {browser: :firefox} do
+              extension = driver.install_web_extension(archive)
+              expect(extension.id).to eq 'webextensions-selenium-example-v3@example.com'
+
+              driver.navigate.to url_for('blank.html')
+              injected = driver.find_element(id: 'webextensions-selenium-example')
+              expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
+
+              driver.uninstall_web_extension(extension)
+            end
+
+            it 'raises on Chromium, which installs only unpacked directories (SeleniumHQ/selenium#16541)',
+               skip_unless: {browser_family: :chromium} do
+              expect { driver.install_web_extension(archive) }
+                .to raise_error(Error::UnsupportedOperationError, /not supported/)
+            end
+          end
+
+          context 'with base64-encoded bytes' do
+            let(:encoded) do
+              xpi = File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__)
+              Base64.strict_encode64(File.binread(xpi))
+            end
+
+            it 'installs and removes on Firefox', skip_unless: {browser: :firefox} do
+              extension = driver.install_web_extension(encoded)
+              expect(extension.id).to eq 'webextensions-selenium-example-v3@example.com'
+
+              driver.navigate.to url_for('blank.html')
+              injected = driver.find_element(id: 'webextensions-selenium-example')
+              expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
+
+              driver.uninstall_web_extension(extension)
+            end
+
+            it 'raises on Chromium, which installs only unpacked directories (SeleniumHQ/selenium#16541)',
+               skip_unless: {browser_family: :chromium} do
+              expect { driver.install_web_extension(encoded) }
+                .to raise_error(Error::UnsupportedOperationError, /not supported/)
+            end
+          end
+
+          context 'when the browser is Firefox', skip_unless: {browser: :firefox} do
+            it 'installs an unsigned directory with permanent: false' do
+              ext = File.expand_path("#{extensions}/webextensions-selenium-example", __dir__)
+              extension = driver.install_web_extension(ext, permanent: false)
+              expect(extension.id).to eq 'webextensions-selenium-example-v3@example.com'
+
+              driver.navigate.to url_for('blank.html')
+              injected = driver.find_element(id: 'webextensions-selenium-example')
+              expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
+
+              driver.uninstall_web_extension(extension)
+            end
+
+            context 'with allow_private_browsing enabled' do
+              let(:ext) { File.expand_path("#{extensions}/webextensions-selenium-example-signed", __dir__) }
+
+              it 'runs in a private window when allowed' do
+                reset_driver!(prefs: {'browser.privatebrowsing.autostart': true}) do |driver|
+                  driver.install_web_extension(ext, allow_private_browsing: true)
+                  driver.navigate.to url_for('blank.html')
+
+                  injected = driver.find_element(id: 'webextensions-selenium-example')
+                  expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
+                end
+              end
+
+              it 'does not run in a private window by default' do
+                reset_driver!(prefs: {'browser.privatebrowsing.autostart': true}) do |driver|
+                  driver.install_web_extension(ext)
+                  driver.navigate.to url_for('blank.html')
+
+                  expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
+                end
+              end
+            end
+          end
+        end
+      end
+    end
   end # WebDriver
 end # Selenium
