@@ -279,7 +279,7 @@ module Selenium
 
       #
       # Installs a browser extension from an unpacked directory, a packed extension (.xpi/.crx/.zip),
-      # or base64-encoded bytes.
+      # or base64-encoded bytes; works with remote (Grid) sessions.
       #
       # @note Chromium requires a BiDi session and installs only unpacked directories
       #   (SeleniumHQ/selenium#16541); Firefox falls back to the classic endpoint without BiDi.
