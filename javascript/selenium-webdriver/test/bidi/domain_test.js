@@ -158,6 +158,31 @@ describe('Domain addCallback', function () {
     assert.strictEqual(receivedBySecond.length, 1)
   })
 
+  it('prunes its internal per-method subscription queue entry once idle', async function () {
+    // queueSubscriptionChange()'s per-method Map has no other seam to observe from
+    // outside the module, so temporarily watch Map.prototype.delete rather than
+    // exporting a test-only hook into the shipped module.
+    const bidi = fakeBidi()
+    const domain = new Domain(bidi, DOMAIN_TOKEN)
+    const descriptor = event('test.untyped')
+
+    const originalDelete = Map.prototype.delete
+    const deletedKeys = []
+    Map.prototype.delete = function (key) {
+      deletedKeys.push(key)
+      return originalDelete.call(this, key)
+    }
+    try {
+      const subscription = await domain.addCallback(descriptor, () => {})
+      await subscription.unsubscribe()
+      await tick() // let the queued promise's own .finally() pruning run
+    } finally {
+      Map.prototype.delete = originalDelete
+    }
+
+    assert.ok(deletedKeys.includes('test.untyped'))
+  })
+
   describe('concurrency', function () {
     it('does not miss an event that arrives while subscribe() is still pending', async function () {
       const bidi = controllableFakeBidi()

@@ -49,7 +49,9 @@ function event(method, type) {
 // after a same-method unsubscribe-in-flight elsewhere wins the race and tells the
 // browser to stop sending it). Keyed by the connection object itself via a WeakMap,
 // not any one Domain instance — module-level, not Domain state, so Domain itself
-// stays a plain, stateless wrapper around `send()` plus this queuing.
+// stays a plain, stateless wrapper around `send()` plus this queuing. The per-method
+// entry is pruned once idle (see below), so a long-lived connection subscribing to
+// many distinct methods over its lifetime doesn't grow this map without bound.
 const subscriptionQueues = new WeakMap()
 
 function queueSubscriptionChange(bidi, method, change) {
@@ -60,10 +62,16 @@ function queueSubscriptionChange(bidi, method, change) {
   }
   const previous = methods.get(method) ?? Promise.resolve()
   const next = previous.then(change, change) // run `change` next regardless of a prior failure
-  methods.set(
-    method,
-    next.catch(() => {}),
-  ) // ...but don't let that failure jam the queue for later callers
+  const queued = next.catch(() => {}) // don't let that failure jam the queue for later callers
+  methods.set(method, queued)
+  queued.finally(() => {
+    // Only this entry's own settlement prunes it, and only if nothing newer was
+    // enqueued for `method` in the meantime — otherwise this would delete a later
+    // caller's still-pending entry out from under it.
+    if (methods.get(method) === queued) {
+      methods.delete(method)
+    }
+  })
   return next
 }
 
