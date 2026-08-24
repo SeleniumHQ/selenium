@@ -82,6 +82,17 @@ module Selenium
           expect(Dir.children(unzipped)).to eq([File.basename(dir_to_zip)])
           expect(File.read(File.join(unzipped, File.basename(dir_to_zip), base_file_name))).to eq(file_content)
         end
+
+        it 'keeps the folder name when the path has a trailing separator' do
+          create_file
+
+          File.open(zip_file, 'wb') do |io|
+            io << Base64.decode64(described_class.zip_root("#{dir_to_zip}/"))
+          end
+
+          unzipped = described_class.unzip(zip_file)
+          expect(Dir.children(unzipped)).to eq([File.basename(dir_to_zip)])
+        end
       end
 
       describe '#unzip' do
