@@ -169,6 +169,7 @@ class Shape(Union):
 class BareOrObject(Union):
     _DISCRIMINATOR = "type"
     _VARIANTS = {}
+    _SCALAR_VALUES = frozenset({"viewport"})
 
 
 @register("test.ObjectOnly")
@@ -622,6 +623,16 @@ def test_an_unknown_discriminator_falls_back_to_the_declared_variant():
 
 def test_a_bare_scalar_arm_is_returned_unchanged():
     assert BareOrObject.from_json("viewport") == "viewport"
+
+
+def test_an_inbound_scalar_outside_the_pinned_arms_raises():
+    with pytest.raises(BiDiSerializationError, match=r"received a scalar not in this Selenium's BiDi schema"):
+        BareOrObject.from_json("banana")
+
+
+def test_an_inbound_unhashable_payload_on_a_scalar_arm_raises_rather_than_crashing():
+    with pytest.raises(BiDiSerializationError, match=r"received a scalar not in this Selenium's BiDi schema"):
+        BareOrObject.from_json(["viewport"])
 
 
 def test_a_variant_outside_the_schema_raises_instead_of_passing_through():

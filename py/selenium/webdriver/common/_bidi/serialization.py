@@ -577,9 +577,22 @@ class Union:
             raise BiDiSerializationError(
                 f"{owner}.{name}: expected an object variant of {cls.__name__}, got {got} {value!r}"
             )
-        if value not in cls._SCALAR_VALUES:
-            expected = ", ".join(repr(v) for v in sorted(cls._SCALAR_VALUES))
-            raise BiDiSerializationError(f"{owner}.{name}: {value!r} is not one of {cls.__name__}'s arms ({expected})")
+        if not cls._scalar_arm(value):
+            raise BiDiSerializationError(f"{owner}.{name}: {value!r} is not one of {cls._arms()}")
+
+    @classmethod
+    def _scalar_arm(cls, value: Any) -> bool:
+        """Whether a bare scalar is one of the literals this union's scalar arm declares.
+
+        Compared by equality rather than set membership so an unhashable payload (a list where
+        a scalar belongs) answers False instead of raising and masking the real error.
+        """
+        return any(value == arm for arm in cls._SCALAR_VALUES)
+
+    @classmethod
+    def _arms(cls) -> str:
+        # Sorted by repr, not value: the arms of one union need not share a primitive type.
+        return f"{cls.__name__}'s arms ({', '.join(repr(v) for v in sorted(cls._SCALAR_VALUES, key=repr))})"
 
     @classmethod
     def from_json(cls, payload: Any) -> Any:
@@ -589,8 +602,12 @@ class Union:
             if cls._OBJECT_ONLY:
                 got = type(payload).__name__
                 raise BiDiSerializationError(f"{cls.__name__} expected an object on the wire, got {got} {payload!r}")
-            # A bare scalar arm (e.g. input.Origin's "viewport") has no object to
-            # dispatch on, so it is returned unchanged.
+            # A bare scalar arm (e.g. input.Origin's "viewport") has no object to dispatch
+            # on, so it stands for itself — but only as a literal the schema pins.
+            if not cls._scalar_arm(payload):
+                raise BiDiSerializationError(
+                    f"{cls.__name__} received a scalar not in this Selenium's BiDi schema: {payload!r}"
+                )
             return payload
         variant = cls._select(payload)
         if variant is None:
