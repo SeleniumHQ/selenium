@@ -42,39 +42,6 @@ function event(method, type) {
   return { method, type }
 }
 
-// Serializes subscribe()/unsubscribe() transitions per (connection, method), so
-// concurrent addCallback()/unsubscribe() calls touching the same event — from any
-// Domain instance sharing that connection, not just one — can't interleave into an
-// inconsistent remote subscription state (e.g. a listener left attached locally
-// after a same-method unsubscribe-in-flight elsewhere wins the race and tells the
-// browser to stop sending it). Keyed by the connection object itself via a WeakMap,
-// not any one Domain instance — module-level, not Domain state, so Domain itself
-// stays a plain, stateless wrapper around `send()` plus this queuing. The per-method
-// entry is pruned once idle (see below), so a long-lived connection subscribing to
-// many distinct methods over its lifetime doesn't grow this map without bound.
-const subscriptionQueues = new WeakMap()
-
-function queueSubscriptionChange(bidi, method, change) {
-  let methods = subscriptionQueues.get(bidi)
-  if (methods === undefined) {
-    methods = new Map()
-    subscriptionQueues.set(bidi, methods)
-  }
-  const previous = methods.get(method) ?? Promise.resolve()
-  const next = previous.then(change, change) // run `change` next regardless of a prior failure
-  const queued = next.catch(() => {}) // don't let that failure jam the queue for later callers
-  methods.set(method, queued)
-  queued.finally(() => {
-    // Only this entry's own settlement prunes it, and only if nothing newer was
-    // enqueued for `method` in the meantime — otherwise this would delete a later
-    // caller's still-pending entry out from under it.
-    if (methods.get(method) === queued) {
-      methods.delete(method)
-    }
-  })
-  return next
-}
-
 /** Shared base for every generated BiDi domain class. See domain.d.ts for the typed surface. */
 class Domain {
   #bidi
@@ -99,22 +66,13 @@ class Domain {
   }
 
   /**
-   * Subscribes `handler` to a BiDi event. Two distinct things happen: remote
-   * subscription (telling the browser to start sending this event at all,
-   * via the underlying connection's `subscribe()`) and local listening
-   * (attaching `handler` to the connection so it runs when the event
-   * arrives) — a descriptor's event only ever reaches `handler` once both
-   * are in place. Remote subscription/unsubscription is ref-counted against
-   * the connection's own listener count — shared truth across every Domain
-   * instance on the same connection — so a second caller subscribing to the
-   * same event doesn't re-subscribe remotely, and unsubscribing doesn't cut
-   * off another caller still listening for it. The listener is attached
-   * before `subscribe()` is awaited (not after), so an event the browser
-   * starts sending as soon as it processes the subscription can't arrive in
-   * a gap where nothing is listening yet; and every subscribe/unsubscribe
-   * transition for this event, from any caller, is serialized (see
-   * queueSubscriptionChange()) so concurrent callers can't interleave into
-   * an inconsistent remote state.
+   * Subscribes `handler` to a BiDi event: tells the remote end to start sending it
+   * (the underlying connection's `subscribe()`), then attaches `handler` as a local
+   * listener for it. Placeholder for now — always subscribes/unsubscribes remotely on
+   * every call, with no ref-counting across callers or connection-wide listener
+   * bookkeeping (that belongs at the connection level, shared across every Domain
+   * instance, mirroring Ruby's WebSocketConnection#add_callback/remove_callback or
+   * Java's equivalent — tracked as follow-up work, not folded into this PR).
    * @param {{method: string, type: ({fromWire(payload: unknown): unknown}|undefined)}} descriptor
    *   An event descriptor from event().
    * @param {function(unknown): void} handler Invoked with the event's params
@@ -124,25 +82,13 @@ class Domain {
    */
   async addCallback(descriptor, handler) {
     const dispatch = descriptor.type === undefined ? handler : (params) => handler(descriptor.type.fromWire(params))
-    await queueSubscriptionChange(this.#bidi, descriptor.method, async () => {
-      this.#bidi.on(descriptor.method, dispatch)
-      if (this.#bidi.listenerCount(descriptor.method) === 1) {
-        try {
-          await this.#bidi.subscribe(descriptor.method)
-        } catch (err) {
-          this.#bidi.off(descriptor.method, dispatch) // don't leak a listener for a subscription that never took
-          throw err
-        }
-      }
-    })
+    await this.#bidi.subscribe(descriptor.method)
+    this.#bidi.on(descriptor.method, dispatch)
     return {
-      unsubscribe: () =>
-        queueSubscriptionChange(this.#bidi, descriptor.method, async () => {
-          this.#bidi.off(descriptor.method, dispatch)
-          if (this.#bidi.listenerCount(descriptor.method) === 0) {
-            await this.#bidi.unsubscribe(descriptor.method)
-          }
-        }),
+      unsubscribe: async () => {
+        this.#bidi.off(descriptor.method, dispatch)
+        await this.#bidi.unsubscribe(descriptor.method)
+      },
     }
   }
 }

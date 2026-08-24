@@ -39,17 +39,14 @@ export declare class Domain {
   protected send(method: string, params: Record<string, unknown>): Promise<unknown>
 
   /**
-   * Subscribes `handler` to a BiDi event — asks the remote end to start
-   * sending it (only if nothing else on this connection already has), then
-   * attaches `handler` as a local listener for it. Remote subscription is
-   * ref-counted against the connection's own listener count, so it's shared
-   * correctly across every Domain instance on that connection, not just this one.
+   * Subscribes `handler` to a BiDi event — asks the remote end to start sending it,
+   * then attaches `handler` as a local listener for it. Placeholder for now: always
+   * subscribes/unsubscribes remotely on every call, with no ref-counting across
+   * callers — connection-wide listener bookkeeping is follow-up work.
    * @param {EventDescriptor<T>} descriptor An event descriptor from event().
    * @param {function(T): void} handler Invoked with the event's parsed params each time it fires.
    * @returns {Promise<{unsubscribe: function(): Promise<void>}>} A handle for this
-   *     subscription; call `unsubscribe()` to stop receiving the event (and, if it
-   *     was the last listener for it on this connection, to tell the remote end to
-   *     stop sending it).
+   *     subscription; call `unsubscribe()` to stop receiving the event.
    */
   addCallback<T>(
     descriptor: EventDescriptor<T>,

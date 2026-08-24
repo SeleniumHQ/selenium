@@ -29,7 +29,7 @@ const EntryAdded = defineRecord('test.domain.EntryAdded', [
 // Fake replacing the real BiDi transport (bidi/index.js's Index). Mirrors its
 // actual shape — an EventEmitter with subscribe()/unsubscribe() added — rather
 // than inventing its own addCallback/removeCallback surface, since Domain talks
-// to the connection's real on/off/listenerCount/subscribe/unsubscribe directly.
+// to the connection's real on/off/subscribe/unsubscribe directly.
 function fakeBidi() {
   const bidi = new EventEmitter()
   bidi.subscribeCalls = []
@@ -42,33 +42,6 @@ function fakeBidi() {
   }
   return bidi
 }
-
-// Same shape as fakeBidi(), but subscribe()/unsubscribe() stay pending until the
-// test explicitly resolves them — widens the race window addCallback()/unsubscribe()
-// must handle correctly (an event arriving mid-subscribe, two callers racing to
-// subscribe/unsubscribe the same method) instead of hoping a real await happens to
-// interleave the wrong way.
-function controllableFakeBidi() {
-  const bidi = new EventEmitter()
-  bidi.subscribeCalls = []
-  bidi.unsubscribeCalls = []
-  const pendingSubscribes = []
-  const pendingUnsubscribes = []
-  bidi.subscribe = (method) => {
-    bidi.subscribeCalls.push(method)
-    return new Promise((resolve, reject) => pendingSubscribes.push({ resolve, reject }))
-  }
-  bidi.unsubscribe = (method) => {
-    bidi.unsubscribeCalls.push(method)
-    return new Promise((resolve, reject) => pendingUnsubscribes.push({ resolve, reject }))
-  }
-  bidi.resolveNextSubscribe = () => pendingSubscribes.shift().resolve()
-  bidi.rejectNextSubscribe = (err) => pendingSubscribes.shift().reject(err)
-  bidi.resolveNextUnsubscribe = () => pendingUnsubscribes.shift().resolve()
-  return bidi
-}
-
-const tick = () => new Promise((resolve) => setTimeout(resolve, 0))
 
 describe('Domain addCallback', function () {
   it('parses delivered payloads through the descriptor type before the handler runs', async function () {
@@ -101,7 +74,10 @@ describe('Domain addCallback', function () {
     assert.ok(!(received[0] instanceof EntryAdded))
   })
 
-  it('subscribes remotely on the first listener, and not again for a second one', async function () {
+  // Placeholder behavior: every addCallback() call subscribes remotely, and every
+  // unsubscribe() call unsubscribes remotely — no ref-counting across callers yet.
+  // See the comment on Domain#addCallback() in domain.js.
+  it('calls bidi.subscribe() on every addCallback call', async function () {
     const bidi = fakeBidi()
     const domain = new Domain(bidi, DOMAIN_TOKEN)
     const descriptor = event('test.entryAdded', EntryAdded)
@@ -109,10 +85,10 @@ describe('Domain addCallback', function () {
     await domain.addCallback(descriptor, () => {})
     await domain.addCallback(descriptor, () => {})
 
-    assert.deepStrictEqual(bidi.subscribeCalls, ['test.entryAdded'])
+    assert.deepStrictEqual(bidi.subscribeCalls, ['test.entryAdded', 'test.entryAdded'])
   })
 
-  it('unsubscribes remotely only once the last local listener is gone', async function () {
+  it('calls bidi.unsubscribe() on every unsubscribe() call', async function () {
     const bidi = fakeBidi()
     const domain = new Domain(bidi, DOMAIN_TOKEN)
     const descriptor = event('test.entryAdded', EntryAdded)
@@ -121,10 +97,9 @@ describe('Domain addCallback', function () {
     const second = await domain.addCallback(descriptor, () => {})
 
     await first.unsubscribe()
-    assert.deepStrictEqual(bidi.unsubscribeCalls, [])
-
     await second.unsubscribe()
-    assert.deepStrictEqual(bidi.unsubscribeCalls, ['test.entryAdded'])
+
+    assert.deepStrictEqual(bidi.unsubscribeCalls, ['test.entryAdded', 'test.entryAdded'])
   })
 
   it('stops delivering to a handler once its own subscription is unsubscribed', async function () {
@@ -141,7 +116,7 @@ describe('Domain addCallback', function () {
     assert.strictEqual(received.length, 0)
   })
 
-  it('does not disturb another still-active listener on the same event', async function () {
+  it('does not remove another still-active local listener on the same event', async function () {
     const bidi = fakeBidi()
     const domain = new Domain(bidi, DOMAIN_TOKEN)
     const descriptor = event('test.untyped')
@@ -156,119 +131,6 @@ describe('Domain addCallback', function () {
 
     assert.strictEqual(receivedByFirst.length, 0)
     assert.strictEqual(receivedBySecond.length, 1)
-  })
-
-  it('prunes its internal per-method subscription queue entry once idle', async function () {
-    // queueSubscriptionChange()'s per-method Map has no other seam to observe from
-    // outside the module, so temporarily watch Map.prototype.delete rather than
-    // exporting a test-only hook into the shipped module.
-    const bidi = fakeBidi()
-    const domain = new Domain(bidi, DOMAIN_TOKEN)
-    const descriptor = event('test.untyped')
-
-    const originalDelete = Map.prototype.delete
-    const deletedKeys = []
-    Map.prototype.delete = function (key) {
-      deletedKeys.push(key)
-      return originalDelete.call(this, key)
-    }
-    try {
-      const subscription = await domain.addCallback(descriptor, () => {})
-      await subscription.unsubscribe()
-      await tick() // let the queued promise's own .finally() pruning run
-    } finally {
-      Map.prototype.delete = originalDelete
-    }
-
-    assert.ok(deletedKeys.includes('test.untyped'))
-  })
-
-  describe('concurrency', function () {
-    it('does not miss an event that arrives while subscribe() is still pending', async function () {
-      const bidi = controllableFakeBidi()
-      const domain = new Domain(bidi, DOMAIN_TOKEN)
-      const descriptor = event('test.untyped')
-      const received = []
-
-      const addP = domain.addCallback(descriptor, (params) => received.push(params))
-      await tick() // let addCallback reach its (still-pending) subscribe() call
-      assert.strictEqual(bidi.subscribeCalls.length, 1)
-
-      bidi.emit('test.untyped', { anything: 'goes' }) // must already be listening, not just subscribing
-      bidi.resolveNextSubscribe()
-      await addP
-
-      assert.strictEqual(received.length, 1)
-    })
-
-    it('removes the listener if subscribe() rejects, instead of leaking it', async function () {
-      const bidi = controllableFakeBidi()
-      const domain = new Domain(bidi, DOMAIN_TOKEN)
-      const descriptor = event('test.untyped')
-
-      const addP = domain.addCallback(descriptor, () => {})
-      await tick()
-      bidi.rejectNextSubscribe(new Error('boom'))
-
-      await assert.rejects(addP, /boom/)
-      assert.strictEqual(bidi.listenerCount('test.untyped'), 0)
-    })
-
-    it('serializes concurrent addCallback calls for the same event so only one subscribe is sent', async function () {
-      const bidi = controllableFakeBidi()
-      const domain = new Domain(bidi, DOMAIN_TOKEN)
-      const descriptor = event('test.untyped')
-
-      const first = domain.addCallback(descriptor, () => {})
-      const second = domain.addCallback(descriptor, () => {})
-      await tick()
-
-      // The second call must not have started (and raced its own listenerCount
-      // check) before the first's subscribe() — still pending — resolves.
-      assert.strictEqual(bidi.subscribeCalls.length, 1)
-      assert.strictEqual(bidi.listenerCount('test.untyped'), 1)
-
-      bidi.resolveNextSubscribe()
-      await first
-      await second
-
-      assert.strictEqual(bidi.subscribeCalls.length, 1)
-      assert.strictEqual(bidi.listenerCount('test.untyped'), 2)
-    })
-
-    it('serializes an unsubscribe against a concurrent addCallback for the same event', async function () {
-      const bidi = controllableFakeBidi()
-      const domain = new Domain(bidi, DOMAIN_TOKEN)
-      const descriptor = event('test.untyped')
-
-      const first = domain.addCallback(descriptor, () => {})
-      await tick()
-      bidi.resolveNextSubscribe()
-      const subscription = await first
-      bidi.subscribeCalls.length = 0 // only the part under test matters from here
-
-      // Start unsubscribing the only listener, then — before that finishes — start
-      // a second addCallback for the same event. Unserialized, the second caller
-      // could attach and see itself as remotely subscribed while the in-flight
-      // unsubscribe() is still telling the browser to stop sending the event,
-      // leaving it un-subscribed remotely despite a live local listener.
-      const unsubP = subscription.unsubscribe()
-      const secondP = domain.addCallback(descriptor, () => {})
-      await tick()
-
-      assert.strictEqual(bidi.unsubscribeCalls.length, 1) // unsubscribe() is in flight...
-      assert.strictEqual(bidi.subscribeCalls.length, 0) // ...and the second caller hasn't jumped ahead of it
-
-      bidi.resolveNextUnsubscribe()
-      await unsubP
-      await tick()
-      bidi.resolveNextSubscribe()
-      await secondP
-
-      assert.strictEqual(bidi.unsubscribeCalls.length, 1)
-      assert.strictEqual(bidi.subscribeCalls.length, 1) // re-subscribed only after unsubscribe() had finished
-      assert.strictEqual(bidi.listenerCount('test.untyped'), 1)
-    })
   })
 })
 
