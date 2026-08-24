@@ -125,12 +125,15 @@ module Selenium
           end
         end
 
-        describe '#upload' do
-          it 'raises WebDriverError if uploading non-files' do
-            expect {
-              bridge.extend(WebDriver::Remote::Features)
-              bridge.upload('NotAFile')
-            }.to raise_error(Error::WebDriverError)
+        describe '#upload_if_necessary' do
+          before do
+            bridge.extend(WebDriver::Remote::Features)
+            bridge.file_detector = ->((file)) { file }
+          end
+
+          it 'raises WebDriverError when the detected path is not a file' do
+            expect { bridge.upload_if_necessary(['NotAFile']) }
+              .to raise_error(Error::WebDriverError, /isn't a file/)
           end
         end
 

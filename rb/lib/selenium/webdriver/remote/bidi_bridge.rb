@@ -105,10 +105,12 @@ module Selenium
           @web_extension ||= BiDi::Protocol::WebExtension.new(connection)
         end
 
-        # A directory is referenced by its path; archives and base64 bytes travel inline.
+        # A directory only resolves on the machine running the browser, so upload it to the remote
+        # end and reference the returned path; archives and base64 bytes travel inline.
         def web_extension_data(path)
           return web_extension.extension_base64_encoded(value: encode_extension(path)) unless File.directory?(path)
 
+          path = upload(path) if respond_to?(:upload)
           web_extension.extension_path(path: path)
         end
 

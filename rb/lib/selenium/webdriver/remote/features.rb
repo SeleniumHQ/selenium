@@ -42,20 +42,21 @@ module Selenium
         end
 
         def upload(local_file)
-          unless File.file?(local_file)
-            WebDriver.logger.error("File detector only works with files. #{local_file.inspect} isn`t a file!",
-                                   id: :file_detector)
-            raise Error::WebDriverError, "You are trying to upload something that isn't a file."
-          end
-
-          execute :upload_file, {}, {file: Zipper.zip_file(local_file)}
+          execute :upload_file, {}, {file: Zipper.zip_root(local_file)}
         end
 
         def upload_if_necessary(keys)
           local_files = keys.first&.split("\n")&.filter_map { |key| @file_detector.call(Array(key)) }
           return keys unless local_files&.any?
 
-          keys = local_files.map { |local_file| upload(local_file) }
+          keys = local_files.map do |local_file|
+            unless File.file?(local_file)
+              WebDriver.logger.error("File detector only works with files. #{local_file.inspect} isn`t a file!",
+                                     id: :file_detector)
+              raise Error::WebDriverError, "You are trying to upload something that isn't a file."
+            end
+            upload(local_file)
+          end
           Array(keys.join("\n"))
         end
 

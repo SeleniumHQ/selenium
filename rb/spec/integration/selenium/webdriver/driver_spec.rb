@@ -371,9 +371,7 @@ module Selenium
 
         describe '#install_web_extension' do
           context 'with an unpacked directory' do
-            it 'installs and removes the extension on any browser',
-               pending_if: {driver: :remote,
-                            reason: 'directory path must resolve on the browser host; Grid support added separately'} do
+            it 'installs and removes the extension on any browser' do
               ext = File.expand_path("#{extensions}/webextensions-selenium-example-signed", __dir__)
               extension = driver.install_web_extension(ext)
               expect(extension.id).not_to be_empty

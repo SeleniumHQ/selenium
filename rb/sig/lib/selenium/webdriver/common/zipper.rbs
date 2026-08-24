@@ -27,9 +27,11 @@ module Selenium
 
       def self.zip: (untyped path) -> untyped
 
-      def self.zip_file: (untyped path) -> untyped
+      def self.zip_root: (untyped path) -> untyped
 
       private
+
+      def self.encode_zip: (untyped path, untyped base) -> untyped
 
       def self.with_tmp_zip: () { () -> untyped } -> untyped
 

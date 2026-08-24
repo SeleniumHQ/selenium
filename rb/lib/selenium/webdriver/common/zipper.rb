@@ -56,26 +56,27 @@ module Selenium
         end
 
         def zip(path)
+          encode_zip(path, path)
+        end
+
+        # Keeps +path+ (a file or directory) as the archive's single top-level entry, unlike #zip
+        # which flattens a directory's contents; the Grid upload endpoint returns that one entry's path.
+        def zip_root(path)
+          encode_zip(path, File.dirname(path))
+        end
+
+        private
+
+        def encode_zip(path, base)
           with_tmp_zip do |zip|
             ::Find.find(path) do |file|
-              add_zip_entry zip, file, file.sub("#{path}/", '') unless File.directory?(file)
+              add_zip_entry zip, file, file.sub("#{base}/", '') unless File.directory?(file)
             end
 
             zip.commit
             File.open(zip.name, 'rb') { |io| Base64.strict_encode64 io.read }
           end
         end
-
-        def zip_file(path)
-          with_tmp_zip do |zip|
-            add_zip_entry zip, path, File.basename(path)
-
-            zip.commit
-            File.open(zip.name, 'rb') { |io| Base64.strict_encode64 io.read }
-          end
-        end
-
-        private
 
         def with_tmp_zip(&blk)
           # Don't use Tempfile since it lacks rb_file_s_rename permission on Windows.
