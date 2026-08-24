@@ -331,8 +331,8 @@ class RemoteConnection:
         RemoteConnection._timeout = self._client_config.timeout
         RemoteConnection._ca_certs = self._client_config.ca_certs
         RemoteConnection._client_config = self._client_config
-        RemoteConnection.extra_headers = self._client_config.extra_headers or RemoteConnection.extra_headers
-        RemoteConnection.user_agent = self._client_config.user_agent or RemoteConnection.user_agent
+        # user_agent and extra_headers are not mirrored onto the class: that leaked one
+        # connection's headers to every other one. _request() reads them per-instance.
 
         if remote_server_addr:
             warnings.warn(
@@ -419,6 +419,13 @@ class RemoteConnection:
         """
         parsed_url = parse.urlparse(url)
         headers = self.get_remote_connection_headers(parsed_url, self._client_config.keep_alive)
+        # Apply this connection's own user-agent and extra headers from its client_config so
+        # per-connection configuration is not shared across RemoteConnection instances via
+        # class attributes.
+        if self._client_config.user_agent:
+            headers["User-Agent"] = self._client_config.user_agent
+        if self._client_config.extra_headers:
+            headers.update(self._client_config.extra_headers)
         auth_header = self._client_config.get_auth_header()
 
         if auth_header:

@@ -404,15 +404,30 @@ def mock_no_proxy_settings(monkeypatch):
     monkeypatch.setenv("NO_PROXY", "65.253.214.253,localhost,127.0.0.1,*zyz.xx,::1,127.0.0.0/8")
 
 
-@patch("selenium.webdriver.remote.remote_connection.RemoteConnection.get_remote_connection_headers")
-def test_override_user_agent_in_headers(mock_get_remote_connection_headers, remote_connection):
-    RemoteConnection.user_agent = "custom-agent/1.0 (python 3.13)"
+class _FakeResponse:
+    status = 200
+    data = b'{"value": {}}'
+    headers = {"Content-Type": "application/json"}
 
-    mock_get_remote_connection_headers.return_value = {
-        "Accept": "application/json",
-        "Content-Type": "application/json;charset=UTF-8",
-        "User-Agent": "custom-agent/1.0 (python 3.13)",
-    }
+    def close(self):
+        pass
+
+
+def _capture_sent_headers(remote_connection):
+    """Stub out the pool manager and return the list that records each request's headers."""
+    sent = []
+
+    class _Conn:
+        def request(self, method, url, body=None, headers=None, timeout=None):
+            sent.append(dict(headers))
+            return _FakeResponse()
+
+    remote_connection._conn = _Conn()
+    return sent
+
+
+def test_override_user_agent_in_headers(monkeypatch):
+    monkeypatch.setattr(RemoteConnection, "user_agent", "custom-agent/1.0 (python 3.13)")
 
     headers = RemoteConnection.get_remote_connection_headers(parse.urlparse("http://remote"))
 
@@ -421,26 +436,20 @@ def test_override_user_agent_in_headers(mock_get_remote_connection_headers, remo
     assert headers.get("Content-Type") == "application/json;charset=UTF-8"
 
 
-@patch("selenium.webdriver.remote.remote_connection.RemoteConnection.get_remote_connection_headers")
-def test_override_user_agent_via_client_config(mock_get_remote_connection_headers):
+def test_override_user_agent_via_client_config():
     client_config = ClientConfig(
         remote_server_addr="http://localhost:4444",
         user_agent="custom-agent/1.0 (python 3.13)",
         extra_headers={"Content-Type": "application/xml;charset=UTF-8"},
     )
     remote_connection = RemoteConnection(client_config=client_config)
+    sent = _capture_sent_headers(remote_connection)
 
-    mock_get_remote_connection_headers.return_value = {
-        "Accept": "application/json",
-        "Content-Type": "application/xml;charset=UTF-8",
-        "User-Agent": "custom-agent/1.0 (python 3.13)",
-    }
+    remote_connection.execute("newSession", {})
 
-    headers = remote_connection.get_remote_connection_headers(parse.urlparse("http://localhost:4444"))
-
-    assert headers.get("User-Agent") == "custom-agent/1.0 (python 3.13)"
-    assert headers.get("Accept") == "application/json"
-    assert headers.get("Content-Type") == "application/xml;charset=UTF-8"
+    assert sent[0]["User-Agent"] == "custom-agent/1.0 (python 3.13)"
+    assert sent[0]["Accept"] == "application/json"
+    assert sent[0]["Content-Type"] == "application/xml;charset=UTF-8"
 
 
 @patch("selenium.webdriver.remote.remote_connection.RemoteConnection._request")
@@ -455,8 +464,10 @@ def test_register_extra_headers(mock_request, remote_connection):
     assert headers["Foo"] == "bar"
 
 
-@patch("selenium.webdriver.remote.remote_connection.RemoteConnection._request")
-def test_register_extra_headers_via_client_config(mock_request):
+def test_register_extra_headers_via_client_config():
+    # client_config extra_headers are applied per-connection in _request (not copied onto
+    # the class), so assert they reach the actual request rather than the class-level
+    # get_remote_connection_headers classmethod.
     client_config = ClientConfig(
         remote_server_addr="http://localhost:4444",
         extra_headers={
@@ -465,14 +476,12 @@ def test_register_extra_headers_via_client_config(mock_request):
         },
     )
     remote_connection = RemoteConnection(client_config=client_config)
+    sent = _capture_sent_headers(remote_connection)
 
-    mock_request.return_value = {"status": 200, "value": "OK"}
     remote_connection.execute("newSession", {})
 
-    mock_request.assert_called_once_with("POST", "http://localhost:4444/session", body="{}")
-    headers = remote_connection.get_remote_connection_headers(parse.urlparse("http://localhost:4444"), False)
-    assert headers["Authorization"] == "AWS4-HMAC-SHA256"
-    assert headers["Credential"] == "abc/20200618/us-east-1/execute-api/aws4_request"
+    assert sent[0]["Authorization"] == "AWS4-HMAC-SHA256"
+    assert sent[0]["Credential"] == "abc/20200618/us-east-1/execute-api/aws4_request"
 
 
 def test_backwards_compatibility_with_appium_connection():
@@ -674,3 +683,36 @@ def test_get_remote_connection_selects_browser_specific_handler(
         ignore_local_proxy=True,
     )
     assert type(conn) is expected_handler
+
+
+def test_client_config_headers_do_not_leak_across_connections(monkeypatch):
+    """Per-connection user_agent/extra_headers must not be shared across RemoteConnection instances."""
+    # Reset any class-level pollution left by other tests so the default is deterministic.
+    monkeypatch.setattr(RemoteConnection, "extra_headers", None)
+    monkeypatch.setattr(RemoteConnection, "user_agent", "selenium-default-ua")
+
+    conn_a = RemoteConnection(
+        client_config=ClientConfig(
+            remote_server_addr="http://localhost:4444",
+            user_agent="ua-a",
+            extra_headers={"X-Tenant": "A", "Authorization": "Bearer SECRET-A"},
+        )
+    )
+    # A plain connection created AFTER conn_a (worst case for the old class-attribute leak).
+    conn_b = RemoteConnection(client_config=ClientConfig(remote_server_addr="http://localhost:4444"))
+
+    sent_a = _capture_sent_headers(conn_a)
+    sent_b = _capture_sent_headers(conn_b)
+
+    conn_a._request("GET", "http://localhost:4444/status")
+    conn_b._request("GET", "http://localhost:4444/status")
+
+    # conn_a keeps its own identity.
+    assert sent_a[0]["User-Agent"] == "ua-a"
+    assert sent_a[0]["X-Tenant"] == "A"
+    assert sent_a[0]["Authorization"] == "Bearer SECRET-A"
+
+    # conn_b must not inherit conn_a's headers, token, or user agent.
+    assert "X-Tenant" not in sent_b[0]
+    assert "Authorization" not in sent_b[0]
+    assert sent_b[0]["User-Agent"] == "selenium-default-ua"
