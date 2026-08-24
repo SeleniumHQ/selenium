@@ -18,8 +18,12 @@
 const { register } = require('./registry')
 
 /**
+ * Registers a schema `enum` — a closed set of string values a field may hold.
  * @param {string} name Schema type name, e.g. 'network.InterceptPhase'.
- * @param {string[]} values
+ * @param {string[]} values The enum's valid values.
+ * @returns {{kind: 'enum', values: string[], includes: function(unknown): boolean}}
+ *   The registered entry, used by validateValue() to check a ref'd value's
+ *   membership; also returned so a generator can build a discoverable constant from it.
  */
 function defineEnum(name, values) {
   const allowed = new Set(values)

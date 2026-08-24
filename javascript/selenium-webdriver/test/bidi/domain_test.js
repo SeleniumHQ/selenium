@@ -18,6 +18,7 @@
 'use strict'
 
 const assert = require('node:assert')
+const { EventEmitter } = require('node:events')
 const { Domain, event, DOMAIN_TOKEN } = require('selenium-webdriver/bidi/domain')
 const { defineRecord } = require('selenium-webdriver/bidi/serialization/record')
 
@@ -25,19 +26,21 @@ const EntryAdded = defineRecord('test.domain.EntryAdded', [
   { name: 'text', wire: 'text', required: true, type: { primitive: 'string' } },
 ])
 
-// Fake replacing the real BiDi transport — records what addCallback/removeCallback
-// receive and lets the test drive delivery directly, without a socket.
+// Fake replacing the real BiDi transport (bidi/index.js's Index). Mirrors its
+// actual shape — an EventEmitter with subscribe()/unsubscribe() added — rather
+// than inventing its own addCallback/removeCallback surface, since Domain talks
+// to the connection's real on/off/listenerCount/subscribe/unsubscribe directly.
 function fakeBidi() {
-  return {
-    registered: undefined,
-    async addCallback(method, handler) {
-      this.registered = { method, handler }
-      return { id: 'sub-1', unsubscribe: async () => {} }
-    },
-    async removeCallback(subscriptionId) {
-      this.removedId = subscriptionId
-    },
+  const bidi = new EventEmitter()
+  bidi.subscribeCalls = []
+  bidi.unsubscribeCalls = []
+  bidi.subscribe = async (method) => {
+    bidi.subscribeCalls.push(method)
   }
+  bidi.unsubscribe = async (method) => {
+    bidi.unsubscribeCalls.push(method)
+  }
+  return bidi
 }
 
 describe('Domain addCallback', function () {
@@ -49,7 +52,7 @@ describe('Domain addCallback', function () {
     const received = []
     await domain.addCallback(descriptor, (params) => received.push(params))
 
-    bidi.registered.handler({ text: 'hello' })
+    bidi.emit('test.entryAdded', { text: 'hello' })
 
     assert.strictEqual(received.length, 1)
     assert.ok(received[0] instanceof EntryAdded)
@@ -64,20 +67,68 @@ describe('Domain addCallback', function () {
     const received = []
     await domain.addCallback(descriptor, (params) => received.push(params))
 
-    bidi.registered.handler({ anything: 'goes' })
+    bidi.emit('test.untyped', { anything: 'goes' })
 
     assert.strictEqual(received.length, 1)
     assert.deepStrictEqual(received[0], { anything: 'goes' })
     assert.ok(!(received[0] instanceof EntryAdded))
   })
 
-  it('removeCallback forwards the subscription id to the underlying transport', async function () {
+  it('subscribes remotely on the first listener, and not again for a second one', async function () {
     const bidi = fakeBidi()
     const domain = new Domain(bidi, DOMAIN_TOKEN)
+    const descriptor = event('test.entryAdded', EntryAdded)
 
-    await domain.removeCallback('sub-1')
+    await domain.addCallback(descriptor, () => {})
+    await domain.addCallback(descriptor, () => {})
 
-    assert.strictEqual(bidi.removedId, 'sub-1')
+    assert.deepStrictEqual(bidi.subscribeCalls, ['test.entryAdded'])
+  })
+
+  it('unsubscribes remotely only once the last local listener is gone', async function () {
+    const bidi = fakeBidi()
+    const domain = new Domain(bidi, DOMAIN_TOKEN)
+    const descriptor = event('test.entryAdded', EntryAdded)
+
+    const first = await domain.addCallback(descriptor, () => {})
+    const second = await domain.addCallback(descriptor, () => {})
+
+    await first.unsubscribe()
+    assert.deepStrictEqual(bidi.unsubscribeCalls, [])
+
+    await second.unsubscribe()
+    assert.deepStrictEqual(bidi.unsubscribeCalls, ['test.entryAdded'])
+  })
+
+  it('stops delivering to a handler once its own subscription is unsubscribed', async function () {
+    const bidi = fakeBidi()
+    const domain = new Domain(bidi, DOMAIN_TOKEN)
+    const descriptor = event('test.untyped')
+
+    const received = []
+    const subscription = await domain.addCallback(descriptor, (params) => received.push(params))
+    await subscription.unsubscribe()
+
+    bidi.emit('test.untyped', { anything: 'goes' })
+
+    assert.strictEqual(received.length, 0)
+  })
+
+  it('does not disturb another still-active listener on the same event', async function () {
+    const bidi = fakeBidi()
+    const domain = new Domain(bidi, DOMAIN_TOKEN)
+    const descriptor = event('test.untyped')
+
+    const receivedByFirst = []
+    const receivedBySecond = []
+    const first = await domain.addCallback(descriptor, (params) => receivedByFirst.push(params))
+    await domain.addCallback(descriptor, (params) => receivedBySecond.push(params))
+
+    await first.unsubscribe()
+    bidi.emit('test.untyped', { anything: 'goes' })
+
+    assert.strictEqual(receivedByFirst.length, 0)
+    assert.strictEqual(receivedBySecond.length, 1)
   })
 })
 

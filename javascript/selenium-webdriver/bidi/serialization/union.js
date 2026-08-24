@@ -40,9 +40,14 @@ function selectVariant(selector, data, hasKey) {
 }
 
 /**
+ * Registers a schema `union` — a value that may be any one of several variant
+ * record types, resolved by a discriminator field or by structural shape.
  * @param {string} name Schema type name, e.g. 'session.ProxyConfiguration'.
  * @param {object} selector The schema's `selector` node for this union.
  * @param {{objectOnly?: boolean}} [options]
+ * @returns {{build: function(unknown): object, fromWire: function(unknown): object}}
+ *   The registered union — `build(data)` resolves and constructs the matching
+ *   variant outbound, `fromWire(payload)` resolves and parses it inbound.
  */
 function defineUnion(name, selector, options = {}) {
   const { objectOnly = false } = options

@@ -27,6 +27,7 @@ const { getBidiConnection } = require('../lib/bidi_connection')
 const DOMAIN_TOKEN = Symbol('Domain internal construction token — obtained only via Class.create(driver)')
 
 /**
+ * Describes one subscribable BiDi event, for use with Domain#addCallback().
  * @param {string} method
  * @param {{fromWire(payload: unknown): unknown}} [type] Runtime record/union
  *   class for the event's params, if the schema declares one. When present,
@@ -35,6 +36,7 @@ const DOMAIN_TOKEN = Symbol('Domain internal construction token — obtained onl
  *   their resolved type; an event's params is such a payload just as much
  *   as a command's result is.
  * @returns {{method: string, type: ({fromWire(payload: unknown): unknown}|undefined)}}
+ *   The event descriptor, ready to pass to Domain#addCallback().
  */
 function event(method, type) {
   return { method, type }
@@ -63,13 +65,38 @@ class Domain {
     return response?.result
   }
 
+  /**
+   * Subscribes `handler` to a BiDi event. Two distinct things happen: remote
+   * subscription (telling the browser to start sending this event at all,
+   * via the underlying connection's `subscribe()`) and local listening
+   * (attaching `handler` to the connection so it runs when the event
+   * arrives) — a descriptor's event only ever reaches `handler` once both
+   * are in place. Remote subscription/unsubscription is ref-counted against
+   * the connection's own listener count — shared truth across every Domain
+   * instance on the same connection — so a second caller subscribing to the
+   * same event doesn't re-subscribe remotely, and unsubscribing doesn't cut
+   * off another caller still listening for it.
+   * @param {{method: string, type: ({fromWire(payload: unknown): unknown}|undefined)}} descriptor
+   *   An event descriptor from event().
+   * @param {function(unknown): void} handler Invoked with the event's params
+   *   (parsed through descriptor.type first, if one was given) each time it fires.
+   * @returns {Promise<{unsubscribe: function(): Promise<void>}>}
+   *   A handle for this subscription — call `unsubscribe()` to stop receiving the event.
+   */
   async addCallback(descriptor, handler) {
     const dispatch = descriptor.type === undefined ? handler : (params) => handler(descriptor.type.fromWire(params))
-    return this.#bidi.addCallback(descriptor.method, dispatch)
-  }
-
-  async removeCallback(subscriptionId) {
-    return this.#bidi.removeCallback(subscriptionId)
+    if (this.#bidi.listenerCount(descriptor.method) === 0) {
+      await this.#bidi.subscribe(descriptor.method)
+    }
+    this.#bidi.on(descriptor.method, dispatch)
+    return {
+      unsubscribe: async () => {
+        this.#bidi.off(descriptor.method, dispatch)
+        if (this.#bidi.listenerCount(descriptor.method) === 0) {
+          await this.#bidi.unsubscribe(descriptor.method)
+        }
+      },
+    }
   }
 }
 

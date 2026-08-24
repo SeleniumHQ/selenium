@@ -24,4 +24,8 @@ export interface UnionClass<T> {
   fromWire(payload: unknown): Readonly<T>
 }
 
+/**
+ * Registers a schema `union` — a value that may be any one of several variant
+ * record types, resolved by a discriminator field or by structural shape.
+ */
 export function defineUnion<T>(name: string, selector: unknown, options?: UnionOptions): UnionClass<T>

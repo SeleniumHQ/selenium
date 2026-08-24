@@ -19,15 +19,19 @@ const { register, resolve } = require('./registry')
 
 class ValidationError extends Error {}
 
-// Validates a *present* value against a resolved type node. This check is
-// identical for outbound and inbound — a structurally wrong value is always
-// an error, whether it's being sent or received. Only presence (required)
-// and extras (undeclared properties) differ by direction, handled separately
-// in the constructor and fromWire() below.
-// `direction` only affects how a nested ref-to-record/union is itself validated.
+// Validates a *present* value against a resolved type node, and returns the value to
+// assign for it — usually the same value, but for a nested ref-to-record/union parsed
+// inbound (fromWire()/build() results, not the raw wire object) and for list/map/inline
+// record values (a fresh, deeply-frozen copy, so validity can't be corrupted after the
+// fact by mutating an array or object a caller still holds a reference to).
+// Outbound nested refs deliberately keep the caller's own value instead of the
+// newly-constructed instance — the nested `new referenced.RecordClass(value)` /
+// `referenced.build(value)` call below exists only to validate, matching the
+// constructor's existing outbound behavior of trusting the caller's own object shape.
+// `direction` only affects how a nested ref-to-record/union is itself validated/parsed.
 function validateValue(typeNode, value, path, direction) {
   if (value === null) {
-    if (typeNode.nullable) return
+    if (typeNode.nullable) return null
     throw new ValidationError(`${path}: null is not allowed`)
   }
 
@@ -36,12 +40,22 @@ function validateValue(typeNode, value, path, direction) {
     if (expected && typeof value !== expected) {
       throw new ValidationError(`${path}: expected ${typeNode.primitive}, got ${typeof value}`)
     }
+    // JSON has no representation for NaN/±Infinity — reject them for both numeric
+    // primitives before the integer-specific check narrows further. (Number.isInteger
+    // already excludes them too, so this is only load-bearing for a bare `number`.)
+    if ((typeNode.primitive === 'integer' || typeNode.primitive === 'number') && !Number.isFinite(value)) {
+      throw new ValidationError(`${path}: expected a finite ${typeNode.primitive}, got ${value}`)
+    }
     // `number` admits any JSON number; `integer` rejects a fractional value
     // (5.7) while still accepting one written 5.0 (Number.isInteger(5.0) is true).
     if (typeNode.primitive === 'integer' && !Number.isInteger(value)) {
       throw new ValidationError(`${path}: expected an integer, got ${value}`)
     }
-    return
+    // An inline literal choice (project_bidi_schema.mjs's enumNode()) carries both
+    // `primitive` and `enum` — the primitive check above narrows the type, but the
+    // closed vocabulary below still needs to run, so only return early when there
+    // is no `enum` to fall through to.
+    if (typeNode.enum === undefined) return value
   }
 
   if (typeNode.const !== undefined) {
@@ -50,7 +64,7 @@ function validateValue(typeNode, value, path, direction) {
         `${path}: expected constant ${JSON.stringify(typeNode.const)}, got ${JSON.stringify(value)}`,
       )
     }
-    return
+    return value
   }
 
   if (typeNode.enum !== undefined) {
@@ -59,30 +73,30 @@ function validateValue(typeNode, value, path, direction) {
         `${path}: "${value}" is not a valid value; expected one of: ${typeNode.enum.join(', ')}`,
       )
     }
-    return
+    return value
   }
 
   if (typeNode.list !== undefined) {
     if (!Array.isArray(value)) {
       throw new ValidationError(`${path}: expected a list, got ${typeof value}`)
     }
-    value.forEach((item, i) => validateValue(typeNode.list, item, `${path}[${i}]`, direction))
-    return
+    return Object.freeze(value.map((item, i) => validateValue(typeNode.list, item, `${path}[${i}]`, direction)))
   }
 
   if (typeNode.map !== undefined) {
     if (typeof value !== 'object' || Array.isArray(value) || value === null) {
       throw new ValidationError(`${path}: expected an object, got ${typeof value}`)
     }
+    const result = {}
     for (const [key, entry] of Object.entries(value)) {
-      validateValue(typeNode.map, entry, `${path}.${key}`, direction)
+      result[key] = validateValue(typeNode.map, entry, `${path}.${key}`, direction)
     }
-    return
+    return Object.freeze(result)
   }
 
   if (typeNode.ref !== undefined) {
     const referenced = resolve(typeNode.ref)
-    if (referenced === undefined) return // not yet registered — best-effort, skip deep validation
+    if (referenced === undefined) return value // not yet registered — best-effort, skip deep validation
 
     if (referenced.kind === 'enum') {
       if (!referenced.includes(value)) {
@@ -90,63 +104,107 @@ function validateValue(typeNode, value, path, direction) {
           `${path}: "${value}" is not a valid ${typeNode.ref} value; expected one of: ${referenced.values.join(', ')}`,
         )
       }
-      return
+      return value
     }
 
     if (referenced.kind === 'record') {
-      if (value instanceof referenced.RecordClass) return // already validated
+      if (value instanceof referenced.RecordClass) return value // already validated
       if (typeof value !== 'object' || Array.isArray(value) || value === null) {
         throw new ValidationError(`${path}: expected an object, got ${typeof value}`)
       }
-      // Recurse through the same-direction path so a nested field gets the
-      // same tolerance (inbound) or strictness (outbound) as its parent.
+      // Recurse through the same-direction path so a nested field gets the same
+      // tolerance (inbound) or strictness (outbound) as its parent. Inbound returns
+      // the parsed instance itself, so a typed parent record ends up with a typed
+      // nested value instead of the raw wire object; outbound only validates this
+      // way (the caller's own value is what gets kept, see the note above).
       if (direction === 'inbound') {
-        referenced.RecordClass.fromWire(value)
-      } else {
-        new referenced.RecordClass(value)
+        return referenced.RecordClass.fromWire(value)
       }
-      return
+      new referenced.RecordClass(value)
+      return value
     }
 
     if (referenced.kind === 'union') {
       if (direction === 'inbound') {
-        referenced.fromWire(value)
-      } else {
-        referenced.build(value)
+        return referenced.fromWire(value)
       }
-      return
+      referenced.build(value)
+      return value
     }
 
     if (referenced.kind === 'alias') {
-      validateValue(referenced.type, value, path, direction)
-      return
+      return validateValue(referenced.type, value, path, direction)
     }
 
-    return
+    return value
   }
 
   if (typeNode.union !== undefined) {
     const errors = []
     for (const variant of typeNode.union) {
       try {
-        validateValue(variant, value, path, direction)
-        return
+        return validateValue(variant, value, path, direction)
       } catch (err) {
         errors.push(err.message)
       }
     }
     throw new ValidationError(`${path}: value did not match any variant (${errors.join('; ')})`)
   }
+
+  // An inline (unnamed) record type node — project_bidi_schema.mjs's projectEntry()
+  // emits this for an anonymous CDDL group (e.g. a field typed as an inline `{ ... }`
+  // rather than a ref to a named, defineRecord()'d type) — same FieldSpec shape as a
+  // named record's `fields`, just with nowhere to register a class. Gets the same
+  // directional required/extra/nested-value handling a named record's constructor/
+  // fromWire gives its fields, just built inline instead of through a Record class.
+  if (typeNode.record !== undefined) {
+    if (typeof value !== 'object' || Array.isArray(value) || value === null) {
+      throw new ValidationError(`${path}: expected an object, got ${typeof value}`)
+    }
+    const byWire = new Map(typeNode.record.map((f) => [f.wire, f]))
+    const result = {}
+    for (const field of typeNode.record) {
+      if (!Object.hasOwn(value, field.wire)) {
+        if (field.required) {
+          throw new ValidationError(`${path}.${field.wire}: required field is missing`)
+        }
+        continue
+      }
+      result[field.name] = validateValue(field.type, value[field.wire], `${path}.${field.wire}`, direction)
+    }
+    for (const wireKey of Object.keys(value)) {
+      if (byWire.has(wireKey)) continue
+      // No `extensible` concept exists for an inline record (project_bidi_schema.mjs
+      // never sets it there) — undeclared keys get exactly the non-extensible named-
+      // record treatment: rejected outbound, dropped-with-a-warning inbound.
+      if (direction === 'inbound') {
+        process.emitWarning(`${path}: undeclared property "${wireKey}"`, 'BiDiSchemaWarning')
+      } else {
+        throw new ValidationError(`${path}: unknown property "${wireKey}"`)
+      }
+    }
+    return Object.freeze(result)
+  }
+
+  return value
 }
 
 /**
+ * Registers a schema `record` — a fixed set of named fields, each independently
+ * validated on the way out (constructor) and in (fromWire()).
  * @param {string} name Schema type name, e.g. 'network.AddInterceptParameters'.
  * @param {Array<{name: string, wire: string, required: boolean, type: object}>} fields
  * @param {{extensible?: boolean}} [options]
+ * @returns {{new (data: object): object, fromWire: function(unknown): object}}
+ *   The generated Record class — `new Record(data)` validates and constructs
+ *   outbound, `Record.fromWire(payload)` validates and parses inbound.
  */
 function defineRecord(name, fields, options = {}) {
   const { extensible = false } = options
   const byWire = new Map(fields.map((f) => [f.wire, f]))
+  // JS property name -> wire key, the inverse of byWire — lets toJSON() below map an
+  // outbound instance's own (JS-facing) properties back to the wire's declared names.
+  const byName = new Map(fields.map((f) => [f.name, f.wire]))
 
   class Record {
     // Outbound: strict. Any value that doesn't match its declared shape is an error here.
@@ -163,8 +221,7 @@ function defineRecord(name, fields, options = {}) {
           continue
         }
         const value = data[field.wire]
-        validateValue(field.type, value, `${name}.${field.wire}`, 'outbound')
-        this[field.name] = value
+        this[field.name] = validateValue(field.type, value, `${name}.${field.wire}`, 'outbound')
       }
 
       for (const wireKey of Object.keys(data)) {
@@ -209,8 +266,7 @@ function defineRecord(name, fields, options = {}) {
         }
         const value = payload[field.wire]
         // A present value's shape is never tolerated, inbound or outbound.
-        validateValue(field.type, value, `${name}.${field.wire}`, 'inbound')
-        instance[field.name] = value
+        instance[field.name] = validateValue(field.type, value, `${name}.${field.wire}`, 'inbound')
       }
 
       for (const wireKey of Object.keys(payload)) {
@@ -236,6 +292,20 @@ function defineRecord(name, fields, options = {}) {
 
       Object.freeze(instance)
       return instance
+    }
+
+    // The JSON.stringify hook: an instance stores its fields under their JS-facing
+    // property names (this[field.name]), but the wire needs the spec's own key
+    // (field.wire) — the two differ whenever a generator picks an idiomatic JS name
+    // distinct from the raw spec key. Runs automatically wherever this instance is
+    // serialized (directly, or nested inside another value being stringified), so a
+    // caller never has to remember to call it.
+    toJSON() {
+      const wire = {}
+      for (const key of Object.keys(this)) {
+        wire[byName.get(key) ?? key] = this[key] // extras have no JS-name mapping — already wire-keyed
+      }
+      return wire
     }
   }
 

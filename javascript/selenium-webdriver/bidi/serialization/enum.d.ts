@@ -20,4 +20,5 @@ export interface EnumEntry<T extends string> {
   includes(value: unknown): value is T
 }
 
+/** Registers a schema `enum` — a closed set of string values a field may hold. */
 export function defineEnum<T extends string>(name: string, values: readonly T[]): EnumEntry<T>

@@ -112,6 +112,13 @@ describe('wire contract — representation', function () {
       assert.strictEqual(parsed.jsPropertyName, 'hello')
       assert.strictEqual(Object.hasOwn(parsed, 'specWireKey'), false)
     })
+
+    it('writes to the literal wire key, not the JS property name, when serialized', function () {
+      const built = new NameMirror({ specWireKey: 'hello' })
+      assert.strictEqual(JSON.stringify(built), JSON.stringify({ specWireKey: 'hello' }))
+      // The instance itself is still JS-facing — only its wire representation changes.
+      assert.strictEqual(built.jsPropertyName, 'hello')
+    })
   })
 
   describe("preserve a numeric value's full range and precision", function () {

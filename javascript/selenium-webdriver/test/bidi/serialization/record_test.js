@@ -19,7 +19,7 @@
 
 const assert = require('node:assert')
 const { defineEnum } = require('selenium-webdriver/bidi/serialization/enum')
-const { defineRecord, ValidationError } = require('selenium-webdriver/bidi/serialization/record')
+const { defineRecord, defineAlias, ValidationError } = require('selenium-webdriver/bidi/serialization/record')
 
 // Real fixtures from the WebDriver BiDi schema (network.InterceptPhase,
 // network.AddInterceptParameters, network.BeforeRequestSentParameters),
@@ -40,6 +40,15 @@ const BeforeRequestSentParameters = defineRecord('test.record.BeforeRequestSentP
   },
   { name: 'isBlocked', wire: 'isBlocked', required: true, type: { primitive: 'boolean' } },
   { name: 'timestamp', wire: 'timestamp', required: true, type: { primitive: 'integer' } },
+])
+
+// network.Intercept aliases a plain string — a name with no fields of its own,
+// just a pointer to another type node. A ref to it should validate through
+// whatever it points at.
+defineAlias('test.record.Intercept', { primitive: 'string' })
+
+const RemoveInterceptParameters = defineRecord('test.record.RemoveInterceptParameters', [
+  { name: 'intercept', wire: 'intercept', required: true, type: { ref: 'test.record.Intercept' } },
 ])
 
 describe('serialization/record', function () {
@@ -143,6 +152,47 @@ describe('serialization/record', function () {
         ValidationError,
       )
     })
+
+    it('rejects NaN and Infinity outbound', function () {
+      for (const bad of [NaN, Infinity, -Infinity]) {
+        assert.throws(
+          () => new BeforeRequestSentParameters({ context: null, isBlocked: true, timestamp: bad }),
+          ValidationError,
+        )
+      }
+    })
+
+    it('rejects NaN and Infinity inbound', function () {
+      for (const bad of [NaN, Infinity, -Infinity]) {
+        assert.throws(
+          () => BeforeRequestSentParameters.fromWire({ context: null, isBlocked: true, timestamp: bad }),
+          ValidationError,
+        )
+      }
+    })
+  })
+
+  describe('number validation', function () {
+    const NumberField = defineRecord('test.record.NumberField', [
+      { name: 'value', wire: 'value', required: true, type: { primitive: 'number' } },
+    ])
+
+    it('accepts a fractional value, unlike integer', function () {
+      const built = new NumberField({ value: 1.5 })
+      assert.strictEqual(built.value, 1.5)
+    })
+
+    it('rejects NaN and Infinity outbound', function () {
+      for (const bad of [NaN, Infinity, -Infinity]) {
+        assert.throws(() => new NumberField({ value: bad }), ValidationError)
+      }
+    })
+
+    it('rejects NaN and Infinity inbound', function () {
+      for (const bad of [NaN, Infinity, -Infinity]) {
+        assert.throws(() => NumberField.fromWire({ value: bad }), ValidationError)
+      }
+    })
   })
 
   describe('extensible types', function () {
@@ -186,6 +236,118 @@ describe('serialization/record', function () {
       assert.strictEqual(Object.getPrototypeOf(built), ExtensibleParams.prototype)
       assert.ok(built instanceof ExtensibleParams)
       assert.deepStrictEqual(built.__proto__, { pwned: true })
+    })
+  })
+
+  describe('defineAlias', function () {
+    it('accepts, through a record field, a value matching the aliased type', function () {
+      const params = new RemoveInterceptParameters({ intercept: 'intercept-1' })
+      assert.strictEqual(params.intercept, 'intercept-1')
+    })
+
+    it('rejects, through a record field, a value not matching the aliased type', function () {
+      assert.throws(() => new RemoveInterceptParameters({ intercept: 42 }), ValidationError)
+    })
+
+    it('validates the same way inbound', function () {
+      const parsed = RemoveInterceptParameters.fromWire({ intercept: 'intercept-1' })
+      assert.strictEqual(parsed.intercept, 'intercept-1')
+      assert.throws(() => RemoveInterceptParameters.fromWire({ intercept: 42 }), ValidationError)
+    })
+  })
+
+  describe('inline type nodes', function () {
+    // project_bidi_schema.mjs's enumNode() emits both `primitive` and `enum` on an
+    // inline literal choice the normalizer didn't hoist to a named enum.
+    const InlineEnumField = defineRecord('test.record.InlineEnumField', [
+      {
+        name: 'phase',
+        wire: 'phase',
+        required: true,
+        type: { primitive: 'string', enum: ['beforeRequestSent', 'responseStarted'] },
+      },
+    ])
+
+    it('enforces the closed vocabulary of an inline enum, not just its shared primitive', function () {
+      assert.throws(() => new InlineEnumField({ phase: 'notARealPhase' }), ValidationError)
+      assert.doesNotThrow(() => new InlineEnumField({ phase: 'beforeRequestSent' }))
+    })
+
+    const InlineRecordField = defineRecord('test.record.InlineRecordField', [
+      {
+        name: 'origin',
+        wire: 'origin',
+        required: true,
+        type: {
+          record: [
+            { name: 'host', wire: 'host', required: true, type: { primitive: 'string' } },
+            { name: 'port', wire: 'port', required: false, type: { primitive: 'integer' } },
+          ],
+        },
+      },
+    ])
+
+    it('validates an inline record field the same way a named record is validated', function () {
+      const built = new InlineRecordField({ origin: { host: 'example.com', port: 443 } })
+      assert.deepStrictEqual(built.origin, { host: 'example.com', port: 443 })
+    })
+
+    it('rejects a missing required field inside an inline record', function () {
+      assert.throws(() => new InlineRecordField({ origin: { port: 443 } }), ValidationError)
+    })
+
+    it('rejects an unknown property inside an inline record outbound', function () {
+      assert.throws(() => new InlineRecordField({ origin: { host: 'x', bogus: true } }), ValidationError)
+    })
+
+    it('warns (not throws) on an unknown property inside an inline record inbound', async function () {
+      const warnings = []
+      const onWarning = (w) => warnings.push(w.message)
+      process.on('warning', onWarning)
+      const parsed = InlineRecordField.fromWire({ origin: { host: 'x', bogus: true } })
+      await new Promise((resolve) => setTimeout(resolve, 20))
+      process.off('warning', onWarning)
+      assert.strictEqual(parsed.origin.bogus, undefined)
+      assert.ok(warnings.some((m) => m.includes('bogus')))
+    })
+  })
+
+  describe('nested ref parsing', function () {
+    const InnerRecord = defineRecord('test.record.InnerRecord', [
+      { name: 'value', wire: 'value', required: true, type: { primitive: 'string' } },
+    ])
+    const OuterRecord = defineRecord('test.record.OuterRecord', [
+      { name: 'inner', wire: 'inner', required: true, type: { ref: 'test.record.InnerRecord' } },
+    ])
+
+    it('assigns the parsed nested record instance inbound, not the raw wire object', function () {
+      const parsed = OuterRecord.fromWire({ inner: { value: 'x' } })
+      assert.ok(parsed.inner instanceof InnerRecord)
+      assert.strictEqual(parsed.inner.value, 'x')
+    })
+
+    it('keeps the caller-provided value outbound, not a newly constructed instance', function () {
+      const rawInner = { value: 'x' }
+      const built = new OuterRecord({ inner: rawInner })
+      assert.strictEqual(built.inner, rawInner) // same reference — outbound behavior preserved
+      assert.ok(!(built.inner instanceof InnerRecord))
+    })
+
+    it('still validates a nested ref outbound even though the raw value is kept', function () {
+      assert.throws(() => new OuterRecord({ inner: { value: 42 } }), ValidationError)
+    })
+  })
+
+  describe('deep immutability', function () {
+    it('freezes a validated list so it cannot be mutated after construction', function () {
+      const params = new AddInterceptParameters({ phases: ['beforeRequestSent'] })
+      assert.ok(Object.isFrozen(params.phases))
+      assert.throws(() => params.phases.push('responseStarted'), TypeError)
+    })
+
+    it('freezes a validated list parsed inbound too', function () {
+      const parsed = AddInterceptParameters.fromWire({ phases: ['beforeRequestSent'] })
+      assert.ok(Object.isFrozen(parsed.phases))
     })
   })
 })

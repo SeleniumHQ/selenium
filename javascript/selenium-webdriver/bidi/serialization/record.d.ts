@@ -24,6 +24,9 @@ export interface TypeNode {
   list?: TypeNode
   map?: TypeNode
   union?: TypeNode[]
+  // An inline (unnamed) record — project_bidi_schema.mjs's projectEntry() emits this
+  // for an anonymous CDDL group instead of hoisting it to a named, ref'able type.
+  record?: FieldSpec[]
   nullable?: boolean
   // Present on an inline union with a bare-scalar arm — the primitive(s) that
   // arm accepts (see unionNode() in project_bidi_schema.mjs). Not consumed by
@@ -53,6 +56,10 @@ export interface RecordClass<T> {
   fromWire(payload: unknown): Readonly<T>
 }
 
+/**
+ * Registers a schema `record` — a fixed set of named fields, each independently
+ * validated on the way out (constructor) and in (fromWire()).
+ */
 export function defineRecord<T>(name: string, fields: FieldSpec[], options?: RecordOptions): RecordClass<T>
 
 export function defineAlias(name: string, type: TypeNode): void
