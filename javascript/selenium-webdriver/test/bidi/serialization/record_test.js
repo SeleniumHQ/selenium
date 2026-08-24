@@ -237,6 +237,37 @@ describe('serialization/record', function () {
       assert.ok(built instanceof ExtensibleParams)
       assert.deepStrictEqual(built.__proto__, { pwned: true })
     })
+
+    it('serializes a "__proto__" extra as data, not as the wire object\'s own prototype', function () {
+      const raw = '{"proxyType":"autodetect","__proto__":{"pwned":true}}'
+      const built = new ExtensibleParams(JSON.parse(raw))
+      const wire = JSON.parse(JSON.stringify(built))
+      assert.strictEqual(wire.proxyType, 'autodetect')
+      assert.strictEqual(Object.getPrototypeOf(wire), Object.prototype) // real prototype unaffected
+      assert.deepStrictEqual(wire.__proto__, { pwned: true }) // preserved as data, not applied as a prototype
+    })
+  })
+
+  describe('map values', function () {
+    const MapField = defineRecord('test.record.MapField', [
+      { name: 'headers', wire: 'headers', required: true, type: { map: { primitive: 'string' } } },
+    ])
+
+    // CWE-1321: `result[key] = ...` with a wire-controlled key would hijack a plain
+    // `{}`'s prototype for a literal "__proto__" key; Object.create(null) has no such trap.
+    it('does not let a "__proto__" key hijack a validated map value inbound', function () {
+      const raw = '{"headers":{"__proto__":"pwned"}}'
+      const parsed = MapField.fromWire(JSON.parse(raw))
+      assert.strictEqual(Object.getPrototypeOf(parsed.headers), null)
+      assert.strictEqual(Object.getOwnPropertyDescriptor(parsed.headers, '__proto__').value, 'pwned')
+    })
+
+    it('does not let a "__proto__" key hijack a validated map value outbound', function () {
+      const raw = '{"headers":{"__proto__":"pwned"}}'
+      const built = new MapField(JSON.parse(raw))
+      assert.strictEqual(Object.getPrototypeOf(built.headers), null)
+      assert.strictEqual(Object.getOwnPropertyDescriptor(built.headers, '__proto__').value, 'pwned')
+    })
   })
 
   describe('defineAlias', function () {

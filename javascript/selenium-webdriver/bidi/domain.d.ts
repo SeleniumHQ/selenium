@@ -20,7 +20,14 @@ export interface EventDescriptor<T> {
   readonly type?: { fromWire(payload: unknown): T }
 }
 
-/** Describes one subscribable BiDi event, for use with Domain#addCallback(). */
+/**
+ * Describes one subscribable BiDi event, for use with Domain#addCallback().
+ * @param {string} method The event's wire method name, e.g. 'log.entryAdded'.
+ * @param {{fromWire(payload: unknown): T}} [type] Runtime record/union class for the
+ *   event's params, if the schema declares one — addCallback() parses each delivered
+ *   payload through it before the caller's handler runs.
+ * @returns {EventDescriptor<T>} The event descriptor, ready to pass to Domain#addCallback().
+ */
 export function event<T>(method: string, type?: { fromWire(payload: unknown): T }): EventDescriptor<T>
 
 /** Internal construction guard — only a generated `Class.create(driver)` passes this. Never use directly. */
@@ -37,11 +44,12 @@ export declare class Domain {
    * attaches `handler` as a local listener for it. Remote subscription is
    * ref-counted against the connection's own listener count, so it's shared
    * correctly across every Domain instance on that connection, not just this one.
-   * @param descriptor An event descriptor from event().
-   * @param handler Invoked with the event's parsed params each time it fires.
-   * @returns A handle for this subscription; call `unsubscribe()` to stop
-   *     receiving the event (and, if it was the last listener for it on this
-   *     connection, to tell the remote end to stop sending it).
+   * @param {EventDescriptor<T>} descriptor An event descriptor from event().
+   * @param {function(T): void} handler Invoked with the event's parsed params each time it fires.
+   * @returns {Promise<{unsubscribe: function(): Promise<void>}>} A handle for this
+   *     subscription; call `unsubscribe()` to stop receiving the event (and, if it
+   *     was the last listener for it on this connection, to tell the remote end to
+   *     stop sending it).
    */
   addCallback<T>(
     descriptor: EventDescriptor<T>,

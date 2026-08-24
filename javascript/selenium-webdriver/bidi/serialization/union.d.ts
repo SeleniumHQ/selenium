@@ -27,5 +27,10 @@ export interface UnionClass<T> {
 /**
  * Registers a schema `union` — a value that may be any one of several variant
  * record types, resolved by a discriminator field or by structural shape.
+ * @param name Schema type name, e.g. 'session.ProxyConfiguration'.
+ * @param selector The schema's `selector` node for this union.
+ * @param options
+ * @returns The registered union — `build(data)` resolves and constructs the matching
+ *   variant outbound, `fromWire(payload)` resolves and parses it inbound.
  */
 export function defineUnion<T>(name: string, selector: unknown, options?: UnionOptions): UnionClass<T>

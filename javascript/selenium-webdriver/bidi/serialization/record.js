@@ -87,7 +87,10 @@ function validateValue(typeNode, value, path, direction) {
     if (typeof value !== 'object' || Array.isArray(value) || value === null) {
       throw new ValidationError(`${path}: expected an object, got ${typeof value}`)
     }
-    const result = {}
+    // Object.create(null), not `{}`: `key` is wire-controlled and a literal "__proto__"
+    // entry assigned via bracket notation would hijack result's prototype instead of
+    // becoming a data property (CWE-1321) — a null-prototype object has no such trap.
+    const result = Object.create(null)
     for (const [key, entry] of Object.entries(value)) {
       result[key] = validateValue(typeNode.map, entry, `${path}.${key}`, direction)
     }
@@ -301,7 +304,12 @@ function defineRecord(name, fields, options = {}) {
     // serialized (directly, or nested inside another value being stringified), so a
     // caller never has to remember to call it.
     toJSON() {
-      const wire = {}
+      // Object.create(null), not `{}`: an extra's key is wire-controlled (extensible
+      // types preserve undeclared properties verbatim, see the constructor above), and
+      // a literal "__proto__" key assigned via bracket notation would hijack wire's
+      // prototype instead of becoming a data property (CWE-1321) — same hazard the
+      // constructor/fromWire already guard against for the instance itself.
+      const wire = Object.create(null)
       for (const key of Object.keys(this)) {
         wire[byName.get(key) ?? key] = this[key] // extras have no JS-name mapping — already wire-keyed
       }

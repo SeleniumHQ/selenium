@@ -59,6 +59,11 @@ export interface RecordClass<T> {
 /**
  * Registers a schema `record` — a fixed set of named fields, each independently
  * validated on the way out (constructor) and in (fromWire()).
+ * @param name Schema type name, e.g. 'network.AddInterceptParameters'.
+ * @param fields The record's field specs.
+ * @param options
+ * @returns The generated Record class — `new Record(data)` validates and constructs
+ *   outbound, `Record.fromWire(payload)` validates and parses inbound.
  */
 export function defineRecord<T>(name: string, fields: FieldSpec[], options?: RecordOptions): RecordClass<T>
 
