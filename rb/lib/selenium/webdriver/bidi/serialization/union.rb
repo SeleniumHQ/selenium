@@ -54,13 +54,19 @@ module Selenium
             def scalar_values(*values) = @scalar_values = values
 
             # A non-Hash payload is a bare scalar arm (e.g. input.Origin's "viewport") with no
-            # object to dispatch on, so it is returned unchanged — unless every arm is an object
-            # (object_only), where a non-Hash cannot match any variant and is a wire error.
+            # object to dispatch on, so it stands for itself — but only as a literal the schema
+            # pins, since anything else matches no arm. Where every arm is an object
+            # (object_only), a non-Hash cannot match any variant at all.
             def from_json(json_payload)
               unless json_payload.is_a?(::Hash)
-                return json_payload unless @object_only
+                if @object_only
+                  raise Error::SerializationError,
+                        "#{name} expected an object on the wire, got #{json_payload.inspect}"
+                end
+                return json_payload if scalar_arm?(json_payload)
 
-                raise Error::SerializationError, "#{name} expected an object on the wire, got #{json_payload.inspect}"
+                raise Error::SerializationError,
+                      "#{name} received a scalar not in this Selenium's BiDi schema: #{json_payload.inspect}"
               end
 
               variant = select(json_payload)
