@@ -33,7 +33,7 @@ task :pin do
   Bazel.execute('fetch', ['--repo_env=CARGO_BAZEL_REPIN=true'], '@crates//...')
 end
 
-desc 'Update Rust dependencies'
+desc 'Update Rust dependencies to latest versions within specified range'
 task :update do
   puts 'updating Cargo.lock'
   manifest = File.expand_path('rust/Cargo.toml')
@@ -71,4 +71,7 @@ task :version, [:version] do |_task, arguments|
     text = File.read(file).sub(pattern, "\\1#{new_version}\\2")
     File.open(file, 'w') { |f| f.puts text }
   end
+
+  Rake::Task['rust:pin'].reenable
+  Rake::Task['rust:pin'].invoke
 end

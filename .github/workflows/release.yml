@@ -143,10 +143,6 @@ jobs:
       gem-trusted-publishing: ${{ matrix.language == 'ruby' }}
       node-version: ${{ matrix.language == 'javascript' && '24.14.1' || '' }}
       run: |
-        if [ "${{ matrix.language == 'java' && (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == 'java') && github.run_attempt > 1 }}" = "true" ]; then
-          echo "::error::Java release is not yet rerun-safe — check/drop the staging repo at https://central.sonatype.com/publishing/deployments and publish manually"
-          exit 1
-        fi
         if [ "${{ needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language }}" = "true" ]; then
           ./go ${{ matrix.language }}:release
         else
@@ -265,25 +261,23 @@ jobs:
 
   verify:
     name: Verify Published Packages
-    needs: [parse-tag, docs]
+    needs: [parse-tag, publish, publish-python]
+    if: >-
+      always() && !cancelled() &&
+      needs.publish.result == 'success' &&
+      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
     uses: ./.github/workflows/bazel.yml
     with:
       name: Verify packages
       run: ./go ${{ needs.parse-tag.outputs.language }}:verify
 
-  unrestrict-trunk:
-    name: Unrestrict Trunk Branch
-    needs: verify
-    uses: ./.github/workflows/restrict-trunk.yml
-    with:
-      restrict: false
-    secrets:
-      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
   reset-version:
     name: Generate Nightly Versions
-    needs: [parse-tag, docs]
+    needs: [parse-tag, publish, publish-python]
+    if: >-
+      always() && !cancelled() &&
+      needs.publish.result == 'success' &&
+      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
     uses: ./.github/workflows/bazel.yml
     with:
       name: Reset Versions
@@ -292,7 +286,7 @@ jobs:
 
   update-version:
     name: Push Nightly Versions
-    needs: [parse-tag, reset-version, unrestrict-trunk]
+    needs: [parse-tag, reset-version]
     permissions:
       contents: write
       actions: read
@@ -303,31 +297,9 @@ jobs:
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
-  reset-dependencies:
-    name: Update Lockfiles for Nightly
-    needs: [parse-tag, update-version]
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Reset Dependencies
-      run: ./go ${{ needs.parse-tag.outputs.language }}:pin${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:pin' || '' }}
-      artifact-name: version-reset-deps
-
-  commit-dependencies:
-    name: Push Nightly Lockfiles
-    needs: [parse-tag, reset-dependencies]
-    permissions:
-      contents: write
-      actions: read
-    uses: ./.github/workflows/commit-changes.yml
-    with:
-      artifact-name: version-reset-deps
-      commit-message: "[build] Update lockfiles for nightly versions"
-    secrets:
-      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
-
   nightly:
     name: Publish Nightly Packages
-    needs: [parse-tag, commit-dependencies]
+    needs: [parse-tag, unrestrict-trunk]
     permissions:
       contents: write
       packages: write
@@ -338,26 +310,42 @@ jobs:
 
   mirror:
     name: Update Release Mirror
-    needs: [parse-tag, nightly]
+    needs: [parse-tag, update-version]
     if: needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/mirror-selenium-releases.yml
     secrets: inherit
 
-  on-release-failure:
-    name: On Release Failure
+  unrestrict-trunk:
+    name: Unrestrict Trunk Branch
+    needs: [parse-tag, publish, publish-python, update-version, mirror]
+    if: >-
+      always() && !cancelled() &&
+      needs.publish.result == 'success' &&
+      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped') &&
+      needs.update-version.result == 'success' &&
+      (needs.mirror.result == 'success' || needs.mirror.result == 'skipped')
+    uses: ./.github/workflows/restrict-trunk.yml
+    with:
+      restrict: false
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  on-release-complete:
+    name: On Release Complete
     runs-on: ubuntu-latest
-    needs: [publish, publish-python, docs, create-tag, github-release-draft, github-release-publish, update-version, reset-dependencies, commit-dependencies, nightly, mirror, verify]
-    if: failure()
+    needs: [publish, publish-python, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, nightly, mirror, verify, unrestrict-trunk]
+    if: always() && !cancelled()
     steps:
       - uses: actions/checkout@v6
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_ICON_EMOJI: ":rotating_light:"
-          SLACK_COLOR: failure
+          SLACK_ICON_EMOJI: ${{ contains(needs.*.result, 'failure') && ':rotating_light:' || (needs.publish.result == 'success' && ':white_check_mark:' || ':warning:') }}
+          SLACK_COLOR: ${{ contains(needs.*.result, 'failure') && 'failure' || (needs.publish.result == 'success' && 'good' || 'warning') }}
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: Release failed
+          SLACK_TITLE: ${{ contains(needs.*.result, 'failure') && 'Release failed' || (needs.publish.result == 'success' && 'Release complete' || 'Release did not run') }}
           SLACK_MESSAGE: |
             • Selenium Published: ${{ needs.publish.result }}
             • Python Published: ${{ needs.publish-python.result }}
@@ -366,9 +354,9 @@ jobs:
             • Docs Updated: ${{ needs.docs.result }}
             • GitHub Release Published: ${{ needs.github-release-publish.result }}
             • Nightly Version Updated: ${{ needs.update-version.result }}
-            • Nightly Lockfiles Updated: ${{ needs.commit-dependencies.result }}
             • Nightly Packages: ${{ needs.nightly.result }}
             • Mirror Updated: ${{ needs.mirror.result }}
             • Packages Verified: ${{ needs.verify.result }}
+            • Trunk Unlocked: ${{ needs.unrestrict-trunk.result }}
           MSG_MINIMAL: actions url
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

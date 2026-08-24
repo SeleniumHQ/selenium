@@ -80,7 +80,7 @@ jobs:
   release-grid:
     name: Release Grid
     needs: [prepare, nightly-release]
-    if: always() && needs.prepare.outputs.artifact-name
+    if: always() && needs.prepare.outputs.artifact-name && needs.nightly-release.result != 'skipped'
     runs-on: ubuntu-latest
     permissions:
       contents: write

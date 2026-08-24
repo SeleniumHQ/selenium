@@ -121,12 +121,20 @@ module SeleniumRake
     raise failures.join("\n\n")
   end
 
+  # Takes a url or a prepared request, so callers needing headers can build their own.
+  def self.get_request(target)
+    request = target.is_a?(Net::HTTPRequest) ? target : Net::HTTP::Get.new(URI(target))
+    uri = request.uri
+
+    Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https',
+                                            open_timeout: 10, read_timeout: 60) do |http|
+      http.request(request)
+    end
+  end
+
   def self.verify_package_published(url)
     puts "Verifying #{url}..."
-    uri = URI(url)
-    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
-      http.request(Net::HTTP::Get.new(uri))
-    end
+    res = get_request(url)
     raise "Package not published: #{url}" unless res.is_a?(Net::HTTPSuccess)
 
     puts 'Verified!'
