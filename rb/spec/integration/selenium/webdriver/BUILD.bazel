@@ -43,8 +43,12 @@ _OS_SENSITIVE = [
 
 # specs whose classes have both bidi implementations
 _BIDI_IMPLEMENTATIONS = [
-    "driver_spec.rb",
     "navigation_spec.rb",
+]
+
+# bidi implementations that must also run over a Grid (e.g. se/file upload of an unpacked extension)
+_GRID_BIDI = [
+    "driver_spec.rb",
 ]
 
 # tests that require bidi enabled
@@ -67,7 +71,7 @@ _NO_GRID = ["driver_finder_spec.rb"]
     )
     for file in glob(
         ["*_spec.rb"],
-        exclude = _OS_SENSITIVE + _BIDI_IMPLEMENTATIONS + _BIDI_ONLY + _DEVTOOLS + _NO_GRID,
+        exclude = _OS_SENSITIVE + _BIDI_IMPLEMENTATIONS + _GRID_BIDI + _BIDI_ONLY + _DEVTOOLS + _NO_GRID,
     )
 ]
 
@@ -106,6 +110,19 @@ _NO_GRID = ["driver_finder_spec.rb"]
         ],
     )
     for f in _BIDI_IMPLEMENTATIONS
+]
+
+[
+    rb_integration_test(
+        name = f[:-8],
+        srcs = [f],
+        bidi = True,
+        grid_bidi = True,
+        deps = [
+            "//rb/lib/selenium/webdriver:bidi",
+        ],
+    )
+    for f in _GRID_BIDI
 ]
 
 [

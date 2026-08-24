@@ -387,10 +387,12 @@ module Selenium
           end
 
           context 'with a packed archive' do
-            let(:archive) { File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__) }
-
-            it 'installs and removes an xpi file', skip_unless: {browser: :firefox} do
-              extension = driver.install_web_extension(archive)
+            it 'installs and removes an xpi file',
+               pending_if: {browser_family: :chromium,
+                            exception: {class: Error::UnsupportedOperationError},
+                            reason: 'chromium-bidi installs only unpacked directories (SeleniumHQ/selenium#16541)'} do
+              ext = File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__)
+              extension = driver.install_web_extension(ext)
               expect(extension.id).to eq 'webextensions-selenium-example-v3@example.com'
 
               driver.navigate.to url_for('blank.html')
@@ -398,23 +400,16 @@ module Selenium
               expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
               driver.uninstall_web_extension(extension)
-            end
-
-            it 'raises on Chromium, which installs only unpacked directories (SeleniumHQ/selenium#16541)',
-               skip_unless: {browser_family: :chromium} do
-              expect { driver.install_web_extension(archive) }
-                .to raise_error(Error::UnsupportedOperationError, /not supported/)
             end
           end
 
           context 'with base64-encoded bytes' do
-            let(:encoded) do
+            it 'installs and removes base64-encoded bytes',
+               pending_if: {browser_family: :chromium,
+                            exception: {class: Error::UnsupportedOperationError},
+                            reason: 'chromium-bidi installs only unpacked directories (SeleniumHQ/selenium#16541)'} do
               xpi = File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__)
-              Base64.strict_encode64(File.binread(xpi))
-            end
-
-            it 'installs and removes on Firefox', skip_unless: {browser: :firefox} do
-              extension = driver.install_web_extension(encoded)
+              extension = driver.install_web_extension(Base64.strict_encode64(File.binread(xpi)))
               expect(extension.id).to eq 'webextensions-selenium-example-v3@example.com'
 
               driver.navigate.to url_for('blank.html')
@@ -422,12 +417,6 @@ module Selenium
               expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
               driver.uninstall_web_extension(extension)
-            end
-
-            it 'raises on Chromium, which installs only unpacked directories (SeleniumHQ/selenium#16541)',
-               skip_unless: {browser_family: :chromium} do
-              expect { driver.install_web_extension(encoded) }
-                .to raise_error(Error::UnsupportedOperationError, /not supported/)
             end
           end
 

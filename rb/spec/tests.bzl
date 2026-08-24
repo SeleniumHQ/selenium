@@ -189,7 +189,8 @@ def rb_integration_test(
         tags = [],
         bidi = False,
         classic = True,
-        grid = True):
+        grid = True,
+        grid_bidi = False):
     for browser in browsers:
         generate_classic = BROWSERS[browser].get("classic", True)
         generate_bidi = BROWSERS[browser].get("bidi", False)
@@ -259,3 +260,32 @@ def rb_integration_test(
                 visibility = ["//rb:__subpackages__"],
                 target_compatible_with = BROWSERS[browser]["target_compatible_with"],
             )
+
+            # Bidi over a Grid, for specs that must exercise remote-end behavior (e.g. se/file uploads).
+            if grid_bidi:
+                rb_test(
+                    name = "{}-{}-remote-bidi".format(name, browser),
+                    size = "large",
+                    srcs = srcs,
+                    args = ["rb/spec/"],
+                    data = BROWSERS[browser]["data"] + data + [
+                        "//common/src/web",
+                        "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+                        "//rb/spec:java-location",
+                        "@bazel_tools//tools/jdk:current_java_runtime",
+                    ],
+                    env = BROWSERS[browser]["env"] | {
+                        "WD_BAZEL_JAVA_LOCATION": "$(rootpath //rb/spec:java-location)",
+                        "WD_SPEC_DRIVER": "remote",
+                        "WEBDRIVER_BIDI": "true",
+                    },
+                    main = "@bundle//bin:rspec",
+                    tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + ["bidi", "{}-remote".format(browser)] + family_tags,
+                    deps = {d: True for d in (
+                        ["//rb/spec/integration/selenium/webdriver:spec_helper", "//rb/lib/selenium/webdriver:bidi"] +
+                        BROWSERS[browser]["deps"] +
+                        deps
+                    )}.keys(),
+                    visibility = ["//rb:__subpackages__"],
+                    target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+                )
