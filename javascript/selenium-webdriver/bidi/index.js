@@ -36,6 +36,8 @@ class Index extends EventEmitter {
     this._closed = false
     this._pending = new Map()
     this._connectWaiters = new Set()
+    // subscriptionId -> { method, handler }, used by addCallback/removeCallback.
+    this._callbacks = new Map()
     this._ws = new WebSocket(_webSocketUrl)
     this._ws.on('open', () => {
       // The handshake can complete after close()/_failPending() has already
@@ -71,12 +73,7 @@ class Index extends EventEmitter {
       } catch (err) {
         // Surface protocol parse failures rather than silently dropping —
         // otherwise callers see misleading send() timeouts.
-        const wrapped = new Error(`Failed to parse BiDi message: ${err.message}`)
-        if (this.listenerCount('error') > 0) {
-          this.emit('error', wrapped)
-        } else {
-          process.emitWarning(wrapped.message, 'BiDiProtocolWarning')
-        }
+        this._emitOrWarn(new Error(`Failed to parse BiDi message: ${err.message}`), 'BiDiProtocolWarning')
         return
       }
       // Messages without a numeric id are BiDi events, not command responses.
@@ -94,14 +91,26 @@ class Index extends EventEmitter {
           // method named 'error' through the same guarded path used for JSON
           // parse failures rather than forwarding it directly.
           if (payload.method === 'error') {
-            const err = new Error(`BiDi protocol error event: ${JSON.stringify(payload.params)}`)
-            if (this.listenerCount('error') > 0) {
-              this.emit('error', err)
-            } else {
-              process.emitWarning(err.message, 'BiDiProtocolWarning')
-            }
+            this._emitOrWarn(
+              new Error(`BiDi protocol error event: ${JSON.stringify(payload.params)}`),
+              'BiDiProtocolWarning',
+            )
           } else {
-            this.emit(payload.method, payload.params)
+            // A listener can throw synchronously — most notably a typed
+            // addCallback() dispatcher's fromWire() rejecting a corrupted
+            // payload, which is meant to error rather than warn. Dispatched
+            // one listener at a time (not via a single this.emit() call) so a
+            // throwing listener doesn't prevent a sibling listener registered
+            // for the same event from still receiving this delivery — emit()
+            // itself aborts the rest of its iteration once one listener throws.
+            for (const listener of this.listeners(payload.method)) {
+              try {
+                listener(payload.params)
+              } catch (err) {
+                const wrapped = err instanceof Error ? err : new Error(String(err))
+                this._emitOrWarn(wrapped, 'BiDiEventHandlerWarning')
+              }
+            }
           }
         }
         return
@@ -147,6 +156,39 @@ class Index extends EventEmitter {
       reject(error)
     }
     this._connectWaiters.clear()
+    // Detach every addCallback() listener too. Once closed, removeCallback()
+    // can no longer reach the remote end (send() would just throw) so it
+    // short-circuits on local cleanup alone — meaning nothing else will ever
+    // detach these listeners. Drop them here instead of leaving them attached
+    // to an EventEmitter nothing will ever emit on again.
+    for (const { method, handler } of this._callbacks.values()) {
+      this.off(method, handler)
+    }
+    this._callbacks.clear()
+  }
+
+  /**
+   * Emits `err` as an 'error' event if anything is listening for one,
+   * otherwise reports it as a process warning under `warningType` — never
+   * emits 'error' with no listener attached, which would itself throw and
+   * crash the process. Also guards against the 'error' listener itself
+   * throwing, so a broken listener can't cause the exact kind of crash this
+   * helper exists to prevent, just one level removed.
+   * @param {Error} err
+   * @param {string} warningType
+   * @private
+   */
+  _emitOrWarn(err, warningType) {
+    if (this.listenerCount('error') === 0) {
+      process.emitWarning(err.message, warningType)
+      return
+    }
+    try {
+      this.emit('error', err)
+    } catch (listenerErr) {
+      const wrapped = listenerErr instanceof Error ? listenerErr : new Error(String(listenerErr))
+      process.emitWarning(`BiDi 'error' listener threw: ${wrapped.message}`, warningType)
+    }
   }
 
   /**
@@ -229,7 +271,17 @@ class Index extends EventEmitter {
   }
 
   /**
-   * Subscribe to events
+   * Subscribe to events.
+   *
+   * Not the correct implementation — this is not tied to a subscription id, so
+   * {@link unsubscribe} below cancels by event/context name and can affect a
+   * subscription made elsewhere (including via {@link addCallback}) for the
+   * same event. Kept as-is only because the existing hand-written bidi/*.js
+   * modules already depend on this exact shape; new code should use
+   * {@link addCallback} instead, which is properly scoped by subscription id
+   * (mirroring Java's BiDi#addListener/removeListener — see BiDi.java). Once
+   * those hand-written modules are replaced by generated code built on
+   * addCallback/removeCallback, this method (and unsubscribe) can be removed.
    * @param events
    * @param browsingContexts
    * @returns {Promise<void>}
@@ -273,7 +325,10 @@ class Index extends EventEmitter {
   }
 
   /**
-   * Unsubscribe to events
+   * Unsubscribe to events. See the note on {@link subscribe} above — this
+   * cancels by event/context name, not by subscription id, so it can affect a
+   * subscription this same connection made elsewhere. New code should call
+   * the returned handle's `unsubscribe()` from {@link addCallback} instead.
    * @param events
    * @param browsingContexts
    * @returns {Promise<void>}
@@ -309,6 +364,93 @@ class Index extends EventEmitter {
     }
 
     await this.send(params)
+  }
+
+  /**
+   * Registers `handler` to be called on every delivered `method` event,
+   * globally (no context/user-context scoping). This is the correct mechanism
+   * — see the note on {@link subscribe}/{@link unsubscribe} above, which is a
+   * separate, imprecise, event-name-scoped mechanism kept only for the
+   * existing hand-written bidi/*.js modules until they're replaced by
+   * generated code built on this method instead.
+   *
+   * Keyed by the server-assigned `subscription` id from `session.subscribe`'s
+   * response, which the spec mints fresh on every call — so multiple
+   * independent subscriptions to the same event coexist safely, and the
+   * returned handle's `unsubscribe()` never affects another callback
+   * registered for the same method. No client-side ref-counting is needed:
+   * the protocol's own per-subscription id already gives each caller its own
+   * independent, individually-cancellable registration.
+   *
+   * The local listener is attached before `session.subscribe` is awaited, not
+   * after — so an event the browser starts sending as soon as it processes
+   * the subscription can't arrive in a gap where nothing is listening yet.
+   * If the subscribe call then fails (or returns no usable id), the listener
+   * is removed again before the error propagates, so a failed subscription
+   * doesn't leak one.
+   * @param {string} method
+   * @param {function(unknown): void} handler
+   * @returns {Promise<{id: string, unsubscribe: function(): Promise<void>}>}
+   */
+  async addCallback(method, handler) {
+    this.on(method, handler)
+
+    try {
+      const response = await this.send({
+        method: 'session.subscribe',
+        params: { events: [method] },
+      })
+      // send() resolves with the raw reply on any response, including a
+      // wire-level error — check for one explicitly and surface it plainly,
+      // rather than letting it fall through to the generic "no subscription
+      // id" message below (matching how Domain#send() reports the same shape).
+      if (response?.error !== undefined) {
+        throw new Error(`${response.error}: ${response.message}`)
+      }
+      const subscriptionId = response?.result?.subscription
+      if (typeof subscriptionId !== 'string' || subscriptionId === '') {
+        throw new Error(`session.subscribe did not return a valid subscription id: ${JSON.stringify(response)}`)
+      }
+
+      this._callbacks.set(subscriptionId, { method, handler })
+
+      return {
+        id: subscriptionId,
+        unsubscribe: () => this.removeCallback(subscriptionId),
+      }
+    } catch (err) {
+      this.off(method, handler)
+      throw err
+    }
+  }
+
+  /**
+   * Removes exactly the callback registered under `subscriptionId` (as
+   * returned by {@link addCallback}). A no-op if already removed — including
+   * once the connection is closed, since _failPending() has already cleaned
+   * up local state at that point and there is no remote end left to reach.
+   * Never affects any other callback, including another one registered for
+   * the same method.
+   * @param {string} subscriptionId
+   * @returns {Promise<void>}
+   */
+  async removeCallback(subscriptionId) {
+    const entry = this._callbacks.get(subscriptionId)
+    if (entry === undefined) {
+      return
+    }
+
+    this._callbacks.delete(subscriptionId)
+    this.off(entry.method, entry.handler)
+
+    if (this._closed) {
+      return
+    }
+
+    await this.send({
+      method: 'session.unsubscribe',
+      params: { subscriptions: [subscriptionId] },
+    })
   }
 
   /**
