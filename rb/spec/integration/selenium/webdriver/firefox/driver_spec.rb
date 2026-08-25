@@ -77,7 +77,7 @@ module Selenium
           end
         end
 
-        describe '#install_addon' do
+        describe '#install_addon', skip_unless: {bidi: false, reason: 'classic moz/addon endpoint'} do
           it 'install and uninstall xpi file' do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__)
             id = nil
@@ -158,7 +158,7 @@ module Selenium
           end
         end
 
-        describe '#install_web_extension' do
+        describe '#install_web_extension', skip_unless: {bidi: false, reason: 'classic moz/addon fallback'} do
           it 'installs and uninstalls without BiDi enabled' do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__)
             extension = driver.install_web_extension(ext)
@@ -202,6 +202,69 @@ module Selenium
               reset_driver!(prefs: {'browser.privatebrowsing.autostart': true}) do |driver|
                 driver.install_web_extension(ext, allow_private_browsing: false)
                 driver.navigate.to url_for('blank.html')
+                expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
+              end
+            end
+          end
+        end
+
+        describe '#install_web_extension', skip_unless: {bidi: true, reason: 'moz webExtension BiDi command'} do
+          after { |example| reset_driver!(example: example) }
+
+          it 'installs and removes an xpi file' do
+            ext = File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__)
+            extension = driver.install_web_extension(ext)
+            expect(extension.id).to eq 'webextensions-selenium-example-v3@example.com'
+
+            driver.navigate.to url_for('blank.html')
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
+
+            driver.uninstall_web_extension(extension)
+          end
+
+          it 'installs and removes base64-encoded bytes' do
+            xpi = File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__)
+            extension = driver.install_web_extension(Base64.strict_encode64(File.binread(xpi)))
+            expect(extension.id).to eq 'webextensions-selenium-example-v3@example.com'
+
+            driver.navigate.to url_for('blank.html')
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
+
+            driver.uninstall_web_extension(extension)
+          end
+
+          it 'installs an unsigned directory with permanent: false' do
+            ext = File.expand_path("#{extensions}/webextensions-selenium-example", __dir__)
+            extension = driver.install_web_extension(ext, permanent: false)
+            expect(extension.id).to eq 'webextensions-selenium-example-v3@example.com'
+
+            driver.navigate.to url_for('blank.html')
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
+
+            driver.uninstall_web_extension(extension)
+          end
+
+          context 'with allow_private_browsing enabled' do
+            let(:ext) { File.expand_path("#{extensions}/webextensions-selenium-example-signed", __dir__) }
+
+            it 'runs in a private window when allowed' do
+              reset_driver!(prefs: {'browser.privatebrowsing.autostart': true}) do |driver|
+                driver.install_web_extension(ext, allow_private_browsing: true)
+                driver.navigate.to url_for('blank.html')
+
+                injected = driver.find_element(id: 'webextensions-selenium-example')
+                expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
+              end
+            end
+
+            it 'does not run in a private window by default' do
+              reset_driver!(prefs: {'browser.privatebrowsing.autostart': true}) do |driver|
+                driver.install_web_extension(ext)
+                driver.navigate.to url_for('blank.html')
+
                 expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
               end
             end
