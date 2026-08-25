@@ -121,14 +121,12 @@ unrecognized error code included, even if that reason would otherwise fail one o
   still layer one on top. This covers only a carrier for a discriminator the spec does not declare; a shared
   carrier for a declared variant a binding has not modeled distinctly is the decision-1 representation
   choice, not this behavior.
-- **Tolerate a missing required field inbound** (decision 8). Represent an absent required field as
-  *omitted* and warn, rather than erroring, so a remote end lagging a newly-required field does not cost the
-  caller the message. Rejected: a static, generated binding cannot hold a required field as *omitted*
-  without typing it away from its declared shape (a required-nullable field then needs an extra
-  omitted-vs-null state), and no clean option exists for this in Java, so the tolerance is not implementable
-  consistently across bindings. Erroring keeps required-ness symmetric and matches every binding, including
-  the webdriverbidi-net reference; a lagging field is handled by a project schema override, not by runtime
-  tolerance.
+- **Tolerate a missing required field inbound** (decision 8). Represent it as *omitted* and warn instead of
+  erroring, so a lagging remote end does not cost the caller the message. Rejected: an absent required field
+  is then null at runtime, corrupting the typed contract in every statically-typed binding — held null under
+  a non-null type, or widened to nullable so every consumer must check a field the spec guarantees. Only
+  untyped dynamic bindings tolerate freely. Erroring keeps the guarantee and one behavior across bindings; a
+  lagging field is relaxed in the schema (a project override) instead.
 - **Surface message-level extras in this layer** (decision 9) rather than leaving them to the transport.
   Rejected: the envelope is the transport's; this layer governs per-type extensibility only.
 - **Retain extras only where they can be sent back** (decision 9), narrower than every extensible type.
@@ -144,9 +142,7 @@ unrecognized error code included, even if that reason would otherwise fail one o
 - Outbound validity differs in cost by binding: a static binding gets it from construction, while a
   dynamic binding must enforce it with an explicit runtime check. The contract requires the behavior from
   both; where a dynamic binding does not yet check, that is a gap to close, not an exemption.
-- Required-ness is symmetric: a required field must be present and valid in both directions (decisions 5
-  and 8). A static binding enforces it on the type itself, typing each field by its declared shape with no
-  omitted-vs-null representation, which is what makes the contract implementable in a generated static
-  binding like Java. The cost is backward compatibility: a remote end that omits a newly-required field
-  errors the whole message; relaxing that field with a project override degrades it to a missing field
-  rather than a failed session.
+- Required-ness is symmetric (decisions 5 and 8): a required field is validated, not represented as absent,
+  so it is never null at runtime and no binding widens it to nullable. The cost is backward compatibility —
+  a remote end omitting a newly-required field errors the whole message until that field is relaxed in the
+  schema (a project override), a reactive fix (notice, override, ship) during which the message fails.
