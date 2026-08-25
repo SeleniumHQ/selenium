@@ -17,6 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'tmpdir'
+
 require_relative '../spec_helper'
 
 module Selenium
@@ -111,6 +113,36 @@ module Selenium
             device_name = sinks.first['name']
             driver.start_cast_tab_mirroring(device_name)
             expect { driver.stop_casting(device_name) }.not_to raise_exception
+          end
+        end
+      end
+
+      describe Driver, skip_unless: [{bidi: true, reason: 'web extensions install over the webExtension BiDi command'},
+                                     {browser: :edge}] do
+        let(:directory) do
+          File.expand_path('../../../../../../common/extensions/webextensions-selenium-example', __dir__)
+        end
+
+        describe '#install_web_extension' do
+          it 'installs a packed archive',
+             pending_if: {exception: {class: Error::UnsupportedOperationError},
+                          reason: 'chromium-bidi installs only unpacked directories (SeleniumHQ/selenium#16541)'} do
+            Dir.mktmpdir do |dir|
+              archive = File.join(dir, 'extension.zip')
+              File.binwrite(archive, Base64.decode64(Zipper.zip_root(directory)))
+
+              extension = driver.install_web_extension(archive)
+              expect(extension.id).not_to be_empty
+              driver.uninstall_web_extension(extension)
+            end
+          end
+
+          it 'installs base64-encoded bytes',
+             pending_if: {exception: {class: Error::UnsupportedOperationError},
+                          reason: 'chromium-bidi installs only unpacked directories (SeleniumHQ/selenium#16541)'} do
+            extension = driver.install_web_extension(Zipper.zip_root(directory))
+            expect(extension.id).not_to be_empty
+            driver.uninstall_web_extension(extension)
           end
         end
       end

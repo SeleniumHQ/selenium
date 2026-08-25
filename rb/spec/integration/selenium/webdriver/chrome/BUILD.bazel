@@ -19,9 +19,23 @@ filegroup(
     )
     for file in glob(
         ["*_spec.rb"],
-        exclude = ["service_spec.rb"],
+        exclude = [
+            "driver_spec.rb",
+            "service_spec.rb",
+        ],
     )
 ]
+
+rb_integration_test(
+    name = "driver",
+    srcs = ["driver_spec.rb"],
+    bidi = True,
+    browsers = [
+        "chrome",
+        "chrome-beta",
+    ],
+    data = ["//common/extensions"],
+)
 
 rb_integration_test(
     name = "service",
