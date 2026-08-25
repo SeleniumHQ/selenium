@@ -50,11 +50,12 @@ internal class DownloadEndEventArgsConverter : JsonConverter<DownloadEndEventArg
 {
     public override DownloadEndEventArgs? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        return reader.GetDiscriminator("status") switch
+        var status = reader.GetDiscriminator("status");
+        return status switch
         {
             "canceled" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DownloadCanceledEventArgs>()),
             "complete" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DownloadCompleteEventArgs>()),
-            _ => null,
+            _ => throw new JsonException($"Unknown download status '{status}'."),
         };
     }
 

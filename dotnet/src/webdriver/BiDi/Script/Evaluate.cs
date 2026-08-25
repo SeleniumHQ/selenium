@@ -81,11 +81,12 @@ internal class EvaluateResultConverter : JsonConverter<EvaluateResult>
 {
     public override EvaluateResult? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        return reader.GetDiscriminator("type") switch
+        var type = reader.GetDiscriminator("type");
+        return type switch
         {
             "success" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<EvaluateResultSuccess>()),
             "exception" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<EvaluateResultException>()),
-            _ => null,
+            _ => throw new JsonException($"Unknown evaluation result type '{type}'."),
         };
     }
 

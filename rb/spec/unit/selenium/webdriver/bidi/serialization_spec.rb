@@ -87,8 +87,13 @@ module Selenium
                 .to raise_error(Error::SerializationError, /RemoteValue expected an object/)
             end
 
-            it 'passes a bare scalar through a union that has a scalar arm (input.Origin)' do
+            it 'passes a declared bare scalar through a union that has a scalar arm (input.Origin)' do
               expect(Input::Origin.from_json('viewport')).to eq('viewport')
+            end
+
+            it 'raises when a bare scalar is not one of the union scalar arms' do
+              expect { Input::Origin.from_json('banana') }
+                .to raise_error(Error::SerializationError, /Origin received a scalar not in this Selenium/)
             end
 
             it 'keeps a map string key while typing its object value (object-only value union)' do
