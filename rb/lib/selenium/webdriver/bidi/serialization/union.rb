@@ -53,10 +53,8 @@ module Selenium
             # An outbound scalar outside that set matches no arm, so it is a caller error.
             def scalar_values(*values) = @scalar_values = values
 
-            # A non-Hash payload is a bare scalar arm (e.g. input.Origin's "viewport") with no
-            # object to dispatch on, so it stands for itself — but only as a literal the schema
-            # pins, since anything else matches no arm. Where every arm is an object
-            # (object_only), a non-Hash cannot match any variant at all.
+            # A non-Hash payload is a bare scalar arm (e.g. input.Origin's "viewport"), valid only
+            # as a literal the schema pins; under object_only it cannot match any variant at all.
             def from_json(json_payload)
               unless json_payload.is_a?(::Hash)
                 if @object_only
