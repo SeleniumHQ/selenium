@@ -348,25 +348,25 @@ internal class BrowsingContextTests : BiDiTestFixture
     [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
     public async Task CanStartAndStopScreencast()
     {
-        StopScreencastResult stopScreencastResult = null;
+        StartScreencastResult startScreencastResult = null;
 
         try
         {
-            var startScreencastResult = await context.StartScreencastAsync();
+            startScreencastResult = await context.StartScreencastAsync();
 
             Assert.That(startScreencastResult.Screencast, Is.Not.Null);
             Assert.That(startScreencastResult.Path, Is.Not.Empty);
 
-            stopScreencastResult = await startScreencastResult.Screencast.StopAsync();
+            var stopScreencastResult = await startScreencastResult.Screencast.StopAsync();
 
             Assert.That(stopScreencastResult.Path, Is.EqualTo(startScreencastResult.Path));
             Assert.That(stopScreencastResult.Error, Is.Null);
         }
         finally
         {
-            if (Path.Exists(stopScreencastResult?.Path))
+            if (Path.Exists(startScreencastResult?.Path))
             {
-                File.Delete(stopScreencastResult.Path);
+                File.Delete(startScreencastResult.Path);
             }
         }
     }
