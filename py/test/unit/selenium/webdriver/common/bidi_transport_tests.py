@@ -29,8 +29,8 @@ from dataclasses import dataclass, field
 import pytest
 
 from selenium.common.exceptions import NoSuchFrameException, WebDriverException
-from selenium.webdriver.common._bidi import errors
 from selenium.webdriver.common._bidi.domain import Domain
+from selenium.webdriver.common._bidi.errors import NoSuchUserContextException
 from selenium.webdriver.common._bidi.serialization import Record, meta, register
 from selenium.webdriver.common._bidi.transport import Transport
 
@@ -143,7 +143,7 @@ def test_a_shared_error_code_raises_the_classic_exception():
 def test_a_bidi_only_error_code_raises_a_bidi_specific_exception():
     connection = DrivingConnection(error="no such user context", message="nope")
 
-    with pytest.raises(errors.NoSuchUserContextException, match=r"nope"):
+    with pytest.raises(NoSuchUserContextException, match=r"nope"):
         Transport(connection).execute("bad.command", result=Result)
 
 

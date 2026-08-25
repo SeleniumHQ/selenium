@@ -1054,21 +1054,82 @@ def exception_class_name(code: str) -> str:
     return "".join(word.capitalize() for word in re.split(r"[^a-zA-Z0-9]+", code) if word) + "Exception"
 
 
-def render_error_codes(schema: Schema) -> str:
-    """Render the wire-code to exception-name map.
+_ERRORS_DOCSTRING = '''"""Exception classes for BiDi wire error codes.
 
-    Deliberately pure data: no selenium imports, so the mapping to real exception
-    classes (which has to reconcile with the classic ones) stays hand-written glue.
+Codes the classic WebDriver error handler already types keep that class, so
+``except NoSuchElementException`` catches a BiDi failure and a classic one alike, even
+where the classic name does not follow from the wire code (``"no such alert"`` is
+``NoAlertPresentException``, ``"unable to capture screen"`` is ``ScreenshotException``).
+The rest are declared here as ``WebDriverException`` subclasses.
+
+This is internal, unsupported implementation. See
+https://www.selenium.dev/documentation/warnings/bidi-implementation/
+"""'''
+
+
+def _classic_exceptions() -> dict[str, type]:
+    """Wire code to the classic exception the error handler already raises for it.
+
+    Read from the handler's own tables rather than a second copy of them, so a class it
+    retypes later follows here on the next build. A code the handler resolves to bare
+    ``WebDriverException`` counts as untyped: a subclass declared in the generated module
+    is strictly more specific and still caught by anyone catching the base.
     """
-    codes = schema.types["ErrorCode"]["values"]
-    docstring = '"""Wire error codes from the BiDi ``ErrorCode`` enum, mapped to exception class names."""'
-    entries = [f"    {lit(code)}: {lit(exception_class_name(code))}," for code in codes]
-    table = "\n".join(["EXCEPTION_NAMES = {", *entries, "}"])
-    return "\n\n\n".join([_HEADER, docstring, table]) + "\n"
+    from selenium.common.exceptions import WebDriverException
+    from selenium.webdriver.remote.errorhandler import ErrorCode, ExceptionMapping
+
+    classic: dict[str, type] = {}
+    for name in dir(ErrorCode):
+        codes = getattr(ErrorCode, name)
+        mapped = getattr(ExceptionMapping, name, None)
+        if not isinstance(codes, list) or mapped is None or mapped is WebDriverException:
+            continue
+        for code in codes:
+            if isinstance(code, str):
+                classic.setdefault(code, mapped)
+    return classic
+
+
+def render_errors(schema: Schema) -> str:
+    """Render the exception classes for the BiDi ``ErrorCode`` enum.
+
+    Emitted as real class statements rather than synthesized at import, so the classes
+    type-check, autocomplete and document like every other exception in the bindings.
+    """
+    classic = _classic_exceptions()
+    resolved = {code: classic.get(code) for code in schema.types["ErrorCode"]["values"]}
+
+    imported = sorted({exc.__name__ for exc in resolved.values() if exc is not None} | {"WebDriverException"})
+    import_block = "\n".join(["from selenium.common.exceptions import (", *(f"    {n}," for n in imported), ")"])
+
+    declarations = [
+        f'class {exception_class_name(code)}(WebDriverException):\n    """Raised for the BiDi {lit(code)} error."""'
+        for code, exc in resolved.items()
+        if exc is None
+    ]
+
+    entries = [
+        f"    {lit(code)}: {exc.__name__ if exc is not None else exception_class_name(code)},"
+        for code, exc in resolved.items()
+    ]
+    table = "\n".join(["EXCEPTIONS: dict[str, type[WebDriverException]] = {", *entries, "}"])
+
+    lookup = '''def exception_for(code: str | None) -> type[WebDriverException]:
+    """The exception class for a wire error code, falling back for an unrecognized one.
+
+    An error the remote end reports must surface as that error even when the code is one
+    this schema does not declare, so an unknown code is never a serialization failure.
+    """
+    return EXCEPTIONS.get(code, WebDriverException) if code else WebDriverException'''
+
+    blocks = [_HEADER, _ERRORS_DOCSTRING, "from __future__ import annotations", import_block]
+    blocks += declarations
+    blocks += [table, lookup]
+    return "\n\n\n".join(blocks) + "\n"
 
 
 def render_all(schema_path: str) -> dict[str, str]:
-    """Render every domain module plus the error-code map; returns {filename: contents}.
+    """Render every domain module plus the error classes; returns {filename: contents}.
 
     The package ``__init__.py`` is hand-written (it carries only the package
     docstring), so it is intentionally not emitted here.
@@ -1076,7 +1137,7 @@ def render_all(schema_path: str) -> dict[str, str]:
     schema = Schema(json.loads(Path(schema_path).read_text(encoding="utf-8")))
     modules = [build_module(schema, domain) for domain in schema.domains()]
     rendered = {f"{mod.filename}.py": render_module(mod) for mod in modules}
-    rendered["error_codes.py"] = render_error_codes(schema)
+    rendered["errors.py"] = render_errors(schema)
     return rendered
 
 

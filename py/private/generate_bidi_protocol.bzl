@@ -6,10 +6,10 @@ The hand-written runtime (``serialization``/``transport``/``domain``) is not pro
 """
 
 # Generated domain modules, snake_case (one per BiDi domain in the schema), plus the
-# domain-less error-code map. The package ``__init__.py`` is hand-written and checked
+# domain-less error classes. The package ``__init__.py`` is hand-written and checked
 # in, so it is not generated here.
 _MODULES = [
-    "error_codes",
+    "errors",
     "bluetooth",
     "browser",
     "browsing_context",

@@ -789,11 +789,14 @@ generate_bidi_protocol(
 
 # Build-graph tool: the generator invoked by the rule above (schema + output dir
 # passed as arguments). No baked args, so it is reusable in the exec configuration.
+# Depends on :remote because rendering reads errorhandler's error-code tables to decide
+# which BiDi codes reuse a classic exception rather than declaring a new one.
 py_binary(
     name = "generate-bidi-protocol-tool",
     srcs = ["generate_bidi_protocol.py"],
     main = "generate_bidi_protocol.py",
     visibility = ["//visibility:private"],
+    deps = [":remote"],
 )
 
 # `bazel run //py:generate-bidi-protocol` regenerates the checked-out tree for local
@@ -805,6 +808,7 @@ py_binary(
     data = ["//javascript/selenium-webdriver:create-bidi-src_schema"],
     main = "generate_bidi_protocol.py",
     visibility = ["//visibility:public"],
+    deps = [":remote"],
 )
 
 py_library(
@@ -813,18 +817,12 @@ py_library(
     srcs = [":create-bidi-protocol-src"] + [
         "selenium/webdriver/common/_bidi/__init__.py",
         "selenium/webdriver/common/_bidi/domain.py",
-        "selenium/webdriver/common/_bidi/errors.py",
         "selenium/webdriver/common/_bidi/serialization.py",
         "selenium/webdriver/common/_bidi/transport.py",
     ],
     imports = ["."],
     visibility = ["//visibility:public"],
-    # :remote for errorhandler's error-code tables, which errors.py reconciles against
-    # rather than keeping a second copy of them.
-    deps = [
-        ":exceptions",
-        ":remote",
-    ],
+    deps = [":exceptions"],
 )
 
 py_test_suite(
