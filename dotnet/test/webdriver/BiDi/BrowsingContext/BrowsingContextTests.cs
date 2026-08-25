@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.IO;
 using OpenQA.Selenium.BiDi.BrowsingContext;
 
 namespace OpenQA.Selenium.Tests.BiDi.BrowsingContext;
@@ -347,14 +348,26 @@ internal class BrowsingContextTests : BiDiTestFixture
     [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
     public async Task CanStartAndStopScreencast()
     {
-        var startScreencastResult = await context.StartScreencastAsync();
+        StopScreencastResult stopScreencastResult = null;
 
-        Assert.That(startScreencastResult.Screencast, Is.Not.Null);
-        Assert.That(startScreencastResult.Path, Is.Not.Empty);
+        try
+        {
+            var startScreencastResult = await context.StartScreencastAsync();
 
-        var stopScreencastResult = await startScreencastResult.Screencast.StopAsync();
+            Assert.That(startScreencastResult.Screencast, Is.Not.Null);
+            Assert.That(startScreencastResult.Path, Is.Not.Empty);
 
-        Assert.That(stopScreencastResult.Path, Is.EqualTo(startScreencastResult.Path));
-        Assert.That(stopScreencastResult.Error, Is.Null);
+            stopScreencastResult = await startScreencastResult.Screencast.StopAsync();
+
+            Assert.That(stopScreencastResult.Path, Is.EqualTo(startScreencastResult.Path));
+            Assert.That(stopScreencastResult.Error, Is.Null);
+        }
+        finally
+        {
+            if (Path.Exists(stopScreencastResult?.Path))
+            {
+                File.Delete(stopScreencastResult.Path);
+            }
+        }
     }
 }
