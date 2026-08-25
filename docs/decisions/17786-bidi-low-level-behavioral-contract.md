@@ -54,8 +54,8 @@ typed payload, and each data type a typed object. A caller creates them to send 
      number, while `integer` rejects a fractional value (`5.7`) but accepts a whole one written `5` or `5.0`.
    - **by vocabulary**: an enum value outside its defined set, a nullable constant set to anything other
      than its literal or `null`, a closed-union discriminator the spec does not declare (such as an unknown
-     `script.RemoteValue` type), or a payload that fails to select any variant (e.g., a missing
-     discriminator or insufficient structural fields).
+     `script.RemoteValue` type), or a payload that fails to select any variant (a missing discriminator,
+     insufficient structural fields, or a scalar matching none of a union's literal variants).
 
 ### Outbound
 
