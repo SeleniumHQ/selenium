@@ -26,6 +26,6 @@ jobs:
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: Ready for Release
-          SLACK_MESSAGE: "CDP was updated in #${{ github.event.pull_request.number }}. Selenium is ready for the next release."
+          SLACK_MESSAGE: "CDP was updated in #${{ github.event.pull_request.number }}. Selenium is ready for the next release. Anything that needs to land before it goes out?"
           MSG_MINIMAL: actions url
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
