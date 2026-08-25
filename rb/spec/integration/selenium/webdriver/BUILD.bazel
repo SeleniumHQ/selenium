@@ -117,6 +117,7 @@ _NO_GRID = ["driver_finder_spec.rb"]
         name = f[:-8],
         srcs = [f],
         bidi = True,
+        data = ["//common/extensions"],
         grid_bidi = True,
         deps = [
             "//rb/lib/selenium/webdriver:bidi",
