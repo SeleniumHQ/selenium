@@ -12,8 +12,8 @@ def pin_browsers():
 
     http_archive(
         name = "linux_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/153.0.4/linux-x86_64/en-US/firefox-153.0.4.tar.xz",
-        sha256 = "7a8392b08168cb7f068055bdd0616a6becf0bf009ae54f405721b8234cfd14e4",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/154.0/linux-x86_64/en-US/firefox-154.0.tar.xz",
+        sha256 = "7665cd49ab13417270748325838e565136adbc76d41bbd76fb24d15a0cc7792b",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -34,8 +34,8 @@ js_library(
 
     dmg_archive(
         name = "mac_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/153.0.4/mac/en-US/Firefox%20153.0.4.dmg",
-        sha256 = "792b313c7e2d2b1327f76f455315dd9d68c59c96935aa5e8c67ae42fe6aeea97",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/154.0/mac/en-US/Firefox%20154.0.dmg",
+        sha256 = "b0295d3b77ec632a60282cf2b9770e1dada085879d00e43d8d23fddf5015e06a",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -51,8 +51,8 @@ js_library(
 
     http_archive(
         name = "linux_beta_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/154.0b10/linux-x86_64/en-US/firefox-154.0b10.tar.xz",
-        sha256 = "39d9b1f5ea53d0174ab2199eb715031cc9d53e6911672dc498ffa14891f6e732",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/155.0b4/linux-x86_64/en-US/firefox-155.0b4.tar.xz",
+        sha256 = "6b9c64759a1e0be28ad8b503fd33cde25c3a61531941997700223bc8e366a3a1",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -73,8 +73,8 @@ js_library(
 
     dmg_archive(
         name = "mac_beta_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/154.0b10/mac/en-US/Firefox%20154.0b10.dmg",
-        sha256 = "b0fa54d57d13be61482de1c4e65acaeca021d4d68e5211d24c8c9aa9950acc88",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/155.0b4/mac/en-US/Firefox%20155.0b4.dmg",
+        sha256 = "9f62d3357f3e09bed4c709a222d2a1e8d8d5084515d1ca0f9adbd467da60e510",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -124,10 +124,10 @@ js_library(
 
     pkg_archive(
         name = "mac_edge",
-        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/ed0bad1f-1780-4ff1-918d-05f38239b396/MicrosoftEdge-151.0.4129.86.pkg",
-        sha256 = "b70216e04be324ba0e2105e74136288685a6a8f118f1128d916009de1fdc1b26",
+        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/d00ded44-4955-41cd-bbc6-aff5a6e507b6/MicrosoftEdge-151.0.4129.107.pkg",
+        sha256 = "fe1c9b7452bd06e5ab622359763e824ddaa03bc8c962d4bcd559a350f49492e4",
         move = {
-            "MicrosoftEdge-151.0.4129.86.pkg/Payload/Microsoft Edge.app": "Edge.app",
+            "MicrosoftEdge-151.0.4129.107.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
@@ -144,8 +144,8 @@ js_library(
 
     deb_archive(
         name = "linux_edge",
-        url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_151.0.4129.86-1_amd64.deb",
-        sha256 = "26b02cb1c6465756df94b9ef34191b614f3df627ba21b7b00b641f44cc1d8343",
+        url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_151.0.4129.107-1_amd64.deb",
+        sha256 = "1193e2de1588c14aff86704cb479f512955cfd6c5f2d5c2bb54ff536a77f624c",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -166,8 +166,8 @@ js_library(
 
     http_archive(
         name = "linux_edgedriver",
-        url = "https://msedgedriver.microsoft.com/151.0.4129.86/edgedriver_linux64.zip",
-        sha256 = "9b79d5a2fe9df27e822d8e5a83d5591878943e49e474af818998a75d40c74240",
+        url = "https://msedgedriver.microsoft.com/151.0.4129.107/edgedriver_linux64.zip",
+        sha256 = "4641be01a004e7675559d4a15b48649bf8e7928ea888db9aad501f5bb408da3c",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -183,8 +183,8 @@ js_library(
 
     http_archive(
         name = "mac_edgedriver",
-        url = "https://msedgedriver.microsoft.com/151.0.4129.86/edgedriver_mac64_m1.zip",
-        sha256 = "3ca2ea494ea9b26e509d3b2aeb824a838e5deacbbb68031ce00b3cbb05cbd61b",
+        url = "https://msedgedriver.microsoft.com/151.0.4129.107/edgedriver_mac64_m1.zip",
+        sha256 = "5f2e84ddd80a030cc5f8a951bcb884bdf111264768f1f04a7b701ea292a1ff1c",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -200,8 +200,8 @@ js_library(
 
     http_archive(
         name = "linux_chrome",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.42/linux64/chrome-linux64.zip",
-        sha256 = "cb77f4781cad7d5e06fcc78b4476e6a6375616e7278dc313abaa9db22ed4674e",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.54/linux64/chrome-linux64.zip",
+        sha256 = "88af83664e1e5f79dc1c1378d0699b98dddd69690a748addf4ccbe322bfacedf",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -221,8 +221,8 @@ js_library(
     )
     http_archive(
         name = "mac_chrome",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.42/mac-arm64/chrome-mac-arm64.zip",
-        sha256 = "c9a7b6bfb57731944990ffb7cafc17ae2f2a2e25ad1f145f45584d7b799d3ce8",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.54/mac-arm64/chrome-mac-arm64.zip",
+        sha256 = "0c8741d580076b3a8add518ddbb674183992d005cdee37a4875948c9f2748d2a",
         strip_prefix = "chrome-mac-arm64",
         patch_cmds = [
             "mv 'Google Chrome for Testing.app' Chrome.app",
@@ -242,8 +242,8 @@ js_library(
     )
     http_archive(
         name = "linux_chromedriver",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.42/linux64/chromedriver-linux64.zip",
-        sha256 = "d6625ea71d0bd3dc0afb45b559d6737d5a5fccfbc04621ad9429e7668de65503",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.54/linux64/chromedriver-linux64.zip",
+        sha256 = "66f3984d666de8455706de8968bd7afb6ad3fa70c1a08084bba8235e146617a6",
         strip_prefix = "chromedriver-linux64",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
@@ -260,8 +260,8 @@ js_library(
 
     http_archive(
         name = "mac_chromedriver",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.42/mac-arm64/chromedriver-mac-arm64.zip",
-        sha256 = "c6ef55f25a0524c7b82f7cd6aff0ed8906c90047743dd9ad3dac763c1422b47d",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.54/mac-arm64/chromedriver-mac-arm64.zip",
+        sha256 = "356c29b24a7b6b8f290ad0312b1ccd90e395981dba57be2e0ac18032e977af56",
         strip_prefix = "chromedriver-mac-arm64",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
@@ -278,8 +278,8 @@ js_library(
 
     http_archive(
         name = "linux_beta_chrome",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.42/linux64/chrome-linux64.zip",
-        sha256 = "cb77f4781cad7d5e06fcc78b4476e6a6375616e7278dc313abaa9db22ed4674e",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.5/linux64/chrome-linux64.zip",
+        sha256 = "4499874646e6a1ce708f76f4519ec6f65f3ddc265a906ca9ff9e768e047ceb92",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -299,8 +299,8 @@ js_library(
     )
     http_archive(
         name = "mac_beta_chrome",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.42/mac-arm64/chrome-mac-arm64.zip",
-        sha256 = "c9a7b6bfb57731944990ffb7cafc17ae2f2a2e25ad1f145f45584d7b799d3ce8",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.5/mac-arm64/chrome-mac-arm64.zip",
+        sha256 = "bb284018027ca5099441c3eed7dc9122dde5cb10927d06e7d8abaa3ee2fdeeef",
         strip_prefix = "chrome-mac-arm64",
         patch_cmds = [
             "mv 'Google Chrome for Testing.app' Chrome.app",
@@ -320,8 +320,8 @@ js_library(
     )
     http_archive(
         name = "linux_beta_chromedriver",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.42/linux64/chromedriver-linux64.zip",
-        sha256 = "d6625ea71d0bd3dc0afb45b559d6737d5a5fccfbc04621ad9429e7668de65503",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.5/linux64/chromedriver-linux64.zip",
+        sha256 = "cfe0a53a83205577bf8a1ac7082a0e1a3d021d8c69efbe22ee534f3d5ab5fab6",
         strip_prefix = "chromedriver-linux64",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
@@ -338,8 +338,8 @@ js_library(
 
     http_archive(
         name = "mac_beta_chromedriver",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.42/mac-arm64/chromedriver-mac-arm64.zip",
-        sha256 = "c6ef55f25a0524c7b82f7cd6aff0ed8906c90047743dd9ad3dac763c1422b47d",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.5/mac-arm64/chromedriver-mac-arm64.zip",
+        sha256 = "432ec376318fe9fbe2981248acd05c073fbfb1aee5d5524d43b46a1393a45db5",
         strip_prefix = "chromedriver-mac-arm64",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
