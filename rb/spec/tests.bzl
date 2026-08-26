@@ -261,7 +261,7 @@ def rb_integration_test(
                 target_compatible_with = BROWSERS[browser]["target_compatible_with"],
             )
 
-            # Bidi over a Grid, for specs that must exercise remote-end behavior (e.g. se/file uploads).
+            # Bidi over a Grid, for specs that must exercise remote-end behavior.
             if grid_bidi:
                 rb_test(
                     name = "{}-{}-remote-bidi".format(name, browser),

@@ -29,6 +29,8 @@ module Selenium
 
       def self.zip_root: (untyped path) -> untyped
 
+      alias self.zip_file self.zip_root
+
       private
 
       def self.encode_zip: (untyped path, untyped base) -> untyped

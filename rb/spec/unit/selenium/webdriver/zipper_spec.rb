@@ -95,6 +95,12 @@ module Selenium
         end
       end
 
+      describe '#zip_file' do
+        it 'is a backwards-compatible alias for #zip_root' do
+          expect(described_class.method(:zip_file)).to eq(described_class.method(:zip_root))
+        end
+      end
+
       describe '#unzip' do
         it 'a file' do
           File.open(zip_file, 'wb') do |io|

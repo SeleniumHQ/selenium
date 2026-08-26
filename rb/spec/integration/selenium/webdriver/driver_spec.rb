@@ -370,10 +370,21 @@ module Selenium
         after { |example| reset_driver!(example: example) }
 
         describe '#install_web_extension' do
-          it 'installs and removes an unpacked directory on any browser' do
+          it 'installs an unpacked directory on any browser' do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example-signed", __dir__)
             extension = driver.install_web_extension(ext)
             expect(extension.id).not_to be_empty
+
+            driver.navigate.to url_for('blank.html')
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
+          end
+        end
+
+        describe '#uninstall_web_extension' do
+          it 'removes an installed extension on any browser' do
+            ext = File.expand_path("#{extensions}/webextensions-selenium-example-signed", __dir__)
+            extension = driver.install_web_extension(ext)
 
             driver.navigate.to url_for('blank.html')
             injected = driver.find_element(id: 'webextensions-selenium-example')

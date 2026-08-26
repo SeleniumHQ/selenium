@@ -65,6 +65,9 @@ module Selenium
           encode_zip(path, File.dirname(path))
         end
 
+        # Backwards-compatible name for the file-only behavior #zip_root now subsumes.
+        alias zip_file zip_root
+
         private
 
         def encode_zip(path, base)

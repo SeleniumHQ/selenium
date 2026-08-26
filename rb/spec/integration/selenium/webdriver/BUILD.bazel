@@ -46,7 +46,7 @@ _BIDI_IMPLEMENTATIONS = [
     "navigation_spec.rb",
 ]
 
-# bidi implementations that must also run over a Grid (e.g. se/file upload of an unpacked extension)
+# bidi implementations that must also run over a Grid
 _GRID_BIDI = [
     "driver_spec.rb",
 ]
