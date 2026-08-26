@@ -36,7 +36,9 @@ class Index extends EventEmitter {
     this._closed = false
     this._pending = new Map()
     this._connectWaiters = new Set()
-    // subscriptionId -> { method, handler }, used by addCallback/removeCallback.
+    // removeCallback(id) only receives the subscriptionId — off() needs the event
+    // name and the exact handler function too, so this holds what it needs to
+    // detach the right listener without the caller having to keep them around.
     this._callbacks = new Map()
     this._ws = new WebSocket(_webSocketUrl)
     this._ws.on('open', () => {
@@ -103,7 +105,12 @@ class Index extends EventEmitter {
             // throwing listener doesn't prevent a sibling listener registered
             // for the same event from still receiving this delivery — emit()
             // itself aborts the rest of its iteration once one listener throws.
-            for (const listener of this.listeners(payload.method)) {
+            // rawListeners(), not listeners(): listeners() unwraps a once()
+            // registration to the caller's original function, so invoking it
+            // here directly (bypassing emit()) would skip the internal wrapper
+            // that removes it after one call — rawListeners() returns that
+            // wrapper itself, preserving once()'s self-removal.
+            for (const listener of this.rawListeners(payload.method)) {
               try {
                 listener(payload.params)
               } catch (err) {
@@ -157,10 +164,9 @@ class Index extends EventEmitter {
     }
     this._connectWaiters.clear()
     // Detach every addCallback() listener too. Once closed, removeCallback()
-    // can no longer reach the remote end (send() would just throw) so it
-    // short-circuits on local cleanup alone — meaning nothing else will ever
-    // detach these listeners. Drop them here instead of leaving them attached
-    // to an EventEmitter nothing will ever emit on again.
+    // can no longer reach the remote end (send() would just throw), so nothing
+    // else will ever detach these listeners. Drop them here instead of leaving
+    // them attached to an EventEmitter nothing will ever emit on again.
     for (const { method, handler } of this._callbacks.values()) {
       this.off(method, handler)
     }
@@ -428,9 +434,19 @@ class Index extends EventEmitter {
    * Removes exactly the callback registered under `subscriptionId` (as
    * returned by {@link addCallback}). A no-op if already removed — including
    * once the connection is closed, since _failPending() has already cleaned
-   * up local state at that point and there is no remote end left to reach.
-   * Never affects any other callback, including another one registered for
-   * the same method.
+   * up local state at that point (and there is no remote end left to reach:
+   * entry is only ever defined here while _closed is still false, since
+   * _failPending() clears every entry in the same synchronous call that sets
+   * _closed). Never affects any other callback, including another one
+   * registered for the same method.
+   *
+   * Local state is only cleaned up once the remote end has confirmed the
+   * subscription is actually gone — not before sending session.unsubscribe,
+   * and not on a wire-level error response. Cleaning up first would leave a
+   * phantom "removed" subscription if the send failed or was rejected: local
+   * delivery would stop while the browser kept sending it, and a retry would
+   * silently no-op since this method's own early return above would find no
+   * entry left to act on.
    * @param {string} subscriptionId
    * @returns {Promise<void>}
    */
@@ -440,17 +456,16 @@ class Index extends EventEmitter {
       return
     }
 
-    this._callbacks.delete(subscriptionId)
-    this.off(entry.method, entry.handler)
-
-    if (this._closed) {
-      return
-    }
-
-    await this.send({
+    const response = await this.send({
       method: 'session.unsubscribe',
       params: { subscriptions: [subscriptionId] },
     })
+    if (response?.error !== undefined) {
+      throw new Error(`${response.error}: ${response.message}`)
+    }
+
+    this._callbacks.delete(subscriptionId)
+    this.off(entry.method, entry.handler)
   }
 
   /**

@@ -314,6 +314,22 @@ describe('BiDi addCallback', function () {
     assert.deepStrictEqual(receivedBySecond, [{ text: 'hello' }])
   })
 
+  // Dispatch invokes each listener directly (for per-listener exception isolation)
+  // instead of going through a single emit() call — rawListeners(), not listeners(),
+  // is what makes that safe for a once() registration: listeners() would unwrap it
+  // to the caller's original function, silently losing its self-removal.
+  it('still removes a once() listener after its one delivery', async function () {
+    const received = []
+    bidi.once('log.entryAdded', (params) => received.push(params))
+
+    subscribeServer.emitEvent('log.entryAdded', { text: 'first' })
+    subscribeServer.emitEvent('log.entryAdded', { text: 'second' })
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    assert.deepStrictEqual(received, [{ text: 'first' }])
+    assert.strictEqual(bidi.listenerCount('log.entryAdded'), 0)
+  })
+
   // _emitOrWarn()'s whole point is to never let a bad 'error' listener crash the
   // process either — otherwise the crash this design guards against just moves
   // one level: from a throwing event handler to a throwing 'error' handler.
@@ -375,6 +391,48 @@ describe('BiDi addCallback', function () {
     const subscription = await bidi.addCallback('log.entryAdded', () => {})
     await bidi.close()
     await assert.doesNotReject(subscription.unsubscribe())
+  })
+
+  it('keeps local state intact and lets a retry actually reach the server when session.unsubscribe is rejected', async function () {
+    let unsubscribeAttempts = 0
+    const failingServer = await startWsServer(({ id, method }, ws) => {
+      if (method === 'session.subscribe') {
+        ws.send(JSON.stringify({ id, result: { subscription: 'sub-1' } }))
+      } else if (method === 'session.unsubscribe') {
+        unsubscribeAttempts++
+        if (unsubscribeAttempts === 1) {
+          ws.send(JSON.stringify({ id, error: 'unknown error', message: 'unsubscribe failed' }))
+        } else {
+          ws.send(JSON.stringify({ id, result: {} }))
+        }
+      } else {
+        ws.send(JSON.stringify({ id, result: {} }))
+      }
+    })
+    const failingBidi = new BiDi(failingServer.url)
+    try {
+      await failingBidi.waitForConnection()
+      const received = []
+      const subscription = await failingBidi.addCallback('log.entryAdded', (params) => received.push(params))
+
+      // First attempt: the server rejects the unsubscribe.
+      await assert.rejects(subscription.unsubscribe(), /unknown error: unsubscribe failed/)
+      assert.strictEqual(unsubscribeAttempts, 1)
+
+      // Local delivery must still work — the failed attempt must not have torn
+      // down local state, since the remote end never confirmed removal.
+      failingServer.emitEvent('log.entryAdded', { text: 'still listening' })
+      await new Promise((resolve) => setTimeout(resolve, 50))
+      assert.deepStrictEqual(received, [{ text: 'still listening' }])
+
+      // Retrying must actually reach the server again, not silently no-op
+      // against local state the first (failed) attempt already deleted.
+      await subscription.unsubscribe()
+      assert.strictEqual(unsubscribeAttempts, 2)
+    } finally {
+      await failingBidi.close()
+      await new Promise((resolve) => failingServer.server.close(resolve))
+    }
   })
 
   it('surfaces the actual remote error when session.subscribe is rejected', async function () {
