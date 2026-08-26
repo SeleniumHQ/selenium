@@ -1,5 +1,10 @@
 load("//rb/spec:tests.bzl", "rb_integration_test")
 
+_BROWSERS = [
+    "firefox",
+    "firefox-beta",
+]
+
 filegroup(
     name = "all_srcs",
     testonly = True,
@@ -11,10 +16,7 @@ filegroup(
     rb_integration_test(
         name = file[:-8],
         srcs = [file],
-        browsers = [
-            "firefox",
-            "firefox-beta",
-        ],
+        browsers = _BROWSERS,
         data = ["//common/extensions"],
     )
     for file in glob(
@@ -30,19 +32,13 @@ rb_integration_test(
     name = "driver",
     srcs = ["driver_spec.rb"],
     bidi = True,
-    browsers = [
-        "firefox",
-        "firefox-beta",
-    ],
+    browsers = _BROWSERS,
     data = ["//common/extensions"],
 )
 
 rb_integration_test(
     name = "service",
     srcs = ["service_spec.rb"],
-    browsers = [
-        "firefox",
-        "firefox-beta",
-    ],
+    browsers = _BROWSERS,
     grid = False,
 )
