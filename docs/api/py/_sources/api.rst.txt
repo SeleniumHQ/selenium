@@ -67,6 +67,17 @@ webdriver.common
    selenium.webdriver.common.webdriver
    selenium.webdriver.common.window
 
+webdriver.common._bidi
+----------------------
+
+.. currentmodule:: selenium.webdriver.common._bidi
+.. autosummary::
+   :toctree: selenium_webdriver_common__bidi
+
+   selenium.webdriver.common._bidi.domain
+   selenium.webdriver.common._bidi.serialization
+   selenium.webdriver.common._bidi.transport
+
 webdriver.common.actions
 ------------------------
 

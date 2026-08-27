@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.47.0 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.48.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../_static/documentation_options.js?v=457a4054"></script>
+    <script src="../_static/documentation_options.js?v=f369efd0"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'selenium_webdriver_remote/selenium.webdriver.remote.webdriver';</script>
@@ -47,7 +47,7 @@
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.47" />
+  <meta name="docsearch:version" content="4.48" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -115,7 +115,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.47.0 documentation</p>
+    <p class="title logo__title">Selenium 4.48.0 documentation</p>
   
 </a></div>
     
@@ -532,7 +532,9 @@ behavior.</p>
 <dd><p>Creates a new session with the desired capabilities.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>capabilities</strong> (<em>dict</em>) – A capabilities dict to start the session with.</p>
+<dd class="field-odd"><p><strong>capabilities</strong> (<em>dict</em>) – Either a flat capabilities dict (from a single options
+object) or an already-formed W3C <code class="docutils literal notranslate"><span class="pre">{&quot;capabilities&quot;:</span> <span class="pre">{...}}</span></code> object
+(produced by <code class="docutils literal notranslate"><span class="pre">create_matches</span></code> when a list of options is supplied).</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>

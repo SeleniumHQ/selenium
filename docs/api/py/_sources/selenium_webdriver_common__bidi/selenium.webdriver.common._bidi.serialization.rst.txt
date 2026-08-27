@@ -1,0 +1,34 @@
+selenium.webdriver.common.\_bidi.serialization
+==============================================
+
+.. automodule:: selenium.webdriver.common._bidi.serialization
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      UNSET
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      meta
+      register
+      resolve
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Record
+      Union
+      UnsetType
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      BiDiSerializationError
+   
