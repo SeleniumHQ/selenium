@@ -183,10 +183,10 @@
   <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>Inbound: builds from the wire. A missing required field is omitted and warned (or
-raised in strict mode, in <code>wire_value</code>); enum tokens are mapped back to symbols and an
-unrecognized one raises (in <code>read</code>); an undeclared property is captured silently
-(extensible) or warned and dropped (closed) — strict on shape, lenient on extras.</p>
+<p>Inbound: builds from the wire. A missing required field raises (in <code>wire_value</code>); enum
+tokens are mapped back to symbols and an unrecognized one raises (in <code>read</code>); an
+undeclared property is captured silently (extensible) or warned and dropped (closed)
+— strict on shape, lenient on extras.</p>
 
   </div>
 </div>
@@ -221,7 +221,7 @@ unrecognized one raises (in <code>read</code>); an undeclared property is captur
 
 <span class='kw'>def</span> <span class='id identifier rubyid_from_json'>from_json</span><span class='lparen'>(</span><span class='id identifier rubyid_json_payload'>json_payload</span><span class='rparen'>)</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_json_payload'>json_payload</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>Hash</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'> expected an object on the wire, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_json_payload'>json_payload</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../../Error/SerializationError.html" title="Selenium::WebDriver::Error::SerializationError (class)">SerializationError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'> expected an object on the wire, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_json_payload'>json_payload</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='id identifier rubyid_fields'>fields</span><span class='period'>.</span><span class='id identifier rubyid_to_h'>to_h</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_f'>f</span><span class='op'>|</span>
@@ -300,7 +300,7 @@ unrecognized one raises (in <code>read</code>); an undeclared property is captur
 </div>
 
       <div id="footer">
-  Generated on Mon Aug 10 18:03:09 2026 by
+  Generated on Thu Aug 27 20:16:07 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-3.3.11).
 </div>
