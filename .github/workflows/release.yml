@@ -23,6 +23,21 @@ permissions:
   packages: write
 
 jobs:
+  unlock-on-close:
+    name: Unlock Trunk on PR Close
+    if: >-
+      github.event.repository.fork == false &&
+      github.event_name == 'pull_request' &&
+      startsWith(github.event.pull_request.head.ref, 'release-preparation-') &&
+      github.event.pull_request.merged == false
+    uses: ./.github/workflows/restrict-trunk.yml
+    with:
+      restrict: false
+      message: "Trunk has been unlocked: ${{ github.event.pull_request.head.ref }} was closed without merging."
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
   extract-tag:
     name: Extract Tag
     runs-on: ubuntu-latest
