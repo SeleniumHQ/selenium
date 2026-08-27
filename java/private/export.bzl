@@ -79,6 +79,15 @@ def java_export(
         deps = [
             ":%s-project" % name,
         ],
+        javadocopts = [
+            "-notimestamp",
+            "-use",
+            "-quiet",
+            "-Xdoclint:-missing",
+            "-encoding",
+            "UTF8",
+            "--no-fonts",
+        ],
     )
 
     pom_file(
