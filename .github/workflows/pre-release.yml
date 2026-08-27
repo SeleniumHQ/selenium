@@ -173,38 +173,49 @@ jobs:
       artifact-name: patch-changelogs
       fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
 
-  release-updates:
-    name: Update ${{ matrix.name }}
-    needs: [parse-tag, commit-versions, selenium-manager, calculate-changelog-depth]
+  update-rust-changelogs:
+    name: Update Rust Changelogs
+    needs: [parse-tag, commit-versions, calculate-changelog-depth]
     if: needs.parse-tag.outputs.language == 'all'
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - task: manager
-            name: Selenium Manager Binaries
-            run: ./go update_manager
-          - task: authors
-            name: Authors
-            run: ./go authors
-          - task: rust-changelogs
-            name: Rust Changelogs
-            run: ./go rust:changelogs
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Update ${{ matrix.name }}
+      name: Update Rust Changelogs
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
-      run: ${{ matrix.run }}
-      artifact-name: patch-${{ matrix.task }}
+      run: ./go rust:changelogs
+      artifact-name: patch-rust-changelogs
       fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
+
+  update-authors:
+    name: Update Authors
+    needs: [parse-tag, calculate-changelog-depth]
+    if: needs.parse-tag.outputs.language == 'all'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Update Authors
+      run: ./go authors
+      artifact-name: patch-authors
+      fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
+
+  update-manager:
+    name: Update Selenium Manager Binaries
+    needs: [parse-tag, selenium-manager]
+    if: needs.parse-tag.outputs.language == 'all'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Update Selenium Manager Binaries
+      run: ./go update_manager
+      artifact-name: patch-manager
 
   create-pr:
     name: Create Pull Request
-    needs: [parse-tag, update-changelogs, release-updates]
+    needs: [parse-tag, update-changelogs, update-rust-changelogs, update-authors, update-manager]
     if: >-
       always() && !cancelled() &&
       needs.update-changelogs.result == 'success' &&
-      needs.release-updates.result != 'failure'
+      (needs.parse-tag.outputs.language != 'all' ||
+       (needs.update-rust-changelogs.result == 'success' &&
+        needs.update-authors.result == 'success' &&
+        needs.update-manager.result == 'success'))
     runs-on: ubuntu-latest
     steps:
       - name: Checkout trunk
@@ -288,7 +299,7 @@ jobs:
 
   unlock-trunk-on-failure:
     name: Unlock Trunk on Failure
-    needs: [parse-tag, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, calculate-changelog-depth, update-changelogs, release-updates, create-pr]
+    needs: [parse-tag, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, calculate-changelog-depth, update-changelogs, update-rust-changelogs, update-authors, update-manager, create-pr]
     if: always() && needs.restrict-trunk.result == 'success' && needs.create-pr.result != 'success'
     uses: ./.github/workflows/restrict-trunk.yml
     with:
@@ -301,7 +312,7 @@ jobs:
   on-prerelease-failure:
     name: On Pre-release Failure
     runs-on: ubuntu-latest
-    needs: [parse-tag, verify-cdp, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, calculate-changelog-depth, update-changelogs, release-updates, create-pr]
+    needs: [parse-tag, verify-cdp, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, calculate-changelog-depth, update-changelogs, update-rust-changelogs, update-authors, update-manager, create-pr]
     if: failure() || cancelled()
     steps:
       - name: Slack Notification
@@ -317,7 +328,9 @@ jobs:
             • Selenium Manager: ${{ needs.selenium-manager.result }}
             • Versions: ${{ needs.commit-versions.result }}
             • Changelogs: ${{ needs.update-changelogs.result }}
-            • Release Updates: ${{ needs.release-updates.result }}
+            • Rust Changelogs: ${{ needs.update-rust-changelogs.result }}
+            • Authors: ${{ needs.update-authors.result }}
+            • Selenium Manager Update: ${{ needs.update-manager.result }}
             • Create PR: ${{ needs.create-pr.result }}
           MSG_MINIMAL: actions url
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
