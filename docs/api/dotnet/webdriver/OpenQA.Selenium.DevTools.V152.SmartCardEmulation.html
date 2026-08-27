@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Namespace OpenQA.Selenium.DevTools.V152.SmartCardEmulation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Namespace OpenQA.Selenium.DevTools.V152.SmartCardEmulation ">
+      
+      
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Selenium .NET API">
+            Selenium .NET API
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="OpenQA.Selenium.DevTools.V152.SmartCardEmulation">
+
+  <h1 id="OpenQA_Selenium_DevTools_V152_SmartCardEmulation" data-uid="OpenQA.Selenium.DevTools.V152.SmartCardEmulation" class="text-break">Namespace OpenQA.Selenium.DevTools.V152.SmartCardEmulation</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.BeginTransactionRequestedEventArgs.html">BeginTransactionRequestedEventArgs</a></dt>
+      <dd><p>Fired when |SCardBeginTransaction| is called.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gaddb835dce01a0da1d6ca02d33ee7d861">https://pcsclite.apdu.fr/api/group__API.html#gaddb835dce01a0da1d6ca02d33ee7d861</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardbegintransaction">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardbegintransaction</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.CancelRequestedEventArgs.html">CancelRequestedEventArgs</a></dt>
+      <dd><p>Fired when |SCardCancel| is called.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gaacbbc0c6d6c0cbbeb4f4debf6fbeeee6">https://pcsclite.apdu.fr/api/group__API.html#gaacbbc0c6d6c0cbbeb4f4debf6fbeeee6</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcancel">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcancel</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ConnectRequestedEventArgs.html">ConnectRequestedEventArgs</a></dt>
+      <dd><p>Fired when |SCardConnect| is called.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga4e515829752e0a8dbc4d630696a8d6a5">https://pcsclite.apdu.fr/api/group__API.html#ga4e515829752e0a8dbc4d630696a8d6a5</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardconnecta">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardconnecta</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ControlRequestedEventArgs.html">ControlRequestedEventArgs</a></dt>
+      <dd><p>Fired when |SCardControl| is called.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gac3454d4657110fd7f753b2d3d8f4e32f">https://pcsclite.apdu.fr/api/group__API.html#gac3454d4657110fd7f753b2d3d8f4e32f</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcontrol">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcontrol</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.DisableCommandResponse.html">DisableCommandResponse</a></dt>
+      <dd><p>Response for Disables the |SmartCardEmulation| domain.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.DisableCommandSettings.html">DisableCommandSettings</a></dt>
+      <dd><p>Disables the |SmartCardEmulation| domain.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.DisconnectRequestedEventArgs.html">DisconnectRequestedEventArgs</a></dt>
+      <dd><p>Fired when |SCardDisconnect| is called.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga4be198045c73ec0deb79e66c0ca1738a">https://pcsclite.apdu.fr/api/group__API.html#ga4be198045c73ec0deb79e66c0ca1738a</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scarddisconnect">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scarddisconnect</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.EnableCommandResponse.html">EnableCommandResponse</a></dt>
+      <dd><p>Response for Enables the |SmartCardEmulation| domain.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.EnableCommandSettings.html">EnableCommandSettings</a></dt>
+      <dd><p>Enables the |SmartCardEmulation| domain.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.EndTransactionRequestedEventArgs.html">EndTransactionRequestedEventArgs</a></dt>
+      <dd><p>Fired when |SCardEndTransaction| is called.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gae8742473b404363e5c587f570d7e2f3b">https://pcsclite.apdu.fr/api/group__API.html#gae8742473b404363e5c587f570d7e2f3b</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardendtransaction">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardendtransaction</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.EstablishContextRequestedEventArgs.html">EstablishContextRequestedEventArgs</a></dt>
+      <dd><p>Fired when |SCardEstablishContext| is called.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gaa1b8970169fd4883a6dc4a8f43f19b67">https://pcsclite.apdu.fr/api/group__API.html#gaa1b8970169fd4883a6dc4a8f43f19b67</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardestablishcontext">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardestablishcontext</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.GetAttribRequestedEventArgs.html">GetAttribRequestedEventArgs</a></dt>
+      <dd><p>Fired when |SCardGetAttrib| is called.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gaacfec51917255b7a25b94c5104961602">https://pcsclite.apdu.fr/api/group__API.html#gaacfec51917255b7a25b94c5104961602</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetattrib">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetattrib</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.GetStatusChangeRequestedEventArgs.html">GetStatusChangeRequestedEventArgs</a></dt>
+      <dd><p>Fired when |SCardGetStatusChange| is called. Timeout is specified in milliseconds.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga33247d5d1257d59e55647c3bb717db24">https://pcsclite.apdu.fr/api/group__API.html#ga33247d5d1257d59e55647c3bb717db24</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetstatuschangea">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetstatuschangea</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ListReadersRequestedEventArgs.html">ListReadersRequestedEventArgs</a></dt>
+      <dd><p>Fired when |SCardListReaders| is called.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga93b07815789b3cf2629d439ecf20f0d9">https://pcsclite.apdu.fr/api/group__API.html#ga93b07815789b3cf2629d439ecf20f0d9</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardlistreadersa">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardlistreadersa</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ProtocolSet.html">ProtocolSet</a></dt>
+      <dd><p>Maps to the |SCARD_PROTOCOL_*| flags.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReaderStateFlags.html">ReaderStateFlags</a></dt>
+      <dd><p>Maps to the |SCARD_STATE_*| flags.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReaderStateIn.html">ReaderStateIn</a></dt>
+      <dd><p>ReaderStateIn</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReaderStateOut.html">ReaderStateOut</a></dt>
+      <dd><p>ReaderStateOut</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReleaseContextRequestedEventArgs.html">ReleaseContextRequestedEventArgs</a></dt>
+      <dd><p>Fired when |SCardReleaseContext| is called.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga6aabcba7744c5c9419fdd6404f73a934">https://pcsclite.apdu.fr/api/group__API.html#ga6aabcba7744c5c9419fdd6404f73a934</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardreleasecontext">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardreleasecontext</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportBeginTransactionResultCommandResponse.html">ReportBeginTransactionResultCommandResponse</a></dt>
+      <dd><p>Response for Reports the result of a |SCardBeginTransaction| call.
+On success, this creates a new transaction object.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gaddb835dce01a0da1d6ca02d33ee7d861">https://pcsclite.apdu.fr/api/group__API.html#gaddb835dce01a0da1d6ca02d33ee7d861</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardbegintransaction">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardbegintransaction</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportBeginTransactionResultCommandSettings.html">ReportBeginTransactionResultCommandSettings</a></dt>
+      <dd><p>Reports the result of a |SCardBeginTransaction| call.
+On success, this creates a new transaction object.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gaddb835dce01a0da1d6ca02d33ee7d861">https://pcsclite.apdu.fr/api/group__API.html#gaddb835dce01a0da1d6ca02d33ee7d861</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardbegintransaction">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardbegintransaction</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportConnectResultCommandResponse.html">ReportConnectResultCommandResponse</a></dt>
+      <dd><p>Response for Reports the successful result of a |SCardConnect| call.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga4e515829752e0a8dbc4d630696a8d6a5">https://pcsclite.apdu.fr/api/group__API.html#ga4e515829752e0a8dbc4d630696a8d6a5</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardconnecta">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardconnecta</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportConnectResultCommandSettings.html">ReportConnectResultCommandSettings</a></dt>
+      <dd><p>Reports the successful result of a |SCardConnect| call.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga4e515829752e0a8dbc4d630696a8d6a5">https://pcsclite.apdu.fr/api/group__API.html#ga4e515829752e0a8dbc4d630696a8d6a5</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardconnecta">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardconnecta</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportDataResultCommandResponse.html">ReportDataResultCommandResponse</a></dt>
+      <dd><p>Response for Reports the successful result of a call that sends back data on success.
+Used for |SCardTransmit|, |SCardControl|, and |SCardGetAttrib|.</p>
+<p>This maps to:</p>
+<ol>
+<li><p>SCardTransmit
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga9a2d77242a271310269065e64633ab99">https://pcsclite.apdu.fr/api/group__API.html#ga9a2d77242a271310269065e64633ab99</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardtransmit">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardtransmit</a></p>
+</li>
+<li><p>SCardControl
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gac3454d4657110fd7f753b2d3d8f4e32f">https://pcsclite.apdu.fr/api/group__API.html#gac3454d4657110fd7f753b2d3d8f4e32f</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcontrol">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcontrol</a></p>
+</li>
+<li><p>SCardGetAttrib
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gaacfec51917255b7a25b94c5104961602">https://pcsclite.apdu.fr/api/group__API.html#gaacfec51917255b7a25b94c5104961602</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetattrib">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetattrib</a></p>
+</li>
+</ol>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportDataResultCommandSettings.html">ReportDataResultCommandSettings</a></dt>
+      <dd><p>Reports the successful result of a call that sends back data on success.
+Used for |SCardTransmit|, |SCardControl|, and |SCardGetAttrib|.</p>
+<p>This maps to:</p>
+<ol>
+<li><p>SCardTransmit
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga9a2d77242a271310269065e64633ab99">https://pcsclite.apdu.fr/api/group__API.html#ga9a2d77242a271310269065e64633ab99</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardtransmit">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardtransmit</a></p>
+</li>
+<li><p>SCardControl
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gac3454d4657110fd7f753b2d3d8f4e32f">https://pcsclite.apdu.fr/api/group__API.html#gac3454d4657110fd7f753b2d3d8f4e32f</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcontrol">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcontrol</a></p>
+</li>
+<li><p>SCardGetAttrib
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gaacfec51917255b7a25b94c5104961602">https://pcsclite.apdu.fr/api/group__API.html#gaacfec51917255b7a25b94c5104961602</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetattrib">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetattrib</a></p>
+</li>
+</ol>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportErrorCommandResponse.html">ReportErrorCommandResponse</a></dt>
+      <dd><p>Response for Reports an error result for the given request.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportErrorCommandSettings.html">ReportErrorCommandSettings</a></dt>
+      <dd><p>Reports an error result for the given request.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportEstablishContextResultCommandResponse.html">ReportEstablishContextResultCommandResponse</a></dt>
+      <dd><p>Response for Reports the successful result of a |SCardEstablishContext| call.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gaa1b8970169fd4883a6dc4a8f43f19b67">https://pcsclite.apdu.fr/api/group__API.html#gaa1b8970169fd4883a6dc4a8f43f19b67</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardestablishcontext">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardestablishcontext</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportEstablishContextResultCommandSettings.html">ReportEstablishContextResultCommandSettings</a></dt>
+      <dd><p>Reports the successful result of a |SCardEstablishContext| call.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gaa1b8970169fd4883a6dc4a8f43f19b67">https://pcsclite.apdu.fr/api/group__API.html#gaa1b8970169fd4883a6dc4a8f43f19b67</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardestablishcontext">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardestablishcontext</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportGetStatusChangeResultCommandResponse.html">ReportGetStatusChangeResultCommandResponse</a></dt>
+      <dd><p>Response for Reports the successful result of a |SCardGetStatusChange| call.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga33247d5d1257d59e55647c3bb717db24">https://pcsclite.apdu.fr/api/group__API.html#ga33247d5d1257d59e55647c3bb717db24</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetstatuschangea">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetstatuschangea</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportGetStatusChangeResultCommandSettings.html">ReportGetStatusChangeResultCommandSettings</a></dt>
+      <dd><p>Reports the successful result of a |SCardGetStatusChange| call.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga33247d5d1257d59e55647c3bb717db24">https://pcsclite.apdu.fr/api/group__API.html#ga33247d5d1257d59e55647c3bb717db24</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetstatuschangea">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetstatuschangea</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportListReadersResultCommandResponse.html">ReportListReadersResultCommandResponse</a></dt>
+      <dd><p>Response for Reports the successful result of a |SCardListReaders| call.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga93b07815789b3cf2629d439ecf20f0d9">https://pcsclite.apdu.fr/api/group__API.html#ga93b07815789b3cf2629d439ecf20f0d9</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardlistreadersa">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardlistreadersa</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportListReadersResultCommandSettings.html">ReportListReadersResultCommandSettings</a></dt>
+      <dd><p>Reports the successful result of a |SCardListReaders| call.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga93b07815789b3cf2629d439ecf20f0d9">https://pcsclite.apdu.fr/api/group__API.html#ga93b07815789b3cf2629d439ecf20f0d9</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardlistreadersa">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardlistreadersa</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportPlainResultCommandResponse.html">ReportPlainResultCommandResponse</a></dt>
+      <dd><p>Response for Reports the successful result of a call that returns only a result code.
+Used for: |SCardCancel|, |SCardDisconnect|, |SCardSetAttrib|, |SCardEndTransaction|.</p>
+<p>This maps to:</p>
+<ol>
+<li><p>SCardCancel
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gaacbbc0c6d6c0cbbeb4f4debf6fbeeee6">https://pcsclite.apdu.fr/api/group__API.html#gaacbbc0c6d6c0cbbeb4f4debf6fbeeee6</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcancel">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcancel</a></p>
+</li>
+<li><p>SCardDisconnect
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga4be198045c73ec0deb79e66c0ca1738a">https://pcsclite.apdu.fr/api/group__API.html#ga4be198045c73ec0deb79e66c0ca1738a</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scarddisconnect">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scarddisconnect</a></p>
+</li>
+<li><p>SCardSetAttrib
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga060f0038a4ddfd5dd2b8fadf3c3a2e4f">https://pcsclite.apdu.fr/api/group__API.html#ga060f0038a4ddfd5dd2b8fadf3c3a2e4f</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardsetattrib">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardsetattrib</a></p>
+</li>
+<li><p>SCardEndTransaction
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gae8742473b404363e5c587f570d7e2f3b">https://pcsclite.apdu.fr/api/group__API.html#gae8742473b404363e5c587f570d7e2f3b</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardendtransaction">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardendtransaction</a></p>
+</li>
+</ol>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportPlainResultCommandSettings.html">ReportPlainResultCommandSettings</a></dt>
+      <dd><p>Reports the successful result of a call that returns only a result code.
+Used for: |SCardCancel|, |SCardDisconnect|, |SCardSetAttrib|, |SCardEndTransaction|.</p>
+<p>This maps to:</p>
+<ol>
+<li><p>SCardCancel
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gaacbbc0c6d6c0cbbeb4f4debf6fbeeee6">https://pcsclite.apdu.fr/api/group__API.html#gaacbbc0c6d6c0cbbeb4f4debf6fbeeee6</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcancel">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcancel</a></p>
+</li>
+<li><p>SCardDisconnect
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga4be198045c73ec0deb79e66c0ca1738a">https://pcsclite.apdu.fr/api/group__API.html#ga4be198045c73ec0deb79e66c0ca1738a</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scarddisconnect">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scarddisconnect</a></p>
+</li>
+<li><p>SCardSetAttrib
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga060f0038a4ddfd5dd2b8fadf3c3a2e4f">https://pcsclite.apdu.fr/api/group__API.html#ga060f0038a4ddfd5dd2b8fadf3c3a2e4f</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardsetattrib">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardsetattrib</a></p>
+</li>
+<li><p>SCardEndTransaction
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gae8742473b404363e5c587f570d7e2f3b">https://pcsclite.apdu.fr/api/group__API.html#gae8742473b404363e5c587f570d7e2f3b</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardendtransaction">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardendtransaction</a></p>
+</li>
+</ol>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportReleaseContextResultCommandResponse.html">ReportReleaseContextResultCommandResponse</a></dt>
+      <dd><p>Response for Reports the successful result of a |SCardReleaseContext| call.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga6aabcba7744c5c9419fdd6404f73a934">https://pcsclite.apdu.fr/api/group__API.html#ga6aabcba7744c5c9419fdd6404f73a934</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardreleasecontext">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardreleasecontext</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportReleaseContextResultCommandSettings.html">ReportReleaseContextResultCommandSettings</a></dt>
+      <dd><p>Reports the successful result of a |SCardReleaseContext| call.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga6aabcba7744c5c9419fdd6404f73a934">https://pcsclite.apdu.fr/api/group__API.html#ga6aabcba7744c5c9419fdd6404f73a934</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardreleasecontext">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardreleasecontext</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportStatusResultCommandResponse.html">ReportStatusResultCommandResponse</a></dt>
+      <dd><p>Response for Reports the successful result of a |SCardStatus| call.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gae49c3c894ad7ac12a5b896bde70d0382">https://pcsclite.apdu.fr/api/group__API.html#gae49c3c894ad7ac12a5b896bde70d0382</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardstatusa">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardstatusa</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ReportStatusResultCommandSettings.html">ReportStatusResultCommandSettings</a></dt>
+      <dd><p>Reports the successful result of a |SCardStatus| call.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gae49c3c894ad7ac12a5b896bde70d0382">https://pcsclite.apdu.fr/api/group__API.html#gae49c3c894ad7ac12a5b896bde70d0382</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardstatusa">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardstatusa</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.SetAttribRequestedEventArgs.html">SetAttribRequestedEventArgs</a></dt>
+      <dd><p>Fired when |SCardSetAttrib| is called.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga060f0038a4ddfd5dd2b8fadf3c3a2e4f">https://pcsclite.apdu.fr/api/group__API.html#ga060f0038a4ddfd5dd2b8fadf3c3a2e4f</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardsetattrib">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardsetattrib</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.SmartCardEmulationAdapter.html">SmartCardEmulationAdapter</a></dt>
+      <dd><p>Represents an adapter for the SmartCardEmulation domain to simplify the command interface.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.StatusRequestedEventArgs.html">StatusRequestedEventArgs</a></dt>
+      <dd><p>Fired when |SCardStatus| is called.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#gae49c3c894ad7ac12a5b896bde70d0382">https://pcsclite.apdu.fr/api/group__API.html#gae49c3c894ad7ac12a5b896bde70d0382</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardstatusa">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardstatusa</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.TransmitRequestedEventArgs.html">TransmitRequestedEventArgs</a></dt>
+      <dd><p>Fired when |SCardTransmit| is called.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__API.html#ga9a2d77242a271310269065e64633ab99">https://pcsclite.apdu.fr/api/group__API.html#ga9a2d77242a271310269065e64633ab99</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardtransmit">https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardtransmit</a></p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ConnectionState.html">ConnectionState</a></dt>
+      <dd><p>Maps to |SCARD_*| connection state values.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.Disposition.html">Disposition</a></dt>
+      <dd><p>Indicates what the reader should do with the card.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.Protocol.html">Protocol</a></dt>
+      <dd><p>Maps to the |SCARD_PROTOCOL_*| values.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ResultCode.html">ResultCode</a></dt>
+      <dd><p>Indicates the PC/SC error code.</p>
+<p>This maps to:
+PC/SC Lite: <a href="https://pcsclite.apdu.fr/api/group__ErrorCodes.html">https://pcsclite.apdu.fr/api/group__ErrorCodes.html</a>
+Microsoft: <a href="https://learn.microsoft.com/en-us/windows/win32/secauthn/authentication-return-values">https://learn.microsoft.com/en-us/windows/win32/secauthn/authentication-return-values</a></p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V152.SmartCardEmulation.ShareMode.html">ShareMode</a></dt>
+      <dd><p>Maps to the |SCARD_SHARE_*| values.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
