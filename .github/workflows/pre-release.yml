@@ -98,11 +98,7 @@ jobs:
 
   update-versions:
     name: Bump Versions
-    needs: [parse-tag, restrict-trunk, selenium-manager]
-    if: >-
-      always() &&
-      needs.restrict-trunk.result == 'success' &&
-      (needs.parse-tag.outputs.language != 'all' || needs.selenium-manager.result == 'success')
+    needs: [parse-tag, restrict-trunk]
     uses: ./.github/workflows/bazel.yml
     with:
       name: Bump versions
