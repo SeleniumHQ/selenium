@@ -1,4 +1,13 @@
+load("@aspect_bazel_lib//lib:write_source_files.bzl", "write_source_files")
+
 exports_files(
     glob(["*.cddl"]),
     visibility = ["//javascript/selenium-webdriver:__pkg__"],
+)
+
+write_source_files(
+    name = "update-schema",
+    files = {
+        "schema.json": "//javascript/selenium-webdriver:create-bidi-src_schema",
+    },
 )
