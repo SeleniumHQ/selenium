@@ -58,6 +58,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
+<li><a href="#isRemoteFileSystem()" tabindex="0">isRemoteFileSystem()</a></li>
 <li><a href="#stop()" tabindex="0">stop()</a></li>
 </ol>
 </li>
@@ -99,9 +100,16 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stop()" class="member-name-link">stop</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isRemoteFileSystem()" class="member-name-link">isRemoteFileSystem</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Indicates whether the browser backing this session runs in a separate environment from the Node
+process (for example, a Docker container, a Kubernetes Pod, or a relayed remote endpoint) and
+therefore does not share the Node's local filesystem.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stop()" class="member-name-link">stop</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -128,6 +136,25 @@ loadScripts(document, 'script');</script>
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="isRemoteFileSystem()">
+<h3>isRemoteFileSystem</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isRemoteFileSystem</span>()</div>
+<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../ActiveSession.html#isRemoteFileSystem()">ActiveSession</a></code></span></div>
+<div class="block">Indicates whether the browser backing this session runs in a separate environment from the Node
+process (for example, a Docker container, a Kubernetes Pod, or a relayed remote endpoint) and
+therefore does not share the Node's local filesystem. When <code>true</code>, file upload and
+download commands must be forwarded to the session so files are written to (or read from) the
+environment where the browser actually runs, instead of being handled on the Node's own
+filesystem.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd><code>true</code> if file transfer commands must be forwarded to the browser environment</dd>
+</dl>
+</div>
+</section>
+</li>
 <li>
 <section class="detail" id="stop()">
 <h3>stop</h3>

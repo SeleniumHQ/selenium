@@ -9659,6 +9659,14 @@ condition was seen.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/node/local/SessionSlot.html#isRelayServiceUp()" class="member-name-link">isRelayServiceUp()</a> - Method in class org.openqa.selenium.grid.node.local.<a href="org/openqa/selenium/grid/node/local/SessionSlot.html" title="class in org.openqa.selenium.grid.node.local">SessionSlot</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/grid/node/ActiveSession.html#isRemoteFileSystem()" class="member-name-link">isRemoteFileSystem()</a> - Method in interface org.openqa.selenium.grid.node.<a href="org/openqa/selenium/grid/node/ActiveSession.html" title="interface in org.openqa.selenium.grid.node">ActiveSession</a></dt>
+<dd>
+<div class="block">Indicates whether the browser backing this session runs in a separate environment from the Node
+process (for example, a Docker container, a Kubernetes Pod, or a relayed remote endpoint) and
+therefore does not share the Node's local filesystem.</div>
+</dd>
+<dt><a href="org/openqa/selenium/grid/node/docker/DockerSession.html#isRemoteFileSystem()" class="member-name-link">isRemoteFileSystem()</a> - Method in class org.openqa.selenium.grid.node.docker.<a href="org/openqa/selenium/grid/node/docker/DockerSession.html" title="class in org.openqa.selenium.grid.node.docker">DockerSession</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/virtualauthenticator/Credential.html#isResidentCredential()" class="member-name-link">isResidentCredential()</a> - Method in class org.openqa.selenium.virtualauthenticator.<a href="org/openqa/selenium/virtualauthenticator/Credential.html" title="class in org.openqa.selenium.virtualauthenticator">Credential</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/internal/Either.html#isRight()" class="member-name-link">isRight()</a> - Method in class org.openqa.selenium.internal.<a href="org/openqa/selenium/internal/Either.html" title="class in org.openqa.selenium.internal">Either</a></dt>
@@ -14588,6 +14596,11 @@ reads a selenium `/status` endpoint.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/LocalValue.html#stringValue(java.lang.String)" class="member-name-link">stringValue(String)</a> - Static method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/LocalValue.html" title="class in org.openqa.selenium.bidi.script">LocalValue</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/grid/node/SessionFactory.html#stripPerHopCapabilities(org.openqa.selenium.Capabilities)" class="member-name-link">stripPerHopCapabilities(Capabilities)</a> - Static method in interface org.openqa.selenium.grid.node.<a href="org/openqa/selenium/grid/node/SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a></dt>
+<dd>
+<div class="block">Removes capabilities scoped to a single hop before a factory forwards a new session request
+upstream.</div>
+</dd>
 <dt><a href="org/openqa/selenium/remote/RemoteWebElement.html#submit()" class="member-name-link">submit()</a> - Method in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/RemoteWebElement.html" title="class in org.openqa.selenium.remote">RemoteWebElement</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/WebElement.html#submit()" class="member-name-link">submit()</a> - Method in interface org.openqa.selenium.<a href="org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></dt>
@@ -16443,6 +16456,11 @@ are visible.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/chromium/ChromiumDriverLogLevel.html#WARNING" class="member-name-link">WARNING</a> - Enum constant in enum class org.openqa.selenium.chromium.<a href="org/openqa/selenium/chromium/ChromiumDriverLogLevel.html" title="enum class in org.openqa.selenium.chromium">ChromiumDriverLogLevel</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/json/WarnOnUnknownFields.html" class="type-name-link" title="annotation interface in org.openqa.selenium.json">WarnOnUnknownFields</a> - Annotation Interface in <a href="org/openqa/selenium/json/package-summary.html">org.openqa.selenium.json</a></dt>
+<dd>
+<div class="block">Opts a type into a <code>ConstructorCoercer</code> check: a JSON property that does not correspond to
+any constructor parameter is logged as a warning instead of passing silently unnoticed.</div>
+</dd>
 <dt><a href="org/openqa/selenium/bidi/script/RemoteValue.Type.html#WEAK_MAP" class="member-name-link">WEAK_MAP</a> - Enum constant in enum class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/RemoteValue.Type.html" title="enum class in org.openqa.selenium.bidi.script">RemoteValue.Type</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/RemoteValue.Type.html#WEAK_SET" class="member-name-link">WEAK_SET</a> - Enum constant in enum class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/RemoteValue.Type.html" title="enum class in org.openqa.selenium.bidi.script">RemoteValue.Type</a></dt>

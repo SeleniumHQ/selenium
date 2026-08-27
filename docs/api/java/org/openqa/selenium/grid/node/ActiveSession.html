@@ -65,6 +65,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#getUri()" tabindex="0">getUri()</a></li>
 <li><a href="#getUpstreamDialect()" tabindex="0">getUpstreamDialect()</a></li>
 <li><a href="#getDownstreamDialect()" tabindex="0">getDownstreamDialect()</a></li>
+<li><a href="#isRemoteFileSystem()" tabindex="0">isRemoteFileSystem()</a></li>
 <li><a href="#stop()" tabindex="0">stop()</a></li>
 </ol>
 </li>
@@ -97,7 +98,7 @@ extends <a href="../../remote/http/HttpHandler.html" title="interface in org.ope
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button><button id="method-summary-table-tab5" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab5', 3)" class="table-tab">Default Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -124,9 +125,16 @@ extends <a href="../../remote/http/HttpHandler.html" title="interface in org.ope
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getUri()" class="member-name-link">getUri</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#stop()" class="member-name-link">stop</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#isRemoteFileSystem()" class="member-name-link">isRemoteFileSystem</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">Indicates whether the browser backing this session runs in a separate environment from the Node
+process (for example, a Docker container, a Kubernetes Pod, or a relayed remote endpoint) and
+therefore does not share the Node's local filesystem.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#stop()" class="member-name-link">stop</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -197,6 +205,24 @@ extends <a href="../../remote/http/HttpHandler.html" title="interface in org.ope
 <h3>getDownstreamDialect</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="return-type"><a href="../../remote/Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a></span>&nbsp;<span class="element-name">getDownstreamDialect</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="isRemoteFileSystem()">
+<h3>isRemoteFileSystem</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isRemoteFileSystem</span>()</div>
+<div class="block">Indicates whether the browser backing this session runs in a separate environment from the Node
+process (for example, a Docker container, a Kubernetes Pod, or a relayed remote endpoint) and
+therefore does not share the Node's local filesystem. When <code>true</code>, file upload and
+download commands must be forwarded to the session so files are written to (or read from) the
+environment where the browser actually runs, instead of being handled on the Node's own
+filesystem.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd><code>true</code> if file transfer commands must be forwarded to the browser environment</dd>
+</dl>
 </div>
 </section>
 </li>
