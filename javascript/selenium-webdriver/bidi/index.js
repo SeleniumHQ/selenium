@@ -447,6 +447,14 @@ class Index extends EventEmitter {
    * delivery would stop while the browser kept sending it, and a retry would
    * silently no-op since this method's own early return above would find no
    * entry left to act on.
+   *
+   * Concurrent calls for the same subscriptionId share one in-flight removal
+   * instead of each sending their own session.unsubscribe — a second, racing
+   * call would otherwise find the subscription already gone (removed by the
+   * first) and get a wire-level error for what was a perfectly valid call.
+   * The in-flight marker is cleared once the attempt settles, either way, so
+   * a later retry after a failure starts a fresh attempt rather than reusing
+   * a rejected one.
    * @param {string} subscriptionId
    * @returns {Promise<void>}
    */
@@ -456,16 +464,23 @@ class Index extends EventEmitter {
       return
     }
 
-    const response = await this.send({
-      method: 'session.unsubscribe',
-      params: { subscriptions: [subscriptionId] },
-    })
-    if (response?.error !== undefined) {
-      throw new Error(`${response.error}: ${response.message}`)
+    if (entry.removing === undefined) {
+      entry.removing = (async () => {
+        const response = await this.send({
+          method: 'session.unsubscribe',
+          params: { subscriptions: [subscriptionId] },
+        })
+        if (response?.error !== undefined) {
+          throw new Error(`${response.error}: ${response.message}`)
+        }
+        this._callbacks.delete(subscriptionId)
+        this.off(entry.method, entry.handler)
+      })().finally(() => {
+        entry.removing = undefined
+      })
     }
 
-    this._callbacks.delete(subscriptionId)
-    this.off(entry.method, entry.handler)
+    return entry.removing
   }
 
   /**

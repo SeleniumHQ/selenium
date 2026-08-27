@@ -435,6 +435,43 @@ describe('BiDi addCallback', function () {
     }
   })
 
+  // Race regression: two concurrent unsubscribe() calls for the same subscription
+  // must share one in-flight session.unsubscribe, not each send their own — a real
+  // server would reject the second as an unknown subscription (already removed by
+  // the first), rejecting what was a perfectly valid concurrent call.
+  it('shares one in-flight removal between concurrent unsubscribe() calls, not sending it twice', async function () {
+    let unsubscribeSends = 0
+    const removed = new Set()
+    const trackingServer = await startWsServer(({ id, method, params }, ws) => {
+      if (method === 'session.subscribe') {
+        ws.send(JSON.stringify({ id, result: { subscription: 'sub-1' } }))
+      } else if (method === 'session.unsubscribe') {
+        unsubscribeSends++
+        const [subscriptionId] = params.subscriptions
+        if (removed.has(subscriptionId)) {
+          ws.send(JSON.stringify({ id, error: 'no such subscription', message: 'already unsubscribed' }))
+        } else {
+          removed.add(subscriptionId)
+          ws.send(JSON.stringify({ id, result: {} }))
+        }
+      } else {
+        ws.send(JSON.stringify({ id, result: {} }))
+      }
+    })
+    const trackingBidi = new BiDi(trackingServer.url)
+    try {
+      await trackingBidi.waitForConnection()
+      const subscription = await trackingBidi.addCallback('log.entryAdded', () => {})
+
+      await assert.doesNotReject(Promise.all([subscription.unsubscribe(), subscription.unsubscribe()]))
+
+      assert.strictEqual(unsubscribeSends, 1)
+    } finally {
+      await trackingBidi.close()
+      await new Promise((resolve) => trackingServer.server.close(resolve))
+    }
+  })
+
   it('surfaces the actual remote error when session.subscribe is rejected', async function () {
     const errorServer = await startEchoErrorServer()
     const errorBidi = new BiDi(errorServer.url)
