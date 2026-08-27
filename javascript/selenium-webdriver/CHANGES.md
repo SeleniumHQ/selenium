@@ -1,3 +1,11 @@
+## 4.48.0
+
+- Support CDP versions: v150, v151, v152
+- Normalize empty custom locator results (#17851)
+- [build] Automated Browser Version Update (major) with CDP (#17910)
+- Ensure BiDi is not exposed on Driver (#17926)
+- Add serialization and domain layer (#17927)
+
 ## 4.47.0
 
 - Support CDP versions: v149, v150, v151
