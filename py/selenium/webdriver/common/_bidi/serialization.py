@@ -35,9 +35,7 @@ from __future__ import annotations
 import dataclasses
 import logging
 import re
-from collections.abc import Callable, Iterator
-from contextlib import contextmanager
-from contextvars import ContextVar
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
 from importlib import import_module
@@ -52,41 +50,14 @@ class BiDiSerializationError(WebDriverException):
     """A payload could not be (de)serialized against this Selenium's BiDi schema."""
 
 
-_strict_inbound: ContextVar[bool] = ContextVar("bidi_strict_inbound", default=False)
-
-
-@contextmanager
-def strict_inbound() -> Iterator[None]:
-    """Escalate the inbound tolerations to errors for the duration of the block.
-
-    By default the layer tolerates a payload that lags or runs ahead of this Selenium's
-    schema — a missing required field or an undeclared property — by warning and carrying
-    on (the wire boundary is not ours to control). Wrap a command call in
-    ``with strict_inbound():`` to make those deviations raise :class:`BiDiSerializationError`
-    instead, for a caller that wants strict conformance. A corrupt value always errors.
-    """
-    token = _strict_inbound.set(True)
-    try:
-        yield
-    finally:
-        _strict_inbound.reset(token)
-
-
-def _tolerate(message: str) -> None:
-    """A tolerated inbound deviation: raise it in strict mode, otherwise warn and continue."""
-    if _strict_inbound.get():
-        raise BiDiSerializationError(message)
-    logger.warning(message)
-
-
-# Cap how many key names one tolerated-inbound warning spells out, so a payload with many
-# unknown/absent keys yields a bounded log line / exception message instead of one built from
-# every remote-supplied key; the remainder is summarized as a count.
+# Cap how many key names one message spells out, so a payload with many unknown/absent keys
+# yields a bounded log line / exception message instead of one built from every remote-supplied
+# key; the remainder is summarized as a count.
 _MAX_KEYS_SHOWN = 10
 
 
 def _summarize(owner: str, kind: str, keys: list[str], suffix: str) -> str:
-    """A bounded ``owner: kind 'a', 'b', … (+N more) (suffix)`` message for tolerated keys."""
+    """A bounded ``owner: kind 'a', 'b', … (+N more) (suffix)`` message."""
     shown = ", ".join(repr(k) for k in keys[:_MAX_KEYS_SHOWN])
     if len(keys) > _MAX_KEYS_SHOWN:
         shown += f", … (+{len(keys) - _MAX_KEYS_SHOWN} more)"
@@ -242,9 +213,8 @@ class Record:
     :func:`meta`. The object itself is permissive; validation lives at the boundaries.
     Outbound (:meth:`as_json`) omits ``UNSET``, emits ``null`` only for nullable fields,
     and errors if a required field is unset. Inbound (:meth:`from_json`) errors on a
-    corrupt value but tolerates a missing required field or an undeclared property —
-    it warns and carries on (``strict_inbound`` escalates to an error) — so a client
-    generated from one spec revision keeps working against a browser on another.
+    corrupt value or a missing required field, and tolerates only an undeclared property,
+    so a browser that adds a field does not break a client generated from an older schema.
     """
 
     _EXTENSIBLE: bool = False
@@ -257,7 +227,7 @@ class Record:
             value = getattr(self, f.name)
             if w.fixed is not UNSET:
                 # A baked discriminator (non-nullable) is forced to its const. A nullable constant
-                # is settable and must be its literal or null (ADR decision 4, by vocabulary).
+                # is settable and must be its literal or null.
                 if w.nullable and value is not UNSET and value is not None and value != w.fixed:
                     raise BiDiSerializationError(
                         f"{type(self).__name__}.{f.name}: {value!r} must be {w.fixed!r} or None"
@@ -294,9 +264,9 @@ class Record:
             declared.add(w.wire)
             value = getattr(self, f.name)
             if value is UNSET:
-                # Outbound requires every required field (ADR decision 1). Enforced here at
-                # the boundary, not in the constructor, so the object stays permissive and
-                # inbound can tolerate the same field being absent (see from_json).
+                # The constructor already requires every required field; this backstops a
+                # caller that passed the UNSET sentinel explicitly, so an unset required
+                # field can never reach the wire as an omission.
                 if w.required:
                     raise BiDiSerializationError(f"{type(self).__name__}.{f.name}: required {w.wire!r} is not set")
                 continue
@@ -306,7 +276,7 @@ class Record:
             payload[w.wire] = _as_json(value)
         if self._EXTENSIBLE:
             extras = getattr(self, "extensions", None) or {}
-            # A key the type declares must never appear in the extras map (ADR decision 1), so an
+            # A key the type declares must never appear in the extras map, so an
             # extra can never shadow a declared field on the wire — whether or not that field is set.
             shadowed = [k for k in extras if k in declared]
             if shadowed:
@@ -338,23 +308,25 @@ class Record:
                 continue
             kwargs[f.name] = _read_field(cls, f.name, w, payload)
         undeclared = [k for k in payload if k not in known]
-        # A missing required field is tolerated and left unset (ADR decision 8). An undeclared field
+        # A required field the remote omitted cannot yield a valid object, so it errors rather
+        # than leaving a hole a caller cannot distinguish from a real value. An undeclared field
         # on an extensible type is spec-sanctioned, not a deviation: it is preserved in the extras
-        # map silently (ADR decision 1/9). On a non-extensible type it is a deviation: warn and drop.
-        # Each tolerated kind warns at most once per record — never once per key, so a verbose payload
-        # cannot flood the log; strict_inbound escalates a genuine deviation to an error.
+        # map silently. On a non-extensible type it is a deviation: warn and drop. Both messages
+        # name at most a bounded number of keys, so a verbose payload cannot flood the log.
         if missing_required:
-            _tolerate(_summarize(cls.__name__, "missing required", missing_required, "left unset"))
+            raise BiDiSerializationError(
+                _summarize(cls.__name__, "missing required", missing_required, "absent from the response")
+            )
         if cls._EXTENSIBLE:
             kwargs["extensions"] = {k: payload[k] for k in undeclared}
         elif undeclared:
-            _tolerate(_summarize(cls.__name__, "undeclared", undeclared, "dropped"))
+            logger.warning(_summarize(cls.__name__, "undeclared", undeclared, "dropped"))
         return cls(**kwargs)
 
 
 def _read_field(cls: type, name: str, w: _Wire, payload: dict) -> Any:
     # Called only for a field present on the wire; from_json handles an absent field (an absent
-    # required one is tolerated and warned there, in one bounded message per record).
+    # required one errors there, in one bounded message naming every field that was missing).
     raw = payload[w.wire]
     if raw is None:
         if w.nullable:
@@ -401,15 +373,23 @@ def _check_scalar(cls: type, name: str, w: _Wire, value: Any) -> Any:
     raise BiDiSerializationError(f"{cls.__name__}.{name}: map key expected {' or '.join(scalars)}, got {got} {value!r}")
 
 
-# JSON value -> the Python types a schema primitive accepts. ``integer`` accepts only an
-# int (a non-integer float like 1.5 is a real mismatch, and even 5.0 is rejected under
-# strict-first — relax reactively if a browser is ever seen sending it). ``number`` accepts
-# an int or a float. ``bool`` is excluded from the numeric checks: it is an ``int`` subclass
-# but is not a number.
+def _is_whole(value: Any) -> bool:
+    # A browser is free to encode a whole number either way (JS has no int/float split), so
+    # ``5`` and ``5.0`` are both integers on the wire; only a fractional value is a mismatch.
+    if isinstance(value, bool):
+        return False
+    if isinstance(value, int):
+        return True
+    return isinstance(value, float) and value.is_integer()
+
+
+# JSON value -> the Python types a schema primitive accepts. A primitive matches by JSON kind,
+# not Python type: ``integer`` admits any whole number, ``number`` an int or a float. ``bool``
+# is excluded from the numeric checks: it is an ``int`` subclass but is not a number.
 _PRIMITIVE_CHECKS = {
     "str": lambda v: isinstance(v, str),
     "bool": lambda v: isinstance(v, bool),
-    "int": lambda v: isinstance(v, int) and not isinstance(v, bool),
+    "int": _is_whole,
     "float": lambda v: isinstance(v, (int, float)) and not isinstance(v, bool),
 }
 
@@ -417,7 +397,7 @@ _PRIMITIVE_CHECKS = {
 def _read_scalar(cls: type, name: str, w: _Wire, raw: Any) -> Any:
     if w.fixed is not UNSET:
         # A nullable constant (a non-nullable one is baked and never read): the wire value must be
-        # the literal, else it is invalid (ADR decision 4, by vocabulary). A null took the nullable
+        # the literal, else it is invalid. A null took the nullable
         # path in _read_field before reaching here.
         if raw != w.fixed:
             raise BiDiSerializationError(f"{cls.__name__}.{name}: {raw!r} is not the constant {w.fixed!r}")
@@ -441,11 +421,14 @@ def _read_scalar(cls: type, name: str, w: _Wire, raw: Any) -> Any:
         if check and not check(raw):
             got = type(raw).__name__
             raise BiDiSerializationError(f"{cls.__name__}.{name}: expected {w.primitive}, got {got} {raw!r}")
+        if w.primitive == "int" and isinstance(raw, float):
+            # A whole number is exact in both types, so the declared type is held with nothing lost.
+            return int(raw)
     return raw
 
 
 def _validate_outbound(owner: str, name: str, w: _Wire, value: Any) -> None:
-    """Reject an outbound value that violates its wire type before it is sent (ADR decision 1).
+    """Reject an outbound value that violates its wire type before it is sent.
 
     A caller mistake — a wrong primitive, a scalar where a list is expected, a raw dict where a
     typed record belongs — surfaces here as a local error rather than a remote protocol error.
@@ -535,6 +518,7 @@ class Union:
     _FALLBACK: str | None = None
     _DISCRIMINATOR_VALUES: frozenset[Any] | None = None
     _OBJECT_ONLY: bool = False
+    _SCALAR_VALUES: frozenset = frozenset()
     _VARIANT_CLASSES: tuple[type, ...] | None = None  # per-subclass cache; see _variant_classes
 
     @classmethod
@@ -576,10 +560,11 @@ class Union:
 
     @classmethod
     def validate_outbound(cls, owner: str, name: str, value: Any) -> None:
-        """Reject an outbound value that is not one of this union's variants (ADR decisions 4-5).
+        """Reject an outbound value that is not one of this union's variants.
 
-        A variant instance passes. A bare scalar passes only for a union that has a scalar arm,
-        never an object-only one. This mirrors inbound dispatch, which errors on the same values.
+        A variant instance passes. A bare scalar passes only for a union that has a scalar arm, and
+        only as one of the literals that arm declares, so a stray string is a caller error rather
+        than a wire round-trip. This mirrors inbound dispatch, which errors on the same values.
         """
         if isinstance(value, Record):
             if not isinstance(value, cls._variant_classes()):
@@ -592,6 +577,22 @@ class Union:
             raise BiDiSerializationError(
                 f"{owner}.{name}: expected an object variant of {cls.__name__}, got {got} {value!r}"
             )
+        if not cls._scalar_arm(value):
+            raise BiDiSerializationError(f"{owner}.{name}: {value!r} is not one of {cls._arms()}")
+
+    @classmethod
+    def _scalar_arm(cls, value: Any) -> bool:
+        """Whether a bare scalar is one of the literals this union's scalar arm declares.
+
+        Compared by equality rather than set membership so an unhashable payload (a list where
+        a scalar belongs) answers False instead of raising and masking the real error.
+        """
+        return any(value == arm for arm in cls._SCALAR_VALUES)
+
+    @classmethod
+    def _arms(cls) -> str:
+        # Sorted by repr, not value: the arms of one union need not share a primitive type.
+        return f"{cls.__name__}'s arms ({', '.join(repr(v) for v in sorted(cls._SCALAR_VALUES, key=repr))})"
 
     @classmethod
     def from_json(cls, payload: Any) -> Any:
@@ -601,8 +602,12 @@ class Union:
             if cls._OBJECT_ONLY:
                 got = type(payload).__name__
                 raise BiDiSerializationError(f"{cls.__name__} expected an object on the wire, got {got} {payload!r}")
-            # A bare scalar arm (e.g. input.Origin's "viewport") has no object to
-            # dispatch on, so it is returned unchanged.
+            # A bare scalar arm (e.g. input.Origin's "viewport") has no object to dispatch
+            # on, so it stands for itself — but only as a literal the schema pins.
+            if not cls._scalar_arm(payload):
+                raise BiDiSerializationError(
+                    f"{cls.__name__} received a scalar not in this Selenium's BiDi schema: {payload!r}"
+                )
             return payload
         variant = cls._select(payload)
         if variant is None:

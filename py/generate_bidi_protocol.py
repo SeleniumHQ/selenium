@@ -235,6 +235,7 @@ class UnionIR:
     object_only: bool = False
     spec_href: str | None = None
     scalar_type: str | None = None  # Literal[...] for an alias-union's bare-scalar arms
+    scalar_values: list[Any] | None = None  # the literals a bare-scalar arm admits
 
 
 @dataclass
@@ -345,8 +346,8 @@ class Schema:
             fields=fields,
             discriminator=discriminator,
             # A type the spec marks extensible carries an untyped map for the fields the spec does
-            # not declare (ADR decision 1); every extensible type keeps them, received-only ones
-            # included (ADR decision 9). A non-extensible type gets no store.
+            # not declare; every extensible type keeps them, received-only ones
+            # included. A non-extensible type gets no store.
             extensible=bool(type_.get("extensible")),
             spec_href=type_.get("specHref"),
         )
@@ -358,7 +359,7 @@ class Schema:
         resolved = self._resolve(field_["type"])
         # Carry a const literal whether or not it is nullable. A non-nullable const is a baked
         # discriminator (forced, init=False); a nullable const (e.g. ``bypass: true / null``) is a
-        # settable field held to its literal-or-null by the runtime (ADR decision 4, by vocabulary).
+        # settable field held to its literal-or-null by the runtime.
         const = field_["type"].get("const", _NO_FIXED)
         py, refs = self.py_type(field_["type"])
         self._pending_refs |= refs
@@ -392,6 +393,11 @@ class Schema:
             ir = self._union_from_selector(name, type_["selector"])
         else:
             ir = self._union_from_alias(name)
+        # A non-object_only union has a bare-scalar arm; only const-literal arms (scalarValues)
+        # are modeled, so the runtime can validate an outbound scalar. Without them the runtime
+        # would accept any scalar, so fail here, at generation, not at a caller's runtime.
+        if not ir.object_only and not ir.scalar_values:
+            raise ValueError(f"non-object_only union {name} has no scalarValues to validate its bare-scalar arm")
         for v in ir.variants:
             py = self._py_ref(v.ref, self._pending_refs)
             ir.variant_types.append(py)
@@ -460,10 +466,8 @@ class Schema:
         # projector leaves it unflagged and a non-object payload still passes through. Those arms
         # have no ref, so they are absent from the record variants above; surface them in the value
         # alias as a Literal[...] so a caller sees the scalar options, not only the record variant.
-        scalar_consts = [
-            arm["const"] for arm in self.types[name]["type"]["union"] if "const" in arm and "ref" not in arm
-        ]
-        scalar_type = f"Literal[{', '.join(repr(c) for c in scalar_consts)}]" if scalar_consts else None
+        scalar_values = self.types[name]["type"].get("scalarValues") or []
+        scalar_type = f"Literal[{', '.join(repr(c) for c in scalar_values)}]" if scalar_values else None
         object_only = bool(self.types[name].get("objectOnly"))
         return UnionIR(
             type_class_name(name),
@@ -475,6 +479,7 @@ class Schema:
             object_only=object_only,
             spec_href=self.types[name].get("specHref"),
             scalar_type=scalar_type,
+            scalar_values=scalar_values,
         )
 
     def params_for(self, params_ref: dict | None) -> list[ParamIR] | None:
@@ -885,6 +890,9 @@ def _emit_union(u: UnionIR) -> str:
         lines.append(f"    _DISCRIMINATOR_VALUES = {frozenset_lit(values, 4)}")
     if u.object_only:
         lines.append("    _OBJECT_ONLY = True")
+    if u.scalar_values:
+        values = [lit(v) for v in u.scalar_values]
+        lines.append(f"    _SCALAR_VALUES = {frozenset_lit(values, 4)}")
     alias = _emit_type_alias(value_alias(u.schema_name), u.variant_types)
     return "\n".join(lines) + "\n\n\n" + alias
 
