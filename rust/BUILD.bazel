@@ -90,7 +90,7 @@ rust_binary(
     rustc_env = {
         "CARGO_PKG_DESCRIPTION": "Selenium Manager is a CLI tool that automatically manages the browser/driver resources required by Selenium.",
     },
-    version = "0.4.48-nightly",
+    version = "0.4.48",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium_manager",
