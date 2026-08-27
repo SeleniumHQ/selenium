@@ -33,6 +33,9 @@ internal sealed class EmulationModule : Module, IEmulationModule
     private static readonly Command<SetLocaleOverrideParameters, SetLocaleOverrideResult> SetLocaleOverrideCommand = new(
         "emulation.setLocaleOverride", Default.SetLocaleOverrideParameters, Default.SetLocaleOverrideResult);
 
+    private static readonly Command<SetMediaFeaturesOverrideParameters, SetMediaFeaturesOverrideResult> SetMediaFeaturesOverrideCommand = new(
+        "emulation.setMediaFeaturesOverride", Default.SetMediaFeaturesOverrideParameters, Default.SetMediaFeaturesOverrideResult);
+
     private static readonly Command<SetForcedColorsModeThemeOverrideParameters, SetForcedColorsModeThemeOverrideResult> SetForcedColorsModeThemeOverrideCommand = new(
         "emulation.setForcedColorsModeThemeOverride", Default.SetForcedColorsModeThemeOverrideParameters, Default.SetForcedColorsModeThemeOverrideResult);
 
@@ -73,6 +76,12 @@ internal sealed class EmulationModule : Module, IEmulationModule
     {
         var @params = new SetLocaleOverrideParameters(locale, options?.Contexts, options?.UserContexts);
         return await ExecuteAsync(SetLocaleOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<SetMediaFeaturesOverrideResult> SetMediaFeaturesOverrideAsync(MediaFeatures? features, SetMediaFeaturesOverrideOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var @params = new SetMediaFeaturesOverrideParameters(features, options?.Contexts, options?.UserContexts);
+        return await ExecuteAsync(SetMediaFeaturesOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetForcedColorsModeThemeOverrideResult> SetForcedColorsModeThemeOverrideAsync(ForcedColorsModeTheme? theme, SetForcedColorsModeThemeOverrideOptions? options = null, CancellationToken cancellationToken = default)
@@ -141,6 +150,8 @@ internal sealed class EmulationModule : Module, IEmulationModule
 [JsonSerializable(typeof(SetUserAgentOverrideResult))]
 [JsonSerializable(typeof(SetLocaleOverrideParameters))]
 [JsonSerializable(typeof(SetLocaleOverrideResult))]
+[JsonSerializable(typeof(SetMediaFeaturesOverrideParameters))]
+[JsonSerializable(typeof(SetMediaFeaturesOverrideResult))]
 [JsonSerializable(typeof(SetForcedColorsModeThemeOverrideParameters))]
 [JsonSerializable(typeof(SetForcedColorsModeThemeOverrideResult))]
 [JsonSerializable(typeof(SetScriptingEnabledParameters))]
